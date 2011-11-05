@@ -7,7 +7,6 @@ public class SiteAttachmentDTO extends BaseModelData implements DTO {
 
 	private static final long serialVersionUID = 4834762767256920716L;
 
-	private int attachmentId;
 	private int siteId;
     private String blobId;
     private String fileName;
@@ -15,14 +14,6 @@ public class SiteAttachmentDTO extends BaseModelData implements DTO {
 	
 	public SiteAttachmentDTO(){
 		
-	}
-
-	public int getAttachmentId() {
-		return attachmentId;
-	}
-
-	public void setAttachmentId(int attachmentId) {
-		this.attachmentId = attachmentId;
 	}
 
 	public int getSiteId() {

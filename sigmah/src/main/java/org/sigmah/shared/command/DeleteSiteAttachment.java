@@ -5,21 +5,18 @@ import org.sigmah.shared.command.result.VoidResult;
 public class DeleteSiteAttachment implements Command<VoidResult> {
 
 	
-	private int attachmentId;
+	private String blobId;
 	
 	public DeleteSiteAttachment(){
 		
 	}
 
-	public int getAttachmentId() {
-		return attachmentId;
+	public String getBlobId() {
+		return blobId;
 	}
 
-	public void setAttachmentId(int attachmentId) {
-		this.attachmentId = attachmentId;
+	public void setBlobId(String blobId) {
+		this.blobId = blobId;
 	}
-	
-	
-	
 	
 }

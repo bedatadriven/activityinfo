@@ -12,13 +12,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "siteattachment")
 @NamedQueries({
-    @NamedQuery(name = "findSiteAttachments", query = "select s from SiteAttachment s where s.siteId = :siteId") })
+    @NamedQuery(name = "findSiteAttachments", query = "select s from SiteAttachment s where s.blobId = :blobId") })
 public class SiteAttachment implements java.io.Serializable {
 
 
 	private static final long serialVersionUID = -619220161104158193L;
 	
-	private int attachmentId;
 	private int siteId;
     private String blobId;
     private String fileName;
@@ -28,14 +27,13 @@ public class SiteAttachment implements java.io.Serializable {
     }
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "attachmentid", unique = true, nullable = false)
-    public int getAttachmentId() {
-		return attachmentId;
+    @Column(name = "blobid", nullable = false, length = 255)
+	public String getBlobId() {
+		return blobId;
 	}
 
-	public void setAttachmentId(int attachmentId) {
-		this.attachmentId = attachmentId;
+	public void setBlobId(String blobId) {
+		this.blobId = blobId;
 	}
 
 	@Column(name = "siteid", nullable = false, length = 11)
@@ -46,16 +44,6 @@ public class SiteAttachment implements java.io.Serializable {
 
 	public void setSiteId(int siteId) {
 		this.siteId = siteId;
-	}
-
-    @Column(name = "blobid", nullable = false, length = 255)
-	public String getBlobId() {
-		return blobId;
-	}
-
-
-	public void setBlobId(String blobId) {
-		this.blobId = blobId;
 	}
 
     @Column(name = "filename", nullable = false, length = 255)

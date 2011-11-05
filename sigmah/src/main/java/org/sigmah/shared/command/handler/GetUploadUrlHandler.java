@@ -13,13 +13,16 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.google.inject.Inject;
 
 public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 
 	private String url;
+	private AmazonS3Client client;
 	
-	public GetUploadUrlHandler(){
-		
+	@Inject
+	public GetUploadUrlHandler(AmazonS3Client client){
+		this.client = client;
 	}
 	
 	@Override
@@ -30,9 +33,7 @@ public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
         String awsSecretAccessKey = "uuzYlC4MFg8oC835uzWblbE6AROGpgGhrqU0vx+4";
         
         String bucketName = "site-attachments";
-        String key = "SiteAttachments";
-        
-        AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey));
+        String key = cmd.getBlobid();
         
         GeneratePresignedUrlRequest request = 
         	    new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);

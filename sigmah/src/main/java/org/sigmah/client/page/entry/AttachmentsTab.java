@@ -2,21 +2,16 @@ package org.sigmah.client.page.entry;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.shared.command.DeleteSiteAttachment;
 import org.sigmah.shared.command.GetSiteAttachments;
 import org.sigmah.shared.command.result.SiteAttachmentResult;
-import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteAttachmentDTO;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.aria.NavigationHandler;
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -27,7 +22,6 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AttachmentsTab extends TabItem implements
@@ -43,9 +37,9 @@ public class AttachmentsTab extends TabItem implements
 	private final UIConstants messages;
 	private final Dispatcher dispatcher;
 
-	
-	private int currentAttachment;
-	
+	private ListView<AttachmentModel> attachmentList;
+	private String currentAttachment;
+
 	public AttachmentsTab(final EventBus eventBus, Dispatcher service,
 			ActivityDTO activity, UIConstants messages) {
 		this.eventBus = eventBus;
@@ -57,13 +51,7 @@ public class AttachmentsTab extends TabItem implements
 		setText(I18N.CONSTANTS.attachment());
 		setLayout(new FitLayout());
 
-		toolBar = new ActionToolBar();
-		toolBar.addUploadButton();
-		toolBar.setUploadEnabled(false);
-		toolBar.add(new SeparatorToolItem());
-		toolBar.addDeleteButton();
-		toolBar.setDeleteEnabled(false);
-		toolBar.setListener(presenter);
+		createToolBar();
 
 		panel = new ContentPanel();
 		panel.setHeading(I18N.CONSTANTS.attachment());
@@ -73,26 +61,38 @@ public class AttachmentsTab extends TabItem implements
 
 		store = new ListStore<AttachmentModel>();
 
-		ListView<AttachmentModel> view = new ListView<AttachmentModel>();
-		view.setTemplate(getTemplate(GWT.getModuleBaseURL() + "image/"));
-		view.setBorders(false);
-		view.setStore(store);
-		view.setItemSelector("dd");
-		view.setOverStyle("over");
+		attachmentList = new ListView<AttachmentModel>();
+		attachmentList.setTemplate(getTemplate(GWT.getModuleBaseURL()
+				+ "image/"));
+		attachmentList.setBorders(false);
+		attachmentList.setStore(store);
+		attachmentList.setItemSelector("dd");
+		attachmentList.setOverStyle("over");
 
-		view.addListener(Events.Select,
+		attachmentList.addListener(Events.Select,
 				new Listener<ListViewEvent<AttachmentModel>>() {
 
 					public void handleEvent(ListViewEvent<AttachmentModel> event) {
-//						eventBus.fireEvent(new NavigationEvent(
-//								NavigationHandler.NavigationRequested, event
-//										.getModel().getAttachmentId()));
-						currentAttachment = event.getModel().getAttachmentId();
+						currentAttachment = event.getModel().getBlobId();
+						toolBar.setActionEnabled(UIActions.delete, true);
 					}
 				});
-		panel.add(view);
+
+		panel.add(attachmentList);
 
 		add(panel);
+	}
+
+	public void createToolBar() {
+
+		toolBar = new ActionToolBar();
+		toolBar.addUploadButton();
+		toolBar.add(new SeparatorToolItem());
+		toolBar.addDeleteButton();
+		toolBar.setListener(presenter);
+		toolBar.setUploadEnabled(false);
+		toolBar.setDeleteEnabled(false);
+
 	}
 
 	public void setSelectionTitle(String title) {
@@ -120,7 +120,6 @@ public class AttachmentsTab extends TabItem implements
 						store.removeAll();
 						for (SiteAttachmentDTO a : result.getData()) {
 							AttachmentModel model = new AttachmentModel();
-							model.setAttachmentId(a.getAttachmentId());
 							model.setSiteId(a.getSiteId());
 							model.setBlobId(a.getBlobId());
 							model.setFileName(a.getFileName());
@@ -140,8 +139,13 @@ public class AttachmentsTab extends TabItem implements
 				'<div style="clear:left;"></div></dl>' ].join("");
 
 	}-*/;
-	
-	public int getSelectedItem(){
+
+	public String getSelectedItem() {
 		return currentAttachment;
 	}
+
+	public void refreshList() {
+		attachmentList.refresh();
+	}
+
 }
