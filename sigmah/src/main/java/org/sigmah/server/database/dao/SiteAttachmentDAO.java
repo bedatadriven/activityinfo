@@ -10,4 +10,5 @@ public interface SiteAttachmentDAO extends DAO <SiteAttachment, Integer> {
 
 	List<SiteAttachment> findSiteAttachments(String siteid);
 	
+	
 }

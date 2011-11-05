@@ -25,7 +25,6 @@ public class CreateSiteAttachmentHandler implements CommandHandlerAsync<CreateSi
 		
 		callback.onSuccess(new VoidResult());
 	}
-
 	
 
 }

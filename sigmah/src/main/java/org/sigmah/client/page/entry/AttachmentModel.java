@@ -4,7 +4,6 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class AttachmentModel extends BaseModelData {
 
-	
 	private int attachmentId;
 	private int siteId;
     private String blobId;
@@ -55,5 +54,4 @@ public class AttachmentModel extends BaseModelData {
 		this.uploadedBy = uploadedBy;
 	}
 	
-    
 }

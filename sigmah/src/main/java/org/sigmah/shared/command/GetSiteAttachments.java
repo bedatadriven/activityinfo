@@ -18,4 +18,6 @@ public class GetSiteAttachments implements Command<SiteAttachmentResult> {
 		this.siteId = siteId;
 	}
 
+	
+	
 }

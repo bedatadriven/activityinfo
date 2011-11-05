@@ -22,6 +22,7 @@ public class DeleteSiteAttachmentHandler  implements CommandHandlerAsync<DeleteS
 //			.value("uploadedby", "umad@gmail.com")
 //			.execute(context.getTransaction());
 		
+		
 		callback.onSuccess(new VoidResult());		
 	}
 

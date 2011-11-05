@@ -24,7 +24,6 @@ public class SiteAttachment implements java.io.Serializable {
     private String fileName;
     private String uploadedBy;
    
-
     public SiteAttachment() {
     }
     

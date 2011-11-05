@@ -100,6 +100,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 	public void addUploadButton() {
 		this.uploadButton = addButton(UIActions.upload,
 				I18N.CONSTANTS.upload(), IconImageBundle.ICONS.up());
+		
 	}
 
 	public void addEditButton() {

@@ -27,4 +27,6 @@ public class SiteAttachmentResult implements CommandResult, ListLoadResult<SiteA
     public void setData(List<SiteAttachmentDTO> data) {
         this.data = data;
     }
+    
+    
 }

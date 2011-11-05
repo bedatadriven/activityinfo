@@ -19,4 +19,6 @@ public class GetUploadUrl implements Command<UploadUrlResult> {
 		this.url = url;
 	}
 
+	
+	
 }

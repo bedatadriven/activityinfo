@@ -203,6 +203,5 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 					}
 				});
 	}
-	
 
 }

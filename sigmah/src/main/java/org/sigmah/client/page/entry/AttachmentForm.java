@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 
 public class AttachmentForm extends FormPanel {
+	
 
 	private FormBinding binding;
 	

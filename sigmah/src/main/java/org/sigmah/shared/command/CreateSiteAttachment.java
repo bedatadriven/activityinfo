@@ -4,9 +4,7 @@ import org.sigmah.shared.command.result.VoidResult;
 
 public class CreateSiteAttachment implements Command<VoidResult> {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1008206027004197062L;
 	
 	private int siteId;
@@ -17,7 +15,6 @@ public class CreateSiteAttachment implements Command<VoidResult> {
     public CreateSiteAttachment(){
     	
     }
-    
     
     public int getSiteId() {
 		return siteId;

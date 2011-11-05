@@ -17,6 +17,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 
 	private String url;
+	
 	public GetUploadUrlHandler(){
 		
 	}
@@ -41,5 +42,6 @@ public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 		
 		return uploadUrl;
 	}
+	
 
 }

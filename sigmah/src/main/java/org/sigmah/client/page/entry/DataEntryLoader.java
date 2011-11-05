@@ -178,6 +178,7 @@ public class DataEntryLoader implements PageLoader {
                     		attachmentsTab);
                     abstractSiteGrid.addSouthTab(attachmentsTab);
                     editor.addSubComponent(attachmentsPresenter);
+                    
 
                 }
 			}

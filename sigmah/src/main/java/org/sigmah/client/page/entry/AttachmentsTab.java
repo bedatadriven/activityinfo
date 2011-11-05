@@ -43,9 +43,9 @@ public class AttachmentsTab extends TabItem implements
 	private final UIConstants messages;
 	private final Dispatcher dispatcher;
 
+	
 	private int currentAttachment;
 	
-
 	public AttachmentsTab(final EventBus eventBus, Dispatcher service,
 			ActivityDTO activity, UIConstants messages) {
 		this.eventBus = eventBus;
