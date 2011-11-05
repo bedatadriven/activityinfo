@@ -29,7 +29,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.sigmah.shared.util.mapping.Published;
+import org.sigmah.shared.dto.Published;
 
 /**
  * After the {@link org.sigmah.server.database.hibernate.entity.UserDatabase},
