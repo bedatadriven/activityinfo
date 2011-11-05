@@ -16,22 +16,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.sigmah.server.database.hibernate.dao.HibernateModule;
-import org.sigmah.server.database.hibernate.dao.Transactional;
-import org.sigmah.server.util.beanMapping.BeanMappingModule;
-import org.sigmah.test.InjectionSupport;
-import org.sigmah.test.Modules;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-@RunWith(InjectionSupport.class)
-@Modules({
-        BeanMappingModule.class
-})
 public class TransactionalInterceptorTest {
-
 
     @Test
     public void testSuccessfulCase() {
@@ -140,7 +130,7 @@ public class TransactionalInterceptorTest {
         }
     }
 
-    private static class MockEntityManagerModule extends HibernateModule {
+    private static class MockEntityManagerModule extends AbstractModule {
         private EntityManager em;
 
         public MockEntityManagerModule(EntityTransaction tx) {
@@ -149,10 +139,10 @@ public class TransactionalInterceptorTest {
             replay(em);
         }
 
-        @Override
-        protected void configureEm() {
-            bind(EntityManager.class).toInstance(em);
-        }
+		@Override
+		protected void configure() {
+			bind(EntityManager.class).toInstance(em);	
+			install(new TransactionModule());
+		}
     }
-
 }

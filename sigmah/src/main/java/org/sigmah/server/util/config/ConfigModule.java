@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.server;
+package org.sigmah.server.util.config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,8 +15,10 @@ import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
 import org.sigmah.server.util.logging.Trace;
 
+import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -31,16 +33,21 @@ public class ConfigModule extends AbstractModule {
     @Provides
     @Singleton
     @Trace
-    public Properties provideConfigProperties(ServletContext context) {
+    public DeploymentConfiguration provideDeploymentConfig(ServletContext context) {
         Properties properties = new Properties();
 
+        tryToLoadFrom(properties, legacyWebInfDirectory(context));
         tryToLoadFrom(properties, webInfDirectory(context));
-        tryToLoadFrom(properties, tomcatConfigurationDirectory());
-        tryToLoadFromS3(properties);
+        tryToLoadFrom(properties, userSettings());
 
-        return properties;
+        return new DeploymentConfiguration(properties);
     }
 
+    @Provides
+    public AWSCredentials provideAWSCredentials(DeploymentConfiguration config) {
+    	return config.getAWSCredentials();
+    }
+    
     private boolean tryToLoadFrom(Properties properties, File file) {
         try {
             logger.info("Trying to read properties from: " + file.getAbsolutePath());
@@ -73,21 +80,20 @@ public class ConfigModule extends AbstractModule {
      * @param properties the properties object into which to load the config
      */
     private void tryToLoadFromS3(Properties properties) {
-        String awsAccessKeyId = System.getProperty("AWS_ACCESS_KEY_ID");
-        String awsSecretAccessKey = System.getProperty("AWS_SECRET_KEY");
-
-        if(awsAccessKeyId == null || awsSecretAccessKey == null) {
+        if(!BeanstalkEnvironment.credentialsArePresent()) {
             logger.info("AWS Credentials not provided, not attempting to load config from S3");
             return;
         }
 
-        String bucket = System.getProperty("PARAM1");
-        if(bucket == null) {
+        String awsAccessKeyId = BeanstalkEnvironment.getAccessKeyId();
+        String awsSecretAccessKey = BeanstalkEnvironment.getSecretKey();
+        String bucket = BeanstalkEnvironment.getConfigurationPropertiesBucket();
+        if(Strings.isNullOrEmpty(bucket)) {
             logger.error("AWS Credentials provided, but PARAM1 does not contain the bucket name in which the configuration file is stored");
             return;
         }
-        String key = System.getProperty("PARAM2");
-        if(key == null) {
+        String key = BeanstalkEnvironment.getConfigurationPropertiesKey();
+        if(Strings.isNullOrEmpty(key)) {
         	logger.error("AWS Credentials provided, but PARAM2 does not contain the configuration file's key");
         }
         
@@ -99,12 +105,15 @@ public class ConfigModule extends AbstractModule {
         }
     }
 
-    private File webInfDirectory(ServletContext context) {
+    private File legacyWebInfDirectory(ServletContext context) {
         return new File(context.getRealPath("WEB-INF") + File.separator + "sigmah.properties");
     }
-
-    private File tomcatConfigurationDirectory() {
-        return  new File(System.getenv("CATALINA_BASE") + File.separator +
-                "conf" + File.separator + "sigmah.properties");
+    
+    private File webInfDirectory(ServletContext context) {
+        return new File(context.getRealPath("WEB-INF") + File.separator + "activityinfo.properties");
+    }
+    
+    private File userSettings() {
+    	return new File(System.getProperty("user.home") + File.separator + "activityinfo.properties");
     }
 }

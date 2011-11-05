@@ -1,0 +1,11 @@
+<module rename-to="ActivityInfo">
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name="org.sigmah.ActivityInfo" />
+
+
+	<source path='client' />
+	<source path="shared" />
+
+    <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
+
+</module>

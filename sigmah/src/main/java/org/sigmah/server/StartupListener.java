@@ -22,6 +22,7 @@ import org.sigmah.server.mail.MailModule;
 import org.sigmah.server.report.ReportModule;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.server.util.beanMapping.BeanMappingModule;
+import org.sigmah.server.util.config.ConfigModule;
 import org.sigmah.server.util.logging.LoggingModule;
 
 import com.google.inject.Guice;
