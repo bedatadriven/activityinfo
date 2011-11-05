@@ -41,10 +41,4 @@
 		<dropColumn tableName="Site" columnName="target" />
 	</changeSet>
 
-	<changeSet author="abid" id="001-05">
-		<addColumn tableName="activity">
-			<column name="published" type="INT" />
-		</addColumn>
-	</changeSet>
-
 </databaseChangeLog> 

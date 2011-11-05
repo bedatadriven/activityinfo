@@ -73,8 +73,7 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         siteRegions.add(new SyncRegion("site-tables"));
 
         // do one sync region per database
-        List<UserDatabase> dbs = schemaDAO.queryAllUserDatabasesAlphabetically();
-        for(UserDatabase db : dbs) {
+        for(UserDatabase db : databases) {
         	siteRegions.add(new SyncRegion("site/" + db.getId()));
         }
         

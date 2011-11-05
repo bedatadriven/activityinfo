@@ -18,6 +18,10 @@ public class AuthenticatedUser {
 	private int userId;
 	private String userEmail;
 	private String userLocale;
+	/**
+	 * Authentication token.
+	 */
+	public static final String AUTH_TOKEN_COOKIE = "authToken";
 	
 	public AuthenticatedUser(String authToken, int userId, String userEmail,
 			String userLocale) {

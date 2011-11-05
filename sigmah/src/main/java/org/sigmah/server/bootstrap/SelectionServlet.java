@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.database.hibernate.entity.Authentication;
-import org.sigmah.shared.Cookies;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.DefaultSelectionServlet;
 import com.bedatadriven.rebar.appcache.server.PropertyProvider;
@@ -64,7 +64,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
 
         private String getAuthToken(HttpServletRequest req) {
             for(Cookie cookie : req.getCookies()) {
-                if(cookie.getName().equals(Cookies.AUTH_TOKEN_COOKIE)) {
+                if(cookie.getName().equals(AuthenticatedUser.AUTH_TOKEN_COOKIE)) {
                     return cookie.getValue();
                 }
             }
@@ -75,6 +75,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
     private class UserNotAuthenticatedException extends SelectionException {
 
 		public UserNotAuthenticatedException(String message) {
+			super(message);
 		}
     }
     

@@ -1,4 +1,4 @@
-package org.sigmah.shared.util.mapping;
+package org.sigmah.shared.dto;
 
 public enum Published {
 

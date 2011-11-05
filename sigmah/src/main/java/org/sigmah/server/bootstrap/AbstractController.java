@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.server.Cookies;
+import org.sigmah.server.authentication.AuthCookieUtil;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
 import org.sigmah.server.bootstrap.model.PageModel;
@@ -127,7 +127,7 @@ public class AbstractController extends HttpServlet {
 
     protected void createAuthCookie(HttpServletRequest req, HttpServletResponse resp, User user, boolean remember) throws IOException {
         Authentication auth = createNewAuthToken(user);
-        Cookies.addAuthCookie(resp, auth, remember);
+        AuthCookieUtil.addAuthCookie(resp, auth, remember);
     }
 
     @Transactional

@@ -59,7 +59,7 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 
             renderMap(writer, element, doc);
             if(!element.getContent().getLegends().isEmpty()) {
-            	renderLegend(writer, element, doc);
+            	renderLegend(element, doc);
             }
 
         } catch(Exception e) {
@@ -80,8 +80,7 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
         }
     }
  
-    private void renderLegend(DocWriter writer, MapReportElement element,
-			Document doc) throws DocumentException, IOException {
+    private void renderLegend(MapReportElement element, Document doc) throws DocumentException, IOException {
 	    	
     	Table table = new Table(2);
     	table.setBorderWidth(1);

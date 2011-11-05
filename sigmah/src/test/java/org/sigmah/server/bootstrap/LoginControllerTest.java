@@ -18,9 +18,9 @@ import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sigmah.server.Cookies;
 import org.sigmah.server.bootstrap.model.LoginPageModel;
 import org.sigmah.server.mail.MailSender;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 public class LoginControllerTest extends ControllerTestCase {
 
@@ -99,7 +99,7 @@ public class LoginControllerTest extends ControllerTestCase {
         post();
 
         assertNotNull("redirected", resp.redirectUrl);
-        assertEquals("new auth token", NEW_AUTH_TOKEN, resp.getCookie(Cookies.AUTH_TOKEN_COOKIE));
+        assertEquals("new auth token", NEW_AUTH_TOKEN, resp.getCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE));
     }
 
     @Test

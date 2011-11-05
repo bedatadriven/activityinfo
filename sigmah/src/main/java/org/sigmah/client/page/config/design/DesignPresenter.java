@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -208,7 +209,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
                 service.execute(new CreateEntity(newEntity), tether, new AsyncCallback<CreateResult>() {
                     public void onFailure(Throwable caught) {
-
+                    	GWT.log(caught.getMessage());
                     }
 
                     public void onSuccess(CreateResult result) {

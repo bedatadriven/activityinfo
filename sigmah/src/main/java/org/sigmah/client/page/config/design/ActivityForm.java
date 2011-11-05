@@ -14,6 +14,7 @@ import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.MapIconDTO;
+import org.sigmah.shared.dto.Published;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.extjs.gxt.ui.client.Style;
@@ -79,6 +80,16 @@ class ActivityForm extends AbstractDesignForm {
         frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
         binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
         this.add(frequencyCombo);
+        
+        MappingComboBox publishedCombo = new MappingComboBox();
+        publishedCombo.setAllowBlank(false);
+        publishedCombo.setFieldLabel(I18N.CONSTANTS.published());
+        publishedCombo.add(Published.NOT_PUBLISHED.toString(), I18N.CONSTANTS.notPublished());
+        publishedCombo.add(Published.ONLY_SOME_SITES_ARE_PUBLISHED.toString(), I18N.CONSTANTS.onlySomeArePublished());
+        publishedCombo.add(Published.ALL_ARE_PUBLISHED.toString(), I18N.CONSTANTS.allArePublished());
+        binding.addFieldBinding(new MappingComboBoxBinding(publishedCombo, "published"));
+        
+        this.add(publishedCombo);
     }
 
     @Override

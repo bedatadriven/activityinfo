@@ -30,6 +30,7 @@ import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.TileProvider;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.server.util.ColorUtil;
+import org.sigmah.server.util.mapping.GoogleStaticMapsApi;
 import org.sigmah.shared.map.BaseMap;
 import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.TileBaseMap;
