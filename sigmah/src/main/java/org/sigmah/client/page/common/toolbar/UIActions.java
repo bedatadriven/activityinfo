@@ -59,4 +59,6 @@ public class UIActions {
     public static final String print = "print";
 
     public static final String mailingList = "mailingList";
+    
+    public static final String upload = "upload";
 }
