@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -17,13 +16,14 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.log4j.Logger;
 import org.sigmah.server.mail.MailSender;
+import org.sigmah.server.util.config.DeploymentConfiguration;
 
 import com.google.inject.Inject;
 
 public class LoggingInterceptor implements MethodInterceptor {
 
     private MailSender mailSender;
-    private List<String> alertRecipients = new ArrayList<String>(0);
+    private final List<String> alertRecipients = new ArrayList<String>(0);
 
     @Inject(optional = true)
     public void setMailSender(MailSender sender) {
@@ -31,7 +31,7 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     @Inject(optional = true)
-    public void setProperties(Properties properties) {
+    public void setProperties(DeploymentConfiguration properties) {
         String alertRecipients = properties.getProperty("alert.recipients");
         if(alertRecipients != null) {
             for(String alertRecipient : alertRecipients.split(",")) {

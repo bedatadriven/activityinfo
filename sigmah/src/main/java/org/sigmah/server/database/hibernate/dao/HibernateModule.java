@@ -20,9 +20,12 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.RequestScoped;
+import org.sigmah.server.util.config.DeploymentConfiguration;
 
 /**
- * Guice module that provides Hibernate-based implementations for the DAO-layer interfaces.
+ * Gui
+import org.sigmah.server.util.config.ConfigProperties;
+ce module that provides Hibernate-based implementations for the DAO-layer interfaces.
  *
  * @author Alex Bertram
  */
@@ -34,7 +37,7 @@ public class HibernateModule extends AbstractModule {
         configureEm();
         configureDialects();
         configureDAOs();
-        configureTransactions();
+        install(new TransactionModule());
     }
 
     protected void configureEmf() {
@@ -43,14 +46,6 @@ public class HibernateModule extends AbstractModule {
 
     protected void configureEm() {
         bind(EntityManager.class).toProvider(EntityManagerProvider.class).in(RequestScoped.class);
-    }
-
-    protected void configureTransactions() {
-        TransactionalInterceptor interceptor = new TransactionalInterceptor();
-        requestInjection(interceptor);
-
-        bindInterceptor(Matchers.any(), Matchers.annotatedWith(Transactional.class),
-                interceptor);
     }
 
     private void configureDialects() {
@@ -81,17 +76,17 @@ public class HibernateModule extends AbstractModule {
 
 
     protected static class EntityManagerFactoryProvider implements Provider<EntityManagerFactory> {
-        private Properties configProperties;
+        private org.sigmah.server.util.config.DeploymentConfiguration configProperties;
 
         @Inject
-        public EntityManagerFactoryProvider(Properties configProperties) {
+        public EntityManagerFactoryProvider(DeploymentConfiguration configProperties) {
             this.configProperties = configProperties;
         }
 
         @Override
         public EntityManagerFactory get() {
         	// ensure that hibernate does do schema updating--liquibase is in charge
-        	Properties config = (Properties)configProperties.clone();
+        	Properties config = configProperties.asProperties();
         	config.setProperty("hibernate.hbm2ddl.auto", "");
         	
             return Persistence.createEntityManagerFactory("activityInfo", config);
