@@ -19,11 +19,6 @@ public class DeploymentConfiguration {
 	
 	private final static Logger LOGGER = Logger.getLogger(DeploymentConfiguration.class);
 	
-//	public DeploymentConfiguration() {
-//		this.properties = new Properties();
-//		LOGGER.warn("Constructing empty DeploymentConfiguration()");
-//	}
-	
 	public DeploymentConfiguration(Properties properties) {
 		super();
 		this.properties = properties;
