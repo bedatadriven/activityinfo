@@ -1,0 +1,38 @@
+#
+# This an example of the deployment property file for ActivityInfo.
+# In the production environment, properties are provided by the container,
+# but when developing, you can copy this file to your home directory
+# and configure access to your development database and to your S3 test account.
+#
+# For example, on Windows you should copy this file to :
+# C:\Users\Alex\activityinfo.properties
+#
+# On a *nix system,
+# /home/alex/activityinfo.properties
+#
+# BE VERY CAREFUL not to edit this file!
+# This is just a template, and will not be consulted by the server.
+# 
+# DO NOT add sensistive passwords here!!
+
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+hibernate.connection.driver_class=com.mysql.jdbc.Driver
+hibernate.connection.username=root
+hibernate.connection.password=adminpwd
+hibernate.connection.url=jdbc:mysql://localhost:3306/activityinfo
+
+hibernate.hbm2ddl.auto=update
+hibernate.show_sql=false
+hibernate.format_sql=false
+
+aws.accessKeyId=XYZ123
+aws.secretKey=PQY456
+
+smtp.host=localhost
+#smtp.port=25
+smtp.from=me@localhost
+smtp.from.name=developer
+#smtp.username=
+#smtp.password=
+#smtp.tls=true
+  	

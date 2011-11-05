@@ -167,6 +167,19 @@ public class DataEntryLoader implements PageLoader {
                             detailsTab);
                     abstractSiteGrid.addSouthTab(detailsTab);
                     editor.addSubComponent(detailsPresenter);
+                    
+                    AttachmentsTab attachmentsTab = new AttachmentsTab(injector.getEventBus(),
+                    		injector.getService(),
+                    		activity,
+                    		injector.getMessages());
+                    AttachmentsPresenter attachmentsPresenter = new AttachmentsPresenter(
+                    		injector.getEventBus(),
+                    		injector.getService(),
+                    		attachmentsTab);
+                    abstractSiteGrid.addSouthTab(attachmentsTab);
+                    editor.addSubComponent(attachmentsPresenter);
+                    
+
                 }
 			}
 

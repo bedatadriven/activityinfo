@@ -7,7 +7,6 @@ package org.sigmah.server.mail;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -15,6 +14,7 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.sigmah.server.i18n.LocaleHelper;
+import org.sigmah.server.util.config.DeploymentConfiguration;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.server.util.logging.Trace;
 
@@ -26,17 +26,18 @@ import freemarker.template.TemplateException;
 
 public class MailSenderImpl implements MailSender {
 	
-	private final Properties configuration;
+	private final DeploymentConfiguration configuration;
 	private final Configuration templateCfg;
 	
 	@Inject	
-    public MailSenderImpl(Properties configuration, Configuration templateCfg) {
+    public MailSenderImpl(DeploymentConfiguration configuration, Configuration templateCfg) {
 		super();
 		this.configuration = configuration;
 		this.templateCfg = templateCfg;
 	}
 
-    @Trace
+    @Override
+	@Trace
     @LogException
     public void send(MailMessage message) {
     	try {
@@ -75,6 +76,7 @@ public class MailSenderImpl implements MailSender {
         		LocaleHelper.getLocaleObject(message.getRecipient()));
     }
 
+	@Override
 	@LogException
     public void send(Email email) throws EmailException {
         email.setHostName(configuration.getProperty("smtp.host"));
@@ -94,5 +96,4 @@ public class MailSenderImpl implements MailSender {
         
         email.send();
     }
-
 }

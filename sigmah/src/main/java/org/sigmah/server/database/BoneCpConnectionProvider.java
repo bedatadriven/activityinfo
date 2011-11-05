@@ -2,14 +2,14 @@ package org.sigmah.server.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
 
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+
+import org.apache.log4j.Logger;
+import org.sigmah.server.util.config.DeploymentConfiguration;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -27,7 +27,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 	private BoneCP connectionPool;
 
 	@Inject
-	public BoneCpConnectionProvider(Properties configProperties) {
+	public BoneCpConnectionProvider(DeploymentConfiguration configProperties) {
 		try {
 			Class.forName(configProperties.getProperty("hibernate.connection.driver_class"));
 		 	BoneCPConfig poolConfig = new BoneCPConfig();	
@@ -45,9 +45,9 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 		}
 	}
 	
-	public void maybeMigrateSchema(Properties config) {
-		if("enabled".equals(config.get(SCHEMA_MIGRATION)) ||
-	       "update".equals(config.get("hibernate.hbm2ddl.auto"))) {
+	public void maybeMigrateSchema(DeploymentConfiguration config) {
+		if("enabled".equals(config.getProperty(SCHEMA_MIGRATION)) ||
+	       "update".equals(config.getProperty("hibernate.hbm2ddl.auto"))) {
 			Connection connection=null;
 			try {		
 				try {
