@@ -34,7 +34,8 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
             final int levelId = level.getId();
 
             final AdminComboBox comboBox = new AdminComboBox(level, presenter.getStore(levelId));
-            comboBox.setEnabled(presenter.isLevelEnabled(levelId));
+            initializeComboBox(comboBox, level);
+            updateComboBoxState(comboBox, presenter.isLevelEnabled(levelId));
             comboBoxes.put(levelId, comboBox);
             
             comboBox.addListener(Events.Select, new Listener<FieldEvent>() {
@@ -68,14 +69,22 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
 
 				@Override
 				public void handleEvent(LevelStateChangeEvent event) {
-					comboBoxes.get(event.getLevelId()).setEnabled(event.isEnabled());
+					updateComboBoxState(comboBoxes.get(event.getLevelId()), event.isEnabled());
 				}
             });
         }
     }
 
+	protected void initializeComboBox(AdminComboBox comboBox, AdminLevelDTO level) {
+		
+	}
+
+	protected void updateComboBoxState(final AdminComboBox comboBox, boolean enabled) {
+		comboBox.setEnabled(enabled);
+	}
+
 	@Override
-	public Iterator<AdminComboBox> iterator() {
+	public final Iterator<AdminComboBox> iterator() {
 		return comboBoxes.values().iterator();
 	}
 }

@@ -5,9 +5,6 @@
 
 package org.sigmah.client.page.entry;
 
-import org.sigmah.client.dispatch.callback.Got;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.NavigationHandler;
@@ -17,11 +14,7 @@ import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.common.filter.FilterPanel;
-import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.client.page.entry.place.DataEntryPlaceParser;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.SchemaDTO;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -32,31 +25,24 @@ import com.google.inject.Provider;
 public class DataEntryLoader implements PageLoader {
     private final AppInjector injector;
     private final Provider<DataEntryPage> dataEntryPageProvider;
-    private final Provider<SiteFormPage> siteFormProvider;
     private FilterPanel filterPanelSet = null;
     
     @Inject
     public DataEntryLoader(AppInjector injector, 
     		NavigationHandler pageManager, 
     		PageStateSerializer placeSerializer,
-    		Provider<DataEntryPage> dataEntryPageProvider, 
-    		Provider<SiteFormPage> siteFormProvider) {
+    		Provider<DataEntryPage> dataEntryPageProvider) {
     	
         this.injector = injector;
         this.dataEntryPageProvider = dataEntryPageProvider;
-        this.siteFormProvider=siteFormProvider;
 
         pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
         
         pageManager.registerPageLoader(DataEntryPage.PAGE_ID, this);
         pageManager.registerPageLoader(SiteTreeGridPageState.SITE_TREE_VIEW, this);
-        pageManager.registerPageLoader(SiteFormPage.EDIT_PAGE_ID, this);
-        pageManager.registerPageLoader(SiteFormPage.NEW_PAGE_ID, this);
         
         placeSerializer.registerParser(DataEntryPage.PAGE_ID, new DataEntryPlaceParser());
 //        placeSerializer.registerParser(SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeGridPageState.Parser());
-        placeSerializer.registerParser(SiteFormPage.EDIT_PAGE_ID, new SiteFormPage.EditPageStateParser());
-        placeSerializer.registerParser(SiteFormPage.NEW_PAGE_ID, new SiteFormPage.NewStateParser());
     }
 
     @Override
@@ -72,10 +58,10 @@ public class DataEntryLoader implements PageLoader {
                     dataEntryPage.navigate(pageState);
 					callback.onSuccess(dataEntryPage);
                     
-                } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
-                	SiteFormPage siteFormPage = siteFormProvider.get();
-                	siteFormPage.navigate(pageState);
-                	callback.onSuccess(siteFormPage);
+//                } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
+//                	SiteFormPage siteFormPage = siteFormProvider.get();
+//                	siteFormPage.navigate(pageState);
+//                	callback.onSuccess(siteFormPage);
                 }
             }
 

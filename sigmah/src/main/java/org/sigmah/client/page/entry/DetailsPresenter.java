@@ -10,7 +10,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.Shutdownable;
-import org.sigmah.client.page.entry.editor.SiteRenderer;
+import org.sigmah.client.page.entry.form.SiteRenderer;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 

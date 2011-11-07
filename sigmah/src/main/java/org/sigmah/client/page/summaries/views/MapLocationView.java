@@ -3,7 +3,7 @@ package org.sigmah.client.page.summaries.views;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.MapTypeFactory;
-import org.sigmah.client.page.entry.editor.MapView;
+import org.sigmah.client.page.entry.form.MapView;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;

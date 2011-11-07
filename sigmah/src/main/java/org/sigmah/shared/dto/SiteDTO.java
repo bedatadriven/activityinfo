@@ -33,7 +33,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityV
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date_;
 
-	private LocationDTO2 location;
+	private LocationDTO location;
 
 	public SiteDTO() {
         set("name", " ");
@@ -494,7 +494,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityV
 		set("locationId", location.getId());
 	}
 	
-	public void setLocation(LocationDTO2 location) {
+	public void setLocation(LocationDTO location) {
 		this.location=location;
 		setLocationId(location.getId());
 		setLocationName(location.getName());
@@ -511,8 +511,8 @@ public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityV
 	}
 	
 	/** Returns a new location constructed from flattened properties of this site */
-	public LocationDTO2 getLocation() {
-		LocationDTO2 location = new LocationDTO2();
+	public LocationDTO getLocation() {
+		LocationDTO location = new LocationDTO();
 		
 		location.setName(getLocationName());
 		location.setAxe(getLocationAxe());

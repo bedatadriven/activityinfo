@@ -21,7 +21,7 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.exception.NotAuthorizedException;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.LocationDTO2;
+import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -36,7 +36,7 @@ public class CreateSiteTest extends CommandTestCase2 {
 
     @Test
     public void test() throws CommandException {
-    	LocationDTO2 location = LocationDTOs.newLocation();
+    	LocationDTO location = LocationDTOs.newLocation();
     	CreateResult createLocation = (CreateResult) execute(new AddLocation().setLocation(location));
     	location.setId(createLocation.getNewId());
     	

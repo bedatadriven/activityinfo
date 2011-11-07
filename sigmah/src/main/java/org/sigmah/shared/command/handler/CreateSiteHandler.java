@@ -12,7 +12,7 @@ import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.LocationDTO2;
+import org.sigmah.shared.dto.LocationDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -115,7 +115,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 									public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 										String name = results.getRow(0).getString("Name");
 										int locationId = getOrCreateKey(properties, "locationId");
-										AddLocation addLocation = new AddLocation().setLocation(new LocationDTO2()
+										AddLocation addLocation = new AddLocation().setLocation(new LocationDTO()
 														.setName(name)
 														.setId(locationId)
 														.setLocationTypeId(locationTypeId));

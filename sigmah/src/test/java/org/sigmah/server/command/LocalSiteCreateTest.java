@@ -13,7 +13,7 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.LocalHandlerTestCase;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dto.LocationDTO2;
+import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
@@ -38,7 +38,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
         // create a new detached, client model
         SiteDTO newSite = SiteDTOs.newSite();
         
-        LocationDTO2 location = LocationDTOs.newLocation();
+        LocationDTO location = LocationDTOs.newLocation();
         CreateResult createLocation = executeLocally(new AddLocation().setLocation(location));
         location.setId(createLocation.getNewId());
 

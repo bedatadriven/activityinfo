@@ -8,7 +8,7 @@ import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.common.widget.CollapsibleTabPanel;
 import org.sigmah.client.page.entry.grouping.NullGroupingModel;
-import org.sigmah.client.page.entry.location.SiteWithBoundLocationTypeForm;
+import org.sigmah.client.page.entry.location.LocationDialog;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -160,7 +160,9 @@ public class SiteGridPanel extends ContentPanel implements ActionListener {
 					ActivityDTO activity = schema.getActivityById(
 							currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity));
 					
-					SiteWithBoundLocationTypeForm dialog = new SiteWithBoundLocationTypeForm(dispatcher, activity);
+					LocationDialog dialog = new LocationDialog(dispatcher, activity.getDatabase().getCountry(),
+							activity.getLocationType());
+					
 					dialog.show();
 					
 				}

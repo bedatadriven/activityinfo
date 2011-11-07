@@ -245,7 +245,4 @@ public class ColumnModelBuilder {
 		
 		return this;
 	}
-
-
-
 }

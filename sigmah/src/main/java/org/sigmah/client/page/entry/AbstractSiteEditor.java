@@ -21,7 +21,6 @@ import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView.SiteGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
-import org.sigmah.client.page.entry.editor.SiteFormPage;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
@@ -101,7 +100,8 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
 	
 	private void addListeners() {
         this.eventBus.addListener(AppEvents.SiteChanged, new Listener<SiteEvent>() {
-            public void handleEvent(SiteEvent se) {
+            @Override
+			public void handleEvent(SiteEvent se) {
                 SiteDTO ourCopy = (SiteDTO) store.findModel("id", se.getSite().getId());
                 if (ourCopy != null) {
                     ourCopy.setProperties(se.getSite().getProperties());
@@ -111,13 +111,15 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         });
 
         this.eventBus.addListener(AppEvents.SiteCreated, new Listener<SiteEvent>() {
-            public void handleEvent(SiteEvent se) {
+            @Override
+			public void handleEvent(SiteEvent se) {
                 onSiteCreated(se);
             }
         });
 
         this.eventBus.addListener(AppEvents.SiteSelected, new Listener<SiteEvent>() {
-            public void handleEvent(SiteEvent se) {
+            @Override
+			public void handleEvent(SiteEvent se) {
                 if (se.getSource() != AbstractSiteEditor.this) {
                 	view.setSelected(se.getSiteId());
                 }
@@ -155,7 +157,8 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         setFilter(effectiveFilter);
 	}
 	
-    public void shutdown() {
+    @Override
+	public void shutdown() {
         eventBus.removeListener(AppEvents.SiteChanged, siteChangedListener);
         eventBus.removeListener(AppEvents.SiteCreated, siteCreatedListener);
         eventBus.removeListener(AppEvents.SiteSelected, siteSelectedListner);
@@ -174,7 +177,8 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         view.setActionEnabled(UIActions.print, false);
 	}
 
-    protected void onLoaded(LoadEvent le) {
+    @Override
+	protected void onLoaded(LoadEvent le) {
         super.onLoaded(le);
 
         if (le.getData() instanceof PagingResult) {
@@ -270,6 +274,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
     	return lockedPeriods;
 	}
 
+	@Override
 	protected void onAdd() {
         SiteDTO newSite = new SiteDTO();
         newSite.setActivityId(currentActivity.getId());
@@ -278,21 +283,24 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
             newSite.setPartner(currentActivity.getDatabase().getMyPartner());
         }
 
-    	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.NewPageState(currentActivity.getId())));
+    	//eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.NewPageState(currentActivity.getId())));
 	}
 
-    protected void onEdit(SiteDTO site) {
-    	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.EditPageState(site.getId())));
+    @Override
+	protected void onEdit(SiteDTO site) {
+    //eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SiteFormPage.EditPageState(site.getId())));
     }
 
     @Override
     protected void onDeleteConfirmed(final SiteDTO site) {
         service.execute(new Delete(site), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
 
             }
 
-            public void onSuccess(VoidResult result) {
+            @Override
+			public void onSuccess(VoidResult result) {
                 view.remove(site);
             }
         });

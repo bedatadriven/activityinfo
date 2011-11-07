@@ -15,7 +15,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.editor.PrintDataEntryForm;
+import org.sigmah.client.page.entry.form.PrintDataEntryForm;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;

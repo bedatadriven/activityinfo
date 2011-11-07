@@ -249,7 +249,8 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     private void updateBounds() {
         BoundingBoxDTO oldBounds = bounds;
         bounds = AdminBoundsHelper.calculate(country, levels, new HasAdminEntityValues() {
-            public AdminEntityDTO getAdminEntity(int levelId) {
+            @Override
+			public AdminEntityDTO getAdminEntity(int levelId) {
                 return level(levelId).getSelection();
             }
         });

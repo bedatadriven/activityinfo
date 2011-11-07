@@ -1,0 +1,54 @@
+
+.locSerPanel {
+	background: white;
+}
+
+.locSerHdr {
+	font-family: tahoma,arial,helvetica;
+	font-size: 13px;
+	font-weight: bold;
+	color: #15428B;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+
+.locSecHlp {
+	margin-left: 8px;
+	margin-right: 3px;
+	margin-bottom: 10px;
+}
+
+.locSerMarker {
+	float: left;
+}
+
+.locSerResult {
+	border: 1px solid white;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	height: 32px;
+	font-family: tahoma,arial,helvetica;
+}
+
+.locSerWrap {
+	margin-left: 32px;
+}
+
+.locSerName {
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+.locSerAxe {
+	font-style: italic;	
+}
+
+.formSec {
+	border: 1px solid white;
+	padding: 3px;
+}
+
+.formSecHeader {
+	font-weight: bold;
+}
