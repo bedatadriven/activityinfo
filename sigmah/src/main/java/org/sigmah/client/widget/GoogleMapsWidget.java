@@ -9,6 +9,7 @@ package org.sigmah.client.widget;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -118,6 +119,10 @@ public class GoogleMapsWidget extends LayoutContainer {
                 LatLng.newInstance(bounds.y2, bounds.x2));
     }
 
+    protected final LatLng newLatLng(AiLatLng latLng) {
+		return LatLng.newInstance(latLng.getLat(), latLng.getLng());
+	}
+    
     protected final BoundingBoxDTO createBounds(LatLngBounds latlngbounds) {
         return new BoundingBoxDTO(latlngbounds.getNorthEast().getLongitude(),
                 latlngbounds.getSouthWest().getLatitude(),

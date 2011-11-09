@@ -14,6 +14,7 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.common.collect.Maps;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -38,10 +39,10 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
             updateComboBoxState(comboBox, presenter.isLevelEnabled(levelId));
             comboBoxes.put(levelId, comboBox);
             
-            comboBox.addListener(Events.Select, new Listener<FieldEvent>() {
+            comboBox.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
                 @Override
-                public void handleEvent(FieldEvent be) {
-                    AdminEntityDTO selected = (AdminEntityDTO) be.getField().getValue();
+                public void handleEvent(SelectionChangedEvent be) {
+                    AdminEntityDTO selected = (AdminEntityDTO) be.getSelectedItem();
                     presenter.setSelection(levelId, selected);
                 }
             });
@@ -58,7 +59,6 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
             });
             
             presenter.addListener(AdminSelectionEvent.TYPE, new Listener<AdminSelectionEvent>() {
-
 				@Override
 				public void handleEvent(AdminSelectionEvent event) {
 					comboBoxes.get(event.getLevelId()).setValue(event.getValue());
@@ -66,7 +66,6 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
             });
             
             presenter.addListener(LevelStateChangeEvent.TYPE, new Listener<LevelStateChangeEvent>() {
-
 				@Override
 				public void handleEvent(LevelStateChangeEvent event) {
 					updateComboBoxState(comboBoxes.get(event.getLevelId()), event.isEnabled());
@@ -75,14 +74,20 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
         }
     }
 
+
+	private void updateComboBoxState(final AdminComboBox comboBox, boolean enabled) {
+		comboBox.setEnabled(enabled);
+		onComboStateUpdated(comboBox, enabled);
+	}
+	   
 	protected void initializeComboBox(AdminComboBox comboBox, AdminLevelDTO level) {
 		
 	}
 
-	protected void updateComboBoxState(final AdminComboBox comboBox, boolean enabled) {
-		comboBox.setEnabled(enabled);
+	protected void onComboStateUpdated(AdminComboBox comboBox, boolean enabled) {
+		
 	}
-
+	
 	@Override
 	public final Iterator<AdminComboBox> iterator() {
 		return comboBoxes.values().iterator();

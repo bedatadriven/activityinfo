@@ -286,4 +286,10 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 
 	@DefaultMessage("Add new site for activity ''{0}''")
 	String addNewSiteForActivity(String activityName);
+	
+	@DefaultMessage("{0,number} matching locations")
+	String matchingLocations(int count); 
+	
+	@DefaultMessage("Use location ''{0}''")
+	String useLocation(String name);
 }

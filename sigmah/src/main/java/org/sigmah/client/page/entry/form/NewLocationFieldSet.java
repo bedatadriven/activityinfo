@@ -3,8 +3,8 @@ package org.sigmah.client.page.entry.form;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.CoordinateField;
-import org.sigmah.client.page.common.widget.CoordinateField.Axis;
+import org.sigmah.client.widget.CoordinateField;
+import org.sigmah.client.widget.CoordinateField.Axis;
 import org.sigmah.shared.dto.LocationDTO;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;

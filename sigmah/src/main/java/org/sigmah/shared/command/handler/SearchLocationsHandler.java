@@ -1,5 +1,6 @@
 package org.sigmah.shared.command.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,10 @@ import com.google.inject.Inject;
 
 public class SearchLocationsHandler implements CommandHandlerAsync<SearchLocations, LocationResult> {
 
-	private final SqlDialect dialect;
+	private static final int MAX_LOCATIONS = 26;
 	
+	private final SqlDialect dialect;
+		
 	@Inject
 	public SearchLocationsHandler(SqlDialect dialect) {
 		super();
@@ -32,8 +35,33 @@ public class SearchLocationsHandler implements CommandHandlerAsync<SearchLocatio
 
 	@Override
 	public void execute(final SearchLocations command, final ExecutionContext context, final AsyncCallback<LocationResult> callback) {
-		 SqlQuery query = composeQuery(command);
-		 query.setLimitClause(dialect.limitClause(0, 26));
+		 
+		// first get a count of how many sites we're talking about
+		baseQuery(command)
+			.appendColumn("count(*)", "count")
+			.execute(context.getTransaction(), new SqlResultCallback() {
+				
+				@Override
+				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					int count = results.getRow(0).getInt("count");
+					if(count > MAX_LOCATIONS) {
+						LocationResult result = new LocationResult(new ArrayList<LocationDTO>());
+						result.setOffset(0);
+						result.setTotalLength(count);
+						callback.onSuccess(result);
+					} else {
+						retrieveLocations(command, context, callback);
+					}
+				}
+			});
+	}
+
+	private void retrieveLocations(final SearchLocations command,
+			final ExecutionContext context,
+			final AsyncCallback<LocationResult> callback) {
+		SqlQuery query = baseQuery(command)
+			.appendColumns("LocationId", "Name","Axe", "X", "Y")
+			.setLimitClause(dialect.limitClause(0, 26));
 
 		 query.execute(context.getTransaction(), new SqlResultCallback() {
 				@Override
@@ -57,8 +85,8 @@ public class SearchLocationsHandler implements CommandHandlerAsync<SearchLocatio
 		});
 	}
 
-	private SqlQuery composeQuery(final SearchLocations command) {
-		SqlQuery query = SqlQuery.select("LocationId", "Name","Axe", "X", "Y").from("location");
+	private SqlQuery baseQuery(final SearchLocations command) {
+		SqlQuery query = SqlQuery.select().from("location");
 		 
 		 if (command.getAdminEntityIds() != null) {
 			 for (Integer adminEntityId : command.getAdminEntityIds()) {

@@ -31,6 +31,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+/**
+ * Presenter for the location search functionality in the LocationDialog.
+ * This 
+ */
 public class SearchPresenter implements SearchView.SearchHandler, Page {
 	public static final PageId Search = new PageId("search");
 	protected final Dispatcher service;

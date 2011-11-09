@@ -290,7 +290,23 @@ public final class BoundingBoxDTO implements Serializable {
     public void setY2(double y2) {
         this.y2 = y2;
     }
-
+    
+	public double getMinLat() {
+		return y1;
+	}
+	
+	public double getMaxLat() {
+		return y2;
+	}
+	
+	public double getMinLng() {
+		return x1;
+	}
+	
+	public double getMaxLng() {
+		return x2;
+	}
+	
     @Override
     public String toString() {
         return "x1:" + x1 + ";x2:" + x2 + ";y1:" + y1 + ";y2:" + y2;
@@ -307,4 +323,5 @@ public final class BoundingBoxDTO implements Serializable {
 	public AiLatLng centroid() {
 		return new AiLatLng(getCenterY(), getCenterX());
 	}
+
 }

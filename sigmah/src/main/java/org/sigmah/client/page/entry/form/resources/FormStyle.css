@@ -1,22 +1,33 @@
 
-.locSerPanel {
+.locationDialogPane {
 	background: white;
 }
 
-.locSerHdr {
+.locationDialogHeader {
 	font-family: tahoma,arial,helvetica;
 	font-size: 13px;
 	font-weight: bold;
 	color: #15428B;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	margin-left: 5px;
+	margin-left: 8px;
 }
 
-.locSecHlp {
+.locationDialogHelp {
 	margin-left: 8px;
 	margin-right: 3px;
 	margin-bottom: 10px;
+	font-size: 12px;
+}
+
+.addLocationButton {
+	margin-left: 8px;
+	margin-bottom: 10px;
+}
+
+.locationSearchResults {
+	margin-left: 8px;
+	margin-right: 3px;
 }
 
 .locSerMarker {
@@ -51,4 +62,11 @@
 
 .formSecHeader {
 	font-weight: bold;
+}
+
+.adminClearSpan {
+	margin-left: 23px;
+	text-decoration: underline;
+	color: blue;
+	cursor: pointer;
 }

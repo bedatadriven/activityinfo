@@ -1,6 +1,7 @@
 package org.sigmah.client.page.entry.location;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.command.result.LocationResult;
 
 import com.extjs.gxt.ui.client.data.LoadEvent;
@@ -16,6 +17,7 @@ public class SearchStatusView extends Html {
 			@Override
 			public void loaderBeforeLoad(LoadEvent le) {
 				setHtml("");
+				addStyleName(SiteFormResources.INSTANCE.style().locationDialogHelp());
 			}
 
 			@Override
@@ -26,11 +28,12 @@ public class SearchStatusView extends Html {
 			@Override
 			public void loaderLoad(LoadEvent le) {
 				LocationResult data = le.getData();
-				if(data.getData().isEmpty()) {
-					setHtml("Your search did not match any existing locations. Make your search more general or add a " +
-							"new location.");
+				if(data.getTotalLength() == 0) {
+					setHtml(I18N.CONSTANTS.locationSearchNoResults());
 				} else if(data.getTotalLength() > data.getData().size()) {
-					setHtml("Your search matches " + data.getTotalLength() + " locations, please narrow your search above");
+					setHtml(I18N.MESSAGES.matchingLocations(data.getTotalLength()) + 
+							"<br>" + 
+							I18N.CONSTANTS.tooManyLocationsToDisplay());
 				} 
 			}
 		});

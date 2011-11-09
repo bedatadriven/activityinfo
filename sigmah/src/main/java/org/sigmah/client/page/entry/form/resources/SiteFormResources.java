@@ -24,5 +24,14 @@ public interface SiteFormResources extends ClientBundle {
 	@Source("marker.png")
 	ImageResource marker();
 	
-	interface FormStyle extends CssResource {}
+	interface FormStyle extends CssResource {
+		
+		String adminClearSpan();
+		String addLocationButton();
+		String locationDialogHeader();
+		String locationDialogHelp();
+		String locationDialogPane();
+		String locationSearchResults();
+	
+	}
 }

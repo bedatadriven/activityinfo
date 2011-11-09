@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.page.common.widget;
+package org.sigmah.client.widget;
 
 
 import org.sigmah.client.i18n.I18N;
@@ -24,7 +24,7 @@ public class CoordinateField extends TextField<Double> {
     /**
      * Because of the conversion between DMS and degrees decimal,
      * we may loose some precision. This becomes a problem when the
-     * coordinate is clamped to the adminstrative bounds, and the
+     * coordinate is clamped to the administrative bounds, and the
      * resulting value is *exactly* on the boundary. When rounded,
      * the coordinate can fall on the wrong side of the boundary,
      * resulting in a validation error.
@@ -32,7 +32,7 @@ public class CoordinateField extends TextField<Double> {
      * The delta value below should be sufficient to allow for such
      * imprecision.
      */
-    public final static double DELTA = 0.00001;
+    public static final double DELTA = 0.00001;
 	
 	private CoordinateEditor editor;
 
@@ -41,11 +41,7 @@ public class CoordinateField extends TextField<Double> {
      */
 	public CoordinateField(Axis axis) {
 		super();
-        if(axis == Axis.LATITUDE) {
-            editor = new CoordinateEditor(I18N.CONSTANTS.southHemiChars(), I18N.CONSTANTS.northHemiChars());
-        } else {
-            editor = new CoordinateEditor(I18N.CONSTANTS.westHemiChars(), I18N.CONSTANTS.eastHemiChars());
-        }
+		editor = new CoordinateEditor(axis);
 		this.setPropertyEditor(editor);
         this.setValidator(editor);
         this.setValidateOnBlur(true);

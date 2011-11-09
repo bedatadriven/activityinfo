@@ -15,11 +15,16 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoader;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
+import com.extjs.gxt.ui.client.event.EventType;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LocationSearchPresenter extends BaseObservable {
+	
+	public static final EventType ACCEPTED = new EventType();
 	
 	private Dispatcher dispatcher;
 	private CountryDTO country;
@@ -29,6 +34,8 @@ public class LocationSearchPresenter extends BaseObservable {
 	private final ListStore<LocationDTO> store;
 	
 	private SearchLocations currentSearch;
+
+	private LocationDTO selection;
 	
 	public LocationSearchPresenter(Dispatcher dispatcher, CountryDTO country, LocationTypeDTO locationType) {
 		this.dispatcher = dispatcher;
@@ -37,6 +44,10 @@ public class LocationSearchPresenter extends BaseObservable {
 		
 		loader = new BaseListLoader<ListLoadResult<LocationDTO>>(new Proxy());
 		store = new ListStore<LocationDTO>(loader);
+		
+		currentSearch = new SearchLocations()
+			.setLocationTypeId(locationType.getId());
+		loader.load();
 	}
 	
 	public CountryDTO getCountry() {
@@ -73,14 +84,33 @@ public class LocationSearchPresenter extends BaseObservable {
 		} 
 	}
 	
+	public LocationDTO getSelection() {
+		return selection;
+	}
+
+	public void select(Object source, LocationDTO newSelection) {
+		int currentId = selection == null ? 0 : selection.getId();
+		int newId = newSelection == null ? 0 : newSelection.getId();
+		if(currentId != newId) {
+			this.selection = newSelection;
+			fireEvent(Events.Select, new LocationEvent(Events.Select, source, newSelection));
+		}
+	}
+	
+	public void accept(LocationDTO location) {
+		this.selection = location;
+		fireEvent(ACCEPTED, new BaseEvent(ACCEPTED));
+	}
+	
 	private class Proxy extends RpcProxy<PagingLoadResult<LocationDTO>> {
 
 		@Override
 		protected void load(Object loadConfig,
 				final AsyncCallback<PagingLoadResult<LocationDTO>> callback) {
 			
+			final SearchLocations thisSearch = currentSearch;
 			
-			dispatcher.execute(currentSearch, null, new AsyncCallback<LocationResult>() {
+			dispatcher.execute(thisSearch, null, new AsyncCallback<LocationResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					callback.onFailure(caught);
@@ -88,11 +118,12 @@ public class LocationSearchPresenter extends BaseObservable {
 		
 				@Override
 				public void onSuccess(LocationResult locations) {
-					numberLocations(locations.getData());
-					callback.onSuccess(locations);
+					if(thisSearch == currentSearch) {
+						numberLocations(locations.getData());
+						callback.onSuccess(locations);
+					}
 				}
 			});
 		}
 	}
-
 }
