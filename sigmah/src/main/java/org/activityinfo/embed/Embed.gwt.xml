@@ -1,11 +1,10 @@
-<module rename-to="ActivityInfo">
-	<inherits name='com.google.gwt.user.User' />
-	<inherits name="org.sigmah.ActivityInfo" />
-
+<module rename-to="Embed">
+	<inherits name='com.google.gwt.user.User' />	
+	<inherits name="org.sigmah.ActivityInfo"/>
+	
+    <entry-point class="org.activityinfo.embed.client.EmbedEntryPoint"/>
 
 	<source path='client' />
 	<source path="shared" />
-
-    <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
 
 </module>

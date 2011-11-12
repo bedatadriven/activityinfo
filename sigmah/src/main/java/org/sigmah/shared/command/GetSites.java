@@ -66,6 +66,13 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
 		return cmd;
 	}
 
+	public static GetSites publicSitesByDatabaseId(int databaseId){
+		GetSites cmd = new GetSites();
+		cmd.filter().onDatabase(databaseId);
+		
+		return cmd;
+	}
+	
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

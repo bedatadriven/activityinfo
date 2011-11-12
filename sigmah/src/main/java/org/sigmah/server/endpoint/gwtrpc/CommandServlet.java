@@ -18,9 +18,11 @@ import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.logging.LogException;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.dto.AnonymousUser;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
@@ -114,10 +116,25 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     private Authentication retrieveAuthentication(String authToken) throws InvalidAuthTokenException {
         AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
         Authentication auth = authDAO.findById(authToken);
+    
         if (auth == null) {
+        	auth = AnonymousUserAuthentication(authToken);
+        	if(auth!=null){
+        		return auth;
+        	}
+        	
             throw new InvalidAuthTokenException();
         }
         return auth;
     }
     
+    private Authentication AnonymousUserAuthentication(String authToken){
+    	if (authToken.equals(AnonymousUser.AUTHTOKEN)) {
+			return new Authentication(new User(new AuthenticatedUser(
+					AnonymousUser.USER_ID, AnonymousUser.AUTHTOKEN,
+					AnonymousUser.USER_EMAIL)));
+		}
+		return null;
+	}
+
 }
