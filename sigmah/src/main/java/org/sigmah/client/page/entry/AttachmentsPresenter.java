@@ -97,13 +97,15 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 		dialog.setHeight(200);
 		dialog.setHeading(I18N.CONSTANTS.newAttachment());
 
+		uploadFile();
+		
 		dialog.show(new FormDialogCallback() {
 			@Override
 			public void onValidated() {
-				uploadFile();
+				createSiteAttachment(blobid);
 			}
 		});
-
+		
 	}
 
 	public void uploadFile() {
@@ -120,7 +122,6 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 
 					}
 				});
-		createSiteAttachment(blobid);
 	}
 
 	public void createSiteAttachment(String blobid) {
@@ -128,6 +129,8 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 		siteAttachment.setSiteId(currentSite.getId());
 		siteAttachment.setBlobId(blobid);
 		siteAttachment.setFileName("file.doc");
+		siteAttachment.setBlobSize(2356);
+		siteAttachment.setContentType("doc");
 
 		dispatcher.execute(siteAttachment, null,
 				new AsyncCallback<VoidResult>() {

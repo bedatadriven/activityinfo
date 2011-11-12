@@ -10,6 +10,7 @@ import org.sigmah.shared.command.result.UploadUrlResult;
 import org.sigmah.shared.exception.CommandException;
 
 import com.amazonaws.HttpMethod;
+import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
@@ -17,32 +18,31 @@ import com.google.inject.Inject;
 
 public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 
-	private String url;
-	private AmazonS3Client client;
-	
+	private AWSCredentials credentials;
+
 	@Inject
-	public GetUploadUrlHandler(AmazonS3Client client){
-		this.client = client;
+	public GetUploadUrlHandler(AWSCredentials credentials) {
+		this.credentials = credentials;
 	}
-	
+
 	@Override
 	public CommandResult execute(GetUploadUrl cmd, User user)
 			throws CommandException {
 		UploadUrlResult uploadUrl = new UploadUrlResult();
-		String awsAccessKeyId = "AKIAJSFOHLS57UUY5JPQ";
-        String awsSecretAccessKey = "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";
-        
-        String bucketName = "site-attachments";
-        String key = cmd.getBlobid();
-        
-        GeneratePresignedUrlRequest request = 
-        	    new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
-        	URL presignedUrl = client.generatePresignedUrl(request);
-        
-        uploadUrl.setUrl(presignedUrl.toString());
-		
+
+		String bucketName = "site-attachments";
+		String key = cmd.getBlobid();
+
+		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
+				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
+
+		GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(
+				bucketName, key, HttpMethod.PUT);
+		URL presignedUrl = client.generatePresignedUrl(request);
+
+		uploadUrl.setUrl(presignedUrl.toString());
+
 		return uploadUrl;
 	}
-	
 
 }

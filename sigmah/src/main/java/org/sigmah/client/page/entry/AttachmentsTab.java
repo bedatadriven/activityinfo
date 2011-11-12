@@ -29,7 +29,7 @@ public class AttachmentsTab extends TabItem implements
 
 	protected ActionToolBar toolBar;
 	private ContentPanel panel;
-	protected ListStore<AttachmentModel> store;
+	protected ListStore<SiteAttachmentDTO> store;
 
 	private AttachmentsPresenter presenter;
 	private final EventBus eventBus;
@@ -37,7 +37,7 @@ public class AttachmentsTab extends TabItem implements
 	private final UIConstants messages;
 	private final Dispatcher dispatcher;
 
-	private ListView<AttachmentModel> attachmentList;
+	private ListView<SiteAttachmentDTO> attachmentList;
 	private String currentAttachment;
 
 	public AttachmentsTab(final EventBus eventBus, Dispatcher service,
@@ -59,9 +59,9 @@ public class AttachmentsTab extends TabItem implements
 		panel.setTopComponent(toolBar);
 		panel.setLayout(new FitLayout());
 
-		store = new ListStore<AttachmentModel>();
+		store = new ListStore<SiteAttachmentDTO>();
 
-		attachmentList = new ListView<AttachmentModel>();
+		attachmentList = new ListView<SiteAttachmentDTO>();
 		attachmentList.setTemplate(getTemplate(GWT.getModuleBaseURL()
 				+ "image/"));
 		attachmentList.setBorders(false);
@@ -70,9 +70,9 @@ public class AttachmentsTab extends TabItem implements
 		attachmentList.setOverStyle("over");
 
 		attachmentList.addListener(Events.Select,
-				new Listener<ListViewEvent<AttachmentModel>>() {
+				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
 
-					public void handleEvent(ListViewEvent<AttachmentModel> event) {
+					public void handleEvent(ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
 						toolBar.setActionEnabled(UIActions.delete, true);
 					}
@@ -118,13 +118,8 @@ public class AttachmentsTab extends TabItem implements
 					@Override
 					public void onSuccess(SiteAttachmentResult result) {
 						store.removeAll();
-						for (SiteAttachmentDTO a : result.getData()) {
-							AttachmentModel model = new AttachmentModel();
-							model.setSiteId(a.getSiteId());
-							model.setBlobId(a.getBlobId());
-							model.setFileName(a.getFileName());
-							model.setUploadedBy(a.getUploadedBy());
-							store.add(model);
+						for (SiteAttachmentDTO attachment : result.getData()) {
+							store.add(attachment);
 						}
 
 					}

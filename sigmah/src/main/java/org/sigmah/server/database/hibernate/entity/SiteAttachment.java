@@ -21,7 +21,10 @@ public class SiteAttachment implements java.io.Serializable {
 	private int siteId;
     private String blobId;
     private String fileName;
-    private String uploadedBy;
+    private int uploadedBy;
+    private int blobSize;
+    private String contentType;
+    
    
     public SiteAttachment() {
     }
@@ -56,14 +59,31 @@ public class SiteAttachment implements java.io.Serializable {
 		this.fileName = fileName;
 	}
 
-    @Column(name = "uploadedby", nullable = false, length = 255)
-	public String getUploadedBy() {
+    @Column(name = "uploadedby", nullable = false, length = 11)
+	public int getUploadedBy() {
 		return uploadedBy;
 	}
 
-
-	public void setUploadedBy(String uploadedBy) {
+	public void setUploadedBy(int uploadedBy) {
 		this.uploadedBy = uploadedBy;
+	}
+
+    @Column(name = "blobsize", nullable = false, length = 11)
+	public int getBlobSize() {
+		return blobSize;
+	}
+
+	public void setBlobSize(int blobSize) {
+		this.blobSize = blobSize;
+	}
+
+    @Column(name = "contenttype", nullable = false, length = 255)
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
     
 

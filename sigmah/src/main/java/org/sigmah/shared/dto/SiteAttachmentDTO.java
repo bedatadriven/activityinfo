@@ -10,7 +10,9 @@ public class SiteAttachmentDTO extends BaseModelData implements DTO {
 	private int siteId;
     private String blobId;
     private String fileName;
-    private String uploadedBy;
+    private int uploadedBy;
+    private int blobSize;
+    private String contentType;
 	
 	public SiteAttachmentDTO(){
 		
@@ -40,15 +42,28 @@ public class SiteAttachmentDTO extends BaseModelData implements DTO {
 		this.fileName = fileName;
 	}
 
-	public String getUploadedBy() {
+	public int getUploadedBy() {
 		return uploadedBy;
 	}
 
-	public void setUploadedBy(String uploadedBy) {
+	public void setUploadedBy(int uploadedBy) {
 		this.uploadedBy = uploadedBy;
 	}
-	
-	
-	
+
+	public int getBlobSize() {
+		return blobSize;
+	}
+
+	public void setBlobSize(int blobSize) {
+		this.blobSize = blobSize;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
 	
 }

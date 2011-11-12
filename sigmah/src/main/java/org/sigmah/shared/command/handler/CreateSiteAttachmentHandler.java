@@ -16,7 +16,9 @@ public class CreateSiteAttachmentHandler implements CommandHandlerAsync<CreateSi
 			.value("siteid", command.getSiteId())
 			.value("blobid", command.getBlobId())
 			.value("filename", command.getFileName())
-			.value("uploadedby", context.getUser().getEmail())
+			.value("uploadedby", context.getUser().getUserId())
+			.value("blobsize", command.getBlobSize())
+			.value("contenttype", command.getContentType())
 			.execute(context.getTransaction());
 		
 		callback.onSuccess(new VoidResult());
