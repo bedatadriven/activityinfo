@@ -7,7 +7,9 @@ import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetSiteAttachments;
+import org.sigmah.shared.command.GetUploadUrl;
 import org.sigmah.shared.command.result.SiteAttachmentResult;
+import org.sigmah.shared.command.result.UploadUrlResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteAttachmentDTO;
 
@@ -22,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AttachmentsTab extends TabItem implements
@@ -29,7 +32,7 @@ public class AttachmentsTab extends TabItem implements
 
 	protected ActionToolBar toolBar;
 	private ContentPanel panel;
-	protected ListStore<AttachmentModel> store;
+	protected ListStore<SiteAttachmentDTO> store;
 
 	private AttachmentsPresenter presenter;
 	private final EventBus eventBus;
@@ -37,7 +40,7 @@ public class AttachmentsTab extends TabItem implements
 	private final UIConstants messages;
 	private final Dispatcher dispatcher;
 
-	private ListView<AttachmentModel> attachmentList;
+	private ListView<SiteAttachmentDTO> attachmentList;
 	private String currentAttachment;
 
 	public AttachmentsTab(final EventBus eventBus, Dispatcher service,
@@ -59,9 +62,9 @@ public class AttachmentsTab extends TabItem implements
 		panel.setTopComponent(toolBar);
 		panel.setLayout(new FitLayout());
 
-		store = new ListStore<AttachmentModel>();
+		store = new ListStore<SiteAttachmentDTO>();
 
-		attachmentList = new ListView<AttachmentModel>();
+		attachmentList = new ListView<SiteAttachmentDTO>();
 		attachmentList.setTemplate(getTemplate(GWT.getModuleBaseURL()
 				+ "image/"));
 		attachmentList.setBorders(false);
@@ -70,14 +73,33 @@ public class AttachmentsTab extends TabItem implements
 		attachmentList.setOverStyle("over");
 
 		attachmentList.addListener(Events.Select,
-				new Listener<ListViewEvent<AttachmentModel>>() {
+				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
 
-					public void handleEvent(ListViewEvent<AttachmentModel> event) {
+					public void handleEvent(ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
 						toolBar.setActionEnabled(UIActions.delete, true);
 					}
 				});
 
+		attachmentList.addListener(Events.DoubleClick,
+				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
+
+					public void handleEvent(ListViewEvent<SiteAttachmentDTO> event) {
+						currentAttachment = event.getModel().getBlobId();
+						dispatcher.execute(new GetUploadUrl(currentAttachment), null,
+								new AsyncCallback<UploadUrlResult>() {
+									public void onFailure(Throwable caught) {
+										// callback.onFailure(caught);
+									}
+
+									@Override
+									public void onSuccess(UploadUrlResult result) {
+										//form.setAction(result.getUrl());
+										Window.open(result.getUrl(), "_blank", "Attachment");
+									}
+								});
+					}
+				});
 		panel.add(attachmentList);
 
 		add(panel);
@@ -118,13 +140,8 @@ public class AttachmentsTab extends TabItem implements
 					@Override
 					public void onSuccess(SiteAttachmentResult result) {
 						store.removeAll();
-						for (SiteAttachmentDTO a : result.getData()) {
-							AttachmentModel model = new AttachmentModel();
-							model.setSiteId(a.getSiteId());
-							model.setBlobId(a.getBlobId());
-							model.setFileName(a.getFileName());
-							model.setUploadedBy(a.getUploadedBy());
-							store.add(model);
+						for (SiteAttachmentDTO attachment : result.getData()) {
+							store.add(attachment);
 						}
 
 					}

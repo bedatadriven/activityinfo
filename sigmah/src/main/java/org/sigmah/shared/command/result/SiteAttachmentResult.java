@@ -1,6 +1,5 @@
 package org.sigmah.shared.command.result;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.shared.dto.SiteAttachmentDTO;

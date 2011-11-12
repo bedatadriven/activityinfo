@@ -39,7 +39,9 @@ public class GetSiteAttachmentsHandler implements CommandHandlerAsync<GetSiteAtt
 						dto.setSiteId(row.getInt("siteid"));
 						dto.setBlobId(row.getString("blobid"));
 						dto.setFileName(row.getString("filename"));
-						dto.setUploadedBy(row.getString("uploadedby"));
+						dto.setUploadedBy(row.getInt("uploadedby"));
+						dto.setBlobSize(row.getInt("blobsize"));
+						dto.setContentType(row.getString("contenttype"));
 						
 						dtos.add(dto);
 					}

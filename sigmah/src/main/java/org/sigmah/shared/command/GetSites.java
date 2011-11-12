@@ -51,7 +51,6 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
         return c;
     }
 
-
     public static GetSites byId(int siteId) {
 		GetSites cmd = new GetSites();
 		cmd.filter().addRestriction(DimensionType.Site, siteId);
@@ -66,13 +65,6 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
 		return cmd;
 	}
 
-	public static GetSites publicSitesByDatabaseId(int databaseId){
-		GetSites cmd = new GetSites();
-		cmd.filter().onDatabase(databaseId);
-		
-		return cmd;
-	}
-	
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

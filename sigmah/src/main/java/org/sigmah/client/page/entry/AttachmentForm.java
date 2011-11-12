@@ -15,11 +15,12 @@ public class AttachmentForm extends FormPanel {
 	public AttachmentForm(){
 		binding = new FormBinding(this);
 		
-		FileUploadField attachmentFile = new FileUploadField();
-		attachmentFile.setFieldLabel(I18N.CONSTANTS.attachFile());
-		attachmentFile.setAllowBlank(false);
-		binding.addFieldBinding(new FieldBinding(attachmentFile, "attachmentFile"));
-		add(attachmentFile);
+		FileUploadField attachmentFiled = new FileUploadField();
+		attachmentFiled.setFieldLabel(I18N.CONSTANTS.attachFile());
+		attachmentFiled.setAllowBlank(false);
+		attachmentFiled.setName("attachmentFile");
+		binding.addFieldBinding(new FieldBinding(attachmentFiled, "attachmentFile"));
+		add(attachmentFiled);
 	}
 	
 	public FormBinding getBinding() {
