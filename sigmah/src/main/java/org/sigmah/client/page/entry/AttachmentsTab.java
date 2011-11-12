@@ -7,7 +7,9 @@ import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetSiteAttachments;
+import org.sigmah.shared.command.GetUploadUrl;
 import org.sigmah.shared.command.result.SiteAttachmentResult;
+import org.sigmah.shared.command.result.UploadUrlResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteAttachmentDTO;
 
@@ -22,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AttachmentsTab extends TabItem implements
@@ -78,6 +81,25 @@ public class AttachmentsTab extends TabItem implements
 					}
 				});
 
+		attachmentList.addListener(Events.DoubleClick,
+				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
+
+					public void handleEvent(ListViewEvent<SiteAttachmentDTO> event) {
+						currentAttachment = event.getModel().getBlobId();
+						dispatcher.execute(new GetUploadUrl(currentAttachment), null,
+								new AsyncCallback<UploadUrlResult>() {
+									public void onFailure(Throwable caught) {
+										// callback.onFailure(caught);
+									}
+
+									@Override
+									public void onSuccess(UploadUrlResult result) {
+										//form.setAction(result.getUrl());
+										Window.open(result.getUrl(), "_blank", "Attachment");
+									}
+								});
+					}
+				});
 		panel.add(attachmentList);
 
 		add(panel);

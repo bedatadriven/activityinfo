@@ -2,6 +2,7 @@ package org.sigmah.shared.command.handler;
 
 import java.net.URL;
 
+import org.sigmah.server.attachment.ServletAttachmentUpload;
 import org.sigmah.server.command.handler.CommandHandler;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetUploadUrl;
@@ -36,9 +37,7 @@ public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
 				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
 
-		GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(
-				bucketName, key, HttpMethod.PUT);
-		URL presignedUrl = client.generatePresignedUrl(request);
+		URL presignedUrl = client.generatePresignedUrl(bucketName, key, null, HttpMethod.GET);
 
 		uploadUrl.setUrl(presignedUrl.toString());
 

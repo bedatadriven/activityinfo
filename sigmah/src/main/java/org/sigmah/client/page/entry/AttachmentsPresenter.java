@@ -19,9 +19,13 @@ import org.sigmah.shared.command.result.UploadUrlResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.SiteDTO;
 
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
+import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -91,20 +95,35 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 		form = new AttachmentForm();
 		form.setEncoding(Encoding.MULTIPART);
 		form.setMethod(Method.POST);
-
+		
+		HiddenField<String> blobField = new HiddenField<String>();
+		blobField.setName("blobId");
+		blobid = UUID.randomUUID().toString();
+		blobField.setValue(blobid);
+		form.add(blobField);
+		
 		final FormDialogImpl dialog = new FormDialogImpl(form);
 		dialog.setWidth(400);
 		dialog.setHeight(200);
 		dialog.setHeading(I18N.CONSTANTS.newAttachment());
 
-		uploadFile();
-		
 		dialog.show(new FormDialogCallback() {
 			@Override
 			public void onValidated() {
-				createSiteAttachment(blobid);
+				form.setAction("/ActivityInfo/attachment?blobId="+ blobid + "&siteId=" + currentSite.getId());
+				form.submit();
+				dialog.getSaveButton().setEnabled(false);
 			}
 		});
+		
+		form.addListener(Events.Submit, new Listener<FormEvent>() {
+
+	            public void handleEvent(FormEvent arg0) {
+	                dialog.hide();
+	                view.setAttachmentStore(currentSite.getId());
+	            }
+	        });
+
 		
 	}
 
@@ -118,7 +137,7 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 
 					@Override
 					public void onSuccess(UploadUrlResult result) {
-						form.setAction(result.getUrl());
+						//form.setAction(result.getUrl());
 
 					}
 				});
