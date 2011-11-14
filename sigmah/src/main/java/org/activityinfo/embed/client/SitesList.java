@@ -14,34 +14,37 @@ import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SitesList extends ContentPanel {
+public class SitesList extends LayoutContainer {
 
 	private final AppInjector injector;
-	SiteEditor siteEditor;
-	SiteGrid grid;
+	private final int databaseId;
 
 	int defaultActivityId = 0;
 
 	@Inject
 	public SitesList(AppInjector injector, int databaseId) {
 		this.injector = injector;
-		UserDatabaseDTO database = new UserDatabaseDTO();
+		this.databaseId = databaseId;
 
-		setHeaderVisible(false);
-		setHeight(500);
+		setLayout(new BorderLayout());
+
+		// setHeight(500);
 		loadSiteGrid();
-		
-		grid = new SiteGrid(true);
-		grid.setHeight(500);
+	}
 
-		add(grid);
-		// add(grid.getGrid());
-
+	public void addToGrid(Widget w) {
+		add(w, new BorderLayoutData(Style.LayoutRegion.CENTER));
+		if (isRendered()) {
+			layout();
+		}
 	}
 
 	protected void loadSiteGrid() {
@@ -54,6 +57,11 @@ public class SitesList extends ContentPanel {
 						setDefaultActivityId(schema);
 						ActivityDTO activity = schema
 								.getActivityById(defaultActivityId);
+
+						SiteGrid grid;
+
+						grid = new SiteGrid(true);
+						grid.setHeight(500);
 
 						AbstractSiteGrid abstractSiteGrid = null;
 						AbstractSiteEditor abstractSiteEditor = null;
@@ -71,15 +79,13 @@ public class SitesList extends ContentPanel {
 						abstractSiteGrid.addSidePanel(I18N.CONSTANTS.map(),
 								IconImageBundle.ICONS.map(), map);
 
-						if (siteEditor != null) {
+						if (siteEditor != null && databaseExist(schema)) {
 							SiteGridPageState place = new SiteGridPageState(
 									activity);
 							siteEditor.go((SiteGridPageState) place, activity);
 						}
 
-						// call back or whatever
-
-						// callback.onSuccess(abstractSiteEditor);
+						addToGrid((Widget) abstractSiteEditor.getWidget());
 					}
 
 					private void setDefaultActivityId(SchemaDTO schema) {
@@ -89,6 +95,16 @@ public class SitesList extends ContentPanel {
 									.getId();
 						}
 
+					}
+
+					private boolean databaseExist(SchemaDTO schema) {
+						UserDatabaseDTO userDatabase = schema
+								.getDatabaseById(databaseId);
+						if (userDatabase == null) {
+							return false;
+						}
+
+						return true;
 					}
 
 					@Override
