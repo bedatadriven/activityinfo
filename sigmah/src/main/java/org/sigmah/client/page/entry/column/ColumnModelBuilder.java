@@ -239,8 +239,26 @@ public class ColumnModelBuilder {
     }
 
 	public ColumnModelBuilder addTreeNameColumn() {
-		ColumnConfig name = new ColumnConfig("name", "Name", 50);
-		name.setRenderer(new TreeGridCellRenderer<ModelData>());
+		ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.location(), 200);
+		name.setRenderer(new TreeGridCellRenderer<ModelData>() {
+
+			@Override
+			public Object render(ModelData model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<ModelData> store, Grid<ModelData> grid) {
+
+				return super.render(model, propertyName(model), config, rowIndex, colIndex, store, grid);
+			}
+
+			private String propertyName(ModelData model) {
+				if(model instanceof SiteDTO) {
+					return "locationName";
+				} else {
+					return "name";
+				}
+			}
+			
+		});
 		columns.add(name);
 		
 		return this;

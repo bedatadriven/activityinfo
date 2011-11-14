@@ -3,6 +3,10 @@ package org.sigmah.client.page.entry;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.entry.column.ColumnModelBuilder;
+import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
+import org.sigmah.shared.command.Filter;
+import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -16,22 +20,24 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class SiteTreeGrid extends EditorTreeGrid<ModelData> {
 
-	public SiteTreeGrid(Dispatcher dispatcher) {
-		super(createStore(), createColumnModel());
+	public SiteTreeGrid(Dispatcher dispatcher, AdminGroupingModel groupingModel) {
+		super(createStore(dispatcher, groupingModel), createColumnModel());
 		setLoadMask(true); 
 		setStateful(true);
-		setAutoExpandColumn("name");
 		setClicksToEdit(ClicksToEdit.TWO);
 		
 		setIconProvider(new ModelIconProvider<ModelData>() {
 			@Override
 			public AbstractImagePrototype getIcon(ModelData model) {
-				if (model instanceof YearViewModel || model instanceof MonthViewModel || model instanceof AdminViewModel) {
+				if (model instanceof AdminEntityDTO) {
 					return IconImageBundle.ICONS.folder();
-				}
-
-				if (model instanceof ShowSitesViewModel) {
-					return IconImageBundle.ICONS.drilldown();
+				} else if (model instanceof SiteDTO) {
+					SiteDTO site = (SiteDTO)model;
+					if(site.hasCoords()) {
+						return IconImageBundle.ICONS.mapped();
+					} else {
+						return IconImageBundle.ICONS.unmapped();
+					}
 				}
 
 				return null;
@@ -43,17 +49,25 @@ public class SiteTreeGrid extends EditorTreeGrid<ModelData> {
 		setSelectionModel(sm);
 	}
 
-	public static TreeStore<ModelData> createStore() {
-		return new TreeStore<ModelData>();
+	private static TreeStore<ModelData> createStore(Dispatcher dispatcher, AdminGroupingModel groupingModel) {
+		SiteAdminTreeLoader loader = new SiteAdminTreeLoader(dispatcher);
+		loader.setAdminLeafLevelId(groupingModel.getAdminLevelId());
+				
+		return new TreeStore<ModelData>(loader);
 	}
 
-	public static ColumnModel createColumnModel() {
+	private static ColumnModel createColumnModel() {
 		return new ColumnModelBuilder() 
 		.addTreeNameColumn()
-		.addLocationColumn()
 		.build();
+	}
 
+	private SiteAdminTreeLoader getLoader() {
+		return (SiteAdminTreeLoader) getTreeStore().getLoader();
 	}
 	
-	
+	public void show(Filter filter) {
+		getLoader().setFilter(filter);
+		getLoader().load();
+	}
 }

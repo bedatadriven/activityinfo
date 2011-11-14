@@ -5,35 +5,29 @@
 
 package org.sigmah.client.page.entry.form;
 
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.NumberFormat;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
-public class IndicatorFieldSet extends FieldSet {
+public class IndicatorSection extends LayoutContainer {
 
 
-    public IndicatorFieldSet(ActivityDTO activity) {
+    public IndicatorSection(ActivityDTO activity) {
 
         TableLayout layout = new TableLayout(3);
         layout.setCellPadding(5);
         layout.setCellVerticalAlign(Style.VerticalAlignment.TOP);
 
-        setHeading(I18N.CONSTANTS.indicators());
         setLayout(layout);
-        setCollapsible(false);
         setStyleAttribute("fontSize", "8pt");
 
         for(IndicatorGroup group : activity.groupIndicators()) {

@@ -2,23 +2,21 @@ package org.sigmah.client.page.entry;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.nav.NavigationPanel;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -50,6 +48,23 @@ public class DataEntryPage extends LayoutContainer  implements Page {
 		
 		gridPanel = new SiteGridPanel(dispatcher);
 		add(gridPanel, new BorderLayoutData(LayoutRegion.CENTER));
+		
+		final SitePane sitePane = new SitePane(dispatcher);
+		BorderLayoutData sitePaneLayout = new BorderLayoutData(LayoutRegion.EAST);
+		sitePaneLayout.setSize(0.4f);
+		sitePaneLayout.setCollapsible(true);
+		sitePaneLayout.setMargins(new Margins(0, 0, 0, 5));
+		sitePaneLayout.setSplit(true);
+		add(sitePane, sitePaneLayout);
+		
+		gridPanel.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
+				sitePane.setSite(se.getSelectedItem());
+			}
+		});
+		
 	}
 	
 	@Override

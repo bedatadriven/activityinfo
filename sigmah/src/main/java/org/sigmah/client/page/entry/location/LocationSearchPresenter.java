@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -97,9 +98,12 @@ public class LocationSearchPresenter extends BaseObservable {
 		}
 	}
 	
-	public void accept(LocationDTO location) {
-		this.selection = location;
+	public void accept() {
 		fireEvent(ACCEPTED, new BaseEvent(ACCEPTED));
+	}
+	
+	public void addAcceptListener(Listener<BaseEvent> listener) {
+		addListener(ACCEPTED, listener);
 	}
 	
 	private class Proxy extends RpcProxy<PagingLoadResult<LocationDTO>> {

@@ -6,32 +6,26 @@
 package org.sigmah.client.page.entry.form;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.entry.form.field.PartnerComboBox;
+import org.sigmah.client.page.entry.form.field.ProjectComboBox;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
-public class ActivityFieldSet extends AbstractFieldSet {
+
+public class ActivitySection extends FormSection {
     private DateField dateField1;
     private DateField dateField2;
 
-    public ActivityFieldSet(final ActivityDTO activity,
-                            ListStore<PartnerDTO> partnerStore,
-                            ListStore<SiteDTO> assessmentStore, 
-                            ListStore<ProjectDTO> projectStore) {
-        super(I18N.CONSTANTS.activity(), 100, 200);
-
+    public ActivitySection(final ActivityDTO activity) {
+    	super();
+    	getFormLayout().setLabelWidth(100);
+    	getFormLayout().setDefaultWidth(200);
+    	
         TextField<String> databaseField = new TextField<String>();
 		databaseField.setValue(activity.getDatabase().getName());
 		databaseField.setFieldLabel(I18N.CONSTANTS.database());
@@ -44,15 +38,7 @@ public class ActivityFieldSet extends AbstractFieldSet {
 		activityField.setReadOnly(true);
 		add(activityField);
 
-		ComboBox<PartnerDTO> partnerCombo = new ComboBox<PartnerDTO>();
-		partnerCombo.setName("partner");
-		partnerCombo.setDisplayField("name");
-		partnerCombo.setEditable(false);
-		partnerCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
-		partnerCombo.setStore(partnerStore);
-		partnerCombo.setFieldLabel(I18N.CONSTANTS.partner());
-		partnerCombo.setForceSelection(true);
-		partnerCombo.setAllowBlank(false);
+		PartnerComboBox partnerCombo = new PartnerComboBox(activity);
 		add(partnerCombo);
 
 		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
@@ -68,7 +54,8 @@ public class ActivityFieldSet extends AbstractFieldSet {
 			dateField2.setAllowBlank(false);
 			dateField2.setFieldLabel(I18N.CONSTANTS.endDate());
             dateField2.setValidator(new Validator() {
-                public String validate(Field<?> field, String value) {
+                @Override
+				public String validate(Field<?> field, String value) {
                     if(dateField1.getValue()!=null && dateField2.getValue()!=null) {
                         if(dateField2.getValue().before(dateField1.getValue())) {
                             return I18N.CONSTANTS.inconsistentDateRangeWarning();
@@ -85,31 +72,10 @@ public class ActivityFieldSet extends AbstractFieldSet {
 
 		}
 		
-		if (activity.getDatabase().getProjects().size() > 0) {
-			ComboBox<ProjectDTO> comboboxProjects = new ComboBox<ProjectDTO>();
-			
-			comboboxProjects.setName("project");
-			comboboxProjects.setDisplayField("name");
-			comboboxProjects.setEditable(false);
-			comboboxProjects.setStore(projectStore);
-			comboboxProjects.setTriggerAction(ComboBox.TriggerAction.ALL);
-			comboboxProjects.setFieldLabel(I18N.CONSTANTS.project());
-			comboboxProjects.setForceSelection(true);
-			comboboxProjects.setAllowBlank(true);
+		if (!activity.getDatabase().getProjects().isEmpty()) {
+			ProjectComboBox comboboxProjects = new ProjectComboBox(activity);
 			add(comboboxProjects);
-		} else {
-			LabelField labelNoProjects = new LabelField(
-					I18N.MESSAGES.noProjectsDefinedForDatabase(activity.getDatabase().getName()));
-			labelNoProjects.setFieldLabel(I18N.CONSTANTS.project());
-			add(labelNoProjects);
-		}
-
-//		if(activity.getLocationType().getBoundAdminLevelId() == null) {
-//			ComboBox<SiteDTO> assessmentCombo = new AssessmentCombo(activity.getDatabase().getCountry());
-//			assessmentCombo.setName("assessment");
-//			assessmentCombo.setFieldLabel(Application.CONSTANTS.assessment());
-//			add(assessmentCombo);
-//		}
+		} 
     }
 
 }

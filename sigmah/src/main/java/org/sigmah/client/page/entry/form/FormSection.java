@@ -6,11 +6,17 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 public class FormSection extends LayoutContainer {
 
+	private final FormLayout layout;
+
 	public FormSection() {
-		FormLayout layout = new FormLayout();
+		layout = new FormLayout();
 		setLayout(layout);
 		setScrollMode(Scroll.AUTOY);
 		setStyleAttribute("padding", "10px");
+	}
+	
+	protected final FormLayout getFormLayout() {
+		return layout;
 	}
 	
 }

@@ -5,6 +5,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -40,6 +41,13 @@ public class LocationDialog extends Window {
 	
 	private Button useLocationButton;
 	
+	
+	public interface Callback {
+		void onSelected(LocationDTO location, boolean isNew);
+	}
+	
+	private Callback callback;
+	
 	public LocationDialog(Dispatcher dispatcher, CountryDTO country, LocationTypeDTO locationType) {
 		this.dispatcher = dispatcher;
 		this.searchPresenter = new LocationSearchPresenter(dispatcher, country, locationType);
@@ -59,7 +67,7 @@ public class LocationDialog extends Window {
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				
+				searchPresenter.accept();
 			}
 		}));
 		useLocationButton.disable();
@@ -87,6 +95,15 @@ public class LocationDialog extends Window {
 			}
 		});
 		
+		newLocationPresenter.addAcceptedListener(new Listener<LocationEvent>() {
+			
+			@Override
+			public void handleEvent(LocationEvent event) {
+				hide();
+				callback.onSelected(event.getLocation(), true);
+			}
+		});
+		
 		searchPresenter.addListener(Events.Select, new Listener<BaseEvent>() {
 
 			@Override
@@ -97,6 +114,15 @@ public class LocationDialog extends Window {
 					useLocationButton.enable();
 					useLocationButton.setText(I18N.MESSAGES.useLocation(searchPresenter.getSelection().getName()));
 				}
+			}
+		});
+		
+		searchPresenter.addAcceptListener(new Listener<BaseEvent>() {
+			
+			@Override
+			public void handleEvent(BaseEvent be) {
+				hide();
+				callback.onSelected(searchPresenter.getSelection(), false);
 			}
 		});
 	}
@@ -151,5 +177,10 @@ public class LocationDialog extends Window {
 		LocationMap mapView = new LocationMap(searchPresenter, newLocationPresenter);
 		
 		add(mapView, new BorderLayoutData(LayoutRegion.CENTER));
+	}
+	
+	public void show(Callback callback) {
+		this.callback = callback;
+		show();
 	}
 }

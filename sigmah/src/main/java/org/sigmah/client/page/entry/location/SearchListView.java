@@ -9,6 +9,7 @@ import org.sigmah.shared.dto.LocationDTO;
 
 import com.extjs.gxt.ui.client.data.ModelProcessor;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -45,6 +46,14 @@ public class SearchListView extends ListView<LocationDTO> {
 			@Override
 			public void selectionChanged(SelectionChangedEvent<LocationDTO> se) { 
 				presenter.select(this, se.getSelectedItem());
+			}
+		});
+		
+		addListener(Events.DoubleClick, new Listener<ListViewEvent<LocationDTO>>() {
+
+			@Override
+			public void handleEvent(ListViewEvent<LocationDTO> be) {
+				presenter.accept();
 			}
 		});
 		

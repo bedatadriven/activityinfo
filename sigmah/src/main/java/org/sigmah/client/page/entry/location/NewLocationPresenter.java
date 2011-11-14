@@ -1,18 +1,21 @@
 package org.sigmah.client.page.entry.location;
 
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.EventType;
+import com.extjs.gxt.ui.client.event.Listener;
 
 public class NewLocationPresenter extends BaseObservable {
 
 	public static EventType POSITION_CHANGED = new EventType();
 	public static EventType ACTIVE_STATE_CHANGED = new EventType();
 	public static EventType BOUNDS_CHANGED = new EventType();
+	public static EventType ACCEPTED = new EventType();
 	
 	private AiLatLng latLng;
 	private boolean provisional;
@@ -60,6 +63,14 @@ public class NewLocationPresenter extends BaseObservable {
 
 	public BoundingBoxDTO getBounds() {
 		return bounds;
+	}
+	
+	public void addAcceptedListener(Listener<LocationEvent> listener) {
+		addListener(ACCEPTED, listener);
+	}
+	
+	public void accept(LocationDTO location) {
+		fireEvent(ACCEPTED, new LocationEvent(ACCEPTED, this, location));
 	}
 
 }

@@ -30,7 +30,10 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -47,7 +50,7 @@ import com.google.inject.Inject;
 /** 
  * Displays of sites in a "flat" projection with a paging toolbar.
  */
-public class FlatSiteGridPanel extends ContentPanel {
+public class FlatSiteGridPanel extends ContentPanel implements SiteGrid {
     private final Dispatcher dispatcher;
 	
 	private EditorGrid<SiteDTO> editorGrid;
@@ -97,15 +100,18 @@ public class FlatSiteGridPanel extends ContentPanel {
     	initGrid(ColumnModelBuilder.buildForAll(schema));
     }
     
-    public void showDatabase(UserDatabaseDTO database) {
+    @Override
+	public void showDatabase(UserDatabaseDTO database) {
     	initGrid(ColumnModelBuilder.buildForDatabase(database));
     }
     
-    public void showActivity(ActivityDTO activity) {
+    @Override
+	public void showActivity(ActivityDTO activity) {
     	initGrid(ColumnModelBuilder.buildForActivity(activity));
     }
     
-    public void showAll(SchemaDTO schema) {
+    @Override
+	public void showAll(SchemaDTO schema) {
     	initGrid(ColumnModelBuilder.buildForAll(schema));
     }
     
@@ -132,7 +138,15 @@ public class FlatSiteGridPanel extends ContentPanel {
 
 	    	GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
 	        sm.setSelectionMode(SelectionMode.SINGLE);
+	        sm.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
+				
+				@Override
+				public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
+					fireEvent(Events.SelectionChange, se);
+				}
+			});
 	        editorGrid.setSelectionModel(sm);
+	        
 	        
 	        QuickTip quickTip = new QuickTip(editorGrid);
 	        
@@ -144,6 +158,10 @@ public class FlatSiteGridPanel extends ContentPanel {
     	}
     	
     	loader.load();
+	}
+	
+	public void addSelectionChangedListener(SelectionChangedListener<SiteDTO> listener) {
+		addListener(Events.SelectionChange, listener);
 	}
 	
 	private class SiteProxy extends RpcProxy<PagingLoadResult<SiteDTO>> {

@@ -30,8 +30,8 @@ public class NewSiteDialog extends Window {
 		
 	public NewSiteDialog(Dispatcher dispatcher, ActivityDTO activity) {
 		setHeading(I18N.MESSAGES.addNewSiteForActivity(activity.getName()));
-		setWidth((int)(com.google.gwt.user.client.Window.getClientWidth() * 0.85));
-		setHeight((int)(com.google.gwt.user.client.Window.getClientHeight() * 0.90));
+		setWidth(500);
+		setHeight(450);
 	
 		setLayout(new BorderLayout());
 		
@@ -46,7 +46,19 @@ public class NewSiteDialog extends Window {
 		
 		add(sectionContainer, new BorderLayoutData(LayoutRegion.CENTER));
 		
-		BoundLocationSection locationForm = new BoundLocationSection(dispatcher, activity);
+		FormSection locationForm;
+		if(activity.getLocationType().isAdminLevel()) {
+			locationForm = new BoundLocationSection(dispatcher, activity);
+		} else {
+			locationForm = new LocationSection(activity);
+		}
+		ActivitySection activityForm = new ActivitySection(activity);
+		
+		addSection(new FormSectionModel()
+				.withHeader("Site Details")
+				.withDescription("Choose the project and partner implementing this activity")
+				.forComponent(activityForm));
+		
 		addSection(new FormSectionModel()
 				.withHeader(I18N.CONSTANTS.location())
 				.withDescription("Choose the location of the activity site")

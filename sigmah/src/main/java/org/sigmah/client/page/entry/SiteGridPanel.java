@@ -7,17 +7,29 @@ import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.common.widget.CollapsibleTabPanel;
+import org.sigmah.client.page.entry.form.NewSiteDialog;
+import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
+import org.sigmah.client.page.entry.grouping.GroupingComboBox;
+import org.sigmah.client.page.entry.grouping.GroupingModel;
 import org.sigmah.client.page.entry.grouping.NullGroupingModel;
 import org.sigmah.client.page.entry.location.LocationDialog;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -39,23 +51,35 @@ public class SiteGridPanel extends ContentPanel implements ActionListener {
 	private Component center = null;
 	
 	private DataEntryPlace currentPlace;
+	private GroupingComboBox groupingComboBox;
 	
 	public SiteGridPanel(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
 		
 		setHeading(I18N.CONSTANTS.sitesHeader());
-		setIcon(IconImageBundle.ICONS.mapped());
+		setIcon(IconImageBundle.ICONS.table());
 		setLayout(new BorderLayout());
 		
 		createToolBar();
-		createTabPanel();
+		//createTabPanel();
 	}
 
 	private void createToolBar() {
     	toolBar = new ActionToolBar(this);
             	
+    	groupingComboBox = new GroupingComboBox(dispatcher);
+    	groupingComboBox.withSelectionListener(new Listener<FieldEvent>() {
+			
+			@Override
+			public void handleEvent(FieldEvent be) {
+				group(groupingComboBox.getGroupingModel());
+			}
+		});
+    	
+    	toolBar.add(new Label("Grouping: "));
+    	toolBar.add(groupingComboBox);
+    	
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
-        toolBar.addEditButton();
         toolBar.addPrintButton();
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
@@ -106,21 +130,39 @@ public class SiteGridPanel extends ContentPanel implements ActionListener {
     
 	public void navigate(DataEntryPlace place) {
 		this.currentPlace = place;
-
-
+		groupingComboBox.setFilter(currentPlace.getFilter());
 		
-		if(place.getGrouping() == NullGroupingModel.INSTANCE) {
+		group(place.getGrouping());    	
+    }
+
+	private void group(GroupingModel grouping) {
+		if(grouping == NullGroupingModel.INSTANCE) {
 			FlatSiteGridPanel panel = new FlatSiteGridPanel(dispatcher);
-			panel.navigate(place);
+			panel.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
+				
+				@Override
+				public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
+					fireEvent(Events.SelectionChange, se);
+				}
+			});
+			panel.navigate(currentPlace);
 			installCenterComponent(panel);
 			
+		} else if(grouping instanceof AdminGroupingModel) {
+			SiteTreeGrid grid = new SiteTreeGrid(dispatcher, (AdminGroupingModel) grouping);			
+			grid.show(currentPlace.getFilter());
+			
+			installCenterComponent(grid);
 		} else {
-						
 			
 		}
-       	layout();    	
-    }
+       	layout();
+	}
 	
+	public void addSelectionChangedListener(SelectionChangedListener<SiteDTO> listener) {
+		addListener(Events.SelectionChange, listener);
+	}
+
 	private void installCenterComponent(Component component) {
 		if(center != null) {
 			remove(center);
@@ -157,14 +199,24 @@ public class SiteGridPanel extends ContentPanel implements ActionListener {
 
 				@Override
 				public void onSuccess(SchemaDTO schema) {
-					ActivityDTO activity = schema.getActivityById(
+					final ActivityDTO activity = schema.getActivityById(
 							currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity));
 					
 					LocationDialog dialog = new LocationDialog(dispatcher, activity.getDatabase().getCountry(),
 							activity.getLocationType());
 					
-					dialog.show();
-					
+					dialog.show(new LocationDialog.Callback() {
+						
+						@Override
+						public void onSelected(LocationDTO location, boolean isNew) {
+							SiteDTO newSite = new SiteDTO();
+							newSite.setActivityId(activity.getId());
+							newSite.setLocation(location);
+							
+							NewSiteDialog dialog = new NewSiteDialog(dispatcher, activity);
+							dialog.show();
+						}
+					});
 				}
 			});
 		}
