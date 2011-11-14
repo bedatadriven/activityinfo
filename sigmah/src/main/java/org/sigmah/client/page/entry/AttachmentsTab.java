@@ -75,7 +75,8 @@ public class AttachmentsTab extends TabItem implements
 		attachmentList.addListener(Events.Select,
 				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
 
-					public void handleEvent(ListViewEvent<SiteAttachmentDTO> event) {
+					public void handleEvent(
+							ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
 						toolBar.setActionEnabled(UIActions.delete, true);
 					}
@@ -84,18 +85,19 @@ public class AttachmentsTab extends TabItem implements
 		attachmentList.addListener(Events.DoubleClick,
 				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
 
-					public void handleEvent(ListViewEvent<SiteAttachmentDTO> event) {
+					public void handleEvent(
+							ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
-						dispatcher.execute(new GetUploadUrl(currentAttachment), null,
-								new AsyncCallback<UploadUrlResult>() {
+						dispatcher.execute(new GetUploadUrl(currentAttachment),
+								null, new AsyncCallback<UploadUrlResult>() {
 									public void onFailure(Throwable caught) {
 										// callback.onFailure(caught);
 									}
 
 									@Override
 									public void onSuccess(UploadUrlResult result) {
-										//form.setAction(result.getUrl());
-										Window.open(result.getUrl(), "_blank", "Attachment");
+										Window.open(result.getUrl(), "_blank",
+												"Attachment");
 									}
 								});
 					}
@@ -151,7 +153,7 @@ public class AttachmentsTab extends TabItem implements
 
 	private native String getTemplate(String base) /*-{
 		return [ '<dl><tpl for=".">', '<dd>',
-				'<img src="' + base + 'excel.png" title="{fileName}">',
+				'<img src="' + base + 'attach.png" title="{fileName}">',
 				'<span>{fileName}</span>', '</tpl>',
 				'<div style="clear:left;"></div></dl>' ].join("");
 

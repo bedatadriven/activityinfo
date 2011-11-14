@@ -39,6 +39,7 @@ public class SiteAttachmentDTO extends BaseModelData implements DTO {
 	}
 
 	public void setFileName(String fileName) {
+		set("fileName", fileName);
 		this.fileName = fileName;
 	}
 

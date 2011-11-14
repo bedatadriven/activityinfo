@@ -18,4 +18,14 @@
             </column>
         </createTable>
 	</changeSet>
+	<changeSet author="umad" id="003-02">
+		<modifyDataType tableName="siteattachment" columnName="uploadedby" newDataType="INT"/>
+       	<addColumn tableName="siteattachment">
+			<column name="blobsize" type="INT" />
+		</addColumn>
+		<addColumn tableName="siteattachment">
+			<column name="contenttype" type="VARCHAR(255)" />
+		</addColumn>
+	</changeSet>
+	
 </databaseChangeLog>

@@ -12,17 +12,13 @@ import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.shared.command.CreateSiteAttachment;
 import org.sigmah.shared.command.DeleteSiteAttachment;
-import org.sigmah.shared.command.GetUploadUrl;
-import org.sigmah.shared.command.result.UploadUrlResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
@@ -47,7 +43,6 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 	private final View view;
 	private final Dispatcher dispatcher;
 	private AttachmentForm form;
-	private CreateSiteAttachment siteAttachment;
 	private SiteDTO currentSite;
 	private Listener<SiteEvent> siteListener;
 	private String blobid;
@@ -77,6 +72,7 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 	private void onSiteSelected() {
 		view.setSelectionTitle(currentSite.getLocationName());
 		view.setActionEnabled(UIActions.upload, true);
+		view.setActionEnabled(UIActions.delete, false);
 		view.setAttachmentStore(currentSite.getId());
 	}
 
@@ -95,13 +91,13 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 		form = new AttachmentForm();
 		form.setEncoding(Encoding.MULTIPART);
 		form.setMethod(Method.POST);
-		
+
 		HiddenField<String> blobField = new HiddenField<String>();
 		blobField.setName("blobId");
 		blobid = UUID.randomUUID().toString();
 		blobField.setValue(blobid);
 		form.add(blobField);
-		
+
 		final FormDialogImpl dialog = new FormDialogImpl(form);
 		dialog.setWidth(400);
 		dialog.setHeight(200);
@@ -110,58 +106,20 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 		dialog.show(new FormDialogCallback() {
 			@Override
 			public void onValidated() {
-				form.setAction("/ActivityInfo/attachment?blobId="+ blobid + "&siteId=" + currentSite.getId());
+				form.setAction("/ActivityInfo/attachment?blobId=" + blobid
+						+ "&siteId=" + currentSite.getId());
 				form.submit();
 				dialog.getSaveButton().setEnabled(false);
 			}
 		});
-		
+
 		form.addListener(Events.Submit, new Listener<FormEvent>() {
 
-	            public void handleEvent(FormEvent arg0) {
-	                dialog.hide();
-	                view.setAttachmentStore(currentSite.getId());
-	            }
-	        });
-
-		
-	}
-
-	public void uploadFile() {
-		blobid = UUID.randomUUID().toString();
-		dispatcher.execute(new GetUploadUrl(blobid), null,
-				new AsyncCallback<UploadUrlResult>() {
-					public void onFailure(Throwable caught) {
-						// callback.onFailure(caught);
-					}
-
-					@Override
-					public void onSuccess(UploadUrlResult result) {
-						//form.setAction(result.getUrl());
-
-					}
-				});
-	}
-
-	public void createSiteAttachment(String blobid) {
-		siteAttachment = new CreateSiteAttachment();
-		siteAttachment.setSiteId(currentSite.getId());
-		siteAttachment.setBlobId(blobid);
-		siteAttachment.setFileName("file.doc");
-		siteAttachment.setBlobSize(2356);
-		siteAttachment.setContentType("doc");
-
-		dispatcher.execute(siteAttachment, null,
-				new AsyncCallback<VoidResult>() {
-					public void onFailure(Throwable caught) {
-						// callback.onFailure(caught);
-					}
-
-					@Override
-					public void onSuccess(VoidResult result) {
-						view.setAttachmentStore(currentSite.getId());
-					}
-				});
+			public void handleEvent(FormEvent event) {
+				dialog.hide();
+				view.setAttachmentStore(currentSite.getId());
+			}
+		});
 
 	}
 
@@ -177,6 +135,7 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 
 			@Override
 			public void onSuccess(VoidResult result) {
+				view.setActionEnabled(UIActions.delete, false);
 				view.setAttachmentStore(currentSite.getId());
 			}
 		});

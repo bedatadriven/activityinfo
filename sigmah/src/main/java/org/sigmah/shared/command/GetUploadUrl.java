@@ -6,14 +6,14 @@ import org.sigmah.shared.command.result.UploadUrlResult;
 public class GetUploadUrl implements Command<UploadUrlResult> {
 
 	private String url;
-	private String blobid;
+	private String blobId;
 
 	public GetUploadUrl() {
 
 	}
 
-	public GetUploadUrl(String blobid){
-		this.blobid = blobid;
+	public GetUploadUrl(String blobId){
+		this.blobId = blobId;
 	}
 	
 	public String getUrl() {
@@ -24,12 +24,12 @@ public class GetUploadUrl implements Command<UploadUrlResult> {
 		this.url = url;
 	}
 
-	public String getBlobid() {
-		return blobid;
+	public String getBlobId() {
+		return blobId;
 	}
 
-	public void setBlobid(String blobid) {
-		this.blobid = blobid;
+	public void setBlobId(String blobId) {
+		this.blobId = blobId;
 	}
 	
 }

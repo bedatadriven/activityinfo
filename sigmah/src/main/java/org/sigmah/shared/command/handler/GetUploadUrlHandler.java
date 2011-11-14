@@ -2,7 +2,6 @@ package org.sigmah.shared.command.handler;
 
 import java.net.URL;
 
-import org.sigmah.server.attachment.ServletAttachmentUpload;
 import org.sigmah.server.command.handler.CommandHandler;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetUploadUrl;
@@ -14,7 +13,6 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.google.inject.Inject;
 
 public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
@@ -32,7 +30,7 @@ public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 		UploadUrlResult uploadUrl = new UploadUrlResult();
 
 		String bucketName = "site-attachments";
-		String key = cmd.getBlobid();
+		String key = cmd.getBlobId();
 
 		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
 				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
