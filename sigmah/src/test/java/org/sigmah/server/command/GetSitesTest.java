@@ -26,187 +26,230 @@ import com.google.gwt.editor.client.Editor.Ignore;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class GetSitesTest extends CommandTestCase2{
-    private static final int DATABASE_OWNER = 1;
-                
+public class GetSitesTest extends CommandTestCase2 {
+	private static final int DATABASE_OWNER = 1;
 
-    @Test
-    public void testActivityQueryBasic() throws CommandException {
+	@Test
+	public void testActivityQueryBasic() throws CommandException {
 
-        setUser(DATABASE_OWNER);
+		setUser(DATABASE_OWNER);
 
-        GetSites cmd = new GetSites();
-        cmd.filter().onActivity(1);
-        cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
+		GetSites cmd = new GetSites();
+		cmd.filter().onActivity(1);
+		cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);    
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        Assert.assertEquals("totalLength", 3, result.getData().size());
-        Assert.assertEquals("totalLength", 3, result.getTotalLength());
-        Assert.assertEquals("offset", 0, result.getOffset());
-        //Assert.assertNull("row(0).activity", result.getData().get(0).getActivity());
+		Assert.assertEquals("totalLength", 3, result.getData().size());
+		Assert.assertEquals("totalLength", 3, result.getTotalLength());
+		Assert.assertEquals("offset", 0, result.getOffset());
+		// Assert.assertNull("row(0).activity",
+		// result.getData().get(0).getActivity());
 
-        // assure sorted
-        Assert.assertEquals("sorted", 2, result.getData().get(0).getId());
-        Assert.assertEquals("sorted", 1, result.getData().get(1).getId());
-        Assert.assertEquals("sorted", 3, result.getData().get(2).getId());
+		// assure sorted
+		Assert.assertEquals("sorted", 2, result.getData().get(0).getId());
+		Assert.assertEquals("sorted", 1, result.getData().get(1).getId());
+		Assert.assertEquals("sorted", 3, result.getData().get(2).getId());
 
-        // assure indicators are present (site id=3)
-        SiteDTO s = result.getData().get(2);
+		// assure indicators are present (site id=3)
+		SiteDTO s = result.getData().get(2);
 
-        Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1).getName());
-        Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
-        Assert.assertEquals("indicator", 10000.0, s.getIndicatorValue(1));
-        Assert.assertNull("site x", s.getX());
-        
-        // assure project is present
-        SiteDTO s1 = result.getData().get(1);
-        assertThat(s1.getId(), equalTo(1));
-        assertThat(s1.getProject().getId(), equalTo(1));
-        
-    }
+		Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1)
+				.getName());
+		Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
+		Assert.assertEquals("indicator", 10000.0, s.getIndicatorValue(1));
+		Assert.assertNull("site x", s.getX());
 
-    @Test
-    public void testIndicatorSort() throws CommandException {
+		// assure project is present
+		SiteDTO s1 = result.getData().get(1);
+		assertThat(s1.getId(), equalTo(1));
+		assertThat(s1.getProject().getId(), equalTo(1));
 
-        setUser(DATABASE_OWNER);
+	}
 
-        GetSites cmd = new GetSites();
-        cmd.filter().onActivity(1);
-        cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
+	@Test
+	public void tesGetPublicSites() throws CommandException {
+		int anonnoymsUserID = 0;
+		setUser(anonnoymsUserID);
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+		GetSites cmd = new GetSites();
+		cmd.filter().onActivity(1);
+		cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
 
-        // assure sorted
-        Assert.assertEquals("sorted", 10000.0, result.getData().get(0).getIndicatorValue(1));
-        Assert.assertEquals("sorted", 3600.0, result.getData().get(1).getIndicatorValue(1));
-        Assert.assertEquals("sorted", 1500.0, result.getData().get(2).getIndicatorValue(1));
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        Assert.assertNotNull("activityId", result.getData().get(0).getActivityId());
-    }
+		Assert.assertEquals("totalLength", 3, result.getData().size());
+		Assert.assertEquals("totalLength", 3, result.getTotalLength());
+		Assert.assertEquals("offset", 0, result.getOffset());
+		// Assert.assertNull("row(0).activity",
+		// result.getData().get(0).getActivity());
 
+		// assure sorted
+		Assert.assertEquals("sorted", 2, result.getData().get(0).getId());
+		Assert.assertEquals("sorted", 1, result.getData().get(1).getId());
+		Assert.assertEquals("sorted", 3, result.getData().get(2).getId());
 
-    @Test
-    public void testActivityQueryPaged() throws CommandException {
+		// assure indicators are present (site id=3)
+		SiteDTO s = result.getData().get(2);
 
-        setUser(DATABASE_OWNER);
+		Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1)
+				.getName());
+		Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
+		Assert.assertEquals("indicator", 10000.0, s.getIndicatorValue(1));
+		Assert.assertNull("site x", s.getX());
 
-        GetSites cmd = new GetSites();
-        cmd.filter().onActivity(1);
-        cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
-        cmd.setLimit(2);
-        cmd.setOffset(0);
+		// assure project is present
+		SiteDTO s1 = result.getData().get(1);
+		assertThat(s1.getId(), equalTo(1));
+		assertThat(s1.getProject().getId(), equalTo(1));
+	}
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+	@Test
+	public void testIndicatorSort() throws CommandException {
 
-        assertThat("offset", result.getOffset(), equalTo(0));
-        
+		setUser(DATABASE_OWNER);
 
-        cmd.setOffset(1);
-        cmd.setLimit(2);
+		GetSites cmd = new GetSites();
+		cmd.filter().onActivity(1);
+		cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1),
+				SortDir.DESC));
 
-        result = execute(cmd);
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        assertThat(result.getOffset(), equalTo(1));
-        assertThat(result.getData().size(), equalTo(2));
-        assertThat("total length", result.getTotalLength(), equalTo(3));
+		// assure sorted
+		Assert.assertEquals("sorted", 10000.0, result.getData().get(0)
+				.getIndicatorValue(1));
+		Assert.assertEquals("sorted", 3600.0, result.getData().get(1)
+				.getIndicatorValue(1));
+		Assert.assertEquals("sorted", 1500.0, result.getData().get(2)
+				.getIndicatorValue(1));
 
-        cmd.setOffset(0);
-        cmd.setLimit(50);
+		Assert.assertNotNull("activityId", result.getData().get(0)
+				.getActivityId());
+	}
 
-        result = execute(cmd);
+	@Test
+	public void testActivityQueryPaged() throws CommandException {
 
-        assertThat(result.getOffset(), equalTo(0));
-        assertThat(result.getData().size(), equalTo(3));
-        assertThat("total length", result.getTotalLength(), equalTo(3));
+		setUser(DATABASE_OWNER);
 
+		GetSites cmd = new GetSites();
+		cmd.filter().onActivity(1);
+		cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1),
+				SortDir.DESC));
+		cmd.setLimit(2);
+		cmd.setOffset(0);
 
-    }
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
+		assertThat("offset", result.getOffset(), equalTo(0));
 
-    @Test
-    public void testDatabase() throws CommandException {
+		cmd.setOffset(1);
+		cmd.setLimit(2);
 
-        setUser(DATABASE_OWNER);
+		result = execute(cmd);
 
-        GetSites cmd = new GetSites();
-        cmd.filter().addRestriction(DimensionType.Database, 2);
+		assertThat(result.getOffset(), equalTo(1));
+		assertThat(result.getData().size(), equalTo(2));
+		assertThat("total length", result.getTotalLength(), equalTo(3));
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+		cmd.setOffset(0);
+		cmd.setLimit(50);
 
-        Assert.assertEquals("rows", 3, result.getData().size());
-        Assert.assertNotNull("activityId", result.getData().get(0).getActivityId());
+		result = execute(cmd);
 
-    }
+		assertThat(result.getOffset(), equalTo(0));
+		assertThat(result.getData().size(), equalTo(3));
+		assertThat("total length", result.getTotalLength(), equalTo(3));
 
-    @Test
-    public void testDatabasePaged() throws CommandException {
+	}
 
-        setUser(DATABASE_OWNER);
+	@Test
+	public void testDatabase() throws CommandException {
 
-        GetSites cmd = new GetSites();
-        cmd.getFilter().addRestriction(DimensionType.Database, 1);
-        cmd.setLimit(2);
+		setUser(DATABASE_OWNER);
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+		GetSites cmd = new GetSites();
+		cmd.filter().addRestriction(DimensionType.Database, 2);
 
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        Assert.assertEquals("rows", 2, result.getData().size());
+		Assert.assertEquals("rows", 3, result.getData().size());
+		Assert.assertNotNull("activityId", result.getData().get(0)
+				.getActivityId());
 
-    }
+	}
 
-    @Test
-    public void testDatabasePartner2PartnerVisibility() throws CommandException {
+	@Test
+	public void testDatabasePaged() throws CommandException {
 
-        setUser(2); // BAVON (can't see other partner's stuff)
+		setUser(DATABASE_OWNER);
 
-        GetSites cmd = new GetSites();
-        cmd.getFilter().addRestriction(DimensionType.Database, 1);
+		GetSites cmd = new GetSites();
+		cmd.getFilter().addRestriction(DimensionType.Database, 1);
+		cmd.setLimit(2);
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        Assert.assertEquals("rows", 3, result.getData().size());
-    }
+		Assert.assertEquals("rows", 2, result.getData().size());
 
-    @Test
-    public void testAll() throws CommandException {
+	}
 
-        setUser(DATABASE_OWNER);
+	@Test
+	public void testDatabasePartner2PartnerVisibility() throws CommandException {
 
-        GetSites cmd = new GetSites();
+		setUser(2); // BAVON (can't see other partner's stuff)
 
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+		GetSites cmd = new GetSites();
+		cmd.getFilter().addRestriction(DimensionType.Database, 1);
 
-        Assert.assertEquals("rows", 8, result.getData().size());
-        Assert.assertNotNull("activityId", result.getData().get(0).getActivityId());
-    }
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
-    @Test
-    public void testAllWithRemovedUser() throws CommandException {
+		Assert.assertEquals("rows", 3, result.getData().size());
+	}
 
-        setUser(5); // Christian (Bad guy!)
+	@Test
+	public void testAll() throws CommandException {
 
-        PagingLoadResult<SiteDTO> result = execute(new GetSites());
+		setUser(DATABASE_OWNER);
 
-        Assert.assertEquals("rows", 0, result.getData().size());
-    }
+		GetSites cmd = new GetSites();
 
-    @Test
-    @Ignore
-    public void testSeekSite() throws Exception {
+		PagingLoadResult<SiteDTO> result = execute(cmd);
 
-        setUser(DATABASE_OWNER);
+		Assert.assertEquals("rows", 8, result.getData().size());
+		Assert.assertNotNull("activityId", result.getData().get(0)
+				.getActivityId());
+	}
 
-        GetSites cmd = new GetSites();
-        cmd.filter().onActivity(1);
-        cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
-        cmd.setLimit(2);
-        cmd.setSeekToSiteId(1);
-        
-        PagingLoadResult<SiteDTO> result = execute(cmd);
+	@Test
+	public void testAllWithRemovedUser() throws CommandException {
 
-        Assert.assertEquals("second page returned", 2, result.getOffset());
-        Assert.assertEquals("rows on this page", 1, result.getData().size());
-        Assert.assertEquals("correct site returned", 1, result.getData().get(0).getId());
-    }
+		setUser(5); // Christian (Bad guy!)
+
+		PagingLoadResult<SiteDTO> result = execute(new GetSites());
+
+		Assert.assertEquals("rows", 0, result.getData().size());
+	}
+
+	@Test
+	@Ignore
+	public void testSeekSite() throws Exception {
+
+		setUser(DATABASE_OWNER);
+
+		GetSites cmd = new GetSites();
+		cmd.filter().onActivity(1);
+		cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1),
+				SortDir.DESC));
+		cmd.setLimit(2);
+		cmd.setSeekToSiteId(1);
+
+		PagingLoadResult<SiteDTO> result = execute(cmd);
+
+		Assert.assertEquals("second page returned", 2, result.getOffset());
+		Assert.assertEquals("rows on this page", 1, result.getData().size());
+		Assert.assertEquals("correct site returned", 1, result.getData().get(0)
+				.getId());
+	}
 }

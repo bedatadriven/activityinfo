@@ -12,10 +12,12 @@ import javax.persistence.EntityManagerFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sigmah.client.mock.DummyData;
 import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.dao.SqlDialect;
 import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.endpoint.export.DbUserExport;
 import org.sigmah.server.endpoint.export.SiteExporter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -51,6 +53,20 @@ public class ExportIntegrationTest extends CommandTestCase2 {
         outputDir.mkdirs();
 
         FileOutputStream fos = new FileOutputStream("target/report-test/ExportTest.xls");
+        export.getBook().write(fos);
+        fos.close();
+    }
+    
+    @Test
+    public void DbUserExportTest()throws Throwable{
+    	
+    	DbUserExport export = new DbUserExport(DummyData.RRM_Users().getData());
+        export.createSheet();
+
+        File outputDir = new File("target/report-test/");
+        outputDir.mkdirs();
+
+        FileOutputStream fos = new FileOutputStream("target/report-test/DbUserExportTest.xls");
         export.getBook().write(fos);
         fos.close();
     }

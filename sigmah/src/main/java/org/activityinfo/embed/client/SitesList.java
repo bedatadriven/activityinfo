@@ -40,7 +40,7 @@ public class SitesList extends LayoutContainer {
 		loadSiteGrid();
 	}
 
-	public void addToGrid(Widget w) {
+	public void addToContainer(Widget w) {
 		add(w, new BorderLayoutData(Style.LayoutRegion.CENTER));
 		if (isRendered()) {
 			layout();
@@ -85,7 +85,7 @@ public class SitesList extends LayoutContainer {
 							siteEditor.go((SiteGridPageState) place, activity);
 						}
 
-						addToGrid((Widget) abstractSiteEditor.getWidget());
+						addToContainer((Widget) abstractSiteEditor.getWidget());
 					}
 
 					private void setDefaultActivityId(SchemaDTO schema) {

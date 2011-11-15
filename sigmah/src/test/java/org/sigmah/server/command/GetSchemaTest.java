@@ -68,6 +68,17 @@ public class GetSchemaTest extends CommandTestCase2 {
     }
 
     @Test
+    public void testDatabasePublished() throws CommandException {
+
+    	// Anonymouse user should fetch schema database with pulished activities.
+        setUser(0); 
+
+        SchemaDTO schema = execute(new GetSchema());
+
+        assertThat(schema.getDatabases().size(), equalTo(1));
+    }
+    
+    @Test
     public void testDatabaseVisibilityForView() throws CommandException {
 
 
