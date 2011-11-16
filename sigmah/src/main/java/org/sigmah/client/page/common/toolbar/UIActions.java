@@ -62,4 +62,6 @@ public class UIActions {
     
     public static final String upload = "upload";
     
+    public static final String subscribe = "subscribe";
+    
 }

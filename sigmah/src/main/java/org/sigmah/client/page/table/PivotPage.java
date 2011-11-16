@@ -380,6 +380,10 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		export.setItemId(UIActions.export);
 		gridToolBar.add(export);
 
+		Button subscribe = new Button(I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.report(), listener);
+		export.setItemId(UIActions.subscribe);
+		gridToolBar.add(subscribe);
+		
 		center.add(gridContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 	}
 

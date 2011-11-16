@@ -49,6 +49,11 @@ public class DbConfigPresenter implements Page {
 	        view.add(I18N.CONSTANTS.project(), I18N.CONSTANTS.projectManagerDescription(),
         			"db-projects.png", new DbPageState(DbProjectEditor.DatabaseProjects, db.getId()));
         }
+        if (db.isDesignAllowed()) {
+	        view.add(I18N.CONSTANTS.target(), I18N.CONSTANTS.targetDescription(),
+        			"db-targets.png", new DbPageState(DbTargetEditor.DatabaseTargets, db.getId()));
+        }
+        
 //        view.add("Cibles", "Définer les cibles pour les indicateurs.", "db-targets",
 //                new DbPageState(Pages.DatabaseTargets, db.getId()));
     }
