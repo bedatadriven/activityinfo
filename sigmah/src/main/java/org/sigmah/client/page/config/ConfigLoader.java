@@ -46,6 +46,7 @@ public class ConfigLoader implements PageLoader {
         pageManager.registerPageLoader(DbProjectEditor.DatabaseProjects, this);
         pageManager.registerPageLoader(LockedPeriodsPresenter.LockedPeriod, this);
         pageManager.registerPageLoader(DesignPresenter.PAGE_ID, this);
+        pageManager.registerPageLoader(DbTargetEditor.DatabaseTargets, this);
 
         placeSerializer.registerStatelessPlace(AccountEditor.Account, new AccountPageState());
         placeSerializer.registerStatelessPlace(DbListPresenter.DatabaseList, new DbListPageState());
@@ -55,6 +56,7 @@ public class ConfigLoader implements PageLoader {
         placeSerializer.registerParser(DbProjectEditor.DatabaseProjects, new DbPageState.Parser(DbProjectEditor.DatabaseProjects));
         placeSerializer.registerParser(LockedPeriodsPresenter.LockedPeriod, new DbPageState.Parser(LockedPeriodsPresenter.LockedPeriod));
         placeSerializer.registerParser(DesignPresenter.PAGE_ID, new DbPageState.Parser(DesignPresenter.PAGE_ID));
+        placeSerializer.registerParser(DbTargetEditor.DatabaseTargets, new DbPageState.Parser(DbTargetEditor.DatabaseTargets));
     }
 
     @Override
@@ -116,6 +118,10 @@ public class ConfigLoader implements PageLoader {
                                 
                             } else if (DbProjectEditor.DatabaseProjects.equals(pageId)) {
                                 DbProjectEditor presenter = injector.getDbProjectEditor();
+                                presenter.go(db);
+                                callback.onSuccess(presenter);
+                            }else if (DbTargetEditor.DatabaseTargets.equals(pageId)) {
+                                DbTargetEditor presenter = injector.getDbTargetEditor();
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
                             } else {
