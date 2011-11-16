@@ -67,4 +67,16 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase {
 
         assertThat(result.getData().size(), equalTo(3));
     }
+    
+
+    @Test
+    public void testRootSiteQuery() throws Exception {
+        GetAdminEntities cmd = new GetAdminEntities();
+        cmd.setCountryId(1);
+        cmd.setFilter(Filter.filter().onActivity(2));
+
+        AdminEntityResult result = execute(cmd);
+
+        assertThat(result.getData().size(), equalTo(3));
+    }
 }

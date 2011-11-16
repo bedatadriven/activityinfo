@@ -33,16 +33,20 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 			final AsyncCallback<AdminEntityResult> callback) {
 		
 		SqlQuery query =
-				SqlQuery.select("adminEntityId",
-					"name",
-					"adminLevelId",
-					"adminEntityParentId",
-					"x1","y1","x2","y2")
+				SqlQuery.select()
+					.appendColumn("adminEntityId")
+					.appendColumn("AdminEntity.Name", "name")
+					.appendColumn("AdminEntity.AdminLevelId", "adminLevelId")
+					.appendColumn("AdminEntity.AdminEntityParentId", "adminEntityParentId")
+					.appendColumn("x1")
+					.appendColumn("y1")
+					.appendColumn("x2")
+					.appendColumn("y2")
 					.from("AdminEntity")
 					.orderBy("AdminEntity.Name");
 
 		if(cmd.getCountryId() != null) {
-			query.leftJoin("AdminLevel").on("AdminLevel.AdminLevelId=AdminEntity.adminLevelId)");
+			query.leftJoin("AdminLevel").on("AdminLevel.AdminLevelId=AdminEntity.adminLevelId");
 			query.where("AdminLevel.CountryId").equalTo(cmd.getCountryId());
 
 			if(cmd.getParentId() == null && cmd.getLevelId() == null) {
@@ -62,7 +66,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 			SqlQuery subQuery = SqlQuery.select("link.AdminEntityId")
 					.from("LocationAdminLink link ")
 					.leftJoin("Location").on("link.LocationId = Location.LocationId")
-					.leftJoin("Site").on("Location.LocationId = Location.LocationId")
+					.leftJoin("Site").on("Location.LocationId = Site.LocationId")
 					.where("Site.ActivityId").in(cmd.getFilter().getRestrictions(DimensionType.Activity));
 
 			query.where("AdminEntity.AdminEntityId").in(subQuery);
