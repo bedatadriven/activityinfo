@@ -226,6 +226,11 @@ public class Filter implements Serializable {
         return this;
     }
     
+    public Filter onDatabase(int databaseId) {
+        addRestriction(DimensionType.Database, databaseId);
+        return this;
+    }
+    
     public static Filter filter() {
         return new Filter();
     }

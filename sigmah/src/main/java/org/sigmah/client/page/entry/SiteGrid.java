@@ -41,7 +41,8 @@ public class SiteGrid extends AbstractSiteGrid implements SiteEditor.View {
         toggle(togglebuttonList);
 	}
 	
-    public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
+	@Override
+	public Grid<SiteDTO> createGridAndAddToContainer(Store store) {
     	editorGrid = new EditorGrid<SiteDTO>((ListStore)store, createColumnModel(activity));
         
     	editorGrid.setLoadMask(true);
@@ -98,5 +99,13 @@ public class SiteGrid extends AbstractSiteGrid implements SiteEditor.View {
 	@Override
 	public void remove(SiteDTO site) {
 		listStore.remove(site);
+	}
+	
+	public Grid getGrid(){
+		return grid;
+	}
+	
+	public EditorGrid editorGrid(){
+		return editorGrid;
 	}
 }

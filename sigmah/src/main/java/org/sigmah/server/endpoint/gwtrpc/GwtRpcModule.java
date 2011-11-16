@@ -5,6 +5,8 @@
 
 package org.sigmah.server.endpoint.gwtrpc;
 
+import org.sigmah.server.attachment.ServletAttachmentUpload;
+
 import com.google.inject.servlet.ServletModule;
 
 public class GwtRpcModule extends ServletModule {
@@ -17,7 +19,9 @@ public class GwtRpcModule extends ServletModule {
         filter("/ActivityInfo/*").through(CacheFilter.class);
 
         serve("/ActivityInfo/cmd").with(CommandServlet.class);
+        serve("/Embed/cmd").with(CommandServlet.class);
         serve("/ActivityInfo/download").with(DownloadServlet.class);
+        serve("/ActivityInfo/attachment").with(ServletAttachmentUpload.class);
 
         // this is here for now but should be probably live elsewhere, if
         // we really need it at all

@@ -10,7 +10,9 @@ public class CreateSiteAttachment implements Command<VoidResult> {
 	private int siteId;
     private String blobId;
     private String fileName;
-    private String uploadedBy;
+    private int uploadedBy;
+    private int blobSize;
+    private String contentType;
 	
     public CreateSiteAttachment(){
     	
@@ -34,12 +36,27 @@ public class CreateSiteAttachment implements Command<VoidResult> {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	public String getUploadedBy() {
+	public int getUploadedBy() {
 		return uploadedBy;
 	}
-	public void setUploadedBy(String uploadedBy) {
+	public void setUploadedBy(int uploadedBy) {
 		this.uploadedBy = uploadedBy;
 	}
-    
+
+	public int getBlobSize() {
+		return blobSize;
+	}
+
+	public void setBlobSize(int blobSize) {
+		this.blobSize = blobSize;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	} 
     
 }

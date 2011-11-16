@@ -52,9 +52,16 @@ public class CommandTestCase2 {
     }
 
     protected <T extends CommandResult> T execute(Command<T> command) throws CommandException {
-        User user = users.findById(AuthenticationModuleStub.currentUser.getUserId());
-        assert user != null;
-
+   
+    	User user = null;
+    	if(AuthenticationModuleStub.currentUser.getUserId()== 0){
+    		user = new User(AuthenticationModuleStub.currentUser);
+    	}else{
+    		user = users.findById(AuthenticationModuleStub.currentUser.getUserId());
+            
+    	}
+    	
+    	assert user != null;
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
         

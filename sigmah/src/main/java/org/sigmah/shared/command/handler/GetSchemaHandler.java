@@ -8,6 +8,7 @@ import java.util.Map;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.AnonymousUser;
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.CountryDTO;
@@ -149,7 +150,7 @@ public class GetSchemaHandler implements
 										.equalTo(context.getUser().getId()), "p")
 					.on("p.DatabaseId = d.DatabaseId").leftJoin("UserLogin o")
 					.on("d.OwnerUserId = o.UserId").where("d.DateDeleted")
-					.isNull().whereTrue("(o.userId = ? or p.AllowView = 1)")
+					.isNull().whereTrue("(o.userId = ? or p.AllowView = 1 or (d.DatabaseId in (select pa.DatabaseId from activity pa where pa.published>0)))")
 					.appendParameter(context.getUser().getId())
 					.orderBy("d.Name");
 
@@ -169,21 +170,39 @@ public class GetSchemaHandler implements
 						db.setOwnerName(row.getString("OwnerName"));
 						db.setOwnerEmail(row.getString("OwnerEmail"));
 
-						db.setViewAllAllowed(db.getAmOwner()
-								|| row.getBoolean("allowViewAll"));
-						db.setEditAllowed(db.getAmOwner()
-								|| row.getBoolean("allowEdit"));
-						db.setEditAllAllowed(db.getAmOwner()
-								|| row.getBoolean("allowEditAll"));
-						db.setManageUsersAllowed(db.getAmOwner()
-								|| row.getBoolean("allowManageUsers"));
-						db.setManageAllUsersAllowed(db.getAmOwner()
-								|| row.getBoolean("allowManageAllUsers"));
-						db.setDesignAllowed(db.getAmOwner()
-								|| row.getBoolean("allowDesign"));
-						
-						if(!db.getAmOwner()) {
-							db.setMyPartnerId(row.getInt("partnerId"));
+						if(context.getUser().getId() != AnonymousUser.USER_ID){
+							
+							db.setViewAllAllowed(db.getAmOwner()
+									|| row.getBoolean("allowViewAll"));
+							db.setEditAllowed(db.getAmOwner()
+									|| row.getBoolean("allowEdit"));
+							db.setEditAllAllowed(db.getAmOwner()
+									|| row.getBoolean("allowEditAll"));
+							db.setManageUsersAllowed(db.getAmOwner()
+									|| row.getBoolean("allowManageUsers"));
+							db.setManageAllUsersAllowed(db.getAmOwner()
+									|| row.getBoolean("allowManageAllUsers"));
+							db.setDesignAllowed(db.getAmOwner()
+									|| row.getBoolean("allowDesign"));
+							
+							if(!db.getAmOwner()) {
+								db.setMyPartnerId(row.getInt("partnerId"));
+							}
+						}else{
+							db.setViewAllAllowed(db.getAmOwner()
+									||false);
+							db.setEditAllowed(db.getAmOwner()
+									|| false);
+							db.setEditAllAllowed(db.getAmOwner()
+									||false);
+							db.setManageUsersAllowed(db.getAmOwner()
+									|| false);
+							db.setManageAllUsersAllowed(db.getAmOwner()
+									|| false);
+							db.setDesignAllowed(db.getAmOwner()
+									|| false);
+							
+
 						}
 
 						databaseMap.put(db.getId(), db);

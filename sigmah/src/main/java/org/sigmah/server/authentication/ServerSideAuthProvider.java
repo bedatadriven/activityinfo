@@ -3,8 +3,8 @@ package org.sigmah.server.authentication;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
 import org.sigmah.shared.auth.AuthenticatedUser;
+import org.sigmah.shared.dto.AnonymousUser;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -28,6 +28,12 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 		String authToken = authTokenFromCookie();
 		
 		if(authToken != null) {
+			
+			AuthenticatedUser au = AnonymousUser(authToken);
+			if(au!=null){
+				return au;
+			}
+			
 			return authFromToken(authToken);
 		}
 		
@@ -39,6 +45,15 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 				entityManager.get().find(org.sigmah.server.database.hibernate.entity.Authentication.class, authToken);
 		
 		return new AuthenticatedUser(entity.getUser().getId(), authToken, entity.getUser().getEmail());
+	}
+	
+	private AuthenticatedUser AnonymousUser(String authToken){
+		if (authToken.equals(AnonymousUser.AUTHTOKEN)) {
+			return new AuthenticatedUser(
+					AnonymousUser.USER_ID, AnonymousUser.AUTHTOKEN,
+					AnonymousUser.USER_EMAIL);
+		}
+		return null;
 	}
 
 	private String authTokenFromCookie() {
