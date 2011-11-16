@@ -3,10 +3,44 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-	<changeSet author="abid" id="001-05">
+	<changeSet author="abid" id="002-01">
 		<addColumn tableName="activity">
 			<column name="published" type="INT" />
 		</addColumn>
+	</changeSet>
+
+	<changeSet author="abid" id="002-02">
+		<createTable tableName="target">
+			<column autoIncrement="true" name="targetId" type="INT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="Name" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="Date1" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="Date2" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="ProjectId" type="INT" />
+			<column name="PartnerId" type="INT" />
+			<column name="AdminEntityId" type="INT" />
+
+		</createTable>
+
+		<createTable tableName="targetvalue">
+			<column name="TargetId" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="IndicatorId" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="Value" type="DOUBLE" />
+
+		</createTable>
+
 	</changeSet>
 
 </databaseChangeLog> 
