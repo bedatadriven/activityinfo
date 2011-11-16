@@ -39,6 +39,7 @@ public class ConfigModule extends AbstractModule {
         tryToLoadFrom(properties, legacyWebInfDirectory(context));
         tryToLoadFrom(properties, webInfDirectory(context));
         tryToLoadFrom(properties, userSettings());
+        tryToLoadFromS3(properties);
 
         return new DeploymentConfiguration(properties);
     }
