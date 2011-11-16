@@ -16,6 +16,7 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.AddTarget;
 import org.sigmah.shared.command.RemoveProject;
+import org.sigmah.shared.command.RemoveTarget;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.TargetDTO;
@@ -42,6 +43,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	@ImplementedBy(DbTargetGrid.class)
 	public interface View extends GridView<DbTargetEditor, TargetDTO> {
 		public void init(DbTargetEditor editor, UserDatabaseDTO db,	ListStore<TargetDTO> store);
+		public void createTargetValueContainer();
 		public FormDialogTether showAddDialog(TargetDTO target,FormDialogCallback callback);
 	}
 
@@ -59,8 +61,6 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 		this.service = service;
 		this.eventBus = eventBus;
 		this.view = view;
-		
-		GWT.log("target editor called.");
 	}
 
 	 public void go(UserDatabaseDTO db) {
@@ -73,18 +73,15 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 
 	        view.init(this, db, store);
 	        view.setActionEnabled(UIActions.delete, false);
+	        view.createTargetValueContainer();
 	    }
 	 
 	 
 	 @Override
 		protected void onDeleteConfirmed(final TargetDTO target) {
-	        service.execute(new RemoveProject(db.getId(), target.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+	        service.execute(new RemoveTarget(db.getId(), target.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
 	            public void onFailure(Throwable caught) {
-	                if (caught instanceof ProjectHasSitesException) { 
-	                    MessageBox.alert(I18N.CONSTANTS.removeItem(), I18N.MESSAGES.projectHasDataWarning(target.getName()), null);
-	                } else {
-	                	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
-	                }
+	                
 	            }
 
 	            public void onSuccess(VoidResult result) {

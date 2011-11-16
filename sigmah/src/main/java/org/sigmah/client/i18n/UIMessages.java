@@ -206,6 +206,11 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
   @Key("projectsForDatabase")
   String projectsForDatabase(String arg0);
 
+  @DefaultMessage("Targets for database {0}<<<<<<< HEAD")
+  @Key("targetsForDatabase")
+  String targetsForDatabase(String arg0);
+
+  
   /**
    * Translated "{0,number,integer}Q{1,number,integer}".
    * 

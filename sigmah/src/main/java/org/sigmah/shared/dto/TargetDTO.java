@@ -1,10 +1,14 @@
 package org.sigmah.shared.dto;
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.util.Format;
 
 public class TargetDTO extends BaseModelData implements DTO {
 
 	private UserDatabaseDTO userDatabase;
+
 	public final static String entityName = "Target";
 
 	public TargetDTO() {
@@ -48,6 +52,54 @@ public class TargetDTO extends BaseModelData implements DTO {
 
 	public UserDatabaseDTO getUserDatabase() {
 		return userDatabase;
+	}
+
+	public ProjectDTO getProject() {
+		return get("project");
+	}
+
+	public void setProject(ProjectDTO value) {
+		set("project", value);
+	}
+
+	public PartnerDTO getPartner() {
+		return get("partner");
+	}
+
+	public void setPartner(PartnerDTO value) {
+		set("partner", value);
+	}
+
+	public AdminEntityDTO getAdminEntity() {
+		return get("adminEntity");
+	}
+
+	public void setAdminEntity(AdminEntityDTO value) {
+		set("adminEntity", value);
+	}
+
+	public void setDate1(Date date1) {
+		set("date1", date1);
+	}
+
+	public Date getDate1() {
+		return (Date) get("date1");
+	}
+
+	public void setDate2(Date date2) {
+		set("date2", date2);
+	}
+
+	public Date getDate2() {
+		return (Date) get("date2");
+	}
+	
+	public void setArea(String area){
+		set("area", area);
+	}
+	
+	public String getArea(){
+		return get("area");
 	}
 
 	@Override

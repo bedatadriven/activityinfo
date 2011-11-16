@@ -6,6 +6,7 @@ import java.util.List;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.columns.TimePeriodColumn;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.dialog.FormDialogTether;
@@ -14,27 +15,31 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.config.form.TargetForm;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.inject.Inject;
 
-public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor>
-		implements DbTargetEditor.View {
+public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> implements DbTargetEditor.View {
 
 	private final UIConstants messages;
 	private final IconImageBundle icons;
 
 	private Grid<TargetDTO> grid;
 
+	protected ContentPanel targetValueContainer;
+
 	@Inject
 	public DbTargetGrid(UIConstants messages, IconImageBundle icons) {
 		this.messages = messages;
-		this.icons = icons;
+		this.icons = icons;		
 	}
 
 	@Override
@@ -43,8 +48,8 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor>
 		grid.setAutoExpandColumn("name");
 		grid.setLoadMask(true);
 
-		setLayout(new FitLayout());
-		add(grid);
+		setLayout(new BorderLayout());
+		add(grid, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
 		return grid;
 	}
@@ -56,8 +61,8 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor>
 		columns.add(new ColumnConfig("project", messages.project(), 150));
 		columns.add(new ColumnConfig("partner", messages.partner(), 150));
 		columns.add(new ColumnConfig("area", messages.area(), 150));
-		columns.add(new ColumnConfig("timeperiod", messages.timePeriod(), 300));
-
+		columns.add(new TimePeriodColumn("timePeriod", messages.timePeriod(), 300));
+		
 		return new ColumnModel(columns);
 	}
 
@@ -65,21 +70,21 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor>
 	protected void initToolBar() {
 		toolBar.addButton(UIActions.add, I18N.CONSTANTS.add(), icons.add());
 		toolBar.addButton(UIActions.delete, messages.delete(), icons.delete());
+		toolBar.addButton(UIActions.edit, messages.edit(), icons.edit());
 	}
 
 	@Override
-	public void init(DbTargetEditor editor, UserDatabaseDTO db,
-			ListStore<TargetDTO> store) {
+	public void init(DbTargetEditor editor, UserDatabaseDTO db,	ListStore<TargetDTO> store) {
 		super.init(editor, store);
-		this.setHeading(I18N.MESSAGES.projectsForDatabase(db.getName()));
+		this.setHeading(I18N.MESSAGES.targetsForDatabase(db.getName()));
 	}
 
 	@Override
-	public FormDialogTether showAddDialog(TargetDTO target,FormDialogCallback callback) {
+	public FormDialogTether showAddDialog(TargetDTO target,	FormDialogCallback callback) {
 
 		TargetForm form = new TargetForm();
 		form.getBinding().bind(target);
-		
+
 		FormDialogImpl<TargetForm> dlg = new FormDialogImpl<TargetForm>(form);
 		dlg.setWidth(450);
 		dlg.setHeight(300);
@@ -89,4 +94,21 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor>
 
 		return dlg;
 	}
+
+	@Override
+	public void createTargetValueContainer() {
+		targetValueContainer = new ContentPanel();
+		targetValueContainer.setHeaderVisible(false);
+		targetValueContainer.setBorders(false);
+		targetValueContainer.setFrame(false);
+
+		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
+		layout.setSplit(true);
+		layout.setCollapsible(true);
+		layout.setSize(250);
+		layout.setMargins(new Margins(5, 0, 0, 0));
+		
+		add(targetValueContainer, layout);
+	}
+
 }
