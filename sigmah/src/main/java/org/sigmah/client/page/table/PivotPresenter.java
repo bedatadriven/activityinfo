@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -165,7 +166,10 @@ public class PivotPresenter implements Page {
         } else if (UIActions.export.equals(itemId)) {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
                     new DownloadCallback(eventBus, "pivotTable"));
+        } else if (UIActions.subscribe.equals(itemId)) {
+        	Window.alert("hello alert!");
         }
+        
     }
 
 
