@@ -1,7 +1,5 @@
 package org.sigmah.client.page.entry;
 
-import java.util.UUID;
-
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -12,6 +10,7 @@ import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.util.UUID;
 import org.sigmah.shared.command.DeleteSiteAttachment;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.SiteDTO;
@@ -94,7 +93,7 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 
 		HiddenField<String> blobField = new HiddenField<String>();
 		blobField.setName("blobId");
-		blobid = UUID.randomUUID().toString();
+		blobid = UUID.uuid();
 		blobField.setValue(blobid);
 		form.add(blobField);
 
