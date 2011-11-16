@@ -27,6 +27,9 @@
 			<column name="ProjectId" type="INT" />
 			<column name="PartnerId" type="INT" />
 			<column name="AdminEntityId" type="INT" />
+			<column name="DatabaseId" type="INT">
+				<constraints nullable="false" />	
+			</column>
 
 		</createTable>
 

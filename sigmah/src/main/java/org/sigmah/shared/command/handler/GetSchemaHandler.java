@@ -1,5 +1,6 @@
 package org.sigmah.shared.command.handler;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
@@ -33,8 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GetSchemaHandler implements
 		CommandHandlerAsync<GetSchema, SchemaDTO> {
-
-
+	
 	@Override
 	public void execute(GetSchema command, ExecutionContext context,
 			AsyncCallback<SchemaDTO> callback) {
@@ -53,6 +54,7 @@ public class GetSchemaHandler implements
 		private final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
 		private final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
 		private final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
+		private final Map<Integer, TargetDTO> targets= new HashMap<Integer, TargetDTO>();
 
 		private SqlTransaction tx;
 		private ExecutionContext context;
@@ -219,6 +221,7 @@ public class GetSchemaHandler implements
 						loadAttributes();
 						joinAttributesToActivities();
 						loadLockedPeriods();
+						loadTargets();
 					}
 
 				}
@@ -250,7 +253,7 @@ public class GetSchemaHandler implements
 						}
 					});
 		}
-
+		
 		protected void loadLockedPeriods() {
 			// TODO(ruud): load only what is visible to user 
 			SqlQuery.select("fromDate", "toDate", "enabled", "name",
@@ -307,7 +310,36 @@ public class GetSchemaHandler implements
 				}
 			});
 		}
-
+	
+		protected void loadTargets() {
+			SqlQuery.select("t.name","t.targetId", "t.Date1","t.Date2", "t.ProjectId", "t.PartnerId", "t.AdminEntityId", "t.DatabaseId").appendColumn("a.name", "area")
+					.from("Target", "t").leftJoin("adminentity", "a").on("t.AdminEntityId = a.AdminEntityId")
+					.where("t.DatabaseId").in(databaseMap.keySet())
+					.execute(tx, new SqlResultCallback() {
+						@Override
+						public void onSuccess(SqlTransaction tx,
+								SqlResultSet results) {
+							
+							for (SqlResultSetRow row : results.getRows()) {
+								TargetDTO target = new TargetDTO();
+								target.setName(row.getString("name"));
+								target.setId(row.getInt("targetId"));
+								target.setDate1(row.getDate("Date1"));
+								target.setDate2(row.getDate("Date2"));
+								target.setPartner(partners.get(row.get("PartnerId")));
+								target.setProject(projects.get(row.get("ProjectId")));
+								target.setArea(row.getString("area"));
+								int databaseId = row.getInt("DatabaseId");
+								UserDatabaseDTO database = databaseMap.get(databaseId);
+								database.getTargets().add(target);
+								target.setUserDatabase(database);
+								
+								targets.put(target.getId(), target);
+							}
+						}
+					});
+		}
+		
 		private void joinPartnersToDatabases() {
 			SqlQuery query = SqlQuery
 					.select("d.databaseId", "d.partnerId", "p.name", "p.fullName")

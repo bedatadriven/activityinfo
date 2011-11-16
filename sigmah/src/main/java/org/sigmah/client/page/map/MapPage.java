@@ -16,6 +16,9 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.common.SubscribeForm;
+import org.sigmah.client.page.common.dialog.FormDialogCallback;
+import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
@@ -142,7 +145,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
         toolbarMapActions.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
         toolbarMapActions.setActionEnabled(UIActions.exportData, false);
-        
+        toolbarMapActions.addButton(UIActions.subscribe, I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.report());
         AbsoluteData layout = new AbsoluteData();
         layout.setLeft(0);
         layout.setTop(0);
@@ -176,6 +179,20 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 	public void onUIAction(String actionId) {
 		if (actionId.equals(UIActions.exportData)) {
 			export(Format.Excel_Data);
+		} else if (actionId.equals(UIActions.subscribe)) {
+			SubscribeForm form = new SubscribeForm();
+			
+			FormDialogImpl dialog = new FormDialogImpl(form);
+			dialog.setWidth(400);
+			dialog.setHeight(400);
+			dialog.setHeading(I18N.CONSTANTS.SubscribeTitle());
+			
+			dialog.show(new FormDialogCallback() {
+				@Override
+				public void onValidated() {
+		
+				}
+			});
 		}
 	}
 
