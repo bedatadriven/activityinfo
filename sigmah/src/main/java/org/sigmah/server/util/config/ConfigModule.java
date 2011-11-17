@@ -101,6 +101,7 @@ public class ConfigModule extends AbstractModule {
         AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey));
         try {
             properties.load(client.getObject(bucket, key).getObjectContent());
+            logger.info("Loaded configuration from S3 " + bucket + "/" + key);
         } catch (IOException e) {
             logger.error("Exception reading configuration from S3: " + e.getMessage(), e);
         }
