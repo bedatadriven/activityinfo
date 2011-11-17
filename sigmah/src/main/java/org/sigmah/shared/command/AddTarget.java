@@ -29,4 +29,11 @@ public class AddTarget implements Command<CreateResult> {
 		this.databaseId = databaseId;
 	}
 
+	public TargetDTO getTargetDTO() {
+		return targetDTO;
+	}
+
+	public void setTargetDTO(TargetDTO targetDTO) {
+		this.targetDTO = targetDTO;
+	}
 }

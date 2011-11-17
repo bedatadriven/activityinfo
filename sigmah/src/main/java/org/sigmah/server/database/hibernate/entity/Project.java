@@ -25,6 +25,7 @@ public class Project implements Serializable {
 	private Date dateDeleted;
 	private UserDatabase userDatabase;
     private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>();
+    private Set<Target> targets = new HashSet<Target>(0);
 
 	public Project() {
 		super();
@@ -93,4 +94,12 @@ public class Project implements Serializable {
 		return lockedPeriods;
 	}
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
+    public Set<Target> getTargets() {
+        return this.targets;
+    }
+
+    public void setTargets(Set<Target> targets) {
+        this.targets = targets;
+    }
 }
