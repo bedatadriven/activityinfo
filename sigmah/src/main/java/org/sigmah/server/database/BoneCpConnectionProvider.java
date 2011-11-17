@@ -11,6 +11,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.log4j.Logger;
 import org.sigmah.server.util.config.DeploymentConfiguration;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -48,6 +49,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 	public void maybeMigrateSchema(DeploymentConfiguration config) {
 		if("enabled".equals(config.getProperty(SCHEMA_MIGRATION)) ||
 	       "update".equals(config.getProperty("hibernate.hbm2ddl.auto"))) {
+			Log.info("Schema migration starting...");
 			Connection connection=null;
 			try {		
 				try {
@@ -59,6 +61,8 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 						new ClassLoaderResourceAccessor(), new JdbcConnection(connection));
 				
 				liquibase.update(null);
+				Log.info("Schema migration complete.");
+
 			} catch (LiquibaseException e) {
 				logger.error("Liquibase schema migration failed", e);
 			} finally {
@@ -69,6 +73,8 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 					}
 				}
 			}
+		} else{ 
+			Log.info("Schema migration disabled");
 		}
 	}	
 	
