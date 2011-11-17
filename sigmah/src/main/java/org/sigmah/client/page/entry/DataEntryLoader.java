@@ -5,15 +5,12 @@
 
 package org.sigmah.client.page.entry;
 
-import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
-import org.sigmah.client.page.common.filter.FilterPanel;
 import org.sigmah.client.page.entry.place.DataEntryPlaceParser;
 
 import com.google.gwt.core.client.GWT;
@@ -23,26 +20,18 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 public class DataEntryLoader implements PageLoader {
-    private final AppInjector injector;
     private final Provider<DataEntryPage> dataEntryPageProvider;
-    private FilterPanel filterPanelSet = null;
     
     @Inject
-    public DataEntryLoader(AppInjector injector, 
+    public DataEntryLoader(
     		NavigationHandler pageManager, 
     		PageStateSerializer placeSerializer,
     		Provider<DataEntryPage> dataEntryPageProvider) {
     	
-        this.injector = injector;
         this.dataEntryPageProvider = dataEntryPageProvider;
-
-        pageManager.registerPageLoader(Frames.DataEntryFrameSet, this);
         
-        pageManager.registerPageLoader(DataEntryPage.PAGE_ID, this);
-        pageManager.registerPageLoader(SiteTreeGridPageState.SITE_TREE_VIEW, this);
-        
+        pageManager.registerPageLoader(DataEntryPage.PAGE_ID, this);       
         placeSerializer.registerParser(DataEntryPage.PAGE_ID, new DataEntryPlaceParser());
-//        placeSerializer.registerParser(SiteTreeGridPageState.SITE_TREE_VIEW, new SiteTreeGridPageState.Parser());
     }
 
     @Override
@@ -50,19 +39,9 @@ public class DataEntryLoader implements PageLoader {
         GWT.runAsync(new RunAsyncCallback() {
             @Override
             public void onSuccess() {
-                if (Frames.DataEntryFrameSet.equals(pageId)) {
-                    loadFrame(pageState, callback);
-                    
-                } else if  (SiteTreeGridPageState.SITE_TREE_VIEW.equals(pageId) || pageId.equals(DataEntryPage.PAGE_ID)) {
-                    DataEntryPage dataEntryPage = dataEntryPageProvider.get();
-                    dataEntryPage.navigate(pageState);
-					callback.onSuccess(dataEntryPage);
-                    
-//                } else if (SiteFormPage.EDIT_PAGE_ID.equals(pageId) || SiteFormPage.NEW_PAGE_ID.equals(pageId)) {
-//                	SiteFormPage siteFormPage = siteFormProvider.get();
-//                	siteFormPage.navigate(pageState);
-//                	callback.onSuccess(siteFormPage);
-                }
+                DataEntryPage dataEntryPage = dataEntryPageProvider.get();
+                dataEntryPage.navigate(pageState);
+				callback.onSuccess(dataEntryPage);
             }
 
             @Override
@@ -70,10 +49,6 @@ public class DataEntryLoader implements PageLoader {
                 callback.onFailure(throwable);
             }
         });
-    }
-
-    private void loadFrame(PageState place, AsyncCallback<Page> callback) {
-  
     }
 
     protected void loadSiteGrid(final PageState place, final AsyncCallback<Page> callback) {

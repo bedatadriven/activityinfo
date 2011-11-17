@@ -88,6 +88,16 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
 		
 	}
 	
+	public boolean validate() {
+		boolean valid = true;
+		for(AdminComboBox comboBox : comboBoxes.values()) {
+			if(!comboBox.validate()) {
+				valid = false;
+			}
+		}
+		return valid;
+	}
+	
 	@Override
 	public final Iterator<AdminComboBox> iterator() {
 		return comboBoxes.values().iterator();

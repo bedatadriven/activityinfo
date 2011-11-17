@@ -1,7 +1,5 @@
 package org.sigmah.client.page.entry.admin;
 
-import java.awt.Event;
-
 import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
@@ -13,6 +11,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 
 public class AdminComboBox extends ComboBox<AdminEntityDTO> {
 
@@ -39,7 +38,7 @@ public class AdminComboBox extends ComboBox<AdminEntityDTO> {
 		clearSpan = new El(DOM.createSpan());
 		clearSpan.setInnerHtml("clear");
 		clearSpan.addStyleName(SiteFormResources.INSTANCE.style().adminClearSpan());
-		clearSpan.addEventsSunk(Event.MOUSE_DOWN);
+		clearSpan.addEventsSunk(Event.MOUSEEVENTS);
 		clearSpan.setVisibilityMode(VisMode.VISIBILITY);
 		clearSpan.setVisible(false);
 		

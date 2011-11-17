@@ -1,22 +1,14 @@
 package org.sigmah.client.page.entry.form;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.Component;
 
-public class FormSection extends LayoutContainer {
+public interface FormSection<Model> {
 
-	private final FormLayout layout;
-
-	public FormSection() {
-		layout = new FormLayout();
-		setLayout(layout);
-		setScrollMode(Scroll.AUTOY);
-		setStyleAttribute("padding", "10px");
-	}
+	boolean validate();
 	
-	protected final FormLayout getFormLayout() {
-		return layout;
-	}
+	void updateModel(Model m);
 	
+	void updateForm(Model m);
+	
+	Component asComponent();
 }

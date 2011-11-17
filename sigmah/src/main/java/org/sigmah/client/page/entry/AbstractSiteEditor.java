@@ -10,9 +10,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.loader.CommandLoadEvent;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
 import org.sigmah.client.event.DownloadRequestEvent;
-import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.event.SiteEvent;
-import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.client.page.common.filter.FilterPanel;
@@ -20,7 +18,6 @@ import org.sigmah.client.page.common.filter.NullFilterPanel;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridView.SiteGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.SiteTreeGridPageState.TreeType;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
@@ -242,23 +239,7 @@ public abstract class AbstractSiteEditor extends AbstractEditorGridPresenter<Sit
         super.onUIAction(actionId);
         if (UIActions.export.equals(actionId)) {
             onExport();
-        } else if (UIActions.showLockedPeriods.equals(actionId)) {
-        	view.showLockedPeriods(getLockedPeriods());
-        } else if (UIActions.treeTime.equals(actionId)) {
-        	eventBus.fireEvent(new NavigationEvent(
-        			NavigationHandler.NavigationRequested, 
-        			new SiteTreeGridPageState().setActivityId(currentActivity.getId())));
-        } else if (UIActions.treeGeo.equals(actionId)) {
-        	eventBus.fireEvent(new NavigationEvent(
-        			NavigationHandler.NavigationRequested, 
-        			new SiteTreeGridPageState()
-        				.setActivityId(currentActivity.getId())
-        				.setTreeType(TreeType.GEO)));
-        } else if (UIActions.list.equals(actionId)) {
-        	eventBus.fireEvent(new NavigationEvent(
-        			NavigationHandler.NavigationRequested, 
-        			new DataEntryPlace(currentActivity)));
-        }
+        } 
     }
 
     protected List<LockedPeriodDTO> getLockedPeriods() {

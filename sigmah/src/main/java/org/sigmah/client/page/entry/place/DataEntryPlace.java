@@ -12,7 +12,6 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 import org.sigmah.client.page.entry.DataEntryPage;
-import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
 import org.sigmah.client.page.entry.grouping.GroupingModel;
 import org.sigmah.client.page.entry.grouping.NullGroupingModel;
 import org.sigmah.shared.command.Filter;
@@ -34,7 +33,13 @@ public class DataEntryPlace extends AbstractPagingGridPageState {
         this.filter = filter;
     }
    
-    public DataEntryPlace(ActivityDTO activity) {
+    public DataEntryPlace(GroupingModel grouping, Filter filter) {
+		super();
+		this.filter = filter;
+		this.grouping = grouping;
+	}
+
+	public DataEntryPlace(ActivityDTO activity) {
     	filter = new Filter();
     	filter.addRestriction(DimensionType.Activity, activity.getId());
     }
@@ -58,8 +63,9 @@ public class DataEntryPlace extends AbstractPagingGridPageState {
     	return grouping;
     }
     
-	public void setGrouping(AdminGroupingModel grouping) {
+	public DataEntryPlace setGrouping(GroupingModel grouping) {
 		this.grouping = grouping;
+		return this;
 	}
     
     @Override
@@ -77,11 +83,14 @@ public class DataEntryPlace extends AbstractPagingGridPageState {
 		return Arrays.asList(DataEntryPage.PAGE_ID);
 	}
 
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
+		result = prime * result
+				+ ((grouping == null) ? 0 : grouping.hashCode());
 		return result;
 	}
 
@@ -97,10 +106,30 @@ public class DataEntryPlace extends AbstractPagingGridPageState {
 			return false;
 		}
 		DataEntryPlace other = (DataEntryPlace) obj;
-		if (!filter.equals(other.filter)) {
+		if (filter == null) {
+			if (other.filter != null) {
+				return false;
+			}
+		} else if (!filter.equals(other.filter)) {
+			return false;
+		}
+		if (grouping == null) {
+			if (other.grouping != null) {
+				return false;
+			}
+		} else if (!grouping.equals(other.grouping)) {
 			return false;
 		}
 		return true;
+	}
+
+	public DataEntryPlace copy() {
+		return new DataEntryPlace(grouping, new Filter(filter));
+	}
+
+	public DataEntryPlace setFilter(Filter filter) {
+		this.filter = filter;
+		return this;
 	}
 
 }

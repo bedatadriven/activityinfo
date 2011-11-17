@@ -60,7 +60,14 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 		}
 		
 		if (cmd.getFilter() != null && cmd.getFilter().isRestricted(DimensionType.AdminLevel)) {
-			query.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+			if(cmd.getLevelId() == null) {
+				query.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+			} else {
+				SqlQuery subQuery = SqlQuery.select("adminEntityId").from("AdminEntity")
+					.where("AdminLevelId").equalTo(cmd.getLevelId())
+					.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+				query.where("AdminEntity.AdminEntityId").in(subQuery);
+			}
 		}
 		query.execute(context.getTransaction(), new SqlResultCallback() {
 

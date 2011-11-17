@@ -26,7 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Loads sites grouped by a set of AdminLevels
  */
-public class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> {
+class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> {
 
 	private TreeProxy treeProxy;
 	

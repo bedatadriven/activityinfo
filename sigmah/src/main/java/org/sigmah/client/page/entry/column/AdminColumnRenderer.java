@@ -28,7 +28,7 @@ public class AdminColumnRenderer implements GridCellRenderer<SiteDTO> {
 	
 	public AdminColumnRenderer(List<AdminLevelDTO> levels) {
 		super();
-		this.levels =  AdminLevelPredicates.breadthFirstSort(levels);
+		this.levels = AdminLevelPredicates.breadthFirstSort(levels);
 	}
 
 	@Override

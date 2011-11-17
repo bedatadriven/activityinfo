@@ -65,7 +65,4 @@ public class FormNavigationListView extends ListView<FormSectionModel> {
 			}
 		}
 	}
-	
-
-	
 }

@@ -9,56 +9,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.grid.AbstractEditorGridView;
-import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.command.Month;
-import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorRowDTO;
 
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.util.DateWrapper;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 
-public class MonthlyGrid 
-	extends 
-		AbstractEditorGridView<IndicatorRowDTO, MonthlyPresenter>
-	implements 
-		MonthlyPresenter.View {
+/**
+ * Grid for use in the MonthlyTab
+ */
+class MonthlyGrid extends EditorGrid<IndicatorRowDTO> {
 
-    private MonthlyPresenter presenter;
-    private EditorGrid<IndicatorRowDTO> grid;
-    private ActivityDTO activity;
+	private static final int MONTHS_TO_SHOW = 7;
 
-    public MonthlyGrid(ActivityDTO activity) {
-        this.activity = activity;
-        
-        initializeComponent();
-    }
+	private static final int ROW_HEADER_WIDTH = 150;
+	private static final int MONTH_COLUMN_WIDTH = 75;
 
-	private void initializeComponent() {
-		this.setHeading(I18N.CONSTANTS.monthlyReports());
-        this.setLayout(new FitLayout());
-        this.setBorders(false);
-        this.setFrame(false);
-	}
+    public MonthlyGrid(ListStore<IndicatorRowDTO> store) {
+        super(store, createColumnModel());
 
-    public void init(MonthlyPresenter presenter, ListStore<IndicatorRowDTO> store) {
-        super.init(presenter, store);
-        this.presenter = presenter;
+        setAutoExpandColumn("indicatorName");
+        setLoadMask(true);
     }
 
     @Override
@@ -66,45 +45,37 @@ public class MonthlyGrid
         super.onRender(parent, pos);
     }
 
-    @Override
-    protected Grid<IndicatorRowDTO> createGridAndAddToContainer(Store store) {
-        grid = new EditorGrid<IndicatorRowDTO>((ListStore)store, createColumnModel());
-        grid.setAutoExpandColumn("indicatorName");
-        grid.setLoadMask(true);
-
-        add(grid);
-
-        return grid;
-    }
-
-    public void setStartMonth(Month startMonth) {
+    /**
+     * Updates the month headers based on the given start month
+     */
+    public void updateMonthColumns(Month startMonth) {
         DateTimeFormat monthFormat = DateTimeFormat.getFormat("MMM yy");
 
         Month month = startMonth;
-        for(int i=0; i!=7; ++i) {
+        for(int i=0; i!=MONTHS_TO_SHOW; ++i) {
             DateWrapper date = new DateWrapper(month.getYear(), month.getMonth()-1, 1);
         
-            grid.getColumnModel().setColumnHeader(i+1, monthFormat.format(date.asDate()));
-            grid.getColumnModel().setDataIndex(i+1, IndicatorRowDTO.propertyName(month));
+            getColumnModel().setColumnHeader(i+1, monthFormat.format(date.asDate()));
+            getColumnModel().setDataIndex(i+1, IndicatorRowDTO.propertyName(month));
             month = month.next();
         }
     }
 
-    public ColumnModel createColumnModel() {
+    private static ColumnModel createColumnModel() {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig indicator = new ColumnConfig("indicatorName", I18N.CONSTANTS.indicators(), 150);
+        ColumnConfig indicator = new ColumnConfig("indicatorName", I18N.CONSTANTS.indicators(), ROW_HEADER_WIDTH);
         indicator.setSortable(false);
         indicator.setMenuDisabled(true);
         columns.add(indicator);
 
         NumberFormat indicatorFormat = NumberFormat.getFormat("0");
 
-        for(int i = 0; i!=7; ++i) {
+        for(int i = 0; i!=MONTHS_TO_SHOW; ++i) {
             NumberField indicatorField = new NumberField();
             indicatorField.getPropertyEditor().setFormat(indicatorFormat);
 
-            ColumnConfig valueColumn = new ColumnConfig("month" + i, "", 75);
+            ColumnConfig valueColumn = new ColumnConfig("month" + i, "", MONTH_COLUMN_WIDTH);
             valueColumn.setNumberFormat(indicatorFormat);
             valueColumn.setEditor(new CellEditor(indicatorField));
             valueColumn.setSortable(false);
@@ -114,34 +85,5 @@ public class MonthlyGrid
         }
 
         return new ColumnModel(columns);
-    }
-
-    @Override
-    protected void initToolBar() {
-        toolBar.addSaveSplitButton();
-        toolBar.add(new LabelToolItem(I18N.CONSTANTS.month() + ": "));
-
-        final MappingComboBox<Month> monthCombo = new MappingComboBox<Month>();
-        monthCombo.setEditable(false);
-        monthCombo.addListener(Events.Select, new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent be) {
-                presenter.onMonthSelected(monthCombo.getMappedValue());
-            }
-        });
-           
-        DateWrapper today = new DateWrapper();
-        DateTimeFormat monthFormat = DateTimeFormat.getFormat("MMM yyyy");
-        for(int year = today.getFullYear(); year != today.getFullYear()-3; --year) {
-
-            for(int month = 12; month != 0; --month) {
-
-                DateWrapper d= new DateWrapper(year, month, 1);
-
-                Month m = new Month(year, month);
-                monthCombo.add(m, monthFormat.format(d.asDate()));
-            }
-        }
-
-        toolBar.add(monthCombo);
     }
 }

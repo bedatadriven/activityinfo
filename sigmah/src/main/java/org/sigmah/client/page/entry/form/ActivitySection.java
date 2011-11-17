@@ -17,9 +17,11 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 
 
-public class ActivitySection extends FormSection {
+public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
     private DateField dateField1;
     private DateField dateField2;
+	private PartnerComboBox partnerCombo;
+	private ProjectComboBox projectCombo;
 
     public ActivitySection(final ActivityDTO activity) {
     	super();
@@ -38,8 +40,13 @@ public class ActivitySection extends FormSection {
 		activityField.setReadOnly(true);
 		add(activityField);
 
-		PartnerComboBox partnerCombo = new PartnerComboBox(activity);
+		partnerCombo = new PartnerComboBox(activity);
 		add(partnerCombo);
+				
+		projectCombo = new ProjectComboBox(activity);
+		if (!activity.getDatabase().getProjects().isEmpty()) {
+			add(projectCombo);
+		} 
 
 		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
 			
@@ -71,11 +78,32 @@ public class ActivitySection extends FormSection {
 			add(dateField2);
 
 		}
-		
-		if (!activity.getDatabase().getProjects().isEmpty()) {
-			ProjectComboBox comboboxProjects = new ProjectComboBox(activity);
-			add(comboboxProjects);
-		} 
     }
+
+	@Override
+	public boolean validate() {
+		boolean valid = true;
+		valid &= dateField1.validate();
+		valid &= dateField2.validate();
+		valid &= partnerCombo.validate();
+		valid &= projectCombo.validate();
+		return valid;
+	}
+
+	@Override
+	public void updateModel(SiteDTO m) {
+		m.setDate1(dateField1.getValue());
+		m.setDate2(dateField2.getValue());
+		m.setPartner(partnerCombo.getValue());
+		m.setProject(projectCombo.getValue());
+	}
+
+	@Override
+	public void updateForm(SiteDTO m) {
+		dateField1.setValue(m.getDate1().atMidnightInMyTimezone());
+		dateField2.setValue(m.getDate2().atMidnightInMyTimezone());
+		partnerCombo.setValue(m.getPartner());
+		projectCombo.setValue(m.getProject());
+	}
 
 }

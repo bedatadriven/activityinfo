@@ -47,7 +47,8 @@ public class CollapsibleTabPanel extends TabPanel {
 		if(super.add(tab)) {
 	
 	        tab.getHeader().addListener(Events.BrowserEvent, new Listener<ComponentEvent>() {
-	            public void handleEvent(ComponentEvent be) {
+	            @Override
+				public void handleEvent(ComponentEvent be) {
 	                if(be.getEventTypeInt() == Event.ONCLICK) {
 	                    onTabClicked((TabItem.HeaderItem) be.getComponent());
 	                }
@@ -68,10 +69,8 @@ public class CollapsibleTabPanel extends TabPanel {
                 // expand tab panel to previous size
                 expandTabs();
             }
-            getLayout().layout();
         } else if(tabPanelCollapsed) {
             expandTabs();
-            getParentLayout().layout();
         }
     }
 
@@ -82,6 +81,7 @@ public class CollapsibleTabPanel extends TabPanel {
         getBody().setVisible(false);
         layoutData.setSplit(false);
         tabPanelCollapsed = true;
+        getParentLayout().layout();
     }
 
     private void expandTabs() {
@@ -90,6 +90,7 @@ public class CollapsibleTabPanel extends TabPanel {
         layoutData.setMargins(new Margins(5, 0, 0, 0));
         layoutData.setSplit(true);
         tabPanelCollapsed = false;
+        getParentLayout().layout();
     }
     
     

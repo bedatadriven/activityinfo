@@ -4,12 +4,17 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.widget.CoordinateFields;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.LocationDTO;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 
-public class LocationSection extends FormSection {
+public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implements LocationFormSection {
 
+	private boolean isNew;
+	private LocationDTO locationDTO;
+	
 	public LocationSection(ActivityDTO activity) {
 		
 		for(AdminLevelDTO level : activity.getDatabase().getCountry().getAdminLevels()) {
@@ -30,8 +35,37 @@ public class LocationSection extends FormSection {
 		add(coordinateFields.getLatitudeField());
 		add(coordinateFields.getLongitudeField());
 		
-		Button changeLocation = new Button("Change Location");
+		Button changeLocation = new Button(I18N.CONSTANTS.changeLocation());
 		add(changeLocation);
+		
+	}
+
+	@Override
+	public boolean validate() {
+		return true;
+	}
+
+	@Override
+	public void updateModel(SiteDTO m) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isNew() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public LocationDTO getLocation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateForm(SiteDTO m) {
+		// TODO Auto-generated method stub
 		
 	}
 	

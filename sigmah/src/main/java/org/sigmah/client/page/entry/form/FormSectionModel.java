@@ -3,29 +3,35 @@ package org.sigmah.client.page.entry.form;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.widget.Component;
 
-public class FormSectionModel extends BaseModelData {
+public class FormSectionModel<M> extends BaseModelData {
 
-	private Component component;
+	private FormSection<M> section;
 	
 	public FormSectionModel() {
 	}
 	
-	public FormSectionModel forComponent(Component component) {
-		this.component = component;
-		return this;
+	public static <M> FormSectionModel<M> forComponent(FormSection<M> section) {
+		FormSectionModel<M> model = new FormSectionModel<M>();
+		model.section = section;
+		return model;
 	}
 	
-	public FormSectionModel withHeader(String header) {
+	public FormSectionModel<M> withHeader(String header) {
 		set("header", header);
 		return this;
 	}
 	
-	public FormSectionModel withDescription(String description) {
+	public FormSectionModel<M>  withDescription(String description) {
 		set("description", description);
 		return this;
 	}
 	
 	public Component getComponent() {
-		return component;
+		return section.asComponent();
 	}
+	
+	public FormSection<M> getSection() {
+		return section;
+	}
+	
 }

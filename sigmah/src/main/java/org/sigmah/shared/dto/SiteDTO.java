@@ -25,7 +25,7 @@ import com.google.common.collect.Maps;
  *
  * @author Alex Bertram
  */
-public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
+public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
 
 	
     public static final String ENTITY_NAME = "Site";
@@ -71,6 +71,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityV
      *
      * @return this site's id
      */
+	@Override
 	public int getId() {
 		return (Integer)get("id");
 	}
@@ -433,14 +434,10 @@ public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityV
 	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, LocalDate date) {
 		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
 			// For reporting purposes, only the Date2 is 'counted'.  
-			if (date != null)
-			{
-				if (lockedPeriod.fallsWithinPeriod(date)) {
-					return true;
-				}
+			if (date != null && lockedPeriod.fallsWithinPeriod(date)) {
+				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -561,7 +558,4 @@ public class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityV
 		}
 		return map;
 	}
-
-
-
 }

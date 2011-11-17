@@ -26,42 +26,14 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.common.collect.Lists;
 import com.google.gwt.i18n.client.NumberFormat;
 
+/**
+ * Builder class for constructing a ColumnModel for site grids
+ * 
+ */
 public class ColumnModelBuilder {
 
-	List<ColumnConfig> columns = Lists.newArrayList();	
-	
-    public static ColumnModel buildForActivity(ActivityDTO activity) {
-    	
-    	return new ColumnModelBuilder()
-    		.addMapColumn()
-    		.maybeAddLockColumn(activity)
-    		.maybeAddDateColumn(activity)
-    		.maybeAddPartnerColumn(activity.getDatabase())
-    		.maybeAddProjectColumn(activity.getDatabase())
-    		.addAdminLevelColumns(activity)
-    		.maybeAddLocationColumns(activity)
-    		.build();
-     }
-    
-    public static ColumnModel buildForDatabase(UserDatabaseDTO database) {
-    	return new ColumnModelBuilder()
-    		.addMapColumn()
-    		.addActivityColumn(database)
-    		.addLocationColumn()
-    		.maybeAddPartnerColumn(database)
-    		.maybeAddProjectColumn(database)
-    		.addAdminLevelColumns(database)
-    		.build();
-    }
-    
-	public static ColumnModel buildForAll(SchemaDTO schema) {
-		return new ColumnModelBuilder()
-			.addMapColumn()
-			.addActivityColumn(schema)
-			.addLocationColumn()
-			.build();
-	}
-    
+	private List<ColumnConfig> columns = Lists.newArrayList();
+   
     public ColumnModelBuilder addActivityColumn(final UserDatabaseDTO database) {
     	ColumnConfig config = new ColumnConfig("activityId", I18N.CONSTANTS.activity(), 100);
     	config.setRenderer(new GridCellRenderer<SiteDTO>() {
@@ -228,7 +200,7 @@ public class ColumnModelBuilder {
         return this;
 	}
 
-    public ColumnModelBuilder createIndicatorColumns(ActivityDTO activity) {
+    public ColumnModelBuilder addKeyIndicatorColumns(ActivityDTO activity) {
     	// Only add indicators that have a queries heading
         for (IndicatorDTO indicator : activity.getIndicators()) {
             if(indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {

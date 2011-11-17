@@ -18,7 +18,6 @@ import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 
 class AdminTreeLoader extends BaseTreeLoader<AdminEntityDTO> {
 
-    private CountryDTO country;
     private Set<Integer> levelsWithChildren;
     
     public AdminTreeLoader(Dispatcher service) {
@@ -27,8 +26,7 @@ class AdminTreeLoader extends BaseTreeLoader<AdminEntityDTO> {
     }
     
     public void setCountry(CountryDTO country) {
-    	this.country = country;
-    	
+   	
     	((AdminTreeProxy)this.proxy).setCountry(country);
     	
     	levelsWithChildren = new HashSet<Integer>();

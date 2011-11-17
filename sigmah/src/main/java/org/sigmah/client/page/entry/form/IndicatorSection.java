@@ -5,23 +5,30 @@
 
 package org.sigmah.client.page.entry.form;
 
+import java.util.List;
+
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.common.collect.Lists;
 import com.google.gwt.i18n.client.NumberFormat;
 
-public class IndicatorSection extends LayoutContainer {
+public class IndicatorSection extends LayoutContainer implements FormSection<SiteDTO>{
 
-
-    public IndicatorSection(ActivityDTO activity) {
+	private List<NumberField> indicatorFields = Lists.newArrayList();
+	
+	public IndicatorSection(ActivityDTO activity) {
 
         TableLayout layout = new TableLayout(3);
         layout.setCellPadding(5);
@@ -29,6 +36,7 @@ public class IndicatorSection extends LayoutContainer {
 
         setLayout(layout);
         setStyleAttribute("fontSize", "8pt");
+        setScrollMode(Scroll.AUTOY);
 
         for(IndicatorGroup group : activity.groupIndicators()) {
 
@@ -83,7 +91,35 @@ public class IndicatorSection extends LayoutContainer {
         unitLabel.setStyleAttribute("fontSize", "9pt");
 
         add(unitLabel);
+        
+        indicatorFields.add(indicatorField);
     }
 
+	@Override
+	public boolean validate() {
+		boolean valid = true;
+		for(NumberField field : indicatorFields) {
+			valid &= field.validate();
+		}
+		return valid;
+	}
 
+	@Override
+	public void updateModel(SiteDTO m) {
+		for(NumberField field : indicatorFields) {
+			m.set(field.getName(), field.getValue());
+		}
+	}
+
+	@Override
+	public void updateForm(SiteDTO m) {
+		for(NumberField field : indicatorFields) {
+			field.setValue((Number)m.get(field.getName()));
+		}
+	}
+
+	@Override
+	public Component asComponent() {
+		return this;
+	}
 }

@@ -1,9 +1,13 @@
 package org.sigmah.client.page.entry.form;
 
+import java.util.List;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.LocationDTO;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -12,13 +16,15 @@ import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
+import com.google.common.collect.Lists;
 
-public class NewSiteDialog extends Window {
+public class SiteDialog extends Window {
 	
 	private FormNavigationListView navigationListView;
 	private LayoutContainer sectionContainer;
@@ -27,8 +33,11 @@ public class NewSiteDialog extends Window {
 	private Button prevButton;
 	private Button nextButton;
 	private Button finishButton;
+	
+	private List<FormSection<SiteDTO>> sections = Lists.newArrayList();
+	private LocationFormSection locationForm;
 		
-	public NewSiteDialog(Dispatcher dispatcher, ActivityDTO activity) {
+	public SiteDialog(Dispatcher dispatcher, ActivityDTO activity) {
 		setHeading(I18N.MESSAGES.addNewSiteForActivity(activity.getName()));
 		setWidth(500);
 		setHeight(450);
@@ -45,44 +54,42 @@ public class NewSiteDialog extends Window {
 		sectionContainer.setLayout(sectionLayout);
 		
 		add(sectionContainer, new BorderLayoutData(LayoutRegion.CENTER));
-		
-		FormSection locationForm;
+
 		if(activity.getLocationType().isAdminLevel()) {
 			locationForm = new BoundLocationSection(dispatcher, activity);
 		} else {
 			locationForm = new LocationSection(activity);
 		}
-		ActivitySection activityForm = new ActivitySection(activity);
 		
-		addSection(new FormSectionModel()
+		addSection(FormSectionModel.forComponent(new ActivitySection(activity))
 				.withHeader("Site Details")
-				.withDescription("Choose the project and partner implementing this activity")
-				.forComponent(activityForm));
+				.withDescription("Choose the project and partner implementing this activity"));
 		
-		addSection(new FormSectionModel()
+		addSection(FormSectionModel.forComponent(locationForm)
 				.withHeader(I18N.CONSTANTS.location())
-				.withDescription("Choose the location of the activity site")
-				.forComponent(locationForm));
+				.withDescription("Choose the location of the activity site"));
 
-		addSection(new FormSectionModel()
+		addSection(FormSectionModel.forComponent(new AttributeSection(activity))
 				.withHeader(I18N.CONSTANTS.attributes())
-				.withDescription("Choose the attributes of this activity site")
-				.forComponent(new AttributeSection(activity)));
+				.withDescription("Choose the attributes of this activity site"));
 		
-		addSection(new FormSectionModel()
+		addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
+				.withHeader(I18N.CONSTANTS.indicators())
+				.withDescription("Enter indicator results for this site"));
+		
+		addSection(FormSectionModel.forComponent(new CommentSection())
 				.withHeader(I18N.CONSTANTS.comments())
-				.withDescription("Add additional comments for this activity site")
-				.forComponent(new CommentSection()));
+				.withDescription("Add additional comments for this activity site"));
 		
 	
-		sectionLayout.setActiveItem(locationForm);
+		sectionLayout.setActiveItem(locationForm.asComponent());
 		
 		SiteFormResources.INSTANCE.style().ensureInjected();
 		
-		navigationListView.addListener(Events.Select, new Listener<ListViewEvent<FormSectionModel>>() {
+		navigationListView.addListener(Events.Select, new Listener<ListViewEvent<FormSectionModel<SiteDTO>>>() {
 
 			@Override
-			public void handleEvent(ListViewEvent<FormSectionModel> be) {
+			public void handleEvent(ListViewEvent<FormSectionModel<SiteDTO>> be) {
 				sectionLayout.setActiveItem(be.getModel().getComponent());
 			}
 		});
@@ -98,7 +105,6 @@ public class NewSiteDialog extends Window {
 		nextButton = new Button("&gt;&gt; Next", new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				navigationListView.prev();
 			}
 		});
 		
@@ -106,7 +112,7 @@ public class NewSiteDialog extends Window {
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				navigationListView.next();
+				save();
 			}
 		});
 		
@@ -115,9 +121,26 @@ public class NewSiteDialog extends Window {
 		getButtonBar().add(finishButton);
 	}
 	
-	private void addSection(FormSectionModel model) {
+	public void showNew(SiteDTO site, LocationDTO location, boolean locationIsNew) {
+		for(FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
+			section.getSection().updateForm(site);
+		}
+	}
+	
+	
+	private void addSection(FormSectionModel<SiteDTO> model) {
 		navigationListView.addSection(model);
 		sectionContainer.add(model.getComponent());
+		sections.add(model.getSection());
+	}
+	
+	private void save() {
+		for(FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
+			if(!section.getSection().validate()) {
+				navigationListView.getSelectionModel().select(section, false);
+				MessageBox.alert(getHeading(), I18N.CONSTANTS.pleaseCompleteForm(), null);
+			}
+		}
 	}
 
 }
