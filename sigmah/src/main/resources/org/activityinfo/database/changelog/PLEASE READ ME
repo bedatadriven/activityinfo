@@ -1,0 +1,29 @@
+
+Updating the database schema
+============================
+
+We use liquibase to version our database schema to simplify schema migration on the test database,
+the staging server and ultimately the production server. 
+
+**IMPORTANT**:
+
+Once you have committed a <changeSet> to the shared Github repo, YOU CANNOT EVER CHANGE
+this <changeSet> again. If you have forgotten to add a column or need to change the data
+type of a column, you will have to add a new <changeSet> element with a new id.
+
+HOW TO UPDATE THE SCHEMA
+
+1. Add a new 'db.changelog-000-feature-name.xml' file for each logical feature. Examples:
+
+   db.changelog-004-targets.xml 
+   db.changelog-005-polygon-maps.xml
+   
+2. Define your changes in this change log, giving each <changeSet> element a unique id 
+   based on the filename and your name. See existing changelogs for examples. 
+   REMEMBER TO OBSERVE RULE NUMBER ONE ABOVE
+   
+3. Add your new change log to the db.changelog-master.xml 
+
+4. Run mvn:test to verify that your tests and all previous tests run with the schema changes.
+
+
