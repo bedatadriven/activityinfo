@@ -6,9 +6,9 @@ public class RemoveTarget implements Command<VoidResult> {
 	private int targetId;
 	private int databaseId;
 	
-	public RemoveTarget(int projectId, int databaseId) {
+	public RemoveTarget(int databaseId, int targetId) {
 		super();
-		this.targetId = projectId;
+		this.targetId = targetId;
 		this.databaseId = databaseId;
 	}
 	public RemoveTarget() {

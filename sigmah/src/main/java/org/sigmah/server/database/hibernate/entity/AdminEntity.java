@@ -41,6 +41,7 @@ public class AdminEntity implements java.io.Serializable {
 
     private Set<Location> locations = new HashSet<Location>(0);
     private Set<AdminEntity> children = new HashSet<AdminEntity>(0);
+    private Set<Target> targets = new HashSet<Target>(0);
 
     public AdminEntity() {
     }
@@ -153,6 +154,15 @@ public class AdminEntity implements java.io.Serializable {
         this.children = children;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "adminEntity")
+    public Set<Target> getTargets() {
+        return this.targets;
+    }
+
+    public void setTargets(Set<Target> targets) {
+        this.targets = targets;
+    }
+    
     @Override
     public String toString() {
         return getName() + "[id=" + getId() + "]";

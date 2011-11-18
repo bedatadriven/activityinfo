@@ -44,7 +44,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	public interface View extends GridView<DbTargetEditor, TargetDTO> {
 		public void init(DbTargetEditor editor, UserDatabaseDTO db,	ListStore<TargetDTO> store);
 		public void createTargetValueContainer();
-		public FormDialogTether showAddDialog(TargetDTO target,FormDialogCallback callback);
+		public FormDialogTether showAddDialog(TargetDTO target, UserDatabaseDTO db, FormDialogCallback callback);
 	}
 
 	private final Dispatcher service;
@@ -93,7 +93,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 		@Override
 		protected void onAdd() {
 	        final TargetDTO newTarget = new TargetDTO();
-	        this.view.showAddDialog(newTarget, new FormDialogCallback() {
+	        this.view.showAddDialog(newTarget, db, new FormDialogCallback() {
 
 	            @Override
 	            public void onValidated(final FormDialogTether dlg) {

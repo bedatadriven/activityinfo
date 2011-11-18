@@ -27,5 +27,7 @@
 			<column name="contenttype" type="VARCHAR(255)" />
 		</addColumn>
 	</changeSet>
-	
+	<changeSet  author="umad" id="003-03">
+				<modifyDataType tableName="siteattachment" columnName="blobsize" newDataType="DOUBLE"/>
+	</changeSet>
 </databaseChangeLog>

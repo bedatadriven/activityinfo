@@ -61,6 +61,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     private Set<UserPermission> userPermissions = new HashSet<UserPermission>(0);
     private Set<Project> projects = new HashSet<Project>(0);
     private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>(0);
+    private Set<Target> targets = new HashSet<Target>(0);
     private Date dateDeleted;
     private Date lastSchemaUpdate;
 
@@ -394,4 +395,12 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
 		return lockedPeriods;
 	}
 
+	public void setTargets(Set<Target> targets) {
+		this.targets = targets;
+	}
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="userDatabase")
+	public Set<Target> getTargets() {
+		return targets;
+	}
 }

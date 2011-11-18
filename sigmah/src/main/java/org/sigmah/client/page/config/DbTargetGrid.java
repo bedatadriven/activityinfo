@@ -80,9 +80,9 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 	}
 
 	@Override
-	public FormDialogTether showAddDialog(TargetDTO target,	FormDialogCallback callback) {
+	public FormDialogTether showAddDialog(TargetDTO target,	UserDatabaseDTO db, FormDialogCallback callback) {
 
-		TargetForm form = new TargetForm();
+		TargetForm form = new TargetForm(db);
 		form.getBinding().bind(target);
 
 		FormDialogImpl<TargetForm> dlg = new FormDialogImpl<TargetForm>(form);

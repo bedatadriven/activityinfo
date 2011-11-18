@@ -6,6 +6,7 @@
 package org.sigmah.server.database.hibernate.entity;
 
 import javax.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public class Partner implements java.io.Serializable, SchemaElement {
     private String name;
     private String fullName;
     private Set<UserDatabase> databases = new HashSet<UserDatabase>(0);
+    private Set<Target> targets = new HashSet<Target>(0);
 
     public Partner() {
     }
@@ -73,6 +75,15 @@ public class Partner implements java.io.Serializable, SchemaElement {
         this.databases = databases;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "partner")
+    public Set<Target> getTargets() {
+        return this.targets;
+    }
+
+    public void setTargets(Set<Target> targets) {
+        this.targets = targets;
+    }
+    
     @Override
     public boolean equals(Object obj) {
 
