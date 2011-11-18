@@ -24,13 +24,14 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.internal.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.inject.Provider;
 
 public class LoadDataSet extends Statement {
     private final Statement next;
     private final Object target;
     private final Provider<Connection> connectionProvider;
-    private String name;
+    private final String name;
 
     public LoadDataSet(Provider<Connection> connectionProvider, Statement next, String name, Object target) {
         this.next = next;
@@ -41,6 +42,9 @@ public class LoadDataSet extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
+    	
+    	JdbcScheduler.get().forceCleanup();
+    	
         System.err.println("DBUnit: removing all rows");
         removeAllRows();
 

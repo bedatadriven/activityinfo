@@ -110,8 +110,7 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
         }
 
         if (changes.containsKey("published")) {
-        	Published published = Published.valueOf(String.valueOf(changes.get("published")));
-            activity.setPublished(published);
+            activity.setPublished(((Published)changes.get("published")).getIndex());
         }
         
         if (changes.containsKey("sortOrder")) {

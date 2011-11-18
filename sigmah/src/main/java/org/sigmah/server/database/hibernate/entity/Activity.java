@@ -13,8 +13,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -69,7 +67,7 @@ public class Activity implements Serializable, Deleteable, Orderable,
 
 	private String mapIcon;
 
-	private Published published;
+	private int published = Published.NOT_PUBLISHED.getIndex();
 
 	public Activity() {
 
@@ -139,11 +137,13 @@ public class Activity implements Serializable, Deleteable, Orderable,
 		this.allowEdit = allowEdit;
 	}
 
+	@Override
 	@Column(name = "SortOrder", nullable = false)
 	public int getSortOrder() {
 		return this.sortOrder;
 	}
 
+	@Override
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
 	}
@@ -191,6 +191,7 @@ public class Activity implements Serializable, Deleteable, Orderable,
 		this.dateDeleted = date;
 	}
 
+	@Override
 	public void delete() {
 		setDateDeleted(new Date());
 		getDatabase().setLastSchemaUpdate(new Date());
@@ -228,14 +229,13 @@ public class Activity implements Serializable, Deleteable, Orderable,
 		return lockedPeriods;
 	}
 
+	// the rebar synchronization library does not yet support enums :-(
 	@Column(name = "published")
-	@Enumerated(EnumType.ORDINAL)
-	public Published getPublished() {
+	public int getPublished() {
 		return published;
 	}
 
-	public void setPublished(Published published) {
+	public void setPublished(int published) {
 		this.published = published;
 	}
-
 }

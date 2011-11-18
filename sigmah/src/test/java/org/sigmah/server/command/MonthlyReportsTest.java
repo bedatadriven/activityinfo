@@ -8,6 +8,7 @@ package org.sigmah.server.command;
 import java.util.ArrayList;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
@@ -21,6 +22,11 @@ import org.sigmah.test.InjectionSupport;
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class MonthlyReportsTest extends CommandTestCase {
 
+	
+	@Before
+	public void setUser() {
+		setUser(1);
+	}
 
     @Test
     public void testMonthCompare() throws Exception {

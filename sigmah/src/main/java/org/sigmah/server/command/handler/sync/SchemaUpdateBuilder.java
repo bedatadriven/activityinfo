@@ -41,28 +41,28 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private final UserDatabaseDAO userDatabaseDAO;
     private final EntityManager entityManager;
 
-    private Set<Integer> countryIds = new HashSet<Integer>();
-    private List<Country> countries = new ArrayList<Country>();
-    private List<AdminLevel> adminLevels = new ArrayList<AdminLevel>();
+    private final Set<Integer> countryIds = new HashSet<Integer>();
+    private final List<Country> countries = new ArrayList<Country>();
+    private final List<AdminLevel> adminLevels = new ArrayList<AdminLevel>();
 
     private List<UserDatabase> databases = new ArrayList<UserDatabase>();
 
-    private Set<Integer> partnerIds = new HashSet<Integer>();
-    private List<Partner> partners = new ArrayList<Partner>();
+    private final Set<Integer> partnerIds = new HashSet<Integer>();
+    private final List<Partner> partners = new ArrayList<Partner>();
 
-    private List<Activity> activities = new ArrayList<Activity>();
-    private List<Indicator> indicators = new ArrayList<Indicator>();
+    private final List<Activity> activities = new ArrayList<Activity>();
+    private final List<Indicator> indicators = new ArrayList<Indicator>();
     
-    private Set<Integer> attributeGroupIds = new HashSet<Integer>();
-    private List<AttributeGroup> attributeGroups = new ArrayList<AttributeGroup> ();
-    private List<Attribute> attributes = new ArrayList<Attribute>();
+    private final Set<Integer> attributeGroupIds = new HashSet<Integer>();
+    private final List<AttributeGroup> attributeGroups = new ArrayList<AttributeGroup> ();
+    private final List<Attribute> attributes = new ArrayList<Attribute>();
     
-    private Set<Integer> userIds = new HashSet<Integer>();
-    private List<User> users = new ArrayList<User>();
-    private List<LocationType> locationTypes  = new ArrayList<LocationType>();
+    private final Set<Integer> userIds = new HashSet<Integer>();
+    private final List<User> users = new ArrayList<User>();
+    private final List<LocationType> locationTypes  = new ArrayList<LocationType>();
     private List<UserPermission> userPermissions;
 
-    private Class[] schemaClasses = new Class[] {
+    private final Class[] schemaClasses = new Class[] {
             Country.class,
             AdminLevel.class,
             LocationType.class,
@@ -77,8 +77,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             LockedPeriod.class,
             Project.class
     };
-	private List<LockedPeriod> allLockedPeriods = new ArrayList<LockedPeriod>();
-	private List<Project> projects = new ArrayList<Project>();
+	private final List<LockedPeriod> allLockedPeriods = new ArrayList<LockedPeriod>();
+	private final List<Project> projects = new ArrayList<Project>();
 
     @Inject
     public SchemaUpdateBuilder(EntityManagerFactory entityManagerFactory) {
@@ -142,6 +142,9 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(UserPermission.class, userPermissions);
         builder.insert(Project.class, projects);
         builder.insert(LockedPeriod.class, allLockedPeriods);
+
+        // TODO: this needs to be actually synchronized
+        builder.executeStatement("CREATE TABLE  target (targetId int, name text, date1 text, date2 text, projectId int, partnerId int, adminEntityId int, databaseId int)"); 
 
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");

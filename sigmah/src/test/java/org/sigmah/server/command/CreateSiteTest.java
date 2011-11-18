@@ -12,6 +12,7 @@ import static org.junit.Assert.assertThat;
 import java.util.GregorianCalendar;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
@@ -37,14 +38,14 @@ public class CreateSiteTest extends CommandTestCase2 {
     @Test
     public void test() throws CommandException {
     	LocationDTO2 location = LocationDTOs.newLocation();
-    	CreateResult createLocation = (CreateResult) execute(new AddLocation().setLocation(location));
+    	CreateResult createLocation = execute(new AddLocation().setLocation(location));
     	location.setId(createLocation.getNewId());
     	
         SiteDTO newSite = SiteDTOs.newSite();
         newSite.setLocation(location);
         CreateSite cmd = new CreateSite(newSite);
         setUser(1);
-        CreateResult result = (CreateResult) execute(cmd);
+        CreateResult result = execute(cmd);
         newSite.setId(result.getNewId());
         assertThat(result.getNewId(), not(equalTo(0)));
         PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
@@ -67,9 +68,9 @@ public class CreateSiteTest extends CommandTestCase2 {
         execute(cmd);
     }
 
-
 	@Test
-    public void testAdminBoundCreate() throws CommandException {
+	@Ignore("WIP")
+	public void testAdminBoundCreate() throws CommandException {
         // create a new detached, client model
         SiteDTO newSite = new SiteDTO();
 
@@ -95,7 +96,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         newSite.setProject(new ProjectDTO(1,"SomeProject"));
 
 
-        CreateResult result = (CreateResult) execute(cmd);
+        CreateResult result = execute(cmd);
         newSite.setId(result.getNewId());
 
 
@@ -136,7 +137,7 @@ public class CreateSiteTest extends CommandTestCase2 {
 
         setUser(1);
 
-        CreateResult result = (CreateResult) execute(cmd);
+        CreateResult result = execute(cmd);
 
 
         // let the client know the command has succeeded

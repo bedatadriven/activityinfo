@@ -54,7 +54,7 @@ import com.google.inject.Inject;
         LoggingModule.class
 })
 public class SyncIntegrationTest extends LocalHandlerTestCase {
-	private KeyGenerator keyGenerator;
+	private final KeyGenerator keyGenerator;
 
 	@Inject
 	public SyncIntegrationTest(KeyGenerator keyGenerator) {
@@ -66,7 +66,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
 	@Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
-    public void run() throws SQLException {
+    public void run() throws SQLException, InterruptedException {
         synchronizeFirstTime();
         
         Collector<Date> lastUpdate = Collector.newCollector();
@@ -96,6 +96,8 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         
         /// now try updating a site remotely (from another client)
         // and veryify that we get the update after we synchronized
+        
+        Thread.sleep(1000);
         
         Map<String, Object> changes = Maps.newHashMap();
         changes.put(AttributeDTO.getPropertyName(1), true);
@@ -127,7 +129,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
     @Test
     @OnDataSet("/dbunit/locations.db.xml")
-    public void locationsAreChunked() throws SQLException {
+    public void locationsAreChunked() throws SQLException, InterruptedException {
         addLocationsToServerDatabase(220);
         synchronizeFirstTime();
 
@@ -143,6 +145,11 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         
         newRequest();
         synchronize();
+       
+        // todo: store milliseconds in mysql rather than as
+        // date time which has resolution limited to 1 second
+        Thread.sleep(1000);
+
         
         assertThat(queryInt("select count(*) from Location where Name='Penekusu 26'"), equalTo(1));
         assertThat(queryString("select axe from Location where Name='Penekusu 26'"), equalTo("Motown"));
@@ -161,6 +168,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         serverEm.getTransaction().commit();
         
         newRequest();
+               
         synchronize();
         
         assertThat(queryString("select name from Location where LocationId = " + locationId), 

@@ -1,6 +1,5 @@
 package org.sigmah.shared.command.handler;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +17,7 @@ import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.Published;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -381,7 +381,7 @@ public class GetSchemaHandler implements
 		public void loadActivities() {
 			SqlQuery query = SqlQuery
 					.select("activityId", "name", "category", "locationTypeId",
-							"reportingFrequency", "databaseId")
+							"reportingFrequency", "databaseId", "published")
 					.from("Activity").orderBy("SortOrder");
 
 			if (!GWT.isClient()) {
@@ -400,7 +400,8 @@ public class GetSchemaHandler implements
 					activity.setLocationTypeId(row.getInt("locationTypeId"));
 					activity.setReportingFrequency(row
 							.getInt("reportingFrequency"));
-
+					activity.setPublished(Published.fromIndex(row.getInt("published")));
+					
 					int databaseId = row.getInt("databaseId");
 					UserDatabaseDTO database = databaseMap.get(databaseId);
 					activity.setDatabase(database);

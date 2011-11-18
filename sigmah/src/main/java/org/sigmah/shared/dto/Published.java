@@ -13,4 +13,13 @@ public enum Published {
 	public int getIndex() {
 		return index;
 	}
+
+	public static Published fromIndex(int index) {
+		for(Published value : values()) {
+			if(value.getIndex() == index) {
+				return value;
+			}
+		}
+		throw new IllegalArgumentException(Integer.toString(index));
+	}
 }

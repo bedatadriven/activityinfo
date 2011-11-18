@@ -67,7 +67,7 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertThat("deleted attribute is not present", schema.getActivityById(1).getAttributeGroups().size(), equalTo(3));
     }
 
-    @Test
+    @Test @OnDataSet("/dbunit/sites-public.db.xml")
     public void testDatabasePublished() throws CommandException {
 
     	// Anonymouse user should fetch schema database with pulished activities.

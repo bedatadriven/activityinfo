@@ -10,6 +10,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
@@ -20,6 +21,7 @@ import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.dto.Published;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.exception.CommandException;
@@ -29,6 +31,10 @@ import org.sigmah.test.InjectionSupport;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class ActivityTest extends CommandTestCase {
 
+	@Before
+	public void setUser() {
+		setUser(1);
+	}
 
     @Test
     public void testActivity() throws CommandException {
@@ -67,6 +73,7 @@ public class ActivityTest extends CommandTestCase {
         Assert.assertEquals("name", "Warshing the dishes", act.getName());
         Assert.assertEquals("locationType", locType.getName(), act.getLocationType().getName());
         Assert.assertEquals("reportingFrequency", ActivityDTO.REPORT_MONTHLY, act.getReportingFrequency());
+        Assert.assertEquals("public", Published.NOT_PUBLISHED, act.getPublished());
 
     }
 
@@ -91,4 +98,18 @@ public class ActivityTest extends CommandTestCase {
         Assert.assertEquals(1, schema.getDatabaseById(1).getActivities().get(1).getId());
     }
 
+    @Test
+    public void updatePublished() throws Throwable {
+
+        /* Update Sort Order */
+        Map<String, Object> changes = new HashMap<String, Object>();
+        changes.put("published", Published.ALL_ARE_PUBLISHED);
+    
+        execute(new UpdateEntity("Activity", 1, changes));
+
+        /* Confirm the order is changed */
+
+        SchemaDTO schema = execute(new GetSchema());
+        Assert.assertEquals(Published.ALL_ARE_PUBLISHED, schema.getActivityById(1).getPublished());
+    }
 }

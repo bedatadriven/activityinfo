@@ -43,7 +43,18 @@
 			<column name="Value" type="DOUBLE" />
 
 		</createTable>
-
 	</changeSet>
-
+	
+	
+	<!--  When introducing new columns its important to 
+			consider values of existing rows -->
+	<changeSet author="alex" id="002-03">
+		<update tableName="activity">
+			<column name="published" value="0"/>
+			<where>published is null</where>
+		</update>
+		
+		<addNotNullConstraint tableName="activity" columnName="published" columnDataType="INT"/>
+		<addDefaultValue tableName="activity" columnName="published" defaultValue="0"/>
+	</changeSet>
 </databaseChangeLog> 

@@ -85,7 +85,8 @@ public final class ActivityDTO
      *
      * @return this Activity's id
      */
-    public int getId() {
+    @Override
+	public int getId() {
         return (Integer)get("id");
     }
 
@@ -107,7 +108,8 @@ public final class ActivityDTO
     /**
      * @return this Activity's name
      */
-    public String getName(){
+    @Override
+	public String getName(){
         return get("name");
     }
 
@@ -124,7 +126,15 @@ public final class ActivityDTO
     public void setDatabase(UserDatabaseDTO database) {
         this.database = database;
     }
+    
+    public Published getPublished() {
+    	return get("published");
+    }
 
+    public void setPublished(Published published) {
+    	set("published", published);
+    }
+    
     /**
      * @return a list of this Activity's indicators
      */
@@ -278,7 +288,8 @@ public final class ActivityDTO
         set("mapIcon", mapIcon);
     }
 
-    public String getEntityName() {
+    @Override
+	public String getEntityName() {
     	return entityName;
     }
 
@@ -330,10 +341,12 @@ public final class ActivityDTO
 		this.lockedPeriods = lockedPeriods;
 	}
 
+	@Override
 	public Set<LockedPeriodDTO> getLockedPeriods() {
 		return lockedPeriods;
 	}
 
+	@Override
 	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
 	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
 
