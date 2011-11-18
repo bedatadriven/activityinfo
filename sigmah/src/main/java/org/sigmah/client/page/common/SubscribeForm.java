@@ -6,11 +6,13 @@ import org.sigmah.shared.dto.ReportSubscriptionDTO;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -41,25 +43,20 @@ public class SubscribeForm extends FormPanel {
 		
 		Radio weekly = new Radio();
 		weekly.setBoxLabel(I18N.CONSTANTS.weekly());
+		weekly.setValue(true);
 		Radio monthly = new Radio();
 		monthly.setBoxLabel(I18N.CONSTANTS.monthly());
 		
-		RadioGroup emailFrequency = new RadioGroup();
+		final RadioGroup emailFrequency = new RadioGroup();
 		emailFrequency.setFieldLabel(I18N.CONSTANTS.emailFrequency());
 		emailFrequency.setOrientation(Orientation.VERTICAL);
 		emailFrequency.add(weekly);
 		emailFrequency.add(monthly);
-		emailFrequency.addListener(Events.Change, new Listener<FieldEvent>() {
-			
-			@Override
-			public void handleEvent(FieldEvent be) {
-				
-			}
-		});
+		
 		
 		add(emailFrequency);
 		
-		MappingComboBox dayOfWeek = new MappingComboBox();
+		final MappingComboBox dayOfWeek = new MappingComboBox();
 		dayOfWeek.setAllowBlank(false);
 		dayOfWeek.setFieldLabel(I18N.CONSTANTS.dayOfWeek());
 		dayOfWeek.add("mon", "Monday");
@@ -71,16 +68,34 @@ public class SubscribeForm extends FormPanel {
 		dayOfWeek.add("sun", "Sunday");
 		add(dayOfWeek);
 		
-		MappingComboBox dayOfMonth = new MappingComboBox();
+		final MappingComboBox dayOfMonth = new MappingComboBox();
 		dayOfMonth.setAllowBlank(false);
+		dayOfMonth.hide();
 		dayOfMonth.setFieldLabel(I18N.CONSTANTS.dayOfMonth());
 		for(int i=1; i<=31; i++){
 			dayOfMonth.add(String.valueOf(i), String.valueOf(i));
 		}
 		add(dayOfMonth);
 		
+		emailFrequency.addListener(Events.Change, new Listener<BaseEvent>(){
+		       public void handleEvent(BaseEvent be) {
+		           if(emailFrequency.getValue().getBoxLabel() == I18N.CONSTANTS.weekly()){
+		        	   dayOfMonth.hide();
+		        	   dayOfWeek.show();
+		        	 
+		           }  else if (emailFrequency.getValue().getBoxLabel() == I18N.CONSTANTS.monthly()) {
+		        	   dayOfWeek.hide();
+		        	   dayOfMonth.show();
+		        	   
+		           }
+		        }
+		});
 		ListField<ReportSubscriptionDTO> subscribers = new ListField<ReportSubscriptionDTO>();
-		subscribers.setFieldLabel(I18N.CONSTANTS.subscribers());
+//		subscribers.a
+//		subscribers.setFieldLabel(I18N.CONSTANTS.subscribers());
+		
+		ListStore<ReportSubscriptionDTO> store = new ListStore<ReportSubscriptionDTO>();
+		//store.add(ReportSubscriptionDTO)
 		add(subscribers);
 
 		newEmailPanel();

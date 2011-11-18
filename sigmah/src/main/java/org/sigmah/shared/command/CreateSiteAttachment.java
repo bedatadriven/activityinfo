@@ -11,7 +11,7 @@ public class CreateSiteAttachment implements Command<VoidResult> {
     private String blobId;
     private String fileName;
     private int uploadedBy;
-    private int blobSize;
+    private double blobSize;
     private String contentType;
 	
     public CreateSiteAttachment(){
@@ -43,11 +43,11 @@ public class CreateSiteAttachment implements Command<VoidResult> {
 		this.uploadedBy = uploadedBy;
 	}
 
-	public int getBlobSize() {
+	public double getBlobSize() {
 		return blobSize;
 	}
 
-	public void setBlobSize(int blobSize) {
+	public void setBlobSize(double blobSize) {
 		this.blobSize = blobSize;
 	}
 

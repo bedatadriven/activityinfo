@@ -1,21 +1,29 @@
 package org.sigmah.server.attachment;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import liquibase.util.file.FilenameUtils;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.shared.command.CreateSiteAttachment;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,9 +33,15 @@ public class ServletAttachmentUpload extends HttpServlet {
 
 	private AWSCredentials credentials;
 	private DispatcherSync dispatcher;
-	private File uploadFile;
 	private CreateSiteAttachment siteAttachment;
-
+	private InputStream uploadingStream;
+	private ObjectMetadata metadata;
+	private FileItem fileItem = null;
+	private String key;
+	private String fileName;
+	private int siteId;
+	private String bucketName;
+	
 	@Inject
 	public ServletAttachmentUpload(AWSCredentials credentials,
 			DispatcherSync dispatcher) {
@@ -38,66 +52,58 @@ public class ServletAttachmentUpload extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String key = request.getParameter("blobId");
-		int siteId = Integer.valueOf(request.getParameter("siteId"));
-		String bucketName = "site-attachments";
+		key = request.getParameter("blobId");
+		siteId = Integer.valueOf(request.getParameter("siteId"));
+		bucketName = "site-attachments";
 
-		String saveFile = "";
-		String attachmentType = "";
-		int endPos = 0;
-		String contentType = request.getContentType();
+		List items = null;
 
-		if ((contentType != null)
-				&& (contentType.indexOf("multipart/form-data") >= 0)) {
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		if (isMultipart) {
 
-			DataInputStream in = new DataInputStream(request.getInputStream());
-			int formDataLength = request.getContentLength();
-			byte dataBytes[] = new byte[formDataLength];
-			int byteRead = 0;
-			int totalBytesRead = 0;
-			while (totalBytesRead < formDataLength) {
-				byteRead = in.read(dataBytes, totalBytesRead, formDataLength);
-				totalBytesRead += byteRead;
+			FileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			String optionalFileName = "";
+			
+			try {
+				items = upload.parseRequest(request);
+			} catch (FileUploadException e1) {
+				e1.printStackTrace();
 			}
-			String file = new String(dataBytes);
-			saveFile = file.substring(file.indexOf("filename=\"") + 10);
-			saveFile = saveFile.substring(0, saveFile.indexOf("\n"));
-			saveFile = saveFile.substring(saveFile.lastIndexOf("\\") + 1,
-					saveFile.indexOf("\""));
+			
+			Iterator iterator = items.iterator();
+			while (iterator.hasNext()) {
+				FileItem fileItemTemp = (FileItem) iterator.next();
+				if(fileItemTemp.getName()!= null){
+					fileItem = fileItemTemp;
+				}
+			}
 
-			attachmentType = file.substring(file.indexOf("Content-Type:") + 14);
-			attachmentType = attachmentType.substring(0,
-					attachmentType.indexOf("\n"));
+			if (fileItem != null) {
+				fileName = fileItem.getName();
 
-			int lastIndex = contentType.lastIndexOf("=");
-			String boundary = contentType.substring(lastIndex + 1,
-					contentType.length());
-			int pos;
-			pos = file.indexOf("filename=\"");
-			pos = file.indexOf("\n", pos) + 1;
-			pos = file.indexOf("\n", pos) + 1;
-			pos = file.indexOf("\n", pos) + 1;
-			int boundaryLocation = file.indexOf(boundary, pos) - 4;
-			int startPos = ((file.substring(0, pos)).getBytes()).length;
-			endPos = ((file.substring(0, boundaryLocation)).getBytes()).length;
-			uploadFile = new File(saveFile);
-			FileOutputStream fileOut = new FileOutputStream(uploadFile);
-			fileOut.write(dataBytes, startPos, (endPos - startPos));
-			fileOut.flush();
-			fileOut.close();
-
+				if (fileItem.getSize() > 0) {
+					
+					fileName = FilenameUtils.getName(fileName);
+					
+					uploadingStream = fileItem.getInputStream();
+				}
+			}
 		}
 
+		metadata = new ObjectMetadata();
+		metadata.setContentType(fileItem.getContentType());
+		metadata.setContentLength(fileItem.getSize());
 		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
 				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
-		client.putObject(new PutObjectRequest(bucketName, key, uploadFile));
+		client.putObject(new PutObjectRequest(bucketName, key, uploadingStream, metadata));
 
 		siteAttachment = new CreateSiteAttachment();
 		siteAttachment.setSiteId(siteId);
 		siteAttachment.setBlobId(key);
-		siteAttachment.setFileName(saveFile);
-		siteAttachment.setBlobSize(endPos);
-		siteAttachment.setContentType(attachmentType);
+		siteAttachment.setFileName(fileName);
+		siteAttachment.setBlobSize(fileItem.getSize());
+		siteAttachment.setContentType(fileItem.getContentType());
 
 		dispatcher.execute(siteAttachment);
 	}
