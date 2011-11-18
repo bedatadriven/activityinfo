@@ -36,6 +36,8 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 			poolConfig.setUsername(configProperties.getProperty("hibernate.connection.username"));
 			poolConfig.setPassword(configProperties.getProperty("hibernate.connection.password"));
 			
+			logger.info("Configuring connection pool to " + poolConfig.getJdbcUrl());
+			
 			connectionPool = new BoneCP(poolConfig);
 			
 			maybeMigrateSchema(configProperties);

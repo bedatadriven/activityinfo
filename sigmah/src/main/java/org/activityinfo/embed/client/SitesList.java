@@ -1,47 +1,57 @@
 package org.activityinfo.embed.client;
 
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.page.entry.AbstractSiteEditor;
 import org.sigmah.client.page.entry.AbstractSiteGrid;
 import org.sigmah.client.page.entry.SiteEditor;
 import org.sigmah.client.page.entry.SiteGrid;
 import org.sigmah.client.page.entry.SiteGridPageState;
 import org.sigmah.client.page.entry.SiteMap;
+import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import com.extjs.gxt.ui.client.Style;
+
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.google.gwt.user.client.Window;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class SitesList extends LayoutContainer {
 
-	private final AppInjector injector;
-	private final int databaseId;
+	private int activityId;
 
 	int defaultActivityId = 0;
 
+	private final EventBus eventBus;
+	private final Dispatcher dispatcher;
+	private final StateProvider stateProvider;
+
+
 	@Inject
-	public SitesList(AppInjector injector, int databaseId) {
-		this.injector = injector;
-		this.databaseId = databaseId;
+	public SitesList(EventBus eventBus, Dispatcher dispatcher, StateProvider stateProvider) {
+		this.eventBus = eventBus;
+		this.dispatcher = dispatcher;
+		this.stateProvider = stateProvider;
+		
+		setLayout(new FitLayout());
 
-		setLayout(new BorderLayout());
-
-		// setHeight(500);
-		loadSiteGrid();
 	}
 
+	public void load(int databaseId) {
+		this.activityId = databaseId;
+		loadSiteGrid();
+
+	}
+	
 	public void addToContainer(Widget w) {
-		add(w, new BorderLayoutData(Style.LayoutRegion.CENTER));
+		add(w);
 		if (isRendered()) {
 			layout();
 		}
@@ -49,32 +59,36 @@ public class SitesList extends LayoutContainer {
 
 	protected void loadSiteGrid() {
 
-		injector.getService().execute(new GetSchema(), null,
+		dispatcher.execute(new GetSchema(), null,
 				new Got<SchemaDTO>() {
+
 					@Override
 					public void got(SchemaDTO schema) {
 
-						setDefaultActivityId(schema);
 						ActivityDTO activity = schema
-								.getActivityById(defaultActivityId);
+								.getActivityById(activityId);
+						
+						if(activity == null) {
+							add(new Label("Sorry, this activity is not published."));
+							layout();
+							return;
+						}
 
 						SiteGrid grid;
 
 						grid = new SiteGrid(true);
-						grid.setHeight(500);
 
 						AbstractSiteGrid abstractSiteGrid = null;
 						AbstractSiteEditor abstractSiteEditor = null;
 						SiteEditor siteEditor = null;
 
-						siteEditor = new SiteEditor(injector.getEventBus(),
-								injector.getService(), injector
-										.getStateManager(), grid);
+						siteEditor = new SiteEditor(eventBus,
+								dispatcher, stateProvider, grid);
 						abstractSiteGrid = grid;
 						abstractSiteEditor = siteEditor;
 
-						SiteMap map = new SiteMap(injector.getEventBus(),
-								injector.getService(), activity);
+						SiteMap map = new SiteMap(eventBus,
+								dispatcher, activity);
 						abstractSiteEditor.addSubComponent(map);
 						abstractSiteGrid.addSidePanel(I18N.CONSTANTS.map(),
 								IconImageBundle.ICONS.map(), map);
@@ -82,7 +96,7 @@ public class SitesList extends LayoutContainer {
 						if (siteEditor != null && databaseExist(schema)) {
 							SiteGridPageState place = new SiteGridPageState(
 									activity);
-							siteEditor.go((SiteGridPageState) place, activity);
+							siteEditor.go(place, activity);
 						}
 
 						addToContainer((Widget) abstractSiteEditor.getWidget());
@@ -99,7 +113,7 @@ public class SitesList extends LayoutContainer {
 
 					private boolean databaseExist(SchemaDTO schema) {
 						UserDatabaseDTO userDatabase = schema
-								.getDatabaseById(databaseId);
+								.getDatabaseById(activityId);
 						if (userDatabase == null) {
 							return false;
 						}

@@ -37,6 +37,9 @@ public final class ActivityDTO
     private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>(0);
     private List<AttributeGroupDTO> attributeGroups = new ArrayList<AttributeGroupDTO>(0);
     private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
+    
+    // to ensure serializer
+    private Published _published;
 
     public ActivityDTO() {
         setAssessment(false);
