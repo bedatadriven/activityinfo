@@ -7,7 +7,6 @@ package org.sigmah.client.page.config;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.loader.PagingCmdLoader;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
@@ -21,7 +20,6 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.ExportUsers;
 import org.sigmah.shared.command.GetUsers;
 import org.sigmah.shared.command.UpdateUserPermissions;
 import org.sigmah.shared.command.result.UserResult;
@@ -36,6 +34,8 @@ import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -78,6 +78,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 		store = new ListStore<UserPermissionDTO>(loader);
 		store.setKeyProvider(new ModelKeyProvider<UserPermissionDTO>() {
+			@Override
 			public String getKey(UserPermissionDTO model) {
 				return model.getEmail();
 			}
@@ -93,6 +94,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		loader.load();
 	}
 
+	@Override
 	public void shutdown() {
 	}
 
@@ -106,6 +108,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		return 100;
 	}
 
+	@Override
 	public boolean navigate(PageState place) {
 		DbPageState userPlace = (DbPageState) place;
 
@@ -130,9 +133,11 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 		service.execute(new UpdateUserPermissions(db.getId(), model), view.getDeletingMonitor(),
 				new AsyncCallback<VoidResult>() {
+					@Override
 					public void onFailure(Throwable caught) {
 					}
 
+					@Override
 					public void onSuccess(VoidResult result) {
 						store.remove(model);
 					}
@@ -199,9 +204,11 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 			public void onValidated(final FormDialogTether dlg) {
 				service.execute(new UpdateUserPermissions(db, newUser), dlg, new AsyncCallback<VoidResult>() {
 
+					@Override
 					public void onFailure(Throwable caught) {
 					}
 
+					@Override
 					public void onSuccess(VoidResult result) {
 						loader.load();
 						dlg.hide();
@@ -217,14 +224,17 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		return "User" + db.getId();
 	}
 
+	@Override
 	public PageId getPageId() {
 		return DatabaseUsers;
 	}
 
+	@Override
 	public Object getWidget() {
 		return view;
 	}
 
+	@Override
 	public String beforeWindowCloses() {
 		return null;
 	}
@@ -253,8 +263,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 	public void onUIAction(String actionId) {
 		super.onUIAction(actionId);
 		if (actionId.equals(UIActions.export)) {
-			ExportUsers exportUsers = new ExportUsers().setDatabaseId(db.getId()).setShowPermissions(true);
-			service.execute(exportUsers, null, new DownloadCallback(eventBus));
+			Window.open(GWT.getModuleBaseURL() + "export/users?dbUsers=" + db.getId(), "_blank", null);
 		} else if (UIActions.mailingList.equals(actionId)) {
 
 			onMailingList();
@@ -266,7 +275,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 	}
 	
 	private void createMailingListPopup() {
-		MailingListDialog dailog = new MailingListDialog(eventBus, service, db.getId());
+		new MailingListDialog(eventBus, service, db.getId());
 	}
 
 	@Override
