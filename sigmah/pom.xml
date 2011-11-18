@@ -519,13 +519,12 @@
                     <inplace>false</inplace>
                     <gwtVersion>${gwtVersion}</gwtVersion>
                     <port>9090</port>
-                    <module>org.sigmah.ActivityInfoProduction</module>
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <warSourceDirectory>${basedir}/war</warSourceDirectory>
                     <extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
                     <hostedWebapp>war</hostedWebapp>
                 </configuration>
-
+	
                 <executions>
                     <execution>
                         <id>i18n</id>
@@ -553,7 +552,10 @@
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                             <logLevel>INFO</logLevel>
                             <compileReport>true</compileReport>
-                            <module>org.sigmah.ActivityInfoProduction</module>
+                            <modules>
+	                            <module>org.sigmah.ActivityInfoProduction</module>
+	                            <module>org.activityinfo.embed.Embed</module>
+                            </modules>
                         </configuration>
                     </execution>
                 </executions>
