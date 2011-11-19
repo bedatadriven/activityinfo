@@ -130,11 +130,11 @@ public final class ActivityDTO
         this.database = database;
     }
     
-    public Published getPublished() {
+    public int getPublished() {
     	return get("published");
     }
 
-    public void setPublished(Published published) {
+    public void setPublished(int published) {
     	set("published", published);
     }
     

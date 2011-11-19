@@ -400,7 +400,7 @@ public class GetSchemaHandler implements
 					activity.setLocationTypeId(row.getInt("locationTypeId"));
 					activity.setReportingFrequency(row
 							.getInt("reportingFrequency"));
-					activity.setPublished(Published.fromIndex(row.getInt("published")));
+					activity.setPublished(row.getInt("published"));
 					
 					int databaseId = row.getInt("databaseId");
 					UserDatabaseDTO database = databaseMap.get(databaseId);

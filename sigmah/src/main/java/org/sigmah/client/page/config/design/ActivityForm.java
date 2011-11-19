@@ -84,9 +84,9 @@ class ActivityForm extends AbstractDesignForm {
         MappingComboBox publishedCombo = new MappingComboBox();
         publishedCombo.setAllowBlank(false);
         publishedCombo.setFieldLabel(I18N.CONSTANTS.published());
-        publishedCombo.add(Published.NOT_PUBLISHED.toString(), I18N.CONSTANTS.notPublished());
-        publishedCombo.add(Published.ONLY_SOME_SITES_ARE_PUBLISHED.toString(), I18N.CONSTANTS.onlySomeArePublished());
-        publishedCombo.add(Published.ALL_ARE_PUBLISHED.toString(), I18N.CONSTANTS.allArePublished());
+        publishedCombo.add(Published.NOT_PUBLISHED.getIndex(), I18N.CONSTANTS.notPublished());
+        publishedCombo.add(Published.ONLY_SOME_SITES_ARE_PUBLISHED.getIndex(), I18N.CONSTANTS.onlySomeArePublished());
+        publishedCombo.add(Published.ALL_ARE_PUBLISHED.getIndex(), I18N.CONSTANTS.allArePublished());
         binding.addFieldBinding(new MappingComboBoxBinding(publishedCombo, "published"));
         
         this.add(publishedCombo);
