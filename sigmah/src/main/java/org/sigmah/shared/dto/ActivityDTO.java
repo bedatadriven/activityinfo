@@ -131,11 +131,11 @@ public final class ActivityDTO
     }
     
     public int getPublished() {
-    	return get("published");
+    	return (Integer) get("published");
     }
 
     public void setPublished(int published) {
-    	set("published", published);
+    	set("published",(Integer) published);
     }
     
     /**

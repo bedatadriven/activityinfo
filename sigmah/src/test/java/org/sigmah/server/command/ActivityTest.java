@@ -73,7 +73,7 @@ public class ActivityTest extends CommandTestCase {
         Assert.assertEquals("name", "Warshing the dishes", act.getName());
         Assert.assertEquals("locationType", locType.getName(), act.getLocationType().getName());
         Assert.assertEquals("reportingFrequency", ActivityDTO.REPORT_MONTHLY, act.getReportingFrequency());
-        Assert.assertEquals("public", Published.NOT_PUBLISHED, act.getPublished());
+        Assert.assertEquals("public", Published.NOT_PUBLISHED.getIndex(), act.getPublished());
 
     }
 
@@ -103,13 +103,13 @@ public class ActivityTest extends CommandTestCase {
 
         /* Update Sort Order */
         Map<String, Object> changes = new HashMap<String, Object>();
-        changes.put("published", Published.ALL_ARE_PUBLISHED);
+        changes.put("published", Published.ALL_ARE_PUBLISHED.getIndex());
     
         execute(new UpdateEntity("Activity", 1, changes));
 
         /* Confirm the order is changed */
 
         SchemaDTO schema = execute(new GetSchema());
-        Assert.assertEquals(Published.ALL_ARE_PUBLISHED, schema.getActivityById(1).getPublished());
+        Assert.assertEquals(Published.ALL_ARE_PUBLISHED.getIndex(), schema.getActivityById(1).getPublished());
     }
 }
