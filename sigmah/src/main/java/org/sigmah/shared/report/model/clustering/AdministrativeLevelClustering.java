@@ -20,4 +20,25 @@ public class AdministrativeLevelClustering implements Clustering {
 		return true;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((adminLevels == null) ? 0 : adminLevels.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AdministrativeLevelClustering other = (AdministrativeLevelClustering) obj;
+		return adminLevels.equals(other.adminLevels);
+	}
+
 }

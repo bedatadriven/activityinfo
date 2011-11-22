@@ -97,9 +97,11 @@ public class Cluster {
         double count=0;
 
         for(PointValue pointValue : pointValues) {
-            latSum += pointValue.site.getLatitude();
-            lngSum += pointValue.site.getLongitude();
-            count++;
+        	if(pointValue.hasLatLng()) {
+	            latSum += pointValue.site.getLatitude();
+	            lngSum += pointValue.site.getLongitude();
+	            count++;
+        	}
         }
 
         return new AiLatLng(latSum / count, lngSum / count);

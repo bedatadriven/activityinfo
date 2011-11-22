@@ -215,12 +215,6 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		}));
 	}
 
-	/** Sets the selected options to the current MapLayer and returns the MapLayer */
-	public MapLayer getMapLayer() {
-		selectedMapLayer.setClustering(clusteringOptions.getSelectedClustering());
-		return selectedMapLayer;
-	}
-
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<MapLayer> handler) {
@@ -234,24 +228,27 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 	
 	@Override
 	public void setValue(MapLayer mapLayer) {
-		this.selectedMapLayer = mapLayer;
-		LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
-		
-		if (mapLayer instanceof BubbleMapLayer) {
-			bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
+		if(mapLayer != selectedMapLayer) {
+			this.selectedMapLayer = mapLayer;
+			LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
+			
+			if (mapLayer instanceof BubbleMapLayer) {
+				bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
+			}
+			if (mapLayer instanceof IconMapLayer) {
+				iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
+			}
+			if (mapLayer instanceof PiechartMapLayer) {
+				piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
+			}
+			
+			setStyleOptions(layerOptionsWidget);
+			clusteringOptions.loadForm(mapLayer);
+			clusteringOptions.setValue(mapLayer.getClustering(), false);
+	
+			filterPanel.getFilterPanelSet().applyBaseFilter(baseFilterFromLayer(mapLayer));
+			filterPanel.setValue(mapLayer.getFilter(), false);
 		}
-		if (mapLayer instanceof IconMapLayer) {
-			iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
-		}
-		if (mapLayer instanceof PiechartMapLayer) {
-			piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
-		}
-		
-		setStyleOptions(layerOptionsWidget);
-		clusteringOptions.setValue(mapLayer.getClustering(), false);
-
-		filterPanel.getFilterPanelSet().applyBaseFilter(baseFilterFromLayer(mapLayer));
-		filterPanel.setValue(mapLayer.getFilter(), false);
 	}
 
 	@Override
