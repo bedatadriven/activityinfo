@@ -190,6 +190,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
 	@Override
 	public void shutdown() {		
+		layersWidget.shutdown();
 	}
 
 	@Override

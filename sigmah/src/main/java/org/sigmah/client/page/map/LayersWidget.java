@@ -190,6 +190,19 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 	    layersPanel.add(view);
 	}
 	
+	public void shutdown() {
+		view.removeAllListeners();
+
+		if(layerMenu != null) {
+			layerMenu.hide();		
+			layerMenu.removeAllListeners();
+		}
+		if(addLayersDialog != null) {
+			addLayersDialog.hide();
+			addLayersDialog.removeAllListeners();
+		}
+	}
+	
 	private class MapLayersDropTarget extends ListViewDropTarget {
 		public MapLayersDropTarget(ListView listView) {
 			super(listView);
@@ -353,4 +366,6 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		ValueChangeEvent.fire(this, mapElement);
 		updateStore();
 	}
+
+
 }
