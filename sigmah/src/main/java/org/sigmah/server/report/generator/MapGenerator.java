@@ -178,21 +178,6 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         }
         
         content.setIndicators(indicatorDTOs);
-
-        // sort order by symbol radius descending
-        // (this assures that smaller symbols are drawn on
-        // top of larger ones)
-        Collections.sort(content.getMarkers(), new Comparator<MapMarker>() {
-            public int compare(MapMarker o1, MapMarker o2) {
-                if (o1.getSize() > o2.getSize()) {
-                    return -1;
-                } else if (o1.getSize() < o2.getSize()) {
-                    return 1;
-                }
-                return 0;
-            }
-        });
-
         element.setContent(content);
 
     }
