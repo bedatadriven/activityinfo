@@ -19,6 +19,7 @@ import org.sigmah.server.database.hibernate.entity.Attribute;
 import org.sigmah.server.database.hibernate.entity.AttributeGroup;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.LockedPeriod;
+import org.sigmah.server.database.hibernate.entity.Target;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CommandResult;
@@ -70,6 +71,8 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         } else if ("LockedPeriod".equals(cmd.getEntityName())) {
             updateLockedPeriod(user, cmd, changes);
             
+        } else if("Target".equals(cmd.getEntityName())){
+        	updateTarget(user, cmd, changes);
         } else {
             throw new RuntimeException("unknown entity type");
         }
@@ -114,5 +117,14 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         
         Activity activity = group.getActivities().iterator().next(); // Assume only one activity for the attr group
         activity.getDatabase().setLastSchemaUpdate(new Date());
+    }
+    
+    private void updateTarget(User user, UpdateEntity cmd, Map<String, Object> changes){
+   		// 	TODO: check permissions when updating the Target
+    	Target target = em.find(Target.class, cmd.getId());
+    	
+    	updateTargetProperties(target, changes);
+
+    	target.getUserDatabase().setLastSchemaUpdate(new Date());
     }
 }

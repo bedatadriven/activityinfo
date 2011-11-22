@@ -7,7 +7,7 @@ package org.sigmah.client.page.config.design;
 
 import org.sigmah.shared.dto.ActivityDTO;
 
-class AttributeGroupFolder extends Folder {
+public class AttributeGroupFolder extends Folder {
 
     public AttributeGroupFolder(ActivityDTO activity, String name) {
         super(activity, name);

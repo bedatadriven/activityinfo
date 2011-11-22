@@ -11,11 +11,15 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.sigmah.server.database.hibernate.entity.Activity;
+import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.Attribute;
 import org.sigmah.server.database.hibernate.entity.AttributeGroup;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.LocationType;
 import org.sigmah.server.database.hibernate.entity.LockedPeriod;
+import org.sigmah.server.database.hibernate.entity.Partner;
+import org.sigmah.server.database.hibernate.entity.Project;
+import org.sigmah.server.database.hibernate.entity.Target;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
@@ -139,6 +143,40 @@ public class BaseEntityHandler {
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
+    
+    protected void updateTargetProperties(Target target, Map<String, Object> changes) {
+        if (changes.containsKey("name")) {
+        	target.setName((String) changes.get("name"));
+        }
+
+        if (changes.containsKey("date1")) {
+        	target.setDate1((Date) changes.get("date1"));
+        }
+        
+        if (changes.containsKey("date2")) {
+        	target.setDate2((Date) changes.get("date2"));
+        }
+        
+        if (changes.containsKey("ProjectId")) {
+            target.setProject(
+                    em.getReference(Project.class,
+                            ((Project) changes.get("ProjectId")).getId()));
+        }
+       
+        if (changes.containsKey("PartnerId")) {
+            target.setPartner(
+                    em.getReference(Partner.class,
+                            ((Partner) changes.get("PartnerId")).getId()));
+        }
+        
+        if (changes.containsKey("AdminEntityId")) {
+            target.setAdminEntity(
+                    em.getReference(AdminEntity.class,
+                            ((AdminEntity) changes.get("AdminEntityId")).getId()));
+        }
+        
+    }
+    
 
     /**
      * Asserts that the user has permission to modify the structure of the given database.

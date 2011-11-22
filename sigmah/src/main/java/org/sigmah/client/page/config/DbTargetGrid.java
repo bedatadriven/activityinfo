@@ -25,6 +25,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> implements DbTargetEditor.View {
@@ -33,7 +35,7 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 	private final IconImageBundle icons;
 
 	private Grid<TargetDTO> grid;
-
+	private ListStore<TargetDTO> store;
 	protected ContentPanel targetValueContainer;
 
 	@Inject
@@ -44,13 +46,15 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 
 	@Override
 	protected Grid<TargetDTO> createGridAndAddToContainer(Store store) {
+		this.store= (ListStore<TargetDTO>) store;
+
 		grid = new Grid<TargetDTO>((ListStore) store, createColumnModel());
 		grid.setAutoExpandColumn("name");
 		grid.setLoadMask(true);
 
 		setLayout(new BorderLayout());
 		add(grid, new BorderLayoutData(Style.LayoutRegion.CENTER));
-
+		
 		return grid;
 	}
 
@@ -83,7 +87,8 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 	public FormDialogTether showAddDialog(TargetDTO target,	UserDatabaseDTO db, FormDialogCallback callback) {
 
 		TargetForm form = new TargetForm(db);
-		form.getBinding().bind(target);
+		form.getBinding().setStore(store);
+		form.getBinding().bind(store.getRecord(target).getModel());		
 
 		FormDialogImpl<TargetForm> dlg = new FormDialogImpl<TargetForm>(form);
 		dlg.setWidth(450);
@@ -96,19 +101,24 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 	}
 
 	@Override
-	public void createTargetValueContainer() {
+	public void createTargetValueContainer(Widget w) {
 		targetValueContainer = new ContentPanel();
 		targetValueContainer.setHeaderVisible(false);
 		targetValueContainer.setBorders(false);
 		targetValueContainer.setFrame(false);
-
+		targetValueContainer.setLayout(new FitLayout());
+		
 		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
 		layout.setSplit(true);
 		layout.setCollapsible(true);
 		layout.setSize(250);
 		layout.setMargins(new Margins(5, 0, 0, 0));
 		
+		targetValueContainer.add(w);
+		
+		
 		add(targetValueContainer, layout);
+
 	}
 
 }

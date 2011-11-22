@@ -1,7 +1,8 @@
 package org.sigmah.client.page.config;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -15,10 +16,13 @@ import org.sigmah.client.page.common.grid.GridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.AddTarget;
+import org.sigmah.shared.command.CreateEntity;
+import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.RemoveProject;
-import org.sigmah.shared.command.RemoveTarget;
+import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.exception.DuplicateException;
@@ -27,9 +31,11 @@ import org.sigmah.shared.exception.ProjectHasSitesException;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
@@ -43,14 +49,15 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	@ImplementedBy(DbTargetGrid.class)
 	public interface View extends GridView<DbTargetEditor, TargetDTO> {
 		public void init(DbTargetEditor editor, UserDatabaseDTO db,	ListStore<TargetDTO> store);
-		public void createTargetValueContainer();
+		public void createTargetValueContainer(Widget w);
 		public FormDialogTether showAddDialog(TargetDTO target, UserDatabaseDTO db, FormDialogCallback callback);
 	}
 
 	private final Dispatcher service;
 	private final EventBus eventBus;
 	private final View view;
-
+	private final StateProvider stateMgr;
+	
 	private UserDatabaseDTO db;
 	private ListStore<TargetDTO> store;
 
@@ -61,6 +68,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 		this.service = service;
 		this.eventBus = eventBus;
 		this.view = view;
+		this.stateMgr =stateMgr;
 	}
 
 	 public void go(UserDatabaseDTO db) {
@@ -73,19 +81,25 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 
 	        view.init(this, db, store);
 	        view.setActionEnabled(UIActions.delete, false);
-	        view.createTargetValueContainer();
+	        view.setActionEnabled(UIActions.edit, false);
+	        
+	        TargetIndicatorPresenter p =   new TargetIndicatorPresenter(eventBus, service, stateMgr, new TargetIndicatorView(service), I18N.CONSTANTS);
+	        view.createTargetValueContainer((Widget)p.getWidget());
+	     //   p.go(db);
 	    }
 	 
 	 
 	 @Override
-		protected void onDeleteConfirmed(final TargetDTO target) {
-	        service.execute(new RemoveTarget(db.getId(), target.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+		protected void onDeleteConfirmed(final TargetDTO model) {
+		 
+		 service.execute(new Delete((EntityDTO) model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
 	            public void onFailure(Throwable caught) {
-	                
+
 	            }
 
 	            public void onSuccess(VoidResult result) {
-	                store.remove(target);
+	                store.remove(model);
+	                eventBus.fireEvent(AppEvents.SchemaChanged);
 	            }
 	        });
 		}
@@ -110,6 +124,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	                    public void onSuccess(CreateResult result) {
 	                    	newTarget.setId(result.getNewId());
 	                        store.add(newTarget);
+	                        store.commitChanges();
 	                        db.getTargets().add(newTarget);
 	                        eventBus.fireEvent(AppEvents.SchemaChanged);
 	                        dlg.hide();
@@ -118,7 +133,43 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	            }
 	        });
 		}
+	
+
+	@Override
+	protected void onEdit(final TargetDTO dto) {
 		
+		this.view.showAddDialog(dto, db, new FormDialogCallback() {
+	        @Override
+	        public void onValidated(final FormDialogTether dlg) {
+
+	        	final Record record =store.getRecord(dto);
+	            service.execute(new UpdateEntity(dto, getChangedProperties(record) ), dlg, new AsyncCallback<VoidResult>() {
+	                public void onFailure(Throwable caught) {
+
+	                }
+	
+	                public void onSuccess(VoidResult result) {
+	                	store.commitChanges();
+	                	eventBus.fireEvent(AppEvents.SchemaChanged);
+	                    dlg.hide();
+	                }
+	            });
+	        }
+		});
+	}
+	
+	
+	
+		 
+	protected Map<String, Object> getChangedProperties(Record record) {
+        Map<String, Object> changes = new HashMap<String, Object>();
+
+        for (String property : record.getChanges().keySet()) {
+            changes.put(property, record.get(property));
+        }
+        return changes;
+    }
+	
 	@Override
 	public PageId getPageId() {
 		return DatabaseTargets;
@@ -147,7 +198,6 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
 		view.setActionEnabled(UIActions.delete, true);
+		view.setActionEnabled(UIActions.edit, true);
 	}
-
-
 }

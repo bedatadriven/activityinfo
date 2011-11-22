@@ -11,9 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
-public class Target implements Serializable {
+public class Target implements Serializable, ReallyDeleteable  {
 
 	private int id;
 	private String name;
@@ -102,6 +103,11 @@ public class Target implements Serializable {
 	@JoinColumn(name = "DatabaseId", nullable = false)
 	public UserDatabase getUserDatabase() {
 		return userDatabase;
+	}
+
+	@Override
+	public void deleteReferences() {
+		// delete references also , from targetValue
 	}
 
 }

@@ -82,6 +82,13 @@
     <partner partnerId="1" name="NRC"/>
 
     <partnerInDatabase databaseId="1" partnerId="1"/>
+    
+    <target targetId="1"
+            databaseId="1"
+            name="target1"
+            date1="2011-11-29 00:00:00"
+            date2="2011-11-29 00:00:00" />
+              
 
     <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org" locale="fr" newUser="1" />
     <userPermission

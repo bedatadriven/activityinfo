@@ -5,7 +5,7 @@ import java.util.Date;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.util.Format;
 
-public class TargetDTO extends BaseModelData implements DTO {
+public class TargetDTO extends BaseModelData implements EntityDTO{
 
 	private UserDatabaseDTO userDatabase;
 
@@ -105,5 +105,10 @@ public class TargetDTO extends BaseModelData implements DTO {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public String getEntityName() {
+		return entityName;
 	}
 }
