@@ -223,7 +223,7 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 				optionsPanel.showStyle(getSelectedLayer());
 			}
 		}));
-		layerMenu.add(new MenuItem(I18N.CONSTANTS.aggregation(),
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.clustering(),
 					AbstractImagePrototype.create(MapResources.INSTANCE.clusterIcon()),
 					new SelectionListener<MenuEvent>() {
 			@Override
