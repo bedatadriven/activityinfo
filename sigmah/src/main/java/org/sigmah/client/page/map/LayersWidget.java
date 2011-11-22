@@ -243,7 +243,7 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		layerMenu.add(new SeparatorMenuItem());
 		
 		
-		layerMenu.add(new MenuItem(I18N.CONSTANTS.remove(), 
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.delete(), 
 					IconImageBundle.ICONS.delete(), 
 					new SelectionListener<MenuEvent>() {
 			@Override
