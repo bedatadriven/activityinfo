@@ -33,8 +33,6 @@ public class IconLayerOptions extends LayoutContainer implements LayerOptionsWid
 	private Map<Radio, Icon> radioIcons = new HashMap<Radio, Icon>();
 	private Map<Icon, Radio> iconsRadio = new HashMap<Icon, Radio>();
 	
-	private boolean ignoreFireEvent = false;
-
 	public IconLayerOptions() {
 		super();
 		
@@ -46,11 +44,7 @@ public class IconLayerOptions extends LayoutContainer implements LayerOptionsWid
 			@Override
 			public void handleEvent(FieldEvent be) {
 				iconMapLayer.setIcon(radioIcons.get(radiogroupIcons.getValue()).name());
-				if (!ignoreFireEvent) {
-					ValueChangeEvent.fire(IconLayerOptions.this, iconMapLayer);
-				} else {
-					ignoreFireEvent = false;
-				}
+				ValueChangeEvent.fire(IconLayerOptions.this, iconMapLayer);
 			}
 		});
 	}
@@ -93,7 +87,6 @@ public class IconLayerOptions extends LayoutContainer implements LayerOptionsWid
 	@Override
 	public void setValue(IconMapLayer value) {
 		this.iconMapLayer=value;
-		ignoreFireEvent=true;
 		updateUI();
 	}
 	private void updateUI() {
