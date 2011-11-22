@@ -4,10 +4,12 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.ColorField;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
+import com.extjs.gxt.ui.client.event.ColorPaletteEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SliderEvent;
+import com.extjs.gxt.ui.client.widget.ColorPalette;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -22,7 +24,7 @@ import com.google.gwt.user.client.Timer;
  */
 public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsWidget<BubbleMapLayer> {
 	private BubbleMapLayer bubbleMapLayer;
-	private ColorField colorPicker = new ColorField();
+	private ColorPalette colorPicker = new ColorPalette();
 	private Slider sliderMinSize = new Slider();
 	private Slider sliderMaxSize = new Slider();
 	private Timer timerMinSlider;
@@ -30,24 +32,18 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 
 	public BubbleLayerOptions() {
 		super();
-		
+		setStyleAttribute("padding", "5px");
 		createColorPicker();
 		createMinMaxSliders();
 	}
 
-	protected void onTimer() {
-		
-	}
-
 	private void createColorPicker() {
-		colorPicker.setFieldLabel("Color");
 		colorPicker.setValue("000000");
-		colorPicker.setAutoWidth(true);
 		
 		// Set the selected color to the maplayer
-		colorPicker.addListener(Events.Change, new Listener<FieldEvent>() {
+		colorPicker.addListener(Events.Select, new Listener<ColorPaletteEvent>() {
 			@Override
-			public void handleEvent(FieldEvent be) {
+			public void handleEvent(ColorPaletteEvent be) {
 				bubbleMapLayer.setBubbletColor(colorPicker.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 		}});
@@ -124,7 +120,7 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 	private void updateUI() {
 		sliderMinSize.setValue(bubbleMapLayer.getMinRadius(), true);
 		sliderMaxSize.setValue(bubbleMapLayer.getMaxRadius(), true);
-		colorPicker.setValue(bubbleMapLayer.getBubbleColor(), true);
+		colorPicker.setValue(bubbleMapLayer.getBubbleColor());
 	}
 	
 	// TODO: fireevent
