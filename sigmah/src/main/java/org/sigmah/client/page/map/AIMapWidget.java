@@ -391,9 +391,13 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 		
 		        GcIconFactory iconFactory = new GcIconFactory();
 		        iconFactory.primaryColor = "#0000FF";
-		
+		       
 		        Extents extents = putMarkersOnMap(result);
-				zoomToBounds(llBoundsForExtents(extents));
+		        
+		        // can we zoom in further and still see all the markers?
+		        if(mapWidget.getBounds().containsBounds(llBoundsForExtents(extents))) {
+		        	zoomToBounds(llBoundsForExtents(extents));
+		        }
 			}
 		});
     }
