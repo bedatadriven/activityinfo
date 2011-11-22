@@ -80,7 +80,7 @@ import com.google.gwt.user.client.ui.HasValue;
  * Named AIMapWidget because of a naming conflict with com.google.gwt.maps.client.MapWidget
  */
 public class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
-    private MapWidget mapWidget = null;
+	private MapWidget mapWidget = null;
     private BaseMap currentBaseMap = null;
     private LatLngBounds pendingZoom = null;
 	private SchemaDTO schema;
@@ -107,6 +107,11 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 
     private final Dispatcher dispatcher;
 	private MapPage mapPage;
+
+	private LargeMapControl zoomControl;
+	private int zoomControlOffsetX = 5;
+    private static final int zoomControlOffsetY = 5;
+
     
     public AIMapWidget(Dispatcher dispatcher) {
 
@@ -203,6 +208,18 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     	}
     }
     
+    public void setZoomControlOffsetX(int offset) {
+    	zoomControlOffsetX = offset;
+    	try {
+    	if(zoomControl != null) {
+    		mapWidget.removeControl(zoomControl);
+    		mapWidget.addControl(zoomControl, zoomControlPosition());
+    	}
+    	} catch(Exception e) {
+    		Log.error("Exception thrown while setting zoom control", e);
+    	}
+    }
+    
     public void createMapIfNeededAndUpdateMapContent() {
         if (mapWidget == null) {
 
@@ -288,7 +305,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     
 	private void createGoogleMapWidget() {
 		mapWidget = new MapWidget();
-        mapWidget.addControl(new LargeMapControl(), new ControlPosition(ControlAnchor.TOP_LEFT, 0, 50));
+        zoomControl = new LargeMapControl();
+		mapWidget.addControl(zoomControl, zoomControlPosition());
         mapWidget.panTo(LatLng.newInstance(-1, 25));
         
         mapWidget.addMapClickHandler(new MapClickHandler() {
@@ -297,6 +315,10 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 				onMapClick(event);
 			}
 		});
+	}
+
+	private ControlPosition zoomControlPosition() {
+		return new ControlPosition(ControlAnchor.TOP_LEFT, zoomControlOffsetX, zoomControlOffsetY);
 	}
     
     /**

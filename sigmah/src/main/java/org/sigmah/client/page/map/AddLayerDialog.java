@@ -95,7 +95,6 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		setPlain(true);
 		setHeading("Add layer");
 		setModal(true);
-		setBlinkModal(true);
 	}
 	
 	private void createLayerOptions() {

@@ -12,8 +12,10 @@ import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FxEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.fx.FxConfig;
 import com.extjs.gxt.ui.client.util.Size;
@@ -31,6 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLayer> {
 	
+	public static final int WIDTH = 271;
+	public static final int HEIGHT = 377;
+
 	private MapLayer selectedMapLayer;
 
 	// Options for every supported MapLayer type
@@ -107,8 +112,8 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 	}
 
 	private void initializeComponent() {
-		setWidth(271);
-		setHeight(377);
+		setWidth(WIDTH);
+		setHeight(HEIGHT);
 		
 		layout = new AccordionLayout() {
 
@@ -143,7 +148,7 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		ToolButton closeBtn = new ToolButton("x-tool-close");
 	    closeBtn.addListener(Events.Select, new Listener<ComponentEvent>() {
 	        public void handleEvent(ComponentEvent ce) {
-	          el().fadeOut(FxConfig.NONE);
+	          fadeOut();
 	        }
 	      });
 	    stylePanel.getHeader().addTool(closeBtn);
@@ -199,6 +204,16 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		stylePanel.layout();
 		
 	}
+	
+	public void fadeOut() {
+		el().fadeOut(new FxConfig(new Listener<FxEvent>() {
+			
+			@Override
+			public void handleEvent(FxEvent be) {
+				hide();
+			}
+		}));
+	}
 
 	/** Sets the selected options to the current MapLayer and returns the MapLayer */
 	public MapLayer getMapLayer() {
@@ -216,7 +231,7 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 	public MapLayer getValue() {
 		return selectedMapLayer;
 	}
-
+	
 	@Override
 	public void setValue(MapLayer mapLayer) {
 		this.selectedMapLayer = mapLayer;

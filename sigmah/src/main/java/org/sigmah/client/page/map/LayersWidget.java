@@ -21,6 +21,8 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -184,7 +186,6 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 				}
 				optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
 			}
-
 		});
 	    layersPanel.add(view);
 	}
@@ -293,6 +294,10 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		mapElement.getLayers().remove(mapLayer);				
 		ValueChangeEvent.fire(this, mapElement);
 		updateStore();
+		
+		if(optionsPanel.getValue() == mapLayer) {
+			optionsPanel.fadeOut();
+		}
 	}
 
 	@Override
