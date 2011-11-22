@@ -78,28 +78,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.Init);
-
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			
-			@Override
-			public void execute() {
-		        updateOlarkInfo(injector.getAuthentication());
-			}
-		});
-	}
-
-    private void updateOlarkInfo(Authentication authentication) {
-    	try {
-	    	OlarkApi.updateEmailAddress(authentication.getEmail());
-	    	//OlarkApi.updateFullName(authentication.getUserName());
-    	} catch(Throwable caught) {
-    		Log.debug("failed to update olark info", caught);
-    	}
-	}
-
-	private boolean isOfflineModeSupported() {
-    	// Gears is currently required for offline mode
-		return Factory.getInstance() != null;
 	}
 
 	protected void createCaches(AppInjector injector) {
