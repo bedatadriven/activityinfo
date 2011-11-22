@@ -59,6 +59,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.control.ControlAnchor;
+import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
@@ -286,7 +288,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     
 	private void createGoogleMapWidget() {
 		mapWidget = new MapWidget();
-        mapWidget.addControl(new LargeMapControl());
+        mapWidget.addControl(new LargeMapControl(), new ControlPosition(ControlAnchor.TOP_LEFT, 0, 50));
         mapWidget.panTo(LatLng.newInstance(-1, 25));
         
         mapWidget.addMapClickHandler(new MapClickHandler() {
@@ -355,7 +357,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 
 			@Override
 			public void onSuccess(MapContent result) {
-		        Log.debug("MapPreview: Received content, extents are = " + result.getExtents().toString());
+		        Log.debug("MapPreview: Received content");
 
 		        mapModel = result;
 		        
@@ -368,21 +370,18 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 		        GcIconFactory iconFactory = new GcIconFactory();
 		        iconFactory.primaryColor = "#0000FF";
 		
-		        putMarkersOnMap(result);
-		        zoomToMarkers(result);
+		        Extents extents = putMarkersOnMap(result);
+				zoomToBounds(llBoundsForExtents(extents));
 			}
 		});
     }
     
-	private void zoomToMarkers(MapContent result) {
-		zoomToBounds(llBoundsForExtents(result.getExtents()));
-	}
-	
-	private void putMarkersOnMap(MapContent result) {
+	private Extents putMarkersOnMap(MapContent result) {
+		Extents extents = Extents.emptyExtents();
 		for (MapMarker marker : result.getMarkers()) {
             Icon icon = IconFactory.createIcon(marker);
             LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-
+            extents.grow(marker.getLat(), marker.getLng());
             MarkerOptions options = MarkerOptions.newInstance();
             options.setIcon(icon);
             options.setTitle(marker.getTitle());
@@ -391,6 +390,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
             mapWidget.addOverlay(overlay);
             overlays.put(overlay, marker);
         }
+		return extents;
 	}
 	
 	/**

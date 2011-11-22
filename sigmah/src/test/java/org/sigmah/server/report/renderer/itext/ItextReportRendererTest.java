@@ -113,7 +113,7 @@ public class ItextReportRendererTest {
 		mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
 		mapContent.setBaseMap(baseMap);
 		mapContent.setZoomLevel(8);
-		mapContent.setExtents(new Extents(-2.2, -2.1, 28.85, 28.9));
+		mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
 		mapContent.setMarkers(Arrays.asList((MapMarker)marker1));
 		
 		MapReportElement map = new MapReportElement();
@@ -171,7 +171,7 @@ public class ItextReportRendererTest {
 			mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
 			mapContent.setBaseMap(baseMap);
 			mapContent.setZoomLevel(8);
-			mapContent.setExtents(new Extents(-2.2, -2.1, 28.85, 28.9));
+			mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
 			mapContent.setMarkers(Arrays.asList((MapMarker)marker1));
 			
 			MapReportElement satelliteMap = new MapReportElement();
@@ -267,7 +267,7 @@ public class ItextReportRendererTest {
 		mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
 		mapContent.setBaseMap(baseMap);
 		mapContent.setZoomLevel(8);
-		mapContent.setExtents(new Extents(-2.2, -2.1, 28.85, 28.9));
+		mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
 		mapContent.setMarkers(Arrays.asList((MapMarker)marker1));
 		mapContent.getIndicators().addAll(Arrays.asList(
 				indicator101, indicator102, indicator103));

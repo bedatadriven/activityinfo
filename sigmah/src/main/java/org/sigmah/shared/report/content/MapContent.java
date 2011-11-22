@@ -27,8 +27,8 @@ public class MapContent implements Content {
     private List<MapMarker> markers = new ArrayList<MapMarker>();
     private Set<Integer> unmappedSites = new HashSet<Integer>();
     private Set<IndicatorDTO> indicators = new HashSet<IndicatorDTO>();
-    private Extents extents;
     private int zoomLevel;
+    private AiLatLng center;
 
     public MapContent() {
 
@@ -58,14 +58,6 @@ public class MapContent implements Content {
         this.unmappedSites = unmappedSites;
     }
 
-    public Extents getExtents() {
-        return extents;
-    }
-
-    public void setExtents(Extents extents) {
-        this.extents = extents;
-    }
-
     public int getZoomLevel() {
         return zoomLevel;
     }
@@ -78,7 +70,15 @@ public class MapContent implements Content {
         return baseMap;
     }
 
-    public void setBaseMap(BaseMap baseMap) {
+    public AiLatLng getCenter() {
+		return center;
+	}
+
+	public void setCenter(AiLatLng center) {
+		this.center = center;
+	}
+
+	public void setBaseMap(BaseMap baseMap) {
         this.baseMap = baseMap;
     }
 

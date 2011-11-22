@@ -43,6 +43,7 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.util.mapping.TileMath;
 
 import com.google.inject.Inject;
 
@@ -219,7 +220,7 @@ public class ImageMapRenderer {
 	}
 
     public void drawBasemap(Graphics2D g2d, MapReportElement element) {
-    	AiLatLng center = element.getCenter() != null ? element.getCenter() : element.getContent().getExtents().center(); 
+    	AiLatLng center = element.getCenter() != null ? element.getCenter() : element.getContent().getCenter(); 
         TiledMap map = new TiledMap(element.getWidth(), element.getHeight(),
         		center,
                 element.getContent().getZoomLevel());
@@ -246,15 +247,28 @@ public class ImageMapRenderer {
 	}
 
 	private void drawGoogleBaseMap(Graphics2D g2d, TiledMap map, GoogleBaseMap baseMap) throws IOException {
-		BufferedImage image = ImageIO.read(GoogleStaticMapsApi.buildRequest()
-				.setBaseMap(baseMap)
-				.setCenter(map.getGeoCenter())
-				.setWidth(map.getWidth())
-				.setHeight(map.getHeight())
-				.setZoom(map.getZoom())
-				.url());
 		
-		g2d.drawImage(image, 0, 0, map.getWidth(), map.getHeight(), null);
+		// the google maps static api imposes a limit to the image sizes we can request, 
+		// so we have to acquire the map imagery in batches
+		
+		for(int x=0;x<map.getWidth();x+=GoogleStaticMapsApi.MAX_WIDTH) {
+			for(int y=0;y<map.getHeight();y+=GoogleStaticMapsApi.MAX_HEIGHT) {
+				int sliceWidth = Math.min(GoogleStaticMapsApi.MAX_WIDTH, map.getWidth()-x);
+				int sliceHeight = Math.min(GoogleStaticMapsApi.MAX_HEIGHT, map.getHeight()-y);
+				
+				AiLatLng sliceCenter = map.fromPixelToLatLng(x + (sliceWidth/2), y + (sliceHeight/2));
+				
+				BufferedImage image = ImageIO.read(GoogleStaticMapsApi.buildRequest()
+						.setBaseMap(baseMap)
+						.setCenter(sliceCenter)
+						.setWidth(sliceWidth)
+						.setHeight(sliceHeight)
+						.setZoom(map.getZoom())
+						.url());
+				
+				g2d.drawImage(image, x, y, image.getWidth(), image.getHeight(), null);
+			}
+		}
 	}
 	
 

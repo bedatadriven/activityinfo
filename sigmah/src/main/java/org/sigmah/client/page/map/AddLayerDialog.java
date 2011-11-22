@@ -89,8 +89,9 @@ public class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		VBoxLayout layout = new VBoxLayout();
 		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		setLayout(layout);
-
-		setSize(800, 600);
+		
+		setSize((int)Math.min(com.google.gwt.user.client.Window.getClientWidth() * 0.8, 800d),
+			    (int)Math.min(com.google.gwt.user.client.Window.getClientWidth() * 0.8, 600d));
 		setPlain(true);
 		setHeading("Add layer");
 		setModal(true);
