@@ -7,6 +7,7 @@ package org.sigmah.server.report.generator.map;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -124,6 +125,21 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
             markers.add(marker);
         }
+        
+        // sort order by symbol radius descending
+        // (this assures that smaller symbols are drawn on
+        // top of larger ones)
+        Collections.sort(markers, new Comparator<MapMarker>() {
+            public int compare(MapMarker o1, MapMarker o2) {
+                if (o1.getSize() > o2.getSize()) {
+                    return -1;
+                } else if (o1.getSize() < o2.getSize()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+
         
         // number markers if applicable
         if(layer.getLabelSequence() != null) {
