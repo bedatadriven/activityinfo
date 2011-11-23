@@ -542,7 +542,6 @@
                         </goals>
                         <configuration>
                             <logLevel>ALL</logLevel>
-                            <generateDirectory>${basedir}/src/main/java</generateDirectory>
                             <i18nConstantsBundle>org.sigmah.client.i18n.UIConstants</i18nConstantsBundle>
                         </configuration>
                     </execution>
