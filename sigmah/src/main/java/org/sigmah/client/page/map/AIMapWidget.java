@@ -6,7 +6,6 @@
 package org.sigmah.client.page.map;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.Dispatcher;
@@ -17,14 +16,11 @@ import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
-import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
@@ -367,9 +363,13 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 		
 		        GoogleChartsIconBuilder iconFactory = new GoogleChartsIconBuilder();
 		        iconFactory.setPrimaryColor("#0000FF");
-		
+
 		        Extents extents = putMarkersOnMap(result);
-				zoomToBounds(llBoundsForExtents(extents));
+		        
+		        // can we zoom in further and still see all the markers?
+		        if(mapWidget.getBounds().containsBounds(llBoundsForExtents(extents))) {
+		        	zoomToBounds(llBoundsForExtents(extents));
+		        }
 			}
 		});
     }
