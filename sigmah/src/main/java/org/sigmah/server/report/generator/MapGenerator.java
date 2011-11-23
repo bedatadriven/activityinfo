@@ -36,6 +36,7 @@ import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
+import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -94,19 +95,29 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         }
 
         // FIRST PASS: calculate extents and margins
-        Extents extents = Extents.emptyExtents();
-        Margins margins = new Margins(0);
-        for (LayerGenerator layerGtor : layerGenerators) {
-            extents.grow(layerGtor.calculateExtents());
-            margins.grow(layerGtor.calculateMargins());
-        }
-
-        // Now we're ready to calculate the zoom level
-        // and the projection
         int width = element.getWidth();
         int height = element.getHeight();
-        int zoom = element.getZoomLevel() == -1 ? TileMath.zoomLevelForExtents(extents, width, height) : element.getZoomLevel();
-        AiLatLng center = element.getCenter() == null ? extents.center() : element.getCenter();
+        AiLatLng center;
+        int zoom;
+        
+        if(element.getCenter() == null) {
+	        Extents extents = Extents.emptyExtents();
+	        Margins margins = new Margins(0);
+	        for (LayerGenerator layerGtor : layerGenerators) {
+	            extents.grow(layerGtor.calculateExtents());
+	            margins.grow(layerGtor.calculateMargins());
+	        }
+	        // Now we're ready to calculate the zoom level
+	        // and the projection
+	        zoom = TileMath.zoomLevelForExtents(extents, width, height);
+	        center = extents.center();
+	        
+        } else {
+        	center = element.getCenter();
+        	zoom = element.getZoomLevel();  	
+        }
+        
+        content.setCenter(center);
 
         // Retrieve the basemap and clamp zoom level
         BaseMap baseMap = null;
@@ -137,7 +148,6 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
 			logger.error("Could not find base map id=" + element.getBaseMapId());
         }
-        content.setExtents(extents);
 
         // Generate the actual content
         for (LayerGenerator layerGtor : layerGenerators) {

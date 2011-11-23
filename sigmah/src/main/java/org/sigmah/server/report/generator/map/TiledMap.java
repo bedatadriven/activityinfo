@@ -135,6 +135,10 @@ public class TiledMap {
 	public AiLatLng fromPixelToLatLng(Point px) {
 		return TileMath.inverse(px.translate(origin.x, origin.y), this.zoom);
 	}
+		
+	public AiLatLng fromPixelToLatLng(double x, double y) {
+		return fromPixelToLatLng(new Point(x,y));
+	}
 
 	public int getWidth() {
 		return width;

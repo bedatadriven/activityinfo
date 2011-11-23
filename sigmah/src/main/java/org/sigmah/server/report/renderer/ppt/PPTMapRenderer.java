@@ -71,11 +71,6 @@ public class PPTMapRenderer extends ImageMapRenderer {
         int offsetX = ((int)pageSize.getWidth() - element.getWidth())/2;
         int offsetY = ((int)pageSize.getHeight() - element.getHeight())/2;
 
-        // create the group for the map
-//        ShapeGroup group = new ShapeGroup();
-//        group.setAnchor(new Rectangle(offsetX, offsetY, element.getWidth(), element.getHeight()));
-//        slide.addShape(group);
-
         // add the map background image
         int basemapPictureIndx = ppt.addPicture(renderBasemap(element), Picture.PNG);
         Picture basemap = new Picture(basemapPictureIndx);
@@ -90,13 +85,22 @@ public class PPTMapRenderer extends ImageMapRenderer {
         // Add the indicator markers to the slide as shapes
         for(MapMarker marker : element.getContent().getMarkers()) {
 
-            if(marker instanceof IconMapMarker) {
-                addIconMarker(ppt, slide, offsetX, offsetY, iconPictureIndex, (IconMapMarker) marker);
-            } else if( marker instanceof BubbleMapMarker) {
-                addBubble(slide, offsetX, offsetY, (BubbleMapMarker) marker);
-            }
+        	if(inView(element, marker)) {
+	        	
+	            if(marker instanceof IconMapMarker) {
+	                addIconMarker(ppt, slide, offsetX, offsetY, iconPictureIndex, (IconMapMarker) marker);
+	            } else if( marker instanceof BubbleMapMarker) {
+	                addBubble(slide, offsetX, offsetY, (BubbleMapMarker) marker);
+	            }
+        	}
         }
-
+    }
+    
+    private boolean inView(MapReportElement element, MapMarker marker) {
+    	return (marker.getX()+marker.getSize()) > 0 &&
+    	       (marker.getY()+marker.getSize()) > 0 &&
+    	       (marker.getX()-marker.getSize()) < element.getWidth() &&
+    	       (marker.getY()-marker.getSize()) < element.getHeight();
     }
 
     private void addBubble(Slide slide, int offsetX, int offsetY, BubbleMapMarker marker) {

@@ -19,6 +19,9 @@ public class GoogleStaticMapsApi {
 	
 	private static final String END_POINT = "http://maps.googleapis.com/maps/api/staticmap?";
 	
+	public static final int MAX_WIDTH = 640;
+	public static final int MAX_HEIGHT = 640; 
+	
 	private int width;
 	private int height;
 	private int zoom;
