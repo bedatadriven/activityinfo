@@ -8,8 +8,8 @@ package org.sigmah.client.dispatch.remote.cache;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.dispatch.remote.ProxyManager;
-import org.sigmah.client.mock.DummyData;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dto.DTOs;
 import org.sigmah.shared.dto.SchemaDTO;
 
 public class SchemaCacheTest {
@@ -21,7 +21,7 @@ public class SchemaCacheTest {
 
         SchemaCache cache = new SchemaCache(proxyMgr);
 
-        SchemaDTO schema = DummyData.PEAR();
+        SchemaDTO schema = DTOs.PEAR();
 
         proxyMgr.notifyListenersOfSuccess(new GetSchema(), schema);
 

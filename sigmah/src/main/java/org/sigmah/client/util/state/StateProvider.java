@@ -15,16 +15,16 @@ import java.util.Map;
  */
 public interface StateProvider {
 
-    public Object get(String name);
+    Object get(String name);
 
-    public Date getDate(String name);
+    Date getDate(String name);
 
-    public Integer getInteger(String name);
+    Integer getInteger(String name);
 
-    public Map<String, Object> getMap(String name);
+    Map<String, Object> getMap(String name);
 
-    public String getString(String name);
+    String getString(String name);
 
-    public void set(String name, Object value);
+    void set(String name, Object value);
 
 }

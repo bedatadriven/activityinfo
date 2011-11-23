@@ -18,14 +18,12 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GeneratePivotTable;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.report.content.Content;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
@@ -44,38 +42,38 @@ import com.google.inject.Inject;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class PivotPresenter implements Page {
-    public static final PageId Pivot = new PageId("pivot");
+    public static final PageId PAGE_ID = new PageId("pivot");
 
     @ImplementedBy(PivotPage.class)
     public interface View {
 
-        public void bindPresenter(PivotPresenter presenter);
+        void bindPresenter(PivotPresenter presenter);
 
-        public void enableUIAction(String actionId, boolean enabled);
+        void enableUIAction(String actionId, boolean enabled);
 
-        public ListStore<Dimension> getRowStore();
+        ListStore<Dimension> getRowStore();
 
-        public ListStore<Dimension> getColStore();
+        ListStore<Dimension> getColStore();
         
-        public TreeStore<ModelData> getDimensionStore();
+        TreeStore<ModelData> getDimensionStore();
 
-        public void setContent(PivotTableReportElement element);
+        void setContent(PivotTableReportElement element);
 
-        public AsyncMonitor getMonitor();
+        AsyncMonitor getMonitor();
 
-        public void setSchema(SchemaDTO schema);
+        void setSchema(SchemaDTO schema);
 
-        public List<IndicatorDTO> getSelectedIndicators();
+        List<IndicatorDTO> getSelectedIndicators();
 
-        public List<AdminEntityDTO> getAdminRestrictions();
+        List<AdminEntityDTO> getAdminRestrictions();
 
-        public Date getMinDate();
+        Date getMinDate();
 
-        public Date getMaxDate();
+        Date getMaxDate();
         
-        public List<PartnerDTO> getPartnerRestrictions();
+        List<PartnerDTO> getPartnerRestrictions();
         
-        public void setDimensionChecked(ModelData d, boolean checked);
+        void setDimensionChecked(ModelData d, boolean checked);
         
     }
 
@@ -175,7 +173,7 @@ public class PivotPresenter implements Page {
 
     @Override
     public PageId getPageId() {
-        return Pivot;
+        return PAGE_ID;
     }
 
     @Override

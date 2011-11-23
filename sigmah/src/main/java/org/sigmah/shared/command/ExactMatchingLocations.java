@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.sigmah.shared.command.ExactMatchingLocations.ExactMatchingLocationsResult;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dto.LocationDTO2;
+import org.sigmah.shared.dto.LocationDTO;
 
 import com.google.common.collect.Lists;
 
@@ -15,13 +15,13 @@ public class ExactMatchingLocations implements Command<ExactMatchingLocationsRes
 	// Nothing really
 	
 	public static class ExactMatchingLocationsResult implements CommandResult {
-		private List<List<LocationDTO2>> matchingLocations = Lists.newArrayList();
+		private List<List<LocationDTO>> matchingLocations = Lists.newArrayList();
 		private int millisecondsToCompleteQuery;
 
-		public List<List<LocationDTO2>> getMatchingLocations() {
+		public List<List<LocationDTO>> getMatchingLocations() {
 			return matchingLocations;
 		}
-		public void setMatchingLocations(List<List<LocationDTO2>> matchingLocations) {
+		public void setMatchingLocations(List<List<LocationDTO>> matchingLocations) {
 			this.matchingLocations = matchingLocations;
 		}
 		public int getMillisecondsToCompleteQuery() {

@@ -1,10 +1,10 @@
 package org.sigmah.server.command;
 
-import org.sigmah.shared.dto.LocationDTO2;
+import org.sigmah.shared.dto.LocationDTO;
 
 public class LocationDTOs {
-	public static LocationDTO2 newLocation() {
-		return new LocationDTO2()
+	public static LocationDTO newLocation() {
+		return new LocationDTO()
 			.setId(1)
 			.setName("Virunga")
 			.setAxe("Goma - Rutshuru")

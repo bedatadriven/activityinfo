@@ -25,7 +25,7 @@ import com.google.common.collect.Maps;
  *
  * @author Alex Bertram
  */
-public class SiteDTO extends BaseModelData implements EntityDTO {
+public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
 
 	
     public static final String ENTITY_NAME = "Site";
@@ -33,7 +33,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date_;
 
-	private LocationDTO2 location;
+	private LocationDTO location;
 
 	public SiteDTO() {
         set("name", " ");
@@ -71,6 +71,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
      *
      * @return this site's id
      */
+	@Override
 	public int getId() {
 		return (Integer)get("id");
 	}
@@ -225,6 +226,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		set(AdminLevelDTO.getPropertyName(levelId), value);
 	}
 
+	@Override
 	public AdminEntityDTO getAdminEntity(int levelId) {
 		return get(AdminLevelDTO.getPropertyName(levelId));
 	}
@@ -432,14 +434,10 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, LocalDate date) {
 		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
 			// For reporting purposes, only the Date2 is 'counted'.  
-			if (date != null)
-			{
-				if (lockedPeriod.fallsWithinPeriod(date)) {
-					return true;
-				}
+			if (date != null && lockedPeriod.fallsWithinPeriod(date)) {
+				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -493,7 +491,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		set("locationId", location.getId());
 	}
 	
-	public void setLocation(LocationDTO2 location) {
+	public void setLocation(LocationDTO location) {
 		this.location=location;
 		setLocationId(location.getId());
 		setLocationName(location.getName());
@@ -510,8 +508,8 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	}
 	
 	/** Returns a new location constructed from flattened properties of this site */
-	public LocationDTO2 getLocation() {
-		LocationDTO2 location = new LocationDTO2();
+	public LocationDTO getLocation() {
+		LocationDTO location = new LocationDTO();
 		
 		location.setName(getLocationName());
 		location.setAxe(getLocationAxe());
@@ -560,7 +558,4 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		}
 		return map;
 	}
-
-
-
 }

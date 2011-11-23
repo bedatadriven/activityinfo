@@ -7,7 +7,7 @@ import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetLocationsWithoutGpsCoordinates;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.GetSitesWithoutCoordinates;
-import org.sigmah.shared.command.result.LocationsWithoutGpsResult;
+import org.sigmah.shared.command.result.LocationResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.command.result.SitesWithoutLocationsResult;
 import org.sigmah.shared.dto.LocationDTO;
@@ -32,13 +32,13 @@ public class GetSitesWithoutCoordinatesHandler implements CommandHandlerAsync<Ge
 			final ExecutionContext context, 
 			final AsyncCallback<SitesWithoutLocationsResult> callback) {
 		
-		context.execute(new GetLocationsWithoutGpsCoordinates(), new AsyncCallback<LocationsWithoutGpsResult>() {
+		context.execute(new GetLocationsWithoutGpsCoordinates(), new AsyncCallback<LocationResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
 			}
 			@Override
-			public void onSuccess(final LocationsWithoutGpsResult locationsResult) {
+			public void onSuccess(final LocationResult locationsResult) {
 				Filter filter = new Filter();
 				Set<Integer> locationIds = new HashSet<Integer>();
 				for (LocationDTO location : locationsResult.getData()) {
@@ -58,7 +58,7 @@ public class GetSitesWithoutCoordinatesHandler implements CommandHandlerAsync<Ge
 					@Override
 					public void onSuccess(SiteResult result) {
 						SitesWithoutLocationsResult newResult = new SitesWithoutLocationsResult(result.getData());
-						newResult.setTotalLocationsCount(locationsResult.getTotalLocationsCount());
+						newResult.setTotalLocationsCount(locationsResult.getTotalLength());
 						callback.onSuccess(newResult);
 					}
 				});

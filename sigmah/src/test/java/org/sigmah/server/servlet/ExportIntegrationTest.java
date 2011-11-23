@@ -8,24 +8,19 @@ package org.sigmah.server.servlet;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.client.mock.DummyData;
 import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.server.database.hibernate.dao.SqlDialect;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.export.DbUserExport;
 import org.sigmah.server.endpoint.export.SiteExporter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.DTOs;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.test.InjectionSupport;
-
-import com.google.inject.Inject;
 
 
 @RunWith(InjectionSupport.class)
@@ -60,7 +55,7 @@ public class ExportIntegrationTest extends CommandTestCase2 {
     @Test
     public void DbUserExportTest()throws Throwable{
     	
-    	DbUserExport export = new DbUserExport(DummyData.RRM_Users().getData());
+    	DbUserExport export = new DbUserExport(DTOs.RRM_Users().getData());
         export.createSheet();
 
         File outputDir = new File("target/report-test/");

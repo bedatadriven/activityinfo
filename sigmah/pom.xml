@@ -243,6 +243,12 @@
             <artifactId>krysalis-jCharts</artifactId>
             <version>1.0.0-alpha-1</version>
         </dependency>
+        
+        <dependency>
+        	<groupId>org.mindrot.bcrypt</groupId>
+        	<artifactId>bcrypt</artifactId>
+        	<version>0.3</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>

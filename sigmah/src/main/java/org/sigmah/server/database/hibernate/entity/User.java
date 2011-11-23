@@ -7,6 +7,7 @@ package org.sigmah.server.database.hibernate.entity;
 
 import javax.persistence.*;
 
+import org.mindrot.bcrypt.BCrypt;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
 import java.util.Date;
@@ -310,5 +311,9 @@ public class User implements java.io.Serializable {
         }
 
         return sb.toString();
+    }
+    
+    public void changePassword(String newPlaintextPassword) {
+    	this.hashedPassword = BCrypt.hashpw(newPlaintextPassword, BCrypt.gensalt());
     }
 }

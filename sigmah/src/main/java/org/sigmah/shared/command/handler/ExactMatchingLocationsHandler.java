@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.sigmah.shared.command.ExactMatchingLocations;
 import org.sigmah.shared.command.ExactMatchingLocations.ExactMatchingLocationsResult;
-import org.sigmah.shared.dto.LocationDTO2;
+import org.sigmah.shared.dto.LocationDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -49,9 +49,9 @@ public class ExactMatchingLocationsHandler implements CommandHandlerAsync<ExactM
 										@Override
 										public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 											if (results.getRowsAffected() > 0) {
-												List<LocationDTO2> locations = Lists.newArrayList();
+												List<LocationDTO> locations = Lists.newArrayList();
 												for (SqlResultSetRow row : results.getRows()) {
-													locations.add(LocationDTO2.fromSqlRow(row));
+													locations.add(LocationDTO.fromSqlRow(row));
 												}
 												result.getMatchingLocations().add(locations);
 											}

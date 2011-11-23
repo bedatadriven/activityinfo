@@ -81,8 +81,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     private LatLngBounds pendingZoom = null;
 	private SchemaDTO schema;
 
-    private Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
-    private Status statusWidget;
+    private final Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
+    private final Status statusWidget;
 
     // A map rendered serverside for reporting usage
     private MapReportElement mapReportElement = new MapReportElement();

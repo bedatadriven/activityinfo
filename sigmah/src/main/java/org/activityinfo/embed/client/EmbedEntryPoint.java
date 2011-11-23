@@ -1,6 +1,10 @@
 package org.activityinfo.embed.client;
 
+import org.sigmah.client.page.entry.SiteGridPanel;
+import org.sigmah.client.page.entry.grouping.NullGroupingModel;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.dto.AnonymousUser;
+import org.sigmah.shared.report.model.DimensionType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
@@ -42,11 +46,14 @@ public class EmbedEntryPoint implements EntryPoint {
 
         int activityId = Integer.valueOf(Location.getParameter("activityId")); 
         
-		SitesList sites = injector.getSitesList();
-		sites.load(activityId);
+		Filter filter = new Filter();
+		filter.addRestriction(DimensionType.Activity, activityId);
+		
+		SiteGridPanel panel = new SiteGridPanel(injector.getDispatcher());
+		panel.load(NullGroupingModel.INSTANCE, filter);
 
         Viewport viewport = new Viewport();
-        viewport.add(sites);
+        viewport.add(panel);
         
         RootPanel.get().add(viewport);        
 	}

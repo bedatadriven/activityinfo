@@ -10,6 +10,8 @@ import java.util.Collection;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.HasAdminEntityValues;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
@@ -22,10 +24,6 @@ import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 public class AdminBoundsHelper {
 
     private AdminBoundsHelper() {}
-
-    public interface EntityAccessor {
-        public AdminEntityDTO get(int levelId);
-    }
 
     /**
      * Calculates the normative lat/lng bounds for a given site as function of AdminEntity entity
@@ -41,8 +39,8 @@ public class AdminBoundsHelper {
      * @return the normative lat/lng bounds
      */
     public static BoundingBoxDTO calculate(ActivityDTO activity, final SiteDTO site) {
-        return calculate(activity, new EntityAccessor() {
-            public AdminEntityDTO get(int levelId) {
+        return calculate(activity, new HasAdminEntityValues() {
+            public AdminEntityDTO getAdminEntity(int levelId) {
                 return site.getAdminEntity(levelId);
             }
         });
@@ -62,8 +60,8 @@ public class AdminBoundsHelper {
      * of a site.
      * @return the normative lat/lng bounds
      */
-    public static BoundingBoxDTO calculate(ActivityDTO activity, EntityAccessor entityAccessor) {
-        return calculate(activity, activity.getAdminLevels(),  entityAccessor);
+    public static BoundingBoxDTO calculate(ActivityDTO activity, HasAdminEntityValues entityAccessor) {
+        return calculate(activity.getDatabase().getCountry(), activity.getAdminLevels(),  entityAccessor);
     }
 
 
@@ -75,23 +73,22 @@ public class AdminBoundsHelper {
      * the method will return the intersection of the bounds for A, B, and C, which are provided
      * by {@link org.sigmah.shared.dto.AdminEntityDTO#getBounds()}  and
      * {@link org.sigmah.shared.dto.CountryDTO#getBounds()}
-     *
-     * @param activity
+     * @param country TODO
      * @param entityAccessor  an adapter class that provides AdminEntity membership for some representation
      * of a site.
      * @return the normative lat/lng bounds
      */
-    public static BoundingBoxDTO calculate(ActivityDTO activity, Collection<AdminLevelDTO> levels, EntityAccessor entityAccessor) {
+    public static BoundingBoxDTO calculate(CountryDTO country, Collection<AdminLevelDTO> levels, HasAdminEntityValues entityAccessor) {
         BoundingBoxDTO bounds = null;
-        if(activity.getDatabase().getCountry() != null) {
-            bounds = new BoundingBoxDTO(activity.getDatabase().getCountry().getBounds());
+        if(country != null) {
+            bounds = new BoundingBoxDTO(country.getBounds());
         }
         if(bounds == null) {
-            bounds = new BoundingBoxDTO(-180, -90, 180, 90);
+            bounds = BoundingBoxDTO.maxGeoBounds();
         }
 
         for(AdminLevelDTO level  : levels) {
-            AdminEntityDTO entity = entityAccessor.get(level.getId());
+            AdminEntityDTO entity = entityAccessor.getAdminEntity(level.getId());
             if(entity != null && entity.hasBounds()) {
                 bounds = bounds.intersect(entity.getBounds());
             }
@@ -111,8 +108,8 @@ public class AdminBoundsHelper {
      * @return
      */
     public static String name(ActivityDTO activity, BoundingBoxDTO bounds, final SiteDTO site) {
-        return name(bounds, activity.getAdminLevels(), new EntityAccessor() {
-            public AdminEntityDTO get(int levelId) {
+        return name(bounds, activity.getAdminLevels(), new HasAdminEntityValues() {
+            public AdminEntityDTO getAdminEntity(int levelId) {
                 return site.getAdminEntity(levelId);
             }
         });
@@ -124,7 +121,7 @@ public class AdminBoundsHelper {
      * @param getter
      * @return
      */
-    public static String name(BoundingBoxDTO bounds, Collection<AdminLevelDTO> levels, EntityAccessor getter) {
+    public static String name(BoundingBoxDTO bounds, Collection<AdminLevelDTO> levels, HasAdminEntityValues getter) {
         // find the entities that are the limiting bounds.
         // E.g., if the user selects North Kivu, distict de North Kivu, and territoire
         // de Beni, the name we give to this bounds should just be 'Beni'.
@@ -134,7 +131,7 @@ public class AdminBoundsHelper {
         } else {
             StringBuilder sb = new StringBuilder();
             for(AdminLevelDTO level : levels) {
-                AdminEntityDTO entity = getter.get(level.getId());
+                AdminEntityDTO entity = getter.getAdminEntity(level.getId());
                 if(entity!=null && entity.hasBounds()) {
                     BoundingBoxDTO b = entity.getBounds();
 

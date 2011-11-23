@@ -29,8 +29,8 @@ public class PivotPageLoader implements PageLoader {
     public PivotPageLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
 
-        pageManager.registerPageLoader(PivotPresenter.Pivot, this);
-        placeSerializer.registerParser(PivotPresenter.Pivot, new PivotPageState.Parser());
+        pageManager.registerPageLoader(PivotPresenter.PAGE_ID, this);
+        placeSerializer.registerParser(PivotPresenter.PAGE_ID, new PivotPageState.Parser());
     }
 
     @Override

@@ -9,24 +9,15 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
 public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEntities, AdminEntityResult> {
 
-	private SqlDatabase database;
-
-	@Inject
-	public GetAdminEntitiesHandler(SqlDatabase database) {
-		super();
-		this.database = database;
-	}
 
 	@Override
 	public void execute(GetAdminEntities cmd, ExecutionContext context,
@@ -62,14 +53,21 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 			SqlQuery subQuery = SqlQuery.select("link.AdminEntityId")
 					.from("LocationAdminLink link ")
 					.leftJoin("Location").on("link.LocationId = Location.LocationId")
-					.leftJoin("Site").on("Location.LocationId = Location.LocationId")
+					.leftJoin("Site").on("Location.LocationId = Site.LocationId")
 					.where("Site.ActivityId").in(cmd.getFilter().getRestrictions(DimensionType.Activity));
 
 			query.where("AdminEntity.AdminEntityId").in(subQuery);
 		}
 		
 		if (cmd.getFilter() != null && cmd.getFilter().isRestricted(DimensionType.AdminLevel)) {
-			query.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+			if(cmd.getLevelId() == null) {
+				query.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+			} else {
+				SqlQuery subQuery = SqlQuery.select("adminEntityId").from("AdminEntity")
+					.where("AdminLevelId").equalTo(cmd.getLevelId())
+					.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
+				query.where("AdminEntity.AdminEntityId").in(subQuery);
+			}
 		}
 		query.execute(context.getTransaction(), new SqlResultCallback() {
 
