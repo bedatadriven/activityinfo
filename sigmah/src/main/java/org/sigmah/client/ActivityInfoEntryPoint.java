@@ -9,7 +9,6 @@ package org.sigmah.client;
 
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.util.state.SafeStateProvider;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
@@ -17,9 +16,6 @@ import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.gears.client.Factory;
 
 
 /**
@@ -30,7 +26,8 @@ public class ActivityInfoEntryPoint implements EntryPoint {
     /**
 	 * This is the entry point method.
 	 */
-	public void onModuleLoad() {
+	@Override
+  public void onModuleLoad() {
 
         Log.info("Application: onModuleLoad starting");
         Log.info("Application Permutation: " + GWT.getPermutationStrongName());
@@ -77,28 +74,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.Init);
-
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			
-			@Override
-			public void execute() {
-		        updateOlarkInfo(injector.getAuthentication());
-			}
-		});
-	}
-
-    private void updateOlarkInfo(AuthenticatedUser authentication) {
-    	try {
-	    	OlarkApi.updateEmailAddress(authentication.getEmail());
-	    	//OlarkApi.updateFullName(authentication.getUserName());
-    	} catch(Throwable caught) {
-    		Log.debug("failed to update olark info", caught);
-    	}
-	}
-
-	private boolean isOfflineModeSupported() {
-    	// Gears is currently required for offline mode
-		return Factory.getInstance() != null;
 	}
 
 	protected void createCaches(AppInjector injector) {
