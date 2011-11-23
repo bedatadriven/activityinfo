@@ -1,254 +1,160 @@
 package org.sigmah.client.page.map.layerOptions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.map.MapResources;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
+import org.sigmah.shared.report.model.layers.MapLayer;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Image;
 
 /*
  * Shows a list of options to aggregate markers on the map
  */
 public class ClusteringOptionsWidget extends LayoutContainer implements HasValue<Clustering> {
-	private Clustering selectedClustering = new NoClustering();
-	private AdministrativeLevelClustering adminLevelClustering = new AdministrativeLevelClustering();
-	
-	// Aggregation of elements on the map
-	private RadioGroup radiogroupAggregation = new RadioGroup();
-	private Radio radioAdminLevelAggr = new Radio();
-	private Radio radioAutomaticAggr = new Radio();
-	private Radio radioNoAggr = new Radio();
-	 
-	// Administrative level clustering
-	private VerticalPanel panelAdministrativeLevelOptions = new VerticalPanel();
-	private Map<CountryDTO, AdminLevelDTO> pickedAdminLevelsByCountry = new HashMap<CountryDTO, AdminLevelDTO>();
-	private Dispatcher service;
-	private SchemaDTO schema;
-	private HorizontalPanel panelEnclosingAdminLevel = new HorizontalPanel();
-	private List<AdminLevelDTO> selectedAdminLevels = new ArrayList<AdminLevelDTO>();
-	private Map<CountryDTO, ComboBox<AdminLevelDTO>> comboboxesByCountry = new HashMap<CountryDTO, ComboBox<AdminLevelDTO>>();
 
+	private Clustering value = new NoClustering();
+		
+	private class ClusteringRadio extends Radio {
+		private Clustering clustering;
+		
+		ClusteringRadio(String label, Clustering clustering) {
+			this.clustering = clustering;
+			this.setBoxLabel(label);
+		}
+
+		public Clustering getClustering() {
+			return clustering;
+		}
+	}
+
+	private List<ClusteringRadio> radios;
+	private RadioGroup radioGroup;
+	private Dispatcher service;
+	
+	
 	public ClusteringOptionsWidget(Dispatcher service) {
 		super();
 		
 		this.service = service;
-		
-		initializeComponent();
-		
-		createOptions();
-		getCountries();
-		
-		// By default, no clustering is used for a layer
-		radioNoAggr.setValue(true);
-	}
-
-	private void initializeComponent() {
-		panelAdministrativeLevelOptions.setAutoWidth(true);
-		panelEnclosingAdminLevel.setAutoWidth(true);
-	}
-
-	private void createOptions() {
-		radioAdminLevelAggr.setBoxLabel(I18N.CONSTANTS.administrativeLevel());
-		radioAutomaticAggr.setBoxLabel(I18N.CONSTANTS.automatic());
-		radioNoAggr.setBoxLabel(I18N.CONSTANTS.none());
-		radiogroupAggregation.setAutoWidth(true);
-		
-		radiogroupAggregation.add(radioAdminLevelAggr);
-		radiogroupAggregation.add(radioAutomaticAggr);
-		radiogroupAggregation.add(radioNoAggr);
-		
-		add(radioAdminLevelAggr);
-		add(panelEnclosingAdminLevel);
-		add(radioAutomaticAggr);
-		add(radioNoAggr);
-		
-		radiogroupAggregation.addListener(Events.Change, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				setValue(getSelectedClustering());
-			}
-		});
 	}
 	
-	private void createAdminLevelOptions() {
-		List<CountryDTO> countries = schema.getCountries();
-		if (countries != null) {
-			// Show name of country with related adminlevels as option for the user
-			for (CountryDTO country : countries) {
-				createAdminLevelsByCountry(country);
-			}
-		} else {
-			createNoCountriesFoundUI();
+	private void destroyForm() {
+		if(radioGroup != null) {
+			radioGroup.removeAllListeners();
 		}
-		
-		HorizontalPanel panelMargin = new HorizontalPanel();
-		panelMargin.setWidth("1em");
-		panelEnclosingAdminLevel.add(panelMargin);
-		panelEnclosingAdminLevel.add(panelAdministrativeLevelOptions);
-		
-		setEnabledOnSelectAdminLevel();
-		setAdminLevelEnabledOrDisabled();
-		
-		layout(true);
+		radioGroup = null;
+		removeAll();
 	}
 
-	private void createNoCountriesFoundUI() {
-		LabelField labelNoCountries = new LabelField("[Unavailable]");
-		panelAdministrativeLevelOptions.add(labelNoCountries);
+	public void loadForm(final MapLayer layer) {
+		//mask();
+		destroyForm();
 		
-		layout();
-	}
-
-	private void createAdminLevelsByCountry(CountryDTO country) {
-		List<AdminLevelDTO> adminLevels = country.getAdminLevels();
-
-		// Get a container
-		HorizontalPanel panel = new HorizontalPanel();
-		
-		// Show the countryname using a label
-		panel.add(new LabelField(country.getName()));
-		
-		if (adminLevels.size() > 0) { 
-			final ComboBox<AdminLevelDTO> combobox = createAdminLevelsCombobox(adminLevels);
-			panel.add(combobox);
-
-			// Keep a reference to the adminlevel by country
-			pickedAdminLevelsByCountry.put(country, adminLevels.get(0));
-			comboboxesByCountry.put(country, combobox);
-		} else { // No adminlevels defined for given country
-			LabelField labelUnavailable = new LabelField();
-			labelUnavailable.setText("[Unavailable]");
-			panel.add(labelUnavailable);
-		}
-
-		panelAdministrativeLevelOptions.add(panel);
-	}
-
-	private ComboBox<AdminLevelDTO> createAdminLevelsCombobox(List<AdminLevelDTO> adminLevels) {
-		// Show a combobox with available adminlevels for the country
-		ListStore<AdminLevelDTO> adminLevelStore = new ListStore<AdminLevelDTO>();
-		adminLevelStore.add(adminLevels);
-		final ComboBox<AdminLevelDTO> combobox = new ComboBox<AdminLevelDTO>();
-		combobox.setStore(adminLevelStore);
-		combobox.setDisplayField("name");
-		combobox.setForceSelection(true);
-		combobox.setTriggerAction(TriggerAction.ALL);
-		combobox.setEditable(false);
-		combobox.addListener(Events.Select, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				onAdminLevelSelection(be);
-				
-			}
-		});
-		
-		return combobox;
-	}
-	
-	protected void onAdminLevelSelection(FieldEvent be) {
-		adminLevelClustering.getAdminLevels().clear();
-		for(ComboBox<AdminLevelDTO> comboBox : comboboxesByCountry.values()) {
-			if(comboBox.getValue() != null) {
-				adminLevelClustering.getAdminLevels().add(comboBox.getValue().getId());
-			}
-		}
-		setValue(adminLevelClustering);		
-	}
-	
-	/*
-	 * Enables/disables the adminlevel choice UI
-	 */
-	private void setEnabledOnSelectAdminLevel() {
-		radioAdminLevelAggr.addListener(Events.Change, new Listener<FieldEvent>(){
-			@Override
-			public void handleEvent(FieldEvent be) {
-				setAdminLevelEnabledOrDisabled();
-			}
-		});
-	}
-
-	private void setAdminLevelEnabledOrDisabled() {
-		panelAdministrativeLevelOptions.setEnabled(radioAdminLevelAggr.getValue());
-	}
-
-	private void getCountries() {
 		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+
 			@Override
 			public void onFailure(Throwable caught) {
-				createFailedFetchCountriesUI();
+				// TODO Auto-generated method stub
+				
 			}
 
 			@Override
-			public void onSuccess(SchemaDTO result) {
-				schema = result;
-				createAdminLevelOptions();
+			public void onSuccess(SchemaDTO schema) {
+				buildForm(countriesForLayer(schema, layer));
 			}
 		});
 	}
-
-	private void createFailedFetchCountriesUI() {
-		LabelField labelFailedFetchCountries = new LabelField("Failed to download list of countries from server, option disabled. Sorry!");
-		labelFailedFetchCountries.setAutoWidth(true);
-		Image imageError = new Image(MapResources.INSTANCE.error());
-
-		panelAdministrativeLevelOptions.add(imageError);
-		panelAdministrativeLevelOptions.add(labelFailedFetchCountries);
-		radioAdminLevelAggr.setEnabled(false);
-		
-		layout();
-	}
 	
-	public Clustering getSelectedClustering() {
-		Radio selectedRadio = radiogroupAggregation.getValue();
-		if (selectedRadio != null) {
-			if (selectedRadio.equals(radioNoAggr)) {
-				return new NoClustering(); 
+
+	private void buildForm(Set<CountryDTO> countries) {
+
+		radios = Lists.newArrayList();
+		radios.add(new ClusteringRadio(I18N.CONSTANTS.none(), new NoClustering()));
+		radios.add(new ClusteringRadio(I18N.CONSTANTS.automatic(), new AutomaticClustering()));
+	
+		if(countries.size() == 1) {
+			CountryDTO country = countries.iterator().next();
+			for(AdminLevelDTO level : country.getAdminLevels()) {
+				
+				AdministrativeLevelClustering clustering = new AdministrativeLevelClustering();
+				clustering.getAdminLevels().add(level.getId());
+				
+				radios.add(new ClusteringRadio(level.getName(), clustering));			
 			}
-			if (selectedRadio.equals(radioAdminLevelAggr)) {
-				AdministrativeLevelClustering newAdminClustering = new AdministrativeLevelClustering();
-				for (Integer adminLevel : adminLevelClustering.getAdminLevels()) {
-					newAdminClustering.getAdminLevels().add(adminLevel);
-				}
-				return newAdminClustering;
-			}
-			if (selectedRadio.equals(radioAutomaticAggr)) {
-				return new AutomaticClustering(); 
+		}		
+		radioGroup = new RadioGroup();
+		radioGroup.setOrientation(Orientation.VERTICAL);
+		radioGroup.setStyleAttribute("padding", "5px");
+		for(ClusteringRadio radio : radios) {
+			radioGroup.add(radio);
+			if(radio.getClustering().equals(value)) {
+				radioGroup.setValue(radio);
 			}
 		}
-
-		return null;
+		add(radioGroup);
+		
+		radioGroup.addListener(Events.Change, new Listener<FieldEvent>() {
+			@Override
+			public void handleEvent(FieldEvent be) {
+				ClusteringRadio radio = (ClusteringRadio)radioGroup.getValue();
+				setValue(radio.getClustering(), true);
+			}
+		});		
+		layout();
+		//unmask();
 	}
 
+	private Set<CountryDTO> countriesForLayer(SchemaDTO schema, MapLayer layer) {
+		Set<Integer> indicatorIds = Sets.newHashSet(layer.getIndicatorIds());
+		Set<CountryDTO> countries = Sets.newHashSet();
+		for(UserDatabaseDTO database : schema.getDatabases()) {
+			if(databaseContainsIndicatorId(database, indicatorIds)) {
+				countries.add(database.getCountry());
+			}
+		}
+		return countries;
+	}
+	
+	private boolean databaseContainsIndicatorId(UserDatabaseDTO database,
+			Set<Integer> indicatorIds) {
+		
+		for(ActivityDTO activity : database.getActivities()) {
+			for(IndicatorDTO indicator : activity.getIndicators()) {
+				if(indicatorIds.contains(indicator.getId())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<Clustering> handler) {
@@ -257,66 +163,31 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 
 	@Override
 	public Clustering getValue() {
-		return selectedClustering;
+		return ((ClusteringRadio)radioGroup.getValue()).getClustering();
 	}
 
 	@Override
 	public void setValue(Clustering value) {
-		selectedClustering = value;
-		updateRadios();
-		ValueChangeEvent.fire(this, value);
+		setValue(value, true);
 	}
 
 	@Override
 	public void setValue(Clustering value, boolean fireEvents) {
-		selectedClustering = value;
-		updateRadios();
+		this.value = value;
+		if(radioGroup != null) {
+			updateSelectedRadio();
+		}
 		if (fireEvents) {
 			ValueChangeEvent.fire(this, value);
 		}
 	}
 
-	private void updateRadios() {
-		if (selectedClustering instanceof NoClustering) {
-			radioNoAggr.setValue(true);
-		}
-		if (selectedClustering instanceof AutomaticClustering) {
-			radioAutomaticAggr.setValue(true);
-		}
-		if (selectedClustering instanceof AdministrativeLevelClustering) {
-			AdministrativeLevelClustering autoClustering = (AdministrativeLevelClustering) selectedClustering;
-			radioAdminLevelAggr.setValue(true);
-			clearComboboxesSelection();
-			selectCorrectAdminLevels(autoClustering);
-		}
-	}
-
-	/**
-	 * Ensure the correct AdminLevels are selected for given AdminClustering instance
-	 */
-	private void selectCorrectAdminLevels(AdministrativeLevelClustering adminLevelClustering) {
-		if (!schema.getCountries().isEmpty()) {
-			for (Integer adminLevelId : adminLevelClustering.getAdminLevels()) {
-				CountryDTO country = schema.getCountryByAdminLevelId(adminLevelId);
-				List<AdminLevelDTO> newSelection = new ArrayList<AdminLevelDTO>();
-				newSelection.add(schema.getAdminLevelById(adminLevelId));
-				comboboxesByCountry.get(country).setSelection(newSelection);
+	private void updateSelectedRadio() {
+		for(ClusteringRadio radio : radios) {
+			if(radio.getClustering().equals(value)) {
+				radioGroup.setValue(radio);
+				return;
 			}
 		}
-	}
-
-	/**
-	 * Clear selection for all comboboxes containing the AdminLevels per country
-	 */
-	private void clearComboboxesSelection() {
-		for (ComboBox<AdminLevelDTO> comboboxAdminLevel : comboboxesByCountry.values()) {
-			comboboxAdminLevel.clearSelections();
-		}
-	}
-
-	@Override
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
-		radiogroupAggregation.setEnabled(enabled);
 	}
 }
