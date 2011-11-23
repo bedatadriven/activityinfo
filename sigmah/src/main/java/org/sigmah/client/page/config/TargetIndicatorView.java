@@ -144,7 +144,7 @@ public class TargetIndicatorView extends
 		TextField<String> valueField = new TextField<String>();
 		valueField.setAllowBlank(false);
 		
-		ColumnConfig valueColumn = new ColumnConfig("value",
+		ColumnConfig valueColumn = new ColumnConfig("units",
 				I18N.CONSTANTS.value(), 150);
 		valueColumn.setEditor(new CellEditor(valueField));
 //		valueColumn.setRenderer(new TreeGridCellRenderer());

@@ -1,19 +1,20 @@
 package org.sigmah.client.page.config;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.TreeGridView;
+import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.config.design.AttributeGroupFolder;
-import org.sigmah.client.page.config.design.IndicatorFolder;
-
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
@@ -25,8 +26,8 @@ import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
@@ -46,6 +47,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	private final Dispatcher service;
 	private final View view;
 	private final UIConstants messages;
+	private TargetDTO targetDTO;
 
 	private UserDatabaseDTO db;
 	private TreeStore<ModelData> treeStore;
@@ -66,42 +68,101 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 
 		treeStore = new TreeStore<ModelData>();
 		fillStore(messages);
-
 		initListeners(treeStore, null);
 
 		this.view.init(this, db, treeStore);
 		this.view.setActionEnabled(UIActions.delete, false);
 	}
 
-	private void fillStore(UIConstants messages) {
-		for (ActivityDTO activity : db.getActivities()) {
-            ActivityDTO activityNode = new ActivityDTO(activity);
-            treeStore.add(activityNode, false);
-
-            AttributeGroupFolder attributeFolder = new AttributeGroupFolder(activityNode, messages.attributes());
-            treeStore.add(activityNode, attributeFolder, false);
-
-            for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-            	if (group != null) {
-	                AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
-	                treeStore.add(attributeFolder, groupNode, false);
-	
-	                for (AttributeDTO attribute : group.getAttributes()) {
-	                    AttributeDTO attributeNode = new AttributeDTO(attribute);
-	                    treeStore.add(groupNode, attributeNode, false);
-	                }
-            	}
-            }
-
-            IndicatorFolder indicatorFolder = new IndicatorFolder(activityNode, messages.indicators());
-            treeStore.add(activityNode, indicatorFolder, false);
-
-            for (IndicatorDTO indicator : activity.getIndicators()) {
-                IndicatorDTO indicatorNode = new IndicatorDTO(indicator);
-                treeStore.add(indicatorFolder, indicatorNode, false);
-            }
-        }
+	public void load(TargetDTO targetDTO) {
+		this.targetDTO = targetDTO;
+//		TODO should re fill store on some events eg selection change.
 	}
+
+	
+	private void fillStore(UIConstants messages) {
+
+		Map<String, Link> categories = new HashMap<String, Link>();
+		for (ActivityDTO activity : db.getActivities()) {
+
+			if (activity.getCategory() != null) {
+				Link actCategoryLink = categories.get(activity.getCategory());
+
+				if (actCategoryLink == null) {
+					
+					actCategoryLink =createCategoryLink(activity, categories);
+					categories.put(activity.getCategory(), actCategoryLink);
+					treeStore.add(actCategoryLink, false);
+				}
+
+				Link activityLink = createActivityLink(activity);
+				treeStore.add(actCategoryLink, activityLink, false);
+
+				addIndicatorLinks(activity, actCategoryLink);
+				
+			} else {
+				Link activityLink = createActivityLink(activity);
+				treeStore.add(activityLink, false);
+				addIndicatorLinks(activity, activityLink);
+			}
+
+		}
+	}
+	
+	private void addIndicatorLinks(ActivityDTO activity, ModelData parent){
+		Map<String, Link> indicatorCategories = new HashMap<String, Link>();
+		
+		for (IndicatorDTO indicator : activity.getIndicators()) {
+			
+			if(indicator.getCategory()!=null){
+				Link indCategoryLink = indicatorCategories.get(indicator.getCategory());
+				
+				if(indCategoryLink  == null){
+					indCategoryLink = createIndicatorCategoryLink(indicator, indicatorCategories);							
+					indicatorCategories.put(indicator.getCategory(), indCategoryLink);
+					treeStore.add(parent, indCategoryLink, false);
+				}
+			
+				treeStore.add(indCategoryLink, indicator, false);
+			}else{
+				treeStore.add(parent, indicator, false);
+			}
+		}
+
+	}
+
+	private Link createIndicatorCategoryLink(IndicatorDTO indicatorNode, Map<String, Link> categories){
+		return Link.folderLabelled(indicatorNode.getCategory())
+				.usingKey(categoryKey(indicatorNode, categories))
+				.withIcon(IconImageBundle.ICONS.folder()).build();
+	}
+	
+	private Link createCategoryLink(ActivityDTO activity,Map<String, Link> categories) {
+
+		return Link.folderLabelled(activity.getCategory())
+				.usingKey(categoryKey(activity, categories))
+				.withIcon(IconImageBundle.ICONS.folder()).build();
+	}
+
+	private Link createActivityLink(ActivityDTO activity) {
+
+		return Link.folderLabelled(activity.getName())
+				.usingKey(activityKey(activity))
+				.withIcon(IconImageBundle.ICONS.folder()).build();
+	}
+
+	private String categoryKey(ActivityDTO activity, Map<String, Link> categories) {
+		return "category" + activity.getDatabase().getId()	+ activity.getCategory() + categories.size();
+	}
+
+	private String categoryKey(IndicatorDTO indicatorNode, Map<String, Link> categories) {
+		return "category-indicator" +  indicatorNode.getCategory() + categories.size();
+	}
+	
+	private String activityKey(ActivityDTO activity) {
+		return "activity" + activity.getDatabase().getId() + activity.getName();
+	}
+
 
 	@Override
 	public Store<ModelData> getStore() {
@@ -124,55 +185,6 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 			Record record = treeStore.getRecord(children.get(i));
 			record.set("sortOrder", i);
 		}
-
-	}
-
-	public void onNew(String entityName) {
-
-		final EntityDTO newEntity;
-		ModelData parent;
-
-		ModelData selected = view.getSelection();
-
-		if ("Activity".equals(entityName)) {
-			newEntity = new ActivityDTO(db);
-			newEntity.set("databaseId", db.getId());
-			parent = null;
-
-		} else if ("AttributeGroup".equals(entityName)) {
-			ActivityDTO activity = findActivityFolder(selected);
-
-			newEntity = new AttributeGroupDTO();
-			newEntity.set("activityId", activity.getId());
-			parent = treeStore.getChild(activity, 0);
-
-		} else if ("Attribute".equals(entityName)) {
-			AttributeGroupDTO group = findAttributeGroupNode(selected);
-
-			newEntity = new AttributeDTO();
-			newEntity.set("attributeGroupId", group.getId());
-
-			parent = group;
-
-		} else if ("Indicator".equals(entityName)) {
-			ActivityDTO activity = findActivityFolder(selected);
-
-			IndicatorDTO newIndicator = new IndicatorDTO();
-			newIndicator.setAggregation(IndicatorDTO.AGGREGATE_SUM);
-
-			newEntity = newIndicator;
-			newEntity.set("activityId", activity.getId());
-
-			parent = treeStore.getChild(activity, 1);
-
-		} else {
-			return; // TODO log error
-		}
-
-		createEntity(parent, newEntity);
-	}
-
-	private void createEntity(final ModelData parent, final EntityDTO newEntity) {
 
 	}
 
@@ -251,7 +263,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 
 	@Override
 	protected void onSaved() {
-		
+
 	}
 
 	@Override
@@ -269,6 +281,6 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	@Override
 	public void shutdown() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

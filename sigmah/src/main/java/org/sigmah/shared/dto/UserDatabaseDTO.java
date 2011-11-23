@@ -347,6 +347,15 @@ public final class UserDatabaseDTO
     	return null;
     }
     
+    public TargetDTO getTargetById(int id) {
+    	for (TargetDTO target : getTargets()) {
+    		if (target.getId() == id) {
+    			return target;
+    		}
+    	}
+		return null;
+	}
+    
     public String getKey() {
     	return "db" + getId();
     }

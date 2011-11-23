@@ -60,6 +60,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	
 	private UserDatabaseDTO db;
 	private ListStore<TargetDTO> store;
+	private TargetIndicatorPresenter targetIndicatorPresenter ;
 
 	@Inject
 	public DbTargetEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
@@ -83,9 +84,9 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	        view.setActionEnabled(UIActions.delete, false);
 	        view.setActionEnabled(UIActions.edit, false);
 	        
-	        TargetIndicatorPresenter p =   new TargetIndicatorPresenter(eventBus, service, stateMgr, new TargetIndicatorView(service), I18N.CONSTANTS);
-	        view.createTargetValueContainer((Widget)p.getWidget());
-	     //   p.go(db);
+	        targetIndicatorPresenter =  new TargetIndicatorPresenter(eventBus, service, stateMgr, new TargetIndicatorView(service), I18N.CONSTANTS);
+	        view.createTargetValueContainer((Widget)targetIndicatorPresenter.getWidget());
+	        targetIndicatorPresenter.go(db);
 	    }
 	 
 	 
@@ -157,9 +158,6 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	        }
 		});
 	}
-	
-	
-	
 		 
 	protected Map<String, Object> getChangedProperties(Record record) {
         Map<String, Object> changes = new HashMap<String, Object>();
@@ -199,5 +197,6 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	public void onSelectionChanged(ModelData selectedItem) {
 		view.setActionEnabled(UIActions.delete, true);
 		view.setActionEnabled(UIActions.edit, true);
+		targetIndicatorPresenter.load(view.getSelection());
 	}
 }
