@@ -25,7 +25,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.DuplicateException;
+import org.sigmah.shared.exception.DuplicatePartnerException;
 import org.sigmah.shared.exception.ProjectHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
@@ -115,7 +115,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 
 	                service.execute(new AddTarget(db.getId(), newTarget), dlg, new AsyncCallback<CreateResult>() {
 	                    public void onFailure(Throwable caught) {
-	                        if (caught instanceof DuplicateException) {
+	                        if (caught instanceof DuplicatePartnerException) {
 	                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
 	                        } else {
 	                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);

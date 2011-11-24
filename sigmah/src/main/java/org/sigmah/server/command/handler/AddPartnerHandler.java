@@ -19,7 +19,7 @@ import org.sigmah.shared.command.AddPartner;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.DuplicateException;
+import org.sigmah.shared.exception.DuplicatePartnerException;
 import org.sigmah.shared.exception.IllegalAccessCommandException;
 
 import com.google.inject.Inject;
@@ -53,7 +53,7 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
         Set<Partner> dbPartners = db.getPartners();
         for (Partner partner : dbPartners) {
             if (partner.getName().equals(cmd.getPartner().getName())) {
-                throw new DuplicateException();
+                throw new DuplicatePartnerException();
             }
         }
 

@@ -33,7 +33,7 @@ class CommandRequest {
     private final List<AsyncMonitor> monitors = new ArrayList<AsyncMonitor>();
     private final List<AsyncCallback> callbacks = new ArrayList<AsyncCallback>();
 
-    public int retries = 0;
+    private int retries = 0;
 
     public CommandRequest(Command command, AsyncMonitor monitor, AsyncCallback callback) {
         this.command = command;
@@ -81,7 +81,7 @@ class CommandRequest {
         for (AsyncCallback c : toCallback) {
             try {
                 c.onSuccess(result);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 Log.error("Exception thrown during callback on AsyncCallback.onSuccess() for " + command.toString(), e);
             }
         }
@@ -143,4 +143,14 @@ class CommandRequest {
     public boolean isMutating() {
         return command instanceof MutatingCommand;
     }
+
+
+	public void setRetries(int retries) {
+		this.retries = retries;
+	}
+
+
+	public int getRetries() {
+		return retries;
+	}
 }

@@ -10,7 +10,9 @@ public class AdminDimension extends Dimension {
 
 	private int levelId;
 	
-    private AdminDimension() {
+	// required for serialization 
+    @SuppressWarnings("unused")
+	private AdminDimension() {
     	super(DimensionType.AdminLevel);
     }
 
@@ -30,10 +32,6 @@ public class AdminDimension extends Dimension {
 		return this.levelId;
 	}
 
-    private void setLevelId(int levelId) {
-        this.levelId = levelId;
-    }
-
     @Override
 	public boolean equals(Object other) {
 		if(this==other) {
@@ -46,13 +44,12 @@ public class AdminDimension extends Dimension {
             return false;
         }
 
-
 		AdminDimension that = (AdminDimension)other;
-
-
 		return this.levelId == that.levelId;
-
 	}
 
-
+    @Override
+    public int hashCode() {
+    	return levelId;
+    }
 }

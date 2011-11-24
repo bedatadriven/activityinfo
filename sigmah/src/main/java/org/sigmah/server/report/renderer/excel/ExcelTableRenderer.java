@@ -72,15 +72,13 @@ public class ExcelTableRenderer implements ExcelRenderer<TableElement> {
 						
 						Cell cell = row.createCell(i);
 						
-						if(value == null) {
-							
-						} else if(value instanceof Number) {
+						if(value instanceof Number) {
 							cell.setCellValue(((Number)value).doubleValue());
 						} else if(value instanceof Date) {
 							cell.setCellValue((Date)value);
 						} else if(value instanceof Boolean) {
 							cell.setCellValue((Boolean)value);
-						} else {
+						} else if(value != null){
 							cell.setCellValue(factory.createRichTextString(value.toString()));
 						}	
 					}

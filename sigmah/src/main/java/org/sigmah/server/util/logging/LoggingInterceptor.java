@@ -32,9 +32,9 @@ public class LoggingInterceptor implements MethodInterceptor {
 
     @Inject(optional = true)
     public void setProperties(DeploymentConfiguration properties) {
-        String alertRecipients = properties.getProperty("alert.recipients");
-        if(alertRecipients != null) {
-            for(String alertRecipient : alertRecipients.split(",")) {
+        String alertRecipientsProperty = properties.getProperty("alert.recipients");
+        if(alertRecipientsProperty != null) {
+            for(String alertRecipient : alertRecipientsProperty.split(",")) {
                 String alertRecipientTrimmed = alertRecipient.trim();
                 if(alertRecipientTrimmed.length() > 0) {
                     this.alertRecipients.add(alertRecipientTrimmed);
@@ -103,8 +103,7 @@ public class LoggingInterceptor implements MethodInterceptor {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         caught.printStackTrace(printWriter);
-        String trace = stringWriter.toString();
-        return trace;
+        return stringWriter.toString();
     }
 
     private Class<?> getOriginalClass(MethodInvocation invocation) {
@@ -113,7 +112,7 @@ public class LoggingInterceptor implements MethodInterceptor {
 
     private void trace(MethodInvocation invocation) {
         Logger logger = Logger.getLogger(invocation.getThis().getClass());
-        //logger.trace("Calling " + invocation.getMethod().getName());
+        logger.trace("Calling " + invocation.getMethod().getName());
     }
 
     private boolean isExceptionLoggingEnabled(MethodInvocation invocation) {

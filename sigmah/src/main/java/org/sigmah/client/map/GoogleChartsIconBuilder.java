@@ -15,11 +15,13 @@ import com.google.gwt.maps.client.overlay.Icon;
  */
 public class GoogleChartsIconBuilder {
 	
-	public final static String SHAPE_CIRCLE = "circle";
-	public final static String SHAPE_ROUNDRECT = "roundrect";
+	public static final int DEFAULT_SIZE = 32;
 	
-	private int width = 32;
-	private int height = 32;
+	public static final String SHAPE_CIRCLE = "circle";
+	public static final String SHAPE_ROUNDRECT = "roundrect";
+	
+	private int width = DEFAULT_SIZE;
+	private int height = DEFAULT_SIZE;
 	private String primaryColor = "#ff0000";
 	private String cornerColor = "#ffffff";
 	private String strokeColor = "#000000";

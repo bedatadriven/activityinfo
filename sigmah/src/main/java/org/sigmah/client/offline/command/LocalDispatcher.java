@@ -7,7 +7,6 @@ package org.sigmah.client.offline.command;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
@@ -56,7 +55,7 @@ public class LocalDispatcher implements Dispatcher {
 			            if(monitor!=null) {
 			                monitor.onServerError();
 			            }
-		            } catch(Throwable ignored) {
+		            } catch(Exception ignored) {
 		            }
 		            callback.onFailure(caught);
 				}
@@ -71,13 +70,13 @@ public class LocalDispatcher implements Dispatcher {
 				}
 			});
 
-        } catch (Throwable e) {
+        } catch (Exception e) {
             Log.debug("Command failure: ", e);
 			try {
 	            if(monitor!=null) {
 	                monitor.onServerError();
 	            }
-            } catch(Throwable ignored) {
+            } catch(Exception ignored) {
             }
             callback.onFailure(e);
         }
@@ -113,6 +112,4 @@ public class LocalDispatcher implements Dispatcher {
     public boolean canExecute(Command c) {
     	return registry.hasHandler(c);    	
     }
-   
-    
 }

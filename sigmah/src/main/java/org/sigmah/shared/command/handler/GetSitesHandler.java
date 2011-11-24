@@ -186,9 +186,16 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		if(filter != null) {
 	        for (DimensionType type : filter.getRestrictedDimensions()) {
 	            if (type == DimensionType.Indicator) {
-	                // TODO: Alex
-	            	//query.where("Indicator.IndicatorId").in(filter.getRestrictions(type));
-	
+	            	
+	            	SqlQuery subQuery = new SqlQuery()
+	            		.appendColumn("ReportingPeriod.SiteId")
+	            		.from("IndicatorValue")
+	            		.leftJoin("ReportingPeriod").on("IndicatorValue.ReportingPeriodId=ReportingPeriod.ReportingPeriodId")
+	            		.where("IndicatorValue.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator))
+	            		.whereTrue("IndicatorValue.Value IS NOT NULL");
+	            	
+	            	query.where("SiteId").in(subQuery);
+	            
 	            } else if (type == DimensionType.Activity) {
 	                query.where("Site.ActivityId").in(filter.getRestrictions(type));
 	
