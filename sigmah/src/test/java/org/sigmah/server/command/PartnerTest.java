@@ -14,7 +14,7 @@ import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.exception.DuplicateException;
+import org.sigmah.shared.exception.DuplicatePartnerException;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)
@@ -59,7 +59,7 @@ public class PartnerTest extends CommandTestCase {
     }
 
 
-    @Test(expected = DuplicateException.class)
+    @Test(expected = DuplicatePartnerException.class)
     public void testAddDuplicatePartner() throws Exception {
         PartnerDTO newPartner = new PartnerDTO();
         newPartner.setName("NRC");

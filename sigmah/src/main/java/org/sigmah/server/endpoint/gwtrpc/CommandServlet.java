@@ -60,8 +60,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         try {
             return handleCommands(auth.getUser(), commands);
 
-        } catch (Throwable caught) {
-            caught.printStackTrace();
+        } catch (Exception caught) {
             throw new CommandException();
         }
     }
@@ -91,7 +90,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
                 // include this as an error-ful result and
                 // continue executing other commands in the list
                 results.add(e);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 // something when wrong while executing the command
                 // this is already logged by the logging interceptor
                 // so just pass a new UnexpectedCommandException to the client
@@ -118,7 +117,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         Authentication auth = authDAO.findById(authToken);
     
         if (auth == null) {
-        	auth = AnonymousUserAuthentication(authToken);
+        	auth = anonymousUserAuthentication(authToken);
         	if(auth!=null){
         		return auth;
         	}
@@ -128,7 +127,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         return auth;
     }
     
-    private Authentication AnonymousUserAuthentication(String authToken){
+    private Authentication anonymousUserAuthentication(String authToken){
     	if (authToken.equals(AnonymousUser.AUTHTOKEN)) {
 			return new Authentication(new User(new AuthenticatedUser(
 					AnonymousUser.USER_ID, AnonymousUser.AUTHTOKEN,

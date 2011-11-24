@@ -86,6 +86,8 @@
 
 	<attributeGroup attributeGroupId="3" name="Something about Kivu"
 		multipleAllowed="1" sortOrder="1" />
+        
+    <attributeGroup attributeGroupId="991" name="Deleted" dateDeleted="2011-1-1" multipleAllowed="1" sortOrder="1"/> 
 
 	<!-- Database: PEAR -->
 
@@ -106,6 +108,8 @@
 		attributeGroupId="2" />
 	<attributeGroupInActivity activityId="1"
 		attributeGroupId="3" />
+    <attributeGroupInActivity activityId="1"
+        attributeGroupId="991" />
 
 	<!-- NFI Indicator 1: Beneficiaries -->
 

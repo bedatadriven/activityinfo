@@ -12,5 +12,14 @@ public class NoClustering implements Clustering {
 	public boolean isClustered() {
 		return false;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass().equals(getClass());
+	}
 
+	@Override
+	public int hashCode() {
+		return 0;
+	}
 }

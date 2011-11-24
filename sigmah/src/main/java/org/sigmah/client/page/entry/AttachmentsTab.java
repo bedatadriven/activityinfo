@@ -1,17 +1,15 @@
 package org.sigmah.client.page.entry;
 
-import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetSiteAttachments;
 import org.sigmah.shared.command.GetUploadUrl;
 import org.sigmah.shared.command.result.SiteAttachmentResult;
 import org.sigmah.shared.command.result.UploadUrlResult;
-import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteAttachmentDTO;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.Events;
@@ -35,21 +33,14 @@ public class AttachmentsTab extends TabItem implements
 	protected ListStore<SiteAttachmentDTO> store;
 
 	private AttachmentsPresenter presenter;
-	private final EventBus eventBus;
-	private final ActivityDTO activity;
-	private final UIConstants messages;
 	private final Dispatcher dispatcher;
 
 	private ListView<SiteAttachmentDTO> attachmentList;
 	private String currentAttachment;
 
-	public AttachmentsTab(final EventBus eventBus, Dispatcher service,
-			ActivityDTO activity, UIConstants messages) {
-		this.eventBus = eventBus;
+	public AttachmentsTab(Dispatcher service) {
 		this.dispatcher = service;
-		this.activity = activity;
-		this.messages = messages;
-		presenter = new AttachmentsPresenter(eventBus, service, this);
+		presenter = new AttachmentsPresenter(service, this);
 
 		setText(I18N.CONSTANTS.attachment());
 		setLayout(new FitLayout());
@@ -75,6 +66,7 @@ public class AttachmentsTab extends TabItem implements
 		attachmentList.addListener(Events.Select,
 				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
 
+					@Override
 					public void handleEvent(
 							ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
@@ -85,11 +77,13 @@ public class AttachmentsTab extends TabItem implements
 		attachmentList.addListener(Events.DoubleClick,
 				new Listener<ListViewEvent<SiteAttachmentDTO>>() {
 
+					@Override
 					public void handleEvent(
 							ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
 						dispatcher.execute(new GetUploadUrl(currentAttachment),
 								null, new AsyncCallback<UploadUrlResult>() {
+									@Override
 									public void onFailure(Throwable caught) {
 										// callback.onFailure(caught);
 									}
@@ -119,15 +113,18 @@ public class AttachmentsTab extends TabItem implements
 
 	}
 
+	@Override
 	public void setSelectionTitle(String title) {
 		panel.setHeading(I18N.CONSTANTS.attachment() + " - " + title);
 
 	}
 
+	@Override
 	public void setActionEnabled(String id, boolean enabled) {
 		toolBar.setActionEnabled(id, enabled);
 	}
 
+	@Override
 	public void setAttachmentStore(int siteId) {
 
 		GetSiteAttachments getAttachments = new GetSiteAttachments();
@@ -135,6 +132,7 @@ public class AttachmentsTab extends TabItem implements
 
 		dispatcher.execute(getAttachments, null,
 				new AsyncCallback<SiteAttachmentResult>() {
+					@Override
 					public void onFailure(Throwable caught) {
 						// callback.onFailure(caught);
 					}
@@ -159,12 +157,18 @@ public class AttachmentsTab extends TabItem implements
 
 	}-*/;
 
+	@Override
 	public String getSelectedItem() {
 		return currentAttachment;
 	}
 
+	@Override
 	public void refreshList() {
 		attachmentList.refresh();
+	}
+
+	public void setSite(SiteDTO site) {
+		presenter.showSite(site);
 	}
 
 }

@@ -6,7 +6,6 @@
 package org.sigmah.client.page.map;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.Dispatcher;
@@ -17,14 +16,11 @@ import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapApiLoader;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.shared.command.GenerateElement;
-import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.IconMapMarker;
@@ -59,6 +55,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.control.ControlAnchor;
+import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
@@ -78,13 +76,13 @@ import com.google.gwt.user.client.ui.HasValue;
  * Named AIMapWidget because of a naming conflict with com.google.gwt.maps.client.MapWidget
  */
 public class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
-    private MapWidget mapWidget = null;
+	private MapWidget mapWidget = null;
     private BaseMap currentBaseMap = null;
     private LatLngBounds pendingZoom = null;
 	private SchemaDTO schema;
 
-    private Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
-    private Status statusWidget;
+    private final Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
+    private final Status statusWidget;
 
     // A map rendered serverside for reporting usage
     private MapReportElement mapReportElement = new MapReportElement();
@@ -104,6 +102,11 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 
     private final Dispatcher dispatcher;
 	private MapPage mapPage;
+
+	private LargeMapControl zoomControl;
+	private int zoomControlOffsetX = 5;
+    private static final int zoomControlOffsetY = 5;
+
     
     public AIMapWidget(Dispatcher dispatcher) {
 
@@ -199,6 +202,18 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     	}
     }
     
+    public void setZoomControlOffsetX(int offset) {
+    	zoomControlOffsetX = offset;
+    	try {
+    	if(zoomControl != null) {
+    		mapWidget.removeControl(zoomControl);
+    		mapWidget.addControl(zoomControl, zoomControlPosition());
+    	}
+    	} catch(Exception e) {
+    		Log.error("Exception thrown while setting zoom control", e);
+    	}
+    }
+    
     public void createMapIfNeededAndUpdateMapContent() {
         if (mapWidget == null) {
 
@@ -284,7 +299,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     
 	private void createGoogleMapWidget() {
 		mapWidget = new MapWidget();
-        mapWidget.addControl(new LargeMapControl());
+        zoomControl = new LargeMapControl();
+		mapWidget.addControl(zoomControl, zoomControlPosition());
         mapWidget.panTo(LatLng.newInstance(-1, 25));
         
         mapWidget.addMapClickHandler(new MapClickHandler() {
@@ -293,6 +309,10 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 				onMapClick(event);
 			}
 		});
+	}
+
+	private ControlPosition zoomControlPosition() {
+		return new ControlPosition(ControlAnchor.TOP_LEFT, zoomControlOffsetX, zoomControlOffsetY);
 	}
     
     /**
@@ -331,7 +351,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 
 			@Override
 			public void onSuccess(MapContent result) {
-		        Log.debug("MapPreview: Received content, extents are = " + result.getExtents().toString());
+		        Log.debug("MapPreview: Received content");
 
 		        mapModel = result;
 		        
@@ -343,22 +363,23 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 		
 		        GoogleChartsIconBuilder iconFactory = new GoogleChartsIconBuilder();
 		        iconFactory.setPrimaryColor("#0000FF");
-		
-		        putMarkersOnMap(result);
-		        zoomToMarkers(result);
+
+		        Extents extents = putMarkersOnMap(result);
+		        
+		        // can we zoom in further and still see all the markers?
+		        if(mapWidget.getBounds().containsBounds(llBoundsForExtents(extents))) {
+		        	zoomToBounds(llBoundsForExtents(extents));
+		        }
 			}
 		});
     }
     
-	private void zoomToMarkers(MapContent result) {
-		zoomToBounds(llBoundsForExtents(result.getExtents()));
-	}
-	
-	private void putMarkersOnMap(MapContent result) {
+	private Extents putMarkersOnMap(MapContent result) {
+		Extents extents = Extents.emptyExtents();
 		for (MapMarker marker : result.getMarkers()) {
             Icon icon = IconFactory.createIcon(marker);
             LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-
+            extents.grow(marker.getLat(), marker.getLng());
             MarkerOptions options = MarkerOptions.newInstance();
             options.setIcon(icon);
             options.setTitle(marker.getTitle());
@@ -367,6 +388,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
             mapWidget.addOverlay(overlay);
             overlays.put(overlay, marker);
         }
+		return extents;
 	}
 	
 	/**

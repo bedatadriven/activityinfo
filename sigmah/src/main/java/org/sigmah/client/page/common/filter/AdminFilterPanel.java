@@ -206,7 +206,8 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 	public void applyBaseFilter(final Filter filter) {
 		if(baseFilter == null || !baseFilter.equals(filter)) {
 			baseFilter = filter;
-
+			loader.setFilter(baseFilter);
+			loader.load();
 		}
 	}
 	

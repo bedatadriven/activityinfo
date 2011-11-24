@@ -15,7 +15,6 @@ import java.util.Set;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.common.collect.Maps;
 
 /**
@@ -25,7 +24,7 @@ import com.google.common.collect.Maps;
  *
  * @author Alex Bertram
  */
-public class SiteDTO extends BaseModelData implements EntityDTO {
+public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
 
 	
     public static final String ENTITY_NAME = "Site";
@@ -33,7 +32,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date_;
 
-	private LocationDTO2 location;
+	private LocationDTO location;
 
 	public SiteDTO() {
         set("name", " ");
@@ -71,6 +70,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
      *
      * @return this site's id
      */
+	@Override
 	public int getId() {
 		return (Integer)get("id");
 	}
@@ -120,6 +120,14 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
      */
 	public LocalDate getDate2() {
 		return get("date2");
+	}
+	
+	public void setReportingPeriodId(int id) {
+		set("reportingPeriodId", id);
+	}
+	
+	public Integer getReportingPeriod() {
+		return get("reportingPeriodId");
 	}
 
     /**
@@ -225,6 +233,7 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		set(AdminLevelDTO.getPropertyName(levelId), value);
 	}
 
+	@Override
 	public AdminEntityDTO getAdminEntity(int levelId) {
 		return get(AdminLevelDTO.getPropertyName(levelId));
 	}
@@ -432,14 +441,10 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, LocalDate date) {
 		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
 			// For reporting purposes, only the Date2 is 'counted'.  
-			if (date != null)
-			{
-				if (lockedPeriod.fallsWithinPeriod(date)) {
-					return true;
-				}
+			if (date != null && lockedPeriod.fallsWithinPeriod(date)) {
+				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -460,24 +465,6 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		return affectedLockedPeriods;
 	}
 
-	public RpcMap toChangeMap() {
-		RpcMap map = new RpcMap();
-	    map.put("activityId", getActivityId());
-	    for(Entry<String, Object> property : getProperties().entrySet()) {
-	    	if(property.getKey().equals("partner")) {
-	            map.put("partnerId", getPartner().getId());
-	    	} else if(property.getKey().equals("project")) {
-	    		map.put("projectId", getProject().getId());
-	    	} else if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-	    		map.put(property.getKey(), property.getValue() == null ? null : ((AdminEntityDTO)property.getValue()).getId());
-	    	} else {
-	    		map.put(property.getKey(), property.getValue());
-	    	}
-	    }
-	
-	    return map;
-	}
-	
 	public boolean isEditedOneOrMoreTimes() {
 		return getDateCreated().equals(getDateEdited());
 	}
@@ -490,10 +477,10 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	}
 	
 	public void setLocationId(int locationId) {
-		set("locationId", location.getId());
+		set("locationId", locationId);
 	}
 	
-	public void setLocation(LocationDTO2 location) {
+	public void setLocation(LocationDTO location) {
 		this.location=location;
 		setLocationId(location.getId());
 		setLocationName(location.getName());
@@ -510,8 +497,8 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 	}
 	
 	/** Returns a new location constructed from flattened properties of this site */
-	public LocationDTO2 getLocation() {
-		LocationDTO2 location = new LocationDTO2();
+	public LocationDTO getLocation() {
+		LocationDTO location = new LocationDTO();
 		
 		location.setName(getLocationName());
 		location.setAxe(getLocationAxe());
@@ -561,6 +548,9 @@ public class SiteDTO extends BaseModelData implements EntityDTO {
 		return map;
 	}
 
-
-
+	public SiteDTO copy() {
+		SiteDTO copy = new SiteDTO();
+		copy.setProperties(copy.getProperties());
+		return copy;
+	}
 }

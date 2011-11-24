@@ -19,7 +19,7 @@ public class PivotPageState implements PageState {
 
     @Override
     public PageId getPageId() {
-        return PivotPresenter.Pivot;
+        return PivotPresenter.PAGE_ID;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class PivotPageState implements PageState {
 
     @Override
     public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(PivotPresenter.Pivot);
+        return Arrays.asList(PivotPresenter.PAGE_ID);
     }
 
     public static class Parser implements PageStateParser {

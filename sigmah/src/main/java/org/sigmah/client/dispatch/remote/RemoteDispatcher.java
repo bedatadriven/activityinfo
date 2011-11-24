@@ -168,12 +168,12 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     }
 
     private boolean retriesMaxedOut(CommandRequest cmd) {
-        return cmd.retries > 0 && !cmd.fireRetrying();
+        return cmd.getRetries() > 0 && !cmd.fireRetrying();
     }
 
     private void onRetriesMaxedOut(CommandRequest cmd) {
         Log.debug("RemoteDispatcher: The monitor " +
-                " has denied a retry attempt after " + cmd.retries +
+                " has denied a retry attempt after " + cmd.getRetries() +
                 " retries, the command is removed from the queue.");
         cmd.fireRetriesMaxedOut();
     }

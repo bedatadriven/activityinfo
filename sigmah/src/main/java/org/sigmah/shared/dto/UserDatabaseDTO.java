@@ -48,7 +48,8 @@ public final class UserDatabaseDTO
     /**
      * @return  this UserDatabase's id
      */
-    public int getId() {
+    @Override
+	public int getId() {
         return (Integer)get("id");
     }
 
@@ -63,7 +64,8 @@ public final class UserDatabaseDTO
      * 
      * @return the name of this UserDatabase
      */
-    public String getName() {
+    @Override
+	public String getName() {
 		return get("name");
 	}
 
@@ -319,7 +321,8 @@ public final class UserDatabaseDTO
 		set("amOwner", value);
 	}
 
-    public String getEntityName() {
+    @Override
+	public String getEntityName() {
         return entityName;
     }
     
@@ -356,7 +359,8 @@ public final class UserDatabaseDTO
 		return null;
 	}
     
-    public String getKey() {
+    @Override
+	public String getKey() {
     	return "db" + getId();
     }
 
@@ -364,10 +368,12 @@ public final class UserDatabaseDTO
 		this.lockedPeriods = lockedPeriods;
 	}
 
+	@Override
 	public Set<LockedPeriodDTO> getLockedPeriods() {
 		return lockedPeriods;
 	}
 	
+	@Override
 	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
 	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
 
@@ -388,5 +394,15 @@ public final class UserDatabaseDTO
 		}
 		
 		return null;
+	}
+
+	public boolean isAllowedToEdit(SiteDTO site) {
+		if(isEditAllAllowed()) {
+			return true;
+		} else if(isEditAllowed()) {
+			return getMyPartnerId() == site.getPartnerId();
+		} else {
+			return false;
+		}
 	}
 }

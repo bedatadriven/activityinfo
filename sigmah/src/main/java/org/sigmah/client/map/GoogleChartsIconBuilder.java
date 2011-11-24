@@ -14,8 +14,14 @@ import com.google.gwt.maps.client.overlay.Icon;
  *     sized and colored marker icons using the Google Charts API marker output.
  */
 public class GoogleChartsIconBuilder {
-	private int width = 32;
-	private int height = 32;
+	
+	public static final int DEFAULT_SIZE = 32;
+	
+	public static final String SHAPE_CIRCLE = "circle";
+	public static final String SHAPE_ROUNDRECT = "roundrect";
+	
+	private int width = DEFAULT_SIZE;
+	private int height = DEFAULT_SIZE;
 	private String primaryColor = "#ff0000";
 	private String cornerColor = "#ffffff";
 	private String strokeColor = "#000000";
@@ -23,10 +29,6 @@ public class GoogleChartsIconBuilder {
 	private String label = "";
 	private String labelColor = "#000000";
 	private int labelSize = 0;
-
-
-	public final static String SHAPE_CIRCLE = "circle";
-	public final static String SHAPE_ROUNDRECT = "roundrect";
 
 	private String shape = SHAPE_CIRCLE;
 
@@ -157,6 +159,35 @@ public class GoogleChartsIconBuilder {
 
 		return icon;
 	}
+	
+	public String composePinUrl() {
+		return "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" +
+		 	label.charAt(0) + "|" + 
+		 	primaryColor.replace("#", "") + "|" +
+		 	labelColor.replace("#", "") + "&ext=.png";
+	}
+	
+	public Icon createPinUrl() {
+		Icon icon = Icon.newInstance(composePinUrl());
+		icon.setIconSize(Size.newInstance(21, 34));
+		icon.setShadowSize(Size.newInstance(0,0));
+		icon.setIconAnchor(Point.newInstance(10, 34));
+		icon.setInfoWindowAnchor(Point.newInstance(21 / 2, (int) Math.floor(34 / 12)));
+		icon.setImageMap( new int[] {
+				width / 2, height,
+				(int)((7d / 16d) * width), (int)((5d / 8d) * height),
+				(int)((5d / 16d) * width), (int)((7d / 16d) * height),
+				(int)((7d / 32d) * width), (int)((5d / 16d) * height),
+				(int)((5d / 16d) * width), (int)((1d / 8d) * height),
+				(int)((1d / 2d) * width), 0,
+				(int)((11d / 16d) * width), (int)((1d / 8d) * height),
+				(int)((25d / 32d) * width), (int)((5d / 16d) * height),
+				(int)((11d / 16d) * width), (int)((7d / 16d) * height),
+				(int)((9d / 16d) * width), (int)((5d / 8d) * height) });
+
+		return icon;
+		
+	}
 
 
     /**
@@ -167,14 +198,7 @@ public class GoogleChartsIconBuilder {
      * @return Icon object for use in GoogleMaps
 	 */
 	public Icon createFlatIcon() {
-		String shapeCode = ("circle".equals(shape)) ? "it" : "itr";
-
-		String baseUrl = "http://chart.apis.google.com/chart?cht=" + shapeCode;
-		String iconUrl = baseUrl + "&chs=" + width + "x" + height +
-			"&chco=" + primaryColor.replace("#", "") + "," +
-			shadowColor.replace("#", "") + "ff,ffffff01" +
-			"&chl=" + label + "&chx=" + labelColor.replace("#", "") +
-			"," + labelSize;
+		String iconUrl = composeFlatIconUrl();
 		Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
 		icon.setImageURL(iconUrl + "&chf=bg,s,00000000" + "&ext=.png");
 		icon.setIconSize(Size.newInstance(width, height));
@@ -185,13 +209,27 @@ public class GoogleChartsIconBuilder {
 		icon.setMozPrintImageURL(iconUrl + "&chf=bg,s,ECECD8" + "&chof=gif");
 		icon.setTransparentImageURL(iconUrl + "&chf=a,s,ffffff01&ext=.png");
 
-		if (shapeCode.equals("itr")) {
+		if (!"circle".equals(shape)) {
 			icon.setImageMap(new int[] { 0, 0, width, 0, width, height, 0, height } );
 		} else {
 			icon.setImageMap(createCircleImageMap(width, height, 8));
 		}
 
 		return icon;
+	}
+
+	public String composeFlatIconUrl() {
+		String baseUrl = "http://chart.apis.google.com/chart?cht=" + shapeCode();
+		String iconUrl = baseUrl + "&chs=" + width + "x" + height +
+			"&chco=" + primaryColor.replace("#", "") + "," +
+			shadowColor.replace("#", "") + "ff,ffffff01" +
+			"&chl=" + label + "&chx=" + labelColor.replace("#", "") +
+			"," + labelSize;
+		return iconUrl;
+	}
+
+	private String shapeCode() {
+		return ("circle".equals(shape)) ? "it" : "itr";
 	}
 
 	public static int[] createCircleImageMap(int width, int height, int polyNumSides) {
@@ -210,5 +248,4 @@ public class GoogleChartsIconBuilder {
 
 		return imageMap;
 	}
-
 }

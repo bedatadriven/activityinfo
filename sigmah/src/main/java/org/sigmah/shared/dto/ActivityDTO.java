@@ -15,6 +15,7 @@ import java.util.Set;
 import org.sigmah.shared.dto.LockedPeriodDTO.HasLockedPeriod;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.common.collect.Sets;
 
 /**
  * One-to-one DTO for the Activity table.
@@ -29,7 +30,9 @@ public final class ActivityDTO
 		HasLockedPeriod,
 		ProvidesKey {
 
-    public final static int REPORT_ONCE = 0;
+    public static final String ENTITY_NAME = "Activity";
+
+    public static final int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
 
     private UserDatabaseDTO database;
@@ -135,7 +138,7 @@ public final class ActivityDTO
     }
 
     public void setPublished(int published) {
-    	set("published",(Integer) published);
+    	set("published",published);
     }
     
     /**
@@ -292,21 +295,20 @@ public final class ActivityDTO
     }
 
     @Override
-	public String getEntityName() {
-    	return entityName;
+    public String getEntityName() {
+    	return ENTITY_NAME;
     }
 
-    public static final String entityName = "Activity";
     
     /**
      *
-     * @return The list of admin levels that are relevant for the
-     * level of aggregation of this activity
+     * @return The list of admin levels that can be set for this 
+     * Activity's LocationType.
      */
     public List<AdminLevelDTO> getAdminLevels() {
         if(getLocationType().isAdminLevel()) {
 
-            // if this activity is bound to an administative
+            // if this activity is bound to an administrative
             // level, then we need only as far down as this goes
 
             return getDatabase().getCountry().getAdminLevelAncestors(
@@ -351,14 +353,14 @@ public final class ActivityDTO
 
 	@Override
 	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
-	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
+	    Set<LockedPeriodDTO> enabled = Sets.newHashSet();
 
-	    for (LockedPeriodDTO lcokedPeriod : getLockedPeriods()) {
-	    	if (lcokedPeriod.isEnabled()) {
-	    		lockedPeriods.add(lcokedPeriod);
+	    for (LockedPeriodDTO lockedPeriod : getLockedPeriods()) {
+	    	if (lockedPeriod.isEnabled()) {
+	    		enabled.add(lockedPeriod);
 	    	}
 	    }
 	    
-	    return lockedPeriods;
+	    return enabled;
 	}
 }

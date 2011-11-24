@@ -237,7 +237,7 @@ public class RemoteDispatcherTest {
 
             @Override
             public void onSuccess(SchemaDTO result) {
-                throw new Error();
+                throw new RuntimeException();
             }
         });
 

@@ -22,7 +22,7 @@ import org.sigmah.client.page.common.SearchField;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.dashboard.DashboardPageState;
-import org.sigmah.client.page.entry.SiteGridPageState;
+import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.search.SearchPageState;
@@ -101,7 +101,7 @@ public class AppFrameSet implements Frame {
         topBar.add(new SeparatorToolItem());
 
         addNavLink(I18N.CONSTANTS.welcome(), IconImageBundle.ICONS.dashboard(), new DashboardPageState());
-        addNavLink(I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new SiteGridPageState());
+        addNavLink(I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new DataEntryPlace());
         addNavLink(I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportListPageState());
         addNavLink(I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());
         addNavLink(I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());

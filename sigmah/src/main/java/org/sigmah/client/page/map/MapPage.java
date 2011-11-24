@@ -30,7 +30,10 @@ import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteData;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteLayout;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -41,12 +44,13 @@ import com.google.inject.Inject;
 /**
  * Displays a map where the user can interactively create a map
  */
-public class MapPage extends LayoutContainer implements Page, ExportCallback, ActionListener  {
+public class MapPage extends ContentPanel implements Page, ExportCallback, ActionListener  {
+
+	public static final PageId PAGE_ID = new PageId("maps");
 
     private static final int CONTROL_TOP_MARGIN = 10;
     private static final int LAYERS_STYLE_TOP_MARGIN = 50;
-    private static final int LAYERS_STYLE_LEFT_MARGIN = 80;
-	public static final PageId PAGE_ID = new PageId("maps");
+    private static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
     private EventBus eventBus;
 	
     // Data mechanics
@@ -77,6 +81,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
     }
 
 	private void initializeComponent() {
+		setHeaderVisible(false);
 		layout = new AbsoluteLayout();
 		setLayout(layout);
 	}
@@ -94,7 +99,23 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 			}
 		});
 		
-		add(optionsPanel, new AbsoluteData(LAYERS_STYLE_LEFT_MARGIN, CONTROL_TOP_MARGIN + LAYERS_STYLE_TOP_MARGIN));
+		optionsPanel.addListener(Events.Hide, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				aiMapWidget.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
+			}
+		});
+		
+		optionsPanel.addListener(Events.Show, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				aiMapWidget.setZoomControlOffsetX(LayerOptionsPanel.WIDTH + ZOOM_CONTROL_LEFT_MARGIN);
+			}
+		});
+		
+		add(optionsPanel, new AbsoluteData(0, CONTROL_TOP_MARGIN));
 	}
 	
     private void createLayersWidget() {
@@ -109,7 +130,6 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 				boolean canExport = !event.getValue().getLayers().isEmpty();
 				toolbarMapActions.setActionEnabled(UIActions.exportData,canExport); 
 				exportMenu.setEnabled(canExport);
-				optionsPanel.setVisible(!event.getValue().getLayers().isEmpty());
 			}
 		});
 
@@ -121,6 +141,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
     		
     	aiMapWidget = new AIMapWidget(dispatcher);
         aiMapWidget.setHeading(I18N.CONSTANTS.preview());
+        aiMapWidget.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
         
         // Ugly hack to prevent call avalanches
         aiMapWidget.setMaster(this);
@@ -146,12 +167,8 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
                 IconImageBundle.ICONS.excel());
         toolbarMapActions.setActionEnabled(UIActions.exportData, false);
         toolbarMapActions.addButton(UIActions.subscribe, I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.report());
-        AbsoluteData layout = new AbsoluteData();
-        layout.setLeft(0);
-        layout.setTop(0);
-        layout.setAnchorSpec("none none"); 
         
-        add(toolbarMapActions, layout);
+        setTopComponent(toolbarMapActions);
     }
 
     public AsyncMonitor getMapLoadingMonitor() {
@@ -173,6 +190,7 @@ public class MapPage extends LayoutContainer implements Page, ExportCallback, Ac
 
 	@Override
 	public void shutdown() {		
+		layersWidget.shutdown();
 	}
 
 	@Override

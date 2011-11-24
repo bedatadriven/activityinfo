@@ -13,7 +13,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
@@ -189,6 +191,19 @@ public class GetSitesTest extends CommandTestCase2{
         PagingLoadResult<SiteDTO> result = execute(new GetSites());
 
         Assert.assertEquals("rows", 0, result.getData().size());
+    }
+    
+    @Test
+    public void filterByIndicator() throws CommandException {
+    	setUser(1);
+    	
+    	Filter filter = new Filter();
+    	filter.addRestriction(DimensionType.Indicator, 5);
+    	
+    	SiteResult result = execute(new GetSites(filter));
+    	
+    	assertThat(result.getData().size(), equalTo(1));
+    	assertThat(result.getData().get(0).getId(), equalTo(9));
     }
 
     @Test

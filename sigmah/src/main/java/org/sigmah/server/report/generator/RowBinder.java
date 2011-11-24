@@ -70,9 +70,7 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
             } else if(column.getProperty().equals("attribute")) {
                 attributeColumns.put(column.getPropertyQualifyingId(), columnIndex);
 
-            } else if(column.getProperty().equals("map")) {
-
-            } else {
+            } else if(!column.getProperty().equals("map")) {
                 baseColumns.put(findSiteColumn(column.getProperty()).index(), columnIndex);
             }
         }
@@ -91,7 +89,7 @@ public class RowBinder implements SiteProjectionBinder<TableData.Row> {
     public TableData.Row newInstance(String[] properties, ResultSet rs) throws SQLException {
 
         TableData.Row row = new TableData.Row(tableData.getLeafColumnCount());
-        row.id = (Integer)rs.getInt(SiteTableColumn.id.index());
+        row.id = rs.getInt(SiteTableColumn.id.index());
 
         row.hasXY = true;
         row.x = rs.getDouble(SiteTableColumn.x.index());

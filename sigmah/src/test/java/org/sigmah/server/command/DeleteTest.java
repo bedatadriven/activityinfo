@@ -84,7 +84,5 @@ public class DeleteTest extends CommandTestCase {
         schema = execute(new GetSchema());
         Assert.assertNull("delete by entity reference", schema.getActivityById(1));
         Assert.assertNull("delete by id", schema.getActivityById(4));
-
     }
-
 }

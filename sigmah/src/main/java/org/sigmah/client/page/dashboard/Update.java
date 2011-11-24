@@ -2,7 +2,7 @@ package org.sigmah.client.page.dashboard;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.entry.editor.SiteRenderer;
+import org.sigmah.client.page.entry.form.SiteRenderer;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 

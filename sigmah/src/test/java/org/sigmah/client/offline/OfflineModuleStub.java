@@ -4,6 +4,8 @@ import org.sigmah.client.offline.command.HandlerRegistry;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.query.SqlDialect;
+import com.bedatadriven.rebar.sql.client.query.SqliteDialect;
 import com.google.inject.AbstractModule;
 
 public class OfflineModuleStub extends AbstractModule {
@@ -21,8 +23,6 @@ public class OfflineModuleStub extends AbstractModule {
 		bind(SqlDatabase.class).toInstance(database);
 		bind(AuthenticatedUser.class).toInstance(authentication);
 		bind(HandlerRegistry.class).toProvider(HandlerRegistryProvider.class);
+		bind(SqlDialect.class).to(SqliteDialect.class);
 	}
-	
-	
-
 }

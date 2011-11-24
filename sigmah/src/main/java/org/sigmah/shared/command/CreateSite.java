@@ -1,8 +1,10 @@
 package org.sigmah.shared.command;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
@@ -20,7 +22,23 @@ public class CreateSite implements MutatingCommand<CreateResult> {
 	}
 	
 	public CreateSite(SiteDTO site) {
-        properties = site.toChangeMap();
+		assert site.getId() != 0;
+		assert site.getActivityId() != 0;
+		assert site.getLocationId() != 0;
+		assert site.getPartner() != null;
+						
+        properties = new RpcMap();
+	    for(Entry<String, Object> property : site.getProperties().entrySet()) {
+	    	if(property.getKey().equals("partner")) {
+	    		properties.put("partnerId", site.getPartner().getId());
+	    	} else if(property.getKey().equals("project")) {
+	    		if(site.getProject() != null) {
+	    			properties.put("projectId", site.getProject().getId());
+	    		}
+	    	} else if( !property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX) ){
+	    		properties.put(property.getKey(), property.getValue());
+	    	}
+	    }
 	}
 	
 	
@@ -29,6 +47,10 @@ public class CreateSite implements MutatingCommand<CreateResult> {
 		this.properties.putAll(properties);
 	}
 
+	public int getSiteId() {
+		return (Integer)properties.get("id");
+	}
+	
 	public int getActivityId() {
 		return (Integer)properties.get("activityId");
 	}
@@ -41,6 +63,10 @@ public class CreateSite implements MutatingCommand<CreateResult> {
 		return (Integer)properties.get("locationId");
 	}
 
+	public Integer getReportingPeriodId() {
+		return (Integer)properties.get("reportingPeriodId");
+	}
+	
 	public RpcMap getProperties() {
 		return properties;
 	}
@@ -68,10 +94,5 @@ public class CreateSite implements MutatingCommand<CreateResult> {
 	@Override
 	public String toString() {
 		return "CreateSite{" + properties.toString() + "}";
-	}
-	
-	
-	
-	
-	
+	}	
 }

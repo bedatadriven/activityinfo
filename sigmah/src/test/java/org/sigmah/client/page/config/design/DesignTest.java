@@ -22,13 +22,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.DispatcherStub;
-import org.sigmah.client.mock.DummyData;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.mock.StateManagerStub;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.common.grid.ConfirmCallback;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.entry.SiteGridPageState;
+import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.shared.command.CreateEntity;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetSchema;
@@ -36,6 +35,7 @@ import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.DTOs;
 import org.sigmah.shared.dto.SchemaDTO;
 
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -49,7 +49,7 @@ public class DesignTest {
     public void testSave() {
 
         // Dummy Data
-        SchemaDTO schema = DummyData.PEAR();
+        SchemaDTO schema = DTOs.PEAR();
 
 
         // Collaborator
@@ -93,7 +93,7 @@ public class DesignTest {
     public void testSaveOnNavigateAway() {
 
         // Dummy Data
-        SchemaDTO schema = DummyData.PEAR();
+        SchemaDTO schema = DTOs.PEAR();
 
 
         // Collaborator
@@ -124,7 +124,7 @@ public class DesignTest {
 
         record.set("name", "New Name");
 
-        designer.requestToNavigateAway(new SiteGridPageState(), new NavigationCallback() {
+        designer.requestToNavigateAway(new DataEntryPlace(), new NavigationCallback() {
             public void onDecided(boolean allowed) {
 
             }
@@ -142,7 +142,7 @@ public class DesignTest {
 
 
         // Dummy Data
-        SchemaDTO schema = DummyData.PEAR();
+        SchemaDTO schema = DTOs.PEAR();
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
@@ -185,7 +185,7 @@ public class DesignTest {
     public void testDeleteEnabled() {
 
         // Dummy Data
-        SchemaDTO schema = DummyData.PEAR();
+        SchemaDTO schema = DTOs.PEAR();
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
@@ -232,7 +232,7 @@ public class DesignTest {
     public void testNewActivityComesWithFolders() {
 
         // Test data
-        SchemaDTO schema = DummyData.PEAR();
+        SchemaDTO schema = DTOs.PEAR();
 
         // Collaborator : EventBus
         MockEventBus eventBus = new MockEventBus();

@@ -21,31 +21,31 @@ public interface MapLayer extends Serializable {
 	 * of the values of the indicators in this list, or
 	 * 1.0 if no indicators are specified.
 	 */
-	public List<Integer> getIndicatorIds();
-	public void addIndicatorId(int Id);
+	List<Integer> getIndicatorIds();
+	void addIndicatorId(int Id);
 	
-	public LabelSequence getLabelSequence();
-	public void setLabelSequence(LabelSequence labelSequence);
+	LabelSequence getLabelSequence();
+	void setLabelSequence(LabelSequence labelSequence);
 
-	public boolean isClustered();
+	boolean isClustered();
 	
-	public boolean supportsMultipleIndicators();
-	public boolean hasMultipleIndicators();
+	boolean supportsMultipleIndicators();
+	boolean hasMultipleIndicators();
 	
-	public Clustering getClustering();
-	public void setClustering(Clustering clustering);
+	Clustering getClustering();
+	void setClustering(Clustering clustering);
 	
-	public String getName();
-	public void setName(String name);
+	String getName();
+	void setName(String name);
 	
 	
 	/*
 	 * Function to determine non-typesafe name of the class for gxt template usage
 	 */
-	public String getTypeName();
+	String getTypeName();
 	
 	
-	public Filter getFilter();
+	Filter getFilter();
 	
-	public void setFilter(Filter filter);
+	void setFilter(Filter filter);
 }

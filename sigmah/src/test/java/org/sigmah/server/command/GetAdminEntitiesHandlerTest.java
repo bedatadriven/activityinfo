@@ -64,6 +64,6 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase2 {
 
         AdminEntityResult result = execute(cmd);
 
-        assertThat(result.getData().size(), equalTo(3));
+        assertThat(result.getData().size(), equalTo(2));
     }
 }

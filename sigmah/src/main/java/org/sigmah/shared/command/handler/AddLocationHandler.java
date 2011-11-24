@@ -9,7 +9,7 @@ import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.LocationDTO2;
+import org.sigmah.shared.dto.LocationDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
@@ -28,7 +28,7 @@ public class AddLocationHandler implements CommandHandlerAsync<AddLocation, Crea
 	public void execute(AddLocation command, ExecutionContext context, AsyncCallback<CreateResult> callback) {
 		int locationId = keyGenerator.generateInt();
 		Date timestamp = new Date();
-		LocationDTO2 newLocation = command.getLocation();
+		LocationDTO newLocation = command.getLocation();
 		
 		SqlInsert.insertInto("Location")
 			.value("LocationID", locationId)

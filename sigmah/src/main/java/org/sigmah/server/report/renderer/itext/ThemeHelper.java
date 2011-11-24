@@ -21,6 +21,7 @@ import com.lowagie.text.Paragraph;
  */
 public class ThemeHelper {
 
+	private ThemeHelper() {}
 
     public static Paragraph reportTitle(String title) {
         Paragraph para = new Paragraph(title);

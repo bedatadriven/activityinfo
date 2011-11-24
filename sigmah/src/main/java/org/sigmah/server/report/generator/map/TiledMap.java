@@ -16,7 +16,7 @@ import org.sigmah.shared.util.mapping.TileMath;
 public class TiledMap {
 
 	
-	private final static int TILE_SIZE = 256;
+	private static final int TILE_SIZE = 256;
 	
 	/**
 	 * width in pixels of the map image
@@ -33,21 +33,11 @@ public class TiledMap {
 	 */
 	private final int zoom;
 	
-	/**
-	 * The width and height of the projected coordinate system
-	 */
-	private final int size;
 	
 	/**
 	 * The geographic center of the map
 	 */
 	private final AiLatLng geoCenter;
-	
-	/**
-	 * The center of the map in the projected coordinate system
-	 * (pixels)
-	 */
-	private Point center;
 	
 
 	/**
@@ -68,18 +58,11 @@ public class TiledMap {
 		
 		
 		/*
-		 * Calculate the width/height of our projected coordinate system
-		 */
-		size = TileMath.size(zoom);
-		
-		/*
 		 * Calculate the center in pixels
 		 */
 		
-		center = TileMath.fromLatLngToPixel(geographicCenter, zoom);
-	
-		
-		
+		Point center = TileMath.fromLatLngToPixel(geographicCenter, zoom);
+				
 		origin = new Point(center.x - (width/2),  
 						   center.y - (height/2));
 		
@@ -113,9 +96,7 @@ public class TiledMap {
 				
 				Image image = source.getImage(zoom, tileX, tileY);
 				
-				if(image == null) {
-					
-				} else {
+				if(image != null) {
 					drawer.drawImage(image, x, y);
 				}
 				
@@ -134,6 +115,10 @@ public class TiledMap {
 	
 	public AiLatLng fromPixelToLatLng(Point px) {
 		return TileMath.inverse(px.translate(origin.x, origin.y), this.zoom);
+	}
+		
+	public AiLatLng fromPixelToLatLng(double x, double y) {
+		return fromPixelToLatLng(new Point(x,y));
 	}
 
 	public int getWidth() {

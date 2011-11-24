@@ -21,6 +21,8 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -184,9 +186,21 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 				}
 				optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
 			}
-
 		});
 	    layersPanel.add(view);
+	}
+	
+	public void shutdown() {
+		view.removeAllListeners();
+
+		if(layerMenu != null) {
+			layerMenu.hide();		
+			layerMenu.removeAllListeners();
+		}
+		if(addLayersDialog != null) {
+			addLayersDialog.hide();
+			addLayersDialog.removeAllListeners();
+		}
 	}
 	
 	private class MapLayersDropTarget extends ListViewDropTarget {
@@ -222,7 +236,7 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 				optionsPanel.showStyle(getSelectedLayer());
 			}
 		}));
-		layerMenu.add(new MenuItem(I18N.CONSTANTS.aggregation(),
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.clustering(),
 					AbstractImagePrototype.create(MapResources.INSTANCE.clusterIcon()),
 					new SelectionListener<MenuEvent>() {
 			@Override
@@ -243,7 +257,7 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		layerMenu.add(new SeparatorMenuItem());
 		
 		
-		layerMenu.add(new MenuItem(I18N.CONSTANTS.remove(), 
+		layerMenu.add(new MenuItem(I18N.CONSTANTS.delete(), 
 					IconImageBundle.ICONS.delete(), 
 					new SelectionListener<MenuEvent>() {
 			@Override
@@ -293,6 +307,10 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		mapElement.getLayers().remove(mapLayer);				
 		ValueChangeEvent.fire(this, mapElement);
 		updateStore();
+		
+		if(optionsPanel.getValue() == mapLayer) {
+			optionsPanel.fadeOut();
+		}
 	}
 
 	@Override
@@ -348,4 +366,6 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		ValueChangeEvent.fire(this, mapElement);
 		updateStore();
 	}
+
+
 }

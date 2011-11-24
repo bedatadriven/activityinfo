@@ -58,22 +58,5 @@ public class MockHibernateModule extends HibernateModule {
         bind(EntityManager.class).toProvider(EntityManagerProvider.class)
                 .in(TestScoped.class);
     }
-
-//    @Provides
-//    protected SqlDatabase provideServerDatabase(final Provider<HibernateEntityManager> hem) {
-//    	return new JdbcDatabase("SERVER") {
-//
-//			@Override
-//			protected JdbcExecutor newExecutor() {
-//				return new JdbcExecutor() {
-//					
-//					@Override
-//					protected Connection openConnection() throws Exception {
-//						return hem.get().getSession().connection();
-//					}
-//				};
-//			}	
-//    	};
-//    }
     
 }

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
@@ -65,6 +66,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 	private long awhileBack;
 
 	@Test
+	@Ignore("need to update rebar-sql")
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void run() throws SQLException, InterruptedException {
         synchronizeFirstTime();

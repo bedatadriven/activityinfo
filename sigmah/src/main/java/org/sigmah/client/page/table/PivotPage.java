@@ -24,7 +24,6 @@ import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.table.drilldown.DrillDownEditor;
-import org.sigmah.client.page.table.drilldown.DrillDownGrid;
 import org.sigmah.client.util.date.DateUtilGWTImpl;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Filter;
@@ -113,7 +112,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	private LayoutContainer center;
 	private PivotGridPanel gridContainer;
 	private ToolBar gridToolBar;
-	private DrillDownGrid drilldownPanel;
 	private Listener<PivotCellEvent> initialDrillDownListener;
 	private FilterPanelSet filterPanelSet;
 
@@ -136,6 +134,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		filterPanelSet = new FilterPanelSet(adminPanel, datePanel, partnerPanel);
 
 		initialDrillDownListener = new Listener<PivotCellEvent>() {
+			@Override
 			public void handleEvent(PivotCellEvent be) {
 				createDrilldownPanel(be);
 			}
@@ -205,6 +204,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		// tree store
 		dimensionStore = new TreeStore<ModelData>(loader);
 		dimensionStore.setKeyProvider(new ModelKeyProvider<ModelData>() {
+			@Override
 			public String getKey(ModelData model) {
 				return "node_" + model.get("id");
 			}
@@ -220,6 +220,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 		treePanel.setStateful(true);
 		treePanel.setLabelProvider(new ModelStringProvider<ModelData>() {
+			@Override
 			public String getStringValue(ModelData model, String property) {
 				return trim((String)model.get("caption"));
 			}
@@ -253,6 +254,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		setDimensionChecked(dimensions.get(3), true);
 		
 		treePanel.addCheckListener( new CheckChangedListener <ModelData > () {
+			@Override
 			public void checkChanged(CheckChangedEvent<ModelData> event) {		
 				List< ModelData > checked = event.getCheckedSelection();	
 				for (ModelData r: rowDims.getModels()) {
@@ -392,11 +394,10 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		layout.setSplit(true);
 		layout.setCollapsible(true);
 
-		drilldownPanel = new DrillDownGrid();
-		DrillDownEditor drilldownEditor = new DrillDownEditor(eventBus, service, stateMgr, new DateUtilGWTImpl(), drilldownPanel);
+		DrillDownEditor drilldownEditor = new DrillDownEditor(eventBus, service, stateMgr, new DateUtilGWTImpl());
 		drilldownEditor.onDrillDown(event);
 
-		center.add(drilldownPanel, layout);
+		center.add(drilldownEditor.getGridPanel(), layout);
 
 		// disconnect our initial drilldown listener;
 		// subsequent events will be handled by the DrillDownEditor's listener
@@ -415,10 +416,12 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		return colDims;
 	}
 
+	@Override
 	public void setSchema(SchemaDTO result) {
 		//    indicatorPanel.setSchema(result);
 	}
 
+	@Override
 	public void bindPresenter(final PivotPresenter presenter) {
 
 		this.presenter = presenter;
@@ -431,6 +434,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		});
 	}
 
+	@Override
 	public void enableUIAction(String actionId, boolean enabled) {
 		Component button = gridToolBar.getItemByItemId(actionId);
 		if (button != null) {
@@ -438,38 +442,47 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		}
 	}
 
+	@Override
 	public void setDimensionChecked(ModelData d, boolean checked) {
 		treePanel.setChecked(d, checked);
 	}
 	
+	@Override
 	public void setContent(PivotTableReportElement element) {
 		gridContainer.setData(element);
 	}
 
+	@Override
 	public AsyncMonitor getMonitor() {
 		return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
 	}
 
+	@Override
 	public List<IndicatorDTO> getSelectedIndicators() {
 		return indicatorPanel.getSelection();
 	}
 
+	@Override
 	public List<AdminEntityDTO> getAdminRestrictions() {
 		return adminPanel.getSelection();
 	}
 
+	@Override
 	public Date getMinDate() {
 		return datePanel.getMinDate();
 	}
 
+	@Override
 	public Date getMaxDate() {
 		return datePanel.getMaxDate();
 	}
 
+	@Override
 	public List<PartnerDTO> getPartnerRestrictions() {
 		return partnerPanel.getSelection();
 	}
 
+	@Override
 	public TreeStore<ModelData> getDimensionStore() {
 		return this.dimensionStore;
 	}
@@ -490,16 +503,19 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 		private SchemaDTO schema;
 
+		@Override
 		public void load(DataReader<List<ModelData>> listDataReader,
 				final Object parent, final AsyncCallback<List<ModelData>> callback) {
 
 			if (schema == null) {
 				service.execute(new GetSchema(), getMonitor(),
 						new AsyncCallback<SchemaDTO>() {
+					@Override
 					public void onFailure(Throwable caught) {
 						callback.onFailure(caught);
 					}
 
+					@Override
 					public void onSuccess(SchemaDTO result) {
 						schema = result;	
 						loadChildren(parent, callback);

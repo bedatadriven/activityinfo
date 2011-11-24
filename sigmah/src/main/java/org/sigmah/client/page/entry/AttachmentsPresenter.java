@@ -1,11 +1,7 @@
 package org.sigmah.client.page.entry;
 
-import org.sigmah.client.AppEvents;
-import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.event.SiteEvent;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.Shutdownable;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ActionListener;
@@ -24,7 +20,7 @@ import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class AttachmentsPresenter implements ActionListener, Shutdownable {
+public class AttachmentsPresenter implements ActionListener {
 
 	public interface View {
 		void setSelectionTitle(String title);
@@ -38,37 +34,20 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 		void refreshList();
 	}
 
-	private final EventBus eventBus;
 	private final View view;
 	private final Dispatcher dispatcher;
 	private AttachmentForm form;
 	private SiteDTO currentSite;
-	private Listener<SiteEvent> siteListener;
 	private String blobid;
 
 	@Inject
-	public AttachmentsPresenter(EventBus eventBus, Dispatcher service, View view) {
-		this.eventBus = eventBus;
+	public AttachmentsPresenter(Dispatcher service, View view) {
 		this.dispatcher = service;
 		this.view = view;
-
-		siteListener = new Listener<SiteEvent>() {
-			public void handleEvent(SiteEvent be) {
-				if (be.getType() == AppEvents.SiteSelected
-						&& be.getSite() != null) {
-					currentSite = be.getSite();
-					onSiteSelected();
-				}
-			}
-		};
-		eventBus.addListener(AppEvents.SiteSelected, siteListener);
 	}
 
-	public void shutdown() {
-		eventBus.removeListener(AppEvents.SiteSelected, siteListener);
-	}
-
-	private void onSiteSelected() {
+	public void showSite(SiteDTO site) {
+		currentSite = site;
 		view.setSelectionTitle(currentSite.getLocationName());
 		view.setActionEnabled(UIActions.upload, true);
 		view.setActionEnabled(UIActions.delete, false);
@@ -114,6 +93,7 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 
 		form.addListener(Events.Submit, new Listener<FormEvent>() {
 
+			@Override
 			public void handleEvent(FormEvent event) {
 				dialog.hide();
 				view.setAttachmentStore(currentSite.getId());
@@ -128,6 +108,7 @@ public class AttachmentsPresenter implements ActionListener, Shutdownable {
 		attachment.setBlobId(view.getSelectedItem());
 
 		dispatcher.execute(attachment, null, new AsyncCallback<VoidResult>() {
+			@Override
 			public void onFailure(Throwable caught) {
 				// callback.onFailure(caught);
 			}

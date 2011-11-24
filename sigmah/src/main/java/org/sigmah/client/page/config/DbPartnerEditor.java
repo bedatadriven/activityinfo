@@ -25,7 +25,7 @@ import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.DuplicateException;
+import org.sigmah.shared.exception.DuplicatePartnerException;
 import org.sigmah.shared.exception.PartnerHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
@@ -96,13 +96,15 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
             public void onValidated(final FormDialogTether dlg) {
 
                 service.execute(new AddPartner(db.getId(), newPartner), dlg, new AsyncCallback<CreateResult>() {
-                    public void onFailure(Throwable caught) {
-                        if (caught instanceof DuplicateException) {
-
+                    @Override
+					public void onFailure(Throwable caught) {
+                        if (caught instanceof DuplicatePartnerException) {
+                        	MessageBox.alert(I18N.CONSTANTS.newPartner(), I18N.CONSTANTS.duplicatePartner(), null);
                         }
                     }
 
-                    public void onSuccess(CreateResult result) {
+                    @Override
+					public void onSuccess(CreateResult result) {
                         newPartner.setId(result.getNewId());
                         store.add(newPartner);
                         eventBus.fireEvent(AppEvents.SchemaChanged);
@@ -116,32 +118,38 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
     @Override
     protected void onDeleteConfirmed(final PartnerDTO model) {
         service.execute(new RemovePartner(db.getId(), model.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
                 if (caught instanceof PartnerHasSitesException) {
                     MessageBox.alert(I18N.CONSTANTS.removeItem(), I18N.MESSAGES.partnerHasDataWarning(model.getName()), null);
                 }
             }
 
-            public void onSuccess(VoidResult result) {
+            @Override
+			public void onSuccess(VoidResult result) {
                 store.remove(model);
             }
         });
 
     }
 
-    public PageId getPageId() {
+    @Override
+	public PageId getPageId() {
         return DatabasePartners;
     }
 
-    public Object getWidget() {
+    @Override
+	public Object getWidget() {
         return view;
     }
 
-    public boolean navigate(PageState place) {
+    @Override
+	public boolean navigate(PageState place) {
         return false;
     }
 
-    public void shutdown() {
+    @Override
+	public void shutdown() {
 
     }
 

@@ -3,6 +3,7 @@ package org.sigmah.server.command;
 import java.util.GregorianCalendar;
 
 import org.junit.Assert;
+import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -12,8 +13,11 @@ public class SiteDTOs {
 	public static SiteDTO newSite() {
 		SiteDTO newSite = new SiteDTO();
 	
+		newSite.setId(new KeyGenerator().generateInt());
 	    newSite.setActivityId(1);
+	    newSite.setLocationId(1);
 	    newSite.setPartner(new PartnerDTO(1, "Foobar"));
+	    newSite.setReportingPeriodId(new KeyGenerator().generateInt());
 	    newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
 	    newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
 	    newSite.setIndicatorValue(1, 996.0);

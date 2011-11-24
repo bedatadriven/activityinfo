@@ -2,9 +2,7 @@ package org.sigmah.client.offline.capability;
 
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.gears.client.Factory;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * FireFox offline capability profile.
