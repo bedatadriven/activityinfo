@@ -38,19 +38,22 @@ public class UpdateSiteTest extends CommandTestCase {
         // retrieve from the server
         ListResult<SiteDTO> result = execute(GetSites.byId(1));
 
-        SiteDTO model = result.getData().get(0);
-
+        SiteDTO original = result.getData().get(0);
+        SiteDTO modified = original.copy();
+        
         // modify and generate command
-        model.setComments("NEW <b>Commentaire</b>");
-        model.setAttributeValue(1, true);
-        model.setAttributeValue(2, null);
-        model.setAttributeValue(3, true);
-        model.setAttributeValue(4, false);
-        model.setIndicatorValue(2, 995.0);
-        model.setAdminEntity(2, null);
+        modified.setComments("NEW <b>Commentaire</b>");
+        modified.setAttributeValue(1, true);
+        modified.setAttributeValue(2, null);
+        modified.setAttributeValue(3, true);
+        modified.setAttributeValue(4, false);
+        modified.setIndicatorValue(2, 995.0);
+        modified.setAdminEntity(2, null);
 
-
-        execute(new UpdateSite(model.getId(), model.toChangeMap()));
+        UpdateSite cmd = new UpdateSite(original, modified);
+        assertThat((String)cmd.getChanges().get("comments"), equalTo(modified.getComments()));
+        
+		execute(cmd);
 
         // retrieve the old one
 
@@ -58,14 +61,14 @@ public class UpdateSiteTest extends CommandTestCase {
         SiteDTO secondRead = result.getData().get(0);
 
         // confirm that the changes are there
-        Assert.assertEquals("site.comments", model.getComments(), secondRead.getComments());
+        Assert.assertEquals("site.comments", modified.getComments(), secondRead.getComments());
         Assert.assertEquals("site.reportingPeriod[0].indicatorValue[0]", 995,
                 secondRead.getIndicatorValue(2).intValue());
 
-        Assert.assertEquals("site.attribute[1]", true, model.getAttributeValue(1));
-        Assert.assertNull("site.attribute[2]", model.getAttributeValue(2));
-        Assert.assertEquals("site.attribute[3]", true, model.getAttributeValue(1));
-        Assert.assertEquals("site.attribute[4]", true, model.getAttributeValue(1));
+        Assert.assertEquals("site.attribute[1]", true, modified.getAttributeValue(1));
+        Assert.assertNull("site.attribute[2]", modified.getAttributeValue(2));
+        Assert.assertEquals("site.attribute[3]", true, modified.getAttributeValue(1));
+        Assert.assertEquals("site.attribute[4]", true, modified.getAttributeValue(1));
     }
 
     @Test

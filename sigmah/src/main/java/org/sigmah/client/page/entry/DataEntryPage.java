@@ -18,7 +18,8 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.common.widget.CollapsibleTabPanel;
 import org.sigmah.client.page.entry.column.DefaultColumnModelProvider;
 import org.sigmah.client.page.entry.form.PrintDataEntryForm;
-import org.sigmah.client.page.entry.form.SiteFormHelper;
+import org.sigmah.client.page.entry.form.SiteDialogCallback;
+import org.sigmah.client.page.entry.form.SiteDialogLauncher;
 import org.sigmah.client.page.entry.grouping.GroupingComboBox;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.shared.command.Filter;
@@ -157,10 +158,11 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 			}
 		});
     	
-    	toolBar.add(new Label("Grouping: "));
+    	toolBar.add(new Label(I18N.CONSTANTS.grouping()));
     	toolBar.add(groupingComboBox);
     	
         toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
+        toolBar.addButton(UIActions.edit, I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit());
         toolBar.addPrintButton();
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
@@ -168,9 +170,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 
         toolBar.addExcelExportButton();
         toolBar.addPrintButton();
-        
-        toolBar.addLockedPeriodsButton();
-        
+                
         return toolBar;
 	}
 	
@@ -191,10 +191,14 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 				updateSelection(activity, site);
 			}
 		});
-
 	}
 	
-	protected void updateSelection(ActivityDTO activity, SiteDTO site) {
+	private void updateSelection(ActivityDTO activity, SiteDTO site) {
+		
+		boolean permissionToEdit = activity.getDatabase().isAllowedToEdit(site);
+		toolBar.setActionEnabled(UIActions.edit, permissionToEdit);
+		toolBar.setActionEnabled(UIActions.delete, permissionToEdit);
+		
 		detailTab.setSite(site);
 		attachmentsTab.setSite(site);
 		if(activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
@@ -253,19 +257,21 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	@Override
 	public void onUIAction(String actionId) {
 		if(UIActions.add.equals(actionId)) {
-			SiteFormHelper formHelper = new SiteFormHelper(dispatcher);
-			formHelper.addSite(currentPlace.getFilter(), new AsyncCallback<SiteDTO>() {
+			SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
+			formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
 				
 				@Override
-				public void onSuccess(SiteDTO result) {
-					// TODO Auto-generated method stub
-					
+				public void onSaved(SiteDTO site) {
+					gridPanel.refresh();
 				}
+			});
+		} else if(UIActions.edit.equals(actionId)) {
+			SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
+			launcher.editSite(gridPanel.getSelection(), new SiteDialogCallback() {
 				
 				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
+				public void onSaved(SiteDTO site) {
+					gridPanel.refresh();
 				}
 			});
 		} else if(UIActions.print.equals(actionId)) {

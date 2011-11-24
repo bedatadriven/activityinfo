@@ -27,9 +27,9 @@ public class AddLocationTest extends CommandTestCase2 {
 		LocationResult locations = execute(getLocations);
 
 		LocationDTO newLocation = locations.getData().get(0);
-		assertEquals("LocationName", location.getName(), newLocation.getName());
-		assertEquals("LocationName", location.getAxe(), newLocation.getAxe());
-		assertEquals("LocationName", location.getLongitude(), newLocation.getLongitude());
-		assertEquals("LocationName", location.getLatitude(), newLocation.getLatitude());
+		assertEquals(location.getName(), newLocation.getName());
+		assertEquals(location.getAxe(), newLocation.getAxe());
+		assertEquals(location.getLongitude(), newLocation.getLongitude());
+		assertEquals(location.getLatitude(), newLocation.getLatitude());
 	}
 }

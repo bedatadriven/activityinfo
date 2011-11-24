@@ -15,7 +15,6 @@ import java.util.Set;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.common.collect.Maps;
 
 /**
@@ -121,6 +120,14 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
      */
 	public LocalDate getDate2() {
 		return get("date2");
+	}
+	
+	public void setReportingPeriodId(int id) {
+		set("reportingPeriodId", id);
+	}
+	
+	public Integer getReportingPeriod() {
+		return get("reportingPeriodId");
 	}
 
     /**
@@ -458,24 +465,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 		return affectedLockedPeriods;
 	}
 
-	public RpcMap toChangeMap() {
-		RpcMap map = new RpcMap();
-	    map.put("activityId", getActivityId());
-	    for(Entry<String, Object> property : getProperties().entrySet()) {
-	    	if(property.getKey().equals("partner")) {
-	            map.put("partnerId", getPartner().getId());
-	    	} else if(property.getKey().equals("project")) {
-	    		map.put("projectId", getProject().getId());
-	    	} else if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-	    		map.put(property.getKey(), property.getValue() == null ? null : ((AdminEntityDTO)property.getValue()).getId());
-	    	} else {
-	    		map.put(property.getKey(), property.getValue());
-	    	}
-	    }
-	
-	    return map;
-	}
-	
 	public boolean isEditedOneOrMoreTimes() {
 		return getDateCreated().equals(getDateEdited());
 	}
@@ -488,7 +477,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 	}
 	
 	public void setLocationId(int locationId) {
-		set("locationId", location.getId());
+		set("locationId", locationId);
 	}
 	
 	public void setLocation(LocationDTO location) {
@@ -557,5 +546,11 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 			}
 		}
 		return map;
+	}
+
+	public SiteDTO copy() {
+		SiteDTO copy = new SiteDTO();
+		copy.setProperties(copy.getProperties());
+		return copy;
 	}
 }

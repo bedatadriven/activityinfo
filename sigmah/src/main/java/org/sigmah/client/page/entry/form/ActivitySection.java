@@ -18,13 +18,19 @@ import com.extjs.gxt.ui.client.widget.form.Validator;
 
 
 public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
-    private DateField dateField1;
+    
+	private final ActivityDTO activity;
+	
+	private DateField dateField1;
     private DateField dateField2;
 	private PartnerComboBox partnerCombo;
 	private ProjectComboBox projectCombo;
 
     public ActivitySection(final ActivityDTO activity) {
     	super();
+    	
+    	this.activity = activity;
+    	
     	getFormLayout().setLabelWidth(100);
     	getFormLayout().setDefaultWidth(200);
     	
@@ -100,8 +106,10 @@ public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
 
 	@Override
 	public void updateForm(SiteDTO m) {
-		dateField1.setValue(m.getDate1().atMidnightInMyTimezone());
-		dateField2.setValue(m.getDate2().atMidnightInMyTimezone());
+		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
+			dateField1.setValue(m.getDate1() == null ? null : m.getDate1().atMidnightInMyTimezone());
+			dateField2.setValue(m.getDate2() == null ? null : m.getDate2().atMidnightInMyTimezone());
+		}
 		partnerCombo.setValue(m.getPartner());
 		projectCombo.setValue(m.getProject());
 	}

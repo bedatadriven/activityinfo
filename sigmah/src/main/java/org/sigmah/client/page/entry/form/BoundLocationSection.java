@@ -9,6 +9,8 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
  * Presents a form dialog for a Site for an Activity that 
  * has a LocationType that is bound to an AdminLevel
@@ -46,8 +48,9 @@ public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO> imp
 	}
 
 	@Override
-	public boolean isNew() {
-		return isNew;
+	public void save(AsyncCallback<Void> callback) {
+	
+		
 	}
 
 	@Override
@@ -58,6 +61,12 @@ public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO> imp
 
 	@Override
 	public void updateForm(SiteDTO m) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateForm(LocationDTO location, boolean isNew) {
 		// TODO Auto-generated method stub
 		
 	}

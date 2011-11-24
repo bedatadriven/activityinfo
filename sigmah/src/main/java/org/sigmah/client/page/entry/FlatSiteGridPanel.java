@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -41,9 +42,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /** 
- * Displays of sites in a "flat" projection with a paging toolbar.
+ * Displays of sites in a "flat" projection with a paging toolbar. 
+ * Note: do not use this component directly. Use the SiteGridPanel component. 
+ *
  */
-public class FlatSiteGridPanel extends ContentPanel {
+final class FlatSiteGridPanel extends ContentPanel implements SiteGridPanelView {
     private final Dispatcher dispatcher;
 	
 	private EditorGrid<SiteDTO> editorGrid;
@@ -113,7 +116,8 @@ public class FlatSiteGridPanel extends ContentPanel {
     	loader.load();
 	}
 	
-	public void addSelectionChangedListener(SelectionChangedListener<SiteDTO> listener) {
+	@Override
+	public void addSelectionChangeListener(SelectionChangedListener<SiteDTO> listener) {
 		addListener(Events.SelectionChange, listener);
 	}
 	
@@ -142,5 +146,20 @@ public class FlatSiteGridPanel extends ContentPanel {
 				}
 			});
 		}
+	}
+
+	@Override
+	public void refresh() {
+		listStore.getLoader().load();
+	}
+
+	@Override
+	public Component asComponent() {
+		return this;
+	}
+
+	@Override
+	public SiteDTO getSelection() {
+		return editorGrid.getSelectionModel().getSelectedItem();
 	}
 }

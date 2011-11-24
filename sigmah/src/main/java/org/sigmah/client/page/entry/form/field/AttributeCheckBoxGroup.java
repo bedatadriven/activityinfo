@@ -6,28 +6,50 @@
 package org.sigmah.client.page.entry.form.field;
 
 
+import java.util.List;
+
 import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.google.common.collect.Lists;
 
-public class AttributeCheckBoxGroup extends CheckBoxGroup {
+public class AttributeCheckBoxGroup extends CheckBoxGroup implements AttributeField {
 
+	private List<CheckBox> checkBoxes;
+	
 	public AttributeCheckBoxGroup(AttributeGroupDTO group) {
-		if (group != null) {
-			this.setFieldLabel(group.getName());
-			this.setOrientation(Orientation.VERTICAL);
+		assert group != null;
+	
+		this.setFieldLabel(group.getName());
+		this.setOrientation(Orientation.VERTICAL);
+		
+		checkBoxes = Lists.newArrayList();
+		for(AttributeDTO attrib : group.getAttributes() ) {
 			
-			for(AttributeDTO attrib : group.getAttributes() ) {
-				
-				CheckBox box = new CheckBox();
-				box.setBoxLabel(attrib.getName());
-				box.setName(attrib.getPropertyName());
-				
-				this.add(box);
-			}
+			CheckBox box = new CheckBox();
+			box.setBoxLabel(attrib.getName());
+			box.setName(attrib.getPropertyName());
+			
+			this.add(box);
+			checkBoxes.add(box);
+		}
+	}
+
+	@Override
+	public void updateForm(SiteDTO site) {
+		for(CheckBox checkBox : checkBoxes) {
+			checkBox.setValue((Boolean) site.get(checkBox.getName()));
+		}		
+	}
+
+	@Override
+	public void updateModel(SiteDTO site) {
+		for(CheckBox checkBox : checkBoxes) {
+			site.set(checkBox.getName(), checkBox.getValue());
 		}
 	}
 }

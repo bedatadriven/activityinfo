@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.shared.command.AddLocation;
 import org.sigmah.shared.command.CreateSite;
@@ -43,8 +44,10 @@ public class CreateSiteTest extends CommandTestCase2 {
     	
         SiteDTO newSite = SiteDTOs.newSite();
         newSite.setLocation(location);
+        
         CreateSite cmd = new CreateSite(newSite);
         setUser(1);
+        
         CreateResult result = execute(cmd);
         newSite.setId(result.getNewId());
         assertThat(result.getNewId(), not(equalTo(0)));
@@ -118,8 +121,9 @@ public class CreateSiteTest extends CommandTestCase2 {
     public void testAllAttribsFalse() throws CommandException {
         // create a new detached, client model
         SiteDTO newSite = new SiteDTO();
-
+        newSite.setId(new KeyGenerator().generateInt());
         newSite.setActivityId(1);
+        newSite.setLocationId(1);
         newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());

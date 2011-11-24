@@ -9,11 +9,12 @@ import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implements LocationFormSection {
 
 	private boolean isNew;
-	private LocationDTO locationDTO;
+	private LocationDTO location;
 	
 	public LocationSection(ActivityDTO activity) {
 		
@@ -44,29 +45,34 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 	public boolean validate() {
 		return true;
 	}
-
+	
 	@Override
-	public void updateModel(SiteDTO m) {
-		// TODO Auto-generated method stub
-		
+	public void updateForm(LocationDTO location, boolean isNew) {
+		this.location = location;
 	}
 
+
 	@Override
-	public boolean isNew() {
+	public void updateModel(SiteDTO site) {
+		site.setLocationId(location.getId());
+	}
+	
+	@Override
+	public void save(AsyncCallback<Void> callback) {
+		callback.onSuccess(null);
+	}
+
+
+	@Override
+	public void updateForm(SiteDTO m) {
 		// TODO Auto-generated method stub
-		return false;
+		
 	}
 
 	@Override
 	public LocationDTO getLocation() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void updateForm(SiteDTO m) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

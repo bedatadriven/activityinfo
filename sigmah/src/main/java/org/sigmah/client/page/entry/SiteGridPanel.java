@@ -3,7 +3,6 @@ package org.sigmah.client.page.entry;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.entry.column.ColumnModelProvider;
 import org.sigmah.client.page.entry.column.DefaultColumnModelProvider;
@@ -16,7 +15,6 @@ import org.sigmah.shared.dto.SiteDTO;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -31,10 +29,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * containers can install their own toolbar by calling {@code setTopComponent() }
  * 
  */
-public final class SiteGridPanel extends ContentPanel implements ActionListener {
+public final class SiteGridPanel extends ContentPanel  {
 
 	private final Dispatcher dispatcher;
 	private final ColumnModelProvider columnModelProvider;
+	
+	private SiteGridPanelView grid = null;
 			
 	public SiteGridPanel(Dispatcher dispatcher, ColumnModelProvider columnModelProvider) {
 		this.dispatcher = dispatcher;
@@ -68,19 +68,19 @@ public final class SiteGridPanel extends ContentPanel implements ActionListener 
 			}
 		});
 	}
+	
+	public void refresh() {
+		if(grid != null) {
+			grid.refresh();
+		}
+	}
 		
 	protected void createGrid(GroupingModel grouping, Filter filter,
 			ColumnModel columnModel) {
 
 		if(grouping == NullGroupingModel.INSTANCE) {
 			FlatSiteGridPanel panel = new FlatSiteGridPanel(dispatcher);
-			panel.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
-				
-				@Override
-				public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
-					fireEvent(Events.SelectionChange, se);
-				}
-			});
+
 			panel.initGrid(filter, columnModel);
 			installGrid(panel);
 			
@@ -105,16 +105,27 @@ public final class SiteGridPanel extends ContentPanel implements ActionListener 
 		addListener(Events.SelectionChange, listener);
 	}
 
-	private void installGrid(Component grid) {
-		removeAll();
-		add(grid);
-		layout();
-	}
-
-	@Override
-	public void onUIAction(String actionId) {
-		// TODO Auto-generated method stub
+	private void installGrid(SiteGridPanelView grid) {
+		this.grid = grid;
 		
+		removeAll();
+		add(grid.asComponent());
+		layout();
+		
+		grid.addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
+				fireEvent(Events.SelectionChange, se);
+			}
+		});
 	}
 
+	public SiteDTO getSelection() {
+		if(grid == null) {
+			return null;
+		} else {
+			return grid.getSelection();
+		}
+	}
 }

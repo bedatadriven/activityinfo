@@ -3,6 +3,10 @@ package org.sigmah.shared.command;
 import java.util.Map;
 
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.PartnerDTO;
+import org.sigmah.shared.dto.ProjectDTO;
+import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.data.RpcMap;
 
@@ -24,6 +28,36 @@ public class UpdateSite implements MutatingCommand<VoidResult> {
 		this.siteId = siteId;
 		this.changes = new RpcMap();
 		this.changes.putAll(changes);
+	}
+	
+	public UpdateSite(SiteDTO original, SiteDTO updated) {
+		assert original.getId() == updated.getId();
+		changes = new RpcMap();
+		for(String property : updated.getProperties().keySet()) {
+			Object newValue = updated.get(property);
+			if(isChanged(original.get(property), newValue)) {
+				if(property.equals("partner")) {
+					changes.put("partnerId", newValue == null ? null : ((PartnerDTO)newValue).getId());
+				} else if(property.equals("project")) {
+					changes.put("projectId", newValue == null ? null : ((ProjectDTO)newValue).getId());
+				} else if(propertyCanBeModified(property)) {
+					changes.put(property, newValue);
+				}
+			}
+		}
+	}
+	
+	private boolean propertyCanBeModified(String property) {
+		return ! (property.equals("activityId") ||
+				  property.startsWith(AdminLevelDTO.PROPERTY_PREFIX));
+	}
+
+	private boolean isChanged(Object a, Object b) {
+		if(a == null) {
+			return b != null;
+		} else {
+			return !a.equals(b);
+		}
 	}
 	
 	public int getSiteId() {
