@@ -102,15 +102,12 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 					treeStore.add(actCategoryLink, false);
 				}
 
-				Link activityLink = createActivityLink(activity);
-				treeStore.add(actCategoryLink, activityLink, false);
-
-				addIndicatorLinks(activity, actCategoryLink);
+				treeStore.add(actCategoryLink, activity, false);
+				addIndicatorLinks(activity, activity);
 				
 			} else {
-				Link activityLink = createActivityLink(activity);
-				treeStore.add(activityLink, false);
-				addIndicatorLinks(activity, activityLink);
+				treeStore.add(activity, false);
+				addIndicatorLinks(activity, activity);
 			}
 
 		}
@@ -186,13 +183,6 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 
 		return Link.folderLabelled(activity.getCategory())
 				.usingKey(categoryKey(activity, categories))
-				.withIcon(IconImageBundle.ICONS.folder()).build();
-	}
-
-	private Link createActivityLink(ActivityDTO activity) {
-
-		return Link.folderLabelled(activity.getName())
-				.usingKey(activityKey(activity))
 				.withIcon(IconImageBundle.ICONS.folder()).build();
 	}
 

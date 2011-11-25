@@ -8,6 +8,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.grid.AbstractEditorTreeGridView;
 import org.sigmah.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
+import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.TargetValueDTO;
@@ -85,7 +86,9 @@ public class TargetIndicatorView extends
                     return IconImageBundle.ICONS.activity();
                 } else if (model instanceof TargetValueDTO) {
                     return IconImageBundle.ICONS.indicator();
-                } else {
+                } else if(model instanceof Link){
+                	return IconImageBundle.ICONS.folder();
+                }else {
                     return null;
                 }
 
