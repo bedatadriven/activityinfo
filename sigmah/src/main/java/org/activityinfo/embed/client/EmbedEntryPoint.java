@@ -51,7 +51,8 @@ public class EmbedEntryPoint implements EntryPoint {
 		
 		SiteGridPanel panel = new SiteGridPanel(injector.getDispatcher());
 		panel.load(NullGroupingModel.INSTANCE, filter);
-
+		panel.setHeight(500);
+		
         Viewport viewport = new Viewport();
         viewport.add(panel);
         
