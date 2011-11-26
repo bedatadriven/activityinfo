@@ -14,6 +14,7 @@ import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.HideMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.Events;
@@ -78,7 +79,7 @@ public class TargetIndicatorView extends
 		tree.setAutoExpandColumn("name");
 		tree.setHideHeaders(true);
 		tree.setLoadMask(true);
-
+		
 		tree.setIconProvider(new ModelIconProvider<ModelData>() {
 			public AbstractImagePrototype getIcon(ModelData model) {
 
@@ -140,18 +141,16 @@ public class TargetIndicatorView extends
 		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
 		ColumnConfig nameColumn = new ColumnConfig("name",
-				I18N.CONSTANTS.name(), 250);
+				I18N.CONSTANTS.indicator(), 250);
 		nameColumn.setRenderer(new TreeGridCellRenderer());
-
 		columns.add(nameColumn);
 
 		TextField<String> valueField = new TextField<String>();
 		valueField.setAllowBlank(true);
 		
 		ColumnConfig valueColumn = new ColumnConfig("value",
-				I18N.CONSTANTS.value(), 150);
+				I18N.CONSTANTS.targetValue(), 150);
 		valueColumn.setEditor(new CellEditor(valueField));
-
 		columns.add(valueColumn);
 
 		return new ColumnModel(columns);

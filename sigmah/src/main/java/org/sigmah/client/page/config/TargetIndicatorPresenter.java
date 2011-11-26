@@ -19,21 +19,15 @@ import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Delete;
-import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.UpdateTargetValue;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AttributeDTO;
-import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -193,10 +187,6 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	private String categoryKey(IndicatorDTO indicatorNode, Map<String, Link> categories) {
 		return "category-indicator" +  indicatorNode.getCategory() + categories.size();
 	}
-	
-	private String activityKey(ActivityDTO activity) {
-		return "activity" + activity.getDatabase().getId() + activity.getName();
-	}
 
 
 	@Override
@@ -208,21 +198,6 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		return treeStore;
 	}
 
-	public void onNodeDropped(ModelData source) {
-
-		// update sortOrder
-
-		ModelData parent = treeStore.getParent(source);
-		List<ModelData> children = parent == null ? treeStore.getRootItems()
-				: treeStore.getChildren(parent);
-
-		for (int i = 0; i != children.size(); ++i) {
-			Record record = treeStore.getRecord(children.get(i));
-			record.set("sortOrder", i);
-		}
-
-	}
-
 	protected ActivityDTO findActivityFolder(ModelData selected) {
 
 		while (!(selected instanceof ActivityDTO)) {
@@ -230,17 +205,6 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		}
 
 		return (ActivityDTO) selected;
-	}
-
-	protected AttributeGroupDTO findAttributeGroupNode(ModelData selected) {
-		if (selected instanceof AttributeGroupDTO) {
-			return (AttributeGroupDTO) selected;
-		}
-		if (selected instanceof AttributeDTO) {
-			return (AttributeGroupDTO) treeStore.getParent(selected);
-		}
-		throw new AssertionError("not a valid selection to add an attribute !");
-
 	}
 	
 	public void updateTargetValue(){

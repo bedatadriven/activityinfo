@@ -1,0 +1,63 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+	font-size:14px;
+	margin:0px;
+	padding:0px;
+}
+#main {
+	width:900px;
+	margin:0px auto;
+}
+#site-detail {
+	width:900px;
+}
+#location-detail {
+	width:900px;
+}
+.float-left {
+	float:left;
+}
+table.form-detail {
+	width:400px;
+	height:0px;
+	min-height:150px;
+}
+table.form-detail td {
+	height:30px;
+}
+table.form-detail #field-set {
+	width:100px;
+}
+.form-title {
+	font-size:18px;
+	font-weight:bold;
+}
+#attribute-detail {
+	width:50%;
+}
+#indicator-detail {
+	width:50%;
+}
+#comment {
+	width:100%;
+}
+.underline {
+	width:100%;
+	height:20px;
+	border-bottom:1px #000 solid;
+	margin:0px;
+}
+.underline1 {
+	width:875px;
+	height:20px;
+	border-bottom:1px #000 solid;
+	margin:0px;
+}
+.underline2 {
+	width:250px;
+	height:20px;
+	border-bottom:1px #000 solid;
+	margin:0px;
+}
