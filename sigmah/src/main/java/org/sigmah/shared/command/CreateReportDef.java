@@ -6,6 +6,7 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.report.model.Report;
 
 
 /**
@@ -20,6 +21,7 @@ public class CreateReportDef implements Command<CreateResult>{
 	
 	private String xml;
 	private Integer databaseId;
+	private Report report;
 	
 	protected CreateReportDef() {
 		
@@ -29,6 +31,12 @@ public class CreateReportDef implements Command<CreateResult>{
 		super();
 		this.databaseId = databaseId;
 		this.xml = xml;
+	}
+	
+	public CreateReportDef(int databaseId,Report report){
+		super();
+		this.databaseId = databaseId;
+		this.report = report;
 	}
 
 	public String getXml() {
@@ -45,6 +53,14 @@ public class CreateReportDef implements Command<CreateResult>{
 
 	public void setDatabaseId(Integer databaseId) {
 		this.databaseId = databaseId;
+	}
+
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
 	}
 
 }

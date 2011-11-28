@@ -20,6 +20,7 @@ import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.Published;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.TargetDTO;
+import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
@@ -55,6 +56,7 @@ public class GetSchemaHandler implements
 		private final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
 		private final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
 		private final Map<Integer, TargetDTO> targets= new HashMap<Integer, TargetDTO>();
+		private final Map<Integer, List<TargetValueDTO>> targetValues = new HashMap<Integer, List<TargetValueDTO>>();
 
 		private SqlTransaction tx;
 		private ExecutionContext context;
@@ -221,6 +223,7 @@ public class GetSchemaHandler implements
 						loadAttributes();
 						joinAttributesToActivities();
 						loadLockedPeriods();
+						loadTargetValues();
 						loadTargets();
 					}
 
@@ -311,6 +314,38 @@ public class GetSchemaHandler implements
 			});
 		}
 	
+		// TODO change query... for target value table
+		protected void loadTargetValues(){
+
+			SqlQuery.select("v.targetId", "v.indicatorId","v.value").appendColumn("t.name").appendColumn("i.name", "iname")
+			.from("targetvalue", "v")
+			.leftJoin("target", "t").on("v.targetId = t.targetId")
+			.leftJoin("indicator", "i").on("v.indicatorId = i.indicatorId")
+			.execute(tx, new SqlResultCallback() {
+				@Override
+				public void onSuccess(SqlTransaction tx,
+						SqlResultSet results) {
+					
+					for (SqlResultSetRow row : results.getRows()) {
+						TargetValueDTO dto = new TargetValueDTO();
+						dto.setValue(row.getDouble("value"));
+						dto.setTargetId(row.getInt("targetId"));
+						dto.setIndicatorId(row.getInt("indicatorId"));
+						dto.setName(row.getString("iname"));
+						
+						List<TargetValueDTO> list = targetValues.get(dto.getTargetId());
+						
+						if(targetValues.get(dto.getTargetId()) == null){
+							list = new ArrayList<TargetValueDTO>();													
+						}
+						
+						list.add(dto);
+						targetValues.put(dto.getTargetId(), list);	
+					}
+				}
+			});
+		}
+		
 		protected void loadTargets() {
 			SqlQuery.select("t.name","t.targetId", "t.Date1","t.Date2", "t.ProjectId", "t.PartnerId", "t.AdminEntityId", "t.DatabaseId").appendColumn("a.name", "area")
 					.from("Target", "t").leftJoin("adminentity", "a").on("t.AdminEntityId = a.AdminEntityId")
@@ -333,7 +368,7 @@ public class GetSchemaHandler implements
 								UserDatabaseDTO database = databaseMap.get(databaseId);
 								database.getTargets().add(target);
 								target.setUserDatabase(database);
-								
+								target.setTargetValues(targetValues.get(target.getId()));
 								targets.put(target.getId(), target);
 							}
 						}

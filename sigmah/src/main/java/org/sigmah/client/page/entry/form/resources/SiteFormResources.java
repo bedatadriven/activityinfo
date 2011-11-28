@@ -17,6 +17,9 @@ public interface SiteFormResources extends ClientBundle {
 	@Source("FormNavigationTemplate.html")
 	TextResource formNavigationTemplate();
 	
+	@Source("collectionForm.html")
+	TextResource collectionForm();
+	
 	@Source("FormStyle.css")
 	@NotStrict
 	FormStyle style();

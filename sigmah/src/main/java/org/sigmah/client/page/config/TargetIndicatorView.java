@@ -6,56 +6,33 @@ import java.util.List;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.dialog.FormDialogCallback;
-import org.sigmah.client.page.common.dialog.FormDialogImpl;
-import org.sigmah.client.page.common.dialog.FormDialogTether;
 import org.sigmah.client.page.common.grid.AbstractEditorTreeGridView;
 import org.sigmah.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
-import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AttributeDTO;
-import org.sigmah.shared.dto.AttributeGroupDTO;
-import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.Style.HideMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
-import com.extjs.gxt.ui.client.data.TreeModel;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.TreeGridDragSource;
-import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
-import com.extjs.gxt.ui.client.widget.treegrid.CellTreeGridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 
@@ -70,7 +47,7 @@ public class TargetIndicatorView extends
 	protected final Dispatcher service;
 
 	protected EditorTreeGrid<ModelData> tree;
-
+	TargetIndicatorPresenter presenter ;
 	protected UserDatabaseDTO db;
 
 	@Inject
@@ -83,6 +60,7 @@ public class TargetIndicatorView extends
 			TreeStore store) {
 
 		this.db = db;
+		this.presenter = presenter;
 		super.init(presenter, store);
 		
 		setBorders(false);
@@ -101,12 +79,19 @@ public class TargetIndicatorView extends
 		tree.setAutoExpandColumn("name");
 		tree.setHideHeaders(true);
 		tree.setLoadMask(true);
-		// tree.setContextMenu(createContextMenu());
-
+		
 		tree.setIconProvider(new ModelIconProvider<ModelData>() {
 			public AbstractImagePrototype getIcon(ModelData model) {
 
-				return null;
+			 if (model instanceof ActivityDTO) {
+                    return IconImageBundle.ICONS.activity();
+                } else if (model instanceof TargetValueDTO) {
+                    return IconImageBundle.ICONS.indicator();
+                } else if(model instanceof Link){
+                	return IconImageBundle.ICONS.folder();
+                }else {
+                    return null;
+                }
 
 			}
 		});
@@ -115,7 +100,31 @@ public class TargetIndicatorView extends
 				// TODO show form
 			}
 		});
+		
+		tree.addListener(Events.OnKeyDown, new Listener<GridEvent>() {
 
+			@Override
+			public void handleEvent(GridEvent be) {
+				if(!(be.getModel() instanceof TargetValueDTO)){
+					presenter.rejectChanges();
+				}
+			}
+		});
+		
+		tree.addListener(Events.AfterEdit, new Listener<GridEvent>() {
+
+			@Override
+			public void handleEvent(GridEvent be) {
+				if(be.getModel() instanceof TargetValueDTO){
+					presenter.updateTargetValue();	
+				}else{
+					presenter.rejectChanges();
+				}
+			}
+			
+		});
+
+		
 		add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
 		return tree;
@@ -131,33 +140,19 @@ public class TargetIndicatorView extends
 
 		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-		TextField<String> nameField = new TextField<String>();
-		nameField.setAllowBlank(false);
-
 		ColumnConfig nameColumn = new ColumnConfig("name",
-				I18N.CONSTANTS.name(), 150);
-		nameColumn.setEditor(new CellEditor(nameField));
+				I18N.CONSTANTS.indicator(), 250);
 		nameColumn.setRenderer(new TreeGridCellRenderer());
-
 		columns.add(nameColumn);
-		
-		TextField<String> valueField = new TextField<String>();
-		valueField.setAllowBlank(false);
-		
-		ColumnConfig valueColumn = new ColumnConfig("units",
-				I18N.CONSTANTS.value(), 150);
-		valueColumn.setEditor(new CellEditor(valueField));
-//		valueColumn.setRenderer(new TreeGridCellRenderer());
 
-		columns.add(valueColumn);
+		TextField<String> valueField = new TextField<String>();
+		valueField.setAllowBlank(true);
 		
+		ColumnConfig valueColumn = new ColumnConfig("value",
+				I18N.CONSTANTS.targetValue(), 150);
+		valueColumn.setEditor(new CellEditor(valueField));
+		columns.add(valueColumn);
 
 		return new ColumnModel(columns);
-	}
-
-	protected Class formClassForSelection(ModelData sel) {
-
-		return null;
-
 	}
 }

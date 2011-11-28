@@ -23,6 +23,8 @@ import com.google.inject.Inject;
 
 public class CreateReportDefHandler implements CommandHandler<CreateReportDef> {
     private EntityManager em;
+    private Report report;
+    private ReportDefinition reportDef;
 
     @Inject
     public CreateReportDefHandler(EntityManager em) {
@@ -35,11 +37,17 @@ public class CreateReportDefHandler implements CommandHandler<CreateReportDef> {
 
         // verify that the XML is valid
         try {
-            Report report = ReportParserJaxb.parseXml(cmd.getXml());
-
-            ReportDefinition reportDef = new ReportDefinition();
+        	reportDef= new ReportDefinition();
+        	if(cmd.getXml() != null){
+                report = ReportParserJaxb.parseXml(cmd.getXml());
+                reportDef.setXml(cmd.getXml());
+        	}else{
+                report = cmd.getReport();
+                String xml = ReportParserJaxb.createXML(report);
+                reportDef.setXml(xml);
+        	}
+ 	
             reportDef.setDatabase(em.getReference(UserDatabase.class, cmd.getDatabaseId()));
-            reportDef.setXml(cmd.getXml());
             reportDef.setTitle(report.getTitle());
             reportDef.setDescription(report.getDescription());
             reportDef.setFrequency(report.getFrequency());

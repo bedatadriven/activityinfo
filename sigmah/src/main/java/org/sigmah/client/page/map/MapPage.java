@@ -25,20 +25,27 @@ import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.map.layerOptions.LayerOptionsPanel;
+import org.sigmah.shared.command.CreateReportDef;
+import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteData;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteLayout;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -64,6 +71,8 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     private MapReportElement mapReportElement = new MapReportElement();
 	private ExportMenuButton exportMenu;
 	private AbsoluteLayout layout;
+    private SubscribeForm form;
+    private FormDialogImpl dialog;
 
     @Inject
     public MapPage(Dispatcher dispatcher, EventBus eventBus) {
@@ -166,7 +175,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         toolbarMapActions.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
         toolbarMapActions.setActionEnabled(UIActions.exportData, false);
-        toolbarMapActions.addButton(UIActions.subscribe, I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.report());
+        toolbarMapActions.addButton(UIActions.subscribe, I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.email());
         
         setTopComponent(toolbarMapActions);
     }
@@ -198,17 +207,21 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 		if (actionId.equals(UIActions.exportData)) {
 			export(Format.Excel_Data);
 		} else if (actionId.equals(UIActions.subscribe)) {
-			SubscribeForm form = new SubscribeForm();
+			form = new SubscribeForm();
 			
-			FormDialogImpl dialog = new FormDialogImpl(form);
-			dialog.setWidth(400);
+			dialog = new FormDialogImpl(form);
+			dialog.setWidth(450);
 			dialog.setHeight(400);
 			dialog.setHeading(I18N.CONSTANTS.SubscribeTitle());
 			
 			dialog.show(new FormDialogCallback() {
 				@Override
 				public void onValidated() {
-		
+					if(form.validListField()){
+						createReport();	
+					} else{
+						MessageBox.alert(I18N.CONSTANTS.error(), I18N.MESSAGES.noEmailAddress(), null);
+					}
 				}
 			});
 		}
@@ -222,6 +235,43 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 		dispatcher.execute(renderElement, null, new DownloadCallback(eventBus));
 	}
 
+	public void createReport(){
+    	
+    	final Report report = new Report();
+    	report.addElement(mapReportElement);
+    	report.setDay(form.getDay());
+    	report.setTitle(form.getTitle());
+    	report.setFrequency(form.getReportFrequency());
+		
+    	dispatcher.execute(new CreateReportDef(0, report), dialog, new AsyncCallback<CreateResult>() {
+            public void onFailure(Throwable caught) {
+            	dialog.onServerError();
+            }
+
+            public void onSuccess(CreateResult result) {
+            	subscribeEmail(result.getNewId());
+            }
+        });
+    	
+    }
+
+    public void subscribeEmail(int templateId){
+    	
+    	CreateSubscribe sub = new CreateSubscribe();
+		sub.setReportTemplateId(templateId);
+		sub.setEmailsList(form.getEmailList());
+        
+		dispatcher.execute(sub, dialog, new AsyncCallback<VoidResult>() {
+            public void onFailure(Throwable caught) {
+            	dialog.onServerError();
+            }
+
+            public void onSuccess(VoidResult result) {
+            	dialog.hide();
+            }
+        });
+    }
+	
 	@Override
 	public PageId getPageId() {
 		return PAGE_ID;

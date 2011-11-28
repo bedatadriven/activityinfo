@@ -19,14 +19,13 @@ import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Delete;
-import org.sigmah.shared.command.UpdateEntity;
+import org.sigmah.shared.command.UpdateTargetValue;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AttributeDTO;
-import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.EntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.TargetDTO;
+import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
@@ -67,7 +66,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		this.db = db;
 
 		treeStore = new TreeStore<ModelData>();
-		fillStore(messages);
+		
 		initListeners(treeStore, null);
 
 		this.view.init(this, db, treeStore);
@@ -76,7 +75,9 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 
 	public void load(TargetDTO targetDTO) {
 		this.targetDTO = targetDTO;
-//		TODO should re fill store on some events eg selection change.
+		treeStore.removeAll();
+
+		fillStore(messages);
 	}
 
 	
@@ -95,15 +96,12 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 					treeStore.add(actCategoryLink, false);
 				}
 
-				Link activityLink = createActivityLink(activity);
-				treeStore.add(actCategoryLink, activityLink, false);
-
-				addIndicatorLinks(activity, actCategoryLink);
+				treeStore.add(actCategoryLink, activity, false);
+				addIndicatorLinks(activity, activity);
 				
 			} else {
-				Link activityLink = createActivityLink(activity);
-				treeStore.add(activityLink, false);
-				addIndicatorLinks(activity, activityLink);
+				treeStore.add(activity, false);
+				addIndicatorLinks(activity, activity);
 			}
 
 		}
@@ -112,6 +110,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	private void addIndicatorLinks(ActivityDTO activity, ModelData parent){
 		Map<String, Link> indicatorCategories = new HashMap<String, Link>();
 		
+
 		for (IndicatorDTO indicator : activity.getIndicators()) {
 			
 			if(indicator.getCategory()!=null){
@@ -122,15 +121,52 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 					indicatorCategories.put(indicator.getCategory(), indCategoryLink);
 					treeStore.add(parent, indCategoryLink, false);
 				}
-			
-				treeStore.add(indCategoryLink, indicator, false);
+		
+				TargetValueDTO targetValueDTO = getTargetValueByIndicatorId(indicator.getId());
+				if(null != targetValueDTO){
+					treeStore.add(indCategoryLink, targetValueDTO, false);	
+				}else{
+					treeStore.add(indCategoryLink, createTargetValueModel(indicator), false);
+				}
+				
 			}else{
-				treeStore.add(parent, indicator, false);
+				TargetValueDTO targetValueDTO = getTargetValueByIndicatorId(indicator.getId());
+				if(null != targetValueDTO){
+					treeStore.add(parent, targetValueDTO, false);
+				}else{
+					treeStore.add(parent, createTargetValueModel(indicator), false);
+				}
 			}
 		}
 
 	}
-
+	
+	private TargetValueDTO createTargetValueModel(IndicatorDTO indicator){
+		TargetValueDTO targetValueDTO = new TargetValueDTO();
+		targetValueDTO.setTargetId(targetDTO.getId());
+		targetValueDTO.setIndicatorId(indicator.getId());
+		targetValueDTO.setName(indicator.getName());
+		
+		return targetValueDTO ;
+	}
+		
+	private TargetValueDTO getTargetValueByIndicatorId(int indicatorId){
+		TargetDTO target = db.getTargetById(targetDTO.getId());
+		List<TargetValueDTO> values =  target.getTargetValues();
+		
+		if(values == null){
+			return null;
+		}
+		
+		for(TargetValueDTO dto : values){
+			if(dto.getIndicatorId() == indicatorId){
+				return dto;
+			}
+		}
+		
+		return null;
+	}
+	
 	private Link createIndicatorCategoryLink(IndicatorDTO indicatorNode, Map<String, Link> categories){
 		return Link.folderLabelled(indicatorNode.getCategory())
 				.usingKey(categoryKey(indicatorNode, categories))
@@ -144,23 +180,12 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 				.withIcon(IconImageBundle.ICONS.folder()).build();
 	}
 
-	private Link createActivityLink(ActivityDTO activity) {
-
-		return Link.folderLabelled(activity.getName())
-				.usingKey(activityKey(activity))
-				.withIcon(IconImageBundle.ICONS.folder()).build();
-	}
-
 	private String categoryKey(ActivityDTO activity, Map<String, Link> categories) {
 		return "category" + activity.getDatabase().getId()	+ activity.getCategory() + categories.size();
 	}
 
 	private String categoryKey(IndicatorDTO indicatorNode, Map<String, Link> categories) {
 		return "category-indicator" +  indicatorNode.getCategory() + categories.size();
-	}
-	
-	private String activityKey(ActivityDTO activity) {
-		return "activity" + activity.getDatabase().getId() + activity.getName();
 	}
 
 
@@ -173,21 +198,6 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		return treeStore;
 	}
 
-	public void onNodeDropped(ModelData source) {
-
-		// update sortOrder
-
-		ModelData parent = treeStore.getParent(source);
-		List<ModelData> children = parent == null ? treeStore.getRootItems()
-				: treeStore.getChildren(parent);
-
-		for (int i = 0; i != children.size(); ++i) {
-			Record record = treeStore.getRecord(children.get(i));
-			record.set("sortOrder", i);
-		}
-
-	}
-
 	protected ActivityDTO findActivityFolder(ModelData selected) {
 
 		while (!(selected instanceof ActivityDTO)) {
@@ -196,18 +206,15 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 
 		return (ActivityDTO) selected;
 	}
-
-	protected AttributeGroupDTO findAttributeGroupNode(ModelData selected) {
-		if (selected instanceof AttributeGroupDTO) {
-			return (AttributeGroupDTO) selected;
-		}
-		if (selected instanceof AttributeDTO) {
-			return (AttributeGroupDTO) treeStore.getParent(selected);
-		}
-		throw new AssertionError("not a valid selection to add an attribute !");
-
+	
+	public void updateTargetValue(){
+		onSave();
 	}
 
+	public void rejectChanges(){
+		treeStore.rejectChanges();
+	}
+	
 	@Override
 	protected void onDeleteConfirmed(final ModelData model) {
 		service.execute(new Delete((EntityDTO) model),
@@ -242,8 +249,9 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		if (model instanceof EntityDTO) {
 			Record record = treeStore.getRecord(model);
 			if (record.isDirty()) {
-				batch.add(new UpdateEntity((EntityDTO) model, this
-						.getChangedProperties(record)));
+				UpdateTargetValue cmd = new UpdateTargetValue((Integer)model.get("targetId"), (Integer)model.get("indicatorId"), this.getChangedProperties(record));
+				
+				batch.add(cmd);
 			}
 		}
 
@@ -256,14 +264,14 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		view.setActionEnabled(UIActions.delete, this.db.isDesignAllowed()
 				&& selectedItem instanceof EntityDTO);
 	}
-
+	
 	public Object getWidget() {
 		return view;
 	}
 
 	@Override
 	protected void onSaved() {
-
+		treeStore.commitChanges();
 	}
 
 	@Override
