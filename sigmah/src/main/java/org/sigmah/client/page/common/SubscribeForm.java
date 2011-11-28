@@ -93,6 +93,7 @@ public class SubscribeForm extends FormPanel {
 		add(dayOfMonth);
 
 		emailFrequency.addListener(Events.Change, new Listener<BaseEvent>() {
+			@Override
 			public void handleEvent(BaseEvent be) {
 				if (weekly.getValue()) {
 					dayOfMonth.hide();
@@ -161,6 +162,7 @@ public class SubscribeForm extends FormPanel {
 			}
 		});
 		newEmail.addListener(Events.Focus, new Listener<BaseEvent>() {
+			@Override
 			public void handleEvent(BaseEvent be) {
 				newEmail.setValue("");
 				addEmail.setEnabled(true);
@@ -187,6 +189,7 @@ public class SubscribeForm extends FormPanel {
 		add(hp);
 	}
 
+	@Override
 	public String getTitle() {
 		return title.getValue();
 	}
@@ -201,9 +204,9 @@ public class SubscribeForm extends FormPanel {
 
 	public int getDay() {
 		if (monthly.getValue()) {
-			return ((ModelData) dayOfMonth.getSelection().get(0)).get("value");
+			return (Integer) ((ModelData) dayOfMonth.getSelection().get(0)).get("value");
 		} else {
-			return ((ModelData) dayOfWeek.getSelection().get(0)).get("value");
+			return (Integer) ((ModelData) dayOfWeek.getSelection().get(0)).get("value");
 		}
 	}
 
