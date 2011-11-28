@@ -70,6 +70,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("partner.name", "PartnerName")
 			.appendColumn("site.projectId", "ProjectId")
 			.appendColumn("project.name", "ProjectName")
+			.appendColumn("location.locationId", "LocationId")
 			.appendColumn("location.name", "LocationName")
 			.appendColumn("location.axe", "LocationAxe")
 			.appendColumn("locationType.name", "LocationTypeName")
@@ -358,6 +359,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         model.setDate2( row.getDate("Date2") );
         model.setDateEdited(row.getDate("DateEdited"));
         model.setDateCreated(row.getDate("DateCreated"));
+        model.setLocationId(row.getInt("LocationId"));
         model.setLocationName( row.getString("LocationName") );
         model.setLocationAxe( row.getString("LocationAxe") );
         

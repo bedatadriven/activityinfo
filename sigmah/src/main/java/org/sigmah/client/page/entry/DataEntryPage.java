@@ -176,21 +176,25 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	
 
 	private void onSiteSelected(final SelectionChangedEvent<SiteDTO> se) {
-		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSuccess(SchemaDTO schema) {
-				SiteDTO site = se.getSelectedItem();
-				ActivityDTO activity = schema.getActivityById(site.getActivityId());
-				updateSelection(activity, site);
-			}
-		});
+		if(se.getSelection().isEmpty()) {
+			onNoSelection();
+		} else {
+			dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+	
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void onSuccess(SchemaDTO schema) {
+					SiteDTO site = se.getSelectedItem();
+					ActivityDTO activity = schema.getActivityById(site.getActivityId());
+					updateSelection(activity, site);
+				}
+			});
+		}
 	}
 	
 	private void updateSelection(ActivityDTO activity, SiteDTO site) {
@@ -210,6 +214,11 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 				tabPanel.setSelection(detailTab);
 			}
 		}
+	}
+	
+	private void onNoSelection() {
+		toolBar.setActionEnabled(UIActions.edit, false);
+		toolBar.setActionEnabled(UIActions.delete, false); 
 	}
 
 	@Override

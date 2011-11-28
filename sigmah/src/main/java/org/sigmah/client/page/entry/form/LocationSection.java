@@ -1,7 +1,10 @@
 package org.sigmah.client.page.entry.form;
 
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.widget.CoordinateFields;
+import org.sigmah.shared.command.CreateLocation;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.LocationDTO;
@@ -15,8 +18,13 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 
 	private boolean isNew;
 	private LocationDTO location;
+	private Dispatcher dispatcher;
+	private LabelField nameField;
+	private LabelField axeField;
+	private CoordinateFields coordinateFields;
 	
-	public LocationSection(ActivityDTO activity) {
+	public LocationSection(Dispatcher dispatcher, ActivityDTO activity) {
+		this.dispatcher = dispatcher;
 		
 		for(AdminLevelDTO level : activity.getDatabase().getCountry().getAdminLevels()) {
 			LabelField levelField = new LabelField();
@@ -24,15 +32,16 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 			add(levelField);
 		}
 
-		LabelField nameField = new LabelField();
+		nameField = new LabelField();
 		nameField.setFieldLabel(activity.getLocationType().getName());
 		add(nameField);
 		
-		LabelField axeField = new LabelField();
+		axeField = new LabelField();
 		axeField.setFieldLabel(I18N.CONSTANTS.axe());
 		add(axeField);
 		
-		CoordinateFields coordinateFields = new CoordinateFields();
+		coordinateFields = new CoordinateFields();
+		coordinateFields.setReadOnly(true);
 		add(coordinateFields.getLatitudeField());
 		add(coordinateFields.getLongitudeField());
 		
@@ -49,6 +58,15 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 	@Override
 	public void updateForm(LocationDTO location, boolean isNew) {
 		this.location = location;
+		this.isNew = isNew;
+		nameField.setValue(location.getName());
+		axeField.setValue(location.getName());
+		if(location.hasCoordinates()) {
+			coordinateFields.getLatitudeField().setValue(location.getLatitude());
+			coordinateFields.getLongitudeField().setValue(location.getLongitude());
+		} else {
+			coordinateFields.setValue(null);
+		}
 	}
 
 
@@ -58,8 +76,23 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 	}
 	
 	@Override
-	public void save(AsyncCallback<Void> callback) {
-		callback.onSuccess(null);
+	public void save(final AsyncCallback<Void> callback) {
+		if(!isNew) {
+			callback.onSuccess(null);
+		} else {
+			dispatcher.execute(new CreateLocation(location), null, new AsyncCallback<VoidResult>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					callback.onFailure(caught);
+				}
+
+				@Override
+				public void onSuccess(VoidResult result) {
+					callback.onSuccess(null);
+				}
+			});
+		}
 	}
 
 

@@ -58,7 +58,7 @@ public class LocationDialog extends Window {
 		setHeight((int)(com.google.gwt.user.client.Window.getClientHeight() * 0.95));
 		setLayout(new BorderLayout());
 		
-		addSearchPanel();
+		addSearchPanel(locationType);
 		addMap();
 				
 		getButtonBar().setAlignment(HorizontalAlignment.LEFT);
@@ -127,7 +127,7 @@ public class LocationDialog extends Window {
 		});
 	}
 
-	private void addSearchPanel() {
+	private void addSearchPanel(LocationTypeDTO locationType) {
 		
 		LayoutContainer container = new LayoutContainer();
 		container.setLayout(new FlowLayout());
@@ -138,7 +138,7 @@ public class LocationDialog extends Window {
 		container.add(newExplanation(I18N.CONSTANTS.chooseLocationDescription()));
 		
 		container.add(formHeader = newHeader(I18N.CONSTANTS.searchLocations()));
-		container.add(new LocationForm(dispatcher, searchPresenter, newLocationPresenter));
+		container.add(new LocationForm(dispatcher, locationType.getId(), searchPresenter, newLocationPresenter));
 		
 		container.add(addLocationHeader = newHeader(I18N.CONSTANTS.addLocation()));
 		container.add(addLocationHelp = newExplanation(I18N.CONSTANTS.addLocationDescription()));

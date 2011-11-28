@@ -3,11 +3,14 @@ package org.sigmah.client.page.entry.location;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.client.page.entry.admin.AdminComboBox;
 import org.sigmah.client.page.entry.admin.AdminFieldSetPresenter;
 import org.sigmah.client.page.entry.admin.AdminSelectionEvent;
 import org.sigmah.client.page.entry.admin.BoundsChangedEvent;
 import org.sigmah.client.widget.CoordinateFields;
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -47,10 +50,13 @@ public class LocationForm extends LayoutContainer {
 	private LayoutContainer newFormButtonContainer;
 	private SearchAdminComboBoxSet comboBoxes;
 	
+	private int locationTypeId;
 	
-	public LocationForm(Dispatcher dispatcher, final LocationSearchPresenter searchPresenter, final NewLocationPresenter newLocationPresenter) {
+	
+	public LocationForm(Dispatcher dispatcher, int locationTypeId, final LocationSearchPresenter searchPresenter, final NewLocationPresenter newLocationPresenter) {
 		this.searchPresenter = searchPresenter;
 		this.newLocationPresenter = newLocationPresenter;
+		this.locationTypeId = locationTypeId;
 		
 		FormLayout layout = new FormLayout();
 		layout.setLabelWidth(LABEL_WIDTH);
@@ -68,6 +74,7 @@ public class LocationForm extends LayoutContainer {
 			@Override
 			public void handleEvent(AdminSelectionEvent be) {
 				search();
+				coordinateFields.validate();
 			}
 		});
 		
@@ -196,8 +203,19 @@ public class LocationForm extends LayoutContainer {
 	}
 
 	private void saveNewLocation() {
-		coordinateFields.validate();
-		nameField.validate();
+		if(coordinateFields.validate() && nameField.validate()) {
+			LocationDTO newLocation = new LocationDTO();
+			newLocation.setId(new KeyGenerator().generateInt());
+			newLocation.setLocationTypeId(locationTypeId);
+			newLocation.setName(nameField.getValue());
+			newLocation.setAxe(axeField.getValue());
+			newLocation.setLatitude(coordinateFields.getLatitudeField().getValue());
+			newLocation.setLongitude(coordinateFields.getLongitudeField().getValue());
+			for(AdminLevelDTO level : adminPresenter.getAdminLevels()) {
+				newLocation.setAdminEntity(level.getId(), adminPresenter.getAdminEntity(level));
+			}
+			newLocationPresenter.accept(newLocation);
+		}
 	}
 
 	private void setNewFormActive(boolean active) {

@@ -7,7 +7,7 @@ import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.util.beanMapping.BeanMappingModule;
 import org.sigmah.server.util.logging.LoggingModule;
-import org.sigmah.shared.command.AddLocation;
+import org.sigmah.shared.command.CreateLocation;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.LocalHandlerTestCase;
@@ -39,8 +39,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
         SiteDTO newSite = SiteDTOs.newSite();
         
         LocationDTO location = LocationDTOs.newLocation();
-        CreateResult createLocation = executeLocally(new AddLocation().setLocation(location));
-        location.setId(createLocation.getNewId());
+        executeLocally(new CreateLocation(location));
 
         newSite.setLocation(location);
         // create command

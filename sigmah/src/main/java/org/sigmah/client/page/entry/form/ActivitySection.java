@@ -89,8 +89,10 @@ public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
 	@Override
 	public boolean validate() {
 		boolean valid = true;
-		valid &= dateField1.validate();
-		valid &= dateField2.validate();
+		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
+			valid &= dateField1.validate();
+			valid &= dateField2.validate();
+		}
 		valid &= partnerCombo.validate();
 		valid &= projectCombo.validate();
 		return valid;
@@ -98,8 +100,10 @@ public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
 
 	@Override
 	public void updateModel(SiteDTO m) {
-		m.setDate1(dateField1.getValue());
-		m.setDate2(dateField2.getValue());
+		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
+			m.setDate1(dateField1.getValue());
+			m.setDate2(dateField2.getValue());
+		}
 		m.setPartner(partnerCombo.getValue());
 		m.setProject(projectCombo.getValue());
 	}

@@ -8,7 +8,9 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.command.CreateSite;
+import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -75,7 +77,7 @@ public class SiteDialog extends Window {
 		if(activity.getLocationType().isAdminLevel()) {
 			locationForm = new BoundLocationSection(dispatcher, activity);
 		} else {
-			locationForm = new LocationSection(activity);
+			locationForm = new LocationSection(dispatcher, activity);
 		}
 		
 		addSection(FormSectionModel.forComponent(new ActivitySection(activity))
@@ -127,22 +129,28 @@ public class SiteDialog extends Window {
 		updateForms(site);
 		show();
 	}
-
+	
+	public void showExisting(SiteDTO site, SiteDialogCallback callback) {
+		this.newSite = false;
+		this.site = site;
+		this.callback = callback;
+		locationForm.updateForm(site.getLocation(), false);
+		updateForms(site);
+		show();
+	}
+	
 	private void updateForms(SiteDTO site) {
 		for(FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
 			section.getSection().updateForm(site);
 		}
 	}
 	
-	public void showExisting(SiteDTO site, SiteDialogCallback callback) {
-		this.newSite = false;
-		this.site = site;
-		this.callback = callback;
-		updateForms(site);
-		show();
+	private void updateModel(final SiteDTO newSite) {
+		for(FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
+			section.getSection().updateModel(newSite);
+		}
 	}
-	
-	
+		
 	private void addSection(FormSectionModel<SiteDTO> model) {
 		navigationListView.addSection(model);
 		sectionContainer.add(model.getComponent());
@@ -183,13 +191,15 @@ public class SiteDialog extends Window {
 	}
 
 
-	protected void saveSite() {
+	private void saveSite() {
 		if(newSite) {
 			saveNewSite();
 		} else {
 			updateSite();
 		}
 	}
+	
+
 
 	private void saveNewSite() {
 		final SiteDTO newSite = new SiteDTO();
@@ -200,9 +210,7 @@ public class SiteDialog extends Window {
 			newSite.setReportingPeriodId(new KeyGenerator().generateInt());
 		}
 		
-		for(FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
-			section.getSection().updateModel(newSite);
-		}
+		updateModel(newSite);
 		
 		dispatcher.execute(new CreateSite(newSite), null, new AsyncCallback<CreateResult>() {
 
@@ -219,9 +227,27 @@ public class SiteDialog extends Window {
 			}
 		});
 	}
+
 	
 	private void updateSite() {
 		
+		final SiteDTO updated = new SiteDTO(site);
+		updateModel(updated);
+		
+		dispatcher.execute(new UpdateSite(site, updated), null, new AsyncCallback<VoidResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(VoidResult result) {
+				hide();
+				callback.onSaved(updated);
+			}
+		});
 	}
 
 }

@@ -69,14 +69,18 @@ public class CoordinateFields {
 		longitudeField.addListener(Events.Change, fieldListener);
 	}
 
-	public void validate() {
-		latitudeField.validate();
-		longitudeField.validate();
+	public boolean validate() {
+		return latitudeField.validate() && longitudeField.validate();
 	}
 
 	public void setVisible(boolean visible) {
 		latitudeField.setVisible(visible);
 		longitudeField.setVisible(visible);
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		latitudeField.setReadOnly(readOnly);
+		longitudeField.setReadOnly(readOnly);
 	}
 	
 }

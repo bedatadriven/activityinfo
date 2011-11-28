@@ -1,8 +1,11 @@
 package org.sigmah.shared.dto;
 
+import java.util.List;
+
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 public class LocationDTO extends BaseModelData implements EntityDTO {
 	public LocationDTO() {
@@ -87,6 +90,19 @@ public class LocationDTO extends BaseModelData implements EntityDTO {
 
 	public AdminEntityDTO getAdminEntityId(int levelId) {
 		return (AdminEntityDTO)get(AdminLevelDTO.getPropertyName(levelId));
+	}
+	
+	public List<AdminEntityDTO> getAdminEntities() {
+		List<AdminEntityDTO> list = Lists.newArrayList();
+		for(String property : getPropertyNames()) {
+			if(property.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
+				AdminEntityDTO entity = (AdminEntityDTO)get(property);
+				if(entity != null) {
+					list.add(entity);
+				}
+			}
+		}
+		return list;
 	}
 	
 	public String getMarker() {

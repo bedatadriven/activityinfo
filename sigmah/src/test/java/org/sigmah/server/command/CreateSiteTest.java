@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.AddLocation;
+import org.sigmah.shared.command.CreateLocation;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.exception.NotAuthorizedException;
@@ -39,8 +39,7 @@ public class CreateSiteTest extends CommandTestCase2 {
     @Test
     public void test() throws CommandException {
     	LocationDTO location = LocationDTOs.newLocation();
-    	CreateResult createLocation = execute(new AddLocation().setLocation(location));
-    	location.setId(createLocation.getNewId());
+    	execute(new CreateLocation(location));
     	
         SiteDTO newSite = SiteDTOs.newSite();
         newSite.setLocation(location);
