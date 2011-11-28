@@ -17,9 +17,16 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.common.SubscribeForm;
+import org.sigmah.client.page.common.dialog.FormDialogCallback;
+import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.shared.command.CreateReportDef;
+import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.GeneratePivotTable;
 import org.sigmah.shared.command.RenderElement;
+import org.sigmah.shared.command.result.CreateResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -28,11 +35,13 @@ import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.sigmah.shared.report.model.Report;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
@@ -80,6 +89,8 @@ public class PivotPresenter implements Page {
     private final Dispatcher service;
     private final View view;
     private final EventBus eventBus;
+    private SubscribeForm form;
+    private FormDialogImpl dialog;
 
     @Inject
     public PivotPresenter(Dispatcher service, EventBus eventBus, final View view) {
@@ -165,11 +176,64 @@ public class PivotPresenter implements Page {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
                     new DownloadCallback(eventBus, "pivotTable"));
         } else if (UIActions.subscribe.equals(itemId)) {
-        	Window.alert("hello alert!");
+        	
+        	form = new SubscribeForm();
+        	
+			dialog = new FormDialogImpl(form);
+			dialog.setWidth(450);
+			dialog.setHeight(400);
+			dialog.setHeading(I18N.CONSTANTS.SubscribeTitle());
+			
+			dialog.show(new FormDialogCallback() {
+				@Override
+				public void onValidated() {
+					if(form.validListField()){
+						createReport();	
+					} else{
+						MessageBox.alert(I18N.CONSTANTS.error(), I18N.MESSAGES.noEmailAddress(), null);
+					}
+	            }
+			});
         }
         
     }
+    
+    public void createReport(){
+    	
+    	final Report report = new Report();
+    	report.addElement(createElement());
+    	report.setDay(form.getDay());
+    	report.setTitle(form.getTitle());
+    	report.setFrequency(form.getReportFrequency());
+		
+		service.execute(new CreateReportDef(0, report), dialog, new AsyncCallback<CreateResult>() {
+            public void onFailure(Throwable caught) {
+            	dialog.onServerError();
+            }
 
+            public void onSuccess(CreateResult result) {
+            	subscribeEmail(result.getNewId());
+            }
+        });
+    	
+    }
+
+    public void subscribeEmail(int templateId){
+    	
+    	CreateSubscribe sub = new CreateSubscribe();
+		sub.setReportTemplateId(templateId);
+		sub.setEmailsList(form.getEmailList());
+        
+		service.execute(sub, dialog, new AsyncCallback<VoidResult>() {
+            public void onFailure(Throwable caught) {
+            	dialog.onServerError();
+            }
+
+            public void onSuccess(VoidResult result) {
+            	dialog.hide();
+            }
+        });
+    }
 
     @Override
     public PageId getPageId() {

@@ -296,4 +296,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("Targets for database {0}")
 	String targetsForDatabase(String arg0);
 
+	@DefaultMessage("Please enter email address to subscribe.")
+	String noEmailAddress();
 }

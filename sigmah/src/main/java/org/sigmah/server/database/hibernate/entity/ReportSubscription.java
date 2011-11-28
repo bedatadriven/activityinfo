@@ -30,6 +30,7 @@ public class ReportSubscription implements Serializable {
     private User user;
     private boolean subscribed;
     private User invitingUser;
+    private String subscriberEmail;
 
     public ReportSubscription() {
     }
@@ -133,4 +134,13 @@ public class ReportSubscription implements Serializable {
     public void setSubscribed(boolean subscribed) {
         this.subscribed = subscribed;
     }
+
+	public String getSubscriberEmail() {
+		return subscriberEmail;
+	}
+
+	public void setSubscriberEmail(String subscriberEmail) {
+		this.subscriberEmail = subscriberEmail;
+	}
+    
 }

@@ -30,4 +30,9 @@
 	<changeSet  author="umad" id="003-03">
 				<modifyDataType tableName="siteattachment" columnName="blobsize" newDataType="DOUBLE"/>
 	</changeSet>
+	<changeSet author="umad" id="003-04">
+		<addColumn tableName="reportsubscription">
+			<column name="subscriberemail" type="VARCHAR(255)" />
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>
