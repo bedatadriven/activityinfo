@@ -147,8 +147,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 							"UserDatabase.DatabaseId in "  +
 							"(SELECT p.DatabaseId from UserPermission p where p.UserId = ? and p.AllowViewAll) or " +
 							"UserDatabase.DatabaseId in " +
-					"(select p.DatabaseId from UserPermission p where (p.UserId = ?) and p.AllowView and p.PartnerId = Site.PartnerId))" +
-					"OR (select pa.DatabaseId from activity pa where pa.published>0) > 0");
+					"(select p.DatabaseId from UserPermission p where (p.UserId = ?) and p.AllowView and p.PartnerId = Site.PartnerId) " +
+					" OR (select count(*) from activity pa where pa.published>0 and pa.ActivityId = Site.ActivityId) > 0 )");
 			
 			query.appendParameter(context.getUser().getId());
 			query.appendParameter(context.getUser().getId());
