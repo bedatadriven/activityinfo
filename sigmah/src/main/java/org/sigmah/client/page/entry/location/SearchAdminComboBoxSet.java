@@ -16,6 +16,7 @@ public class SearchAdminComboBoxSet extends AdminComboBoxSet {
 	
 	public SearchAdminComboBoxSet(LayoutContainer container, AdminFieldSetPresenter presenter) {
 		super(presenter);
+		assert container != null;
 		this.container = container;
 		this.presenter = presenter;
 		
@@ -46,7 +47,10 @@ public class SearchAdminComboBoxSet extends AdminComboBoxSet {
 			boolean enabled) {
 		if(mode == EditMode.SEARCH) {
 			comboBox.setVisible(enabled);
-			container.layout();
+			// called by super class constructor before container is initialized
+			if(container != null) {
+				container.layout();
+			}
 		}
 	}
 }
