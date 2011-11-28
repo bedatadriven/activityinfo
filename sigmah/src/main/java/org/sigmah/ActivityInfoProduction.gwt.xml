@@ -20,6 +20,9 @@
 
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
 
-    
+	<set-configuration-property name="compiler.emulatedStack" value="true"/>
+	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true"/>
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true"/>
+	
 </module>
 
