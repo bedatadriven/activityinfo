@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
 import org.sigmah.server.report.renderer.html.ImageStorage;
@@ -43,6 +44,7 @@ import org.sigmah.shared.util.mapping.Extents;
 
 import com.google.common.collect.Lists;
 
+@Ignore("too long")
 public class ItextReportRendererTest {
 	
 	@Before

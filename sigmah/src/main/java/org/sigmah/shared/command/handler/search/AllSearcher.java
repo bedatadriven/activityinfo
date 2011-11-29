@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -18,7 +19,8 @@ public class AllSearcher {
 	private static Map<DimensionType, Searcher> searchers = new HashMap<DimensionType, Searcher>();
 	private List<Searcher> failedSearchers = new ArrayList<Searcher>();
 	private Filter filter = new Filter();
-	SqlTransaction tx;
+	
+	private final SqlTransaction tx;
 	
 	static {
 		searchers.put(DimensionType.Partner, new GenericSearcher(DimensionType.Partner));
@@ -69,7 +71,6 @@ public class AllSearcher {
 	public void searchNextDimension(final Iterator<Entry<DimensionType, List<String>>> iterator,
 			final SqlTransaction tx, final AsyncCallback<Filter> callback) {
 
-		Filter filter = new Filter();
 		final Entry<DimensionType, List<String>> entry = iterator.next();
 		final Searcher searcher = searchers.get(entry.getKey());
 		
@@ -77,14 +78,14 @@ public class AllSearcher {
 			@Override
 			public void onFailure(Throwable caught) {
 				failedSearchers.add(searcher);
-				System.out.println("Failed searcher: ");
-				AllSearcher.this.continueOrYieldFilterSpecific(entry.getValue(), iterator, tx, callback);
+				Log.trace("Failed searcher: ");
+				AllSearcher.this.continueOrYieldFilterSpecific(iterator, tx, callback);
 			}
 
 			@Override
 			public void onSuccess(List<Integer> result) {
 				addRestrictions(result);
-				AllSearcher.this.continueOrYieldFilterSpecific(entry.getValue(), iterator, tx, callback);
+				AllSearcher.this.continueOrYieldFilterSpecific(iterator, tx, callback);
 			}
 			
 			private void addRestrictions(List<Integer> result) {
@@ -95,8 +96,7 @@ public class AllSearcher {
 		});
 	}
 	
-	private void continueOrYieldFilterSpecific(final List<String> q,
-			final Iterator<Entry<DimensionType, List<String>>> iterator,
+	private void continueOrYieldFilterSpecific(final Iterator<Entry<DimensionType, List<String>>> iterator,
 			final SqlTransaction tx,
 			final AsyncCallback<Filter> callback) {
 		
@@ -115,7 +115,7 @@ public class AllSearcher {
 			@Override
 			public void onFailure(Throwable caught) {
 				failedSearchers.add(searcher);
-				System.out.println("Failed searcher: ");
+				Log.trace("Failed searcher: ");
 				AllSearcher.this.continueOrYieldFilter(q, iterator, tx, callback);
 			}
 

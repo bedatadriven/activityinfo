@@ -12,10 +12,10 @@ import com.extjs.gxt.ui.client.event.Listener;
 
 public class NewLocationPresenter extends BaseObservable {
 
-	public static EventType POSITION_CHANGED = new EventType();
-	public static EventType ACTIVE_STATE_CHANGED = new EventType();
-	public static EventType BOUNDS_CHANGED = new EventType();
-	public static EventType ACCEPTED = new EventType();
+	public static final EventType POSITION_CHANGED = new EventType();
+	public static final EventType ACTIVE_STATE_CHANGED = new EventType();
+	public static final EventType BOUNDS_CHANGED = new EventType();
+	public static final EventType ACCEPTED = new EventType();
 	
 	private AiLatLng latLng;
 	private boolean provisional;

@@ -130,11 +130,11 @@ public class CreateSiteTest extends CommandTestCase2 {
         newSite.setAttributeValue(1, false);
         newSite.setAttributeValue(2, false);
         newSite.setProject(new ProjectDTO(1,"SomeProject"));
-        newSite.setLocation(LocationDTOs.newLocation());
 
         // create command
 
         CreateSite cmd = new CreateSite(newSite);
+        assertThat((Integer)cmd.getProperties().get("locationId"), equalTo(1));
 
         // execute the command
 

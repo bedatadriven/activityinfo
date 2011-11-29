@@ -9,41 +9,41 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public interface CanCreate<M extends DTO> {
 	
-	public interface CreateHandler extends EventHandler {
+	interface CreateHandler extends EventHandler {
 		void onCreate(CreateEvent createEvent);
 	}
-	public interface CancelCreateHandler extends EventHandler {
+	interface CancelCreateHandler extends EventHandler {
 		void onCancelCreate(CancelCreateEvent createEvent);
 	}
-	public interface StartCreateHandler extends EventHandler {
+	interface StartCreateHandler extends EventHandler {
 		void onStartCreate(StartCreateEvent createEvent);
 	}
 	// The user signals the presenter it wants to add a new item
-	public HandlerRegistration addCreateHandler(CreateHandler handler);
+	HandlerRegistration addCreateHandler(CreateHandler handler);
 
 	// The user signals the presenter it wants to add a new item
-	public HandlerRegistration addCancelCreateHandler(CancelCreateHandler handler);
+	HandlerRegistration addCancelCreateHandler(CancelCreateHandler handler);
 
 	// The user signals the presenter it wants to add a new item
-	public HandlerRegistration addStartCreateHandler(StartCreateHandler handler);
+	HandlerRegistration addStartCreateHandler(StartCreateHandler handler);
 	
 	// An item is created by the presenter, this method adds the item to the view 
-	public void create(M item);
+	void create(M item);
 	
 	// Is the 'new' button enabled?
-	public void setCreateEnabled(boolean createEnabled);
+	void setCreateEnabled(boolean createEnabled);
 	
 	// Set the UI for creation of a new entity
-	public void startCreate();
+	void startCreate();
 	
 	// The user wants to exit the new entity creation mode
-	public void cancelCreate();
+	void cancelCreate();
 	
 	// Let the user know what's going on when creating an entity
-	public AsyncMonitor getCreatingMonitor();
+	AsyncMonitor getCreatingMonitor();
 	
 	// The Presenter has a seperate view for creating/updating domain object
-	public class CreateEvent extends GwtEvent<CreateHandler> {
+	class CreateEvent extends GwtEvent<CreateHandler> {
 		public static Type TYPE = new Type<CreateHandler>(); 
 		
 		@Override
@@ -58,7 +58,7 @@ public interface CanCreate<M extends DTO> {
 	}
 
 	// The Presenter has a seperate view for creating/updating domain object
-	public class CancelCreateEvent extends GwtEvent<CancelCreateHandler> {
+	class CancelCreateEvent extends GwtEvent<CancelCreateHandler> {
 		public static Type TYPE = new Type<CancelCreateHandler>(); 
 		
 		@Override
@@ -73,7 +73,7 @@ public interface CanCreate<M extends DTO> {
 	}
 
 	// The Presenter has a seperate view for creating/updating domain object
-	public class StartCreateEvent extends GwtEvent<StartCreateHandler> {
+	class StartCreateEvent extends GwtEvent<StartCreateHandler> {
 		public static Type TYPE = new Type<StartCreateHandler>(); 
 		
 		@Override

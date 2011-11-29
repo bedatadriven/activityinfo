@@ -8,6 +8,7 @@ package org.sigmah.server.endpoint.export;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
@@ -43,12 +44,30 @@ import com.extjs.gxt.ui.client.data.SortInfo;
  */
 public class SiteExporter {
 
-    private final DispatcherSync dispatcher;
+
+	private static final short FONT_SIZE = 8;
+
+	/** 
+     * sheet names can only be 31 characters long, plus we need about 4-6 chars for disambiguation
+     */
+    private static final int MAX_SHEET_NAME_LENGTH = 25;
+
+	private static final short DIAGONAL = 45;
+
+    private static final int COORD_COLUMN_WIDTH = 12;
+	private static final int ATTRIBUTE_COLUMN_WIDTH = 5;
+	private static final int INDICATOR_COLUMN_WIDTH = 16;
+	private static final int LOCATION_COLUMN_WIDTH = 20;
+	private static final int PARTNER_COLUMN_WIDTH = 16;
+	private static final int HEADER_CELL_HEIGHT = 75;
+	private static final int CHARACTERS_PER_WIDTH_UNIT = 255;
+	
+	private final DispatcherSync dispatcher;
 
     private final HSSFWorkbook book;
     private final CreationHelper creationHelper;
 
-    private HashMap<String, Integer> sheetNames;
+    private Map<String, Integer> sheetNames;
 
     private CellStyle dateStyle;
     private CellStyle coordStyle;
@@ -96,7 +115,7 @@ public class SiteExporter {
         headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
 
         Font smallFont = book.createFont();
-        smallFont.setFontHeightInPoints((short) 8);
+        smallFont.setFontHeightInPoints(FONT_SIZE);
 
         headerStyle = book.createCellStyle();
         headerStyle.setFont(headerFont);
@@ -111,7 +130,7 @@ public class SiteExporter {
 
         attribHeaderStyle = book.createCellStyle();
         attribHeaderStyle.setFont(smallFont);
-        attribHeaderStyle.setRotation((short) 45);
+        attribHeaderStyle.setRotation(DIAGONAL);
         attribHeaderStyle.setWrapText(true);
 
         indicatorHeaderStyle = book.createCellStyle();
@@ -155,8 +174,7 @@ public class SiteExporter {
         // replace invalid chars: / \ [ ] * ?
         sheetName = sheetName.replaceAll("[\\Q/\\*?[]\\E]", " ");
 
-        // sheet names can only be 31 characters long, plus we need about 4-6 chars for disambiguation
-        String shortenedName = sheetName.substring(0, Math.min(25, sheetName.length()));
+        String shortenedName = sheetName.substring(0, Math.min(MAX_SHEET_NAME_LENGTH, sheetName.length()));
 
         // assure that the sheet name is unique
         if (!sheetNames.containsKey(shortenedName)) {
@@ -176,18 +194,18 @@ public class SiteExporter {
 
         Row headerRow1 = sheet.createRow(0);
         Row headerRow2 = sheet.createRow(1);
-        headerRow2.setHeightInPoints(75);
+        headerRow2.setHeightInPoints(HEADER_CELL_HEIGHT);
 
         int column = 0;
         createHeaderCell(headerRow2, column++, "Date1", CellStyle.ALIGN_RIGHT);
         createHeaderCell(headerRow2, column++, "Date2", CellStyle.ALIGN_RIGHT);
 
         createHeaderCell(headerRow2, column, "Partner");
-        sheet.setColumnWidth(column, 16 * 256);
+        sheet.setColumnWidth(column, characters(PARTNER_COLUMN_WIDTH));
         column++;
 
         createHeaderCell(headerRow2, column, activity.getLocationType().getName());
-        sheet.setColumnWidth(column, 20 * 256);
+        sheet.setColumnWidth(column, characters(LOCATION_COLUMN_WIDTH));
         column++;
 
         createHeaderCell(headerRow2, column++, "Axe");
@@ -204,13 +222,12 @@ public class SiteExporter {
                 for (IndicatorDTO indicator : group.getIndicators()) {
                     indicators.add(indicator.getId());
                     createHeaderCell(headerRow2, column, indicator.getName(), indicatorHeaderStyle);
-                    sheet.setColumnWidth(column, 16 * 256);
+                    sheet.setColumnWidth(column, characters(INDICATOR_COLUMN_WIDTH));
                     column++;
                 }
             }
         }
         attributes = new ArrayList<Integer>();
-        int firstAttributeColumn = column;
         for (AttributeGroupDTO group : activity.getAttributeGroups()) {
             if (group.getAttributes().size() != 0) {
                 createHeaderCell(headerRow1, column, group.getName(), CellStyle.ALIGN_CENTER);
@@ -219,7 +236,7 @@ public class SiteExporter {
                 for (AttributeDTO attrib : group.getAttributes()) {
                     attributes.add(attrib.getId());
                     createHeaderCell(headerRow2, column, attrib.getName(), attribHeaderStyle);
-                    sheet.setColumnWidth(column, 5 * 256);
+                    sheet.setColumnWidth(column, characters(ATTRIBUTE_COLUMN_WIDTH));
                     column++;
                 }
             }
@@ -233,8 +250,8 @@ public class SiteExporter {
         }
         createHeaderCell(headerRow2, column, "Longitude", CellStyle.ALIGN_RIGHT);
         createHeaderCell(headerRow2, column + 1, "Latitude", CellStyle.ALIGN_RIGHT);
-        sheet.setColumnWidth(column, 12 * 256);
-        sheet.setColumnWidth(column + 1, 12 * 256);
+        sheet.setColumnWidth(column, characters(COORD_COLUMN_WIDTH));
+        sheet.setColumnWidth(column + 1, characters(COORD_COLUMN_WIDTH));
 
     }
 
@@ -375,5 +392,9 @@ public class SiteExporter {
 
     public HSSFWorkbook getBook() {
         return book;
+    }
+    
+    private int characters(int numberOfCharacters) {
+    	return numberOfCharacters * CHARACTERS_PER_WIDTH_UNIT;
     }
 }

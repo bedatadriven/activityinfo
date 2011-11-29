@@ -21,8 +21,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -45,8 +43,11 @@ import com.google.inject.Inject;
  * Displays a list of layers selected by the user 
  */
 public class LayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
-	
+
 	public static int WIDTH = 225;
+
+	private static final int CONTEXT_MENU_WIDTH = 150;
+
 	
 	private Dispatcher service;
 	private MapReportElement mapElement;
@@ -54,7 +55,6 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 	private ListView<LayerModel> view = new ListView<LayerModel>();
 
 	private ContentPanel layersPanel;
-	private Button addLayerButton;
 	private AddLayerDialog addLayersDialog;
 	private LayerOptionsPanel optionsPanel;
 	private BaseMapPanel baseMapPanel;
@@ -96,7 +96,7 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 	}
 
 	private void createAddLayerButton() {
-		addLayerButton = new Button();
+		Button addLayerButton = new Button();
 		addLayerButton.setText(I18N.CONSTANTS.add());
 		addLayerButton.addListener(Events.Select, new SelectionListener<ButtonEvent>() {  
 		      @Override  
@@ -168,26 +168,31 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		view.addListener(Events.Select, new Listener<ListViewEvent<LayerModel>>() {
 			@Override
 			public void handleEvent(ListViewEvent<LayerModel> event) {
-				if (event.getIndex() == -1) {
-					optionsPanel.hide();
-				}
-				// Change visibility
-				if (event.getTargetEl().hasStyleName("x-view-item-checkbox")) {
-					LayerModel layerModel = (LayerModel) event.getModel();
-					if (layerModel != null) {
-						boolean newSetting = !layerModel.isVisible();
-						layerModel.setVisible(newSetting);
-						layerModel.getMapLayer().setVisible(newSetting);
-						ValueChangeEvent.fire(LayersWidget.this, mapElement);
-						store.update(layerModel);
-					}
-				} else {
-					showOptionsMenu(event.getModel(), event.getIndex());
-				}
-				optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
+				onLayerSelected(event);
 			}
 		});
 	    layersPanel.add(view);
+	}
+
+
+	private void onLayerSelected(ListViewEvent<LayerModel> event) {
+		if (event.getIndex() == -1) {
+			optionsPanel.hide();
+		}
+		// Change visibility
+		if (event.getTargetEl().hasStyleName("x-view-item-checkbox")) {
+			LayerModel layerModel = event.getModel();
+			if (layerModel != null) {
+				boolean newSetting = !layerModel.isVisible();
+				layerModel.setVisible(newSetting);
+				layerModel.getMapLayer().setVisible(newSetting);
+				ValueChangeEvent.fire(LayersWidget.this, mapElement);
+				store.update(layerModel);
+			}
+		} else {
+			showOptionsMenu(event.getIndex());
+		}
+		optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
 	}
 	
 	public void shutdown() {
@@ -203,24 +208,15 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		}
 	}
 	
-	private class MapLayersDropTarget extends ListViewDropTarget {
-		public MapLayersDropTarget(ListView listView) {
-			super(listView);
-		}
-    	public int getInsertIndex() {
-    		return insertIndex;
-    	}
-	}
-	
 	private MapLayer getSelectedLayer() {
 		return view.getSelectionModel().getSelectedItem().getMapLayer();
 	}
 
-	private void showOptionsMenu(final LayerModel model, int index) {
+	private void showOptionsMenu(int index) {
 		if(layerMenu == null) {
 			createLayerMenu();
 		}
-		int x = this.getAbsoluteLeft() - 150;
+		int x = this.getAbsoluteLeft() - CONTEXT_MENU_WIDTH;
 		int y = view.getElement(index).getAbsoluteTop();
 		
 		layerMenu.showAt(x, y);
@@ -265,7 +261,7 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 				removeLayer(getSelectedLayer());
 			}
 		}));
-		layerMenu.setWidth(150);
+		layerMenu.setWidth(CONTEXT_MENU_WIDTH);
 	}
 	
 	private void addListViewDnd() {
@@ -273,33 +269,7 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 	    target.setAllowSelfAsSource(true);
 	    target.setFeedback(Feedback.INSERT);
 
-	    ListViewDragSource source = new ListViewDragSource(view) {
-	    	int draggedItemIndexStart = 0;
-	    	int draggedItemIndexDrop = 0;
-	    	
-			@Override
-			protected void onDragStart(DNDEvent e) {
-				super.onDragStart(e);
-				if (!e.getTargetEl().hasStyleName("grabSprite")) {
-					e.setCancelled(true);
-				}
-				draggedItemIndexStart = store.indexOf(view.getSelectionModel().getSelectedItem());
-				e.setData(draggedItemIndexStart);
-			}
-			
-			@Override
-			protected void onDragDrop(DNDEvent e) {
-				super.onDragDrop(e);
-				
-				// Move the MapLayer onto his new position
-				draggedItemIndexDrop = ((MapLayersDropTarget)e.getDropTarget()).getInsertIndex();
-				if (draggedItemIndexDrop == mapElement.getLayers().size()){
-					draggedItemIndexDrop--;
-				} 
-				Collections.swap(mapElement.getLayers(), draggedItemIndexStart, draggedItemIndexDrop);
-				ValueChangeEvent.fire(LayersWidget.this, mapElement);
-			}
-		};
+	    new LayerListViewDragSource(view);
 	
 	}
 	
@@ -365,6 +335,48 @@ public class LayersWidget extends LayoutContainer implements HasValue<MapReportE
 		mapElement.getLayers().add(layer);
 		ValueChangeEvent.fire(this, mapElement);
 		updateStore();
+	}
+	
+
+	private final class LayerListViewDragSource extends ListViewDragSource {
+		private int draggedItemIndexStart = 0;
+		private int draggedItemIndexDrop = 0;
+
+		private LayerListViewDragSource(ListView listView) {
+			super(listView);
+		}
+
+		@Override
+		protected void onDragStart(DNDEvent e) {
+			super.onDragStart(e);
+			if (!e.getTargetEl().hasStyleName("grabSprite")) {
+				e.setCancelled(true);
+			}
+			draggedItemIndexStart = store.indexOf(view.getSelectionModel().getSelectedItem());
+			e.setData(draggedItemIndexStart);
+		}
+
+		@Override
+		protected void onDragDrop(DNDEvent e) {
+			super.onDragDrop(e);
+			
+			// Move the MapLayer onto his new position
+			draggedItemIndexDrop = ((MapLayersDropTarget)e.getDropTarget()).getInsertIndex();
+			if (draggedItemIndexDrop == mapElement.getLayers().size()){
+				draggedItemIndexDrop--;
+			} 
+			Collections.swap(mapElement.getLayers(), draggedItemIndexStart, draggedItemIndexDrop);
+			ValueChangeEvent.fire(LayersWidget.this, mapElement);
+		}
+	}
+
+	private class MapLayersDropTarget extends ListViewDropTarget {
+		public MapLayersDropTarget(ListView listView) {
+			super(listView);
+		}
+    	public int getInsertIndex() {
+    		return insertIndex;
+    	}
 	}
 
 

@@ -48,8 +48,7 @@ public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
             // this was the defaul
             countryId = 1;
         }
-        Country country = countryDAO.findById(countryId);
-        return country;
+        return countryDAO.findById(countryId);
     }
 
     @Override

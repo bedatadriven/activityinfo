@@ -41,6 +41,8 @@ public class UpdateSiteTest extends CommandTestCase {
         SiteDTO original = result.getData().get(0);
         SiteDTO modified = original.copy();
         
+        assertThat(modified.getId(), equalTo(original.getId()));
+        
         // modify and generate command
         modified.setComments("NEW <b>Commentaire</b>");
         modified.setAttributeValue(1, true);

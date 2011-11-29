@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.CreateLocation;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.UpdateSite;
 
@@ -164,6 +165,8 @@ public class CommandQueue {
 			return serialize((CreateSite)cmd);
 		} else if(cmd instanceof UpdateSite) {
 			return serialize((UpdateSite)cmd);
+		} else if(cmd instanceof CreateLocation) {
+			return serialize((CreateLocation)cmd);
 		} else {
 			throw new IllegalArgumentException("Cannot serialize commands of type " + cmd.getClass());
 		}
@@ -184,6 +187,12 @@ public class CommandQueue {
 		return root;
 	}
 	
+	private JsonObject serialize(CreateLocation cmd) {
+		JsonObject root = new JsonObject();
+		root.addProperty("commandClass", "CreateLocation");
+		root.add("properties", encodeMap(cmd.getProperties().getTransientMap()));
+		return root;
+	}
 	
 	private Command deserializeCommand(String json) {
 		JsonObject root = (JsonObject) new JsonParser().parse(json);
@@ -193,6 +202,8 @@ public class CommandQueue {
 			return deserializeCreateSite(root);
 		} else if("UpdateSite".equals(commandClass)) {
 			return deserializeUpdateSite(root);
+		} else if("CreateLocation".equals(commandClass)) {
+			return deserializeCreateLocation(root);
 		} else {
 			throw new RuntimeException("Cannot deserialize queud command of class " + commandClass);
 		}
@@ -207,6 +218,10 @@ public class CommandQueue {
 	private UpdateSite deserializeUpdateSite(JsonObject root) {
 		return new UpdateSite(root.get("siteId").getAsInt(), 
 				decodeMap(root.get("changes").getAsJsonObject()));
+	}
+	
+	private CreateLocation deserializeCreateLocation(JsonObject root) {
+		return new CreateLocation(decodeMap(root.get("properties").getAsJsonObject()));
 	}
 
 	

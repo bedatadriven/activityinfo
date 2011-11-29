@@ -50,7 +50,7 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
     }
 
 	private void createFilterToolbar() {
-		filterToolBar = new FilterToolBarImpl();
+		filterToolBar = new FilterToolBar();
 		filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
 			@Override
 			public void onApplyFilter(ApplyFilterEvent deleteEvent) {

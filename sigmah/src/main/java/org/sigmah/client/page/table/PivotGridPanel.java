@@ -44,14 +44,14 @@ import com.google.inject.Inject;
  */
 public class PivotGridPanel extends ContentPanel {
 
-    protected EventBus eventBus;
+    private final EventBus eventBus;
 
-    protected PivotReportElement element;
-    protected TreeGrid<PivotTableRow> grid;
-    protected TreeStore<PivotTableRow> store;
-    protected ColumnModel columnModel;
-    protected Map<PivotTableData.Axis, String> propertyMap;
-    protected Map<Integer, PivotTableData.Axis> columnMap;
+    private PivotReportElement element;
+    private TreeGrid<PivotTableRow> grid;
+    private TreeStore<PivotTableRow> store;
+    private ColumnModel columnModel;
+    private Map<PivotTableData.Axis, String> propertyMap;
+    private Map<Integer, PivotTableData.Axis> columnMap;
 
     @Inject
     public PivotGridPanel(EventBus eventBus) {
@@ -109,7 +109,8 @@ public class PivotGridPanel extends ContentPanel {
         grid.setAutoExpandColumn("header");
         grid.setAutoExpandMin(150);
         grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<PivotTableRow>>() {
-            public void handleEvent(GridEvent<PivotTableRow> ge) {
+            @Override
+			public void handleEvent(GridEvent<PivotTableRow> ge) {
                 if(ge.getColIndex() != 0) {
                     eventBus.fireEvent(new PivotCellEvent(AppEvents.Drilldown,
                             element,
@@ -124,7 +125,8 @@ public class PivotGridPanel extends ContentPanel {
         layout();
 
         new DelayedTask(new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
+            @Override
+			public void handleEvent(BaseEvent be) {
                 for(PivotTableRow row : store.getRootItems()) {
                     grid.setExpanded(row, true, true);
                 }

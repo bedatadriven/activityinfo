@@ -17,7 +17,6 @@ public class AdminLevelPredicates {
 		Predicate<AdminLevelDTO> predicate = rootLevels();
 		Collection<AdminLevelDTO> next;
 		while(!(next = Collections2.filter(allLevels, predicate)).isEmpty()){
-			System.out.println(next);
 			sorted.addAll(next);
 			predicate = childrenOf(next);
 		} 

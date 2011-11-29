@@ -1,5 +1,7 @@
 package org.sigmah.shared.command;
 
+import java.util.Map;
+
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
@@ -27,6 +29,11 @@ public class CreateLocation implements MutatingCommand<VoidResult>{
 		for(AdminEntityDTO entity : location.getAdminEntities()) {
 			properties.put(AdminLevelDTO.getPropertyName(entity.getLevelId()), entity.getId());
 		}	
+	}
+	
+	public CreateLocation(Map<String, Object> properties) {
+		this.properties = new RpcMap();
+		this.properties.putAll(properties);
 	}
 
 	public RpcMap getProperties() {

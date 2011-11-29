@@ -8,39 +8,39 @@ import com.google.gwt.resources.client.TextResource;
 
 public interface SearchResources extends ClientBundle {
 	
-	public static final SearchResources INSTANCE = GWT.create(SearchResources.class);
+	static final SearchResources INSTANCE = GWT.create(SearchResources.class);
 	
 	@Source("SitesTemplate.html")
-	public TextResource sitesTemplate();
+	TextResource sitesTemplate();
 	
 	@Source("EntitiesTemplate.html")
-	public TextResource entitiesTemplate();
+	TextResource entitiesTemplate();
 	
 	@Source("SearchStyles.css")
-	public SearchStyles searchStyles();
+	SearchStyles searchStyles();
 	
 	@Source("location.png")
-	public ImageResource location();	
+	ImageResource location();	
 	
 	@Source("database.png")
-	public ImageResource database();	
+	ImageResource database();	
 	
 	@Source("activity.png")
-	public ImageResource activity();	
+	ImageResource activity();	
 	
 	@Source("date.png")
-	public ImageResource date();	
+	ImageResource date();	
 	
 	@Source("addEdited.png")
-	public ImageResource addEdited();	
+	ImageResource addEdited();	
 	
 	@Source("search.png")
-	public ImageResource search();	
+	ImageResource search();	
 	
 	@Source("searchSmall.png")
-	public ImageResource searchSmall();	  
+	ImageResource searchSmall();	  
 	
-	public interface SearchStyles extends CssResource {
+	interface SearchStyles extends CssResource {
 		String searchBox();
 		String link();
 		String panelEntityResults();

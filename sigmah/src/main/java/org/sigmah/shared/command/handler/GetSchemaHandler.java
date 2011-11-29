@@ -17,7 +17,6 @@ import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.Published;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.TargetValueDTO;
@@ -174,7 +173,15 @@ public class GetSchemaHandler implements
 						db.setOwnerName(row.getString("OwnerName"));
 						db.setOwnerEmail(row.getString("OwnerEmail"));
 
-						if(context.getUser().getId() != AnonymousUser.USER_ID){
+						if(context.getUser().getId() == AnonymousUser.USER_ID){
+							db.setViewAllAllowed(true); // since the anonymous user doesn't have a partner, this 
+														// must be true
+							db.setEditAllowed(false);
+							db.setEditAllAllowed(false);
+							db.setManageUsersAllowed(false);
+							db.setManageAllUsersAllowed(false);
+							db.setDesignAllowed(false);
+						} else {
 							
 							db.setViewAllAllowed(db.getAmOwner()
 									|| row.getBoolean("allowViewAll"));
@@ -192,23 +199,7 @@ public class GetSchemaHandler implements
 							if(!db.getAmOwner()) {
 								db.setMyPartnerId(row.getInt("partnerId"));
 							}
-						}else{
-							db.setViewAllAllowed(db.getAmOwner()
-									||false);
-							db.setEditAllowed(db.getAmOwner()
-									|| false);
-							db.setEditAllAllowed(db.getAmOwner()
-									||false);
-							db.setManageUsersAllowed(db.getAmOwner()
-									|| false);
-							db.setManageAllUsersAllowed(db.getAmOwner()
-									|| false);
-							db.setDesignAllowed(db.getAmOwner()
-									|| false);
-							
-
 						}
-
 						databaseMap.put(db.getId(), db);
 						databaseList.add(db);
 					}

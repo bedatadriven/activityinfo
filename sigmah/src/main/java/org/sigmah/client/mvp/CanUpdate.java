@@ -7,44 +7,44 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 public interface CanUpdate<M> {
-	public interface CancelUpdateHandler extends EventHandler {
+	interface CancelUpdateHandler extends EventHandler {
 		void onCancelUpdate(CancelUpdateEvent updateEvent);
 	}
-	public interface UpdateHandler extends EventHandler {
+	interface UpdateHandler extends EventHandler {
 		void onUpdate(UpdateEvent updateEvent);
 	}
-	public interface RequestUpdateHandler extends EventHandler{
+	interface RequestUpdateHandler extends EventHandler{
 		void onRequestUpdate(RequestUpdateEvent requestUpdateEvent);
 	}
 	
 	// An item is updated by the presenter, this method updates the item at the view
-	public void update(M item);
+	void update(M item);
 	
 	// Throw away changes of given item 
-	public void cancelUpdate(M item);
+	void cancelUpdate(M item);
 	
 	// Throw away all changes for all changed objects
-	public void cancelUpdateAll();
+	void cancelUpdateAll();
 	
-	public void startUpdate();
+	void startUpdate();
 	
 	// Is the update button enabled?
-	public void setUpdateEnabled(boolean updateEnabled);
+	void setUpdateEnabled(boolean updateEnabled);
 	
 	// Let the user know what's going on during updating
-	public AsyncMonitor getUpdatingMonitor();
+	AsyncMonitor getUpdatingMonitor();
 	
 	// The user wants to save dirty changes 
-	public HandlerRegistration addUpdateHandler(UpdateHandler handler);
+	HandlerRegistration addUpdateHandler(UpdateHandler handler);
 	
 	// The user wants to cancel the changes made to an item
-	public HandlerRegistration addCancelUpdateHandler(CancelUpdateHandler handler);
+	HandlerRegistration addCancelUpdateHandler(CancelUpdateHandler handler);
 	
 	// The user wants to cancel the changes made to an item
-	public HandlerRegistration addRequestUpdateHandler(RequestUpdateHandler handler);
+	HandlerRegistration addRequestUpdateHandler(RequestUpdateHandler handler);
 	
 	// The Presenter has a seperate view for creating/updating domain object
-	public class UpdateEvent extends GwtEvent<UpdateHandler> {
+	class UpdateEvent extends GwtEvent<UpdateHandler> {
 		public static Type TYPE = new Type<UpdateHandler>(); 
 		
 		@Override
@@ -60,7 +60,7 @@ public interface CanUpdate<M> {
 
 	
 	// The Presenter has a seperate view for creating/updating domain object
-	public class CancelUpdateEvent extends GwtEvent<CancelUpdateHandler> {
+	class CancelUpdateEvent extends GwtEvent<CancelUpdateHandler> {
 		public static Type TYPE = new Type<CancelUpdateHandler>(); 
 		
 		@Override
@@ -75,7 +75,7 @@ public interface CanUpdate<M> {
 	}
 	
 	// The Presenter has a seperate view for creating/updating domain object
-	public class RequestUpdateEvent extends GwtEvent<RequestUpdateHandler> {
+	class RequestUpdateEvent extends GwtEvent<RequestUpdateHandler> {
 		public static Type TYPE = new Type<RequestUpdateHandler>(); 
 		
 		@Override

@@ -42,8 +42,7 @@ public class ParserTest {
 	@BeforeClass 
 	public static void initLocales() {
 		LocaleProxy.initialize();
-		LocaleProxy.setLocale(Locale.ENGLISH);
-		
+		LocaleProxy.setLocale(Locale.ENGLISH);	
 	}
 	
 	@Test

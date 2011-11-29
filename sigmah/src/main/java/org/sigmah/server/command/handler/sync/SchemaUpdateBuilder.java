@@ -145,6 +145,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
         // TODO: this needs to be actually synchronized
         builder.executeStatement("CREATE TABLE  target (targetId int, name text, date1 text, date2 text, projectId int, partnerId int, adminEntityId int, databaseId int)"); 
+        builder.executeStatement("CREATE TABLE  targetvalue (targetId int, IndicatorId int, value real)"); 
 
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
