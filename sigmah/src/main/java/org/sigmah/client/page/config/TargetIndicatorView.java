@@ -18,18 +18,22 @@ import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 
@@ -74,9 +78,10 @@ public class TargetIndicatorView extends
 		tree = new EditorTreeGrid<ModelData>(treeStore, createColumnModel());
 	    tree.setAutoExpandColumn("name");  
 	    tree.setSelectionModel(new ImprovedCellTreeGridSelectionModel<ModelData>());
-		tree.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
+		tree.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		tree.setLoadMask(true);
-			
+		tree.setStateId("TargetValueGrid" + db.getId());
+		
 		tree.setIconProvider(new ModelIconProvider<ModelData>() {
 			public AbstractImagePrototype getIcon(ModelData model) {
 
@@ -92,41 +97,42 @@ public class TargetIndicatorView extends
 
 			}
 		});
-		tree.addListener(Events.CellClick, new Listener<GridEvent>() {
-			public void handleEvent(GridEvent ge) {
-				// TODO show form
-			}
-		});
-		
-		tree.addListener(Events.OnKeyDown, new Listener<GridEvent>() {
+	
+		tree.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
 
 			@Override
 			public void handleEvent(GridEvent be) {
 				if(!(be.getModel() instanceof TargetValueDTO)){
-					presenter.rejectChanges();
-				}
-			}
-		});
-		
-		tree.addListener(Events.AfterEdit, new Listener<GridEvent>() {
-
-			@Override
-			public void handleEvent(GridEvent be) {
-				if(be.getModel() instanceof TargetValueDTO){
-					presenter.updateTargetValue();	
-				}else{
-					presenter.rejectChanges();
+					be.setCancelled(true);
 				}
 			}
 			
 		});
 
+		tree.addListener(Events.AfterEdit, new Listener<GridEvent>() {
+
+			@Override
+			public void handleEvent(GridEvent be) {
+				if(be.getModel() instanceof TargetValueDTO){
+					
+					if(be.getRecord().getChanges().size()>0){
+						presenter.updateTargetValue();	
+					}						
+				}
+			}
+			
+		});
 		
 		add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
 		return tree;
 	}
 
+	@Override
+	public void expandAll(){
+		tree.expandAll();
+	}
+	
 	@Override
 	protected void initToolBar() {
 
@@ -148,6 +154,25 @@ public class TargetIndicatorView extends
 		ColumnConfig valueColumn = new ColumnConfig("value",
 				I18N.CONSTANTS.targetValue(), 150);
 		valueColumn.setEditor(new CellEditor(valueField));
+		valueColumn.setRenderer(new GridCellRenderer<ModelData>() {
+
+			@Override
+			public Object render(ModelData model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<ModelData> store, Grid<ModelData> grid) {
+				
+				if(model instanceof TargetValueDTO  && model.get("value")==null){
+					config.style = "color:gray;font-style:italic;";
+					return	I18N.CONSTANTS.noTarget();
+					
+				}else if(model.get("value")!=null){
+					
+					return model.get("value");
+				}
+				
+				return "";
+			}
+		});
 		columns.add(valueColumn);
 
 		return new ColumnModel(columns);
