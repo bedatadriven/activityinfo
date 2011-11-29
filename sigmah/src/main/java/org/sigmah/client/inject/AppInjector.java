@@ -31,8 +31,6 @@ import org.sigmah.client.page.config.DbTargetEditor;
 import org.sigmah.client.page.config.DbUserEditor;
 import org.sigmah.client.page.config.LockedPeriodsPresenter;
 import org.sigmah.client.page.config.design.DesignPresenter;
-import org.sigmah.client.page.dashboard.Dashboard;
-import org.sigmah.client.page.dashboard.DashboardLoader;
 import org.sigmah.client.page.entry.DataEntryLoader;
 import org.sigmah.client.page.entry.EntryModule;
 import org.sigmah.client.page.map.MapLoader;
@@ -98,9 +96,7 @@ public interface AppInjector extends Ginjector {
     DataEntryLoader createDataEntryLoader();
 
     MapLoader createMapLoader();
-    
-    Dashboard getDashboard();
-    
+        
     LockedPeriodsPresenter getLockedPeriodsEditor();
 
     ChartLoader createChartLoader();
@@ -132,8 +128,6 @@ public interface AppInjector extends Ginjector {
     DbListPage getDbListPage();
 
     AuthenticatedUser getAuthentication();
-
-	DashboardLoader createDashboardLoader();
 
 	SearchPresenter getSearchPage();
 
