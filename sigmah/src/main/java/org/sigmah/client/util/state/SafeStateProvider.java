@@ -17,7 +17,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public final class SafeStateProvider extends Provider {
-	Map<String, String> stateMap = new HashMap<String, String>();
+	private Map<String, String> stateMap = new HashMap<String, String>();
 
 	public SafeStateProvider() {
 		if(Storage.isLocalStorageSupported()) {

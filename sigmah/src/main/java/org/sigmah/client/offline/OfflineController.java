@@ -306,7 +306,7 @@ public class OfflineController implements Dispatcher {
 				Synchronizer impl = null;
 				try {
 					impl = synchronizerProvider.get();
-				} catch(Throwable caught) {
+				} catch(Exception caught) {
 					Log.error("SynchronizationImpl constructor threw exception", caught);
 					callback.onFailure(caught);
 					return;
@@ -573,6 +573,7 @@ public class OfflineController implements Dispatcher {
 			this.offlineManger = offlineManger;
 		}
 
+		@Override
 		public OfflineStrategy activate() {
 			persistState(OfflineMode.OFFLINE);
 			offlineManger.getLastSyncTime(new AsyncCallback<Date>() {

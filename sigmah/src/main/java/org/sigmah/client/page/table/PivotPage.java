@@ -89,7 +89,7 @@ import com.google.inject.Inject;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPage extends LayoutContainer implements PivotPresenter.View {
+public final class PivotPage extends LayoutContainer implements PivotPresenter.View {
 
 	private EventBus eventBus;
 	private Dispatcher service;
@@ -100,7 +100,6 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	private ListStore<Dimension> rowDims;
 	private ListStore<Dimension> colDims;
 
-	private TreeLoader<ModelData> loader;
 	private TreeStore<ModelData> dimensionStore;
 	private TreePanel<ModelData> treePanel;
 
@@ -149,7 +148,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		setLayout(borderLayout);
 	}
 
-	public void createPane() {
+	private void createPane() {
 
 		VBoxLayout layout = new VBoxLayout();
 		layout.setPadding(new Padding(5));
@@ -190,7 +189,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 	}	
 
 	private void createDimensionsTree() {
-		loader = new BaseTreeLoader<ModelData>(new Proxy()) {
+		TreeLoader<ModelData> loader = new BaseTreeLoader<ModelData>(new Proxy()) {
 			@Override
 			public boolean hasChildren(ModelData parent) {
 				if (parent instanceof AttributeGroupDTO) {
@@ -256,30 +255,7 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		treePanel.addCheckListener( new CheckChangedListener <ModelData > () {
 			@Override
 			public void checkChanged(CheckChangedEvent<ModelData> event) {		
-				List< ModelData > checked = event.getCheckedSelection();	
-				for (ModelData r: rowDims.getModels()) {
-					if (checked.contains(r)) {
-						checked.remove(r);
-					} else {
-						rowDims.remove((Dimension)r);
-					}
-				}
-
-				for (ModelData c: colDims.getModels()) {
-					if (checked.contains(c)) {
-						checked.remove(c);
-					} else {
-						colDims.remove((Dimension)c);
-					}
-				}
-
-				for (ModelData newItem: checked) {
-					if (rowDims.getModels().size() > colDims.getModels().size()) {
-						colDims.add((Dimension)newItem);
-					} else {
-						rowDims.add((Dimension)newItem);
-					}
-				}
+				onDimensionChecked(event);
 			}
 		});
 	}
@@ -350,6 +326,34 @@ public class PivotPage extends LayoutContainer implements PivotPresenter.View {
 		filterPane.add(partnerPanel);
 	}
 
+
+	private void onDimensionChecked(CheckChangedEvent<ModelData> event) {
+		List< ModelData > checked = event.getCheckedSelection();	
+		for (ModelData r: rowDims.getModels()) {
+			if (checked.contains(r)) {
+				checked.remove(r);
+			} else {
+				rowDims.remove((Dimension)r);
+			}
+		}
+
+		for (ModelData c: colDims.getModels()) {
+			if (checked.contains(c)) {
+				checked.remove(c);
+			} else {
+				colDims.remove((Dimension)c);
+			}
+		}
+
+		for (ModelData newItem: checked) {
+			if (rowDims.getModels().size() > colDims.getModels().size()) {
+				colDims.add((Dimension)newItem);
+			} else {
+				rowDims.add((Dimension)newItem);
+			}
+		}
+	}
+	
 	private void createGridContainer() {
 		center = new LayoutContainer();
 		center.setLayout(new BorderLayout());

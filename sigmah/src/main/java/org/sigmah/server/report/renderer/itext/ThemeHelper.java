@@ -21,11 +21,26 @@ import com.lowagie.text.Paragraph;
  */
 public class ThemeHelper {
 
+	private static final float LEFT_INDENT = 5.4f;
+	
+	private static final int TITLE_FONT_SIZE = 26;
+	private static final int HEADER2_FONT_SIZE = 13;
+	private static final int HEADER3_FONT_SIZE = 12;
+	private static final int BODY_FONT_SIZE = 10;
+	
+	private static final float THIN_BORDER_WIDTH = 0.5f;
+		
+	private static final Color BLUE = new Color(23, 54, 93);
+	private static final Color BLUE2 = new Color(79, 129, 189);
+	private static final Color BLUE3 = new Color(55, 96, 145);
+	private static final Color BLUE4 = new Color(149, 179, 215);
+	private static final Color BLUE5 = new Color(219, 229, 241);
+
 	private ThemeHelper() {}
 
     public static Paragraph reportTitle(String title) {
         Paragraph para = new Paragraph(title);
-        para.setFont(new Font(Font.TIMES_ROMAN, 26, Font.NORMAL, new Color(23, 54, 93)));
+        para.setFont(new Font(Font.TIMES_ROMAN, TITLE_FONT_SIZE, Font.NORMAL, BLUE));
         para.setSpacingAfter(15);
 
         return para;
@@ -33,7 +48,7 @@ public class ThemeHelper {
 
     public static Paragraph filterDescription(String text) {
         Paragraph para = new Paragraph(text);
-        para.setFont(new Font(Font.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 0)));
+        para.setFont(new Font(Font.HELVETICA, HEADER3_FONT_SIZE, Font.NORMAL, Color.BLACK));
         return para;
     }
 
@@ -45,21 +60,21 @@ public class ThemeHelper {
 
     public static Paragraph elementTitle(String title) {
         Paragraph para = new Paragraph(title);
-        para.setFont(new Font(Font.TIMES_ROMAN, 13, Font.BOLD, new Color(79, 129, 189)));
-        para.setSpacingBefore(10);
+        para.setFont(new Font(Font.TIMES_ROMAN, HEADER2_FONT_SIZE, Font.BOLD, BLUE2));
+        para.setSpacingBefore(BODY_FONT_SIZE);
         return para;
     }
     
     public static Paragraph legendTitle(String title) {
         Paragraph para = new Paragraph(title);
-        para.setFont(new Font(Font.TIMES_ROMAN, 10, Font.BOLD, new Color(79, 129, 189)));
-        para.setSpacingBefore(10);
+        para.setFont(new Font(Font.TIMES_ROMAN, BODY_FONT_SIZE, Font.BOLD, BLUE2));
+        para.setSpacingBefore(BODY_FONT_SIZE);
         return para;
     }
     
     
     public static Font footerFont() {
-    	return new Font(Font.TIMES_ROMAN, 13, Font.BOLD, new Color(0, 0, 0)); 
+    	return new Font(Font.TIMES_ROMAN, BODY_FONT_SIZE, Font.BOLD, Color.BLACK); 
     }
 
     public static Cell columnHeaderCell(String label, boolean leaf) throws BadElementException {
@@ -68,14 +83,14 @@ public class ThemeHelper {
 
     public static Cell columnHeaderCell(String label, boolean leaf, int hAlign) throws BadElementException {
         Paragraph para = new Paragraph(label);
-        para.setFont(new Font(Font.HELVETICA, 10, Font.NORMAL, Color.WHITE));
+        para.setFont(new Font(Font.HELVETICA, BODY_FONT_SIZE, Font.NORMAL, Color.WHITE));
 
         Cell cell = new Cell();
         cell.addElement(para);
         cell.setHorizontalAlignment(hAlign);
         cell.setHeader(true);
         cell.setVerticalAlignment(Cell.ALIGN_BOTTOM);
-        cell.setBackgroundColor(new Color(55, 96, 145));
+        cell.setBackgroundColor(BLUE3);
 
         cell.setBorderWidth(0);
 
@@ -86,7 +101,7 @@ public class ThemeHelper {
         Cell cell = new Cell();
         cell.setHeader(true);
         cell.setBorderWidth(0);
-        cell.setBackgroundColor(new Color(55, 96, 145));
+        cell.setBackgroundColor(BLUE3);
         return cell;
     }
 
@@ -120,7 +135,7 @@ public class ThemeHelper {
                 font.setColor(Color.WHITE);
             }
             para.setFont(font);
-            para.setIndentationLeft( 5.4f + (header ? 12 * depth : 0));
+            para.setIndentationLeft( LEFT_INDENT + (header ? HEADER3_FONT_SIZE * depth : 0));
             cell.addElement(para);
         }
 
@@ -129,24 +144,24 @@ public class ThemeHelper {
         cell.setBorderWidthTop(0);
 
         if(!leaf &&depth == 0) {
-            cell.setBackgroundColor(new Color(149, 179, 215)); // #95B3D7
-            cell.setBorderWidthBottom(0.5f);
-            cell.setBorderColorBottom(new Color(219, 229, 241)); // #DBE5F1
+            cell.setBackgroundColor(BLUE4); // #95B3D7
+            cell.setBorderWidthBottom(THIN_BORDER_WIDTH);
+            cell.setBorderColorBottom(BLUE5); // #DBE5F1
         } else if(!leaf && depth == 1) {
-            cell.setBackgroundColor(new Color(219, 229, 241));
-            cell.setBorderWidthBottom(0.5f);
-            cell.setBorderColorBottom(new Color(79, 129, 189));
+            cell.setBackgroundColor(BLUE5);
+            cell.setBorderWidthBottom(THIN_BORDER_WIDTH);
+            cell.setBorderColorBottom(BLUE2);
         } else {
-            cell.setBorderWidthBottom(0.5f);
-            cell.setBorderColorBottom(new Color(219, 229, 241));
-            cell.setBorderWidthTop(0.5f);
-            cell.setBorderColorTop(new Color(219, 229, 241));
+            cell.setBorderWidthBottom(THIN_BORDER_WIDTH);
+            cell.setBorderColorBottom(BLUE5);
+            cell.setBorderWidthTop(THIN_BORDER_WIDTH);
+            cell.setBorderColorTop(BLUE5);
         }
 
         return cell;
     }
 
 	private static Font bodyFont() {
-		return new Font(Font.HELVETICA, 10, Font.NORMAL, Color.BLACK);
+		return new Font(Font.HELVETICA, BODY_FONT_SIZE, Font.NORMAL, Color.BLACK);
 	}
 }

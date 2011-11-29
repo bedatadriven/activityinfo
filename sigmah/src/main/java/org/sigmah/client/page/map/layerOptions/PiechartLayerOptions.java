@@ -213,7 +213,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 		return this.addHandler(handler, ValueChangeEvent.getType());
 	}
 	
-	public static class NamedSlice extends BaseModelData {
+	public final static class NamedSlice extends BaseModelData {
 		private Slice slice;
 		public NamedSlice() {
 		}

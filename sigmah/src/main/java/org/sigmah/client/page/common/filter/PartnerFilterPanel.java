@@ -17,7 +17,7 @@ import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.ApplyFilterHandler;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterEvent;
 import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
-import org.sigmah.client.page.common.filter.FilterToolBarImpl;
+import org.sigmah.client.page.common.filter.FilterToolBar;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetPartnersWithSites;
 import org.sigmah.shared.command.result.PartnerResult;
@@ -72,7 +72,7 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 	}
     
 	private void createFilterToolBar() {
-		filterToolBar = new FilterToolBarImpl();
+		filterToolBar = new FilterToolBar();
 		filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
 			
 			@Override

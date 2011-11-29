@@ -547,7 +547,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 
 	public SiteDTO copy() {
 		SiteDTO copy = new SiteDTO();
-		copy.setProperties(copy.getProperties());
+		copy.setProperties(this.getProperties());
 		return copy;
 	}
 }

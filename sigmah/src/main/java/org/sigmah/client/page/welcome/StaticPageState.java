@@ -13,23 +13,26 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
 
-public class StaticPageState implements PageState {
+public final class StaticPageState implements PageState {
 
-    String keyword;
+    private String keyword;
 
     public StaticPageState(String keyword) {
         this.keyword = keyword;
     }
 
-    public PageId getPageId() {
+    @Override
+	public PageId getPageId() {
         return Frames.Static;
     }
 
-    public String serializeAsHistoryToken() {
+    @Override
+	public String serializeAsHistoryToken() {
         return keyword;
     }
 
-    public List<PageId> getEnclosingFrames() {
+    @Override
+	public List<PageId> getEnclosingFrames() {
         return Arrays.asList(Frames.Static);
     }
 
@@ -39,7 +42,8 @@ public class StaticPageState implements PageState {
     
     public static class Parser implements PageStateParser {
 
-        public PageState parse(String token) {
+        @Override
+		public PageState parse(String token) {
             return new StaticPageState(token);
         }
     }

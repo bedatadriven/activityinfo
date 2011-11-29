@@ -16,7 +16,6 @@ import org.sigmah.server.database.hibernate.entity.LocationType;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.shared.dto.LocationTypeDTO;
-import org.sigmah.shared.dto.Published;
 
 import com.google.inject.Inject;
 
@@ -71,14 +70,12 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
 	private UserDatabase getDatabase(PropertyMap properties) {
 		int databaseId = (Integer) properties.get("databaseId");
 
-		UserDatabase database = databaseDAO.findById(databaseId);
-		return database;
+		return databaseDAO.findById(databaseId);
 	}
 
 	private LocationType getLocationType(PropertyMap properties) {
 		int locationTypeId = ((Integer) properties.get("locationTypeId"));
-		LocationType type = em.getReference(LocationType.class, locationTypeId);
-		return type;
+		return em.getReference(LocationType.class, locationTypeId);
 	}
 
 	private Integer calculateNextSortOrderIndex(int databaseId) {

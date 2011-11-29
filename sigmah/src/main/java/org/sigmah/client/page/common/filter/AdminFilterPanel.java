@@ -19,6 +19,7 @@ import org.sigmah.client.page.common.filter.FilterToolBar.RemoveFilterHandler;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.AdminEntityDTO;
+import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
@@ -80,16 +81,19 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 			public void onSuccess(SchemaDTO result) {
 				Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);
 				if(!activities.isEmpty()) {
-					loader.setCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
+					loadCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
 				} else if(!result.getCountries().isEmpty()) {
-					loader.setCountry(result.getCountries().iterator().next());
-				} else {
-					// TODO: support multiple countries!
+					loadCountry(result.getCountries().iterator().next());
 				}
-				loader.setFilter(filter);
-				loader.load();
+				// TODO: support multiple countries!
 			}
 		});	
+	}
+	
+	private void loadCountry(CountryDTO country) {
+		loader.setCountry(country);
+		loader.setFilter(filter);
+		loader.load();
 	}
 
 	private void createAdminEntitiesTree() {
@@ -125,7 +129,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 	}
 
 	private void createFilterToolBar() {
-		filterToolBar = new FilterToolBarImpl();
+		filterToolBar = new FilterToolBar();
 		
 		filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
 			@Override

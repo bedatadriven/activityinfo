@@ -215,9 +215,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     }
     
     public void createMapIfNeededAndUpdateMapContent() {
-        if (mapWidget == null) {
-
-        } else {
+        if (mapWidget != null) {
             clearOverlays();
             updateMapToContent();
         }
