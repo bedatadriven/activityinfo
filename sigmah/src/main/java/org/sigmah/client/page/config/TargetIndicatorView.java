@@ -10,11 +10,9 @@ import org.sigmah.client.page.common.grid.AbstractEditorTreeGridView;
 import org.sigmah.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Style.HideMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.Events;
@@ -22,7 +20,6 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -30,9 +27,9 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 
@@ -66,6 +63,7 @@ public class TargetIndicatorView extends
 		setBorders(false);
 		setHeaderVisible(false);
 		setFrame(false);
+		setLayout(new FitLayout());
 	}
 
 	@Override
@@ -74,12 +72,11 @@ public class TargetIndicatorView extends
 		final TreeStore treeStore = (TreeStore) store;
 
 		tree = new EditorTreeGrid<ModelData>(treeStore, createColumnModel());
-		tree.setSelectionModel(new ImprovedCellTreeGridSelectionModel<ModelData>());
+	    tree.setAutoExpandColumn("name");  
+	    tree.setSelectionModel(new ImprovedCellTreeGridSelectionModel<ModelData>());
 		tree.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
-		tree.setAutoExpandColumn("name");
-		tree.setHideHeaders(true);
 		tree.setLoadMask(true);
-		
+			
 		tree.setIconProvider(new ModelIconProvider<ModelData>() {
 			public AbstractImagePrototype getIcon(ModelData model) {
 
