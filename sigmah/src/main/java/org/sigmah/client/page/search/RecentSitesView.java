@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
-import org.sigmah.client.page.summaries.views.MapLocationView;
 import org.sigmah.shared.command.result.SitePointList;
 
 import com.extjs.gxt.ui.client.event.Events;
@@ -19,10 +18,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 
 public class RecentSitesView extends ContentPanel {
-	private ListView<RecentSiteModel> listviewSites;
 	private ListStore<RecentSiteModel> storeSites;
-	private List<RecentSiteModel> sites;
-	private MapLocationView map;
 	
 	public RecentSitesView() {
 		super();
@@ -34,7 +30,6 @@ public class RecentSitesView extends ContentPanel {
 	}
 	
 	public void setSites(List<RecentSiteModel> sites) {
-		this.sites=sites;
 		
 		storeSites.removeAll();
 		storeSites.add(sites);
@@ -56,7 +51,7 @@ public class RecentSitesView extends ContentPanel {
 	}
 
 	private void createSitesPanel() {
-		listviewSites = new ListView<RecentSiteModel>(storeSites);
+		ListView<RecentSiteModel> listviewSites = new ListView<RecentSiteModel>(storeSites);
 		
 		listviewSites.setTemplate(SearchResources.INSTANCE.sitesTemplate().getText());
 		listviewSites.setItemSelector(".site");

@@ -171,7 +171,7 @@ public class DbListPresenter implements ActionListener {
         dispatcher.execute(new CreateEntity("UserDatabase", properties), dialog, new Created() {
             @Override
             public void created(int newId) {
-                eventBus.fireEvent(AppEvents.SchemaChanged);
+                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
                 loader.load();
                 dialog.hide();
             }

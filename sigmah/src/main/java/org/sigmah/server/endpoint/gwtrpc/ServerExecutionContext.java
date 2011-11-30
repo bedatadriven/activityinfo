@@ -142,8 +142,8 @@ public class ServerExecutionContext implements ExecutionContext {
 	private static class ResultCollector<R> implements AsyncCallback<R> {
 
 		private int callbackCount=0;
-		R result = null;
-		Throwable caught = null;
+		private R result = null;
+		private Throwable caught = null;
 		
 		@Override
 		public void onFailure(Throwable caught) {

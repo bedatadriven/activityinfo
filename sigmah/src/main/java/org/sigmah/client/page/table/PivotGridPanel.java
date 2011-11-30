@@ -112,7 +112,7 @@ public class PivotGridPanel extends ContentPanel {
             @Override
 			public void handleEvent(GridEvent<PivotTableRow> ge) {
                 if(ge.getColIndex() != 0) {
-                    eventBus.fireEvent(new PivotCellEvent(AppEvents.Drilldown,
+                    eventBus.fireEvent(new PivotCellEvent(AppEvents.DRILL_DOWN,
                             element,
                             ge.getModel().getRowAxis(),
                             columnMap.get(ge.getColIndex())));

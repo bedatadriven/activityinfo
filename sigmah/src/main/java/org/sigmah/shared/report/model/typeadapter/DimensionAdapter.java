@@ -27,13 +27,13 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
 
     public static class CategoryElement {
         @XmlAttribute(required = true)
-        public String name;
+        private String name;
 
         @XmlAttribute
-        public String label;
+        private String label;
 
         @XmlAttribute
-        public String color;
+        private String color;
     }
 
     public static class DimensionElement {
@@ -62,17 +62,16 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
     }
 
     private <T extends Enum<T>> T findEnumValue(T[] values, String text) {
-        String textLowered = text.toLowerCase();
         for(T value : values) {
-            if(value.toString().toLowerCase().equals(textLowered)) {
+            if(value.toString().equalsIgnoreCase(text)) {
                 return value;
             }
         }
-        throw new RuntimeException("'" + text + "' is not a member of " + values[0].getClass().getName());
+        throw new IllegalArgumentException("'" + text + "' is not a member of " + values[0].getClass().getName());
     }
 
     @Override
-    public Dimension unmarshal(DimensionElement element) throws Exception {
+    public Dimension unmarshal(DimensionElement element) {
         Dimension dim = createDim(element);
 
         for(CategoryElement category : element.categories) {
@@ -98,7 +97,7 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
     }
 
     @Override
-    public DimensionElement marshal(Dimension dim) throws Exception {
+    public DimensionElement marshal(Dimension dim)  {
         DimensionElement element = new DimensionElement();
         element.type = dim.getType().toString();
         if(dim instanceof AdminDimension) {

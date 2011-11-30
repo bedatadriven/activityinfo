@@ -9,6 +9,6 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(DispatcherSyncImpl.class)
 public interface DispatcherSync {
 
-	public <C extends Command<R>, R extends CommandResult> R execute(C command);
+	<C extends Command<R>, R extends CommandResult> R execute(C command);
 
 }

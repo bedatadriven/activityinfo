@@ -42,12 +42,12 @@ public class DrillDownEditor implements Shutdownable {
                 onDrillDown(be);
             }
         };
-        eventBus.addListener(AppEvents.Drilldown, eventListener);
+        eventBus.addListener(AppEvents.DRILL_DOWN, eventListener);
     }
 
     @Override
     public void shutdown() {
-        eventBus.removeListener(AppEvents.Drilldown, eventListener);
+        eventBus.removeListener(AppEvents.DRILL_DOWN, eventListener);
     } 
 
     public void onDrillDown(PivotCellEvent event) {

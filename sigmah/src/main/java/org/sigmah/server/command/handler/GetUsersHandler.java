@@ -29,8 +29,8 @@ import com.google.inject.Inject;
  */
 public class GetUsersHandler implements CommandHandler<GetUsers> {
 
-    protected EntityManager em;
-    protected Mapper mapper;
+    private EntityManager em;
+    private Mapper mapper;
 
     @Inject
     public GetUsersHandler(EntityManager em, Mapper mapper) {

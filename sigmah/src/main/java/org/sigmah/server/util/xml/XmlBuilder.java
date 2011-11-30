@@ -20,10 +20,12 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class XmlBuilder {
 
-	TransformerHandler hd;
+	private TransformerHandler hd;
 	
 	private static class State {
-		
+		private XmlElement element;
+		private String qname;
+		private String defaultNamespace;
 		
 		public State(XmlElement element, String qname, String defaultNamespace) {
 			super();
@@ -32,17 +34,33 @@ public class XmlBuilder {
 			this.defaultNamespace = defaultNamespace;
 		}
 		
-		public XmlElement element;
-		public String qname;
-		public String defaultNamespace;
+		public void setElement(XmlElement element) {
+			this.element = element;
+		}
+		public XmlElement getElement() {
+			return element;
+		}
+
+		public void setQname(String qname) {
+			this.qname = qname;
+		}
+
+		public String getQname() {
+			return qname;
+		}
+
+		public void setDefaultNamespace(String defaultNamespace) {
+			this.defaultNamespace = defaultNamespace;
+		}
+
+		public String getDefaultNamespace() {
+			return defaultNamespace;
+		}
 	}
 	
 	private XmlElement pendingTag = null;
 	private Stack<State> openTags = new Stack<State>();
-	
-	
-	public boolean formatted = false;
-	
+		
 	public XmlBuilder(StreamResult result) throws TransformerConfigurationException, SAXException {
 		SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
 		
@@ -76,7 +94,7 @@ public class XmlBuilder {
 		
 		for(int i=openTags.size()-1; i>=0; i--) {
 			
-			prefix = openTags.get(i).element.getNamespacePrefixes().get(namespace);
+			prefix = openTags.get(i).getElement().getNamespacePrefixes().get(namespace);
 			
 			if(prefix != null) {
                 return prefix;
@@ -100,7 +118,7 @@ public class XmlBuilder {
 			
 			String defaultNamespace = "";
 			if(openTags.size() != 0) {
-				defaultNamespace = openTags.peek().defaultNamespace;
+				defaultNamespace = openTags.peek().getDefaultNamespace();
 			}
 			
 			if(prefix == null && !defaultNamespace.equals(tag.getNamespace()) ) {
@@ -186,9 +204,9 @@ public class XmlBuilder {
 				
 		State openTag = openTags.pop();
 		
-		hd.endElement(openTag.element.getNamespace(), openTag.element.getName(), openTag.qname);
+		hd.endElement(openTag.getElement().getNamespace(), openTag.getElement().getName(), openTag.getQname());
 		
-        for(Entry<String, String> entry : openTag.element.getNamespacePrefixes().entrySet()) {
+        for(Entry<String, String> entry : openTag.getElement().getNamespacePrefixes().entrySet()) {
             hd.endPrefixMapping(entry.getValue());
         }
 

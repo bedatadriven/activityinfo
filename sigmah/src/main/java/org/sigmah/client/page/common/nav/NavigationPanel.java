@@ -72,14 +72,14 @@ public class NavigationPanel extends ContentPanel {
             	tree.getStore().getLoader().load();
             }
         };
-        eventBus.addListener(AppEvents.SchemaChanged, changeListener);
+        eventBus.addListener(AppEvents.SCHEMA_CHANGED, changeListener);
 
         this.add(tree);
     }
     
     public void shutdown() {
         eventBus.removeListener(NavigationHandler.NavigationAgreed, navListener);
-        eventBus.removeListener(AppEvents.SchemaChanged, changeListener);
+        eventBus.removeListener(AppEvents.SCHEMA_CHANGED, changeListener);
     }
 
     private void onNavigated(PageState place) {

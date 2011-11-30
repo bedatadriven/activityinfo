@@ -25,7 +25,7 @@ public final class FilterToolBar extends ToolBar {
 	}
 	
 	public static class ApplyFilterEvent extends GwtEvent<ApplyFilterHandler> {
-		public static Type TYPE = new Type<ApplyFilterHandler>(); 
+		public static final Type TYPE = new Type<ApplyFilterHandler>(); 
 
 		@Override
 		public Type<ApplyFilterHandler> getAssociatedType() {
@@ -39,7 +39,7 @@ public final class FilterToolBar extends ToolBar {
 	}
 	
 	public static class RemoveFilterEvent extends GwtEvent<RemoveFilterHandler> {
-		public static Type TYPE = new Type<RemoveFilterHandler>(); 
+		public static final sType TYPE = new Type<RemoveFilterHandler>(); 
 
 		@Override
 		public Type<RemoveFilterHandler> getAssociatedType() {

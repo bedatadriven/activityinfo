@@ -40,7 +40,7 @@ public class HistoryManager {
         this.placeSerializer = placeSerializer;
         this.eventBus = eventBus;
 
-        this.eventBus.addListener(AppEvents.Init, new Listener<BaseEvent>() {
+        this.eventBus.addListener(AppEvents.INIT, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
                 fireInitialPage();

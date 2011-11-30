@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.sigmah.shared.dto.AdminLevelDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.report.content.TreeNode;
 
 /**
@@ -102,5 +104,30 @@ public class TableColumn extends TreeNode<TableColumn> {
 
     public void setPropertyQualifyingId(Integer propertyQualifyingId) {
         this.propertyQualifyingId = propertyQualifyingId;
+    }
+    
+    /** 
+     * @return the name of the property in SiteDTO
+     */
+    public String getSitePropertyName() {
+    	
+    	// support legacy models that used their own special names
+    	if("site.date1".equals(property)) {
+    		return "date1";
+    	} else if("site.date2".equals(property)) {
+    		return "date2";
+    	} else if("site.comments".equals(property)) {
+    		return "comments";
+    	} else if("location.name".equals(property)) {
+    		return "locationName";
+    	} else if("location.axe".equals(property)) {
+    		return "locationAxe";
+    	} else if("indicator".equals(property)) {
+    		return IndicatorDTO.getPropertyName(propertyQualifyingId);
+    	} else if("admin".equals(property)) {
+    		return AdminLevelDTO.getPropertyName(propertyQualifyingId);
+    	} else {
+    		return property;
+    	}
     }
 }

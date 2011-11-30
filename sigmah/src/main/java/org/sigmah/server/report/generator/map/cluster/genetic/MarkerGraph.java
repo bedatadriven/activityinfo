@@ -25,9 +25,9 @@ public class MarkerGraph {
      * Two <code>PointValue</code> are connected if they potentially overlap.
      */
     public static class Edge {
-        public Node a;
-        public Node b;
-        public int subgraph = -1;
+        private Node a;
+        private Node b;
+        private int subgraph = -1;
 
         public Edge(Node a, Node b) {
             this.a = a;
@@ -41,6 +41,14 @@ public class MarkerGraph {
         public double length() {
             return a.getPoint().distance(b.getPoint());
         }
+        
+        public Node getA() {
+        	return a;
+        }
+
+		public Node getB() {
+			return b;
+		}
     }
 
     /**
@@ -49,7 +57,7 @@ public class MarkerGraph {
     public static class Node {
         private List<Edge> edges;
         private PointValue pv;
-        public int subgraph = -1;
+        private int subgraph = -1;
 
         public Node(PointValue pv) {
             this.pv = pv;

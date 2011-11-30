@@ -6,113 +6,45 @@
 package org.sigmah.shared.report.content;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.TableColumn;
 
 public class TableData implements Serializable {
 
-    private TableColumn rootColumn;
-    private int leafColumnCount;
+    private final TableColumn rootColumn;
+	private final List<TableColumn> leaves;
+	private final List<SiteDTO> rows;
 
-	/**
-	 * Maps leaf-columns to their slot in the <code>Row.values</code> array.
-	 */
-	private Map<TableColumn, Integer> columnMap;
-	private List<Row> rows;
-
-
-
-	public TableData(TableColumn rootColumn) {
+	public TableData(TableColumn rootColumn, List<SiteDTO> rows) {
 		this.rootColumn = rootColumn;
-        List<TableColumn> leaves = rootColumn.getLeaves();
-        leafColumnCount = leaves.size();
-
-		columnMap = new HashMap<TableColumn, Integer>();
-
-		for(TableColumn leaf : leaves) {
-			columnMap.put(leaf, columnMap.size());
-		}
+        this.leaves = rootColumn.getLeaves();
+		this.rows = rows;
 	}
 
-    public Integer getColumnIndex(TableColumn column) {
-		return columnMap.get(column);
-	}
-
-    public Integer getColumnIndex(String source) {
-        for(Map.Entry<TableColumn, Integer> entry : columnMap.entrySet()) {
-            if(entry.getKey().getProperty().equals(source)) {
-                return entry.getValue();
+    public String getColumnIndex(String source) {
+        for(TableColumn column : leaves) {
+            if(column.getProperty().equals(source)) {
+                return column.getSitePropertyName();
             }
         }
         return null;
     }
 
     public int getLeafColumnCount() {
-        return leafColumnCount;
+        return leaves.size();
     }
 
     public TableColumn getRootColumn() {
         return rootColumn;
     }
 
-    public void setRows(List<Row> rows) {
-		this.rows = rows;
-	}
-
-    public Map<TableColumn, Integer> getColumnMap() {
-        return columnMap;
-    }
-
-    public void setColumnMap(Map<TableColumn, Integer> columnMap) {
-        this.columnMap = columnMap;
-    }
-
-
-    public List<Row> getRows() {
+    public List<SiteDTO> getRows() {
 		return rows;
 	}
 
 	public boolean isEmpty() {
 		return rows == null || rows.size() == 0;
 	}
-
-     /**
-     * Data structure that stores the data for each
-     * row in the table.
-     *
-     */
-    public static class Row implements Serializable {
-
-        private Row() {
-
-        }
-
-        public Row(int leafColumnCount) {
-            values = new Object[leafColumnCount];
-        }
-
-        public int id;
-
-        public Object[] values;
-        public boolean hasXY;
-        public double x;
-        public double y;
-
-         public int getId() {
-             return id;
-         }
-
-        public double getLatitude() {
-            return y;
-        }
-        public double getLongitude() {
-            return x;
-        }
-        public boolean hasLatLong() {
-            return hasXY;
-        }
-    }
 }

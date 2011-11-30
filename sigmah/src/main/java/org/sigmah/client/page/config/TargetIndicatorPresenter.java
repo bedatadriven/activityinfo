@@ -225,7 +225,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 
 					public void onSuccess(VoidResult result) {
 						treeStore.remove(model);
-						eventBus.fireEvent(AppEvents.SchemaChanged);
+						eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
 					}
 				});
 	}

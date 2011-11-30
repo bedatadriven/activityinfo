@@ -11,7 +11,7 @@ public class SitesWithoutLocationsResult extends SiteResult{
 	}
 
 	public SitesWithoutLocationsResult(List<SiteDTO> data) {
-		this.data=data;
+		super(data);
 	}
 
 	public int getTotalLocationsCount() {

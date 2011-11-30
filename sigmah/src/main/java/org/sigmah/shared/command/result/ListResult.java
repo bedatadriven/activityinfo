@@ -21,7 +21,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
  */
 public abstract class ListResult<D extends ModelData> implements CommandResult, ListLoadResult<D> {
 
-	protected List<D> data;
+	private List<D> data;
 
 	protected ListResult() {
 	    data = new ArrayList<D>();	
@@ -39,4 +39,8 @@ public abstract class ListResult<D extends ModelData> implements CommandResult, 
 	public List<D> getData() {
 		return data;
 	}	
+    
+    public void setData(List<D> data) {
+    	this.data = data;
+    }
 }

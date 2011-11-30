@@ -5,11 +5,13 @@
 
 package org.sigmah.server.report.generator;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +20,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
-import org.sigmah.server.database.hibernate.dao.SiteOrder;
-import org.sigmah.server.database.hibernate.dao.SiteProjectionBinder;
-import org.sigmah.server.database.hibernate.dao.SiteTableColumn;
-import org.sigmah.server.database.hibernate.dao.SiteTableDAO;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.map.MockBaseMapDAO;
-import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dto.SiteDTO;
@@ -43,123 +39,122 @@ import org.sigmah.shared.report.model.layers.CircledMapLayer;
  * @author Alex Bertram
  */
 public class TableGeneratorTest {
-    private User user;
+	private static final int INDICATOR_ID = 99;
+	private User user;
 
-    @Before
-    public void setUp() {
-        user = new User();
-        user.setName("Alex");
-        user.setEmail("akbertra@mgail.com");
-        user.setLocale("fr");
-    }
+	@Before
+	public void setUp() {
+		user = new User();
+		user.setName("Alex");
+		user.setEmail("akbertra@mgail.com");
+		user.setLocale("fr");
+	}
 
-    @Test
-    public void testTableGenerator() {
+	@Test
+	public void simpleTable() {
 
-        TableElement table = new TableElement();
-        table.addColumn(new TableColumn("Location", "location.name"));
+		TableElement table = new TableElement();
+		TableColumn column = new TableColumn("Location", "location.name");
+		table.addColumn(column);
 
-        TableGenerator gtor = new TableGenerator(createDispatcher(), new MockSiteTableDAO(), createIndicator(), null);
-        gtor.generate(user, table, null, null);
+		TableGenerator gtor = new TableGenerator(createDispatcher(), null);
+		gtor.generate(user, table, null, null);
 
-        Assert.assertNotNull("content is set", table.getContent());
+		Assert.assertNotNull("content is set", table.getContent());
 
-        TableData data = table.getContent().getData();
-        List<TableData.Row> rows = data.getRows();
-        Assert.assertEquals("row count", 1, rows.size());
+		TableData data = table.getContent().getData();
+		List<SiteDTO> rows = data.getRows();
+		Assert.assertEquals("row count", 1, rows.size());
 
-        TableData.Row row = rows.get(0);
-        Assert.assertEquals("column data", "tampa bay", row.values[0]);
-    }
+		SiteDTO row = rows.get(0);
+		assertThat((String)row.get(column.getSitePropertyName()), equalTo("tampa bay"));
+	}
+//
+//	@Test
+//	public void tableWithMap() {
+//		
+//		MapReportElement map = new MapReportElement();
+//		map.setBaseMapId(GoogleBaseMap.ROADMAP.getId());
+//		
+//		BubbleMapLayer layer = new BubbleMapLayer();
+//		layer.addIndicator(INDICATOR_ID);
+//		map.addLayer(layer);
+//		
+//		TableElement table = new TableElement();
+//		table.setMap(map);
+//	
+//		TableColumn column = new TableColumn("Location", "location.name");
+//		table.addColumn(column);
+//		
+//		TableColumn mapColumn = new TableColumn("Map", "map");
+//		table.addColumn(mapColumn);
+//		
+//		DispatcherSync dispatcher = createDispatcher();
+//		TableGenerator gtor = new TableGenerator(dispatcher, new MapGenerator(dispatcher, null, null));
+//		gtor.generate(user, table, null, null);
+//
+//		Assert.assertNotNull("content is set", table.getContent());
+//
+//		TableData data = table.getContent().getData();
+//		List<SiteDTO> rows = data.getRows();
+//		Assert.assertEquals("row count", 1, rows.size());
+//
+//		SiteDTO row = rows.get(0);
+//		assertThat((String)row.get(column.getSitePropertyName()), equalTo("tampa bay"));
+//		assertThat((String)row.get("map"), equalTo("1"));
+//	}
 
 
-    @Test
-    public void testMap() {
+	@Test
+	public void testMap() {
 
-        TableElement table = new TableElement();
-        table.addColumn(new TableColumn("Index", "map"));
-        table.addColumn(new TableColumn("Site", "location.name"));
+		TableElement table = new TableElement();
+		table.addColumn(new TableColumn("Index", "map"));
+		table.addColumn(new TableColumn("Site", "location.name"));
 
-        MapReportElement map = new MapReportElement();
-        map.setBaseMapId("map1");
-        CircledMapLayer layer = new BubbleMapLayer();
-        layer.setLabelSequence(new ArabicNumberSequence());
-        map.addLayer(layer);
-        table.setMap(map);
-        
-        DispatcherSync dispatcher = createMock(DispatcherSync.class);
-        expect(dispatcher.execute(isA(GetSites.class)))
-        	.andReturn(new SiteResult(dummySite()))
-        	.anyTimes();
-       
-        replay(dispatcher);
+		MapReportElement map = new MapReportElement();
+		map.setBaseMapId("map1");
+		CircledMapLayer layer = new BubbleMapLayer();
+		layer.setLabelSequence(new ArabicNumberSequence());
+		map.addLayer(layer);
+		table.setMap(map);
 
-        TableGenerator gtor = new TableGenerator(dispatcher, new MockSiteTableDAO(), createIndicator(),
-                new MapGenerator(dispatcher, new MockBaseMapDAO(), new MockIndicatorDAO()));
-        gtor.generate(user, table, null, null);
+		DispatcherSync dispatcher = createMock(DispatcherSync.class);
+		expect(dispatcher.execute(isA(GetSites.class)))
+		.andReturn(new SiteResult(dummySite()))
+		.anyTimes();
 
-        MapContent mapContent = map.getContent();
-        Assert.assertNotNull("map content", mapContent);
-        Assert.assertEquals("marker count", 1, mapContent.getMarkers().size());
-        Assert.assertEquals("label on marker", "1", ((BubbleMapMarker) mapContent.getMarkers().get(0)).getLabel());
+		replay(dispatcher);
 
-        Map<Integer, String> siteLabels = mapContent.siteLabelMap();
-        Assert.assertEquals("site id in map", "1", siteLabels.get(1));
+		TableGenerator gtor = new TableGenerator(dispatcher, new MapGenerator(dispatcher, new MockBaseMapDAO(), new MockIndicatorDAO()));
+		gtor.generate(user, table, null, null);
 
-        TableData.Row row = table.getContent().getData().getRows().get(0);
-        Assert.assertEquals("label on row", "1", row.values[0]);
-    }
+		MapContent mapContent = map.getContent();
+		Assert.assertNotNull("map content", mapContent);
+		Assert.assertEquals("marker count", 1, mapContent.getMarkers().size());
+		Assert.assertEquals("label on marker", "1", ((BubbleMapMarker) mapContent.getMarkers().get(0)).getLabel());
 
-    private IndicatorDAO createIndicator() {
-        IndicatorDAO indicatorDAO = createNiceMock(IndicatorDAO.class);
-        replay(indicatorDAO);
-        return indicatorDAO;
-    }
+		Map<Integer, String> siteLabels = mapContent.siteLabelMap();
+		Assert.assertEquals("site id in map", "1", siteLabels.get(1));
 
-    private DispatcherSync createDispatcher() {
-        DispatcherSync dispatcher = createNiceMock(DispatcherSync.class);
-        replay(dispatcher);
-        return dispatcher;
-    }
+		SiteDTO row = table.getContent().getData().getRows().get(0);
+		Assert.assertEquals("label on row", "1", row.get("map"));
+	}
 
-    public SiteDTO dummySite() {
-    	SiteDTO site = new SiteDTO();
-    	site.setId(1);
-    	site.setLocationName("tampa bay");
-    	site.setX(28.4);
-    	site.setY(1.2);
-    	return site;
-    }
-    
-    private class MockSiteTableDAO implements SiteTableDAO {
-        @Override
-        public <RowT> List<RowT> query(User user, Filter filter, List<SiteOrder> orderings, SiteProjectionBinder<RowT> binder, int retrieve, int offset, int limit)  {
-            try {
-                final ResultSet rs = createNiceMock(ResultSet.class);
-                expect(rs.getInt(SiteTableColumn.id.index())).andReturn(1);
-                expect(rs.getObject(SiteTableColumn.id.index())).andReturn(1);
-                expect(rs.getObject(SiteTableColumn.location_name.index())).andReturn("tampa bay");
-                expect(rs.getDouble(SiteTableColumn.x.index())).andReturn(28.4);
-                expect(rs.getObject(SiteTableColumn.x.index())).andReturn(28.4);
-                expect(rs.getDouble(SiteTableColumn.y.index())).andReturn(1.2);
-                expect(rs.getObject(SiteTableColumn.y.index())).andReturn(1.2);
-                expect(rs.wasNull()).andReturn(false).anyTimes();
-                replay(rs);
+	private DispatcherSync createDispatcher() {
+		DispatcherSync dispatcher = createMock(DispatcherSync.class);
+		expect(dispatcher.execute(isA(GetSites.class))).andReturn(new SiteResult(dummySite())).anyTimes();
+		replay(dispatcher);
+		return dispatcher;
+	}
 
-                return Collections.singletonList(binder.newInstance(new String[0], rs));
-            } catch (SQLException e) {
-                throw new AssertionError(e);
-            }
-        }
-
-        @Override
-        public int queryCount(User user, Filter filter) {
-            return 0;
-        }
-
-        @Override
-        public int queryPageNumber(User user, Filter filter, List<SiteOrder> orderings, int pageSize, int siteId) {
-            return 0;
-        }
-    }
+	public SiteDTO dummySite() {
+		SiteDTO site = new SiteDTO();
+		site.setId(1);
+		site.setLocationName("tampa bay");
+		site.setIndicatorValue(INDICATOR_ID, 1500d);
+		site.setX(28.4);
+		site.setY(1.2);
+		return site;
+	}
 }

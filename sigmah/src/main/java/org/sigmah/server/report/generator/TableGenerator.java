@@ -5,19 +5,15 @@
 
 package org.sigmah.server.report.generator;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
-import org.sigmah.server.database.hibernate.dao.SiteOrder;
-import org.sigmah.server.database.hibernate.dao.SiteTableDAO;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.result.SiteResult;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.TableContent;
 import org.sigmah.shared.report.content.TableData;
 import org.sigmah.shared.report.model.DateRange;
@@ -25,22 +21,18 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.inject.Inject;
 
 public class TableGenerator extends ListGenerator<TableElement> {
 
-    protected IndicatorDAO indicatorDAO;
     protected MapGenerator mapGenerator;
     
-    private SiteTableDAO siteDAO;
-
     @Inject
-    public TableGenerator(DispatcherSync dispatcher, SiteTableDAO siteTableDAO, IndicatorDAO indicatorDAO,
-                          MapGenerator mapGenerator) {
+    public TableGenerator(DispatcherSync dispatcher, MapGenerator mapGenerator) {
         super(dispatcher);
-        this.indicatorDAO = indicatorDAO;
         this.mapGenerator = mapGenerator;
-        this.siteDAO = siteTableDAO;
     }
 
     @Override
@@ -51,55 +43,30 @@ public class TableGenerator extends ListGenerator<TableElement> {
         TableContent content = new TableContent();
         content.setFilterDescriptions(generateFilterDescriptions(filter, Collections.<DimensionType>emptySet(), user));
 
-        TableData data = generateData(user, element, effectiveFilter);
+        TableData data = generateData(element, effectiveFilter);
         content.setData(data);
 
         if (element.getMap() != null) {
             mapGenerator.generate(user, element.getMap(), effectiveFilter, dateRange);
 
-            Integer mapColIndex = data.getColumnIndex("map");
-            if (mapColIndex != null) {
-
-                Map<Integer, String> siteLabels = element.getMap().getContent().siteLabelMap();
-                for (TableData.Row row : data.getRows()) {
-                    row.values[mapColIndex] = siteLabels.get(row.getId());
-                }
+            Map<Integer, String> siteLabels = element.getMap().getContent().siteLabelMap();
+            for (SiteDTO row : data.getRows()) {
+                row.set("map", siteLabels.get(row.getId()));
             }
         }
         element.setContent(content);
     }
 
-    protected List<SiteOrder> resolveOrder(TableElement element) {
-        List<SiteOrder> list = new ArrayList<SiteOrder>();
 
-        for (TableColumn column : element.getSortBy()) {
-            if ("admin".equals(column.getProperty())) {
-                list.add(new SiteOrder(AdminLevelDTO.getPropertyName(column.getPropertyQualifyingId()),
-                        !column.isOrderAscending()));
-
-            } else if ("indicator".equals(column.getProperty())) {
-                list.add(new SiteOrder(IndicatorDTO.getPropertyName(column.getPropertyQualifyingId()),
-                        !column.isOrderAscending()));
-
-            } else {
-                list.add(new SiteOrder(column.getProperty(), column.isOrderAscending()));
-            }
-        }
-        return list;
-    }
-
-    public TableData generateData(User user, TableElement element, Filter filter) {
-
-        TableData data = new TableData(element.getRootColumn());
-        List<TableData.Row> rows = siteDAO.query(
-                user,
-                filter,
-                resolveOrder(element),
-                new RowBinder(data),
-                SiteTableDAO.RETRIEVE_ALL, 0, -1);
-
-        data.setRows(rows);
-
-        return data;
+    public TableData generateData(TableElement element, Filter filter) {
+    	GetSites query = new GetSites(filter);
+    	
+    	if(!element.getSortBy().isEmpty()) {
+    		TableColumn sortBy = element.getSortBy().get(0);
+    		query.setSortInfo(new SortInfo(sortBy.getSitePropertyName(), sortBy.isOrderAscending() ? SortDir.ASC : SortDir.DESC));
+    	}
+    	
+		SiteResult sites = getDispatcher().execute(query);    	
+        return new TableData(element.getRootColumn(), sites.getData());
     }
 }

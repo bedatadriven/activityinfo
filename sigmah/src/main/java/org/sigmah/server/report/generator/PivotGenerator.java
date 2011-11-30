@@ -31,7 +31,7 @@ public abstract class PivotGenerator<T extends PivotReportElement> extends BaseG
                                           Filter filter,
                                           List<Dimension> rowDims, List<Dimension> colDims) {
 
-    	PivotResult result = dispatcher.execute(new PivotSites(element.allDimensions(), filter));
+    	PivotResult result = getDispatcher().execute(new PivotSites(element.allDimensions(), filter));
     	
     	PivotTableDataBuilder builder = new PivotTableDataBuilder();
         return builder.build(element, rowDims, colDims, result.getBuckets());

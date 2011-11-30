@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.AdminLevel;
 import org.sigmah.server.database.hibernate.entity.Bounds;
-import org.sigmah.server.util.beanMapping.BeanMappingModule;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
@@ -53,9 +52,9 @@ public class AdminEntityMappingTest {
         Assert.assertEquals("levelId", level.getId(), dto.getLevelId());
 
         Assert.assertNotNull("bounds", dto.getBounds());
-        Assert.assertEquals("x1", bounds.getX1(), dto.getBounds().x1);
-        Assert.assertEquals("y1", bounds.getY1(), dto.getBounds().y1);
-        Assert.assertEquals("x2", bounds.getX2(), dto.getBounds().x2);
-        Assert.assertEquals("y2", bounds.getY2(), dto.getBounds().y2);
+        Assert.assertEquals("x1", bounds.getX1(), dto.getBounds().getX1());
+        Assert.assertEquals("y1", bounds.getY1(), dto.getBounds().getY1());
+        Assert.assertEquals("x2", bounds.getX2(), dto.getBounds().getX2());
+        Assert.assertEquals("y2", bounds.getY2(), dto.getBounds().getY2());
     }
 }

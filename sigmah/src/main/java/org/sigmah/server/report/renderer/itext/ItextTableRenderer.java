@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.TableData;
 import org.sigmah.shared.report.model.TableColumn;
 import org.sigmah.shared.report.model.TableElement;
@@ -86,10 +87,10 @@ public class ItextTableRenderer implements ItextRenderer<TableElement> {
         NumberFormat numberFormat = NumberFormat.getIntegerInstance();
         numberFormat.setGroupingUsed(true);
 
-        for(TableData.Row row : data.getRows()) {
+        for(SiteDTO row : data.getRows()) {
             for(TableColumn column : colLeaves) {
 
-                Object value = row.values[data.getColumnIndex(column)];
+                Object value = row.get(column.getSitePropertyName());
 
                 String label = "";
                 if(value instanceof Date) {

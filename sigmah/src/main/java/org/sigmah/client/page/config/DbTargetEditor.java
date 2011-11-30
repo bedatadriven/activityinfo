@@ -100,7 +100,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 
 	            public void onSuccess(VoidResult result) {
 	                store.remove(model);
-	                eventBus.fireEvent(AppEvents.SchemaChanged);
+	                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
 	            }
 	        });
 		}
@@ -127,7 +127,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	                        store.add(newTarget);
 	                        store.commitChanges();
 	                        db.getTargets().add(newTarget);
-	                        eventBus.fireEvent(AppEvents.SchemaChanged);
+	                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
 	                        dlg.hide();
 	                    }
 	                });
@@ -151,7 +151,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	
 	                public void onSuccess(VoidResult result) {
 	                	store.commitChanges();
-	                	eventBus.fireEvent(AppEvents.SchemaChanged);
+	                	eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
 	                    dlg.hide();
 	                }
 	            });

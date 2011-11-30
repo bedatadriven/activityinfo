@@ -276,7 +276,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 	}
 	
 	public Double getLongitude() {
-		return getY();
+		return getX();
 	}
 	
     /**

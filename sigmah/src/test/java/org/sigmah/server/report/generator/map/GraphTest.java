@@ -56,10 +56,10 @@ public class GraphTest {
         for(MarkerGraph.Edge edge : graph.getEdges()) {
             svg.write(String.format("<line x1='%d' y1='%d' x2='%d' y2='%d' " +
                         "style='stroke:rgb(99,99,99);stroke-width:1'/>",
-                        edge.a.getPoint().getX(),
-                         edge.a.getPoint().getY(),
-                         edge.b.getPoint().getX(),
-                         edge.b.getPoint().getY()));
+                        edge.getA().getPoint().getX(),
+                         edge.getA().getPoint().getY(),
+                         edge.getB().getPoint().getX(),
+                         edge.getB().getPoint().getY()));
         }
 
         for(MarkerGraph.Node node : graph.getNodes()) {
@@ -96,10 +96,10 @@ public class GraphTest {
         for(MarkerGraph.Edge edge : graph.getEdges()) {
             svg.write(String.format("<path d='M%d %d L%d %d' " +
                         "style='stroke:rgb(92,92,92);stroke-width:0.25'/>\n",
-                         edge.a.getPoint().getX(),
-                         edge.a.getPoint().getY(),
-                         edge.b.getPoint().getX(),
-                         edge.b.getPoint().getY()));
+                         edge.getA().getPoint().getX(),
+                         edge.getA().getPoint().getY(),
+                         edge.getB().getPoint().getX(),
+                         edge.getB().getPoint().getY()));
         }
 
         String[] colors = new String[] {

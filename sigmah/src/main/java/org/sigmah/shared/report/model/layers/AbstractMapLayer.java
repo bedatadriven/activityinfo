@@ -28,31 +28,35 @@ import org.sigmah.shared.report.model.labeling.LatinAlphaSequence;
  */
 public abstract class AbstractMapLayer implements MapLayer {
 	private boolean isVisible = true;
-	protected List<Integer> indicatorIds = new ArrayList<Integer>();
-	protected LabelSequence labelSequence = new LatinAlphaSequence();
-	protected Clustering clustering =  new NoClustering(); 
-	protected String name;
-	protected Filter filter = new Filter();
+	private List<Integer> indicatorIds = new ArrayList<Integer>();
+	private LabelSequence labelSequence = new LatinAlphaSequence();
+	private Clustering clustering =  new NoClustering(); 
+	private String name;
+	private Filter filter = new Filter();
 
 	@Override
 	public void addIndicatorId(int id) {
 	    indicatorIds.add(id);
 	}
 
+	@Override
 	public boolean isVisible() {
 		return isVisible;
 	}
 
+	@Override
 	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
 
+	@Override
 	@XmlElement(name = "indicator")
 	@XmlElementWrapper(name = "indicators")
 	public List<Integer> getIndicatorIds() {
 	    return indicatorIds;
 	}
 	
+	@Override
 	@XmlElementRefs({
 		@XmlElementRef(type=ArabicNumberSequence.class),
 		@XmlElementRef(type=LatinAlphaSequence.class)
@@ -61,15 +65,18 @@ public abstract class AbstractMapLayer implements MapLayer {
 		return labelSequence;
 	}
 
+	@Override
 	public void setLabelSequence(LabelSequence labelSequence) {
 		this.labelSequence = labelSequence;
 	}
 
+	@Override
 	@XmlTransient
 	public boolean isClustered() {
 	    return clustering.isClustered();
 	}
 
+	@Override
 	@XmlElementRefs({
 		@XmlElementRef(type=AdministrativeLevelClustering.class),
 		@XmlElementRef(type=NoClustering.class),
@@ -79,6 +86,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 		return clustering;
 	}
 
+	@Override
 	public void setClustering(Clustering clustering) {
 		this.clustering = clustering;
 	}

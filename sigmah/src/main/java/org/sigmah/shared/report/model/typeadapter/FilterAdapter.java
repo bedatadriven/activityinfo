@@ -25,17 +25,18 @@ public class FilterAdapter extends XmlAdapter<
 
     public static class Restriction {
         @XmlAttribute
-        public String dimension;
+        private String dimension;
+        
         @XmlElement(name="category")
-        public List<String> categories = new ArrayList<String>(0);
+        private List<String> categories = new ArrayList<String>(0);
     }
 
     public static class FilterElement {
         @XmlElement(name="restriction")
-        public List<Restriction> restrictions = new ArrayList<Restriction>(0);
+        private List<Restriction> restrictions = new ArrayList<Restriction>(0);
 
         @XmlElement
-        public DateRange dateRange;
+        private DateRange dateRange;
     }
 
     @Override

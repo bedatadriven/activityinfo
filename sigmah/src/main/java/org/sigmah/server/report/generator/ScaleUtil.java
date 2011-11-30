@@ -11,9 +11,19 @@ package org.sigmah.server.report.generator;
 public class ScaleUtil {
 
     public static class Scale {
-        double valmin;
-        double step;
-        double valmax;
+        private double valmin;
+        private double step;
+        private double valmax;
+        
+		public double getValmin() {
+			return valmin;
+		}
+		public double getStep() {
+			return step;
+		}
+		public double getValmax() {
+			return valmax;
+		}
     }
 
 

@@ -30,7 +30,7 @@ import com.google.inject.Inject;
  */
 public abstract class BaseGenerator<T extends ReportElement> implements ContentGenerator<T> {
 
-    protected final DispatcherSync dispatcher;
+    private DispatcherSync dispatcher;
 
     @Inject
     public BaseGenerator(DispatcherSync dispatcher) {
@@ -82,4 +82,8 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
             return template;
         }
 	}
+    
+    protected final DispatcherSync getDispatcher() {
+    	return dispatcher;
+    }
 }

@@ -139,10 +139,11 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     }
 
 
-    public void shutdown() {
-        eventBus.removeListener(AppEvents.SiteSelected, siteListener);
-        eventBus.removeListener(AppEvents.SiteCreated, siteListener);
-        eventBus.removeListener(AppEvents.SiteChanged, siteListener);
+    @Override
+	public void shutdown() {
+        eventBus.removeListener(AppEvents.SITE_SELECTED, siteListener);
+        eventBus.removeListener(AppEvents.SITE_CREATED, siteListener);
+        eventBus.removeListener(AppEvents.SITE_CHANGED, siteListener);
     }
 
     public void onSiteDropped(Record record, double lat, double lng) {
@@ -193,13 +194,14 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                         if (event.getOverlay() != null) {
                             int siteId = siteIdFromOverlay(event.getOverlay());
                             highlightSite(siteId, false);
-                            eventBus.fireEvent(new SiteEvent(AppEvents.SiteSelected, SiteMap.this, siteId));
+                            eventBus.fireEvent(new SiteEvent(AppEvents.SITE_SELECTED, SiteMap.this, siteId));
                         }
 
                     }
                 });
                 map.addMapRightClickHandler(new MapRightClickHandler() {
-                    public void onRightClick(MapRightClickEvent event) {
+                    @Override
+					public void onRightClick(MapRightClickEvent event) {
                         if (event.getOverlay() != null) {
                             showContextMenu(event);
                         }
@@ -245,21 +247,22 @@ public class SiteMap extends ContentPanel implements Shutdownable {
                 addSitesToMap(points);
 
                 siteListener = new Listener<SiteEvent>() {
-                    public void handleEvent(SiteEvent be) {
-                        if (be.getType() == AppEvents.SiteSelected) {
+                    @Override
+					public void handleEvent(SiteEvent be) {
+                        if (be.getType() == AppEvents.SITE_SELECTED) {
                             onSiteSelected(be);
-                        } else if (be.getType() == AppEvents.SiteCreated) {
+                        } else if (be.getType() == AppEvents.SITE_CREATED) {
                             onSiteCreated(be.getSite());
-                        } else if (be.getType() == AppEvents.SiteChanged) {
+                        } else if (be.getType() == AppEvents.SITE_CHANGED) {
                             onSiteChanged(be.getSite());
                         }
 
                     }
                 };
 
-                eventBus.addListener(AppEvents.SiteSelected, siteListener);
-                eventBus.addListener(AppEvents.SiteCreated, siteListener);
-                eventBus.addListener(AppEvents.SiteChanged, siteListener);
+                eventBus.addListener(AppEvents.SITE_SELECTED, siteListener);
+                eventBus.addListener(AppEvents.SITE_CREATED, siteListener);
+                eventBus.addListener(AppEvents.SITE_CHANGED, siteListener);
             }
         });
     }

@@ -63,8 +63,7 @@ public class TiledMap {
 		
 		Point center = TileMath.fromLatLngToPixel(geographicCenter, zoom);
 				
-		origin = new Point(center.x - (width/2),  
-						   center.y - (height/2));
+		origin = center.translate(-(width/2), -(height/2));
 		
 		
 		tileOrigin = TileMath.tileForPoint(origin);
@@ -110,11 +109,11 @@ public class TiledMap {
 	
 	public Point fromLatLngToPixel(AiLatLng latLng) {
 		return TileMath.fromLatLngToPixel(latLng, this.zoom)
-					.translate(-origin.x, -origin.y);
+					.translate(-origin.getDoubleX(), -origin.getDoubleY());
 	}
 	
 	public AiLatLng fromPixelToLatLng(Point px) {
-		return TileMath.inverse(px.translate(origin.x, origin.y), this.zoom);
+		return TileMath.inverse(px.translate(origin.getDoubleX(), origin.getDoubleY()), this.zoom);
 	}
 		
 	public AiLatLng fromPixelToLatLng(double x, double y) {

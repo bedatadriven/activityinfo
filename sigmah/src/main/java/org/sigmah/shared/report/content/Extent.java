@@ -7,6 +7,9 @@ package org.sigmah.shared.report.content;
 
 public class Extent {
 
+	private double x1, y1, x2, y2;
+
+	
 	public Extent(double x1, double y1, double x2, double y2) {
 		super();
 		this.x1 = x1;
@@ -21,8 +24,6 @@ public class Extent {
 		this.x2 = Double.MIN_VALUE;
 		this.y2 = Double.MIN_VALUE;
 	}
-
-	public double x1, y1, x2, y2;
 
 	public double getX1() {
 		return x1;

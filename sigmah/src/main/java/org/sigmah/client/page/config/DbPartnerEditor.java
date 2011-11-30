@@ -107,7 +107,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
 					public void onSuccess(CreateResult result) {
                         newPartner.setId(result.getNewId());
                         store.add(newPartner);
-                        eventBus.fireEvent(AppEvents.SchemaChanged);
+                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
                         dlg.hide();
                     }
                 });

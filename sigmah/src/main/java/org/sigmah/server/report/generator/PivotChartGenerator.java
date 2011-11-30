@@ -51,8 +51,8 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement>
         content.setYAxisTitle(composeYAxisTitle(element));
         content.setEffectiveFilter(filter);
         content.setFilterDescriptions(generateFilterDescriptions(filter, element.allDimensionTypes(), user));
-        content.setYMin(scale.valmin);
-        content.setYStep(scale.step);
+        content.setYMin(scale.getValmin());
+        content.setYStep(scale.getStep());
         content.setData(data);
 
         element.setContent(content);

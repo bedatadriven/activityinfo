@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
 
 public class KMLNamespace {
 
-    public static String URI = "http://earth.google.com/kml/2.2";
+    public static final String URI = "http://earth.google.com/kml/2.2";
 
     private final XmlBuilder builder;
     private final SimpleDateFormat xmlDateFormat;

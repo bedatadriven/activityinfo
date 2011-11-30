@@ -14,8 +14,9 @@ import java.io.Serializable;
  */
 public class Month implements Serializable, Comparable<Month> {
 
-    int year;
-    int month;
+    private static final int MONTHS_PER_YEAR = 12;
+	private int year;
+    private int month;
 
     /**
      * Constructs an uninitialized <code>Month</code>
@@ -40,13 +41,13 @@ public class Month implements Serializable, Comparable<Month> {
     }
     
     private void normalize() {
-        while(month > 12) {
+        while(month > MONTHS_PER_YEAR) {
             year++;
-            month -= 12;
+            month -= MONTHS_PER_YEAR;
         }
         while(month < 1) {
             year--;
-            month+=12;
+            month+=MONTHS_PER_YEAR;
         }
     }
 
@@ -93,7 +94,8 @@ public class Month implements Serializable, Comparable<Month> {
      * @return  0 if this month is the same as <code>m</code>, -1 if this month is
      * earlier than <code>m</code>, or +1 if this month follows <code>m</code>
      */
-    public int compareTo(Month m) {
+    @Override
+	public int compareTo(Month m) {
         if(year < m.year) {
             return -1;
         }

@@ -32,8 +32,8 @@ import com.extjs.gxt.ui.client.data.RpcMap;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class CreateEntity implements Command<CreateResult> {
-    public String entityName;
-    public RpcMap properties;
+    private String entityName;
+    private RpcMap properties;
 
     private AdminEntityDTO entity_;
     private PartnerDTO partner_;

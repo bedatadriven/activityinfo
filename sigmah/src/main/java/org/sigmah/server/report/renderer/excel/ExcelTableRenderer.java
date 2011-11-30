@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.TableData;
 import org.sigmah.shared.report.model.TableColumn;
@@ -50,15 +51,15 @@ public class ExcelTableRenderer implements ExcelRenderer<TableElement> {
 				/* Prepare the generators and indexes */
 				
 				List<TableColumn> leaves = element.getRootColumn().getLeaves();
-				int[] colIndexes = new int[leaves.size()];
+				String[] colIndexes = new String[leaves.size()];
 
 				for(int i=0; i!=leaves.size(); ++i) {	
-					colIndexes[i] = tableData.getColumnIndex(leaves.get(i));
+					colIndexes[i] = leaves.get(i).getSitePropertyName();
 				}
 				
 				/* Now write the actual rows */
 				
-				for(TableData.Row rowData : tableData.getRows()) {
+				for(SiteDTO rowData : tableData.getRows()) {
 					
 					Row row = sheet.createRow(rowIndex++);
 					
@@ -66,8 +67,8 @@ public class ExcelTableRenderer implements ExcelRenderer<TableElement> {
 						
 						Object value = null;
 						
-						if(colIndexes[i] >= 0) {
-							value = rowData.values[colIndexes[i]];
+						if(colIndexes[i] != null) {
+							value = rowData.get(colIndexes[i]);
 						}
 						
 						Cell cell = row.createCell(i);

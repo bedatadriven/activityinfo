@@ -19,9 +19,9 @@ public class ScaleTest {
 
         ScaleUtil.Scale s = ScaleUtil.computeScale(1.2, 4.2, 10);
 
-        Assert.assertEquals(0.0, s.valmin);
-        Assert.assertEquals(4.5, s.valmax);
-        Assert.assertEquals(0.5, s.step);
+        Assert.assertEquals(0.0, s.getValmin());
+        Assert.assertEquals(4.5, s.getValmax());
+        Assert.assertEquals(0.5, s.getStep());
     }
 
     @Test
@@ -29,9 +29,9 @@ public class ScaleTest {
 
         ScaleUtil.Scale s = ScaleUtil.computeScale(1500, 9000, 10);
 
-        Assert.assertEquals("valmin", 1000.0, s.valmin);
-        Assert.assertEquals("valmax", 10000.0, s.valmax);
-        Assert.assertEquals("step", 1000.0, s.step);
+        Assert.assertEquals("valmin", 1000.0, s.getValmin());
+        Assert.assertEquals("valmax", 10000.0, s.getValmax());
+        Assert.assertEquals("step", 1000.0, s.getStep());
     }
 
 }

@@ -115,8 +115,8 @@ public class GoogleMapsWidget extends LayoutContainer {
 
     protected final LatLngBounds newLatLngBounds(BoundingBoxDTO bounds) {
         return LatLngBounds.newInstance(
-                LatLng.newInstance(bounds.y1, bounds.x1),
-                LatLng.newInstance(bounds.y2, bounds.x2));
+                LatLng.newInstance(bounds.getY1(), bounds.getX1()),
+                LatLng.newInstance(bounds.getY2(), bounds.getX2()));
     }
 
     protected final LatLng newLatLng(AiLatLng latLng) {

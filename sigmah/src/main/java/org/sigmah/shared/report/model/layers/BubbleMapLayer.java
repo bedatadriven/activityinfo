@@ -27,7 +27,7 @@ public class BubbleMapLayer extends CircledMapLayer {
     }
 
     public void addIndicator(int id) {
-        indicatorIds.add(id);
+        getIndicatorIds().add(id);
     }
 
     public boolean containsIndicatorDimension() {

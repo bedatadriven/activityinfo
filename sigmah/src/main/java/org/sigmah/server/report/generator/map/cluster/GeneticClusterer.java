@@ -17,8 +17,8 @@ import org.sigmah.shared.report.model.PointValue;
  * a genetic algorithm.
  */
 public class GeneticClusterer implements Clusterer {
-	RadiiCalculator radiiCalculator;
-	IntersectionCalculator intersectionCalculator;
+	private final RadiiCalculator radiiCalculator;
+	private final IntersectionCalculator intersectionCalculator;
 	
 	public GeneticClusterer(RadiiCalculator radiiCalculator,
 			IntersectionCalculator intersectionCalculator) {

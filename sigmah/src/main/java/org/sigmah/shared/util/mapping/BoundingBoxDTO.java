@@ -16,10 +16,15 @@ import org.sigmah.shared.report.content.AiLatLng;
  * @author Alex Bertram
  */
 public final class BoundingBoxDTO implements Serializable {
-    public double x1;
-    public double y1;
-    public double x2;
-    public double y2;
+    private static final int LAT_MAX = 90;
+	private static final int LNG_MAX = 180;
+	private static final int LAT_MIN = -LAT_MAX;
+	private static final int LNG_MIN = -180;
+	
+	private double x1;
+    private double y1;
+    private double x2;
+    private double y2;
 
     /**
      * 
@@ -34,14 +39,14 @@ public final class BoundingBoxDTO implements Serializable {
      * @return maximum geographic bounds (-180, -90, 180, 90)
      */
     public static BoundingBoxDTO maxGeoBounds() {
-    	return new BoundingBoxDTO(-180, -90, 180, 90);
+    	return new BoundingBoxDTO(LNG_MIN, LAT_MIN, LNG_MAX, LAT_MAX);
     }
     
     private BoundingBoxDTO() {
-        this.x1 = 180;
-        this.y1 = 90;
-        this.x2 = -180;
-        this.y2 = -90;
+        this.x1 = LNG_MAX;
+        this.y1 = LAT_MAX;
+        this.x2 = LNG_MIN;
+        this.y2 = LAT_MIN;
     }
 
     /**

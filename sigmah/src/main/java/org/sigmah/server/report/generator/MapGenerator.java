@@ -7,7 +7,6 @@ package org.sigmah.server.report.generator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.dao.BaseMapDAO;
 import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
-import org.sigmah.server.database.hibernate.dao.SiteTableDAO;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.map.BubbleLayerGenerator;
@@ -35,8 +33,6 @@ import org.sigmah.shared.map.PredefinedBaseMaps;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -66,7 +62,8 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         this.indicatorDAO = indicatorDAO;
     }
 
-    public void generate(User user, MapReportElement element, Filter inheritedFilter, DateRange dateRange) {
+    @Override
+	public void generate(User user, MapReportElement element, Filter inheritedFilter, DateRange dateRange) {
 
         Filter filter = GeneratorUtils.resolveElementFilter(element, dateRange);
         Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
@@ -82,7 +79,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         		// Add indicator
         		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
         		//filter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
-                List<SiteDTO> sites = dispatcher.execute(new GetSites(layerFilter)).getData();
+                List<SiteDTO> sites = getDispatcher().execute(new GetSites(layerFilter)).getData();
                 
 	            if (layer instanceof BubbleMapLayer) {
 	                layerGenerators.add(new BubbleLayerGenerator((BubbleMapLayer) layer, sites));

@@ -29,7 +29,7 @@ import com.google.inject.Inject;
  */
 public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
 
-    protected SchemaDTO schema = null;
+    private SchemaDTO schema = null;
 
     @Inject
     public SchemaCache(DispatchEventSource source) {

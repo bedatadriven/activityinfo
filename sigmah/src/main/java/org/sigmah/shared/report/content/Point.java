@@ -17,8 +17,8 @@ package org.sigmah.shared.report.content;
  */
 public class Point {
 
-	public final double x;
-	public final double y;
+	private final double x;
+	private final double y;
 	
 	public Point(int x, int y) {
 		super();
@@ -87,6 +87,7 @@ public class Point {
         return result;
     }
 
+	@Override
 	public String toString() {
         return "(" + x + ", " + y + ")";                
     }

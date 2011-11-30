@@ -12,15 +12,14 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.hibernate.ejb.HibernateEntityManager;
+import org.sigmah.server.util.config.DeploymentConfiguration;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.RequestScoped;
-import org.sigmah.server.util.config.DeploymentConfiguration;
 
 /**
  * Gui
@@ -35,7 +34,6 @@ public class HibernateModule extends AbstractModule {
     protected void configure() {
         configureEmf();
         configureEm();
-        configureDialects();
         configureDAOs();
         install(new TransactionModule());
     }
@@ -47,11 +45,6 @@ public class HibernateModule extends AbstractModule {
     protected void configureEm() {
         bind(EntityManager.class).toProvider(EntityManagerProvider.class).in(RequestScoped.class);
     }
-
-    private void configureDialects() {
-        bind(SqlDialect.class).toProvider(SQLDialectProvider.class).in(Singleton.class);
-    }
-
     protected void configureDAOs() {
     	bind(AdminDAO.class).to(AdminHibernateDAO.class);
         bindDAOProxy(ActivityDAO.class);
@@ -60,8 +53,6 @@ public class HibernateModule extends AbstractModule {
         bindDAOProxy(IndicatorDAO.class);
         bindDAOProxy(ReportDefinitionDAO.class);
         bindDAOProxy(PartnerDAO.class);
-        bind(SiteTableDAO.class).to(HibernateSiteTableDAO.class);
-        bind(SiteDAO.class).to(SiteHibernateDAO.class);
         bindDAOProxy(UserDatabaseDAO.class);
         bindDAOProxy(UserPermissionDAO.class);
         bind(UserDAO.class).to(UserDAOImpl.class);

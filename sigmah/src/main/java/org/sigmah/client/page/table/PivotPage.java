@@ -138,7 +138,7 @@ public final class PivotPage extends LayoutContainer implements PivotPresenter.V
 				createDrilldownPanel(be);
 			}
 		};
-		eventBus.addListener(AppEvents.Drilldown, initialDrillDownListener);
+		eventBus.addListener(AppEvents.DRILL_DOWN, initialDrillDownListener);
 	}
 	
 	private void initializeComponent() {
@@ -405,7 +405,7 @@ public final class PivotPage extends LayoutContainer implements PivotPresenter.V
 
 		// disconnect our initial drilldown listener;
 		// subsequent events will be handled by the DrillDownEditor's listener
-		eventBus.removeListener(AppEvents.Drilldown, initialDrillDownListener);
+		eventBus.removeListener(AppEvents.DRILL_DOWN, initialDrillDownListener);
 
 		layout();
 	}

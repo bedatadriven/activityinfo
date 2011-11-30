@@ -228,7 +228,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
                         tether.hide();
 
-                        eventBus.fireEvent(AppEvents.SchemaChanged);
+                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
                     }
                 });
 
@@ -265,7 +265,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
             public void onSuccess(VoidResult result) {
                 treeStore.remove(model);
-                eventBus.fireEvent(AppEvents.SchemaChanged);
+                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
             }
         });
     }
@@ -313,6 +313,6 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
     @Override
     protected void onSaved() {
-        eventBus.fireEvent(AppEvents.SchemaChanged);
+        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
     }
 }

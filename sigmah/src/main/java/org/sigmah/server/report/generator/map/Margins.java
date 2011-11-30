@@ -10,41 +10,73 @@ package org.sigmah.server.report.generator.map;
 
 public class Margins {
 
-    public int left;
-    public int top;
-    public int bottom;
-    public int right;
+    private int left;
+    private int top;
+    private int bottom;
+    private int right;
 
     public Margins() {
     }
 
     public Margins(int size) {
-        this.left = size;
-        this.top = size;
-        this.bottom = size;
-        this.right = size;
+        this.setLeft(size);
+        this.setTop(size);
+        this.setBottom(size);
+        this.setRight(size);
     }
 
     public Margins(int left, int top, int bottom, int right) {
-        this.left = left;
-        this.top = top;
-        this.bottom = bottom;
-        this.right = right;
+        this.setLeft(left);
+        this.setTop(top);
+        this.setBottom(bottom);
+        this.setRight(right);
     }
 
     public void grow(Margins other) {
-        if(other.left > this.left) {
-            this.left = other.left;
+        if(other.getLeft() > this.getLeft()) {
+            this.setLeft(other.getLeft());
         }
-        if(other.right > this.right) {
-            this.right = other.right;
+        if(other.getRight() > this.getRight()) {
+            this.setRight(other.getRight());
         }
-        if(other.top > this.top) {
-            this.top = other.top;
+        if(other.getTop() > this.getTop()) {
+            this.setTop(other.getTop());
         }
-        if(other.bottom > this.bottom) {
-            this.bottom = other.bottom;
+        if(other.getBottom() > this.getBottom()) {
+            this.setBottom(other.getBottom());
         }
     }
+
+	public void setLeft(int left) {
+		this.left = left;
+	}
+
+	public int getLeft() {
+		return left;
+	}
+
+	public void setTop(int top) {
+		this.top = top;
+	}
+
+	public int getTop() {
+		return top;
+	}
+
+	public void setBottom(int bottom) {
+		this.bottom = bottom;
+	}
+
+	public int getBottom() {
+		return bottom;
+	}
+
+	public void setRight(int right) {
+		this.right = right;
+	}
+
+	public int getRight() {
+		return right;
+	}
 
 }
