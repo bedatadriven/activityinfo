@@ -5,9 +5,9 @@ import java.util.List;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.ReportSubscriber;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -27,7 +27,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 
 public class SubscribeForm extends FormPanel {
 
-	private ListStore<EmailModelData> store;
+	private ListStore<ReportSubscriber> store;
 	private final static String EMAIL_VALIDATION_REGEX = "[a-z0-9!#$%&'*+/ =?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
 	private TextField<String> title;
@@ -36,7 +36,7 @@ public class SubscribeForm extends FormPanel {
 	private RadioGroup emailFrequency;
 	private MappingComboBox dayOfWeek;
 	private MappingComboBox dayOfMonth;
-	private ListField<EmailModelData> subscribers;
+	private ListField<ReportSubscriber> subscribers;
 	private TextField<String> newEmail;
 	private Button addEmail;
 	private Button removeEmail;
@@ -75,13 +75,13 @@ public class SubscribeForm extends FormPanel {
 		dayOfWeek = new MappingComboBox();
 		dayOfWeek.setAllowBlank(false);
 		dayOfWeek.setFieldLabel(I18N.CONSTANTS.dayOfWeek());
-		dayOfWeek.add(2, I18N.CONSTANTS.monday());
-		dayOfWeek.add(3, I18N.CONSTANTS.tuesday());
-		dayOfWeek.add(4, I18N.CONSTANTS.wednesday());
-		dayOfWeek.add(5, I18N.CONSTANTS.thursday());
-		dayOfWeek.add(6, I18N.CONSTANTS.friday());
-		dayOfWeek.add(7, I18N.CONSTANTS.saturday());
-		dayOfWeek.add(1, I18N.CONSTANTS.sunday());
+		dayOfWeek.add(1, I18N.CONSTANTS.monday());
+		dayOfWeek.add(2, I18N.CONSTANTS.tuesday());
+		dayOfWeek.add(3, I18N.CONSTANTS.wednesday());
+		dayOfWeek.add(4, I18N.CONSTANTS.thursday());
+		dayOfWeek.add(5, I18N.CONSTANTS.friday());
+		dayOfWeek.add(6, I18N.CONSTANTS.saturday());
+		dayOfWeek.add(0, I18N.CONSTANTS.sunday());
 		add(dayOfWeek);
 
 		dayOfMonth = new MappingComboBox();
@@ -110,18 +110,18 @@ public class SubscribeForm extends FormPanel {
 			}
 		});
 
-		store = new ListStore<EmailModelData>();
+		store = new ListStore<ReportSubscriber>();
 
-		subscribers = new ListField<EmailModelData>();
+		subscribers = new ListField<ReportSubscriber>();
 		subscribers.setFieldLabel(I18N.CONSTANTS.subscribers());
 		subscribers.setDisplayField("email");
 		subscribers.setStore(store);
 		subscribers
-				.addSelectionChangedListener(new SelectionChangedListener<EmailModelData>() {
+				.addSelectionChangedListener(new SelectionChangedListener<ReportSubscriber>() {
 
 					@Override
 					public void selectionChanged(
-							SelectionChangedEvent<EmailModelData> se) {
+							SelectionChangedEvent<ReportSubscriber> se) {
 						removeEmail.setEnabled(true);
 					}
 				});
@@ -155,7 +155,7 @@ public class SubscribeForm extends FormPanel {
 				boolean valid = newEmail.getValue().matches(
 						EMAIL_VALIDATION_REGEX);
 				if (valid) {
-					store.add(new EmailModelData(newEmail.getValue()));
+					store.add(new ReportSubscriber(newEmail.getValue()));
 					newEmail.setValue(I18N.CONSTANTS.enterNewEmail());
 					addEmail.setEnabled(false);
 				}
@@ -210,18 +210,9 @@ public class SubscribeForm extends FormPanel {
 		}
 	}
 
-	public String getEmailList() {
+	public List<ReportSubscriber> getEmailList() {
 
-		List<EmailModelData> emailsList = store.getModels();
-		int listSize = store.getModels().size();
-		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i <= listSize; i++) {
-			sb.append(emailsList.get(i - 1).getEmail());
-			if (i != listSize) {
-				sb.append(",");
-			}
-		}
-		return sb.toString();
+		return store.getModels();
 
 	}
 
@@ -230,21 +221,6 @@ public class SubscribeForm extends FormPanel {
 			return false;
 		} else {
 			return true;
-		}
-	}
-
-	class EmailModelData extends BaseModelData {
-
-		public EmailModelData(String email) {
-			setEmail(email);
-		}
-
-		public void setEmail(String email) {
-			set("email", email);
-		}
-
-		public String getEmail() {
-			return (String) get("email");
 		}
 	}
 

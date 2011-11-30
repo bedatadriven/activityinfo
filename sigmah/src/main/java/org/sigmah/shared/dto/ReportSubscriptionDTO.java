@@ -54,11 +54,4 @@ public final class ReportSubscriptionDTO extends BaseModelData {
         set("subscribed", subscribed);
     }
     
-    public void setSubscriberEmail(String subscriberEmail){
-    	set("subscriberEmail", subscriberEmail);
-    }
-    
-    public String getSubscriberEmail(){
-    	return get("subscriberEmail");
-    }
 }
