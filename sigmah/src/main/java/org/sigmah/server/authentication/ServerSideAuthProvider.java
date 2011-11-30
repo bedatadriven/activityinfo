@@ -1,7 +1,6 @@
 package org.sigmah.server.authentication;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.dto.AnonymousUser;
@@ -13,6 +12,7 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 
 	private final Provider<HttpServletRequest> request;
 	private final Provider<EntityManager> entityManager;
+	public static ThreadLocal<AuthenticatedUser> authenticatedUserThreadLocal = new ThreadLocal<AuthenticatedUser>();
 	
 	@Inject
 	public ServerSideAuthProvider(Provider<HttpServletRequest> request,
@@ -20,21 +20,24 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 		super();
 		this.request = request;
 		this.entityManager = entityManager;
+
 	}
 
 	@Override
 	public AuthenticatedUser get() {
 		// first attempt to get authToken from the cookie
-		String authToken = authTokenFromCookie();
-		
-		if(authToken != null) {
-			
-			AuthenticatedUser au = AnonymousUser(authToken);
-			if(au!=null){
-				return au;
+
+		AuthenticatedUser user = null;
+		AuthenticatedUser authenticatedUser = authenticatedUserThreadLocal.get();
+	
+		if(authenticatedUser!=null){
+			user = AnonymousUser(authenticatedUser.getAuthToken());
+			if(user == null){
+				user = authFromToken(authenticatedUser.getAuthToken());
 			}
-			
-			return authFromToken(authToken);
+		}
+		if(user !=null){
+			return user;
 		}
 		
 		throw new IllegalStateException("Request is not authenticated");
@@ -56,15 +59,5 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 		return null;
 	}
 
-	private String authTokenFromCookie() {
-		Cookie[] cookies = request.get().getCookies();
-		if(cookies != null) {
-			for(Cookie cookie : cookies) {
-				if(cookie.getName().equals(org.sigmah.shared.auth.AuthenticatedUser.AUTH_TOKEN_COOKIE)) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
-	}
+	
 }

@@ -40,6 +40,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	@ImplementedBy(TargetIndicatorView.class)
 	public interface View extends TreeGridView<TargetIndicatorPresenter, ModelData> {
 		public void init(TargetIndicatorPresenter presenter, UserDatabaseDTO db, TreeStore store);
+		public void expandAll();
 	}
 
 	private final EventBus eventBus;
@@ -78,6 +79,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		treeStore.removeAll();
 
 		fillStore(messages);
+		view.expandAll();
 	}
 
 	
@@ -208,7 +210,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	}
 	
 	public void updateTargetValue(){
-		onSave();
+			onSave();	
 	}
 
 	public void rejectChanges(){

@@ -35,4 +35,7 @@
 			<column name="subscriberemail" type="VARCHAR(255)" />
 		</addColumn>
 	</changeSet>
+	<changeSet author="umad" id="003-05">
+		<dropColumn tableName="reportsubscription" columnName="subscriberemail" />
+	</changeSet>
 </databaseChangeLog>

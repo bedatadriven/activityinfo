@@ -2,7 +2,6 @@ package org.activityinfo.embed.client;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.LoggingEventBus;
-import org.sigmah.client.authentication.ClientSideAuthProvider;
 import org.sigmah.client.dispatch.DispatchEventSource;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.RemoteServiceProvider;
@@ -19,9 +18,9 @@ public class EmbedModule extends AbstractGinModule {
 
 	@Override
 	protected void configure() {
-		bind(AuthenticatedUser.class).toProvider(ClientSideAuthProvider.class);
+		bind(AuthenticatedUser.class).toProvider(ClientSideAnonymousAuthProvider.class);
 		bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
-		bind(Dispatcher.class).to(RemoteDispatcher.class).in(Singleton.class);
+		bind(Dispatcher.class).to(EmbedDispatcher.class).in(Singleton.class);
 		bind(DispatchEventSource.class).to(RemoteDispatcher.class);
 		bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 		bind(StateProvider.class).to(GxtStateProvider.class);

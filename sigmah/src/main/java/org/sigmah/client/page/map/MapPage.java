@@ -243,7 +243,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     	report.setTitle(form.getTitle());
     	report.setFrequency(form.getReportFrequency());
 		
-    	dispatcher.execute(new CreateReportDef(0, report), dialog, new AsyncCallback<CreateResult>() {
+    	dispatcher.execute(new CreateReportDef(0, report), null, new AsyncCallback<CreateResult>() {
             public void onFailure(Throwable caught) {
             	dialog.onServerError();
             }
@@ -261,7 +261,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 		sub.setReportTemplateId(templateId);
 		sub.setEmailsList(form.getEmailList());
         
-		dispatcher.execute(sub, dialog, new AsyncCallback<VoidResult>() {
+		dispatcher.execute(sub, null, new AsyncCallback<VoidResult>() {
             public void onFailure(Throwable caught) {
             	dialog.onServerError();
             }

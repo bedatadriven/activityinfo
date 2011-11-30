@@ -1,11 +1,14 @@
 package org.sigmah.shared.command;
 
+import java.util.List;
+
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.report.model.ReportSubscriber;
 
 public class CreateSubscribe implements Command<VoidResult> {
 
-	int reportTemplateId;
-	private String emailsList;
+	private int reportTemplateId;
+	private List<ReportSubscriber> emailsList;
 	
 	public CreateSubscribe() {
 	}
@@ -18,11 +21,11 @@ public class CreateSubscribe implements Command<VoidResult> {
 		this.reportTemplateId = reportTemplateId;
 	}
 
-	public String getEmailsList() {
+	public List<ReportSubscriber> getEmailsList() {
 		return emailsList;
 	}
 
-	public void setEmailsList(String emailsList) {
+	public void setEmailsList(List<ReportSubscriber> emailsList) {
 		this.emailsList = emailsList;
 	}
 	

@@ -10,6 +10,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window.Location;
@@ -40,9 +41,7 @@ public class EmbedEntryPoint implements EntryPoint {
 
 		GXT.setDefaultTheme(Theme.BLUE, true);
 
-		AnonymousUser.createCookiesForAnonymousUser();
-		
-        final EmbedInjector injector = GWT.create(EmbedInjector.class);
+	    final EmbedInjector injector = GWT.create(EmbedInjector.class);
 
         int activityId = Integer.valueOf(Location.getParameter("activityId")); 
         
@@ -51,9 +50,9 @@ public class EmbedEntryPoint implements EntryPoint {
 		
 		SiteGridPanel panel = new SiteGridPanel(injector.getDispatcher());
 		panel.load(NullGroupingModel.INSTANCE, filter);
-		panel.setHeight(500);
 		
         Viewport viewport = new Viewport();
+        viewport.setLayout(new FitLayout());
         viewport.add(panel);
         
         RootPanel.get().add(viewport);        

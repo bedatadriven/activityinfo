@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
+import org.sigmah.server.authentication.ServerSideAuthProvider;
 import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.entity.Authentication;
@@ -113,17 +114,18 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     
 
     private Authentication retrieveAuthentication(String authToken) throws InvalidAuthTokenException {
-        AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
-        Authentication auth = authDAO.findById(authToken);
+    	
+        Authentication auth = anonymousUserAuthentication(authToken);
+    	if(auth==null){
+    		AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
+ 	        auth = authDAO.findById(authToken);
+    	}
     
         if (auth == null) {
-        	auth = anonymousUserAuthentication(authToken);
-        	if(auth!=null){
-        		return auth;
-        	}
-        	
             throw new InvalidAuthTokenException();
         }
+        
+        ServerSideAuthProvider.authenticatedUserThreadLocal.set(new AuthenticatedUser(auth.getUser().getId(),authToken, auth.getUser().getEmail()));
         return auth;
     }
     
