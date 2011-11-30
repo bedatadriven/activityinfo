@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.dozer.Mapper;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.endpoint.gwtrpc.ServerExecutionContext;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.Month;
@@ -30,6 +29,7 @@ import com.google.inject.Injector;
  */
 public class HandlerUtil {
 
+	private HandlerUtil() {}
 
     /**
      * Returns the <code>CommandHandler</code> that corresponds to the given <code>Command</code>.
@@ -50,7 +50,7 @@ public class HandlerUtil {
     		commandName + "Handler";
 
         try {
-            return (Class<CommandHandler<?>>) CommandHandler.class.getClassLoader().loadClass(handlerName);
+            return CommandHandler.class.getClassLoader().loadClass(handlerName);
 
         } catch (ClassNotFoundException e1) {
         	

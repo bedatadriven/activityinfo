@@ -6,21 +6,18 @@
 package org.sigmah.server.command.handler.sync;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
 
-import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.sigmah.server.database.hibernate.entity.Location;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.GetSyncRegionUpdates;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;
 
@@ -30,8 +27,6 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     private final EntityManager em;
     private List<Location> locations;
     private Set<Integer> locationIds = new HashSet<Integer>();
-
-    private static final Logger logger = Logger.getLogger(LocationUpdateBuilder.class);
 
 	private LocalState localState;
 

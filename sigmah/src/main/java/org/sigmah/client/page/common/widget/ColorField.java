@@ -48,7 +48,8 @@ public class ColorField extends TriggerField<String> {
 			}};
         
         menu.getColorPalette().addListener(Events.BeforeSelect, new Listener<ColorPaletteEvent>() {
-            public void handleEvent(ColorPaletteEvent ce) {
+            @Override
+			public void handleEvent(ColorPaletteEvent ce) {
                 setValue(ce.getColor());
                 menu.hide();
             }
@@ -73,9 +74,6 @@ public class ColorField extends TriggerField<String> {
     	setValue(Integer.toHexString(value));
     }
     
-    private String fromIntValue(int color) {
-    	return "#" + (value == null ? WHITE_HEX_STRING : value);
-    }
 
     @Override
     public void render(Element target, int index) {

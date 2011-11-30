@@ -34,6 +34,8 @@ public class MapApiLoader {
     private static boolean loadInProgress = false;
     private static List<AsyncMonitor> waitingMonitors;
     private static List<AsyncCallback> waitingCallbacks;
+    
+    private MapApiLoader() {}
 
     public static void load(final AsyncMonitor monitor, final AsyncCallback<Void> callback) {
         if(Maps.isLoaded()) {

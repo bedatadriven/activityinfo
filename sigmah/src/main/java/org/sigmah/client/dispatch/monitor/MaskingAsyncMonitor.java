@@ -24,21 +24,18 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
  */
 public class MaskingAsyncMonitor implements AsyncMonitor {
 
-    String maskingText;
-    Component panel;
-    String connectionText;
-    int maxRetries = 2;
+    private String maskingText;
+    private Component panel;
+    private String connectionText;
 
     public MaskingAsyncMonitor(Component panel, String connectionText) {
         this.panel = panel;
         this.connectionText = connectionText;
-        this.maxRetries = 2;
     }
 
     public MaskingAsyncMonitor(Component panel, String connectionText, int maxRetries) {
         this.panel = panel;
         this.connectionText = connectionText;
-        this.maxRetries = maxRetries;
     }
 
     @Override
@@ -59,7 +56,8 @@ public class MaskingAsyncMonitor implements AsyncMonitor {
         } else {
             panel.addListener(panel instanceof Container ? Events.AfterLayout : Events.Render,
                     new Listener<ComponentEvent>() {
-                        public void handleEvent(ComponentEvent be) {
+                        @Override
+						public void handleEvent(ComponentEvent be) {
                             /*
                             * If the call is still in progress,
                             * apply the mask now.

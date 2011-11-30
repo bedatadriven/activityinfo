@@ -5,10 +5,8 @@
 
 package org.sigmah.server.util.xml;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -20,7 +18,6 @@ public class XmlElement {
 	private StringBuilder innerText = new StringBuilder(0);
 	private boolean closed;
 	private Map<String, XmlAttribute> attributes = new HashMap<String, XmlAttribute>();
-	private List<XmlElement> children = new ArrayList<XmlElement>();
 	
 	private Map<String, String> namespacePrefixes = new HashMap<String, String>();
 	

@@ -24,7 +24,7 @@ public class StaticPage extends ContentPanel implements Page {
     }
 
     public PageId getPageId() {
-        return Frames.Static;
+        return Frames.STATIC;
     }
 
     public Object getWidget() {

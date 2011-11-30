@@ -8,6 +8,9 @@ import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 
 public class ClustererFactory {
+	
+	private ClustererFactory() {}
+	
     public static Clusterer fromClustering(Clustering clustering, RadiiCalculator radiiCalculator, 
     		IntersectionCalculator intersectionCalculator) {
     	if (clustering instanceof NoClustering) {

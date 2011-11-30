@@ -4,9 +4,9 @@ import com.google.gwt.user.client.Cookies;
 
 public class AnonymousUser {
 
-	public static String AUTHTOKEN = "AnonymousUser";
-	public static int USER_ID = 0;
-	public static String USER_EMAIL = "AnonymousUser@activityinfo.com";
+	public static final String AUTHTOKEN = "AnonymousUser";
+	public static final int USER_ID = 0;
+	public static final String USER_EMAIL = "AnonymousUser@activityinfo.org";
 
 	private AnonymousUser() {
 

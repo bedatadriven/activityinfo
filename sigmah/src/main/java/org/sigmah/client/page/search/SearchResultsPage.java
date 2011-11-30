@@ -6,7 +6,6 @@ import java.util.Map;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.entry.SiteMap;
 import org.sigmah.client.page.search.SearchFilterView.DimensionAddedEvent;
 import org.sigmah.client.page.search.SearchFilterView.DimensionAddedEventHandler;
 import org.sigmah.client.page.search.SearchPresenter.RecentSiteModel;
@@ -46,7 +45,6 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private TextBox textboxSearch;
 	private AsyncMonitor loadingMonitor;
 	private SimpleEventBus eventBus = new SimpleEventBus();
-	private SiteMap siteMap;
 	private String searchQuery;
 
 	public SearchResultsPage() {

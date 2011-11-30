@@ -46,7 +46,8 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
         super.initListeners(store, loader);
 
         store.addListener(Store.Update, new Listener<StoreEvent>() {
-            public void handleEvent(StoreEvent be) {
+            @Override
+			public void handleEvent(StoreEvent be) {
                 boolean isDirtyNow = be.getStore().getModifiedRecords().size() != 0;
                 if (isDirty != isDirtyNow) {
                     isDirty = isDirtyNow;
@@ -90,12 +91,14 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
     protected void onSave() {
 
         service.execute(createSaveCommand(), view.getSavingMonitor(), new AsyncCallback() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
                 // let the monitor handle failure, we're not
                 // expecting any exceptions
             }
 
-            public void onSuccess(Object result) {
+            @Override
+			public void onSuccess(Object result) {
                 getStore().commitChanges();
 
                 onSaved();
@@ -123,26 +126,30 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
      * and discarding changes
      */
 
-    public void requestToNavigateAway(PageState place, final NavigationCallback callback) {
+    @Override
+	public void requestToNavigateAway(PageState place, final NavigationCallback callback) {
 
         if (getModifiedRecords().size() == 0) {
             callback.onDecided(true);
         } else {
             service.execute(createSaveCommand(), view.getSavingMonitor(), new AsyncCallback<BatchResult>() {
 
-                public void onSuccess(BatchResult result) {
+                @Override
+				public void onSuccess(BatchResult result) {
                     getStore().commitChanges();
                     callback.onDecided(true);
                 }
 
-                public void onFailure(Throwable caught) {
+                @Override
+				public void onFailure(Throwable caught) {
                     // TODO
                 }
             });
         }
     }
 
-    public String beforeWindowCloses() {
+    @Override
+	public String beforeWindowCloses() {
         if (getModifiedRecords().size() == 0) {
             return null;
         } else {
@@ -162,25 +169,6 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
             changes.put(property, record.get(property));
         }
         return changes;
-    }
-
-    private String logRecord(Record record) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        for (String p : record.getPropertyNames()) {
-            if (sb.length() > 1) {
-                sb.append(", ");
-            }
-            sb.append(p).append(": ").append(record.get(p));
-            if (record.isModified(p)) {
-                sb.append("[*]");
-            }
-            if (!record.isValid(p)) {
-                sb.append("[!]");
-            }
-        }
-        sb.append("}");
-        return sb.toString();
     }
 
     protected void onSaved() {

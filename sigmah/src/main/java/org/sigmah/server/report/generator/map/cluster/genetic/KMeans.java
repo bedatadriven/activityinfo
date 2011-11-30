@@ -21,6 +21,8 @@ import org.sigmah.shared.report.content.Point;
  */
 public class KMeans {
 
+	private KMeans() {}
+	
     public static List<Cluster> cluster(List<MarkerGraph.Node> nodes, int numClusters) {
 
         List<Cluster> clusters = new ArrayList<Cluster>(numClusters);
@@ -58,7 +60,7 @@ public class KMeans {
         }
         
         for(int j=0; j!=nodes.size();++j) {
-            ((Cluster) clusters.get(membership[j])).addNode(nodes.get(j));
+            (clusters.get(membership[j])).addNode(nodes.get(j));
         }
 
         return clusters;

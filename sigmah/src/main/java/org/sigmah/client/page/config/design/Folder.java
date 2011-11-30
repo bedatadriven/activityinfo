@@ -5,16 +5,13 @@
 
 package org.sigmah.client.page.config.design;
 
-import org.sigmah.shared.dto.ActivityDTO;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 class Folder extends BaseModelData {
-    private ActivityDTO activity;
 
-    public Folder(ActivityDTO activity, String name) {
+    public Folder(String name) {
         super();
-        this.activity = activity;
         set("name", name);
     }
 }

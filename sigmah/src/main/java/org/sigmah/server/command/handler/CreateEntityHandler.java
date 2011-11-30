@@ -10,8 +10,6 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.command.handler.crud.ActivityPolicy;
 import org.sigmah.server.command.handler.crud.PropertyMap;
 import org.sigmah.server.command.handler.crud.UserDatabasePolicy;
@@ -32,8 +30,6 @@ import com.google.inject.Injector;
 public class CreateEntityHandler extends BaseEntityHandler implements CommandHandler<CreateEntity> {
 
     private final Injector injector;
-
-    private static final Log log = LogFactory.getLog(CreateEntityHandler.class);
 
     @Inject
     public CreateEntityHandler(EntityManager em, Injector injector) {

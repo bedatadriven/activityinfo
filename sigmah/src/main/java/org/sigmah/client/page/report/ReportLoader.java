@@ -38,10 +38,10 @@ public class ReportLoader implements PageLoader {
         this.injector = injector;
         this.service = service;
 
-        pageManager.registerPageLoader(ReportListPagePresenter.ReportHome, this);
+        pageManager.registerPageLoader(ReportListPagePresenter.REPORT_HOME_PAGE_ID, this);
         pageManager.registerPageLoader(ReportPreviewPresenter.ReportPreview, this);
 
-        placeSerializer.registerStatelessPlace(ReportListPagePresenter.ReportHome, new ReportListPageState());
+        placeSerializer.registerStatelessPlace(ReportListPagePresenter.REPORT_HOME_PAGE_ID, new ReportListPageState());
         placeSerializer.registerParser(ReportPreviewPresenter.ReportPreview, new ReportPreviewPageState.Parser());
     }
 
@@ -58,7 +58,7 @@ public class ReportLoader implements PageLoader {
                 if (ReportPreviewPresenter.ReportPreview.equals(pageId)) {
                     loadPreview((ReportPreviewPageState) pageState, callback);
 
-                } else if (ReportListPagePresenter.ReportHome.equals(pageId)) {
+                } else if (ReportListPagePresenter.REPORT_HOME_PAGE_ID.equals(pageId)) {
 
                     callback.onSuccess(injector.getReportHomePresenter());
                 } else {

@@ -3,6 +3,9 @@ package org.sigmah.server.util;
 import java.awt.Color;
 
 public class ColorUtil {
+	
+	private ColorUtil() {}
+	
 	public static Color colorFromString(String color) {
 		if (color.startsWith("#")) {
 			color = color.substring(1);

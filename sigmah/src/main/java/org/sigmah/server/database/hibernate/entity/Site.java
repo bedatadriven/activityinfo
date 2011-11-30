@@ -56,15 +56,12 @@ public class Site implements java.io.Serializable, Deleteable {
 	
 	private String siteGuid;
 	private Partner partner;
-	private int status;
 	
 	private Date date1;
 	private Date date2;
 	private Date dateCreated;
 	private Date dateEdited;
 	private Date dateDeleted;
-
-    private int target;
 
 	private Date dateSynchronized;
 	
@@ -337,6 +334,7 @@ public class Site implements java.io.Serializable, Deleteable {
      * allow for the possibility of undoing of catastrophic error as well as to retain a record
      * for synchronization with clients.
      */
+	@Override
 	public void delete() {
         Date now = new Date();
         setDateDeleted(now);

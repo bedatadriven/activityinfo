@@ -3,11 +3,8 @@ package org.sigmah.server.report.renderer.image;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.color.ColorSpace;
 import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
 import org.sigmah.server.util.ColorUtil;
@@ -19,7 +16,6 @@ public class BubbleLegendRenderer {
 
 	private static final int PADDING = 2;
 	
-	private static final int MAX_LABEL_WIDTH = 30;
 	private static final int LABEL_HEIGHT = 12;
 	
 	private BubbleLayerLegend legend;
@@ -37,9 +33,7 @@ public class BubbleLegendRenderer {
 	private int height;
 	
 	private int bubbleCenterX;
-	
-	private Font labelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
-	
+		
 	
 	public BubbleLegendRenderer(BubbleLayerLegend legend) {
 		this.legend = legend;

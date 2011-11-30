@@ -38,13 +38,9 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 	private SplitButton saveButton;
 	private Button addButton;
 	private Button removeButton;
-	private Button refreshButton;
 	private Button editButton;
-	private Button buttonGroupTime;
-	private Button buttonGroupAdminLevel;
-	private Button buttonShowLockedPeriods;
-	private Button printButton;
 	private Button uploadButton;
+	private Button printButton;
 
 	public ActionToolBar() {
 	}
@@ -100,12 +96,12 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 	}
 
 	public void addPrintButton() {
-		this.printButton = addButton(UIActions.print,
+		addButton(UIActions.print,
 				I18N.CONSTANTS.printForm(), IconImageBundle.ICONS.printer());
 	}
 
 	public void addUploadButton() {
-		this.uploadButton = addButton(UIActions.upload,
+		addButton(UIActions.upload,
 				I18N.CONSTANTS.upload(), IconImageBundle.ICONS.up());
 		
 	}
@@ -134,21 +130,11 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 	}
 
 	public void addRefreshButton() {
-		this.refreshButton = addButton(UIActions.refresh,
+		addButton(UIActions.refresh,
 				I18N.CONSTANTS.refreshPreview(),
 				IconImageBundle.ICONS.refresh());
 	}
 
-	public void addGroupTimeButton() {
-		this.buttonGroupTime = addButton(UIActions.groupTime,
-				I18N.CONSTANTS.time(), IconImageBundle.ICONS.group());
-	}
-
-	public void addGroupAdminLevelButton() {
-		this.buttonGroupAdminLevel = addButton(UIActions.groupAdminLevel,
-				I18N.CONSTANTS.administrativeLevel(),
-				IconImageBundle.ICONS.add());
-	}
 
 	public void addSaveSplitButton() {
 		saveButton = new SplitButton(I18N.CONSTANTS.save());

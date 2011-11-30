@@ -26,7 +26,7 @@ public class AccountPageState implements PageState {
 
 	@Override
 	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(Frames.ConfigFrameSet, AccountEditor.Account);
+		return Arrays.asList(Frames.CONFIG_FRAME_SET, AccountEditor.Account);
 	}
 
 	@Override

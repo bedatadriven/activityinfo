@@ -32,7 +32,7 @@ public class PartnerFilterWidget extends FilterWidget {
 		if(dialog == null) {
 			dialog = new PartnerFilterDialog(dispatcher);
 		}
-		dialog.show(baseFilter, value, new SelectionCallback<Set<Integer>>() {
+		dialog.show(getBaseFilter(), getValue(), new SelectionCallback<Set<Integer>>() {
 			
 			@Override
 			public void onSelected(Set<Integer> selection) {
@@ -49,8 +49,9 @@ public class PartnerFilterWidget extends FilterWidget {
 
 	}
 	
+	@Override
 	public void updateView() {
-		if(value.isRestricted(DimensionType.Partner)) {
+		if(getValue().isRestricted(DimensionType.Partner)) {
 			setState(I18N.CONSTANTS.loading());
 			retrievePartnerNames();
 		} else {
@@ -74,7 +75,7 @@ public class PartnerFilterWidget extends FilterWidget {
 	
 	private void formatPartners(SchemaDTO schema) {
 		List<String> partnerNames = new ArrayList<String>();
-		for(Integer id : value.getRestrictions(DimensionType.Partner)) {
+		for(Integer id : getValue().getRestrictions(DimensionType.Partner)) {
 			partnerNames.add(schema.getPartnerById(id).getName());
 		}
 		Collections.sort(partnerNames);

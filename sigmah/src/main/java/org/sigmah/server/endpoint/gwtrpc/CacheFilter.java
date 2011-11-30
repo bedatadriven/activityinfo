@@ -30,9 +30,10 @@ import com.google.inject.Singleton;
 @Singleton
 public class CacheFilter implements Filter {
 
-    private FilterConfig filterConfig;
+    private static final long ONE_YEAR = 31536000000L;
 
-    public void doFilter(ServletRequest request, ServletResponse response,
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -41,7 +42,7 @@ public class CacheFilter implements Filter {
         if (requestURI.contains(".cache.") || requestURI.contains("/gxt")) {
             long today = new Date().getTime();
             HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.setDateHeader("Expires", today + 31536000000L);
+            httpResponse.setDateHeader("Expires", today + ONE_YEAR);
             
         } else if (requestURI.contains(".nocache.")) {
 
@@ -53,11 +54,11 @@ public class CacheFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
-    public void init(FilterConfig filterConfig) throws ServletException {
-        this.filterConfig = filterConfig;
+    @Override
+	public void init(FilterConfig filterConfig) throws ServletException {
     }
 
-    public void destroy() {
-        this.filterConfig = null;
+    @Override
+	public void destroy() {
     }
 }

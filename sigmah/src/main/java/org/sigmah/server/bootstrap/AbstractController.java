@@ -5,8 +5,6 @@
 
 package org.sigmah.server.bootstrap;
 
-import static org.sigmah.shared.util.StringUtil.isEmpty;
-
 import java.io.IOException;
 
 import javax.persistence.NoResultException;
@@ -27,6 +25,7 @@ import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.exception.InvalidLoginException;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -168,7 +167,7 @@ public class AbstractController extends HttpServlet {
 
     protected final String getRequiredParameter(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
-        if (isEmpty(value)) {
+        if (Strings.isNullOrEmpty(value)) {
             throw new IncompleteFormException();
         }
 

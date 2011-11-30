@@ -178,21 +178,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         cmd.fireRetriesMaxedOut();
     }
 
-    /**
-     * Attempts to execute the command locally using one of the registered
-     * proxies
-     *
-     * @param request
-     * @return
-     */
-    private boolean executionWithProxySuccessful(CommandRequest request) {
-        ProxyResult r = proxyManager.execute(request.getCommand());
-        if (!r.couldExecute) {
-            return false;
-        }
-
-        return true;
-    }
 
     private List<Command> commandListFromRequestList(List<CommandRequest> pending) {
         List<Command> commands = new ArrayList<Command>(pending.size());
@@ -212,12 +197,14 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         if(!sent.isEmpty()) {
             try {
                 service.execute(authentication.getAuthToken(), commandListFromRequestList(sent), new AsyncCallback<List<CommandResult>>() {
-                    public void onSuccess(List<CommandResult> results) {
+                    @Override
+					public void onSuccess(List<CommandResult> results) {
                         executingCommands.removeAll(sent);
                         onRemoteCallSuccess(results, sent);
                     }
 
-                    public void onFailure(Throwable caught) {
+                    @Override
+					public void onFailure(Throwable caught) {
                         executingCommands.removeAll(sent);
                         onRemoteServiceFailure(sent, caught);
                     }
@@ -293,10 +280,10 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     }
 
     private void onHttpError(List<CommandRequest> executingCommands, Throwable caught) {
-        int code = ((StatusCodeException) caught).getStatusCode();
 
         // TODO: handle 404s and other indications of temporary service inavailability
         // (different than 500 which means we screwed up on the server)
+    	// int code = ((StatusCodeException) caught).getStatusCode();
 
         // internal server error. This shouldn't happen so probably
         // indicates a pretty serious error.

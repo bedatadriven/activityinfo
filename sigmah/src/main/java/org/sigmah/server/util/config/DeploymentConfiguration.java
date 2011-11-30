@@ -2,8 +2,6 @@ package org.sigmah.server.util.config;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 
@@ -17,7 +15,6 @@ public class DeploymentConfiguration {
 
 	private final Properties properties;
 	
-	private final static Logger LOGGER = Logger.getLogger(DeploymentConfiguration.class);
 	
 	public DeploymentConfiguration(Properties properties) {
 		super();

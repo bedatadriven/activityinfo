@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -42,8 +43,6 @@ public class DownloadServlet extends HttpServlet {
     private ServletContext context;
     private SimpleDateFormat dateFormat;
 
-    private static int BUFFER_SIZE = 4096;
-
     @Inject
     public DownloadServlet(ServletContext context) {
         this.context = context;
@@ -57,7 +56,7 @@ public class DownloadServlet extends HttpServlet {
         String tempFile = request.getQueryString();
         String tempPath = context.getRealPath("/temp/" + tempFile);
 
-        String ext = tempFile.substring(tempFile.lastIndexOf("."));
+        String ext = tempFile.substring(tempFile.lastIndexOf('.'));
 
         String friendlyName = "ActivityInfo" + dateFormat.format(new Date()) + ext;
 
@@ -76,15 +75,7 @@ public class DownloadServlet extends HttpServlet {
         response.addHeader("Content-disposition", "attachment; filename=" + friendlyName);
 
         OutputStream out = response.getOutputStream();
-
-        int bytesRead;
-        byte[] buffer = new byte[BUFFER_SIZE];
-        do {
-            bytesRead = in.read(buffer);
-            if (bytesRead > 0) {
-                out.write(buffer, 0, bytesRead);
-            }
-        } while (bytesRead > 0);
-
+        ByteStreams.copy(in, out);
+        in.close();
     }
 }

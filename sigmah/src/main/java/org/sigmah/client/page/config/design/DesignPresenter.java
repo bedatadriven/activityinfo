@@ -103,7 +103,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             ActivityDTO activityNode = new ActivityDTO(activity);
             treeStore.add(activityNode, false);
 
-            AttributeGroupFolder attributeFolder = new AttributeGroupFolder(activityNode, messages.attributes());
+            AttributeGroupFolder attributeFolder = new AttributeGroupFolder(messages.attributes());
             treeStore.add(activityNode, attributeFolder, false);
 
             for (AttributeGroupDTO group : activity.getAttributeGroups()) {
@@ -118,7 +118,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             	}
             }
 
-            IndicatorFolder indicatorFolder = new IndicatorFolder(activityNode, messages.indicators());
+            IndicatorFolder indicatorFolder = new IndicatorFolder(messages.indicators());
             treeStore.add(activityNode, indicatorFolder, false);
 
             for (IndicatorDTO indicator : activity.getIndicators()) {
@@ -222,8 +222,8 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                         }
 
                         if (newEntity instanceof ActivityDTO) {
-                            treeStore.add(newEntity, new AttributeGroupFolder((ActivityDTO) newEntity, messages.attributes()), false);
-                            treeStore.add(newEntity, new IndicatorFolder((ActivityDTO) newEntity, messages.indicators()), false);
+                            treeStore.add(newEntity, new AttributeGroupFolder(messages.attributes()), false);
+                            treeStore.add(newEntity, new IndicatorFolder(messages.indicators()), false);
                         }
 
                         tether.hide();

@@ -13,6 +13,8 @@ import org.sigmah.shared.auth.AuthenticatedUser;
 
 public class AuthCookieUtil {
     
+	private AuthCookieUtil() {}
+	
     private class For {
         private static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
         private static final int THIS_SESSION = -1;

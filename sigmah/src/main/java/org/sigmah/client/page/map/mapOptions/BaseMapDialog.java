@@ -118,11 +118,6 @@ public class BaseMapDialog extends Dialog {
 			listView.getSelectionModel().setSelection(Arrays.asList(selected));
 		}
 	}
-	
-	private void failLoadingBaseMapsEmpty() {
-		Label labelFailLoading = new Label(I18N.CONSTANTS.failBaseMapLoadingCount());
-		add(labelFailLoading);
-	}
 
 	private void failLoadingBaseMaps() {
 		Label labelFailLoading = new Label(I18N.CONSTANTS.failBaseMapLoading());

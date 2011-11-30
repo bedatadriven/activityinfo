@@ -9,6 +9,8 @@ import org.sigmah.shared.report.content.Point;
 
 public class CircleMath {
 
+	private CircleMath() {}
+	
     public static double area(double radius) {
         return Math.PI * radius * radius;
     }
@@ -37,14 +39,14 @@ public class CircleMath {
             return area(r0); // the second circle completely contains the first
         }
 
-        double CBA = Math.acos( ((r1*r1) + (c*c) - (r0*r0)) / (2.0*r1*c));
-        double CBD = CBA * 2.0;
+        double cba = Math.acos( ((r1*r1) + (c*c) - (r0*r0)) / (2.0*r1*c));
+        double cbd = cba * 2.0;
 
-        double CAB = Math.acos( ((r0*r0) + (c*c) - (r1*r1))/(2.0*r0*c) );
-        double CAD = CAB * 2.0;
+        double cab = Math.acos( ((r0*r0) + (c*c) - (r1*r1))/(2.0*r0*c) );
+        double cad = cab * 2.0;
 
-        return    (0.5)*(CBD)*(r1*r1) - (0.5)*(r1*r1)*Math.sin(CBD)
-                + (0.5)*(CAD)*(r0*r0) - (0.5)*(r0*r0*Math.sin(CAD));
+        return    (0.5)*(cbd)*(r1*r1) - (0.5)*(r1*r1)*Math.sin(cbd)
+                + (0.5)*(cad)*(r0*r0) - (0.5)*(r0*r0*Math.sin(cad));
 
     }
 

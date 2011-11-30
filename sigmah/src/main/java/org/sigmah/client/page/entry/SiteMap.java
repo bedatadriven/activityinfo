@@ -40,7 +40,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -81,7 +80,6 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     private MapWidget map = null;
     private LatLngBounds pendingZoom = null;
-    private StateManager stateMgr;
 
     /**
      * Efficiently handles a large number of markers

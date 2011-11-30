@@ -16,6 +16,8 @@ import org.hibernate.ejb.HibernateEntityManager;
 
 public class DomainFilters {
 
+	private DomainFilters() {}
+	
     public static void applyUserFilter(User user, EntityManager em) {
          applyDeletedFilter(em);
         applyVisibleFilter(user,em);

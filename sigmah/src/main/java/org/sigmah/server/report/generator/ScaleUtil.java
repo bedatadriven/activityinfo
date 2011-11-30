@@ -9,6 +9,8 @@ package org.sigmah.server.report.generator;
  * @author Alex Bertram
  */
 public class ScaleUtil {
+	
+		
 
     public static class Scale {
         private double valmin;
@@ -25,6 +27,8 @@ public class ScaleUtil {
 			return valmax;
 		}
     }
+    
+    private ScaleUtil() {}
 
 
 //

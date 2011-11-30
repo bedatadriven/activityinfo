@@ -26,8 +26,8 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 	@UiField SpanElement stateSpan;
 //	@UiField Element removeIcon;
 	
-	protected Filter value = new Filter();
-	protected Filter baseFilter = new Filter();
+	private Filter value = new Filter();
+	private Filter baseFilter = new Filter();
 
 	public FilterWidget() {
 		setElement(uiBinder.createAndBindUi(this));
@@ -81,5 +81,13 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 	@Override
 	public void applyBaseFilter(Filter filter) {
 		this.baseFilter = filter;
+	}
+
+	protected void setBaseFilter(Filter baseFilter) {
+		this.baseFilter = baseFilter;
+	}
+
+	protected Filter getBaseFilter() {
+		return baseFilter;
 	}
 }

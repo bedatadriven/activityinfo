@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.event.EventType;
  */
 public class AdminSelectionEvent extends BaseEvent {
 	
-	public static EventType TYPE = new EventType();
+	public static final EventType TYPE = new EventType();
 	
 	private int levelId;
 	private AdminEntityDTO value;

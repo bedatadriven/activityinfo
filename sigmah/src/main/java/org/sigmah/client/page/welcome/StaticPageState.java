@@ -23,7 +23,7 @@ public final class StaticPageState implements PageState {
 
     @Override
 	public PageId getPageId() {
-        return Frames.Static;
+        return Frames.STATIC;
     }
 
     @Override
@@ -33,7 +33,7 @@ public final class StaticPageState implements PageState {
 
     @Override
 	public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(Frames.Static);
+        return Arrays.asList(Frames.STATIC);
     }
 
     public String getKeyword() {

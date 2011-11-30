@@ -34,7 +34,6 @@ public class CoordinateEditor implements PropertyEditor<Double>, Validator {
     }
   
     private static final double MINUTES_PER_DEGREE = 60;
-    private static final double SECONDS_PER_MINUTE = 60;
     private static final double SECONDS_PER_DEGREE = 3600;
     private static final double MIN_MINUTES = 0;
     private static final double MAX_MINUTES = 60;
@@ -43,10 +42,11 @@ public class CoordinateEditor implements PropertyEditor<Double>, Validator {
     
     private static final double MAX_LATITUDE = 90;
     private static final double MAX_LONGITUDE = 180;
+
+    private static final String DECIMAL_SEPERATORS = ".,";
     
     private final String posHemiChars;
     private final String negHemiChars;
-    private final String decimalSeperators = ".,";
 
     private final String noNumberErrorMessage = I18N.CONSTANTS.noNumber();
     private final String tooManyNumbersErrorMessage = I18N.CONSTANTS.tooManyNumbers();
@@ -148,7 +148,7 @@ public class CoordinateEditor implements PropertyEditor<Double>, Validator {
 	}
 
 	private boolean isNumberPart(char c) {
-		return Character.isDigit(c) || decimalSeperators.indexOf(c) != -1;
+		return Character.isDigit(c) || DECIMAL_SEPERATORS.indexOf(c) != -1;
 	}
 
 	private boolean isPosHemiChar(char c) {

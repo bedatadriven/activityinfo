@@ -37,7 +37,6 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
     private final IconImageBundle icons;
 
     private Grid<PartnerDTO> grid;
-    private ListStore<PartnerDTO> store;
 
     @Inject
     public DbPartnerGrid(UIConstants messages, IconImageBundle icons) {
@@ -45,7 +44,8 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
         this.icons = icons;
     }
 
-    public void init(DbPartnerEditor editor, UserDatabaseDTO db, ListStore<PartnerDTO> store) {
+    @Override
+	public void init(DbPartnerEditor editor, UserDatabaseDTO db, ListStore<PartnerDTO> store) {
         super.init(editor, store);
         this.setHeading(db.getName() + " - " + messages.partners());
 
@@ -79,7 +79,8 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
         toolBar.addButton(UIActions.delete, messages.delete(), icons.delete());
     }
 
-    public FormDialogTether showAddDialog(PartnerDTO partner, FormDialogCallback callback) {
+    @Override
+	public FormDialogTether showAddDialog(PartnerDTO partner, FormDialogCallback callback) {
 
         PartnerForm form = new PartnerForm();
         form.getBinding().bind(partner);

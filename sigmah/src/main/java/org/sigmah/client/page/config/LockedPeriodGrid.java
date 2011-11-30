@@ -59,7 +59,6 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	private AsyncMonitor updatingMonitor = new NullAsyncMonitor();
 
 	// Data
-	private UserDatabaseDTO userDatabase;
 	private LockedPeriodDTO lockedPeriod;
 	private ActivityDTO activityFilter= null;
 
@@ -197,7 +196,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	}
 
 	@Override
-	public void setDeleteEnabled(boolean deleteEnabled) {
+	public final void setDeleteEnabled(boolean deleteEnabled) {
 		toolbarActions.setDeleteEnabled(deleteEnabled);
 	}
 
@@ -247,7 +246,6 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 
 	@Override
 	public void setParent(UserDatabaseDTO parent) {
-		this.userDatabase = parent;
 		addLockedPeriod.setUserDatabase(parent);
 	}
 
@@ -476,6 +474,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		}
 	}
 
+	@Override
 	public void setTitle(String title) {
 		setHeading(title);
 	}

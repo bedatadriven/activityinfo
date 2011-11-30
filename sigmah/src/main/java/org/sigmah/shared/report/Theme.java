@@ -9,6 +9,8 @@ package org.sigmah.shared.report;
  * @author Alex Bertram
  */
 public class Theme {
+	
+	private Theme() {}
 
     public static String[] getColors() {
         String[] colors = new String[8];

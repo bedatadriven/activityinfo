@@ -43,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
 
 /**
@@ -54,7 +53,6 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
 
     private MappingComboBox<Integer> dayCombo;
     private String[] weekdays;
-    private NumberFormat numberFormat;
     private final Dispatcher service;
 
     @Inject
@@ -65,10 +63,10 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
         setLayout(new FitLayout());
         setHeaderVisible(false);
         weekdays = LocaleInfo.getCurrentLocale().getDateTimeConstants().weekdays();
-        numberFormat = NumberFormat.getFormat("0");
     }
 
-    public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store) {
+    @Override
+	public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store) {
         super.init(presenter, store);
     }
 
@@ -77,7 +75,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
 
         EditorGrid<ReportDefinitionDTO> grid = new EditorGrid<ReportDefinitionDTO>((ListStore) store, createColumnModel());
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent<ReportDefinitionDTO>>() {
-            public void handleEvent(GridEvent<ReportDefinitionDTO> be) {
+            @Override
+			public void handleEvent(GridEvent<ReportDefinitionDTO> be) {
                 ReportDefinitionDTO report = be.getModel();
                 be.setCancelled(!(report.getFrequency() == ReportFrequency.Monthly ||
                         report.getFrequency() == ReportFrequency.Weekly ||
@@ -89,7 +88,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
         view.setShowGroupedColumn(false);
         view.setForceFit(true);
         view.setGroupRenderer(new GridGroupRenderer() {
-            public String render(GroupColumnData data) {
+            @Override
+			public String render(GroupColumnData data) {
                 return data.group;
             }
         });
@@ -99,7 +99,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
         grid.setAutoExpandMin(250);
 
         grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<ReportDefinitionDTO>>() {
-            public void handleEvent(GridEvent<ReportDefinitionDTO> event) {
+            @Override
+			public void handleEvent(GridEvent<ReportDefinitionDTO> event) {
                 if (event.getColIndex() == 1) {
                     presenter.onTemplateSelected(event.getModel());
                 }
@@ -118,7 +119,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
 
         ColumnConfig name = new ColumnConfig("title", I18N.CONSTANTS.name(), 250);
         name.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
-            public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+            @Override
+			public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 return "<b>" + model.getTitle() + "</b><br>" + model.getDescription();
             }
         });
@@ -126,7 +128,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
 
         ColumnConfig frequency = new ColumnConfig("frequency", I18N.CONSTANTS.reportingFrequency(), 100);
         frequency.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
-            public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+            @Override
+			public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 if (model.getFrequency() == ReportFrequency.Monthly) {
                     return I18N.CONSTANTS.monthly();
                 } else if (model.getFrequency() == ReportFrequency.Weekly) {
@@ -143,7 +146,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
 
         ColumnConfig day = new ColumnConfig("day", I18N.CONSTANTS.day(), 100);
         day.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
-            public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {
+            @Override
+			public Object render(ReportDefinitionDTO model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {
                 if (model.getFrequency() == ReportFrequency.Weekly) {
                     return model.getDay() < 7 ? weekdays[model.getDay()] :
                             weekdays[6];

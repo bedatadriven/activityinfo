@@ -5,11 +5,10 @@
 
 package org.sigmah.client.page.config.design;
 
-import org.sigmah.shared.dto.ActivityDTO;
 
 class IndicatorFolder extends Folder {
 
-    public IndicatorFolder(ActivityDTO activity, String name) {
-        super(activity, name);
+    public IndicatorFolder(String name) {
+        super(name);
     }
 }

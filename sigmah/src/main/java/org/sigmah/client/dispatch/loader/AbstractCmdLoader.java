@@ -34,7 +34,6 @@ abstract class AbstractCmdLoader<ResultT extends ListResult,
 
     private int requestId = 0;
     private Dispatcher service;
-    private boolean remoteSort = true;
 
     private AsyncMonitor monitor = null;
 

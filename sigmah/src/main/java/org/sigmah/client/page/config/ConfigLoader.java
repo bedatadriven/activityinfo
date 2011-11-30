@@ -37,7 +37,7 @@ public class ConfigLoader implements PageLoader {
         this.injector = injector;
         this.service = injector.getService();
 
-        pageManager.registerPageLoader(Frames.ConfigFrameSet, this);
+        pageManager.registerPageLoader(Frames.CONFIG_FRAME_SET, this);
         pageManager.registerPageLoader(AccountEditor.Account, this);
         pageManager.registerPageLoader(DbConfigPresenter.DatabaseConfig, this);
         pageManager.registerPageLoader(DbListPresenter.DatabaseList, this);
@@ -68,7 +68,7 @@ public class ConfigLoader implements PageLoader {
             }
             @Override
             public void onSuccess() {
-                if (Frames.ConfigFrameSet.equals(pageId)) {
+                if (Frames.CONFIG_FRAME_SET.equals(pageId)) {
                     NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
                             injector.getConfigNavigator());
                     VSplitFrameSet frameSet = new VSplitFrameSet(pageId, navPanel);

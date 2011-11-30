@@ -9,8 +9,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.report.model.clustering.Clustering;
-
 public class PieMapMarker extends BubbleMapMarker {
 
     public static class SliceValue implements Serializable {
@@ -18,8 +16,6 @@ public class PieMapMarker extends BubbleMapMarker {
         private DimensionCategory category;
         private String color;
         private int indicatorId = 0;
-        private Clustering clustering;
-        private int clusterAmount;
 
         public SliceValue() {
         }

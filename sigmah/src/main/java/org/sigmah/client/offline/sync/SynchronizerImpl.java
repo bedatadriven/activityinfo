@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class SynchronizerImpl implements Synchronizer {
-    private static final int SYNC_INTERVAL = 30000;
 
     private final LocalDispatcher localDispatcher;
     private final Dispatcher remoteDispatcher;

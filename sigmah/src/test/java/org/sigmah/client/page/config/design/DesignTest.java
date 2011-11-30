@@ -222,7 +222,7 @@ public class DesignTest {
         view.setActionEnabled(UIActions.delete, false);
         replay(view);
 
-        designer.onSelectionChanged(new IndicatorFolder(schema.getActivityById(91), null));
+        designer.onSelectionChanged(new IndicatorFolder(null));
 
         verify(view);
 

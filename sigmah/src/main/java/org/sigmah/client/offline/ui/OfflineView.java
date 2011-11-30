@@ -44,12 +44,10 @@ public class OfflineView extends Button implements OfflineController.View {
     private MenuItem toggleModeButton;
     private MenuItem reinstallOffline;
     
-    private OfflineCapabilityProfile capabilityProfile;
 
     @Inject
     public OfflineView(CrossSessionStateProvider stateProvider, OfflineCapabilityProfile profile) {
     	this.stateProvider = stateProvider;
-    	this.capabilityProfile = profile;
         syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.sync());
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
         reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
@@ -148,11 +146,13 @@ public class OfflineView extends Button implements OfflineController.View {
     	progressDialog.getProgressBar().updateText(I18N.CONSTANTS.connectionProblem());
 	}
 
+	@Override
 	public void enableMenu() {
         setMenu(menu);
     }
 
-    public void disableMenu() {
+    @Override
+	public void disableMenu() {
         setMenu(null);
     }
 

@@ -14,7 +14,7 @@ public abstract class Exporter {
 
 	public final HSSFWorkbook book;
 	public final CreationHelper creationHelper;
-	 public HashMap<String, Integer> sheetNames;
+	public HashMap<String, Integer> sheetNames;
 
 	private CellStyle dateStyle;
 	private CellStyle coordStyle;

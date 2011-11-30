@@ -25,7 +25,7 @@ public class DbListPageState implements PageState {
 
 	@Override
 	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(Frames.ConfigFrameSet, DbListPresenter.DatabaseList);
+		return Arrays.asList(Frames.CONFIG_FRAME_SET, DbListPresenter.DatabaseList);
 	}
 
 	@Override

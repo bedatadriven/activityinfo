@@ -41,11 +41,11 @@ import com.google.inject.Inject;
  * @author Alex Bertram
  */
 public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportDefinitionDTO> {
-    public static final PageId ReportHome = new PageId("reports");
+    public static final PageId REPORT_HOME_PAGE_ID = new PageId("reports");
 
     @ImplementedBy(ReportListPageView.class)
     public interface View extends GridView<ReportListPagePresenter, ReportDefinitionDTO> {
-        public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store);
+        void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store);
     }
 
     private final EventBus eventBus;
@@ -74,7 +74,8 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
         loader.load();
     }
 
-    public void shutdown() {
+    @Override
+	public void shutdown() {
 
     }
 
@@ -103,19 +104,23 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
 //    public void onSelectionChanged(ReportDefinitionDTO selectedItem) {
 //    }
 
-    public PageId getPageId() {
-        return ReportHome;
+    @Override
+	public PageId getPageId() {
+        return REPORT_HOME_PAGE_ID;
     }
 
-    public Object getWidget() {
+    @Override
+	public Object getWidget() {
         return view;
     }
 
-    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
+    @Override
+	public void requestToNavigateAway(PageState place, NavigationCallback callback) {
         callback.onDecided(true);
     }
 
-    public String beforeWindowCloses() {
+    @Override
+	public String beforeWindowCloses() {
         return null;
     }
 
@@ -135,11 +140,13 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
             @Override
             public void onValidated() {
                 service.execute(new CreateReportDef(dbId, form.getXml()), dlg, new AsyncCallback<CreateResult>() {
-                    public void onFailure(Throwable caught) {
+                    @Override
+					public void onFailure(Throwable caught) {
                         dlg.onServerError();
                     }
 
-                    public void onSuccess(CreateResult result) {
+                    @Override
+					public void onSuccess(CreateResult result) {
                         dlg.hide();
                         loader.load();
                     }
@@ -149,7 +156,8 @@ public class ReportListPagePresenter extends AbstractEditorGridPresenter<ReportD
 
     }
 
-    public boolean navigate(PageState place) {
+    @Override
+	public boolean navigate(PageState place) {
         return true;
     }
 

@@ -25,6 +25,7 @@ import org.sigmah.shared.report.content.Point;
  */
 public class TileMath {
 
+	private static final int MAX_ZOOM = 16;
 	/*
 	 * Various math constants
 	 */
@@ -33,9 +34,11 @@ public class TileMath {
 	private static final double HALF_PI = 1.5707963267948966192313216916398;
 	private static final double TWO_PI = 6.283185307179586476925286766559;
 	private static final double FORTPI = 0.78539816339744833;
-	private static final double RADIANS_PER_DEGREE = 0.0174532925;
 	private static final double DEGREES_PER_RADIAN = 57.2957795;
 
+	private static final int TILE_SIZE = 256;
+		
+	private TileMath() {}
 	
 	/**
 	 * Returns the circumference of the projected coordinate 
@@ -45,7 +48,7 @@ public class TileMath {
 	 * @return
 	 */
 	public static int size(int zoom) {
-		return (int)(float)(Math.pow(2, zoom) * 256f);
+		return (int)(float)(Math.pow(2, zoom) * TILE_SIZE);
 	}
 	
 	public static double radius(int zoom) { 
@@ -74,7 +77,7 @@ public class TileMath {
 			throw new IllegalArgumentException("Too close to the poles to project");
 		}
 		
-		double ty = ((double)size) / 2.0;
+		double ty = (size) / 2.0;
 	    double y = radius * Math.log(Math.tan(FORTPI + 0.5*lat));
 	    	   y = ty - y;
 			   
@@ -88,7 +91,7 @@ public class TileMath {
 
 		double lng = (px.getDoubleX() / size * 360d) - 180d;
 		
-		double ty = ((double)size)/2.0; 
+		double ty = (size)/2.0; 
 		double y = (ty - px.getDoubleY()) / radius;
 		double lat = Math.atan(Math.sinh(y)) * DEGREES_PER_RADIAN;
 		
@@ -130,7 +133,7 @@ public class TileMath {
 
 			zoomLevel++;
 			
-		} while(zoomLevel < 16);
+		} while(zoomLevel < MAX_ZOOM);
 
 		return zoomLevel;
 	}
@@ -143,7 +146,7 @@ public class TileMath {
 	 * @return
 	 */
 	public static Tile tileForPoint(Point px) {	
-		return new Tile( px.getX() / 256, px.getY() / 256 );
+		return new Tile( px.getX() / TILE_SIZE, px.getY() / TILE_SIZE );
 	}
 }
 

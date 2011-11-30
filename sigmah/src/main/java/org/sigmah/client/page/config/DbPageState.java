@@ -47,7 +47,7 @@ public class DbPageState extends AbstractPagingGridPageState {
     }
 
     public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(Frames.ConfigFrameSet, pageId);
+        return Arrays.asList(Frames.CONFIG_FRAME_SET, pageId);
     }
 
     @Override

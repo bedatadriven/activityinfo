@@ -61,7 +61,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		parser.parse(command.getSearchQuery());
 		checkParserResult(parser, callback);
 		if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries 
-			searchDimensions(parser, command, context, callback);
+			searchDimensions(parser, context, callback);
 		} else { // assume first time search
 			searchAll(parser.getSimpleSearchTerms(), context, callback);
 		}
@@ -92,7 +92,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		});
 	}
 
-	private void searchDimensions(QueryParser parser, Search command, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
+	private void searchDimensions(QueryParser parser, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
 		AllSearcher allSearcher = new AllSearcher(context.getTransaction());
 		allSearcher.searchDimensions(parser.getUniqueDimensions(), new AsyncCallback<Filter>() {
 			@Override

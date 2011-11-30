@@ -70,12 +70,41 @@ import com.google.inject.Inject;
 public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPresenter>
         implements DesignPresenter.View {
 
-    protected final Dispatcher service;
+    private final class DragDropListener extends DNDListener {
+		private final TreeStore treeStore;
 
-    protected EditorTreeGrid<ModelData> tree;
-    protected ContentPanel formContainer;
+		private DragDropListener(TreeStore treeStore) {
+			this.treeStore = treeStore;
+		}
 
-    protected UserDatabaseDTO db;
+		@Override
+		public void dragMove(DNDEvent e) {
+		    List<TreeModel> sourceData = e.getData();
+		    ModelData source = sourceData.get(0).get("model");
+		    TreeGrid.TreeNode target = tree.findNode(e.getTarget());
+
+		    if (treeStore.getParent(target.getModel()) !=
+		            treeStore.getParent(source)) {
+
+		        e.setCancelled(true);
+		        e.getStatus().setStatus(false);
+		    }
+		}
+
+		@Override
+		public void dragDrop(DNDEvent e) {
+		    List<TreeModel> sourceData = e.getData();
+		    ModelData source = sourceData.get(0).get("model");
+		    presenter.onNodeDropped(source);
+		}
+	}
+
+	private final Dispatcher service;
+
+    private EditorTreeGrid<ModelData> tree;
+    private ContentPanel formContainer;
+
+    private UserDatabaseDTO db;
 
     @Inject
     public DesignView(Dispatcher service) {
@@ -112,7 +141,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         //   tree.setContextMenu(createContextMenu());
 
         tree.setIconProvider(new ModelIconProvider<ModelData>() {
-            public AbstractImagePrototype getIcon(ModelData model) {
+            @Override
+			public AbstractImagePrototype getIcon(ModelData model) {
                 if (model instanceof ActivityDTO) {
                     return IconImageBundle.ICONS.activity();
                 } else if (model instanceof Folder) {
@@ -129,7 +159,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             }
         });
         tree.addListener(Events.CellClick, new Listener<GridEvent>() {
-            public void handleEvent(GridEvent ge) {
+            @Override
+			public void handleEvent(GridEvent ge) {
                 showForm(tree.getStore().getAt(ge.getRowIndex()));
             }
         });
@@ -155,28 +186,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         target.setAllowSelfAsSource(true);
         target.setFeedback(DND.Feedback.BOTH);
         target.setAutoExpand(false);
-        target.addDNDListener(new DNDListener() {
-            @Override
-            public void dragMove(DNDEvent e) {
-                List<TreeModel> sourceData = e.getData();
-                ModelData source = sourceData.get(0).get("model");
-                TreeGrid.TreeNode target = tree.findNode(e.getTarget());
-
-                if (treeStore.getParent(target.getModel()) !=
-                        treeStore.getParent(source)) {
-
-                    e.setCancelled(true);
-                    e.getStatus().setStatus(false);
-                }
-            }
-
-            @Override
-            public void dragDrop(DNDEvent e) {
-                List<TreeModel> sourceData = e.getData();
-                ModelData source = sourceData.get(0).get("model");
-                presenter.onNodeDropped(source);
-            }
-        });
+        target.addDNDListener(new DragDropListener(treeStore));
         return tree;
     }
 
@@ -227,7 +237,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
 
         menu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
+            @Override
+			public void handleEvent(BaseEvent be) {
 
                 ModelData sel = getSelection();
 
@@ -358,7 +369,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         currentForm.getBinding().bind(model);
     }
 
-    public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback) {
+    @Override
+	public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback) {
 
         AbstractDesignForm form = createForm(entity);
         form.getBinding().bind(entity);

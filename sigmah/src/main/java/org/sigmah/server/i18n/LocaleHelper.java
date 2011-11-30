@@ -11,6 +11,8 @@ import org.sigmah.server.database.hibernate.entity.User;
  */
 public class LocaleHelper {
 
+	private LocaleHelper() {}
+	
     public static Locale getLocaleObject(User u) {
     	String locale = u.getLocale();
         if(locale != null) {

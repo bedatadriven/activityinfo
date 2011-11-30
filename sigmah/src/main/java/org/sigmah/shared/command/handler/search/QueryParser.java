@@ -13,23 +13,22 @@ import org.sigmah.shared.report.model.DimensionType;
  * See related test class for OK/non OK queries
  */
 public class QueryParser {
-	private static final String colon = ":";
-	private static final String quote = "\"";
-	private static final String space = " ";
-	private static final String comma = ",";
-	private boolean hasEntities;
+	private static final String COLON = ":";
+	private static final String QUOTE = "\"";
+	private static final String SPACE = " ";
+	private static final String COMMA = ",";
+	
 	private Filter filter = new Filter();
 	private List<Integer> colonPositions = new ArrayList<Integer>();
 	private List<Dimension> dimensions = new ArrayList<Dimension>();
 	private Map<DimensionType, List<String>> uniqueDimensions = new HashMap<DimensionType, List<String>>();
 	private Map<String, List<String>> preciseDimensions = new HashMap<String, List<String>>();
 	private List<String> simpleSearchTerms = new ArrayList<String>();
-	private List<ParserError> errors = new ArrayList<ParserError>();
 	private String query;
 	private boolean hasFailed=false;
 	private boolean hasDimensions = false;
 	private String failReason = "";
-	QueryChecker checker = new QueryChecker();
+	private QueryChecker checker = new QueryChecker();
 	
 	public void parse(String query) {
 		this.query=query;
@@ -91,11 +90,11 @@ public class QueryParser {
 	/** performs simple parsing on the searchterm, falling back on space seperation if no comma found */
 	private void parseSearchTermsList() {
 		String[] splitted = null;
-		if (query.contains(comma)) {
-			splitted = query.split(comma);
+		if (query.contains(COMMA)) {
+			splitted = query.split(COMMA);
 		}
-		if (query.contains(space)) {
-			splitted = query.split(space);
+		if (query.contains(SPACE)) {
+			splitted = query.split(SPACE);
 		}
 		if (splitted != null) {
 			for (String term : splitted) {
@@ -231,12 +230,12 @@ public class QueryParser {
 			// Parse text between the colon and the starting position of the next dimension
 			for (int pos = startPosSearchTerm; pos < endPosition; pos++) {
 				String character = query.substring(pos, pos + 1);
-				if (character.equals(comma)) { // add 
+				if (character.equals(COMMA)) { // add 
 					dimension.addSearchTerm(sb.toString());
 					sb = new StringBuilder();
 					startPosCurrentSearchTerm = pos;
 					continue;
-				} else if (character.equals(quote)) {
+				} else if (character.equals(QUOTE)) {
 					if (pos==startPosCurrentSearchTerm) { // opening quote
 						isQuoted = true;
 						startPosCurrentSearchTerm++;
@@ -273,7 +272,7 @@ public class QueryParser {
 				for (int pos = colonPosition-1; pos > -1; pos--) {
 					String lookBehind = query.substring(pos, pos + 1);
 					// Quote/space/start of string means detection of begincharacter dimensiontype
-					if (lookBehind.equals(quote) || lookBehind.equals(space) || pos == 0) {
+					if (lookBehind.equals(QUOTE) || lookBehind.equals(SPACE) || pos == 0) {
 						dimension.startPosition = pos;
 						startNotFound = false;
 						break;
@@ -293,9 +292,9 @@ public class QueryParser {
 	 */
 	private void determineColonPositions() {
 		int position=0;
-		while (query.indexOf(colon, position) != -1) {
-			colonPositions.add(query.indexOf(colon, position));
-			position=query.indexOf(colon, position) + 1;
+		while (query.indexOf(COLON, position) != -1) {
+			colonPositions.add(query.indexOf(COLON, position));
+			position=query.indexOf(COLON, position) + 1;
 		}
 	}
 

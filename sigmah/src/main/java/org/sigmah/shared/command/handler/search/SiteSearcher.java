@@ -3,10 +3,8 @@ package org.sigmah.shared.command.handler.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.server.database.hibernate.entity.Site;
 import org.sigmah.shared.report.model.DimensionType;
 
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -22,27 +20,22 @@ public class SiteSearcher implements Searcher {
 		
 		final String primaryKey = "SiteId";
 		String tableName="Site";
-		String ColumnToSearch = "Comments";
+		String columnToSearch = "Comments";
 		
 		SqlQuery
 				.select(primaryKey)
 				.from(tableName)
-				.whereLikes(ColumnToSearch)
+				.whereLikes(columnToSearch)
 				.likeMany(testQuery)
 				
 				.execute(tx, new SqlResultCallback() {
-					List<Integer> ids = new ArrayList<Integer>();
 					@Override
 					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+						List<Integer> ids = new ArrayList<Integer>();
 						for (SqlResultSetRow row : results.getRows()) {
 							ids.add(row.getInt(primaryKey));
 						}
 						callback.onSuccess(ids);
-					}
-					
-					@Override
-					public boolean onFailure(SqlException e) {
-						return super.onFailure(e);
 					}
 				});
 	}

@@ -24,7 +24,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 public class DrillDownEditor implements Shutdownable {
   
     private final EventBus eventBus;
-    private final Dispatcher service;
     private final DateUtil dateUtil;
     private Listener<PivotCellEvent> eventListener;
     private SiteGridPanel gridPanel;
@@ -33,7 +32,6 @@ public class DrillDownEditor implements Shutdownable {
 
         this.eventBus = eventBus;
         this.dateUtil = dateUtil;
-        this.service = service;
         this.gridPanel = new SiteGridPanel(service);
 
         eventListener = new Listener<PivotCellEvent>() {

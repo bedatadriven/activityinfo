@@ -17,6 +17,8 @@ import com.lowagie.text.DocumentException;
  */
 class ItextRendererHelper {
 
+	private ItextRendererHelper() {}
+	
     /**
      * Adds a set of paragraphs describing the filters which are applied to this
      * given ReportElement.

@@ -16,14 +16,14 @@ public class DateFilterWidget extends FilterWidget {
 	}
 	
 	public void updateView() {
-		if(value.getMinDate() == null && value.getMaxDate() == null) {
+		if(getValue().getMinDate() == null && getValue().getMaxDate() == null) {
 			setState(I18N.CONSTANTS.allDates());
-		} else if(value.getMinDate()==null) {
-			setState(FilterResources.MESSAGES.beforeDate(value.getMaxDate()));
-		} else if(value.getMaxDate()==null) {
-			setState(FilterResources.MESSAGES.afterDate(value.getMinDate()));
+		} else if(getValue().getMinDate()==null) {
+			setState(FilterResources.MESSAGES.beforeDate(getValue().getMaxDate()));
+		} else if(getValue().getMaxDate()==null) {
+			setState(FilterResources.MESSAGES.afterDate(getValue().getMinDate()));
 		} else {
-			setState(FilterResources.MESSAGES.betweenDates(value.getMinDate(), value.getMaxDate()));
+			setState(FilterResources.MESSAGES.betweenDates(getValue().getMinDate(), getValue().getMaxDate()));
 		}
 	}
 
@@ -36,7 +36,7 @@ public class DateFilterWidget extends FilterWidget {
 			
 			@Override
 			public void onSelected(DateRange selection) {
-				Filter filter = new Filter(value);
+				Filter filter = new Filter(getValue());
 				filter.setDateRange(selection);
 				
 				setValue(filter);

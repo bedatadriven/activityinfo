@@ -20,29 +20,24 @@ import org.sigmah.shared.report.content.IconMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.Point;
 import org.sigmah.shared.report.model.MapIcon;
-import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PointValue;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.util.mapping.Extents;
 
-/*
- * @author Alex Bertram
- */
+
 public class IconLayerGenerator 
 	extends 
 		AbstractLayerGenerator
 	implements 
 		LayerGenerator {
 
-    private final MapReportElement element;
     private final IconMapLayer layer;
 
     private MapIcon icon;
 	private List<SiteDTO> sites;
 
 
-    public IconLayerGenerator(MapReportElement element, IconMapLayer layer, List<SiteDTO> sites) {
-        this.element = element;
+    public IconLayerGenerator(IconMapLayer layer, List<SiteDTO> sites) {
         this.layer = layer;
         this.sites=sites;
 
@@ -63,7 +58,8 @@ public class IconLayerGenerator
         }
     }
 
-    public Extents calculateExtents() {
+    @Override
+	public Extents calculateExtents() {
         Extents extents = Extents.emptyExtents();
         for(SiteDTO site : sites) {
             if(meetsCriteria(site) && site.hasLatLong()) {
@@ -73,7 +69,8 @@ public class IconLayerGenerator
         return extents;
     }
 
-    public Margins calculateMargins() {
+    @Override
+	public Margins calculateMargins() {
         return new Margins(
                 icon.getAnchorX(),
                 icon.getAnchorY(),
@@ -81,7 +78,8 @@ public class IconLayerGenerator
                 icon.getWidth() - icon.getAnchorX());
     }
 
-    public void generate(TiledMap map, MapContent content) {
+    @Override
+	public void generate(TiledMap map, MapContent content) {
         List<PointValue> points = new ArrayList<PointValue>();
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
 

@@ -5,7 +5,6 @@
 
 package org.sigmah.server.command.handler;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -15,7 +14,6 @@ import javax.xml.bind.JAXBException;
 import org.sigmah.server.database.hibernate.dao.ReportDefinitionDAO;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.ReportParserJaxb;
-import org.sigmah.server.report.ServletImageStorageProvider;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.util.logging.LogException;
@@ -46,7 +44,8 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
         this.servletContext = servletContext;
     }
 
-    @LogException
+    @Override
+	@LogException
     public CommandResult execute(RenderReportHtml cmd, User user) throws CommandException {
 
         String xml = reportDAO.findById(cmd.getTemplateId()).getXml();
@@ -67,13 +66,4 @@ public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml>
         }
     }
 
-    private ServletImageStorageProvider createServletImageProvider() {
-        File tempPath = new File(servletContext.getRealPath("/temp/"));
-        if(!tempPath.exists()) {
-            tempPath.mkdir();
-        }
-        ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
-                tempPath.getAbsolutePath(), null);
-        return isp;
-    }
 }

@@ -5,10 +5,7 @@
 
 package org.sigmah.client.page.entry;
 
-import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.result.SiteResult;
@@ -54,9 +51,7 @@ final class FlatSiteGridPanel extends ContentPanel implements SiteGridPanelView 
     private PagingToolBar pagingToolBar;
 
     private Filter currentFilter = new Filter();
-    
-    private final AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
-    
+       
     	
     @Inject
     public FlatSiteGridPanel(Dispatcher dispatcher) {

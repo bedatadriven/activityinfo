@@ -8,7 +8,7 @@ package org.sigmah.shared.command;
 import org.sigmah.shared.command.result.AdminEntityResult;
 
 /**
- * Retrieves a list of admin entities from the server. 
+ * Retrieves a list of admin entities from the server.
  * 
  * @author alexander
  *
@@ -18,16 +18,16 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	private Integer countryId;
 	private Integer levelId;
 	private Integer parentId;
-    private Filter filter;
-	
+	private Filter filter;
+
 	public GetAdminEntities() {
-		
+
 	}
 
 	public GetAdminEntities(int levelId) {
 		this.levelId = levelId;
 	}
-	
+
 	public GetAdminEntities(int levelId, Integer parentId) {
 		super();
 		this.levelId = levelId;
@@ -35,7 +35,7 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	}
 
 
-    public Integer getLevelId() {
+	public Integer getLevelId() {
 		return levelId;
 	}
 	public void setLevelId(Integer levelId) {
@@ -47,8 +47,8 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
-	
-    public Integer getCountryId() {
+
+	public Integer getCountryId() {
 		return countryId;
 	}
 
@@ -71,17 +71,17 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
 		result = prime * result + ((levelId == null) ? 0 : levelId.hashCode());
 		result = prime * result
-				+ ((parentId == null) ? 0 : parentId.hashCode());
+		+ ((parentId == null) ? 0 : parentId.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		} else if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass()) {
+		} else if (getClass() != obj.getClass()) {
 			return false;
 		}
 		GetAdminEntities other = (GetAdminEntities) obj;
@@ -112,9 +112,9 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	@Override
 	public String toString() {
 		return "GetAdminEntities [levelId=" + levelId + ", parentId="
-				+ parentId + ", filter=" + filter + "]";
+		+ parentId + ", filter=" + filter + "]";
 	}
 
-	
+
 
 }

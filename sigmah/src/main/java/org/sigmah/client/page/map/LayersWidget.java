@@ -44,7 +44,7 @@ import com.google.inject.Inject;
  */
 public class LayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
 
-	public static int WIDTH = 225;
+	public static final int WIDTH = 225;
 
 	private static final int CONTEXT_MENU_WIDTH = 150;
 
