@@ -132,7 +132,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		monthlyTab.setLayout(new FitLayout());
 		monthlyTab.add(monthlyPanel);
 		
-		attachmentsTab = new AttachmentsTab(dispatcher);
+		attachmentsTab = new AttachmentsTab(dispatcher, eventBus);
 						
 		tabPanel = new CollapsibleTabPanel();
 		tabPanel.add(detailTab);

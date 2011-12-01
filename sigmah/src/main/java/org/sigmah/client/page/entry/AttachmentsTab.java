@@ -1,6 +1,8 @@
 package org.sigmah.client.page.entry;
 
+import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.event.DownloadRequestEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
@@ -22,7 +24,6 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AttachmentsTab extends TabItem implements
@@ -34,12 +35,14 @@ public class AttachmentsTab extends TabItem implements
 
 	private AttachmentsPresenter presenter;
 	private final Dispatcher dispatcher;
+	private final EventBus eventBus;
 
 	private ListView<SiteAttachmentDTO> attachmentList;
 	private String currentAttachment;
 
-	public AttachmentsTab(Dispatcher service) {
+	public AttachmentsTab(Dispatcher service, final EventBus eventBus) {
 		this.dispatcher = service;
+		this.eventBus = eventBus;
 		presenter = new AttachmentsPresenter(service, this);
 
 		setText(I18N.CONSTANTS.attachment());
@@ -90,8 +93,7 @@ public class AttachmentsTab extends TabItem implements
 
 									@Override
 									public void onSuccess(UploadUrlResult result) {
-										Window.open(result.getUrl(), "_blank",
-												"Attachment");
+										eventBus.fireEvent(new DownloadRequestEvent("attachment", result.getUrl()));
 									}
 								});
 					}
