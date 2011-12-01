@@ -12,7 +12,6 @@ import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FxEvent;
@@ -31,7 +30,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLayer> {
+public final class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLayer> {
 	
 	public static final int WIDTH = 271;
 	public static final int HEIGHT = 377;
@@ -147,7 +146,8 @@ public class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLa
 		
 		ToolButton closeBtn = new ToolButton("x-tool-close");
 	    closeBtn.addListener(Events.Select, new Listener<ComponentEvent>() {
-	        public void handleEvent(ComponentEvent ce) {
+	        @Override
+			public void handleEvent(ComponentEvent ce) {
 	          fadeOut();
 	        }
 	      });

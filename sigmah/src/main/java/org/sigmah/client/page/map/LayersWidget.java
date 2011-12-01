@@ -42,7 +42,7 @@ import com.google.inject.Inject;
 /**
  * Displays a list of layers selected by the user 
  */
-public class LayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
+public final class LayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
 
 	public static final int WIDTH = 225;
 

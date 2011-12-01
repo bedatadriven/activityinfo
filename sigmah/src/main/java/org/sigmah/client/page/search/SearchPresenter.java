@@ -171,7 +171,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		return result;
 	}
 	
-	public class RecentSiteModel extends BaseModelData {
+	public static final class RecentSiteModel extends BaseModelData {
 		
 		public RecentSiteModel(SiteDTO site) {
 			set("hasComment", false);

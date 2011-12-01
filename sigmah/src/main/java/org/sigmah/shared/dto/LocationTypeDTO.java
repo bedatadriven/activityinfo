@@ -14,7 +14,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
-public class LocationTypeDTO extends BaseModelData implements DTO {
+public final class LocationTypeDTO extends BaseModelData implements DTO {
 
 	public LocationTypeDTO() {
 	}

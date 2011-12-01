@@ -5,12 +5,19 @@
 
 package org.sigmah.server.database.hibernate.entity;
 
-import javax.persistence.*;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import org.mindrot.bcrypt.BCrypt;
 import org.sigmah.shared.auth.AuthenticatedUser;
-
-import java.util.Date;
 
 
 /**
@@ -44,9 +51,9 @@ public class User implements java.io.Serializable {
     }
 
     public User(AuthenticatedUser user) {
-		setId(user.getId());
-		setEmail(user.getEmail());
-		setLocale(user.getUserLocale());
+		this.id = user.getId();
+		this.email = user.getEmail();
+		this.locale = user.getUserLocale();
     }
 
 	@Id

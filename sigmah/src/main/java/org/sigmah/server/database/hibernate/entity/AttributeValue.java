@@ -34,10 +34,10 @@ public class AttributeValue implements java.io.Serializable {
 	}
 
 	public AttributeValue(Site site, Attribute attribute, boolean value) {
-		setId(new AttributeValueId(site.getId(), attribute.getId()));
-		setSite(site);
-		setAttribute(attribute);
-		setValue(value);
+		this.id = new AttributeValueId(site.getId(), attribute.getId());
+		this.site = site;
+		this.attribute = attribute;
+		this.value = value;
 	}
 
 

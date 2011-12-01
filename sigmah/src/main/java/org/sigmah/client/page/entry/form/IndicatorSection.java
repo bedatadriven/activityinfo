@@ -50,7 +50,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         }
     }
 
-    protected void addGroupHeader(String name) {
+    private void addGroupHeader(String name) {
 
         TableData layoutData = new TableData();
         layoutData.setColspan(3);
@@ -63,7 +63,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         add(header, layoutData);
     }
 
-    protected void addIndicator(IndicatorDTO indicator) {
+    private void addIndicator(IndicatorDTO indicator) {
 
         Text indicatorLabel = new Text(indicator.getName());
         indicatorLabel.setStyleAttribute("fontSize", "9pt");

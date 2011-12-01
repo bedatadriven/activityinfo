@@ -6,7 +6,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * Encapsulates the DTO instance to have the ability for a rich user experience
  * in the UI for the search results. 
  */
-public class SearchHitDTO extends BaseModelData implements DTO {
+public final class SearchHitDTO extends BaseModelData implements DTO {
 	
 	public SearchHitDTO() {
 		set("name", "woei!");

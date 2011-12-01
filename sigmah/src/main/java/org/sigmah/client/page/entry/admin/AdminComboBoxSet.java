@@ -26,16 +26,23 @@ import com.google.gwt.user.client.Event;
  * these AdminComboBoxes must still be added to a container. 
  */
 public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
-    private final Map<Integer, AdminComboBox> comboBoxes = Maps.newHashMap();
+    
+    public interface Style {
+    	void initializeComboBox(AdminComboBox comboBox, AdminLevelDTO level);
+    	void onComboStateUpdated(AdminComboBox comboBox, boolean enabled);
+    }
 
-    public AdminComboBoxSet(final AdminFieldSetPresenter presenter) {
-    	super();
+    private final Map<Integer, AdminComboBox> comboBoxes = Maps.newHashMap();
+    private final Style style;
+    
+    public AdminComboBoxSet(final AdminFieldSetPresenter presenter, Style style) {
+    	this.style = style;
        
         for(final AdminLevelDTO level : presenter.getAdminLevels()) {
             final int levelId = level.getId();
 
             final AdminComboBox comboBox = new AdminComboBox(level, presenter.getStore(levelId));
-            initializeComboBox(comboBox, level);
+            style.initializeComboBox(comboBox, level);
             updateComboBoxState(comboBox, presenter.isLevelEnabled(levelId));
             comboBoxes.put(levelId, comboBox);
             
@@ -49,11 +56,10 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
             comboBox.addListener(Events.BrowserEvent, new Listener<FieldEvent>() {
                 @Override
 				public void handleEvent(FieldEvent be) {
-                    if(be.getEventTypeInt() == Event.ONKEYUP) {
-                        if(be.getEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    if(be.getEventTypeInt() == Event.ONKEYUP &&
+                       be.getEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
                             comboBox.setValue(null);
                             presenter.setSelection(levelId, null);
-                        }
                     }
                 }
             });
@@ -74,19 +80,27 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
         }
     }
 
+    public AdminComboBoxSet(AdminFieldSetPresenter presenter) {
+    	this(presenter, new Style() {
+			
+			@Override
+			public void onComboStateUpdated(AdminComboBox comboBox, boolean enabled) {}
+			
+			@Override
+			public void initializeComboBox(AdminComboBox comboBox, AdminLevelDTO level) {}
+		});
+    }
+    
+    public final Style getStyle() {
+    	return style;
+    }
 
 	private void updateComboBoxState(final AdminComboBox comboBox, boolean enabled) {
 		comboBox.setEnabled(enabled);
-		onComboStateUpdated(comboBox, enabled);
+		style.onComboStateUpdated(comboBox, enabled);
 	}
 	   
-	protected void initializeComboBox(AdminComboBox comboBox, AdminLevelDTO level) {
-		
-	}
-
-	protected void onComboStateUpdated(AdminComboBox comboBox, boolean enabled) {
-		
-	}
+	
 	
 	public boolean validate() {
 		boolean valid = true;

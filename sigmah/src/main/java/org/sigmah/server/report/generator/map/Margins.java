@@ -4,11 +4,8 @@
  */
 
 package org.sigmah.server.report.generator.map;
-/*
- * @author Alex Bertram
- */
 
-public class Margins {
+public final class Margins {
 
     private int left;
     private int top;

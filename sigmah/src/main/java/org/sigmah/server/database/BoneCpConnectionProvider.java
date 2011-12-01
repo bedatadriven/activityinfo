@@ -23,7 +23,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 
 	public static final String SCHEMA_MIGRATION = "schema.migration";
 
-	private static final Logger logger = Logger.getLogger(BoneCpConnectionProvider.class);
+	private static final Logger LOGGER = Logger.getLogger(BoneCpConnectionProvider.class);
 	
 	private BoneCP connectionPool;
 
@@ -36,7 +36,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 			poolConfig.setUsername(configProperties.getProperty("hibernate.connection.username"));
 			poolConfig.setPassword(configProperties.getProperty("hibernate.connection.password"));
 			
-			logger.info("Configuring connection pool to " + poolConfig.getJdbcUrl());
+			LOGGER.info("Configuring connection pool to " + poolConfig.getJdbcUrl());
 			
 			connectionPool = new BoneCP(poolConfig);
 			
@@ -48,7 +48,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 		}
 	}
 	
-	public void maybeMigrateSchema(DeploymentConfiguration config) {
+	public final void maybeMigrateSchema(DeploymentConfiguration config) {
 		if("enabled".equals(config.getProperty(SCHEMA_MIGRATION)) ||
 	       "update".equals(config.getProperty("hibernate.hbm2ddl.auto"))) {
 			Log.info("Schema migration starting...");
@@ -66,7 +66,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 				Log.info("Schema migration complete.");
 
 			} catch (LiquibaseException e) {
-				logger.error("Liquibase schema migration failed", e);
+				LOGGER.error("Liquibase schema migration failed", e);
 			} finally {
 				if(connection != null) {
 					try {

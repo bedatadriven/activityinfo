@@ -13,9 +13,7 @@ import java.util.Locale;
 
 import org.sigmah.shared.report.model.DateRange;
 
-public class DateRangeFormat {
-	
-	
+public final class DateRangeFormat {
 	private DateFormat medium;
 	private DateFormat month;
 	private DateFormat monthYear;
@@ -38,7 +36,6 @@ public class DateRangeFormat {
     }
 
 	public String format(Date min, Date max) {
-		StringBuilder text = new StringBuilder();
 		
 		if(min != null && max == null) {
 			
@@ -64,7 +61,7 @@ public class DateRangeFormat {
 		
 	}
 	
-	protected String format(Calendar min, Calendar max) {
+	private String format(Calendar min, Calendar max) {
 
 
 		
@@ -125,22 +122,22 @@ public class DateRangeFormat {
 		
 	}
 	
-	protected boolean isMax(Calendar c, int field) {
+	private boolean isMax(Calendar c, int field) {
 		return c.get(field) == c.getMaximum(field);
 	}
 	
-	protected boolean isMin(Calendar c, int field) {
+	private boolean isMin(Calendar c, int field) {
 		return c.get(field) == c.getMinimum(field);
 	}
 	
-	protected DateFormat getMonthYearFormat(Locale locale) {
+	private DateFormat getMonthYearFormat(Locale locale) {
 		SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT,locale);
 		format.applyPattern("MMM yyyy");
 		
 		return format;
 	}
 	
-	protected DateFormat getMonthFormat(Locale locale) {
+	private DateFormat getMonthFormat(Locale locale) {
 		SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT, locale);
 		format.applyPattern("MMM");
 		

@@ -42,7 +42,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 public class ReportPreview extends ContentPanel implements ReportPreviewPresenter.View {
     private ReportPreviewPresenter presenter;
 
-    private static class DateValue extends BaseModelData {
+    private final static class DateValue extends BaseModelData {
 
         public DateValue(DateRange value, String label) {
             setValue(value);
@@ -76,7 +76,8 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         dateRange = new DateRange();
     }
 
-    public void init(ReportPreviewPresenter presenter, ReportDefinitionDTO template) {
+    @Override
+	public void init(ReportPreviewPresenter presenter, ReportDefinitionDTO template) {
 
         toolBar = new ActionToolBar();
         this.presenter = presenter;
@@ -112,11 +113,13 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         setScrollMode(Style.Scroll.AUTO);
     }
 
-    public void setActionEnabled(String actionId, boolean enabled) {
+    @Override
+	public void setActionEnabled(String actionId, boolean enabled) {
         toolBar.setActionEnabled(actionId, enabled);
     }
 
-    public DateRange getDateRange() {
+    @Override
+	public DateRange getDateRange() {
         return dateRange;
     }
 
@@ -179,11 +182,13 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         dateRange = combo.getValue().getValue();
     }
 
-    public void setPreviewHtml(String html) {
+    @Override
+	public void setPreviewHtml(String html) {
         previewHtml.setHtml(html);
     }
 
-    public AsyncMonitor getLoadingMonitor() {
+    @Override
+	public AsyncMonitor getLoadingMonitor() {
         return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
     }
 }
