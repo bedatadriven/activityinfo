@@ -45,9 +45,9 @@ public class Authentication implements java.io.Serializable {
      */
     public Authentication(User user) {
         //	setId(SecureTokenGenerator.generate());
-        setUser(user);
-        setDateCreated(new Date());
-        setDateLastActive(new Date());
+        this.user = user;
+        this.dateCreated = new Date();
+        this.dateLastActive = new Date();
     }
 
     /**

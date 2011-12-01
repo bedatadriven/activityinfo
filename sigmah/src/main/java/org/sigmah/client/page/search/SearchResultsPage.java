@@ -115,7 +115,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		recentSitesView.el().mask();
 	}
 
-	protected void showError(List<QueryFail> fails) {
+	private void showError(List<QueryFail> fails) {
 		StringBuilder sb = new StringBuilder();
 		for (QueryFail fail : fails) {
 			sb.append(fail.fail());

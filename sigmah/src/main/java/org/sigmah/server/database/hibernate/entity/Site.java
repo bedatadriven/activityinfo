@@ -73,8 +73,8 @@ public class Site implements java.io.Serializable, Deleteable {
 
     public Site() {
 		Date now = new Date();
-		setDateCreated(now);
-		setDateEdited(now);
+		this.dateCreated = now;
+		this.dateEdited = now;
 	}
 
     /**

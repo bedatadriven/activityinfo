@@ -15,7 +15,7 @@ import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.content.Point;
 
-public class PointValue {
+public final class PointValue {
     private SiteDTO site;
     private MapSymbol symbol;
     private double value;

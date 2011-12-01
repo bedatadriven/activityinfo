@@ -15,13 +15,15 @@ import com.google.gwt.resources.client.ImageResource;
  *
  * @author Alex Bertram
  */
-public class MapIcon implements Serializable, ImageResource {
-    private String name;
+public final class MapIcon implements Serializable, ImageResource {
+    private static final int DEFAULT_SIZE = 32;
+    
+	private String name;
 	private String url;
 	
 	// Default to 32x32 sized icons
-    private int width = 32; 
-    private int height = 32;
+    private int width = DEFAULT_SIZE; 
+    private int height = DEFAULT_SIZE;
     
     private int anchorX;
     private int anchorY;
@@ -45,7 +47,8 @@ public class MapIcon implements Serializable, ImageResource {
      *
      * @return A short name of the icon
      */
-    public String getName() {
+    @Override
+	public String getName() {
         return name;
     }
 
@@ -58,7 +61,8 @@ public class MapIcon implements Serializable, ImageResource {
      * 
      * @return The width of the icon image, in pixels
      */
-    public int getWidth() {
+    @Override
+	public int getWidth() {
         return width;
     }
 
@@ -70,7 +74,8 @@ public class MapIcon implements Serializable, ImageResource {
      *
      * @return The height of the icon image, in pixels
      */
-    public int getHeight() {
+    @Override
+	public int getHeight() {
         return height;
     }
 

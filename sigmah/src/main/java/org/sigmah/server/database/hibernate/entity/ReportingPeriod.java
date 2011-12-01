@@ -41,8 +41,8 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 	public ReportingPeriod() {
 		
 		Date now = new Date();
-		setDateCreated(now);
-		setDateEdited(now);
+		this.dateCreated = now;
+		this.dateEdited = now; 
 	}
 
     public ReportingPeriod(Site site) {
@@ -167,6 +167,7 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 		this.dateDeleted = date;
 	}
 
+	@Override
 	public void delete() {
 		setDateDeleted(new Date());
 	}

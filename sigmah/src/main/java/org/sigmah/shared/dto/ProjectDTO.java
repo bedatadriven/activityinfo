@@ -7,7 +7,7 @@ import org.sigmah.shared.dto.LockedPeriodDTO.HasLockedPeriod;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class ProjectDTO 
+public final class ProjectDTO 
 	extends 
 		BaseModelData 
 	implements 
@@ -16,7 +16,8 @@ public class ProjectDTO
 	
     private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
     private UserDatabaseDTO userDatabase;
-    public final static String entityName="Project";
+    
+    public final static String ENTITY_NAME = "Project";
 
     public ProjectDTO() {
 		super();
@@ -29,6 +30,7 @@ public class ProjectDTO
 		setName(name);
 	} 
 
+	@Override
 	public int getId() {
 		return (Integer)get("id");
 	}
@@ -37,6 +39,7 @@ public class ProjectDTO
 		set("id", id); 
 	}
 	
+	@Override
 	public String getName() {
 		return (String)get("name");
 	}
@@ -53,12 +56,8 @@ public class ProjectDTO
 		return (String)get("description");
 	}
 	
+	@Override
 	public Set<LockedPeriodDTO> getLockedPeriods() {
-//		Set<LockedPeriodDTO> allLockedPeriods = new HashSet<LockedPeriodDTO>();
-//		allLockedPeriods.addAll(lockedPeriods);
-//		if (getDatabase() != null && getDatabase().getLockedPeriods() != null) {
-//			allLockedPeriods.addAll(getDatabase().getLockedPeriods());
-//		}
 		return lockedPeriods;
 	}
 	
@@ -74,16 +73,15 @@ public class ProjectDTO
 		return userDatabase;
 	}
 	
+	@Override
 	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
-	    Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
-
+	    Set<LockedPeriodDTO> enabled = new HashSet<LockedPeriodDTO>(0);
 	    for (LockedPeriodDTO lockedPeriod : getLockedPeriods()) {
 	    	if (lockedPeriod.isEnabled()) {
-	    		lockedPeriods.add(lockedPeriod);
+	    		enabled.add(lockedPeriod);
 	    	}
 	    }
-	    
-	    return lockedPeriods;
+	    return enabled;
 	}
 
 	@Override
@@ -93,6 +91,6 @@ public class ProjectDTO
 
 	@Override
 	public String getEntityName() {
-		return entityName;
+		return ENTITY_NAME;
 	}
 }

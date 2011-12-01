@@ -48,10 +48,8 @@ import javax.xml.bind.annotation.XmlAttribute;
  * </tbody>
  * </table>
  *
- *
- * @author Alex Bertram
  */
-public class DateRange implements Serializable {
+public final class DateRange implements Serializable {
 
 
     private Date minDate;

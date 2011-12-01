@@ -19,7 +19,7 @@ import com.extjs.gxt.ui.client.data.SortInfo;
  *
  * @author Alex Bertram 
  */
-public class PagingGetCommandConfig extends BaseModelData implements PagingLoadConfig {
+public final class PagingGetCommandConfig extends BaseModelData implements PagingLoadConfig {
 
     private int offset;
     private int limit;
