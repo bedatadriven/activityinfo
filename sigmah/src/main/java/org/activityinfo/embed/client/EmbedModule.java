@@ -18,9 +18,9 @@ public class EmbedModule extends AbstractGinModule {
 
 	@Override
 	protected void configure() {
-		bind(AuthenticatedUser.class).toProvider(ClientSideAnonymousAuthProvider.class);
+		//bind(AuthenticatedUser.class).toProvider(ClientSideAnonymousAuthProvider.class);
 		bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
-		bind(Dispatcher.class).to(EmbedDispatcher.class).in(Singleton.class);
+		//bind(Dispatcher.class).to(EmbedDispatcher.class).in(Singleton.class);
 		bind(DispatchEventSource.class).to(RemoteDispatcher.class);
 		bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 		bind(StateProvider.class).to(GxtStateProvider.class);
