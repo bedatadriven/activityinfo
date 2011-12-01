@@ -138,9 +138,9 @@ public class MonthlyReportsPanel extends ContentPanel {
             IndicatorRowDTO report = (IndicatorRowDTO) record.getModel();
             for (String property : record.getChanges().keySet()) {
                 UpdateMonthlyReports.Change change = new UpdateMonthlyReports.Change();
-                change.indicatorId = report.getIndicatorId();
-                change.month = IndicatorRowDTO.monthForProperty(property);
-                change.value = report.get(property);
+                change.setIndicatorId(report.getIndicatorId());
+                change.setMonth(IndicatorRowDTO.monthForProperty(property));
+                change.setValue((Double)report.get(property));
                 changes.add(change);
             }
         }

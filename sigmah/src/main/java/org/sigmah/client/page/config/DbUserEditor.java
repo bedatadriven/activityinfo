@@ -87,9 +87,9 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		initListeners(store, loader);
 
 		view.init(this, db, store);
-		view.setActionEnabled(UIActions.save, false);
-		view.setActionEnabled(UIActions.add, db.isManageUsersAllowed());
-		view.setActionEnabled(UIActions.delete, false);
+		view.setActionEnabled(UIActions.SAVE, false);
+		view.setActionEnabled(UIActions.ADD, db.isManageUsersAllowed());
+		view.setActionEnabled(UIActions.DELETE, false);
 
 		loader.load();
 	}
@@ -262,9 +262,9 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 	@Override
 	public void onUIAction(String actionId) {
 		super.onUIAction(actionId);
-		if (actionId.equals(UIActions.export)) {
+		if (actionId.equals(UIActions.EXPORT)) {
 			Window.open(GWT.getModuleBaseURL() + "export/users?dbUsers=" + db.getId(), "_blank", null);
-		} else if (UIActions.mailingList.equals(actionId)) {
+		} else if (UIActions.MAILING_LIST.equals(actionId)) {
 
 			onMailingList();
 		}
@@ -283,10 +283,10 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		if (selectedItem instanceof PartnerDTO) {
 			PartnerDTO selectedPartner = (PartnerDTO) selectedItem;
 			if (selectedItem != null) {
-				view.setActionEnabled(UIActions.delete, db.isManageAllUsersAllowed()
+				view.setActionEnabled(UIActions.DELETE, db.isManageAllUsersAllowed()
 						|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedPartner.getId()));
 			}
-			view.setActionEnabled(UIActions.delete, selectedItem != null);
+			view.setActionEnabled(UIActions.DELETE, selectedItem != null);
 		}
 	}
 

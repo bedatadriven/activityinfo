@@ -11,19 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
-public class AuthCookieUtil {
+public final class AuthCookieUtil {
     
 	private AuthCookieUtil() {}
 	
-    private class For {
-        private static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
-        private static final int THIS_SESSION = -1;
-    }
-
+    private static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
+    private static final int THIS_SESSION = -1;
 
     public static void addAuthCookie(HttpServletResponse response, Authentication auth, boolean remember) {
         Cookie authCookie = new Cookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, auth.getId());
-        authCookie.setMaxAge(remember ? For.THIRTY_DAYS : For.THIS_SESSION);
+        authCookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
         authCookie.setPath("/");
         response.addCookie(authCookie);
     }

@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VSplitFrameSet implements Frame {
 
-    protected final LayoutContainer container;
+    private final LayoutContainer container;
     private Page activePage;
     private Widget activeWidget;
     private NavigationPanel navPanel;

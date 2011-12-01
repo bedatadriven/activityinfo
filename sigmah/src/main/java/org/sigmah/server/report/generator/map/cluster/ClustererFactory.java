@@ -7,7 +7,7 @@ import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.Clustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 
-public class ClustererFactory {
+public final class ClustererFactory {
 	
 	private ClustererFactory() {}
 	

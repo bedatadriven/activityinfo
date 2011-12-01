@@ -49,16 +49,16 @@ public class AttachmentsPresenter implements ActionListener {
 	public void showSite(SiteDTO site) {
 		currentSite = site;
 		view.setSelectionTitle(currentSite.getLocationName());
-		view.setActionEnabled(UIActions.upload, true);
-		view.setActionEnabled(UIActions.delete, false);
+		view.setActionEnabled(UIActions.UPLOAD, true);
+		view.setActionEnabled(UIActions.DELETE, false);
 		view.setAttachmentStore(currentSite.getId());
 	}
 
 	@Override
 	public void onUIAction(String actionId) {
-		if (UIActions.delete.equals(actionId)) {
+		if (UIActions.DELETE.equals(actionId)) {
 			onDelete();
-		} else if (UIActions.upload.equals(actionId)) {
+		} else if (UIActions.UPLOAD.equals(actionId)) {
 			onUpload();
 		}
 
@@ -115,7 +115,7 @@ public class AttachmentsPresenter implements ActionListener {
 
 			@Override
 			public void onSuccess(VoidResult result) {
-				view.setActionEnabled(UIActions.delete, false);
+				view.setActionEnabled(UIActions.DELETE, false);
 				view.setAttachmentStore(currentSite.getId());
 			}
 		});

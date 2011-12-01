@@ -27,7 +27,7 @@ public class AdminEntityCacheTest {
 
         ProxyResult<ListResult<AdminEntityDTO>> proxyResult = proxyMgr.execute(new GetAdminEntities(1));
 
-        Assert.assertTrue(proxyResult.couldExecute);
-        Assert.assertEquals(2, proxyResult.result.getData().size());
+        Assert.assertTrue(proxyResult.isCouldExecute());
+        Assert.assertEquals(2, proxyResult.getResult().getData().size());
     }
 }

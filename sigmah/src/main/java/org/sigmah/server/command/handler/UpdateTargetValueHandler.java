@@ -42,22 +42,22 @@ public class UpdateTargetValueHandler extends BaseEntityHandler implements
 		PropertyMap changeMap = new PropertyMap(changes);
 
 		try{
-			TargetValue targetValue = em.find(TargetValue.class, new TargetValueId(cmd.getTargetId(), cmd.getIndicatorId()));
+			TargetValue targetValue = entityManager().find(TargetValue.class, new TargetValueId(cmd.getTargetId(), cmd.getIndicatorId()));
 			if(cmd.getChanges().get("value") !=null){
 				targetValue.setValue((Double.valueOf((String)cmd.getChanges().get("value"))));
-				em.persist(targetValue);
+				entityManager().persist(targetValue);
 			
 				return null;
 			}
 			
-			em.remove(targetValue);			
+			entityManager().remove(targetValue);			
 			return null;
 		}catch(Exception e){
 			// ignore 
 		}
 		
-		Target target  = em.find(Target.class, cmd.getTargetId());
-		Indicator indicator = em.find(Indicator.class, cmd.getIndicatorId());
+		Target target  = entityManager().find(Target.class, cmd.getTargetId());
+		Indicator indicator = entityManager().find(Indicator.class, cmd.getIndicatorId());
 		
 		TargetValue targetValue =  new TargetValue();
 		targetValue.setId(new TargetValueId(cmd.getTargetId(),cmd.getIndicatorId()));
@@ -65,7 +65,7 @@ public class UpdateTargetValueHandler extends BaseEntityHandler implements
 		targetValue.setTarget(target);
 		targetValue.setIndicator(indicator);
 		
-		em.persist(targetValue);
+		entityManager().persist(targetValue);
 		
 
 		return null;

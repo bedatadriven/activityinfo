@@ -19,7 +19,7 @@ import org.sigmah.shared.report.content.Point;
  *
  * @author Alex Bertram
  */
-public class KMeans {
+public final class KMeans {
 
 	private KMeans() {}
 	

@@ -10,7 +10,7 @@ import org.sigmah.shared.auth.AuthenticatedUser;
  *
  * @author Alex Bertram
  */
-public class LocaleHelper {
+public final class LocaleHelper {
 
 	private LocaleHelper() {}
 	

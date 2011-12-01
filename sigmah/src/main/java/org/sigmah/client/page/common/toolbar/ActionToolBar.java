@@ -90,18 +90,18 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     
 
 	public void addCreateButton() {
-		this.addButton = addButton(UIActions.add, I18N.CONSTANTS.addItem(),
+		this.addButton = addButton(UIActions.ADD, I18N.CONSTANTS.addItem(),
 				IconImageBundle.ICONS.add());
 
 	}
 
 	public void addPrintButton() {
-		addButton(UIActions.print,
+		addButton(UIActions.PRINT,
 				I18N.CONSTANTS.printForm(), IconImageBundle.ICONS.printer());
 	}
 
 	public void addUploadButton() {
-		addButton(UIActions.upload,
+		addButton(UIActions.UPLOAD,
 				I18N.CONSTANTS.upload(), IconImageBundle.ICONS.up());
 		
 	}
@@ -111,26 +111,26 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 	}
 
 	public void addEditButton(AbstractImagePrototype icon) {
-		this.editButton = addButton(UIActions.edit, I18N.CONSTANTS.edit(), icon);
+		this.editButton = addButton(UIActions.EDIT, I18N.CONSTANTS.edit(), icon);
 	}
 
 	public void addDeleteButton() {
-		this.removeButton = addButton(UIActions.delete,
+		this.removeButton = addButton(UIActions.DELETE,
 				I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
 	}
 
 	public void addDeleteButton(String text) {
-		this.removeButton = addButton(UIActions.delete, text,
+		this.removeButton = addButton(UIActions.DELETE, text,
 				IconImageBundle.ICONS.delete());
 	}
 
 	public void addExcelExportButton() {
-		addButton(UIActions.export, I18N.CONSTANTS.export(),
+		addButton(UIActions.EXPORT, I18N.CONSTANTS.export(),
 				IconImageBundle.ICONS.excel());
 	}
 
 	public void addRefreshButton() {
-		addButton(UIActions.refresh,
+		addButton(UIActions.REFRESH,
 				I18N.CONSTANTS.refreshPreview(),
 				IconImageBundle.ICONS.refresh());
 	}
@@ -139,7 +139,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 	public void addSaveSplitButton() {
 		saveButton = new SplitButton(I18N.CONSTANTS.save());
 		saveButton.setIcon(IconImageBundle.ICONS.save());
-		saveButton.setItemId(UIActions.save);
+		saveButton.setItemId(UIActions.SAVE);
 		saveButton.addListener(Events.Select, this);
 
 		Menu menu = new Menu();
@@ -149,7 +149,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 					@Override
 					public void componentSelected(MenuEvent ce) {
 						if (listener != null) {
-							listener.onUIAction(UIActions.save);
+							listener.onUIAction(UIActions.SAVE);
 						}
 					}
 				});
@@ -160,7 +160,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 				new SelectionListener<MenuEvent>() {
 					@Override
 					public void componentSelected(MenuEvent ce) {
-						listener.onUIAction(UIActions.discardChanges);
+						listener.onUIAction(UIActions.DISCARD_CHANGES);
 					}
 				});
 		menu.add(discardItem);
@@ -236,7 +236,7 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 	}
 
 	public void addLockedPeriodsButton() {
-		addButton(UIActions.showLockedPeriods, I18N.CONSTANTS.timeLocks(),
+		addButton(UIActions.SHOW_LOCKED_PERIODS, I18N.CONSTANTS.timeLocks(),
 				IconImageBundle.ICONS.lockedPeriod());
 	}
 

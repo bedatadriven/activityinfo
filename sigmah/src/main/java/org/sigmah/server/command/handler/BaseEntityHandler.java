@@ -35,7 +35,7 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
  */
 public class BaseEntityHandler {
 
-    protected final EntityManager em;
+    private final EntityManager em;
 
     public BaseEntityHandler(EntityManager em) {
         this.em = em;
@@ -111,7 +111,7 @@ public class BaseEntityHandler {
         }
         
         lockedPeriod.getParentDatabase().setLastSchemaUpdate(new Date());
-        em.merge(lockedPeriod);
+        entityManager().merge(lockedPeriod);
     }
 
     protected void updateActivityProperties(Activity activity, Map<String, Object> changes) {
@@ -121,7 +121,7 @@ public class BaseEntityHandler {
 
         if (changes.containsKey("locationType")) {
             activity.setLocationType(
-                    em.getReference(LocationType.class,
+                    entityManager().getReference(LocationType.class,
                             ((LocationTypeDTO) changes.get("locationType")).getId()));
         }
 
@@ -159,19 +159,19 @@ public class BaseEntityHandler {
         
         if (changes.containsKey("ProjectId")) {
             target.setProject(
-                    em.getReference(Project.class,
+                    entityManager().getReference(Project.class,
                             ((Project) changes.get("ProjectId")).getId()));
         }
        
         if (changes.containsKey("PartnerId")) {
             target.setPartner(
-                    em.getReference(Partner.class,
+                    entityManager().getReference(Partner.class,
                             ((Partner) changes.get("PartnerId")).getId()));
         }
         
         if (changes.containsKey("AdminEntityId")) {
             target.setAdminEntity(
-                    em.getReference(AdminEntity.class,
+                    entityManager().getReference(AdminEntity.class,
                             ((AdminEntity) changes.get("AdminEntityId")).getId()));
         }
         
@@ -192,5 +192,9 @@ public class BaseEntityHandler {
         }
 
     }
+
+	public EntityManager entityManager() {
+		return em;
+	}
 
 }

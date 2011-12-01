@@ -28,7 +28,8 @@ import org.sigmah.shared.report.model.ReportElement;
  */
 public class ExcelMapDataExporter implements Renderer {
 
-    public void render(ReportElement element, OutputStream stm) throws IOException {
+    @Override
+	public void render(ReportElement element, OutputStream stm) throws IOException {
 
         if(!(element instanceof MapReportElement)) {
             throw new RuntimeException("ExcelMapDataExporter accepts only MapElements");
@@ -83,7 +84,7 @@ public class ExcelMapDataExporter implements Renderer {
         return ".xls";
     }
 
-    private class Helper {
+    private final class Helper {
         private CreationHelper factory;
 
         private Helper(Workbook book) {

@@ -149,7 +149,7 @@ public class SearchFilterView extends ContentPanel {
 			Image icon = IconImageBundle.fromEntities.fromDimension(dimension).createImage();
 			icon.setStylePrimaryName(".entityIcon");
 			panelHeader.add(icon);
-			panelHeader.add(new LabelField(I18N.fromEntities.getDimensionTypePluralName(dimension)));
+			panelHeader.add(new LabelField(I18N.FROM_ENTITIES.getDimensionTypePluralName(dimension)));
 			add(panelHeader);
 			
 			labelNoMatches.setStyleAttribute("color", "grey");

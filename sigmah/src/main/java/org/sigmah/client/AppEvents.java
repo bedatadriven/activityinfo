@@ -7,7 +7,7 @@ package org.sigmah.client;
 
 import com.extjs.gxt.ui.client.event.EventType;
 
-public class AppEvents {
+public final class AppEvents {
 	
 	private AppEvents() {}
 

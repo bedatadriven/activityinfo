@@ -62,7 +62,7 @@ public abstract class ReportElement<ContentT extends Content> implements Seriali
     private String sheetTitle;
 
     @XmlTransient
-    protected ContentT content;
+    private ContentT content;
 
     public ReportElement() {
 

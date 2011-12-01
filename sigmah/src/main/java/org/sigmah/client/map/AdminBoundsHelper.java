@@ -21,7 +21,7 @@ import org.sigmah.shared.util.mapping.BoundingBoxDTO;
  *
  * @author Alex Bertram
  */
-public class AdminBoundsHelper {
+public final class AdminBoundsHelper {
 
     private AdminBoundsHelper() {}
 
@@ -40,7 +40,8 @@ public class AdminBoundsHelper {
      */
     public static BoundingBoxDTO calculate(ActivityDTO activity, final SiteDTO site) {
         return calculate(activity, new HasAdminEntityValues() {
-            public AdminEntityDTO getAdminEntity(int levelId) {
+            @Override
+			public AdminEntityDTO getAdminEntity(int levelId) {
                 return site.getAdminEntity(levelId);
             }
         });
@@ -109,7 +110,8 @@ public class AdminBoundsHelper {
      */
     public static String name(ActivityDTO activity, BoundingBoxDTO bounds, final SiteDTO site) {
         return name(bounds, activity.getAdminLevels(), new HasAdminEntityValues() {
-            public AdminEntityDTO getAdminEntity(int levelId) {
+            @Override
+			public AdminEntityDTO getAdminEntity(int levelId) {
                 return site.getAdminEntity(levelId);
             }
         });

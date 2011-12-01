@@ -38,15 +38,16 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUserEditor>
         implements DbUserEditor.View {
 
-    protected EditorGrid<UserPermissionDTO> grid;
-    protected UserDatabaseDTO db;
+    private EditorGrid<UserPermissionDTO> grid;
+    private UserDatabaseDTO db;
 
     public DbUserGrid() {
         setHeading(I18N.CONSTANTS.users());
         setLayout(new FitLayout());
     }
 
-    public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store) {
+    @Override
+	public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store) {
         this.db = db;
         super.init(presenter, store);
         this.setHeading(db.getName() + " - " + I18N.CONSTANTS.users());
@@ -128,7 +129,8 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
         }
         grid.addListener(Events.CellClick, new Listener<GridEvent>() {
 
-            public void handleEvent(GridEvent ge) {
+            @Override
+			public void handleEvent(GridEvent ge) {
 
                 if (ge.getColIndex() >= 4) {
 
@@ -147,13 +149,14 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
     @Override
     protected void initToolBar() {
         toolBar.addSaveSplitButton();
-        toolBar.addButton(UIActions.add, I18N.CONSTANTS.addUser(), IconImageBundle.ICONS.addUser());
-        toolBar.addButton(UIActions.delete, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.deleteUser());
-        toolBar.addButton(UIActions.export, I18N.CONSTANTS.export(), IconImageBundle.ICONS.excel());
-        toolBar.addButton(UIActions.mailingList, I18N.CONSTANTS.CopyAddressToClipBoard() , IconImageBundle.ICONS.dataEntry());
+        toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.addUser(), IconImageBundle.ICONS.addUser());
+        toolBar.addButton(UIActions.DELETE, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.deleteUser());
+        toolBar.addButton(UIActions.EXPORT, I18N.CONSTANTS.export(), IconImageBundle.ICONS.excel());
+        toolBar.addButton(UIActions.MAILING_LIST, I18N.CONSTANTS.CopyAddressToClipBoard() , IconImageBundle.ICONS.dataEntry());
     }
 
-    public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback) {
+    @Override
+	public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback) {
         UserForm form = new UserForm(db);
         form.getBinding().bind(user);
 

@@ -152,9 +152,9 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         while (i < pendingCommands.size()) {
             CommandRequest cmd = pendingCommands.get(i);
             ProxyResult proxyResult = proxyManager.execute(cmd.getCommand());
-            if (proxyResult.couldExecute) {
+            if (proxyResult.isCouldExecute()) {
             	pendingCommands.remove(i);
-            	cmd.fireOnSuccess(proxyResult.result);
+            	cmd.fireOnSuccess(proxyResult.getResult());
             
             } else if (retriesMaxedOut(cmd)) {
                 pendingCommands.remove(i);

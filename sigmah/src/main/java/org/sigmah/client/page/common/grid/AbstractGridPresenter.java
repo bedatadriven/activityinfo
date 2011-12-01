@@ -73,15 +73,15 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
     }
 
     public void onUIAction(String actionId) {
-        if (UIActions.delete.equals(actionId)) {
+        if (UIActions.DELETE.equals(actionId)) {
             view.confirmDeleteSelected(new ConfirmCallback() {
                 public void confirmed() {
                     onDeleteConfirmed(view.getSelection());
                 }
             });
-        } else if (UIActions.edit.equals(actionId)) {
+        } else if (UIActions.EDIT.equals(actionId)) {
             onEdit(view.getSelection());
-        } else if (UIActions.add.equals(actionId)) {
+        } else if (UIActions.ADD.equals(actionId)) {
             onAdd();
         }
     }

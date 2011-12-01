@@ -67,7 +67,7 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
         store.add(new ArrayList<ProjectDTO>(db.getProjects()));
 
         view.init(this, db, store);
-        view.setActionEnabled(UIActions.delete, false);
+        view.setActionEnabled(UIActions.DELETE, false);
     }
 
 	@Override
@@ -149,7 +149,7 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
 
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
-		view.setActionEnabled(UIActions.delete, true);
+		view.setActionEnabled(UIActions.DELETE, true);
 	}
 
 }

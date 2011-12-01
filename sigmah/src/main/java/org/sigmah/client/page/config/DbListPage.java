@@ -57,7 +57,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
 
     private void createToolBar() {
         toolBar = new ActionToolBar();
-        toolBar.addButton(UIActions.add, I18N.CONSTANTS.newDatabase(), IconImageBundle.ICONS.addDatabase());
+        toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.newDatabase(), IconImageBundle.ICONS.addDatabase());
         toolBar.addEditButton(IconImageBundle.ICONS.editDatabase());
         toolBar.addDeleteButton();
         toolBar.setListener(presenter);
@@ -72,7 +72,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             @Override
             public void handleEvent(GridEvent be) {
-                presenter.onUIAction(UIActions.edit);
+                presenter.onUIAction(UIActions.EDIT);
             }
         });
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<UserDatabaseDTO>() {

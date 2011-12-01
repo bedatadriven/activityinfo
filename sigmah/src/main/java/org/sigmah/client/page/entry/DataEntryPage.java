@@ -161,8 +161,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     	toolBar.add(new Label(I18N.CONSTANTS.grouping()));
     	toolBar.add(groupingComboBox);
     	
-        toolBar.addButton(UIActions.add, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
-        toolBar.addButton(UIActions.edit, I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit());
+        toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
+        toolBar.addButton(UIActions.EDIT, I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit());
         toolBar.addPrintButton();
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
@@ -200,8 +200,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	private void updateSelection(ActivityDTO activity, SiteDTO site) {
 		
 		boolean permissionToEdit = activity.getDatabase().isAllowedToEdit(site);
-		toolBar.setActionEnabled(UIActions.edit, permissionToEdit);
-		toolBar.setActionEnabled(UIActions.delete, permissionToEdit);
+		toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit);
+		toolBar.setActionEnabled(UIActions.DELETE, permissionToEdit);
 		
 		detailTab.setSite(site);
 		attachmentsTab.setSite(site);
@@ -217,8 +217,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	}
 	
 	private void onNoSelection() {
-		toolBar.setActionEnabled(UIActions.edit, false);
-		toolBar.setActionEnabled(UIActions.delete, false); 
+		toolBar.setActionEnabled(UIActions.EDIT, false);
+		toolBar.setActionEnabled(UIActions.DELETE, false); 
 	}
 
 	@Override
@@ -257,7 +257,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		
 		// currently the print form only does one activity
 		Set<Integer> activities = currentPlace.getFilter().getRestrictions(DimensionType.Activity);			
-		toolBar.setActionEnabled(UIActions.print, activities.size() == 1);
+		toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
 
 		
 		return true;
@@ -265,7 +265,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 
 	@Override
 	public void onUIAction(String actionId) {
-		if(UIActions.add.equals(actionId)) {
+		if(UIActions.ADD.equals(actionId)) {
 			SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
 			formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
 				
@@ -274,7 +274,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 					gridPanel.refresh();
 				}
 			});
-		} else if(UIActions.edit.equals(actionId)) {
+		} else if(UIActions.EDIT.equals(actionId)) {
 			SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
 			launcher.editSite(gridPanel.getSelection(), new SiteDialogCallback() {
 				
@@ -283,7 +283,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 					gridPanel.refresh();
 				}
 			});
-		} else if(UIActions.print.equals(actionId)) {
+		} else if(UIActions.PRINT.equals(actionId)) {
 			dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 
 				@Override

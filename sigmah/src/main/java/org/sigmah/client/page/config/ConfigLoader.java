@@ -44,7 +44,7 @@ public class ConfigLoader implements PageLoader {
         pageManager.registerPageLoader(DbUserEditor.DatabaseUsers, this);
         pageManager.registerPageLoader(DbPartnerEditor.DatabasePartners, this);
         pageManager.registerPageLoader(DbProjectEditor.DatabaseProjects, this);
-        pageManager.registerPageLoader(LockedPeriodsPresenter.LockedPeriod, this);
+        pageManager.registerPageLoader(LockedPeriodsPresenter.PAGE_ID, this);
         pageManager.registerPageLoader(DesignPresenter.PAGE_ID, this);
         pageManager.registerPageLoader(DbTargetEditor.DatabaseTargets, this);
 
@@ -54,7 +54,7 @@ public class ConfigLoader implements PageLoader {
         placeSerializer.registerParser(DbUserEditor.DatabaseUsers, new DbPageState.Parser(DbUserEditor.DatabaseUsers));
         placeSerializer.registerParser(DbPartnerEditor.DatabasePartners, new DbPageState.Parser(DbPartnerEditor.DatabasePartners));
         placeSerializer.registerParser(DbProjectEditor.DatabaseProjects, new DbPageState.Parser(DbProjectEditor.DatabaseProjects));
-        placeSerializer.registerParser(LockedPeriodsPresenter.LockedPeriod, new DbPageState.Parser(LockedPeriodsPresenter.LockedPeriod));
+        placeSerializer.registerParser(LockedPeriodsPresenter.PAGE_ID, new DbPageState.Parser(LockedPeriodsPresenter.PAGE_ID));
         placeSerializer.registerParser(DesignPresenter.PAGE_ID, new DbPageState.Parser(DesignPresenter.PAGE_ID));
         placeSerializer.registerParser(DbTargetEditor.DatabaseTargets, new DbPageState.Parser(DbTargetEditor.DatabaseTargets));
     }
@@ -111,7 +111,7 @@ public class ConfigLoader implements PageLoader {
                                 presenter.go(db);
                                 callback.onSuccess(presenter);
 
-                            } else if (LockedPeriodsPresenter.LockedPeriod.equals(pageId)) {
+                            } else if (LockedPeriodsPresenter.PAGE_ID.equals(pageId)) {
                             	LockedPeriodsPresenter presenter = injector.getLockedPeriodsEditor();
                                 presenter.initialize(db);
                                 callback.onSuccess(presenter);

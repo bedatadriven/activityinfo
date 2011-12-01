@@ -10,8 +10,8 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class ShowLockedPeriodsDialog extends Dialog implements ShowLockedPeriodsView{
-	LockedPeriodGrid grid = new LockedPeriodGrid();
+public final class ShowLockedPeriodsDialog extends Dialog implements ShowLockedPeriodsView{
+	private final LockedPeriodGrid grid = new LockedPeriodGrid();
 
 	public ShowLockedPeriodsDialog() {
 		super();

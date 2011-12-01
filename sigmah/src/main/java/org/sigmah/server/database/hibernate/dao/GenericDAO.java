@@ -22,7 +22,7 @@ import javax.persistence.EntityManager;
  */
 public abstract class GenericDAO<T, K> implements DAO<T, K> {
     private final Class<T> persistentClass;
-    protected final EntityManager em;
+    private final EntityManager em;
 
     protected GenericDAO(EntityManager em) {
         this.em = em;
@@ -30,11 +30,17 @@ public abstract class GenericDAO<T, K> implements DAO<T, K> {
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    public void persist(T entity) {
+    protected final EntityManager getEntityManager() {
+    	return em;
+    }
+    
+    @Override
+	public void persist(T entity) {
         this.em.persist(entity);
     }
 
-    public T findById(K primaryKey) {
+    @Override
+	public T findById(K primaryKey) {
         return this.em.find(persistentClass, primaryKey);
     }
 }

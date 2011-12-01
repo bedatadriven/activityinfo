@@ -47,7 +47,7 @@ public interface CanDelete<M extends DTO> {
 	
 	// Since View<T> extends TakesValue<T>, the value does not need to be encapsulated
 	class RequestDeleteEvent extends GwtEvent<RequestDeleteHandler> {
-		public static Type TYPE = new Type<RequestDeleteHandler>(); 
+		public static final Type TYPE = new Type<RequestDeleteHandler>(); 
 		
 		@Override
 		public Type<RequestDeleteHandler> getAssociatedType() {
@@ -62,7 +62,7 @@ public interface CanDelete<M extends DTO> {
 	
 	// Since View<T> extends TakesValue<T>, the value does not need to be encapsulated
 	class ConfirmDeleteEvent extends GwtEvent<ConfirmDeleteHandler> {
-		public static Type TYPE = new Type<ConfirmDeleteHandler>(); 
+		public static final Type TYPE = new Type<ConfirmDeleteHandler>(); 
 		
 		@Override
 		public Type<ConfirmDeleteHandler> getAssociatedType() {
@@ -77,7 +77,7 @@ public interface CanDelete<M extends DTO> {
 	
 	// Since View<T> extends TakesValue<T>, the value does not need to be encapsulated
 	class CancelDeleteEvent extends GwtEvent<CancelDeleteHandler> {
-		public static Type TYPE = new Type<CancelDeleteHandler>(); 
+		public static final Type TYPE = new Type<CancelDeleteHandler>(); 
 		
 		@Override
 		public Type<CancelDeleteHandler> getAssociatedType() {

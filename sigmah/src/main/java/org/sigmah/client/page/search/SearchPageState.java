@@ -28,12 +28,12 @@ public class SearchPageState implements PageState {
 
 	@Override
 	public PageId getPageId() {
-		return SearchPresenter.Search;
+		return SearchPresenter.SEARCH_PAGE_ID;
 	}
 
 	@Override
 	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(SearchPresenter.Search);
+		return Arrays.asList(SearchPresenter.SEARCH_PAGE_ID);
 	}
 	
     @Override

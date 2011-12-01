@@ -25,7 +25,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
@@ -37,11 +36,11 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.inject.Inject;
 
-/*
+/**
  * Displays a modal window enabling the user to add a layer by selecting one or more indicators
  */
-public class AddLayerDialog extends Window implements HasValue<MapLayer> {
-    protected Dispatcher service;
+public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
+    private Dispatcher service;
     private boolean multiSelect = true;
     private MapLayer newLayer = null;
 

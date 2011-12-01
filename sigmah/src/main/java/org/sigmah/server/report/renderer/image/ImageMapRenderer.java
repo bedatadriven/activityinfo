@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.TileProvider;
 import org.sigmah.server.report.generator.map.TiledMap;
@@ -44,7 +45,6 @@ import org.sigmah.shared.report.content.MapMarker;
 import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PieMapMarker;
 import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.util.mapping.TileMath;
 
 import com.google.inject.Inject;
 
@@ -55,6 +55,8 @@ import com.google.inject.Inject;
  * @author Alex Bertram
  */
 public class ImageMapRenderer {
+	
+	private static final Logger LOGGER = Logger.getLogger(ImageMapRenderer.class);
 
 
 	/**
@@ -63,14 +65,15 @@ public class ImageMapRenderer {
 	 * @author alex
 	 *
 	 */
-    private class RemoteTileProvider implements TileProvider {
+    private final class RemoteTileProvider implements TileProvider {
         private TileBaseMap baseMap;
 
         private RemoteTileProvider(TileBaseMap baseMap) {
             this.baseMap = baseMap;
         }
 
-        public Image getImage(int zoom, int tileX, int tileY) {
+        @Override
+		public Image getImage(int zoom, int tileX, int tileY) {
             try {
                 return ImageIO.read(new URL(baseMap.getTileUrl(zoom, tileX, tileY)));
             } catch (IOException e) {
@@ -79,13 +82,17 @@ public class ImageMapRenderer {
         }
     }
 	
-	protected final String mapIconRoot;
+	private final String mapIconRoot;
 
 	private Map<String, BufferedImage> iconImages = new HashMap<String, BufferedImage>();
 
     @Inject
     public ImageMapRenderer(@MapIconPath String mapIconPath) {
         this.mapIconRoot = mapIconPath;
+    }
+    
+    public String getMapIconRoot() {
+    	return mapIconRoot;
     }
 
     public void renderToFile(MapReportElement element, File file) throws IOException {
@@ -214,7 +221,7 @@ public class ImageMapRenderer {
                 image = ImageIO.read(new File(mapIconRoot + "/" + name + ".png"));
                 iconImages.put(name, image);
             } catch (IOException e) {
-                e.printStackTrace();
+            	LOGGER.debug("Exception reading icon '" + name + "'", e);
             }
         }
 		return image;
@@ -238,7 +245,7 @@ public class ImageMapRenderer {
 	        	drawGoogleBaseMap(g2d, map, (GoogleBaseMap)baseMap);
 	        }
         } catch(Exception e) {
-            e.printStackTrace();
+        	LOGGER.debug("Exception drawing basemap", e);
         }
     }
 

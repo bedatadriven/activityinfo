@@ -52,7 +52,7 @@ import freemarker.template.TemplateException;
 @Singleton
 public class AbstractController extends HttpServlet {
 
-    protected final Injector injector;
+    private final Injector injector;
     private final Configuration templateCfg;
 
     private static final String GWT_CODE_SERVER_HOST = "gwt.codesvr";
@@ -116,7 +116,7 @@ public class AbstractController extends HttpServlet {
 
     protected User findUserByEmail(String email) throws InvalidLoginException {
         try {
-            UserDAO userDAO = injector.getInstance(UserDAO.class);
+            UserDAO userDAO = getInjector().getInstance(UserDAO.class);
             return userDAO.findUserByEmail(email);
 
         } catch (NoResultException e) {
@@ -132,7 +132,7 @@ public class AbstractController extends HttpServlet {
     @Transactional
     protected Authentication createNewAuthToken(User user) {
         Authentication auth = new Authentication(user);
-        AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
+        AuthenticationDAO authDAO = getInjector().getInstance(AuthenticationDAO.class);
         authDAO.persist(auth);
         return auth;
     }
@@ -140,14 +140,14 @@ public class AbstractController extends HttpServlet {
     protected <T extends AbstractController> void delegateGet(Class<T> controllerClass,
                                                               HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
-        AbstractController controller = injector.getInstance(controllerClass);
+        AbstractController controller = getInjector().getInstance(controllerClass);
         controller.doGet(req, resp);
     }
 
     protected <T extends AbstractController> void delegatePost(Class<T> controllerClass,
                                                                HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
-        AbstractController controller = injector.getInstance(controllerClass);
+        AbstractController controller = getInjector().getInstance(controllerClass);
         controller.doPost(req, resp);
     }
 
@@ -182,11 +182,15 @@ public class AbstractController extends HttpServlet {
                 throw new InvalidKeyException();
             }
 
-            UserDAO userDAO = injector.getInstance(UserDAO.class);
+            UserDAO userDAO = getInjector().getInstance(UserDAO.class);
             return userDAO.findUserByChangePasswordKey(key);
 
         } catch (NoResultException e) {
             throw new InvalidKeyException();
         }
     }
+
+	protected Injector getInjector() {
+		return injector;
+	}
 }

@@ -73,7 +73,7 @@ public class HostController extends AbstractController {
             throw new NoValidAuthentication();
         }
 
-        AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
+        AuthenticationDAO authDAO = getInjector().getInstance(AuthenticationDAO.class);
         Authentication auth = authDAO.findById(authToken);
 
         if (auth == null) {

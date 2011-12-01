@@ -14,7 +14,7 @@ public class HtmlWriter {
 	private HtmlTag pendingTag = null;
 	private Stack<String> openTags = new Stack<String>();
 	
-	public boolean formatted = false;
+	private boolean formatted = false;
 	
 	protected void writeTag(HtmlTag tag, boolean closed) {
 		if(tag != null) {

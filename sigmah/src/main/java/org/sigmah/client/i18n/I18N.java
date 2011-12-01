@@ -11,13 +11,14 @@ import com.teklabs.gwt.i18n.client.LocaleFactory;
 /**
  * Contains global instances of UIConstants and UIMessages
  */
-public class I18N {
+public final class I18N {
 
     private I18N() {}
 
     public static final UIConstants CONSTANTS;
     public static final UIMessages MESSAGES;
-    public static final FromEntities fromEntities;
+    public static final FromEntities FROM_ENTITIES;
+    
     static {
     	if (GWT.isClient()) {
     		CONSTANTS = GWT.create(UIConstants.class);
@@ -28,6 +29,6 @@ public class I18N {
     		CONSTANTS = LocaleFactory.get(UIConstants.class);
     		MESSAGES = LocaleFactory.get(UIMessages.class);
     	}
-    	fromEntities = new FromEntities();
+    	FROM_ENTITIES = new FromEntities();
     }
 }

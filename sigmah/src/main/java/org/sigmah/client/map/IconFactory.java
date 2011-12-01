@@ -22,7 +22,7 @@ import com.google.gwt.maps.client.overlay.Icon;
  *
  * @author Alex Bertram
  */
-public class IconFactory {
+public final class IconFactory {
 
     private IconFactory() {}
 

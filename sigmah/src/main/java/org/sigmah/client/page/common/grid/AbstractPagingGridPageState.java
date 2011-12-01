@@ -8,7 +8,7 @@ package org.sigmah.client.page.common.grid;
 import com.extjs.gxt.ui.client.Style;
 
 public abstract class AbstractPagingGridPageState extends AbstractGridPageState {
-    protected int pageNum = -1;
+    private int pageNum = -1;
 
     public int getPageNum() {
         return pageNum;
@@ -19,14 +19,14 @@ public abstract class AbstractPagingGridPageState extends AbstractGridPageState 
     }
 
     protected void appendGridStateToken(StringBuilder sb) {
-        if(sortInfo != null && sortInfo.getSortDir() != Style.SortDir.NONE &&
-                sortInfo.getSortField().length() !=0) {
+        if(getSortInfo() != null && getSortInfo().getSortDir() != Style.SortDir.NONE &&
+                getSortInfo().getSortField().length() !=0) {
 
             sb.append("/sort");
-            if(sortInfo.getSortDir() == Style.SortDir.DESC) {
+            if(getSortInfo().getSortDir() == Style.SortDir.DESC) {
                 sb.append("-desc");
             }
-            sb.append(":").append(sortInfo.getSortField());
+            sb.append(":").append(getSortInfo().getSortField());
             if(pageNum > 0) {
                 sb.append("/p").append(pageNum);
             }

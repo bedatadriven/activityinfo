@@ -19,25 +19,25 @@ import com.google.inject.Inject;
 
 public class AdminUpdateBuilder implements UpdateBuilder {
     private AdminDAO dao;
-    protected int levelId;
+    private int levelId;
     private AdminLocalState localState;
     private static final int LAST_VERSION_NUMBER = 1;
-    protected JpaUpdateBuilder builder;
-
+    private JpaUpdateBuilder builder;
 
     @Inject
     public AdminUpdateBuilder(AdminDAO dao) {
         this.dao = dao;
     }
 
-    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
+    @Override
+	public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         parseLevelId(request);
         localState = new AdminLocalState(request.getLocalVersion());
 
         SyncRegionUpdate update = new SyncRegionUpdate();
         builder = new JpaUpdateBuilder();
 
-        if(localState.version < LAST_VERSION_NUMBER) {
+        if(localState.getVersion() < LAST_VERSION_NUMBER) {
             /**
              * This level is out of date, delete all on the client and send all from the server
              */
@@ -46,11 +46,11 @@ public class AdminUpdateBuilder implements UpdateBuilder {
 
             List<AdminEntity> entities = dao.query().level(levelId).execute();
             update.setSql(makeJson(entities));
-            localState.complete = true;
-            localState.version = LAST_VERSION_NUMBER;
+            localState.setComplete(true);
+            localState.setVersion(LAST_VERSION_NUMBER);
         }
 
-        update.setComplete(localState.complete);
+        update.setComplete(localState.isComplete());
         update.setVersion(localState.toString());
 
         return update;

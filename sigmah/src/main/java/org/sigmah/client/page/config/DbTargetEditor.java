@@ -81,8 +81,8 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	        store.add(new ArrayList<TargetDTO>(db.getTargets()));
 
 	        view.init(this, db, store);
-	        view.setActionEnabled(UIActions.delete, false);
-	        view.setActionEnabled(UIActions.edit, false);
+	        view.setActionEnabled(UIActions.DELETE, false);
+	        view.setActionEnabled(UIActions.EDIT, false);
 	        
 	        targetIndicatorPresenter =  new TargetIndicatorPresenter(eventBus, service, stateMgr, new TargetIndicatorView(service), I18N.CONSTANTS);
 	        view.createTargetValueContainer((Widget)targetIndicatorPresenter.getWidget());
@@ -195,8 +195,8 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
-		view.setActionEnabled(UIActions.delete, true);
-		view.setActionEnabled(UIActions.edit, true);
+		view.setActionEnabled(UIActions.DELETE, true);
+		view.setActionEnabled(UIActions.EDIT, true);
 		targetIndicatorPresenter.load(view.getSelection());
 	}
 }

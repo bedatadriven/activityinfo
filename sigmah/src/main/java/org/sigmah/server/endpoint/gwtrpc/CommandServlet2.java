@@ -3,23 +3,18 @@ package org.sigmah.server.endpoint.gwtrpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.server.command.handler.CommandHandler;
-import org.sigmah.server.command.handler.HandlerUtil;
+import org.apache.log4j.Logger;
 import org.sigmah.server.database.dao.UserDAO;
-import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.RemoteCommandService;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -39,6 +34,8 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
     @Inject 
     private UserDAO userDAO;
+    
+    private static final Logger LOGGER = Logger.getLogger(CommandServlet2.class);
     
     @Override
     @LogException

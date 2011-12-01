@@ -2,7 +2,7 @@ package org.sigmah.server.util;
 
 import java.awt.Color;
 
-public class ColorUtil {
+public final class ColorUtil {
 	
 	private ColorUtil() {}
 	

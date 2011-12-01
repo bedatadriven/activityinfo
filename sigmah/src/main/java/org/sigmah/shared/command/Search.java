@@ -3,8 +3,8 @@ package org.sigmah.shared.command;
 import org.sigmah.shared.command.result.SearchResult;
 
 public class Search implements Command<SearchResult> {
-	int pageId;
-	String searchQuery;
+	private int pageId;
+	private String searchQuery;
 	
 	public Search() {
 	}

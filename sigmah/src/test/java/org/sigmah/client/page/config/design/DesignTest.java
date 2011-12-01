@@ -80,7 +80,7 @@ public class DesignTest {
 
         record.set("name", "New Name");
 
-        designer.onUIAction(UIActions.save);
+        designer.onUIAction(UIActions.SAVE);
 
         UpdateEntity cmd = service.getLastExecuted(UpdateEntity.class);
 
@@ -172,7 +172,7 @@ public class DesignTest {
 
         // Verify that the proper delete command executes
 
-        designer.onUIAction(UIActions.delete);
+        designer.onUIAction(UIActions.DELETE);
 
         Delete cmd = service.getLastExecuted(Delete.class);
 
@@ -194,7 +194,7 @@ public class DesignTest {
 
         // Collaborator
         DesignPresenter.View view = createNiceMock(DesignPresenter.View.class);
-        view.setActionEnabled(UIActions.delete, false);
+        view.setActionEnabled(UIActions.DELETE, false);
         replay(view);
 
         // Collaborator
@@ -210,7 +210,7 @@ public class DesignTest {
 
         // Verify that the delete command is enabled when an activity is selected
         resetToDefault(view);
-        view.setActionEnabled(UIActions.delete, true);
+        view.setActionEnabled(UIActions.DELETE, true);
         replay(view);
 
         designer.onSelectionChanged(schema.getActivityById(91));
@@ -219,7 +219,7 @@ public class DesignTest {
 
         // Verify that the delete command is disabled when a folder is selected
         reset(view);
-        view.setActionEnabled(UIActions.delete, false);
+        view.setActionEnabled(UIActions.DELETE, false);
         replay(view);
 
         designer.onSelectionChanged(new IndicatorFolder(null));

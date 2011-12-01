@@ -14,9 +14,9 @@ public class UpdateMonthlyReports implements Command<VoidResult> {
 
 
     public  static class Change implements Serializable {
-        public Month month;
-        public int indicatorId;
-        public Double value;
+        private Month month;
+        private int indicatorId;
+        private Double value;
 
         public Change() {
 
@@ -24,9 +24,33 @@ public class UpdateMonthlyReports implements Command<VoidResult> {
 
         public Change(int indicatorId, Month month, Double value) {
             this.indicatorId = indicatorId;
-            this.month = month;
-            this.value = value;
+            this.setMonth(month);
+            this.setValue(value);
         }
+
+		public void setMonth(Month month) {
+			this.month = month;
+		}
+
+		public Month getMonth() {
+			return month;
+		}
+
+		public void setIndicatorId(int indicatorId) {
+			this.indicatorId = indicatorId;
+		}
+
+		public int getIndicatorId() {
+			return indicatorId;
+		}
+
+		public void setValue(Double value) {
+			this.value = value;
+		}
+
+		public Double getValue() {
+			return value;
+		}
 
 
     }

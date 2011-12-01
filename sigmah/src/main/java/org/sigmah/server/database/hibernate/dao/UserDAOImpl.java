@@ -24,7 +24,7 @@ public class UserDAOImpl extends GenericDAO<User, Integer> implements UserDAO {
 
     @Override
     public boolean doesUserExist(String email) {
-        return em.createNamedQuery("findUserByEmail")
+        return getEntityManager().createNamedQuery("findUserByEmail")
                 .setParameter("email", email)
                 .getResultList().size() == 1;
     }
@@ -32,14 +32,14 @@ public class UserDAOImpl extends GenericDAO<User, Integer> implements UserDAO {
     @Override
     public User findUserByEmail(String email)  {
 
-        return (User) em.createNamedQuery("findUserByEmail")
+        return (User) getEntityManager().createNamedQuery("findUserByEmail")
                 .setParameter("email", email)
                 .getSingleResult();
     }
 
     @Override
     public User findUserByChangePasswordKey(String key) {
-        return (User) em.createNamedQuery("findUserByChangePasswordKey")
+        return (User) getEntityManager().createNamedQuery("findUserByChangePasswordKey")
                 .setParameter("key", key)
                 .getSingleResult();
     }

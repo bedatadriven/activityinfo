@@ -52,14 +52,14 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
 
         for (UpdateMonthlyReports.Change change : cmd.getChanges()) {
 
-            ReportingPeriod period = periods.get(change.month);
+            ReportingPeriod period = periods.get(change.getMonth());
             if (period == null) {
                 period = new ReportingPeriod(site);
                 period.setId(keyGenerator.generateInt());
                 
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, change.month.getYear());
-                calendar.set(Calendar.MONTH, change.month.getMonth() - 1);
+                calendar.set(Calendar.YEAR, change.getMonth().getYear());
+                calendar.set(Calendar.MONTH, change.getMonth().getMonth() - 1);
                 calendar.set(Calendar.DATE, 1);
                 period.setDate1(calendar.getTime());
 
@@ -68,10 +68,10 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
 
                 em.persist(period);
 
-                periods.put(change.month, period);
+                periods.put(change.getMonth(), period);
             }
 
-            updateIndicatorValue(em, period, change.indicatorId, change.value, false);
+            updateIndicatorValue(em, period, change.getIndicatorId(), change.getValue(), false);
         }
 
         return new VoidResult();

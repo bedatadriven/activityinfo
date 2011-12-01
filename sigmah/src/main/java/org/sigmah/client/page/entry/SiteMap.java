@@ -406,10 +406,10 @@ public class SiteMap extends ContentPanel implements Shutdownable {
 
     }
 
-    private class MapDropTarget extends DropTarget {
+    private final class MapDropTarget extends DropTarget {
 
-        BoundingBoxDTO bounds;
-        String boundsName;
+        private BoundingBoxDTO bounds;
+        private String boundsName;
 
         private MapDropTarget(Component target) {
             super(target);

@@ -20,7 +20,7 @@ import com.google.inject.Inject;
  */
 public class GetReportDefHandler implements CommandHandler<GetReportDef> {
 
-    protected ReportDefinitionDAO reportDAO;
+    private ReportDefinitionDAO reportDAO;
 
     @Inject
     public void setReportDAO(ReportDefinitionDAO dao) {

@@ -3,6 +3,7 @@ package org.sigmah.server.report.renderer.itext;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.apache.log4j.Logger;
 import org.sigmah.shared.report.model.ImageReportElement;
 
 import com.lowagie.text.DocWriter;
@@ -15,6 +16,8 @@ import com.lowagie.text.Image;
  */
 public class ItextImageRenderer implements ItextRenderer<ImageReportElement>{
 
+	private static final Logger LOGGER = Logger.getLogger(ItextImageRenderer.class);
+	
 	@Override
 	public void render(DocWriter writer, Document doc, ImageReportElement element)
 			throws DocumentException {
@@ -25,9 +28,9 @@ public class ItextImageRenderer implements ItextRenderer<ImageReportElement>{
 				image = Image.getInstance(element.getUrl());
 				doc.add(image);
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				LOGGER.debug("Error rendering image", e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.debug("Error rendering image", e);
 			}
     	}		
 	}

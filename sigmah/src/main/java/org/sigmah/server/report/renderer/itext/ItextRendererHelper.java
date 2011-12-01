@@ -15,7 +15,7 @@ import com.lowagie.text.DocumentException;
 /**
  * Support routines for ItextRenderers
  */
-class ItextRendererHelper {
+final class ItextRendererHelper {
 
 	private ItextRendererHelper() {}
 	

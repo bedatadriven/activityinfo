@@ -61,9 +61,9 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
     public void onUIAction(String actionId) {
         super.onUIAction(actionId);
 
-        if (UIActions.save.equals(actionId)) {
+        if (UIActions.SAVE.equals(actionId)) {
             onSave();
-        } else if (UIActions.discardChanges.equals(actionId)) {
+        } else if (UIActions.DISCARD_CHANGES.equals(actionId)) {
             getStore().rejectChanges();
         }
 
@@ -159,7 +159,7 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
 
     @Override
     public void onDirtyFlagChanged(boolean isDirty) {
-        view.setActionEnabled(UIActions.save, isDirty);
+        view.setActionEnabled(UIActions.SAVE, isDirty);
     }
 
     protected Map<String, Object> getChangedProperties(Record record) {

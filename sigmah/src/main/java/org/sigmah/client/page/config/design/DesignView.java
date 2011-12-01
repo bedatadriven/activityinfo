@@ -251,7 +251,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
     protected void initRemoveMenu(Menu menu) {
         final MenuItem removeItem = new MenuItem(I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
-        removeItem.setItemId(UIActions.delete);
+        removeItem.setItemId(UIActions.DELETE);
         menu.add(removeItem);
 
     }

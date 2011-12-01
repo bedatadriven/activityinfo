@@ -256,7 +256,7 @@ public class DownSynchronizer {
 		}
     }
 
-    private static class ProgressTrackingIterator<T> implements Iterator<T> {
+    private static final class ProgressTrackingIterator<T> implements Iterator<T> {
         private double total;
         private double completed;
         private Iterator<T> inner;

@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  *
  * @author Alex Bertram
  */
-public class Link extends BaseTreeModel {
+public final class Link extends BaseTreeModel {
     private PageState pageState;
     private AbstractImagePrototype icon;
     private String key;
@@ -72,7 +72,7 @@ public class Link extends BaseTreeModel {
     /**
      * Builder class for Links
      */
-    public static class Builder {
+    public static final class Builder {
         private Link link;
 
         private Builder() {

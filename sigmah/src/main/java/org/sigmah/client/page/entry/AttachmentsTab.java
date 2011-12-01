@@ -70,7 +70,7 @@ public class AttachmentsTab extends TabItem implements
 					public void handleEvent(
 							ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
-						toolBar.setActionEnabled(UIActions.delete, true);
+						toolBar.setActionEnabled(UIActions.DELETE, true);
 					}
 				});
 

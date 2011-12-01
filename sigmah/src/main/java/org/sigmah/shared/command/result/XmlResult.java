@@ -7,7 +7,7 @@ package org.sigmah.shared.command.result;
 
 public class XmlResult implements SingleResult<String> {
 
-	String xml;
+	private String xml;
 	
 	public XmlResult() {
 		
@@ -25,6 +25,7 @@ public class XmlResult implements SingleResult<String> {
 		this.xml = xml;
 	}
 	
+	@Override
 	public String getResult() {
 		return getValue();
 	}

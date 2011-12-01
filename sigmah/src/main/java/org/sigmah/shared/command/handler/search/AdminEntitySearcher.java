@@ -3,8 +3,6 @@ package org.sigmah.shared.command.handler.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.server.database.hibernate.entity.AdminEntity;
-import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -24,10 +22,9 @@ public class AdminEntitySearcher implements Searcher {
 		.likeMany(testQuery)
 		
 		.execute(tx, new SqlResultCallback() {
-			final List<Integer> adminEntityIds = new ArrayList<Integer>();
-			
 			@Override
 			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+				final List<Integer> adminEntityIds = new ArrayList<Integer>();
 				for (SqlResultSetRow result : results.getRows()) {
 					adminEntityIds.add(result.getInt("AdminEntityId"));
 				}

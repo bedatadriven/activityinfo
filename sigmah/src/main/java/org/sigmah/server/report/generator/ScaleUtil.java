@@ -8,7 +8,7 @@ package org.sigmah.server.report.generator;
 /**
  * @author Alex Bertram
  */
-public class ScaleUtil {
+public final class ScaleUtil {
 	
 		
 

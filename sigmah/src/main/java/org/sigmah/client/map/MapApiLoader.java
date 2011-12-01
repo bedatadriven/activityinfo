@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *
  * @author Alex Bertram
  */
-public class MapApiLoader {
+public final class MapApiLoader {
     private static final int TIMEOUT = 10 * 1000;
     // TODO: externalize this, should come from page
     private static final String API_VERSION = "2.153";

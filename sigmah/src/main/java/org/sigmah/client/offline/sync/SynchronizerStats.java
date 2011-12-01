@@ -12,9 +12,9 @@ import com.allen_sauer.gwt.log.client.Log;
 public class SynchronizerStats {
 
 	
-	double timeStarted;
-	double timeWaitingForServer = 0;
-	double timeWaitingForLocalDatabase = 0;
+	private double timeStarted;
+	private double timeWaitingForServer = 0;
+	private double timeWaitingForLocalDatabase = 0;
 	
 	public void onStart() {
 		if(Log.isDebugEnabled()) {

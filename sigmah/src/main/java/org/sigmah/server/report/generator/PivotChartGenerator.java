@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 
 public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement> {
 
-    protected final IndicatorDAO indicatorDAO;
+    private final IndicatorDAO indicatorDAO;
 
     @Inject
     public PivotChartGenerator(DispatcherSync dispatcher, IndicatorDAO indicatorDAO) {

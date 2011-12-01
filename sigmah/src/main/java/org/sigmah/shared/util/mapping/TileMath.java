@@ -23,7 +23,7 @@ import org.sigmah.shared.report.content.Point;
  * @author Alex Bertram
  *
  */
-public class TileMath {
+public final class TileMath {
 
 	private static final int MAX_ZOOM = 16;
 	/*

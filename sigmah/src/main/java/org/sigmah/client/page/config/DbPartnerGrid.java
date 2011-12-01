@@ -75,8 +75,8 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
 
     @Override
     protected void initToolBar() {
-        toolBar.addButton(UIActions.add, messages.addPartner(), icons.add());
-        toolBar.addButton(UIActions.delete, messages.delete(), icons.delete());
+        toolBar.addButton(UIActions.ADD, messages.addPartner(), icons.add());
+        toolBar.addButton(UIActions.DELETE, messages.delete(), icons.delete());
     }
 
     @Override

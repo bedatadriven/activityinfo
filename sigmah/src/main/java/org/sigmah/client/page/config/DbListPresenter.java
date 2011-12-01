@@ -90,11 +90,11 @@ public class DbListPresenter implements ActionListener {
 
     private void enableActions() {
         if(selection == null) {
-            view.setActionEnabled(UIActions.delete, false);
-            view.setActionEnabled(UIActions.edit, false);
+            view.setActionEnabled(UIActions.DELETE, false);
+            view.setActionEnabled(UIActions.EDIT, false);
         } else {
-            view.setActionEnabled(UIActions.delete, userHasRightToDeleteSelectedDatabase());
-            view.setActionEnabled(UIActions.edit, userHasRightToEditSelectedDatabase());
+            view.setActionEnabled(UIActions.DELETE, userHasRightToDeleteSelectedDatabase());
+            view.setActionEnabled(UIActions.EDIT, userHasRightToEditSelectedDatabase());
         }
     }
 
@@ -108,11 +108,11 @@ public class DbListPresenter implements ActionListener {
 
     @Override
     public void onUIAction(String actionId) {
-        if(UIActions.delete.equals(actionId)) {
+        if(UIActions.DELETE.equals(actionId)) {
             onDelete();
-        } else if(UIActions.edit.equals(actionId)){
+        } else if(UIActions.EDIT.equals(actionId)){
             onEdit();
-        } else if(UIActions.add.equals(actionId)) {
+        } else if(UIActions.ADD.equals(actionId)) {
             onAdd();
         }
     }

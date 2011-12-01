@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 
 public class TableGenerator extends ListGenerator<TableElement> {
 
-    protected MapGenerator mapGenerator;
+    private MapGenerator mapGenerator;
     
     @Inject
     public TableGenerator(DispatcherSync dispatcher, MapGenerator mapGenerator) {

@@ -127,13 +127,13 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 		toolbarActions = new ActionToolBar(new ActionListener(){
 			@Override
 			public void onUIAction(String actionId) {
-				if (actionId.equals(UIActions.add)) {
+				if (actionId.equals(UIActions.ADD)) {
 					eventBus.fireEvent(new StartCreateEvent());
-				} else if (actionId.equals(UIActions.delete)) {
+				} else if (actionId.equals(UIActions.DELETE)) {
 					eventBus.fireEvent(new RequestDeleteEvent());
-				} else if (actionId.equals(UIActions.save)) {
+				} else if (actionId.equals(UIActions.SAVE)) {
 					eventBus.fireEvent(new UpdateEvent());
-				} else if (actionId.equals(UIActions.discardChanges)) {
+				} else if (actionId.equals(UIActions.DISCARD_CHANGES)) {
 					eventBus.fireEvent(new CancelUpdateEvent());
 //				} else if (actionId.equals(UIActions.refresh)) {
 //					eventBus.fireEvent(new RefreshEvent());

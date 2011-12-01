@@ -14,7 +14,7 @@ import org.hibernate.ejb.HibernateEntityManager;
  * @author Alex Bertram
  */
 
-public class DomainFilters {
+public final class DomainFilters {
 
 	private DomainFilters() {}
 	
@@ -29,7 +29,6 @@ public class DomainFilters {
 
         /* Hide entities deleted by users  */
         session.enableFilter("hideDeleted");
-
     }
 
     public static void applyVisibleFilter(User user, EntityManager em) {
@@ -38,8 +37,5 @@ public class DomainFilters {
 
         Filter filter = session.enableFilter("userVisible");
 		filter.setParameter("currentUserId", user.getId());
-
     }
-
-
 }

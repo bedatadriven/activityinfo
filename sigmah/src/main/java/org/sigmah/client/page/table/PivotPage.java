@@ -377,17 +377,17 @@ public final class PivotPage extends LayoutContainer implements PivotPresenter.V
 
 		Button refresh = new Button(I18N.CONSTANTS.refreshPreview(),
 				IconImageBundle.ICONS.refresh(), listener);
-		refresh.setItemId(UIActions.refresh);
+		refresh.setItemId(UIActions.REFRESH);
 		gridToolBar.add(refresh);
 
 
 		Button export = new Button(I18N.CONSTANTS.export(),
 				IconImageBundle.ICONS.excel(), listener);
-		export.setItemId(UIActions.export);
+		export.setItemId(UIActions.EXPORT);
 		gridToolBar.add(export);
 
 		Button subscribe = new Button(I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.email(), listener);
-		subscribe.setItemId(UIActions.subscribe);
+		subscribe.setItemId(UIActions.SUBSCRIBE);
 		gridToolBar.add(subscribe);
 		
 		center.add(gridContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
@@ -433,7 +433,7 @@ public final class PivotPage extends LayoutContainer implements PivotPresenter.V
 					
 			@Override
 			public void onValueChange(ValueChangeEvent<Filter> event) {
-				presenter.onUIAction(UIActions.refresh);
+				presenter.onUIAction(UIActions.REFRESH);
 			}
 		});
 	}

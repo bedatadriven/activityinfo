@@ -36,10 +36,11 @@ import com.google.inject.Inject;
  * This 
  */
 public class SearchPresenter implements SearchView.SearchHandler, Page {
-	public static final PageId Search = new PageId("search");
-	protected final Dispatcher service;
-	protected final EventBus eventBus;
-	protected final SearchView view;
+	public static final PageId SEARCH_PAGE_ID = new PageId("search");
+	
+	private final Dispatcher service;
+	private final EventBus eventBus;
+	private final SearchView view;
 	private SchemaDTO schema;
 	
 	@Inject
@@ -125,7 +126,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 
 	@Override
 	public PageId getPageId() {
-		return Search;
+		return SEARCH_PAGE_ID;
 	}
 
 	@Override

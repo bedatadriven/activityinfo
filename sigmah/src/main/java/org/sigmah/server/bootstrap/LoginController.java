@@ -78,7 +78,7 @@ public class LoginController extends AbstractController {
 	}
 
 	protected void checkPassword(String password, User user) throws InvalidLoginException {
-        Authenticator authenticator = injector.getInstance(Authenticator.class);
+        Authenticator authenticator = getInjector().getInstance(Authenticator.class);
         if (!authenticator.check(user, password)) {
             throw new InvalidLoginException();
         }

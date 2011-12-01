@@ -19,7 +19,7 @@ import com.lowagie.text.Paragraph;
  *
  * @author Alex Bertram
  */
-public class ThemeHelper {
+public final class ThemeHelper {
 
 	private static final float LEFT_INDENT = 5.4f;
 	

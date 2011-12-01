@@ -63,10 +63,10 @@ public class LockedPeriodsPresenter
 		extends 
 			AddCreateView<LockedPeriodDTO> {
 
-		public void setUserDatabase(UserDatabaseDTO userDatabase);
+		void setUserDatabase(UserDatabaseDTO userDatabase);
 	}
 	
-	public static PageId LockedPeriod = new PageId("lockedPeriod");
+	public static final PageId PAGE_ID = new PageId("lockedPeriod");
 	
 	@Inject
 	public LockedPeriodsPresenter(Dispatcher service, EventBus eventBus,
@@ -257,7 +257,7 @@ public class LockedPeriodsPresenter
 
 	@Override
 	public PageId getPageId() {
-		return LockedPeriod;
+		return PAGE_ID;
 	}
 
 	@Override

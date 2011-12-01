@@ -17,14 +17,14 @@ public class ProxyResult<T extends CommandResult> {
     /**
      * True if the handler was able to execute the command locally
      */
-    public final boolean couldExecute;
+    private final boolean couldExecute;
 
     /**
      * The result of the local execution. N.B.: <code>null</code> is a legitimate
      * return value of a {@link org.sigmah.shared.command.Command} so be sure to check the
      * value of <code>couldExecute</code>
      */
-    public final T result;
+    private final T result;
 
     private static ProxyResult failed = new ProxyResult();
 
@@ -54,5 +54,11 @@ public class ProxyResult<T extends CommandResult> {
         return failed;
     }
 
+	public T getResult() {
+		return result;
+	}
 
+	public boolean isCouldExecute() {
+		return couldExecute;
+	}
 }

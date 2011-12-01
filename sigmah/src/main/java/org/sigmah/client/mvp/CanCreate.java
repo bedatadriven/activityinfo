@@ -44,7 +44,7 @@ public interface CanCreate<M extends DTO> {
 	
 	// The Presenter has a seperate view for creating/updating domain object
 	class CreateEvent extends GwtEvent<CreateHandler> {
-		public static Type TYPE = new Type<CreateHandler>(); 
+		public static final Type TYPE = new Type<CreateHandler>(); 
 		
 		@Override
 		public Type<CreateHandler> getAssociatedType() {
@@ -59,7 +59,7 @@ public interface CanCreate<M extends DTO> {
 
 	// The Presenter has a seperate view for creating/updating domain object
 	class CancelCreateEvent extends GwtEvent<CancelCreateHandler> {
-		public static Type TYPE = new Type<CancelCreateHandler>(); 
+		public static final Type TYPE = new Type<CancelCreateHandler>(); 
 		
 		@Override
 		public Type<CancelCreateHandler> getAssociatedType() {
@@ -74,7 +74,7 @@ public interface CanCreate<M extends DTO> {
 
 	// The Presenter has a seperate view for creating/updating domain object
 	class StartCreateEvent extends GwtEvent<StartCreateHandler> {
-		public static Type TYPE = new Type<StartCreateHandler>(); 
+		public static final Type TYPE = new Type<StartCreateHandler>(); 
 		
 		@Override
 		public Type<StartCreateHandler> getAssociatedType() {

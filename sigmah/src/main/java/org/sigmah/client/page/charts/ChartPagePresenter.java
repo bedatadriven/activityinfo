@@ -35,19 +35,14 @@ public class ChartPagePresenter implements Page, ActionListener, ExportCallback 
 
     @ImplementedBy(ChartPage.class)
     public interface View {
-
-        public void bindPresenter(ChartPagePresenter presenter);
-
-        public PivotChartReportElement getChartElement();
-
-        public AsyncMonitor getMonitor();
-
-        public void setData(PivotChartReportElement element);
-
+        void bindPresenter(ChartPagePresenter presenter);
+        PivotChartReportElement getChartElement();
+        AsyncMonitor getMonitor();
+        void setData(PivotChartReportElement element);
     }
 
-    protected final EventBus eventBus;
-    protected final Dispatcher service;
+    private final EventBus eventBus;
+    private final Dispatcher service;
 
     private final View view;
 
@@ -59,7 +54,8 @@ public class ChartPagePresenter implements Page, ActionListener, ExportCallback 
         this.view.bindPresenter(this);
     }
 
-    public void shutdown() {
+    @Override
+	public void shutdown() {
 
     }
 
@@ -83,9 +79,10 @@ public class ChartPagePresenter implements Page, ActionListener, ExportCallback 
         return null;
     }
 
-    public void onUIAction(String actionId) {
+    @Override
+	public void onUIAction(String actionId) {
 
-        if (UIActions.refresh.equals(actionId)) {
+        if (UIActions.REFRESH.equals(actionId)) {
 
             final PivotChartReportElement element = view.getChartElement();
             service.execute(new GenerateElement(element), view.getMonitor(),
@@ -105,11 +102,13 @@ public class ChartPagePresenter implements Page, ActionListener, ExportCallback 
         }
     }
 
-    public void export(RenderElement.Format format) {
+    @Override
+	public void export(RenderElement.Format format) {
 
     }
 
-    public boolean navigate(PageState place) {
+    @Override
+	public boolean navigate(PageState place) {
         return false;
     }
 }

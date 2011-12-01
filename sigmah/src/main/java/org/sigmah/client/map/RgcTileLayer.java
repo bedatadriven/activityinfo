@@ -13,7 +13,7 @@ import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.geom.Point;
 
 class RgcTileLayer extends TileLayer {
-	String baseUrl;
+	private String baseUrl;
 	
 	public RgcTileLayer(String baseUrl, int minZoom, int maxZoom) {
 		super(createCopyRights(), minZoom, maxZoom);

@@ -64,9 +64,9 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         AttributeGroup group = new AttributeGroup();
         updateAttributeGroupProperties(group, properties);
 
-        em.persist(group);
+        entityManager().persist(group);
 
-        Activity activity = em.find(Activity.class, properties.get("activityId"));
+        Activity activity = entityManager().find(Activity.class, properties.get("activityId"));
         activity.getAttributeGroups().add(group);
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
@@ -76,14 +76,14 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
     
     private CommandResult createAttribute(CreateEntity cmd, Map<String, Object> properties) {
         Attribute attribute = new Attribute();
-        AttributeGroup ag = em.getReference(AttributeGroup.class, properties.get("attributeGroupId")); 
+        AttributeGroup ag = entityManager().getReference(AttributeGroup.class, properties.get("attributeGroupId")); 
         attribute.setGroup(ag);
 
         updateAttributeProperties(properties, attribute);
         
         Activity activity = ag.getActivities().iterator().next(); // Assume group has only one activity
 
-        em.persist(attribute);
+        entityManager().persist(attribute);
         activity.getDatabase().setLastSchemaUpdate(new Date());
         
         return new CreateResult(attribute.getId());
@@ -93,14 +93,14 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             throws IllegalAccessCommandException {
 
         Indicator indicator = new Indicator();
-        Activity activity = em.getReference(Activity.class, properties.get("activityId"));
+        Activity activity = entityManager().getReference(Activity.class, properties.get("activityId"));
         indicator.setActivity(activity);
 
         assertDesignPriviledges(user, indicator.getActivity().getDatabase());
 
         updateIndicatorProperties(indicator, properties);
 
-        em.persist(indicator);
+        entityManager().persist(indicator);
         activity.getDatabase().setLastSchemaUpdate(new Date());
 
         return new CreateResult(indicator.getId());

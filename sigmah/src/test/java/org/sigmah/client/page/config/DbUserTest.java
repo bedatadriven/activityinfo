@@ -44,7 +44,7 @@ public class DbUserTest {
 
         // Collaborator: View
         DbUserEditor.View view = createNiceMock(DbUserEditor.View.class);
-        view.setActionEnabled(UIActions.save, false);
+        view.setActionEnabled(UIActions.SAVE, false);
         replay(view);
 
         // Class under test
@@ -56,7 +56,7 @@ public class DbUserTest {
 
         // VERIFY that following a modification the button is enabled
         reset(view);
-        view.setActionEnabled(UIActions.save, true);
+        view.setActionEnabled(UIActions.SAVE, true);
         replay(view);
 
         Record record = editor.getStore().getRecord(users.getData().get(0));
@@ -92,7 +92,7 @@ public class DbUserTest {
         Record record = editor.getStore().getRecord(users.getData().get(0));
         record.set("allowViewAll", true);
 
-        editor.onUIAction(UIActions.save);
+        editor.onUIAction(UIActions.SAVE);
 
         UpdateUserPermissions cmd = service.getLastExecuted(UpdateUserPermissions.class);
         Assert.assertEquals("typhaine@sol.net", cmd.getModel().getEmail());
@@ -127,10 +127,10 @@ public class DbUserTest {
         record.set("allowViewAll", true);
 
         reset(view);
-        view.setActionEnabled(UIActions.save, false);
+        view.setActionEnabled(UIActions.SAVE, false);
         replay(view);
 
-        editor.onUIAction(UIActions.save);
+        editor.onUIAction(UIActions.SAVE);
 
         verify(view);
     }

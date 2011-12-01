@@ -19,7 +19,7 @@ public class CategoryAdapter extends XmlAdapter<CategoryAdapter.Category, Dimens
     public static class Category {
 
         @XmlAttribute
-        public Integer id;
+        private Integer id;
     }
 
     @Override

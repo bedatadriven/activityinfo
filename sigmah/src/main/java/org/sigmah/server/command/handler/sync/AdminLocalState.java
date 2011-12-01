@@ -5,34 +5,56 @@
 
 package org.sigmah.server.command.handler.sync;
 
-/**
- * 
- */
+
 public class AdminLocalState {
-    int version = 0;
-    boolean complete = false;
-    int lastId;
+    private int version = 0;
+    private boolean complete = false;
+    private int lastId;
 
     public AdminLocalState(String localState) {
         if(localState != null) {
             String[] tokens = localState.split(",");
-            version = Integer.parseInt(tokens[0]);
+            setVersion(Integer.parseInt(tokens[0]));
 
             if(tokens.length == 1) {
-                complete = true;
+                setComplete(true);
             } else {
-                complete = false;
-                lastId = Integer.parseInt(tokens[1]);
+                setComplete(false);
+                setLastId(Integer.parseInt(tokens[1]));
             }
         }
     }
 
     @Override
     public String toString() {
-        if(complete) {
-            return Integer.toString(version);
+        if(isComplete()) {
+            return Integer.toString(getVersion());
         } else {
-            return version + "," + lastId;
+            return getVersion() + "," + getLastId();
         }
     }
+
+	void setVersion(int version) {
+		this.version = version;
+	}
+
+	int getVersion() {
+		return version;
+	}
+
+	void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+
+	boolean isComplete() {
+		return complete;
+	}
+
+	void setLastId(int lastId) {
+		this.lastId = lastId;
+	}
+
+	int getLastId() {
+		return lastId;
+	}
 }

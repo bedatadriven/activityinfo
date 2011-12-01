@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class LatinAlphaSequence implements LabelSequence {
 
-    int nextNumber = 0;
+    private int nextNumber = 0;
 
     @Override
     public String next() {

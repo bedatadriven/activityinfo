@@ -67,7 +67,7 @@ public class ReportPreviewPresenter implements Page, ActionListener, ExportCallb
         this.template = template;
         this.view.init(this, template);
 
-        this.view.setActionEnabled(UIActions.edit, template.getAmOwner());
+        this.view.setActionEnabled(UIActions.EDIT, template.getAmOwner());
     }
 
     public PageId getPageId() {
@@ -112,7 +112,7 @@ public class ReportPreviewPresenter implements Page, ActionListener, ExportCallb
     }
 
     public void onUIAction(String actionId) {
-        if (UIActions.refresh.equals(actionId)) {
+        if (UIActions.REFRESH.equals(actionId)) {
 
             RenderReportHtml command = new RenderReportHtml(template.getId(), view.getDateRange());
             service.execute(command, view.getLoadingMonitor(), new Got<HtmlResult>() {
@@ -122,7 +122,7 @@ public class ReportPreviewPresenter implements Page, ActionListener, ExportCallb
                 }
             });
 
-        } else if (UIActions.edit.equals(actionId)) {
+        } else if (UIActions.EDIT.equals(actionId)) {
 
             service.execute(new GetReportDef(template.getId()), view.getLoadingMonitor(), new Got<XmlResult>() {
                 @Override

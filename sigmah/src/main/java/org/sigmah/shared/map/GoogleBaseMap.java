@@ -3,7 +3,7 @@ package org.sigmah.shared.map;
 /**
  * BaseMap provided through the Google Maps API
  */
-public class GoogleBaseMap extends BaseMap {
+public final class GoogleBaseMap extends BaseMap {
 
 	/**
 	 *  specifies a standard roadmap image, as is normally shown on the Google Maps website

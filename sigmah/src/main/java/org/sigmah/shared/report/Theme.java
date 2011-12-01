@@ -8,27 +8,25 @@ package org.sigmah.shared.report;
 /**
  * @author Alex Bertram
  */
-public class Theme {
+public final class Theme {
 	
 	private Theme() {}
 
     public static String[] getColors() {
-        String[] colors = new String[8];
-        colors[0] = "#1F497D"; // 31, 73, 125
-        colors[1] = "#EEECE1"; // 238, 236, 225
+        return new String[] {
+        	"#1F497D", // 31, 73, 125
+        	"#EEECE1" }; // 238, 236, 225
 
-        return colors;
     }
 
     public static String[] getAccents() {
-        String[] accents = new String[6];
-        accents[0] = "#4F81BD"; // 79, 129, 189
-        accents[1] = "#C0504D"; // 192, 80, 77
-        accents[2] = "#98BB59"; // 155, 187, 89
-        accents[3] = "#8064A2"; // 128, 100, 162
-        accents[4] = "#4BACC6"; // 75, 172, 198
-        accents[5] = "#F79646"; // 247, 150, 70
-        return accents;
+        return new String[] {
+        	"#4F81BD", // 79, 129, 189
+        	"#C0504D", // 192, 80, 77
+        	"#98BB59", // 155, 187, 89
+        	"#8064A2", // 128, 100, 162
+        	"#4BACC6", // 75, 172, 198
+        	"#F79646"}; // 247, 150, 70
     }
 
     public static String getColor(int index) {

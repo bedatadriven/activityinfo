@@ -159,7 +159,7 @@ public class PivotPresenter implements Page {
     }
 
     public void onUIAction(String itemId) {
-        if (UIActions.refresh.equals(itemId)) {
+        if (UIActions.REFRESH.equals(itemId)) {
             final PivotTableReportElement element = createElement();
             service.execute(new GeneratePivotTable(element), view.getMonitor(), new AsyncCallback<PivotContent>() {
                 public void onFailure(Throwable throwable) {
@@ -172,10 +172,10 @@ public class PivotPresenter implements Page {
                 }
             });
 
-        } else if (UIActions.export.equals(itemId)) {
+        } else if (UIActions.EXPORT.equals(itemId)) {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
                     new DownloadCallback(eventBus, "pivotTable"));
-        } else if (UIActions.subscribe.equals(itemId)) {
+        } else if (UIActions.SUBSCRIBE.equals(itemId)) {
         	
         	form = new SubscribeForm();
         	

@@ -38,7 +38,7 @@ import com.lowagie.text.DocumentException;
  */
 public abstract class ItextReportRenderer implements Renderer {
 
-	protected final Map<Class, ItextRenderer> renderers = new HashMap<Class, ItextRenderer>();
+	private final Map<Class, ItextRenderer> renderers = new HashMap<Class, ItextRenderer>();
 	
     @Inject
     protected ItextReportRenderer(@MapIconPath String mapIconPath) {
@@ -52,6 +52,7 @@ public abstract class ItextReportRenderer implements Renderer {
     	renderers.put(ImageReportElement.class, new ItextImageRenderer());
     }
 
+	@Override
 	public void render(ReportElement element, OutputStream os) throws IOException {
 
         try {

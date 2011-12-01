@@ -90,7 +90,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         initListeners(treeStore, null);
 
         this.view.init(this, db, treeStore);
-        this.view.setActionEnabled(UIActions.delete, false);
+        this.view.setActionEnabled(UIActions.DELETE, false);
     }
 
     public void shutdown() {
@@ -299,7 +299,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     public void onSelectionChanged(ModelData selectedItem) {
-        view.setActionEnabled(UIActions.delete, this.db.isDesignAllowed() &&
+        view.setActionEnabled(UIActions.DELETE, this.db.isDesignAllowed() &&
                 selectedItem instanceof EntityDTO);
     }
 

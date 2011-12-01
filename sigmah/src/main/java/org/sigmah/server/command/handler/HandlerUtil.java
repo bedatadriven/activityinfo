@@ -27,7 +27,7 @@ import com.google.inject.Injector;
 /**
  * Convenience methods for <code>CommandHandler</code>s
  */
-public class HandlerUtil {
+public final class HandlerUtil {
 
 	private HandlerUtil() {}
 

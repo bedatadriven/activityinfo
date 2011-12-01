@@ -39,7 +39,7 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
     public static class DimensionElement {
 
         @XmlAttribute
-        public String type;
+        private String type;
 
         @XmlAttribute
         private Integer levelId;

@@ -19,7 +19,7 @@ import com.google.gwt.maps.client.geom.Projection;
 /**
  * Utility class for creating standard GoogleMap MapTypes
  */
-public class MapTypeFactory {
+public final class MapTypeFactory {
 
     private MapTypeFactory() {}
 

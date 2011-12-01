@@ -82,7 +82,7 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
     private void updateIndicator(User user, UpdateEntity cmd, Map<String, Object> changes)
             throws IllegalAccessCommandException {
-        Indicator indicator = em.find(Indicator.class, cmd.getId());
+        Indicator indicator = entityManager().find(Indicator.class, cmd.getId());
 
         assertDesignPriviledges(user, indicator.getActivity().getDatabase());
 
@@ -90,7 +90,7 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
     }
     
     private void updateLockedPeriod(User user, UpdateEntity cmd, Map<String, Object> changes) {
-    	LockedPeriod lockedPeriod = em.find(LockedPeriod.class, cmd.getId());
+    	LockedPeriod lockedPeriod = entityManager().find(LockedPeriod.class, cmd.getId());
     	
     	// TODO: check permissions when updating the LockedPeriod
     	//assertDesignPriviledges(user, database)
@@ -99,19 +99,19 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
     }
 
     private void updateAttribute(User user, UpdateEntity cmd, Map<String, Object> changes) {
-        Attribute attribute = em.find(Attribute.class, cmd.getId());
+        Attribute attribute = entityManager().find(Attribute.class, cmd.getId());
 
         // TODO: decide where attributes belong and how to manage them
         // assertDesignPriviledges(user, attribute.get);
 
         updateAttributeProperties(changes, attribute);
-        AttributeGroup ag = em.find(AttributeGroup.class, attribute.getGroup().getId());
+        AttributeGroup ag = entityManager().find(AttributeGroup.class, attribute.getGroup().getId());
         Activity activity = ag.getActivities().iterator().next(); // Assume only one activity for the attr group
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
 
     private void updateAttributeGroup(UpdateEntity cmd, Map<String, Object> changes) {
-        AttributeGroup group = em.find(AttributeGroup.class, cmd.getId());
+        AttributeGroup group = entityManager().find(AttributeGroup.class, cmd.getId());
 
         updateAttributeGroupProperties(group, changes);
         
@@ -121,7 +121,7 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
     
     private void updateTarget(User user, UpdateEntity cmd, Map<String, Object> changes){
    		// 	TODO: check permissions when updating the Target
-    	Target target = em.find(Target.class, cmd.getId());
+    	Target target = entityManager().find(Target.class, cmd.getId());
     	
     	updateTargetProperties(target, changes);
 

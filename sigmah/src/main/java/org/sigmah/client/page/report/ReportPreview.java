@@ -95,7 +95,7 @@ public class ReportPreview extends ContentPanel implements ReportPreviewPresente
         toolBar.addEditButton();
 
         // do initial load
-        presenter.onUIAction(UIActions.refresh);
+        presenter.onUIAction(UIActions.REFRESH);
 
         ExportMenuButton export = new ExportMenuButton(RenderElement.Format.Word)
         	.withWord()

@@ -148,7 +148,7 @@ public class QueryParser {
 	/** Transforms a localized dimension into a dimension we can use to parse using the DimensionType enum */
 	// TODO: implement
 	private DimensionType fromLocalizedDimension(String localizedDimension) {
-		return I18N.fromEntities.fromLocalizedString(localizedDimension);
+		return I18N.FROM_ENTITIES.fromLocalizedString(localizedDimension);
 	}
 
 	private DimensionType fromString(String dimensionString) throws Exception {
@@ -281,7 +281,7 @@ public class QueryParser {
 			}
 			dimension.setName(query.substring(dimension.getStartPosition(), dimension.getEndPosition()));
 			if (!dimension.isIdDimension()) {
-				dimension.setDimensionType(I18N.fromEntities.fromLocalizedString(dimension.getName()));
+				dimension.setDimensionType(I18N.FROM_ENTITIES.fromLocalizedString(dimension.getName()));
 			}
 			dimensions.add(dimension);
 		}

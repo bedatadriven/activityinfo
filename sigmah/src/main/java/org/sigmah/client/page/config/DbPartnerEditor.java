@@ -75,7 +75,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
         store.add(new ArrayList<PartnerDTO>(db.getPartners()));
 
         view.init(this, db, store);
-        view.setActionEnabled(UIActions.delete, false);
+        view.setActionEnabled(UIActions.DELETE, false);
     }
 
     @Override
@@ -155,6 +155,6 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
 
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
-        this.view.setActionEnabled(UIActions.delete, selectedItem != null);
+        this.view.setActionEnabled(UIActions.DELETE, selectedItem != null);
 	}
 }

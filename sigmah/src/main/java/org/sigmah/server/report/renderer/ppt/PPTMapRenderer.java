@@ -123,7 +123,7 @@ public class PPTMapRenderer extends ImageMapRenderer {
         if(iconIndex == null) {
             try {
                 iconIndex = ppt.addPicture(
-                        new File(mapIconRoot + "/" + marker.getIcon().getName() + ".png"),
+                        new File(getMapIconRoot() + "/" + marker.getIcon().getName() + ".png"),
                         Picture.PNG);
             } catch (IOException e) {
                 iconIndex = -1;

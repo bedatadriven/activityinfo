@@ -238,7 +238,7 @@ public class XmlBuilder {
 	}
 	
 	public XmlBuilder e(SimpleXmlElement tag) throws SAXException {
-		e(new XmlElement(tag.namespace, tag.name)).text(tag.text.toString());
+		e(new XmlElement(tag.getNamespace(), tag.getName())).text(tag.getText().toString());
 		return this;
 	}
 

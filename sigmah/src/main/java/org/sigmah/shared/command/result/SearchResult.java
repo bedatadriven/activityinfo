@@ -10,9 +10,9 @@ import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.content.PivotContent;
 
 public class SearchResult extends ListResult<SearchHitDTO> implements CommandResult, DTO {
-	PivotContent pivotTabelData; // hierarchy of activities
-	List<SiteDTO> recentAdditions;
-	List<Searcher> failedSearchers = new ArrayList<Searcher>();
+	private PivotContent pivotTabelData; // hierarchy of activities
+	private List<SiteDTO> recentAdditions;
+	private List<Searcher> failedSearchers = new ArrayList<Searcher>();
 
 	public SearchResult() {
 		super();

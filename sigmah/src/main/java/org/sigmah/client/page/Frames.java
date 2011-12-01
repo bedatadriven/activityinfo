@@ -11,7 +11,7 @@ package org.sigmah.client.page;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class Frames {
+public final class Frames {
 
 	private Frames() {}
 	

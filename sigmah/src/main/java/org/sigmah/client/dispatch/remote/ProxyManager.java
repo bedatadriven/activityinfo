@@ -101,7 +101,7 @@ public class ProxyManager implements DispatchEventSource {
 
                 try {
                     ProxyResult r = proxy.maybeExecute(cmd);
-                    if (r.couldExecute) {
+                    if (r.isCouldExecute()) {
 
                         Log.debug("ProxyManager: EXECUTED (!!) " + cmd.toString() + " locally with proxy "
                                 + proxy.getClass().getName());

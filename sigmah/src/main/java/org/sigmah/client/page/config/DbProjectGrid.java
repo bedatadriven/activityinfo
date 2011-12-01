@@ -59,8 +59,8 @@ public class DbProjectGrid extends
     
 	@Override
 	protected void initToolBar() {
-        toolBar.addButton(UIActions.add, I18N.CONSTANTS.addProject(), icons.add()); 
-        toolBar.addButton(UIActions.delete, messages.delete(), icons.delete());
+        toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.addProject(), icons.add()); 
+        toolBar.addButton(UIActions.DELETE, messages.delete(), icons.delete());
 	}
 
 	@Override

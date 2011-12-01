@@ -110,7 +110,7 @@ public class DbListPresenterTest {
         createPresenter();
         presenter.onSelectionChanged(null);
 
-        assertThat(disabledActions, hasItems(UIActions.edit, UIActions.delete));
+        assertThat(disabledActions, hasItems(UIActions.EDIT, UIActions.DELETE));
     }
 
     @Test
@@ -121,8 +121,8 @@ public class DbListPresenterTest {
         createPresenter();
         presenter.onSelectionChanged(ownedDb);
 
-        assertThat(disabledActions, not(hasItem(UIActions.edit)));
-        assertThat(disabledActions, not(hasItem(UIActions.delete)));
+        assertThat(disabledActions, not(hasItem(UIActions.EDIT)));
+        assertThat(disabledActions, not(hasItem(UIActions.DELETE)));
     }
 
     @Test
@@ -133,8 +133,8 @@ public class DbListPresenterTest {
         createPresenter();
         presenter.onSelectionChanged(designableDb);
 
-        assertThat(disabledActions, hasItem(UIActions.delete));
-        assertThat(disabledActions, not(hasItem(UIActions.edit)));
+        assertThat(disabledActions, hasItem(UIActions.DELETE));
+        assertThat(disabledActions, not(hasItem(UIActions.EDIT)));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class DbListPresenterTest {
         createPresenter();
         presenter.onSelectionChanged(viewableDb);
 
-        assertThat(disabledActions, hasItems(UIActions.edit, UIActions.delete));
+        assertThat(disabledActions, hasItems(UIActions.EDIT, UIActions.DELETE));
     }
 
     @Test

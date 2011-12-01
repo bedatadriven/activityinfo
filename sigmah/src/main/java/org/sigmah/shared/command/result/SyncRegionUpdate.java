@@ -10,9 +10,9 @@ package org.sigmah.shared.command.result;
  */
 public class SyncRegionUpdate implements CommandResult {
 
-    String version;
-    boolean complete;
-    String sql;
+    private String version;
+    private boolean complete;
+    private String sql;
 
     public SyncRegionUpdate() {
     }

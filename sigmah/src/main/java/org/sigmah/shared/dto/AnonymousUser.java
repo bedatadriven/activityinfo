@@ -2,7 +2,7 @@ package org.sigmah.shared.dto;
 
 import com.google.gwt.user.client.Cookies;
 
-public class AnonymousUser {
+public final class AnonymousUser {
 
 	public static final String AUTHTOKEN = "AnonymousUser";
 	public static final int USER_ID = 0;

@@ -28,9 +28,9 @@ import com.google.inject.Inject;
  */
 public class GalleryPage extends LayoutContainer implements GalleryView {
 
-    protected ListStore<GalleryModel> store;
-    protected Html heading;
-    protected Html introPara;
+    private ListStore<GalleryModel> store;
+    private Html heading;
+    private Html introPara;
 
     public static class GalleryModel extends BaseModelData {
 
@@ -79,7 +79,8 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
         view.addListener(Events.Select,
             new Listener<ListViewEvent<GalleryModel>>() {
 
-                public void handleEvent(ListViewEvent<GalleryModel> event) {
+                @Override
+				public void handleEvent(ListViewEvent<GalleryModel> event) {
                     eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
                             event.getModel().getPlace()));
                 }
@@ -87,11 +88,13 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
         add(view);
     }
 
-    public void setHeading(String html) {
+    @Override
+	public void setHeading(String html) {
         heading.setHtml(html);
     }
 
-    public void setIntro(String html) {
+    @Override
+	public void setIntro(String html) {
         introPara.setHtml(html);
     }
 

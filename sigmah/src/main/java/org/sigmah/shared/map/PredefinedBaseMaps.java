@@ -3,7 +3,7 @@ package org.sigmah.shared.map;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PredefinedBaseMaps {
+public final class PredefinedBaseMaps {
 
 	private PredefinedBaseMaps() {}
 	

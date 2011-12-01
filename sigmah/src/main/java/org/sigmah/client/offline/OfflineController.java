@@ -523,7 +523,7 @@ public class OfflineController implements Dispatcher {
 	 * We defer all subsequent command handling until we've entered one mode or
 	 * the other.
 	 */
-	private class GoingOffline extends Strategy {
+	private final class GoingOffline extends Strategy {
 		private Synchronizer offlineManager;
 
 		private List<CommandRequest> pending;
@@ -566,7 +566,7 @@ public class OfflineController implements Dispatcher {
 	 * encountered, we offer the user the chance to connect.
 	 * 
 	 */
-	private class OfflineStrategy extends Strategy {
+	private final class OfflineStrategy extends Strategy {
 		private Synchronizer offlineManger;
 
 		private OfflineStrategy(Synchronizer offlineManger) {
@@ -621,7 +621,7 @@ public class OfflineController implements Dispatcher {
 		}
 	}
 
-	private class CheckingIfUserWantsToGoOnline extends Strategy {
+	private final class CheckingIfUserWantsToGoOnline extends Strategy {
 
 		private Synchronizer offlineManager;
 
@@ -694,7 +694,7 @@ public class OfflineController implements Dispatcher {
 		}
 	}
 
-	private class GoingOnlineStrategy extends Strategy {
+	private final class GoingOnlineStrategy extends Strategy {
 		private final Synchronizer offlineManager;
 
 		private GoingOnlineStrategy(final Synchronizer offlineManager) {
@@ -726,7 +726,7 @@ public class OfflineController implements Dispatcher {
 	 * Strategy for the state in which offline mode is available and installed,
 	 * but we are currently connecting directly to the server.
 	 */
-	private class OnlineStrategy extends Strategy {
+	private final class OnlineStrategy extends Strategy {
 		private Synchronizer offlineManager;
 
 		private OnlineStrategy(Synchronizer offlineManager) {
@@ -783,7 +783,7 @@ public class OfflineController implements Dispatcher {
 	 * database. Synchronization can be initiated by the user when offline or
 	 * offline, so we need to keep track of the "parent strategy"
 	 */
-	private class SyncingStrategy extends Strategy {
+	private final class SyncingStrategy extends Strategy {
 		private final Strategy parentStrategy;
 		private final Synchronizer offlineManager;
 
@@ -829,7 +829,7 @@ public class OfflineController implements Dispatcher {
 		}
 	}
 	
-	private class BackgroundSyncingWhileOnlineStrategy extends Strategy {
+	private final class BackgroundSyncingWhileOnlineStrategy extends Strategy {
 		private final Synchronizer synchronizer;
 		private boolean dirty = false;
 		

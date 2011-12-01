@@ -40,7 +40,7 @@ public class ExcelPivotTableRenderer implements ExcelRenderer<PivotTableReportEl
 			}
 			
 			
-			protected CellStyle[] rowHeaderStyles;
+			private CellStyle[] rowHeaderStyles;
 
 			
 			@Override

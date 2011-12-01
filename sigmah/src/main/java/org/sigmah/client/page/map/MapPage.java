@@ -137,7 +137,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 				aiMapWidget.setValue(event.getValue());
 				layersWidget.setValue(event.getValue());
 				boolean canExport = !event.getValue().getLayers().isEmpty();
-				toolbarMapActions.setActionEnabled(UIActions.exportData,canExport); 
+				toolbarMapActions.setActionEnabled(UIActions.EXPORT_DATA,canExport); 
 				exportMenu.setEnabled(canExport);
 			}
 		});
@@ -172,10 +172,10 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         	.callbackTo(this);
         exportMenu.setEnabled(false);
 		toolbarMapActions.add(exportMenu);
-        toolbarMapActions.addButton(UIActions.exportData, I18N.CONSTANTS.exportData(),
+        toolbarMapActions.addButton(UIActions.EXPORT_DATA, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
-        toolbarMapActions.setActionEnabled(UIActions.exportData, false);
-        toolbarMapActions.addButton(UIActions.subscribe, I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.email());
+        toolbarMapActions.setActionEnabled(UIActions.EXPORT_DATA, false);
+        toolbarMapActions.addButton(UIActions.SUBSCRIBE, I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.email());
         
         setTopComponent(toolbarMapActions);
     }
@@ -204,9 +204,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
 	@Override
 	public void onUIAction(String actionId) {
-		if (actionId.equals(UIActions.exportData)) {
+		if (actionId.equals(UIActions.EXPORT_DATA)) {
 			export(Format.Excel_Data);
-		} else if (actionId.equals(UIActions.subscribe)) {
+		} else if (actionId.equals(UIActions.SUBSCRIBE)) {
 			form = new SubscribeForm();
 			
 			dialog = new FormDialogImpl(form);

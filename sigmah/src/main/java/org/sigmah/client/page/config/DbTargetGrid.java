@@ -15,6 +15,7 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.config.form.TargetForm;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
@@ -36,7 +37,7 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 
 	private Grid<TargetDTO> grid;
 	private ListStore<TargetDTO> store;
-	protected ContentPanel targetValueContainer;
+	private ContentPanel targetValueContainer;
 
 	@Inject
 	public DbTargetGrid(UIConstants messages, IconImageBundle icons) {
@@ -72,9 +73,9 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 
 	@Override
 	protected void initToolBar() {
-		toolBar.addButton(UIActions.add, I18N.CONSTANTS.add(), icons.add());
-		toolBar.addButton(UIActions.delete, messages.delete(), icons.delete());
-		toolBar.addButton(UIActions.edit, messages.edit(), icons.edit());
+		toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.add(), icons.add());
+		toolBar.addButton(UIActions.DELETE, messages.delete(), icons.delete());
+		toolBar.addButton(UIActions.EDIT, messages.edit(), icons.edit());
 	}
 
 	@Override

@@ -20,8 +20,8 @@ public class SearchLoader implements PageLoader {
     public SearchLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
         this.injector = injector;
 
-        pageManager.registerPageLoader(SearchPresenter.Search, this);
-        placeSerializer.registerParser(SearchPresenter.Search, new SearchPageState.Parser());
+        pageManager.registerPageLoader(SearchPresenter.SEARCH_PAGE_ID, this);
+        placeSerializer.registerParser(SearchPresenter.SEARCH_PAGE_ID, new SearchPageState.Parser());
     }
 	
 	@Override
@@ -31,7 +31,7 @@ public class SearchLoader implements PageLoader {
 		GWT.runAsync(new RunAsyncCallback() {
 			@Override
 			public void onSuccess() {
-				if (pageState instanceof SearchPageState && SearchPresenter.Search.equals(pageId)) {
+				if (pageState instanceof SearchPageState && SearchPresenter.SEARCH_PAGE_ID.equals(pageId)) {
 					SearchPageState searchPageState = (SearchPageState)pageState;
 					SearchPresenter searchPage =  injector.getSearchPage();
 					searchPage.setQuery(searchPageState.getSearchQuery());

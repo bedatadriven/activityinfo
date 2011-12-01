@@ -71,7 +71,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 		initListeners(treeStore, null);
 
 		this.view.init(this, db, treeStore);
-		this.view.setActionEnabled(UIActions.delete, false);
+		this.view.setActionEnabled(UIActions.DELETE, false);
 	}
 
 	public void load(TargetDTO targetDTO) {
@@ -263,7 +263,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	}
 
 	public void onSelectionChanged(ModelData selectedItem) {
-		view.setActionEnabled(UIActions.delete, this.db.isDesignAllowed()
+		view.setActionEnabled(UIActions.DELETE, this.db.isDesignAllowed()
 				&& selectedItem instanceof EntityDTO);
 	}
 	

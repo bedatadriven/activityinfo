@@ -8,7 +8,7 @@ package org.sigmah.client.util;
 import com.extjs.gxt.ui.client.data.SortInfo;
 
 
-public class SortInfoEqualityChecker {
+public final class SortInfoEqualityChecker {
 
 	private SortInfoEqualityChecker() {}
 	

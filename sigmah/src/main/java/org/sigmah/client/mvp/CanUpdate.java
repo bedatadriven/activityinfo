@@ -45,7 +45,7 @@ public interface CanUpdate<M> {
 	
 	// The Presenter has a seperate view for creating/updating domain object
 	class UpdateEvent extends GwtEvent<UpdateHandler> {
-		public static Type TYPE = new Type<UpdateHandler>(); 
+		public static final Type TYPE = new Type<UpdateHandler>(); 
 		
 		@Override
 		public Type<UpdateHandler> getAssociatedType() {
@@ -61,7 +61,7 @@ public interface CanUpdate<M> {
 	
 	// The Presenter has a seperate view for creating/updating domain object
 	class CancelUpdateEvent extends GwtEvent<CancelUpdateHandler> {
-		public static Type TYPE = new Type<CancelUpdateHandler>(); 
+		public static final Type TYPE = new Type<CancelUpdateHandler>(); 
 		
 		@Override
 		public Type<CancelUpdateHandler> getAssociatedType() {
@@ -76,7 +76,7 @@ public interface CanUpdate<M> {
 	
 	// The Presenter has a seperate view for creating/updating domain object
 	class RequestUpdateEvent extends GwtEvent<RequestUpdateHandler> {
-		public static Type TYPE = new Type<RequestUpdateHandler>(); 
+		public static final Type TYPE = new Type<RequestUpdateHandler>(); 
 		
 		@Override
 		public Type<RequestUpdateHandler> getAssociatedType() {

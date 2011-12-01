@@ -29,9 +29,9 @@ import com.google.inject.Inject;
  */
 public class ConfigNavigator implements Navigator {
 
-    protected final Dispatcher service;
-    protected final UIConstants messages;
-    protected final IconImageBundle icons;
+    private final Dispatcher service;
+    private final UIConstants messages;
+    private final IconImageBundle icons;
 
 
     @Inject
@@ -41,11 +41,13 @@ public class ConfigNavigator implements Navigator {
         this.icons = icons;
     }
 
-    public String getHeading() {
+    @Override
+	public String getHeading() {
         return I18N.CONSTANTS.setup();
     }
 
-    public String getStateId() {
+    @Override
+	public String getStateId() {
         return "configNavPanel";
     }
 
@@ -55,7 +57,8 @@ public class ConfigNavigator implements Navigator {
     }
 
 
-    public void load(DataReader<List<Link>> dataReader, Object parent, AsyncCallback<List<Link>> callback) {
+    @Override
+	public void load(DataReader<List<Link>> dataReader, Object parent, AsyncCallback<List<Link>> callback) {
 
         if (parent == null) {
 
@@ -74,27 +77,16 @@ public class ConfigNavigator implements Navigator {
         } else {
             Link link = (Link) parent;
             if (link.getPageState() instanceof DbListPageState) {
-                loadDbList(callback);
+                loadDbListAsync(callback);
             }
         }
     }
 
-    public void loadDbList(final AsyncCallback<List<Link>> callback) {
+    public void loadDbListAsync(final AsyncCallback<List<Link>> callback) {
         service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
             @Override
             public void got(SchemaDTO result) {
-                List<Link> list = new ArrayList<Link>();
-                for (UserDatabaseDTO db : result.getDatabases()) {
-                    if (db.isDesignAllowed() || db.isManageUsersAllowed()) {
-                        Link link = Link
-                                .to(new DbPageState(DbConfigPresenter.DatabaseConfig, db.getId()))
-                                .labeled(db.getName())
-                                .withIcon(icons.database()).build();
-                        link.set("db", db);
-                        list.add(link);
-                    }
-                }
-                callback.onSuccess(list);
+                loadDbList(callback, result);
             }
 
             @Override
@@ -103,6 +95,22 @@ public class ConfigNavigator implements Navigator {
             }
         });
     }
+
+	private void loadDbList(final AsyncCallback<List<Link>> callback,
+			SchemaDTO result) {
+		List<Link> list = new ArrayList<Link>();
+		for (UserDatabaseDTO db : result.getDatabases()) {
+		    if (db.isDesignAllowed() || db.isManageUsersAllowed()) {
+		        Link link = Link
+		                .to(new DbPageState(DbConfigPresenter.DatabaseConfig, db.getId()))
+		                .labeled(db.getName())
+		                .withIcon(icons.database()).build();
+		        link.set("db", db);
+		        list.add(link);
+		    }
+		}
+		callback.onSuccess(list);
+	}
 
 
 }

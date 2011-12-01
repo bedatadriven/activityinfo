@@ -5,20 +5,20 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 public interface CanRefresh<M> {
-	public interface RefreshHandler extends EventHandler {
+	interface RefreshHandler extends EventHandler {
 		void onRefresh(RefreshEvent refreshEvent);
 	}
 
 	// The user wants to have the latest information from the server.
 	// The refresh on the view is managed by calling the setValue and other setData
 	// methods.
-	public HandlerRegistration addRefreshHandler(RefreshHandler handler);
+	HandlerRegistration addRefreshHandler(RefreshHandler handler);
 	
 	// Is the refresh button enabled?
-	public void setRefreshEnabled(boolean canRefresh);
+	void setRefreshEnabled(boolean canRefresh);
 	
 	public class RefreshEvent extends GwtEvent<RefreshHandler> {
-		public static Type TYPE = new Type<RefreshHandler>(); 
+		public static final Type TYPE = new Type<RefreshHandler>(); 
 		
 		@Override
 		public Type<RefreshHandler> getAssociatedType() {

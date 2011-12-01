@@ -43,12 +43,11 @@ public abstract class PivotReportElement<ContentT extends PivotContent> extends 
 		}
 		return set;
 	}
+	
+	@Override
+	public ContentT getContent() {
+		return super.getContent();
+	}
 
-    public ContentT getContent() {
-        return content;
-    }
-
-    public void setContent(ContentT content) {
-        this.content = content;
-    }
+    
 }

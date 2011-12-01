@@ -6,7 +6,7 @@ import com.google.common.base.Strings;
  * These properties are provided by the Amazon Beanstalk container
  * 
  */
-class BeanstalkEnvironment {
+final class BeanstalkEnvironment {
 
 
 	private BeanstalkEnvironment() { }

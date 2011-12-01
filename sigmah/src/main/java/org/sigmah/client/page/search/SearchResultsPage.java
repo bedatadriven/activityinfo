@@ -135,7 +135,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	private String createEntityText(SearchResultEntity addedEntity) {
 		return new StringBuilder()
-			.append(I18N.fromEntities.localizedStringFrom(addedEntity.getDimension()))
+			.append(I18N.FROM_ENTITIES.localizedStringFrom(addedEntity.getDimension()))
 			.append(":")
 			.append(addedEntity.getName())
 			.toString();
