@@ -28,9 +28,7 @@ import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.LocalDispatcher;
 import org.sigmah.client.offline.sync.DownSynchronizer;
 import org.sigmah.server.authentication.AuthenticationModuleStub;
-import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
-import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.shared.util.Collector;
@@ -95,7 +93,7 @@ public abstract class LocalHandlerTestCase {
     protected void setUser(int userId) {
     	AuthenticationModuleStub.setUserId(userId);
     	
-        Injector clientSideInjector = Guice.createInjector(new OfflineModuleStub(AuthenticationModuleStub.currentUser, localDatabase));
+        Injector clientSideInjector = Guice.createInjector(new OfflineModuleStub(AuthenticationModuleStub.getCurrentUser(), localDatabase));
         localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
         
     }
@@ -167,7 +165,7 @@ public abstract class LocalHandlerTestCase {
     private class RemoteDispatcherStub implements Dispatcher {
         @Override
         public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
-            List<CommandResult> results = servlet.handleCommands(new User(AuthenticationModuleStub.currentUser), Collections.<Command>singletonList(command));
+            List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
             CommandResult result = results.get(0);
 
             if(result instanceof SyncRegionUpdate) {

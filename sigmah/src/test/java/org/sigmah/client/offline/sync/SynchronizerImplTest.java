@@ -27,7 +27,7 @@ public class SynchronizerImplTest {
 	@Before
 	public void setUp() {
 		registry = new HandlerRegistry();
-		auth = new AuthenticatedUser(1, "XYZ123", "akbertram@gmail.com");
+		auth = new AuthenticatedUser("XYZ123", 1, "akbertram@gmail.com");
 		eventBus = new MockEventBus();
 	}
 

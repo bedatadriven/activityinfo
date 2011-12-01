@@ -54,10 +54,10 @@ public class CommandTestCase2 {
     protected <T extends CommandResult> T execute(Command<T> command) throws CommandException {
    
     	User user = null;
-    	if(AuthenticationModuleStub.currentUser.getUserId()== 0){
-    		user = new User(AuthenticationModuleStub.currentUser);
+    	if(AuthenticationModuleStub.getCurrentUser().getUserId()== 0){
+    		user = new User(AuthenticationModuleStub.getCurrentUser());
     	}else{
-    		user = users.findById(AuthenticationModuleStub.currentUser.getUserId());
+    		user = users.findById(AuthenticationModuleStub.getCurrentUser().getUserId());
             
     	}
     	
@@ -94,7 +94,7 @@ public class CommandTestCase2 {
 			@Override
 			public <C extends Command<R>, R extends CommandResult> R execute(C command) {
 				try {
-					return (R)CommandTestCase2.this.execute(command);
+					return CommandTestCase2.this.execute(command);
 				} catch (CommandException e) {
 					throw new RuntimeException(e);
 				}

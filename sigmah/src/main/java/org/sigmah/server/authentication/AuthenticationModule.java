@@ -7,7 +7,7 @@ package org.sigmah.server.authentication;
 
 import org.sigmah.shared.auth.AuthenticatedUser;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.servlet.ServletModule;
 
 /**
  * Guice Module defining bindings for Authentication interfaces.
@@ -15,11 +15,12 @@ import com.google.inject.AbstractModule;
  *
  * See http://code.google.com/p/google-web-toolkit-incubator/wiki/LoginSecurityFAQ for background
  */
-public class AuthenticationModule extends AbstractModule {
+public class AuthenticationModule extends ServletModule {
 
-    @Override
-    protected void configure() {
+	@Override
+	protected void configureServlets() {
         bind(Authenticator.class).to(DatabaseAuthenticator.class);
         bind(AuthenticatedUser.class).toProvider(ServerSideAuthProvider.class);
-    }
+        filter("/*").through(AuthenticationFilter.class);
+	}
 }

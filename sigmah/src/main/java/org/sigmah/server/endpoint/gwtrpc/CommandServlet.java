@@ -12,12 +12,9 @@ import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
 import org.sigmah.server.authentication.ServerSideAuthProvider;
-import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.dao.Transactional;
-import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.logging.LogException;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
@@ -25,14 +22,12 @@ import org.sigmah.shared.command.RemoteCommandService;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.dto.AnonymousUser;
 import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.InvalidAuthTokenException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 
 /**
@@ -49,17 +44,23 @@ import com.teklabs.gwt.i18n.server.LocaleProxy;
 @Singleton
 public class CommandServlet extends RemoteServiceServlet implements RemoteCommandService {
 
+    private static final Logger LOGGER = Logger.getLogger(CommandServlet.class);
+
+	
     @Inject
     private Injector injector;
 
-    private static final Logger logger = Logger.getLogger(CommandServlet.class);
+    @Inject
+    private ServerSideAuthProvider authProvider;
 
+       
     @Override
     @LogException
     public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
-        Authentication auth = retrieveAuthentication(authToken);
+    	checkAuthentication(authToken);
+    	
         try {
-            return handleCommands(auth.getUser(), commands);
+            return handleCommands(commands);
 
         } catch (Exception caught) {
             throw new CommandException();
@@ -67,9 +68,8 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     }
 
     public CommandResult execute(String authToken, Command command) throws CommandException {
-        Authentication auth = retrieveAuthentication(authToken);
-        applyUserFilters(auth.getUser());
-        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(auth.getUser()));
+    	checkAuthentication(authToken);
+    	applyUserFilters();
         return handleCommand(command);
     }
 
@@ -77,13 +77,13 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
      * Publicly visible for testing *
      */
     @LogException
-    public List<CommandResult> handleCommands(User user, List<Command> commands) {
-        applyUserFilters(user);
+    public List<CommandResult> handleCommands(List<Command> commands) {
+        applyUserFilters();
 
         List<CommandResult> results = new ArrayList<CommandResult>();
         for (Command command : commands) {
         	
-        	logger.debug(user.getEmail() + ": " + command.getClass().getSimpleName());
+        	LOGGER.debug(authProvider.get().getEmail() + ": " + command.getClass().getSimpleName());
         	
             try {
                 results.add(handleCommand(command));
@@ -101,8 +101,9 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         return results;
     }
 
-    private void applyUserFilters(User user) {
+    private void applyUserFilters() {
         EntityManager em = injector.getInstance(EntityManager.class);
+        User user = em.getReference(User.class, authProvider.get().getUserId());
         DomainFilters.applyUserFilter(user, em);
     }
 
@@ -112,30 +113,18 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     	return ServerExecutionContext.execute(injector, command);
     }
     
-
-    private Authentication retrieveAuthentication(String authToken) throws InvalidAuthTokenException {
-    	
-        Authentication auth = anonymousUserAuthentication(authToken);
-    	if(auth==null){
-    		AuthenticationDAO authDAO = injector.getInstance(AuthenticationDAO.class);
- 	        auth = authDAO.findById(authToken);
+    private void checkAuthentication(String authToken) {
+    	if(authToken.equals(AnonymousUser.AUTHTOKEN)) {
+    		authProvider.set(AuthenticatedUser.getAnonymous());
+    	} else {
+    		
+    		// TODO(alex): renable this check once the authToken has been removed from the host
+    		// page
+    		
+//    		// user is already authenticated, but ensure that the authTokens match
+//    		if(!authToken.equals(authProvider.get().getAuthToken())) {
+//    			throw new InvalidAuthTokenException("Auth Tokens do not match, possible XSRF attack");
+//    		}
     	}
-    
-        if (auth == null) {
-            throw new InvalidAuthTokenException();
-        }
-        
-        ServerSideAuthProvider.authenticatedUserThreadLocal.set(new AuthenticatedUser(auth.getUser().getId(),authToken, auth.getUser().getEmail()));
-        return auth;
     }
-    
-    private Authentication anonymousUserAuthentication(String authToken){
-    	if (authToken.equals(AnonymousUser.AUTHTOKEN)) {
-			return new Authentication(new User(new AuthenticatedUser(
-					AnonymousUser.USER_ID, AnonymousUser.AUTHTOKEN,
-					AnonymousUser.USER_EMAIL)));
-		}
-		return null;
-	}
-
 }

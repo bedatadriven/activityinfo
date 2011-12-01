@@ -3,40 +3,32 @@ package org.sigmah.server.authentication;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 
 public class AuthenticationModuleStub extends AbstractModule {
 
-	public static AuthenticatedUser currentUser;
+	public static ServerSideAuthProvider authProvider = new ServerSideAuthProvider();
 
 	public static void setUserId(int userId) {
 		switch (userId) {
 		case 0:
-			setAnonymouseUser();
+			authProvider.set(AuthenticatedUser.getAnonymous());
 			break;
 		default:
-			currentUser = new AuthenticatedUser(userId, "XYZ123",
-					"test@test.com");
+			authProvider.set(new AuthenticatedUser("XYZ123", userId,
+					"test@test.com"));
 		}
-
-	}
-
-	public static void setAnonymouseUser() {
-		currentUser = new AuthenticatedUser(0,
-				"AnonymousUser_Authentication_Token",
-				"AnonymousUser@activityinfo.com");
 	}
 
 	static {
 		setUserId(1);
 	}
 
+	public static AuthenticatedUser getCurrentUser() {
+		return authProvider.get();
+	}
+	
 	@Override
 	protected void configure() {
-	}
-
-	@Provides
-	public AuthenticatedUser provideAuthenticatedUser() {
-		return currentUser;
+		bind(AuthenticatedUser.class).toProvider(authProvider);
 	}
 }

@@ -1,63 +1,39 @@
 package org.sigmah.server.authentication;
 
-import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
+import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.dto.AnonymousUser;
+import org.sigmah.shared.exception.InvalidAuthTokenException;
 
-import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
+/**
+ * Stores and provides the authentication status for
+ * requests. 
+ * 
+ * <p>This value is initially set for each new request by the 
+ * {@link AuthenticationFilter}. It can be overridden in specific cases
+ * (see {@link CommandServlet})
+ */
+@Singleton
 public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 
-	private final Provider<HttpServletRequest> request;
-	private final Provider<EntityManager> entityManager;
-	public static ThreadLocal<AuthenticatedUser> authenticatedUserThreadLocal = new ThreadLocal<AuthenticatedUser>();
+	private static ThreadLocal<AuthenticatedUser> currentUser = new ThreadLocal<AuthenticatedUser>();
 	
-	@Inject
-	public ServerSideAuthProvider(Provider<HttpServletRequest> request,
-								  Provider<EntityManager> entityManager) {
-		super();
-		this.request = request;
-		this.entityManager = entityManager;
-
-	}
-
 	@Override
 	public AuthenticatedUser get() {
-		// first attempt to get authToken from the cookie
-
-		AuthenticatedUser user = null;
-		AuthenticatedUser authenticatedUser = authenticatedUserThreadLocal.get();
-	
-		if(authenticatedUser!=null){
-			user = AnonymousUser(authenticatedUser.getAuthToken());
-			if(user == null){
-				user = authFromToken(authenticatedUser.getAuthToken());
-			}
+		AuthenticatedUser user = currentUser.get();
+		if(user == null) {
+			throw new InvalidAuthTokenException("Request is not authenticated");
 		}
-		if(user !=null){
-			return user;
-		}
-		
-		throw new IllegalStateException("Request is not authenticated");
+		return user;
 	}
 	
-	private AuthenticatedUser authFromToken(String authToken) {
-		org.sigmah.server.database.hibernate.entity.Authentication entity =
-				entityManager.get().find(org.sigmah.server.database.hibernate.entity.Authentication.class, authToken);
-		
-		return new AuthenticatedUser(entity.getUser().getId(), authToken, entity.getUser().getEmail());
+	public void set(AuthenticatedUser user) {
+		currentUser.set(user);
 	}
 	
-	private AuthenticatedUser AnonymousUser(String authToken){
-		if (authToken.equals(AnonymousUser.AUTHTOKEN)) {
-			return new AuthenticatedUser(
-					AnonymousUser.USER_ID, AnonymousUser.AUTHTOKEN,
-					AnonymousUser.USER_EMAIL);
-		}
-		return null;
+	public void clear() {
+		currentUser.set(null);
 	}
-
-	
 }

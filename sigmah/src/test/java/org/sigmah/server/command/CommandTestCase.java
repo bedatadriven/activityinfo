@@ -18,7 +18,6 @@ import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.server.util.beanMapping.BeanMappingModule;
-import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
@@ -51,11 +50,11 @@ public abstract class CommandTestCase {
     }
 
     protected <T extends CommandResult> T execute(Command<T> command) throws CommandException {
-        User user = em.find(User.class, AuthenticationModuleStub.currentUser.getUserId());
+        User user = em.find(User.class, AuthenticationModuleStub.getCurrentUser().getUserId());
         assert user != null;
         Locale.setDefault(Locale.ENGLISH);
 
-        List<CommandResult> results = servlet.handleCommands(user, Collections.<Command>singletonList(command));
+        List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
 
         // normally each request and so each handleCommand() gets its own
         // EntityManager, but here successive requests in the same test

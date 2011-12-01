@@ -3,6 +3,7 @@ package org.sigmah.server.i18n;
 import java.util.Locale;
 
 import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.shared.auth.AuthenticatedUser;
 
 /**
  * Static Locale helper methods.
@@ -14,8 +15,15 @@ public class LocaleHelper {
 	private LocaleHelper() {}
 	
     public static Locale getLocaleObject(User u) {
-    	String locale = u.getLocale();
-        if(locale != null) {
+        return getLocaleObject(u.getLocale());
+    }
+
+    public static Locale getLocaleObject(AuthenticatedUser user) {
+    	return getLocaleObject(user.getUserLocale());
+    }
+    
+	private static Locale getLocaleObject(String locale) {
+		if(locale != null) {
             Locale[] locales = Locale.getAvailableLocales();
             for (Locale l : locales) {
                 if (locale.startsWith(l.getLanguage())) {
@@ -24,5 +32,5 @@ public class LocaleHelper {
             }
         }
         return Locale.getDefault();
-    }
+	}
 }

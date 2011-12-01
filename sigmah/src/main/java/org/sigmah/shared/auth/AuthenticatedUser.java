@@ -5,6 +5,10 @@
 
 package org.sigmah.shared.auth;
 
+import org.sigmah.shared.dto.AnonymousUser;
+
+import com.google.gwt.i18n.client.LocaleInfo;
+
 
 /**
  * Encapsulates user identity and their authorization to access the server.
@@ -32,7 +36,7 @@ public class AuthenticatedUser {
 		this.userLocale = userLocale;
 	}
 	
-	public AuthenticatedUser(int userId, String authToken, String userEmail) {
+	public AuthenticatedUser(String authToken, int userId, String userEmail) {
 		super();
 		this.authToken = authToken;
 		this.userId = userId;
@@ -62,5 +66,13 @@ public class AuthenticatedUser {
 
 	public int getId() {
 		return userId;
+	}
+	
+	public static AuthenticatedUser getAnonymous() {
+		return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0, AnonymousUser.USER_EMAIL);
+	}
+
+	public static AuthenticatedUser getAnonymous(LocaleInfo currentLocale) {
+		return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0, AnonymousUser.USER_EMAIL, currentLocale.getLocaleName());
 	}
 }

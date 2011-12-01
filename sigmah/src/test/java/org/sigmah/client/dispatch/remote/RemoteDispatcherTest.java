@@ -52,7 +52,7 @@ public class RemoteDispatcherTest {
         proxy = createMock("proxy", CommandProxy.class);
 
         dispatcher = new RemoteDispatcher(service, new MockEventBus(),
-                new AuthenticatedUser(1, AUTH_TOKEN, "alex@alex.com"));
+                new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com"));
     }
 
     @Test
