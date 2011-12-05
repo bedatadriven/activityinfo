@@ -51,12 +51,13 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
         this.imageCreator = imageCreator;
     }
 
-    public void render(DocWriter writer, Document doc, MapReportElement element) {
+    @Override
+	public void render(DocWriter writer, Document doc, MapReportElement element) {
 
         try {
             doc.add(ThemeHelper.elementTitle(element.getTitle()));
             ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
-
+            ItextRendererHelper.addDateFilterDescription(doc, element.getFilter().getDateRange());
             renderMap(writer, element, doc);
             if(!element.getContent().getLegends().isEmpty()) {
             	renderLegend(element, doc);

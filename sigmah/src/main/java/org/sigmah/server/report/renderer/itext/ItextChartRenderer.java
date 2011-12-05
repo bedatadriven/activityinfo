@@ -25,13 +25,15 @@ public class ItextChartRenderer implements ItextRenderer<PivotChartReportElement
 		this.imageCreator = imageCreator;
 	}
 
+	@Override
 	public void render(DocWriter writer, Document doc, PivotChartReportElement element) {
 
 
 		try {
 			doc.add(ThemeHelper.elementTitle(element.getTitle()));
 			ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
-
+			ItextRendererHelper.addDateFilterDescription(doc, element.getFilter().getDateRange());
+			
 			if(element.getContent().getData().isEmpty()) {
 				Paragraph para = new Paragraph("Aucune Données");
 				para.setFont(new Font(Font.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 0)));

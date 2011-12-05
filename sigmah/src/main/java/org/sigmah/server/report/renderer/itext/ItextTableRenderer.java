@@ -41,7 +41,7 @@ public class ItextTableRenderer implements ItextRenderer<TableElement> {
     public void render(DocWriter writer, Document document, TableElement element) throws DocumentException {
         document.add(ThemeHelper.elementTitle(element.getTitle()));
         ItextRendererHelper.addFilterDescription(document, element.getContent().getFilterDescriptions());
-
+        ItextRendererHelper.addDateFilterDescription(document, element.getFilter().getDateRange());
         TableData data = element.getContent().getData();
 
         if(data.isEmpty()) {

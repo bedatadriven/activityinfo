@@ -25,7 +25,7 @@ import org.sigmah.shared.util.date.DateUtil;
  */
 public class ReportMailerHelper {
 
-    private static final DateUtil dateUtil = new DateUtilCalendarImpl();
+    private static final DateUtil DATE_UTIL = new DateUtilCalendarImpl();
 
 
     /**
@@ -59,12 +59,12 @@ public class ReportMailerHelper {
     public static DateRange computeDateRange(Report report, Date today) {
 
         if(report.getFrequency() == ReportFrequency.Monthly) {
-            return dateUtil.lastCompleteMonthRange(today);
+            return DATE_UTIL.lastCompleteMonthRange(today);
 
         } else if(report.getFrequency() == ReportFrequency.Weekly) {
             DateRange lastWeek = new DateRange();
             lastWeek.setMaxDate(today);
-            lastWeek.setMinDate(dateUtil.add(today, DateUnit.WEEK, -1));
+            lastWeek.setMinDate(DATE_UTIL.add(today, DateUnit.WEEK, -1));
 
             return lastWeek;
 
@@ -83,7 +83,7 @@ public class ReportMailerHelper {
         } else if(frequency == ReportFrequency.Monthly) {
             return messages.getString("monthly");
         } else {
-            throw new RuntimeException("Invalid frequency = " + frequency);
+            throw new IllegalArgumentException("Invalid frequency = " + frequency);
         }
     }
 

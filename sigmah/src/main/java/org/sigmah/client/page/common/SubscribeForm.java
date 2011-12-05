@@ -142,6 +142,7 @@ public class SubscribeForm extends FormPanel {
 
 		newEmail = new TextField<String>();
 		newEmail.setValue(I18N.CONSTANTS.enterNewEmail());
+		newEmail.setRegex(EMAIL_VALIDATION_REGEX);
 		hp.add(newEmail);
 
 		addEmail = new Button();
@@ -152,7 +153,8 @@ public class SubscribeForm extends FormPanel {
 		addEmail.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				boolean valid = newEmail.getValue().matches(
+				boolean valid = newEmail.getValue() != null &&
+					newEmail.getValue().matches(
 						EMAIL_VALIDATION_REGEX);
 				if (valid) {
 					store.add(new ReportSubscriber(newEmail.getValue()));

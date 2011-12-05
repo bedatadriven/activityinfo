@@ -69,6 +69,7 @@ public abstract class DateUtil {
         Date start = floor(today, DateUnit.MONTH);
         if(!isLastDayOfMonth(today)) {
             start = add(start, DateUnit.MONTH, -1);
+            
         }
         return start;
     }

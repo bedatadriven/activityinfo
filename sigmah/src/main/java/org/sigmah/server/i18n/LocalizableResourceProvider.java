@@ -5,11 +5,11 @@ import com.google.inject.Provider;
 import com.teklabs.gwt.i18n.client.LocaleFactory;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
-public class LocaleProvider<T extends LocalizableResource> implements Provider<T> {
+public class LocalizableResourceProvider<T extends LocalizableResource> implements Provider<T> {
 
 	private Class<T> clazz;
 	
-	public LocaleProvider(Class<T> clazz) {
+	public LocalizableResourceProvider(Class<T> clazz) {
 		super();
 		this.clazz = clazz;
 		LocaleProxy.initialize();

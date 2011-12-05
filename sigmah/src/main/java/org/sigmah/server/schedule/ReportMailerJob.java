@@ -11,17 +11,14 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.xml.bind.JAXBException;
 
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.apache.log4j.Logger;
+import org.sigmah.server.authentication.ServerSideAuthProvider;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.server.database.hibernate.entity.ReportDefinition;
 import org.sigmah.server.database.hibernate.entity.ReportSubscription;
@@ -29,7 +26,7 @@ import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.RtfReportRenderer;
-import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportFrequency;
 import org.xml.sax.SAXException;
@@ -42,30 +39,36 @@ import com.google.inject.Inject;
  *
  * @author Alex Bertram
  */
-public class ReportMailerJob implements Job {
+public class ReportMailerJob {
 
     private final EntityManager em;
     private final ReportGenerator reportGenerator;
     private final RtfReportRenderer rtfReportRenderer;
     private final MailSender mailer;
+    
+    private final ServerSideAuthProvider authProvider;
 
     private DateFormat reportDateFormat;
+    
+    private static final Logger LOGGER = Logger.getLogger(ReportMailerJob.class);
 
     @Inject
     public ReportMailerJob(EntityManager em, ReportGenerator reportGenerator,
-                           RtfReportRenderer rtfReportRenderer, MailSender mailer) {
+                           RtfReportRenderer rtfReportRenderer, MailSender mailer, ServerSideAuthProvider authProvider) {
         this.em = em;
         this.reportGenerator = reportGenerator;
         this.rtfReportRenderer = rtfReportRenderer;
         this.mailer = mailer;
+        this.authProvider = authProvider;
 
         reportDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
     }
 
 
-    public void execute(JobExecutionContext jobContext) throws JobExecutionException {
+    public void execute(Date today) {
+    	
+    	LOGGER.info("Starting nightly mailing job for " + today);
 
-        Date today = new Date();
         List<ReportDefinition> reports = em.createQuery("select t from ReportDefinition t")
                 .getResultList();
 
@@ -74,64 +77,53 @@ public class ReportMailerJob implements Job {
                 Report report = ReportParserJaxb.parseXml(template.getXml());
                 if (report.getFrequency() == ReportFrequency.Monthly) {
                     if (ReportMailerHelper.mailToday(today, report)) {
-                        execute(today, report, template.getSubscriptions());
+                        execute(today, template, report);
                     }
                 }
             } catch (Exception caught) {
-                caught.printStackTrace();
+            	LOGGER.error("Exception thrown while processing report " + template.getId()); 
             }
         }
     }
 
-    public void execute(Date today, Report report, Set<ReportSubscription> subs) {
+    public void execute(Date today, ReportDefinition def, Report report) throws IOException {
 
-        // calculate the date range for the report
-        DateRange dateRange = ReportMailerHelper.computeDateRange(report, today);
+    	// set up authentication for the owner of this report
+    	// this allows a user to share reports even with those who 
+    	// might not have access to the whole database
+    	
+    	authProvider.set(new AuthenticatedUser("", def.getOwner().getId(), def.getOwner().getEmail()));
+        DomainFilters.applyUserFilter(def.getOwner(), em);
 
-        // loop through report subscriptions that are to be mailed
-        // today
-        for (ReportSubscription sub : subs) {
-
-            try {
-                mailReport(sub, today);
-            } catch (Exception e) {
-                System.out.println("Report mailing of " + sub.getTemplate().getId() + " failed for user "
-                        + sub.getUser().getEmail());
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    private void mailReport(ReportSubscription sub, Date today) throws IOException, SAXException, EmailException {
-
-        // apply the appropriate filters so the user
-        // only views the reports they're meant to
-        DomainFilters.applyUserFilter(sub.getUser(), em);
-
-        // load the report definition
-        Report report = null;
-        try {
-            report = ReportParserJaxb.parseXml(sub.getTemplate().getXml());
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return;
-        }
-
+        // render the report to a temp file
         // generate the report
-        reportGenerator.generate(sub.getUser(), report, null,
+        reportGenerator.generate(def.getOwner(), report, null,
                 ReportMailerHelper.computeDateRange(report, today));
 
-        // render the report to a temporary path and create the
-        // attachement
 
         File tempFile = File.createTempFile("report", ".rtf");
         FileOutputStream rtf = new FileOutputStream(tempFile);
         rtfReportRenderer.render(report, rtf);
         rtf.close();
 
+        // loop through report subscriptions that are to be mailed
+        // today
+        for (ReportSubscription sub : def.getSubscriptions()) {
+            try {
+                mailReport(sub, report, today, tempFile);
+            } catch (Exception e) {
+            	LOGGER.error("Report mailing of " + sub.getTemplate().getId() + " failed for user "
+                        + sub.getUser().getEmail(), e);
+            }
+        }
+
+    }
+
+    private void mailReport(ReportSubscription sub,  Report report, Date today, File tempFile) throws IOException, SAXException, EmailException {
+
+    
         EmailAttachment attachment = new EmailAttachment();
-        attachment.setName(report.getContent().getFileName() +
+        attachment.setName(report.getContent().getFileName() + " " +
                 reportDateFormat.format(today) + ".rtf");
         attachment.setDescription(report.getTitle());
         attachment.setPath(tempFile.getAbsolutePath());
@@ -141,6 +133,9 @@ public class ReportMailerJob implements Job {
         // message for email clients that can't read html
 
         // email
+        
+        LOGGER.debug("Sending email to " + sub.getUser().getEmail());
+        
         MultiPartEmail email = new MultiPartEmail();
         // email.setHtmlMsg(ReportMailerHelper.composeHtmlEmail(sub, report ));
         email.setMsg(ReportMailerHelper.composeTextEmail(sub, report));

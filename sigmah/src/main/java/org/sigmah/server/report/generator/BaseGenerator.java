@@ -47,16 +47,6 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
         	DimensionLabels labels = dispatcher.execute(new GetDimensionLabels(type, filter.getRestrictions(type)));
         	list.add(new FilterDescription(type, labels.getLabels()));
         }
-
-        if (filter.getMinDate() != null || filter.getMaxDate() != null) {
-            DateRangeFormat format = new DateRangeFormat(LocaleHelper.getLocaleObject(user));
-
-            //TODO: implement
-//            list.add(new FilterDescription(
-//                    DimensionType.Date,
-//                    format.format(filter.getMinDate(), filter.getMaxDate())));
-        }
-
         return list;
 
     }

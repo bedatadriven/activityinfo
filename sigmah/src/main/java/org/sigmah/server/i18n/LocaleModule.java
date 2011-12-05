@@ -1,5 +1,7 @@
 package org.sigmah.server.i18n;
 
+import java.util.Locale;
+
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.i18n.UIMessages;
 
@@ -14,8 +16,9 @@ public class LocaleModule extends AbstractModule {
 	
 	@Override
 	protected void configure() {
-		bind(UIConstants.class).toProvider(new LocaleProvider<UIConstants>(UIConstants.class));
-		bind(UIMessages.class).toProvider(new LocaleProvider<UIMessages>(UIMessages.class));
+		bind(UIConstants.class).toProvider(new LocalizableResourceProvider<UIConstants>(UIConstants.class));
+		bind(UIMessages.class).toProvider(new LocalizableResourceProvider<UIMessages>(UIMessages.class));
+		bind(Locale.class).toProvider(LocaleProvider.class);
 	}
 	
 }

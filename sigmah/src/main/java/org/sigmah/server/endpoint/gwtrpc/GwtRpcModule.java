@@ -6,7 +6,7 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
 import org.sigmah.server.attachment.ServletAttachmentUpload;
-import org.sigmah.server.schedule.ServletReportMailer;
+import org.sigmah.server.schedule.ReportMailerServlet;
 
 import com.google.inject.servlet.ServletModule;
 
@@ -23,7 +23,7 @@ public class GwtRpcModule extends ServletModule {
         serve("/Embed/cmd").with(CommandServlet.class);
         serve("/ActivityInfo/download").with(DownloadServlet.class);
         serve("/ActivityInfo/attachment").with(ServletAttachmentUpload.class);
-        serve("/tasks/mailSubscriptions").with(ServletReportMailer.class);
+        serve("/tasks/mailSubscriptions").with(ReportMailerServlet.class);
 
         // this is here for now but should be probably live elsewhere, if
         // we really need it at all

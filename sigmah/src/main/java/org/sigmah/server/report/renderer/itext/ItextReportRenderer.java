@@ -41,7 +41,7 @@ public abstract class ItextReportRenderer implements Renderer {
 	private final Map<Class, ItextRenderer> renderers = new HashMap<Class, ItextRenderer>();
 	
     @Inject
-    protected ItextReportRenderer(@MapIconPath String mapIconPath) {
+    protected ItextReportRenderer(@MapIconPath String mapIconPath) {    	
     	ItextMapRenderer itextMapRenderer = new ItextMapRenderer(mapIconPath, getImageCreator());
 		
     	renderers.put(PivotTableReportElement.class, new ItextPivotTableRenderer());
@@ -94,6 +94,7 @@ public abstract class ItextReportRenderer implements Renderer {
         Report report = (Report) element;
         document.add(ThemeHelper.reportTitle(report.getTitle()));
         ItextRendererHelper.addFilterDescription(document, report.getContent().getFilterDescriptions());
+        ItextRendererHelper.addDateFilterDescription(document, report.getFilter().getDateRange());
 
         for(ReportElement childElement : report.getElements()) {
         	renderElement(writer, document, childElement);

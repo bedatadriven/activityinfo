@@ -24,14 +24,15 @@ import com.lowagie.text.Table;
  *
  * @author Alex Bertram
  */
-public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportElement> {
-
-    public void render(DocWriter writer, Document document, PivotTableReportElement element) {
+public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportElement> {	
+	
+	@Override
+	public void render(DocWriter writer, Document document, PivotTableReportElement element) {
         try {
 
             document.add(ThemeHelper.elementTitle(element.getTitle()));
             ItextRendererHelper.addFilterDescription(document, element.getContent().getFilterDescriptions());
-
+            ItextRendererHelper.addDateFilterDescription(document, element.getFilter().getDateRange());
             PivotTableData data = element.getContent().getData();
 
 

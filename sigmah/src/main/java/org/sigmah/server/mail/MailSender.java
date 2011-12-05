@@ -11,7 +11,7 @@ import org.apache.commons.mail.EmailException;
 
 public interface MailSender {
 
-    public void send(MailMessage message);
-    public void send(Email email) throws EmailException;
+    void send(MailMessage message);
+    void send(Email email) throws EmailException;
 }
 

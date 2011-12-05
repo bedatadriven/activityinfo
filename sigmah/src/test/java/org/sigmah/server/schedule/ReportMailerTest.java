@@ -29,7 +29,6 @@ public class ReportMailerTest {
         sub.setFrequency(ReportFrequency.Daily);
 
         Assert.assertTrue("Daily report always goes out", ReportMailerHelper.mailToday(new Date(), sub));
-
     }
 
     @Test

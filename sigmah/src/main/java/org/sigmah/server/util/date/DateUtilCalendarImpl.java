@@ -15,7 +15,8 @@ import org.sigmah.shared.util.date.DateUtil;
 
 public class DateUtilCalendarImpl extends DateUtil {
 
-    public Month getCurrentMonth() {
+    @Override
+	public Month getCurrentMonth() {
         Calendar calendar = Calendar.getInstance();
         return new Month(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1);
     }
@@ -31,7 +32,7 @@ public class DateUtilCalendarImpl extends DateUtil {
         calendar.set(Calendar.DATE, 1);
         range.setMinDate(calendar.getTime());
 
-        calendar.set(Calendar.MONTH, 11);
+        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
         calendar.set(Calendar.DATE, 31);
         range.setMaxDate(calendar.getTime());
 
@@ -79,10 +80,15 @@ public class DateUtilCalendarImpl extends DateUtil {
         return calendar.get(Calendar.MONTH) + 1;
     }
 
-    public Date floor(Date date, DateUnit dateUnit) {
+    @Override
+	public Date floor(Date date, DateUnit dateUnit) {
         
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         if(dateUnit == DateUnit.YEAR) {
             calendar.set( Calendar.MONTH, calendar.getActualMinimum( Calendar.MONTH ) );
@@ -95,7 +101,7 @@ public class DateUtilCalendarImpl extends DateUtil {
 
         } else if(dateUnit == DateUnit.MONTH ) {
 
-            calendar.set( Calendar.DATE, calendar.getActualMinimum( Calendar.MONTH ) );
+            calendar.set( Calendar.DATE, calendar.getActualMinimum( Calendar.DAY_OF_MONTH ) );
 
         } else if(dateUnit == DateUnit.WEEK ) {
 
@@ -106,7 +112,8 @@ public class DateUtilCalendarImpl extends DateUtil {
         return calendar.getTime();
     }
 
-    public Date ceil(Date date, DateUnit dateUnit) {
+    @Override
+	public Date ceil(Date date, DateUnit dateUnit) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -135,7 +142,8 @@ public class DateUtilCalendarImpl extends DateUtil {
         return calendar.getTime();
     }
 
-    public Date add(Date date, DateUnit dateUnit, int count) {
+    @Override
+	public Date add(Date date, DateUnit dateUnit, int count) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
