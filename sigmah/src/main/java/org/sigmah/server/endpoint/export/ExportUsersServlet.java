@@ -38,8 +38,6 @@ public class ExportUsersServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		
-
 		int dbId = Integer.valueOf(req.getParameter("dbUsers"));
 
 		try {
