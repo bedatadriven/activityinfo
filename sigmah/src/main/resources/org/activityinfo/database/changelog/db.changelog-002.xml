@@ -57,4 +57,18 @@
 		<addNotNullConstraint tableName="activity" columnName="published" columnDataType="INT"/>
 		<addDefaultValue tableName="activity" columnName="published" defaultValue="0"/>
 	</changeSet>
+	
+	
+	<changeSet author="abid" id="002-04">
+
+		<createTable tableName="IndicatorLink">
+			<column name="SourceIndicatorId" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="DestinationIndicatorId" type="INT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+		
 </databaseChangeLog> 

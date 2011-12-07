@@ -32,5 +32,6 @@ public class ConfigModule extends AbstractGinModule {
         bind(DesignPresenter.View.class).to(DesignView.class);
         bind(LockedPeriodListEditor.class).to(LockedPeriodGrid.class);
         bind(DbTargetEditor.View.class).to(DbTargetGrid.class);
+        bind(LinkIndicatorPresenter.View.class).to(IndicatorLinkView.class);
     }
 }

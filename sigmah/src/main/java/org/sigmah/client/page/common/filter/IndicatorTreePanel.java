@@ -58,6 +58,8 @@ public class IndicatorTreePanel extends ContentPanel {
 	private StoreFilterField filter;
 	private AsyncMonitor monitor;
 	private boolean multipleSelection;
+	
+	private int databaseId ;
 
 	public IndicatorTreePanel(Dispatcher service,
 			final boolean multipleSelection, AsyncMonitor monitor) {
@@ -137,7 +139,75 @@ public class IndicatorTreePanel extends ContentPanel {
 		add(tree);
 		createFilterBar();
 	}
+	
+	public static IndicatorTreePanel forSingleDatabase(Dispatcher service){
+		return new IndicatorTreePanel(service);
+	}
 
+	private IndicatorTreePanel(Dispatcher service) {
+		this.service = service;
+		this.setLayout(new FitLayout());
+		this.setScrollMode(Style.Scroll.NONE);
+
+		this.store = new TreeStore<ModelData>();
+		this.store.setKeyProvider(new ModelKeyProvider<ModelData>() {
+
+			@Override
+			public String getKey(ModelData model) {
+				List<String> keys = new ArrayList<String>();
+				if (model instanceof ProvidesKey) {
+					return ((ProvidesKey) model).getKey();
+				} else if (model == null) {
+					throw new IllegalStateException(
+							"Did not expect model to be null: assigning keys in IndicatorTreePanel");
+				}
+				throw new IllegalStateException(
+						"Unknown type: expected activity, userdb, indicator or indicatorgroup");
+			}
+		});
+
+		tree = new TreePanel<ModelData>(this.store);
+		tree.setCheckable(true);
+		tree.expandAll();
+		tree.setLabelProvider(new ModelStringProvider<ModelData>() {
+			@Override
+			public String getStringValue(ModelData model, String property) {
+				String name = model.get("name");
+				if (model instanceof IndicatorDTO) {
+					return name;
+				} else {
+					if (name == null) {
+						name = "noname";
+					}
+					return "<b>" + name + "</b>";
+				}
+			}
+		});
+		tree.setStateId("indicatorPanel");
+		tree.setStateful(true);
+		tree.setAutoSelect(true);
+		
+		add(tree);
+	}
+	
+	public void loadSingleDatabase(UserDatabaseDTO database){
+		store.removeAll();
+		for(ActivityDTO activity: database.getActivities()){
+			store.add(activity, true);
+			List<ModelData> groups = createActivityChildren(activity);
+			for(ModelData group : groups){
+				store.add(activity, group, true);
+				store.add(group,createIndicatorList((IndicatorGroup)group), true);
+			}
+			
+		}
+		
+	}
+	
+	public void setHeading(String heading){
+		super.setHeading(heading);
+	}
+	
 	private void createFilterBar() {
 		toolBar = new ToolBar();
 		toolBar.add(new LabelToolItem(I18N.CONSTANTS.search()));
@@ -175,8 +245,7 @@ public class IndicatorTreePanel extends ContentPanel {
 							@Override
 							public void onSuccess(SchemaDTO result) {
 								schema = result;
-								callback.onSuccess(new ArrayList<ModelData>(
-										schema.getDatabases()));
+								callback.onSuccess(new ArrayList<ModelData>(schema.getDatabases()));
 							}
 						});
 			} else if (parent instanceof UserDatabaseDTO) {
@@ -185,30 +254,40 @@ public class IndicatorTreePanel extends ContentPanel {
 
 			} else if (parent instanceof ActivityDTO) {
 				ActivityDTO acitvity = (ActivityDTO)parent;
-				List<IndicatorGroup> groupIndicators = acitvity.groupIndicators();
-				List<ModelData> children = new ArrayList<ModelData>();
-				for (IndicatorGroup group : groupIndicators) {
-					if (group.getName() == null) {
-						for (IndicatorDTO indicator : group.getIndicators()) {
-							children.add(indicator);
-						}
-					} else {
-						children.add(group);
-					}
-				}
-				callback.onSuccess(children);
-				
+				callback.onSuccess(createActivityChildren(acitvity));
 				
 			} else if (parent instanceof IndicatorGroup) {
 				IndicatorGroup group = ((IndicatorGroup) parent);
-				ArrayList<ModelData> list = new ArrayList<ModelData>();
-				for (IndicatorDTO indicator : group.getIndicators()) {
-					list.add(indicator);
-				}
-				callback.onSuccess(list);
+				callback.onSuccess(createIndicatorList(group));
 			}
 		}
 	}
+	
+	private List<ModelData> createActivityChildren(ActivityDTO acitvity){
+		List<IndicatorGroup> groupIndicators = acitvity.groupIndicators();
+		List<ModelData> children = new ArrayList<ModelData>();
+		for (IndicatorGroup group : groupIndicators) {
+			if (group.getName() == null) {
+				for (IndicatorDTO indicator : group.getIndicators()) {
+					children.add(indicator);
+				}
+			} else {
+				children.add(group);
+			}
+		}
+		
+		return children;
+	}
+	
+	private List<ModelData> createIndicatorList(IndicatorGroup group){		
+		ArrayList<ModelData> list = new ArrayList<ModelData>();
+		for (IndicatorDTO indicator : group.getIndicators()) {
+			list.add(indicator);
+		}
+		
+		return list;
+	}
+
 
 	/**
 	 * @return the list of selected indicators

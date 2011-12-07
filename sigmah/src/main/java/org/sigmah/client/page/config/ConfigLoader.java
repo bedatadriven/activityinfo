@@ -47,6 +47,7 @@ public class ConfigLoader implements PageLoader {
         pageManager.registerPageLoader(LockedPeriodsPresenter.PAGE_ID, this);
         pageManager.registerPageLoader(DesignPresenter.PAGE_ID, this);
         pageManager.registerPageLoader(DbTargetEditor.DatabaseTargets, this);
+        pageManager.registerPageLoader(LinkIndicatorPresenter.PAGE_ID, this);
 
         placeSerializer.registerStatelessPlace(AccountEditor.Account, new AccountPageState());
         placeSerializer.registerStatelessPlace(DbListPresenter.DatabaseList, new DbListPageState());
@@ -57,6 +58,7 @@ public class ConfigLoader implements PageLoader {
         placeSerializer.registerParser(LockedPeriodsPresenter.PAGE_ID, new DbPageState.Parser(LockedPeriodsPresenter.PAGE_ID));
         placeSerializer.registerParser(DesignPresenter.PAGE_ID, new DbPageState.Parser(DesignPresenter.PAGE_ID));
         placeSerializer.registerParser(DbTargetEditor.DatabaseTargets, new DbPageState.Parser(DbTargetEditor.DatabaseTargets));
+        placeSerializer.registerParser(LinkIndicatorPresenter.PAGE_ID, new DbPageState.Parser(LinkIndicatorPresenter.PAGE_ID));
     }
 
     @Override
@@ -123,6 +125,10 @@ public class ConfigLoader implements PageLoader {
                             }else if (DbTargetEditor.DatabaseTargets.equals(pageId)) {
                                 DbTargetEditor presenter = injector.getDbTargetEditor();
                                 presenter.go(db);
+                                callback.onSuccess(presenter);
+                            } else if (LinkIndicatorPresenter.PAGE_ID.equals(pageId)) {
+                            	LinkIndicatorPresenter presenter = injector.getLinkIndicatorPresenter();
+                                presenter.go(schema, dPlace);
                                 callback.onSuccess(presenter);
                             } else {
                                 callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + pageState.toString()));
