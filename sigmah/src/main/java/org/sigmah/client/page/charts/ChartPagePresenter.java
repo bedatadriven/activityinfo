@@ -85,6 +85,12 @@ public class ChartPagePresenter implements Page, ActionListener, ExportCallback 
         if (UIActions.REFRESH.equals(actionId)) {
 
             final PivotChartReportElement element = view.getChartElement();
+            if(element.getIndicators() == null || element.getIndicators().size() == 0){
+            	return;
+            }
+            if(element.getCategoryDimensions() == null || element.getCategoryDimensions().size() == 0){
+            	return;
+            }
             service.execute(new GenerateElement(element), view.getMonitor(),
                     new AsyncCallback<Content>() {
 

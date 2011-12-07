@@ -230,9 +230,11 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
                 element.addCategoryDimension(new DateDimension(DateUnit.YEAR));
             }
         }
-
-        element.addCategoryDimension(categoryCombo.getValue());
-
+        
+        if(categoryCombo.getValue() != null){
+        	element.addCategoryDimension(categoryCombo.getValue());
+        }
+        
         for (Integer indicatorId : indicatorPanel.getSelectedIds()) {
             element.addIndicator(indicatorId);
         }
