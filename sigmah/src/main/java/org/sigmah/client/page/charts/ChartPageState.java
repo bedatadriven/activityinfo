@@ -5,28 +5,30 @@
 
 package org.sigmah.client.page.charts;
 
-import org.sigmah.client.page.PageId;
-import org.sigmah.client.page.PageState;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class ChartPageState implements PageState {
 
-    public String serializeAsHistoryToken() {
+    @Override
+	public String serializeAsHistoryToken() {
         return null;
     }
 
-    public List<PageId> getEnclosingFrames() {
+    @Override
+	public List<PageId> getEnclosingFrames() {
         return Arrays.asList(getPageId());
     }
 
     @Override
     public PageId getPageId() {
-        return ChartPagePresenter.PAGE_ID;
+        return ChartPage.PAGE_ID;
     }
 
     @Override

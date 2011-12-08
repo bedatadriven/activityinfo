@@ -72,7 +72,12 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 		return button;
 	}
 	
-	
+
+	public void add(Iterable<? extends Component> buttons) {
+		for(Component component : buttons) {
+			add(component);
+		}
+	}
 
 	public ToggleButton addToggleButton(String actionId, String text,
 			AbstractImagePrototype icon) {
@@ -269,5 +274,6 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
 			return this;
 		}
 	}
+
 	
 }

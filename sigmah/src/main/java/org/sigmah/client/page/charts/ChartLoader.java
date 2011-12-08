@@ -25,15 +25,15 @@ import com.google.inject.Provider;
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class ChartLoader implements PageLoader {
-    private final Provider<ChartPagePresenter> chartPageProvider;
+    private final Provider<ChartPage> chartPageProvider;
 
     @Inject
     public ChartLoader(NavigationHandler pageManager, PageStateSerializer placeSerializer,
-                       Provider<ChartPagePresenter> chartPageProvider) {
+                       Provider<ChartPage> chartPageProvider) {
         this.chartPageProvider = chartPageProvider;
 
-        pageManager.registerPageLoader(ChartPagePresenter.PAGE_ID, this);
-        placeSerializer.registerStatelessPlace(ChartPagePresenter.PAGE_ID, new ChartPageState());
+        pageManager.registerPageLoader(ChartPage.PAGE_ID, this);
+        placeSerializer.registerStatelessPlace(ChartPage.PAGE_ID, new ChartPageState());
     }
 
     @Override

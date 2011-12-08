@@ -5,7 +5,7 @@
 
 package org.sigmah.client.page.charts;
 
-import org.sigmah.shared.report.content.PivotChartContent;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 
 /**
  * Interface to a view of a PivotChartElement
@@ -13,5 +13,5 @@ import org.sigmah.shared.report.content.PivotChartContent;
  * @author Alex Bertram
  */
 public interface ChartView {
-    void setContent(PivotChartContent content);
+    void setContent(PivotChartReportElement element);
 }

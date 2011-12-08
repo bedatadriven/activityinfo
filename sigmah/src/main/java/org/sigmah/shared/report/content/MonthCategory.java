@@ -78,7 +78,7 @@ public class MonthCategory implements DimensionCategory {
 	@SuppressWarnings("deprecation")
 	public String getLabel() {
     	// hackish, yes, but it's the only thing that works on client & server
-		Date date = new Date(year, month-1, 1);
+		Date date = new Date(year-1900, month-1, 1);
 		return I18N.MESSAGES.month(date);
 	}
 }

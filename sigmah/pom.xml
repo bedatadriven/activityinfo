@@ -176,7 +176,7 @@
         <dependency>
 	        <groupId>com.teklabs.gwt-i18n-server</groupId>
 	        <artifactId>gwt-i18n-server</artifactId>
-	        <version>0.6</version>
+	        <version>0.7-bedatadriven1</version>
 	    </dependency>
 
         <!-- Rebar- client persistence -->

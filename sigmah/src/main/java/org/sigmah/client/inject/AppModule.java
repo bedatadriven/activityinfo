@@ -19,8 +19,6 @@ import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.PageStateSerializer;
 import org.sigmah.client.page.app.AppFrameSet;
-import org.sigmah.client.page.charts.ChartPage;
-import org.sigmah.client.page.charts.ChartPagePresenter;
 import org.sigmah.client.page.common.GalleryPage;
 import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.util.state.GxtStateProvider;
@@ -47,6 +45,5 @@ public class AppModule extends AbstractGinModule {
         bind(StateProvider.class).to(GxtStateProvider.class);
         bind(Frame.class).annotatedWith(Root.class).to(AppFrameSet.class);
         bind(GalleryView.class).to(GalleryPage.class);
-        bind(ChartPagePresenter.View.class).to(ChartPage.class);
     }
 }

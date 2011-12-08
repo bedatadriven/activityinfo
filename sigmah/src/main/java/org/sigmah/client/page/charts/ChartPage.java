@@ -5,35 +5,40 @@
 
 package org.sigmah.client.page.charts;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.NavigationCallback;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
+import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
+import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.table.PivotGridPanel;
 import org.sigmah.client.report.DimensionStoreFactory;
+import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
+import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -42,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -50,17 +56,16 @@ import com.google.inject.Inject;
  *
  * @author Alex Bertram
  */
-public class ChartPage extends LayoutContainer implements ChartPagePresenter.View {
+public class ChartPage extends LayoutContainer implements Page, ActionListener{
 
+	public static final PageId PAGE_ID = new PageId("charts");
+	
     private final EventBus eventBus;
     private final Dispatcher service;
-
-    private ChartPagePresenter presenter;
-
     private ActionToolBar toolBar;
-    private List<ToggleButton> chartTypeButtons;
 
     private ComboBox<Dimension> categoryCombo;
+    private ChartTypeGroup typeGroup;
 
     private ChartOFCView preview;
     private ContentPanel center;
@@ -69,6 +74,8 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
     private IndicatorTreePanel indicatorPanel;
     private AdminFilterPanel adminFilterPanel;
     private DateRangePanel dateFilterPanel;
+
+	private ComboBox<Dimension> legendCombo;
 
     @Inject
     public ChartPage(EventBus eventBus, Dispatcher service) {
@@ -84,32 +91,32 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
         createDimBar();
         createGridPane();
     }
+    
+    @Override
+	public void onUIAction(String actionId) {
+
+        if (UIActions.REFRESH.equals(actionId)) {
+            load();
+        }
+    }
 
     private void createToolBar() {
-        toolBar = new ActionToolBar(presenter);
+        toolBar = new ActionToolBar(this);
 
         toolBar.addRefreshButton();
         toolBar.add(new SeparatorToolItem());
 
-        chartTypeButtons = new ArrayList<ToggleButton>();
+        typeGroup = new ChartTypeGroup();
+        typeGroup.addListener(Events.Select, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				load();
+			}
+        });
 
         toolBar.add(new LabelToolItem(I18N.CONSTANTS.chartType()));
-
-        ToggleButton button = new ToggleButton("", IconImageBundle.ICONS.barChart());
-        button.setToggleGroup("chartType");
-        button.setData("chartType", PivotChartReportElement.Type.Bar);
-        chartTypeButtons.add(button);
-        toolBar.add(button);
-
-        button = new ToggleButton("", IconImageBundle.ICONS.curveChart());
-        button.setToggleGroup("chartType");
-        chartTypeButtons.add(button);
-        toolBar.add(button);
-
-        button = new ToggleButton("", IconImageBundle.ICONS.pieChart());
-        button.setToggleGroup("chartType");
-        chartTypeButtons.add(button);
-        toolBar.add(button);
+        toolBar.add(typeGroup.getButtons());
 
         toolBar.add(new SeparatorToolItem());
 
@@ -119,8 +126,9 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
         	.withPdf()
         	.withPng()
         	.callbackTo(new ExportCallback() {
-            public void export(RenderElement.Format format) {
-                presenter.export(format);
+            @Override
+			public void export(RenderElement.Format format) {
+                ChartPage.this.export(format);
             }
         }));
 
@@ -188,12 +196,13 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
         categoryCombo.setEditable(false);
         categoryCombo.setStore(store);
         categoryCombo.setDisplayField("caption");
+        categoryCombo.setValue(new DateDimension(DateUnit.YEAR));
         dimBar.add(categoryCombo);
 
         dimBar.add(new FillToolItem());
 
         dimBar.add(new LabelToolItem(I18N.CONSTANTS.legend()));
-        ComboBox<Dimension> legendCombo = new ComboBox<Dimension>();
+        legendCombo = new ComboBox<Dimension>();
         legendCombo.setForceSelection(true);
         legendCombo.setEditable(false);
         legendCombo.setStore(store);
@@ -203,26 +212,10 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
         preview.setBottomComponent(dimBar);
     }
 
-    @Override
-    public void bindPresenter(ChartPagePresenter presenter) {
-        this.presenter = presenter;
-        this.toolBar.setListener(presenter);
-    }
 
-    private PivotChartReportElement.Type getChartType() {
-        for (ToggleButton button : chartTypeButtons) {
-            if (button.isPressed()) {
-                return button.getData("chartData");
-            }
-        }
-        return null;
-    }
-
-
-    @Override
     public PivotChartReportElement getChartElement() {
         PivotChartReportElement element = new PivotChartReportElement();
-        element.setType(getChartType());
+        element.setType(typeGroup.getSelection());
 
         if (categoryCombo.getValue() instanceof DateDimension) {
             DateDimension dim = (DateDimension) categoryCombo.getValue();
@@ -238,17 +231,71 @@ public class ChartPage extends LayoutContainer implements ChartPagePresenter.Vie
         for (Integer indicatorId : indicatorPanel.getSelectedIds()) {
             element.addIndicator(indicatorId);
         }
+        
+        if(legendCombo.getValue() != null) {
+        	element.addSeriesDimension(legendCombo.getValue());
+        }
 
         return element;
     }
 
-    @Override
-    public AsyncMonitor getMonitor() {
-        return new MaskingAsyncMonitor(preview, I18N.CONSTANTS.loading());
+    
+    private void load() {
+    	final PivotChartReportElement element = getChartElement();
+		service.execute(new GenerateElement<PivotChartContent>(element), null, new AsyncCallback<PivotChartContent>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(PivotChartContent result) {
+				element.setContent(result);
+				setData(element);
+			}
+		});
+    }
+    
+	private void export(RenderElement.Format format) {
+		service.execute(new RenderElement(getChartElement(), format), null, new DownloadCallback(eventBus));
     }
 
     public void setData(PivotChartReportElement element) {
-        preview.setContent(element.getContent());
+        preview.setContent(element);
         gridPanel.setData(element);
     }
+
+	@Override
+	public void shutdown() {
+	}
+
+	@Override
+	public PageId getPageId() {
+		return PAGE_ID;
+	}
+
+	@Override
+	public Object getWidget() {
+		return this;
+	}
+
+	@Override
+	public void requestToNavigateAway(PageState place,
+			NavigationCallback callback) {
+		callback.onDecided(true);
+		
+	}
+
+	@Override
+	public String beforeWindowCloses() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean navigate(PageState place) {
+		return true;
+	}
 }

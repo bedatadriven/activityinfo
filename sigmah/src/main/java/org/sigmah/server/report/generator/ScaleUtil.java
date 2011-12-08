@@ -180,12 +180,17 @@ public final class ScaleUtil {
 //    IF (X .LT. ZERO) J = J - 1
 //    VALMIN = STEP * FLOAT(J)
 
-        x = 0.5 * (1d + (fmin + fmax - range) / scale.step);
-        j = (int) (x - bias);
-        if( x < 0) {
-            j = j - 1;
+        // AB: bit hackish, but if the min value is zero, we want to stay at zero
+        if(fmin == 0) {
+        	scale.valmin = 0;
+        } else {
+            x = 0.5 * (1d + (fmin + fmax - range) / scale.step);
+	        j = (int) (x - bias);
+	        if( x < 0) {
+	            j = j - 1;
+	        }
+	        scale.valmin = scale.step * j;
         }
-        scale.valmin = scale.step * j;
 
 //  C
 //  C     Test if VALMIN could be zero
