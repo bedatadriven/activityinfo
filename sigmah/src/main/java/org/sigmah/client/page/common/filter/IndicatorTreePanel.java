@@ -194,10 +194,14 @@ public class IndicatorTreePanel extends ContentPanel {
 		store.removeAll();
 		for(ActivityDTO activity: database.getActivities()){
 			store.add(activity, true);
-			List<ModelData> groups = createActivityChildren(activity);
-			for(ModelData group : groups){
-				store.add(activity, group, true);
-				store.add(group,createIndicatorList((IndicatorGroup)group), true);
+			List<ModelData> models = createActivityChildren(activity);
+			for(ModelData model : models){
+				if(model instanceof IndicatorGroup){
+					store.add(activity, model, true);
+					store.add(model,createIndicatorList((IndicatorGroup)model), true);
+				}else{
+					store.add(activity, model, true);
+				}
 			}
 			
 		}

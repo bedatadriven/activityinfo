@@ -5,6 +5,7 @@
 
 package	org.sigmah.shared.dto;
 
+import java.util.List;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
@@ -19,6 +20,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 	public final static int AGGREGATE_SITE_COUNT = 2;
 
     public static final String PROPERTY_PREFIX = "I";
+    
+    private IndicatorLinkDTO indicatorLinks; 
 	
 	public IndicatorDTO() {
         super();
@@ -152,7 +155,15 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 		return getPropertyName(this.getId());
 	}
 
-    /**
+	public IndicatorLinkDTO getIndicatorLinks() {
+		return indicatorLinks;
+	}
+
+	public void setIndicatorLinks(IndicatorLinkDTO indicatorLinks) {
+		this.indicatorLinks = indicatorLinks;
+	}
+
+	/**
      * Returns the name of the property in which values for Indicators of this id are stored, for
      * example in the {@link org.sigmah.shared.dto.SiteDTO} object.
      *
@@ -179,6 +190,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public String getEntityName() {
         return "Indicator";
     }
+
 
 	@Override
 	public String getKey() {

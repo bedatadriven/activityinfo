@@ -1,20 +1,28 @@
 package org.sigmah.client.page.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.TreeGridView;
+import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.IndicatorLinkDTO;
 import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Store;
@@ -35,13 +43,13 @@ public class LinkIndicatorPresenter extends
 	private SchemaDTO schema;
 	private UserDatabaseDTO db;
 	private TreeStore<ModelData> sourceTreeStore;
-	private TreeStore<ModelData> destinationTreeStore;
+
 
 	@ImplementedBy(IndicatorLinkView.class)
 	public interface View extends
 			TreeGridView<LinkIndicatorPresenter, ModelData> {
 		public void init(LinkIndicatorPresenter presenter, UserDatabaseDTO db,
-				TreeStore sourceStore, TreeStore destinationStore);
+				TreeStore sourceStore);
 
 		public void addDatabasesToList(List<ModelData> models);
 	}
@@ -61,19 +69,92 @@ public class LinkIndicatorPresenter extends
 		this.db = schema.getDatabaseById(place.getDatabaseId());
 		
 		sourceTreeStore = new TreeStore<ModelData>();
-		destinationTreeStore = new TreeStore<ModelData>();
 
 		fillStore();
 
 		initListeners(sourceTreeStore, null);
 
-		this.view.init(this, db, sourceTreeStore, destinationTreeStore);
+		this.view.init(this, db, sourceTreeStore);
 		this.view.addDatabasesToList(new ArrayList(schema.getDatabases()));
 	}
 
 	private void fillStore() {
 
+		Map<String, Link> categories = new HashMap<String, Link>();
+		for (ActivityDTO activity : db.getActivities()) {
+
+			if (activity.getCategory() != null) {
+				Link actCategoryLink = categories.get(activity.getCategory());
+
+				if (actCategoryLink == null) {
+					
+					actCategoryLink =createCategoryLink(activity, categories);
+					categories.put(activity.getCategory(), actCategoryLink);
+					sourceTreeStore.add(actCategoryLink, false);
+				}
+
+				sourceTreeStore.add(actCategoryLink, activity, false);
+				addIndicatorLinks(activity, activity);
+				
+			} else {
+				sourceTreeStore.add(activity, false);
+				addIndicatorLinks(activity, activity);
+			}
+
+		}
 	}
+	
+	private void addIndicatorLinks(ActivityDTO activity, ModelData parent){
+		Map<String, Link> indicatorCategories = new HashMap<String, Link>();
+		
+
+		for (IndicatorDTO indicator : activity.getIndicators()) {
+			
+			if(indicator.getCategory()!=null){
+				Link indCategoryLink = indicatorCategories.get(indicator.getCategory());
+				
+				if(indCategoryLink  == null){
+					indCategoryLink = createIndicatorCategoryLink(indicator, indicatorCategories);							
+					indicatorCategories.put(indicator.getCategory(), indCategoryLink);
+					sourceTreeStore.add(parent, indCategoryLink, false);
+				}
+					sourceTreeStore.add(indCategoryLink, indicator, false);	
+			}else{
+					sourceTreeStore.add(parent, indicator, false);
+			}
+		}
+
+	}
+	
+	private IndicatorLinkDTO createIndicatorLinkModel(IndicatorDTO indicator){
+		IndicatorLinkDTO indicatorLinkDTO = new IndicatorLinkDTO();
+		
+		
+		return indicatorLinkDTO ;
+	}
+	
+	private Link createIndicatorCategoryLink(IndicatorDTO indicatorNode, Map<String, Link> categories){
+		return Link.folderLabelled(indicatorNode.getCategory())
+				.usingKey(categoryKey(indicatorNode, categories))
+				.withIcon(IconImageBundle.ICONS.folder()).build();
+	}
+	
+	private Link createCategoryLink(ActivityDTO activity,Map<String, Link> categories) {
+
+		return Link.folderLabelled(activity.getCategory())
+				.usingKey(categoryKey(activity, categories))
+				.withIcon(IconImageBundle.ICONS.folder()).build();
+	}
+
+	private String categoryKey(ActivityDTO activity, Map<String, Link> categories) {
+		return "category" + activity.getDatabase().getId()	+ activity.getCategory() + categories.size();
+	}
+
+	private String categoryKey(IndicatorDTO indicatorNode, Map<String, Link> categories) {
+		return "category-indicator" +  indicatorNode.getCategory() + categories.size();
+	}
+	
+	
 
 	public void loadDestinationIndicators(int databaseId) {
 

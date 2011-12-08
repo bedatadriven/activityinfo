@@ -13,6 +13,7 @@ import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.IndicatorLinkDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.LockedPeriodDTO;
 import org.sigmah.shared.dto.PartnerDTO;
@@ -30,6 +31,7 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sql.client.util.RowHandler;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -216,6 +218,7 @@ public class GetSchemaHandler implements
 						loadLockedPeriods();
 						loadTargetValues();
 						loadTargets();
+						loadLinkIndicators();
 					}
 
 				}
@@ -364,6 +367,41 @@ public class GetSchemaHandler implements
 							}
 						}
 					});
+		}
+		
+		protected void loadLinkIndicators(){
+			SqlQuery.select("l.SourceIndicatorId","l.DestinationIndicatorId").appendColumn("i.Name", "name")
+			.from("indicatorlink", "l")
+			.leftJoin("indicator", "i").on("l.SourceIndicatorId = i.indicatorId")
+			
+			.execute(tx, new SqlResultCallback() {
+				@Override
+				public void onSuccess(SqlTransaction tx,
+						SqlResultSet results) {
+					
+					HashMap<Integer, IndicatorLinkDTO> linksMap = new HashMap<Integer, IndicatorLinkDTO>();
+					
+					for (SqlResultSetRow row : results.getRows()) {
+						IndicatorLinkDTO destinations = linksMap.get(row.getInt("SourceIndicatorId"));
+						if(destinations == null || destinations.getDestinationIndicator()==null){
+							destinations = new IndicatorLinkDTO();
+						}
+						destinations.setSourceIndicator(row.getInt("SourceIndicatorId"));
+						if(destinations.getDestinationIndicator() == null){
+							destinations.setDestinationIndicator(new HashMap<Integer, String>());
+						}
+						destinations.getDestinationIndicator().put(row.getInt("DestinationIndicatorId"), row.getString("name"));
+						linksMap.put(row.getInt("SourceIndicatorId"), destinations);
+					}
+					
+					for(ActivityDTO activity: activities.values()){
+						for(IndicatorDTO indicator : activity.getIndicators()){
+							indicator.setIndicatorLinks(linksMap.get(indicator.getId()));
+						}
+					}
+					
+				}
+			});
 		}
 		
 		private void joinPartnersToDatabases() {

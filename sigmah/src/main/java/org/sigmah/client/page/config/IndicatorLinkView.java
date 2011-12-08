@@ -12,6 +12,7 @@ import org.sigmah.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.Style;
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 
@@ -68,7 +70,7 @@ public class IndicatorLinkView extends
 
 	@Override
 	public void init(LinkIndicatorPresenter presenter, UserDatabaseDTO db,
-			TreeStore store, TreeStore destinationStore) {
+			TreeStore store) {
 
 		this.db = db;
 		this.presenter = presenter;
@@ -165,10 +167,12 @@ public class IndicatorLinkView extends
 		sourceTree.setIconProvider(new ModelIconProvider<ModelData>() {
 			public AbstractImagePrototype getIcon(ModelData model) {
 
-				if (model instanceof ActivityDTO) {
+				if(model instanceof ActivityDTO) {
 					return IconImageBundle.ICONS.activity();
 				} else if (model instanceof Link) {
 					return IconImageBundle.ICONS.folder();
+				} else if (model instanceof IndicatorDTO) {
+					return IconImageBundle.ICONS.indicator();
 				} else {
 					return null;
 				}
@@ -207,14 +211,21 @@ public class IndicatorLinkView extends
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<ModelData> store, Grid<ModelData> grid) {
 
-				if (model instanceof TargetValueDTO
-						&& model.get("value") == null) {
-					config.style = "color:gray;font-style:italic;";
-					return I18N.CONSTANTS.notLinked();
-
-				} else if (model.get("value") != null) {
-
-					return model.get("value");
+				if (model instanceof IndicatorDTO) {
+					IndicatorDTO dto = (IndicatorDTO)model;
+					if(dto.getIndicatorLinks() == null || dto.getIndicatorLinks().getDestinationIndicator() == null){
+						config.style = "color:gray;font-style:italic;";
+						return I18N.CONSTANTS.notLinked();
+						
+					}else {
+						SafeHtmlBuilder builder = new SafeHtmlBuilder();
+						for(String name : dto.getIndicatorLinks().getDestinationIndicator().values()){
+							builder.appendHtmlConstant(name);
+							builder.appendEscaped(" | ");
+						}
+						
+						return "" + builder.toSafeHtml().asString();	
+					}
 				}
 
 				return "";
@@ -231,7 +242,9 @@ public class IndicatorLinkView extends
 
 			@Override
 			public void handleEvent(GridEvent be) {
-
+				if(!(be.getModel() instanceof IndicatorDTO)){
+					be.setCancelled(true);
+				}
 			}
 
 		});
