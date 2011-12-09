@@ -41,6 +41,7 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 
 	private static final String TRANSPARENT_BG = "-1";
 	
+
 	private Chart chart;
 	private ChartModel chartModel;
 
@@ -155,7 +156,7 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 			List<PivotTableData.Axis> series) {
 		
 		for(PivotTableData.Axis s : series) { 
-			
+
 			FilledBarChart bchart = new FilledBarChart("6666ff", "000066");
 			bchart.setTooltip("#x_label#<br>#val#");
 			for (PivotTableData.Axis category : categories) {
@@ -210,6 +211,4 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 		
 		cm.addChartConfig(pieChart);
 	}
-
-
 }
