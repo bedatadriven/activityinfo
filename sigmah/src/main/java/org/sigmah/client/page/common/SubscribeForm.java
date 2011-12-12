@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.form.ListField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.i18n.client.LocaleInfo;
 
 public class SubscribeForm extends FormPanel {
 
@@ -75,13 +76,11 @@ public class SubscribeForm extends FormPanel {
 		dayOfWeek = new MappingComboBox();
 		dayOfWeek.setAllowBlank(false);
 		dayOfWeek.setFieldLabel(I18N.CONSTANTS.dayOfWeek());
-		dayOfWeek.add(1, I18N.CONSTANTS.monday());
-		dayOfWeek.add(2, I18N.CONSTANTS.tuesday());
-		dayOfWeek.add(3, I18N.CONSTANTS.wednesday());
-		dayOfWeek.add(4, I18N.CONSTANTS.thursday());
-		dayOfWeek.add(5, I18N.CONSTANTS.friday());
-		dayOfWeek.add(6, I18N.CONSTANTS.saturday());
-		dayOfWeek.add(0, I18N.CONSTANTS.sunday());
+		
+		String[] weekDays = LocaleInfo.getCurrentLocale().getDateTimeConstants().weekdays();
+		for(int i=0;i!=weekDays.length;++i) {
+			dayOfWeek.add(i+1, weekDays[i]);
+		}
 		add(dayOfWeek);
 
 		dayOfMonth = new MappingComboBox();

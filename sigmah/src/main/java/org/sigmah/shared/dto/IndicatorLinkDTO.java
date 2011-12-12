@@ -3,6 +3,7 @@ package org.sigmah.shared.dto;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.common.collect.Maps;
 
 public class IndicatorLinkDTO extends BaseModelData implements EntityDTO{
 
@@ -22,7 +23,12 @@ public class IndicatorLinkDTO extends BaseModelData implements EntityDTO{
 	}
 	
 	public HashMap<Integer, String> getDestinationIndicator(){
-		return (HashMap<Integer, String>) get("destinationIndicators");
+		HashMap<Integer, String> map = (HashMap<Integer, String>) get("destinationIndicators");
+		if(map==null){
+			map=Maps.newHashMap();
+			setDestinationIndicator(map);
+		}
+		return map;
 	}
 	
 	@Override

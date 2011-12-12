@@ -36,6 +36,8 @@ import org.sigmah.client.page.entry.DataEntryLoader;
 import org.sigmah.client.page.entry.EntryModule;
 import org.sigmah.client.page.map.MapLoader;
 import org.sigmah.client.page.map.MapModule;
+import org.sigmah.client.page.report.ReportDesignLoader;
+import org.sigmah.client.page.report.ReportDesignPresenter;
 import org.sigmah.client.page.report.ReportListPagePresenter;
 import org.sigmah.client.page.report.ReportLoader;
 import org.sigmah.client.page.report.ReportModule;
@@ -135,5 +137,9 @@ public interface AppInjector extends Ginjector {
 	SearchPresenter getSearchPage();
 
 	SearchLoader createSearchLoader();
+	
+	ReportDesignLoader createReportDesignLoader();
+
+    ReportDesignPresenter getReportDesignPresenter();
 	
 }

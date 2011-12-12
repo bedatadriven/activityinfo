@@ -19,13 +19,13 @@ public class IndicatorLink implements Serializable, ReallyDeleteable {
 	private Indicator destinationIndicator;
 
 	public IndicatorLink() {
-		super();
+		
 	}
 
 	@EmbeddedId
 	@AttributeOverrides( {
-		@AttributeOverride(name = "sourceIndicator", column = @Column(name = "sourceIndicator", nullable = false)),
-		@AttributeOverride(name = "destinationIndicator", column = @Column(name = "destinationIndicator", nullable = false)) })
+		@AttributeOverride(name = "SourceIndicatorId", column = @Column(name = "SourceIndicatorId", nullable = false)),
+		@AttributeOverride(name = "DestinationIndicatorId", column = @Column(name = "DestinationIndicatorId", nullable = false)) })
 	
 	public IndicatorLinkId getId() {
 		return id;
@@ -36,7 +36,7 @@ public class IndicatorLink implements Serializable, ReallyDeleteable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "IndicatorId", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "SourceIndicatorId", nullable = false, insertable = false, updatable = false)
 	public Indicator getSourceIndicator() {
 		return sourceIndicator;
 	}
@@ -46,7 +46,7 @@ public class IndicatorLink implements Serializable, ReallyDeleteable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "IndicatorId", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "DestinationIndicatorId", nullable = false, insertable = false, updatable = false)
 	public Indicator getDestinationIndicator() {
 		return destinationIndicator;
 	}
