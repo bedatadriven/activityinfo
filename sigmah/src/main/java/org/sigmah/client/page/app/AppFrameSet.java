@@ -106,7 +106,7 @@ public class AppFrameSet implements Frame {
         addNavLink(I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());
         addNavLink(I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());
         addNavLink(I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(), new DbListPageState());
-
+        
         addSearchBox();
 
         topBar.add(new FillToolItem());
