@@ -305,6 +305,15 @@ public class IndicatorTreePanel extends ContentPanel {
 		}
 		return list;
 	}
+	
+	public void setSelection(int indicatorId){
+		
+		for(ModelData model : tree.getStore().getAllItems()){
+			if(model instanceof IndicatorDTO && ((IndicatorDTO) model).getId() == indicatorId){
+				setChecked((IndicatorDTO)model,true);		
+			}			
+		}
+	}
 
 	public void addCheckChangedListener(Listener<TreePanelEvent> listener) {
 		tree.addListener(Events.CheckChange, listener);

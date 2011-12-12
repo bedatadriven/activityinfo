@@ -372,7 +372,7 @@ public class GetSchemaHandler implements
 		protected void loadLinkIndicators(){
 			SqlQuery.select("l.SourceIndicatorId","l.DestinationIndicatorId").appendColumn("i.Name", "name")
 			.from("indicatorlink", "l")
-			.leftJoin("indicator", "i").on("l.SourceIndicatorId = i.indicatorId")
+			.leftJoin("indicator", "i").on("l.DestinationIndicatorId = i.indicatorId")
 			
 			.execute(tx, new SqlResultCallback() {
 				@Override

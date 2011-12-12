@@ -12,12 +12,11 @@ public class IndicatorLinkId implements java.io.Serializable {
 	}
 
 	public IndicatorLinkId(int sourceIndicatorId, int destinationIndicatorId) {
-		super();
 		this.sourceIndicatorId = sourceIndicatorId;
 		this.destinationIndicatorId = destinationIndicatorId;
 	}
 
-	@Column(name = "sourceIndicatorId", nullable = false)
+	@Column(name = "SourceIndicatorId", nullable = false)
 	public int getSourceIndicatorId() {
 		return sourceIndicatorId;
 	}
@@ -26,7 +25,7 @@ public class IndicatorLinkId implements java.io.Serializable {
 		this.sourceIndicatorId = sourceIndicatorId;
 	}
 
-	@Column(name = "destinationIndicatorId", nullable = false)
+	@Column(name = "DestinationIndicatorId", nullable = false)
 	public int getDestinationIndicatorId() {
 		return destinationIndicatorId;
 	}
