@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.Page;
@@ -52,6 +51,7 @@ public class LinkIndicatorPresenter extends
 
 		public void addDatabasesToList(List<ModelData> models);
 		public void defaultSelectionForIndicatorTree();
+		public void clearAllCheckedDestinations();
 	}
 
 	@Inject
@@ -198,9 +198,8 @@ public class LinkIndicatorPresenter extends
 
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
-		// TODO Auto-generated method stub
+		view.clearAllCheckedDestinations();
 		view.defaultSelectionForIndicatorTree();
-
 	}
 
 	@Override
