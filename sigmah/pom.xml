@@ -112,10 +112,15 @@
 
         <dependency>
             <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
-            <!--  needed at deploy time for server-side locale stuff -->
-            <scope>compile</scope> 
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gaxb</groupId>
