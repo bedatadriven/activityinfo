@@ -205,7 +205,7 @@ public class IndicatorTreePanel extends ContentPanel {
 			}
 			
 		}
-		
+		tree.expandAll();
 	}
 	
 	public void setHeading(String heading){
@@ -306,17 +306,21 @@ public class IndicatorTreePanel extends ContentPanel {
 		return list;
 	}
 	
-	public void setSelection(int indicatorId){
+	public void setSelection(int indicatorId, boolean select){
 		
 		for(ModelData model : tree.getStore().getAllItems()){
 			if(model instanceof IndicatorDTO && ((IndicatorDTO) model).getId() == indicatorId){
-				setChecked((IndicatorDTO)model,true);		
+				setChecked((IndicatorDTO)model,select);		
 			}			
 		}
 	}
 
 	public void addCheckChangedListener(Listener<TreePanelEvent> listener) {
 		tree.addListener(Events.CheckChange, listener);
+	}
+	
+	public void addBeforeCheckedListener(Listener<TreePanelEvent> listener) {
+		tree.addListener(Events.BeforeCheckChange, listener);
 	}
 
 	/**

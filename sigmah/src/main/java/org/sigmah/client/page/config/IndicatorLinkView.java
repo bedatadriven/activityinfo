@@ -109,7 +109,8 @@ public class IndicatorLinkView extends
 			public void selectionChanged(SelectionChangedEvent<ModelData> se) {
 				loadDestinationIndicators();
 				if(sourceTree.isRendered()){
-					defaultSelectionForIndicatorTree();	
+					//TODO should remove previous selection and set default selection
+					//defaultSelectionForIndicatorTree();
 				}
 			}
 		});
@@ -124,19 +125,31 @@ public class IndicatorLinkView extends
 
 			@Override
 			public void handleEvent(TreePanelEvent be) {
-				if(!(be.getItem() instanceof IndicatorDTO)){
-					be.setChecked(false);
-					return ;
-				}
 				if(defaultSelectedIndicator == (Integer)be.getItem().get("id")){
+					cancelCheckedEvent(be);
 					defaultSelectedIndicator = 0;
 					return;
 				}
 				
+				IndicatorDTO source = getSelectedSourceIndicator();
 				IndicatorDTO destination = (IndicatorDTO)be.getItem();
-				IndicatorDTO source = (IndicatorDTO) sourceTree.getSelectionModel().getSelectedItem();
-
 				presenter.updateLinkIndicator(source, destination, be.isChecked());		
+			}
+		});
+		
+		indicatorTreePanel.addBeforeCheckedListener(new Listener<TreePanelEvent>() {
+
+			@Override
+			public void handleEvent(TreePanelEvent be) {
+				if(!(be.getItem() instanceof IndicatorDTO)){
+					cancelCheckedEvent(be);
+					return ;
+				}
+				IndicatorDTO source = getSelectedSourceIndicator();
+				if(source==null){
+					cancelCheckedEvent(be);					
+					return;
+				}
 			}
 		});
 		
@@ -149,6 +162,9 @@ public class IndicatorLinkView extends
 		add(indicatorTreePanel, layout);
 	}
 
+	private void cancelCheckedEvent(TreePanelEvent be){
+		be.setCancelled(true);
+	}
 	
 	public void loadDestinationIndicators(){
 		List selectedItems = databaseCombo.getSelection();
@@ -157,15 +173,23 @@ public class IndicatorLinkView extends
 		indicatorTreePanel.loadSingleDatabase(presenter.loadDestinationDatabase((Integer)model.get("value")));
 	}
 	
+	@Override
+	public void clearAllCheckedDestinations(){
+		for(Integer id : indicatorTreePanel.getSelectedIds()){
+			defaultSelectedIndicator =id;
+			indicatorTreePanel.setSelection(id, false);
+		}
+	}
+	
+	@Override
 	public void defaultSelectionForIndicatorTree(){
 		if(sourceTree== null || sourceTree.getSelectionModel()==null){
 			return;
 		}
 		
-		indicatorTreePanel.clearSelection();
-		ModelData source = sourceTree.getSelectionModel().getSelectedItem();
+		ModelData source = getSelectedSourceIndicator();
 		
-		if(source!=null && source instanceof IndicatorDTO){
+		if(source!=null){
 			if(((IndicatorDTO)source).getIndicatorLinks() == null ){
 				return;
 			}
@@ -173,9 +197,20 @@ public class IndicatorLinkView extends
 			
 			for(Integer id : map.keySet()){
 				defaultSelectedIndicator = id;
-				indicatorTreePanel.setSelection(id);
+				indicatorTreePanel.setSelection(id, true);
 			}
 		}
+		
+	}
+	
+	public IndicatorDTO getSelectedSourceIndicator(){
+		IndicatorDTO dto = null;
+		
+		if(sourceTree.getSelectionModel().getSelectedItem() instanceof IndicatorDTO){
+			dto = (IndicatorDTO)sourceTree.getSelectionModel().getSelectedItem();
+		}
+		
+		return dto;
 	}
 	
 	@Override
