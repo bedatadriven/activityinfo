@@ -297,7 +297,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 					ActivityDTO activity = result.getActivityById(
 							currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity));
 					
-					new PrintDataEntryForm(activity, dispatcher);
+					new PrintDataEntryForm(activity);
 				}
 			});
 		}

@@ -2,16 +2,14 @@ package org.sigmah.shared.dto;
 
 import java.util.Date;
 import java.util.List;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.util.Format;
 
 public class TargetDTO extends BaseModelData implements EntityDTO{
 
 	private UserDatabaseDTO userDatabase;
 	private List<TargetValueDTO> targetValues ;
 
-	public final static String entityName = "Target";
+	public static final String entityName = "Target";
 
 	public TargetDTO() {
 		super();
@@ -20,8 +18,8 @@ public class TargetDTO extends BaseModelData implements EntityDTO{
 	public TargetDTO(int id, String name) {
 		super();
 
-		setId(id);
-		setName(name);
+		set("id", id);
+		set("name", name);
 	}
 
 	public int getId() {

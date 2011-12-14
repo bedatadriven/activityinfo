@@ -53,8 +53,6 @@ public class IndicatorLinkView extends
 
 	private EditorTreeGrid<ModelData> sourceTree;
 	private IndicatorTreePanel indicatorTreePanel;
-	private HorizontalPanel listContainer;
-
 	private UserDatabaseDTO db;
 
 	private MappingComboBox databaseCombo;
@@ -84,7 +82,7 @@ public class IndicatorLinkView extends
 	}
 	
 	private void createListContainer() {
-		listContainer = new HorizontalPanel();
+		HorizontalPanel listContainer = new HorizontalPanel();
 		listContainer.setBorders(false);
 		
 		listContainer.add(new Html(I18N.CONSTANTS.showLinksBetweenThisDatabaseAnd()));
@@ -108,10 +106,6 @@ public class IndicatorLinkView extends
 			@Override
 			public void selectionChanged(SelectionChangedEvent<ModelData> se) {
 				loadDestinationIndicators();
-				if(sourceTree.isRendered()){
-					//TODO should remove previous selection and set default selection
-					//defaultSelectionForIndicatorTree();
-				}
 			}
 		});
 		
@@ -169,7 +163,7 @@ public class IndicatorLinkView extends
 	public void loadDestinationIndicators(){
 		List selectedItems = databaseCombo.getSelection();
 		ModelData model = (ModelData) selectedItems .get(0);
-		indicatorTreePanel.setHeading(I18N.CONSTANTS.destinationIndicator() + " - " + String.valueOf(model.get("label")));
+		indicatorTreePanel.setHeading(I18N.CONSTANTS.destinationIndicator() + " - " + model.get("label"));
 		indicatorTreePanel.loadSingleDatabase(presenter.loadDestinationDatabase((Integer)model.get("value")));
 	}
 	
@@ -275,41 +269,43 @@ public class IndicatorLinkView extends
 		columns.add(nameColumn);
 
 	
-		ColumnConfig valueColumn = new ColumnConfig("value",
+		final ColumnConfig valueColumn = new ColumnConfig("value",
 				I18N.CONSTANTS.destinationIndicator(), 150);
-		valueColumn.setRenderer(new GridCellRenderer<ModelData>() {
-
-			@Override
-			public Object render(ModelData model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ModelData> store, Grid<ModelData> grid) {
-
-				if (model instanceof IndicatorDTO) {
-					IndicatorDTO dto = (IndicatorDTO)model;
-					if(dto.getIndicatorLinks() == null || dto.getIndicatorLinks().getDestinationIndicator().size() == 0){
-						config.style = "color:gray;font-style:italic;";
-						return I18N.CONSTANTS.notLinked();
-						
-					}else {
-						SafeHtmlBuilder builder = new SafeHtmlBuilder();
-						Collection<String> collection = dto.getIndicatorLinks().getDestinationIndicator().values();
-						for(String name : collection){
-							builder.appendHtmlConstant(name);
-							builder.appendEscaped(" | ");
-						}
-						
-						return "" + builder.toSafeHtml().asString();	
-					}
-				}
-
-				return "";
-			}
-		});
+		valueColumn.setRenderer(new IndicatorLinkCellRenderer());
 		columns.add(valueColumn);
 
 		return new ColumnModel(columns);
 	}
 
+	class IndicatorLinkCellRenderer implements GridCellRenderer<ModelData>{
+		@Override
+		public Object render(ModelData model, String property,
+				ColumnData config, int rowIndex, int colIndex,
+				ListStore<ModelData> store, Grid<ModelData> grid) {
+
+			if (model instanceof IndicatorDTO) {
+				IndicatorDTO dto = (IndicatorDTO)model;
+				if(dto.getIndicatorLinks() == null || dto.getIndicatorLinks().getDestinationIndicator().size() == 0){
+					config.style = "color:gray;font-style:italic;";
+					return I18N.CONSTANTS.notLinked();
+					
+				}else {
+					SafeHtmlBuilder builder = new SafeHtmlBuilder();
+					Collection<String> collection = dto.getIndicatorLinks().getDestinationIndicator().values();
+					for(String name : collection){
+						builder.appendHtmlConstant(name);
+						builder.appendEscaped(" | ");
+					}
+
+					setToolTip(builder.toSafeHtml().asString());
+					return "" + builder.toSafeHtml().asString();	
+				}
+			}
+
+			return "";
+		}
+	}
+	
 	@Override
 	protected void initToolBar() {
 

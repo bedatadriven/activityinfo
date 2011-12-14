@@ -46,12 +46,12 @@ public class LinkIndicatorPresenter extends
 	@ImplementedBy(IndicatorLinkView.class)
 	public interface View extends
 			TreeGridView<LinkIndicatorPresenter, ModelData> {
-		public void init(LinkIndicatorPresenter presenter, UserDatabaseDTO db,
+		void init(LinkIndicatorPresenter presenter, UserDatabaseDTO db,
 				TreeStore sourceStore);
 
-		public void addDatabasesToList(List<ModelData> models);
-		public void defaultSelectionForIndicatorTree();
-		public void clearAllCheckedDestinations();
+		void addDatabasesToList(List<ModelData> models);
+		void defaultSelectionForIndicatorTree();
+		void clearAllCheckedDestinations();
 	}
 
 	@Inject
