@@ -29,7 +29,7 @@ import com.google.gwt.i18n.client.LocaleInfo;
 public class SubscribeForm extends FormPanel {
 
 	private ListStore<ReportSubscriber> store;
-	private final static String EMAIL_VALIDATION_REGEX = "[a-z0-9!#$%&'*+/ =?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+	private static final String EMAIL_VALIDATION_REGEX = "[a-z0-9!#$%&'*+/ =?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
 	private TextField<String> title;
 	private Radio weekly;
@@ -140,7 +140,7 @@ public class SubscribeForm extends FormPanel {
 		hp.add(pf);
 
 		newEmail = new TextField<String>();
-		newEmail.setValue(I18N.CONSTANTS.enterNewEmail());
+		newEmail.setEmptyText(I18N.CONSTANTS.enterNewEmail());
 		newEmail.setRegex(EMAIL_VALIDATION_REGEX);
 		hp.add(newEmail);
 
@@ -152,21 +152,11 @@ public class SubscribeForm extends FormPanel {
 		addEmail.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				boolean valid = newEmail.getValue() != null &&
-					newEmail.getValue().matches(
-						EMAIL_VALIDATION_REGEX);
-				if (valid) {
+				if (newEmail.validate()) {
 					store.add(new ReportSubscriber(newEmail.getValue()));
-					newEmail.setValue(I18N.CONSTANTS.enterNewEmail());
+					newEmail.setValue(null);
 					addEmail.setEnabled(false);
 				}
-			}
-		});
-		newEmail.addListener(Events.Focus, new Listener<BaseEvent>() {
-			@Override
-			public void handleEvent(BaseEvent be) {
-				newEmail.setValue("");
-				addEmail.setEnabled(true);
 			}
 		});
 
