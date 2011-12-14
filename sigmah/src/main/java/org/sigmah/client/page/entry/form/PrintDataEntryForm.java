@@ -9,6 +9,10 @@ import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
 import org.sigmah.shared.dto.SchemaDTO;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.resources.client.TextResource;
 
 public class PrintDataEntryForm {
@@ -20,13 +24,23 @@ public class PrintDataEntryForm {
 	private StringBuilder html;
 	private ActivityDTO activity;
 
+	final Button invisibleButton = new Button();
+	
 	public PrintDataEntryForm(ActivityDTO activity, Dispatcher service) {
 
 		super();
 		this.service = service;
 		this.activity = activity;
-
-		init();
+		
+		invisibleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				init();
+				print();
+			}
+		});
+		invisibleButton.fireEvent(Events.Select);
 	}
 
 	private void init() {
@@ -44,9 +58,7 @@ public class PrintDataEntryForm {
 				.replace("{$attributes}", addAttributes());
 		
 		html = new StringBuilder();
-		html.append(contents);
-
-		print();
+		html.append(contents);		
 	}
 
 	private String addIndicators() {
