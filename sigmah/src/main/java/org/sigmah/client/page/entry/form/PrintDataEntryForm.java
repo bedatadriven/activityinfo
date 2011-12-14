@@ -7,58 +7,48 @@ import org.sigmah.shared.dto.AttributeDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
-import org.sigmah.shared.dto.SchemaDTO;
-
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.resources.client.TextResource;
 
 public class PrintDataEntryForm {
 
 	private final Dispatcher service;
 
-	private SchemaDTO schemaDTO;
-
 	private StringBuilder html;
 	private ActivityDTO activity;
 
-	final Button invisibleButton = new Button();
-	
 	public PrintDataEntryForm(ActivityDTO activity, Dispatcher service) {
 
 		super();
 		this.service = service;
 		this.activity = activity;
-		
-		invisibleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				init();
-				print();
-			}
-		});
-		invisibleButton.fireEvent(Events.Select);
+		init();
+		print();
 	}
 
 	private void init() {
 
 		String contents = getFormContents();
-		
+
 		contents = contents.replace("{$activityName}", activity.getName())
 				.replace("{$databaseName}", activity.getDatabase().getName())
-				.replace("{$activityName}",activity.getName())
-				.replace("{$partnerName}", " ")
-				.replace("{$projectName}", " ")
-				.replace("{$startDate}", "")
-				.replace("{$endDate}", " ")
+				.replace("{$activityName}", activity.getName())
+				.replace("{$partnerName}", " ").replace("{$projectName}", " ")
+				.replace("{$startDate}", "").replace("{$endDate}", " ")
 				.replace("{$indicators}", addIndicators())
 				.replace("{$attributes}", addAttributes());
-		
+
 		html = new StringBuilder();
-		html.append(contents);		
+		html.append(contents);
+	}
+
+	private String getFormContents() {
+		TextResource formPage = SiteFormResources.INSTANCE.collectionForm();
+		String text = formPage.getText();
+		return text;
+	}
+
+	private void print() {
+		Print.it(html.toString());
 	}
 
 	private String addIndicators() {
@@ -79,13 +69,13 @@ public class PrintDataEntryForm {
 			}
 			builder.append("</table>");
 		}
-		
+
 		return builder.toString();
 	}
 
 	private void addIndicator(IndicatorDTO indicator, StringBuilder builder) {
 		builder.append("<tr>");
-		builder.append("<td>"+ indicator.getName() +"</td>");
+		builder.append("<td>" + indicator.getName() + "</td>");
 		builder.append("<td>&nbsp;</td>");
 		builder.append("<td>" + indicator.getUnits() + "</td>");
 		builder.append("</tr>");
@@ -97,41 +87,22 @@ public class PrintDataEntryForm {
 		for (AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
 
 			builder.append("<tr>");
-			builder.append("<td id=\"field-set\" valign=\"top\">" + attributeGroup.getName() + ":</td><td>");
-	      	
+			builder.append("<td id=\"field-set\" valign=\"top\">"
+					+ attributeGroup.getName() + ":</td><td>");
+
 			AttributeCheckBoxGroup(attributeGroup, builder);
 			builder.append("</td></tr>");
 		}
 		return builder.toString();
 	}
 
-	private void AttributeCheckBoxGroup(AttributeGroupDTO group, StringBuilder builder) {
+	private void AttributeCheckBoxGroup(AttributeGroupDTO group,
+			StringBuilder builder) {
 
-		for(AttributeDTO attribture : group.getAttributes()){
-			builder.append("[  ] "+ attribture.getName() +"<br />");
+		for (AttributeDTO attribture : group.getAttributes()) {
+			builder.append("[  ] " + attribture.getName() + "<br />");
 		}
 
 	}
-	
-	private String getFormContents(){
-		TextResource formPage = SiteFormResources.INSTANCE.collectionForm();
-		 String text=	formPage.getText();
-		return text;
-	}
-
-	private void print() {
-		printInPopup(html.toString());
-	}
-
-	native void printInPopup(String body) /*-{
-		OpenWindow = window.open("", "PrintForm",
-				"height=650, width=800,toolbar=no,scrollbars=1"
-						+ ",menubar=no");
-		OpenWindow.document.write(body)
-		OpenWindow.document.write("<script>window.print();</script></body>")
-	
-		OpenWindow.document.close()
-		self.name = "main"
-	}-*/;
 
 }
