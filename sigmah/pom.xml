@@ -604,7 +604,7 @@
                             <directory>war/temp</directory>
                         </fileset>
                         <fileset>
-                            <directory>war/Sigmah</directory>
+                            <directory>war/Embed</directory>
                         </fileset>
                         <fileset>
                             <directory>war/WEB-INF/lib</directory>
