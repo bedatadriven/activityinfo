@@ -14,17 +14,20 @@
     <set-property name="locale" value="en,fr"/>
 
     <!-- Turn all logging off  -->
-    <extend-property name="log_level" values="TRACE" />
-    <set-property name="log_level" value="TRACE"/>
     <set-property name="log_DivLogger" value="DISABLED" />
-
+    <extend-property name="log_level" values="ERROR" />
+    <set-property name="log_level" value="ERROR"/>
+    
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
 
-	<set-property name="compiler.emulatedStack" value="true" />
-	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers"
-		value="true" />
-	<set-configuration-property name="compiler.emulatedStack.recordFileNames"
-		value="true" />
+
+<!--     <extend-property name="log_level" values="TRACE" /> -->
+<!--     <set-property name="log_level" value="TRACE"/> -->
+<!-- 	<set-property name="compiler.emulatedStack" value="true" /> -->
+<!-- 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" -->
+<!-- 		value="true" /> -->
+<!-- 	<set-configuration-property name="compiler.emulatedStack.recordFileNames" -->
+<!-- 		value="true" /> -->
 	
 </module>
 
