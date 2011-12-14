@@ -46,4 +46,10 @@ public final class UIActions {
     
     public static final String SUBSCRIBE = "subscribe";
     
+    public static final String ADDCHART = "addChart";
+    
+    public static final String ADDMAP  = "addMap";
+    
+    public static final String ADDTABLE = "addTable";
+    
 }

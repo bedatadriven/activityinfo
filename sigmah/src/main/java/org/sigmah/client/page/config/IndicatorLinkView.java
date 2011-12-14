@@ -1,6 +1,8 @@
 package org.sigmah.client.page.config;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
@@ -13,16 +15,14 @@ import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -30,8 +30,6 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -60,6 +58,8 @@ public class IndicatorLinkView extends
 	private UserDatabaseDTO db;
 
 	private MappingComboBox databaseCombo;
+	
+	private int defaultSelectedIndicator = 0;
 	
 	@Inject
 	public IndicatorLinkView(Dispatcher service) {
@@ -99,6 +99,7 @@ public class IndicatorLinkView extends
 		add(listContainer, layout);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private MappingComboBox createDatabaseList(){
 		databaseCombo = new MappingComboBox();
 		databaseCombo.setAllowBlank(false);
@@ -107,6 +108,10 @@ public class IndicatorLinkView extends
 			@Override
 			public void selectionChanged(SelectionChangedEvent<ModelData> se) {
 				loadDestinationIndicators();
+				if(sourceTree.isRendered()){
+					//TODO should remove previous selection and set default selection
+					//defaultSelectionForIndicatorTree();
+				}
 			}
 		});
 		
@@ -116,6 +121,37 @@ public class IndicatorLinkView extends
 	private void createDestinationContainer(){
 		indicatorTreePanel =  IndicatorTreePanel.forSingleDatabase(service);
 		indicatorTreePanel.setLeafCheckableOnly();
+		indicatorTreePanel.addCheckChangedListener(new Listener<TreePanelEvent>() {
+
+			@Override
+			public void handleEvent(TreePanelEvent be) {
+				if(defaultSelectedIndicator == (Integer)be.getItem().get("id")){
+					cancelCheckedEvent(be);
+					defaultSelectedIndicator = 0;
+					return;
+				}
+				
+				IndicatorDTO source = getSelectedSourceIndicator();
+				IndicatorDTO destination = (IndicatorDTO)be.getItem();
+				presenter.updateLinkIndicator(source, destination, be.isChecked());		
+			}
+		});
+		
+		indicatorTreePanel.addBeforeCheckedListener(new Listener<TreePanelEvent>() {
+
+			@Override
+			public void handleEvent(TreePanelEvent be) {
+				if(!(be.getItem() instanceof IndicatorDTO)){
+					cancelCheckedEvent(be);
+					return ;
+				}
+				IndicatorDTO source = getSelectedSourceIndicator();
+				if(source==null){
+					cancelCheckedEvent(be);					
+					return;
+				}
+			}
+		});
 		
 		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.EAST);
 		layout.setSplit(true);
@@ -126,12 +162,55 @@ public class IndicatorLinkView extends
 		add(indicatorTreePanel, layout);
 	}
 
+	private void cancelCheckedEvent(TreePanelEvent be){
+		be.setCancelled(true);
+	}
 	
 	public void loadDestinationIndicators(){
 		List selectedItems = databaseCombo.getSelection();
 		ModelData model = (ModelData) selectedItems .get(0);
 		indicatorTreePanel.setHeading(I18N.CONSTANTS.destinationIndicator() + " - " + String.valueOf(model.get("label")));
 		indicatorTreePanel.loadSingleDatabase(presenter.loadDestinationDatabase((Integer)model.get("value")));
+	}
+	
+	@Override
+	public void clearAllCheckedDestinations(){
+		for(Integer id : indicatorTreePanel.getSelectedIds()){
+			defaultSelectedIndicator =id;
+			indicatorTreePanel.setSelection(id, false);
+		}
+	}
+	
+	@Override
+	public void defaultSelectionForIndicatorTree(){
+		if(sourceTree== null || sourceTree.getSelectionModel()==null){
+			return;
+		}
+		
+		ModelData source = getSelectedSourceIndicator();
+		
+		if(source!=null){
+			if(((IndicatorDTO)source).getIndicatorLinks() == null ){
+				return;
+			}
+			HashMap<Integer, String> map = ((IndicatorDTO)source).getIndicatorLinks().getDestinationIndicator();
+			
+			for(Integer id : map.keySet()){
+				defaultSelectedIndicator = id;
+				indicatorTreePanel.setSelection(id, true);
+			}
+		}
+		
+	}
+	
+	public IndicatorDTO getSelectedSourceIndicator(){
+		IndicatorDTO dto = null;
+		
+		if(sourceTree.getSelectionModel().getSelectedItem() instanceof IndicatorDTO){
+			dto = (IndicatorDTO)sourceTree.getSelectionModel().getSelectedItem();
+		}
+		
+		return dto;
 	}
 	
 	@Override
@@ -180,9 +259,6 @@ public class IndicatorLinkView extends
 			}
 		});
 
-		addBeforeEditListner();
-		addAfterEditListner();
-
 		sourceIndicatorsContainer.add(sourceTree);
 		add(sourceIndicatorsContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
@@ -198,12 +274,9 @@ public class IndicatorLinkView extends
 		nameColumn.setRenderer(new TreeGridCellRenderer());
 		columns.add(nameColumn);
 
-		TextField<String> valueField = new TextField<String>();
-		valueField.setAllowBlank(true);
-
+	
 		ColumnConfig valueColumn = new ColumnConfig("value",
 				I18N.CONSTANTS.destinationIndicator(), 150);
-		valueColumn.setEditor(new CellEditor(valueField));
 		valueColumn.setRenderer(new GridCellRenderer<ModelData>() {
 
 			@Override
@@ -213,13 +286,14 @@ public class IndicatorLinkView extends
 
 				if (model instanceof IndicatorDTO) {
 					IndicatorDTO dto = (IndicatorDTO)model;
-					if(dto.getIndicatorLinks() == null || dto.getIndicatorLinks().getDestinationIndicator() == null){
+					if(dto.getIndicatorLinks() == null || dto.getIndicatorLinks().getDestinationIndicator().size() == 0){
 						config.style = "color:gray;font-style:italic;";
 						return I18N.CONSTANTS.notLinked();
 						
 					}else {
 						SafeHtmlBuilder builder = new SafeHtmlBuilder();
-						for(String name : dto.getIndicatorLinks().getDestinationIndicator().values()){
+						Collection<String> collection = dto.getIndicatorLinks().getDestinationIndicator().values();
+						for(String name : collection){
 							builder.appendHtmlConstant(name);
 							builder.appendEscaped(" | ");
 						}
@@ -234,32 +308,6 @@ public class IndicatorLinkView extends
 		columns.add(valueColumn);
 
 		return new ColumnModel(columns);
-	}
-
-	private void addBeforeEditListner() {
-
-		sourceTree.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
-
-			@Override
-			public void handleEvent(GridEvent be) {
-				if(!(be.getModel() instanceof IndicatorDTO)){
-					be.setCancelled(true);
-				}
-			}
-
-		});
-	}
-
-	private void addAfterEditListner() {
-
-		sourceTree.addListener(Events.AfterEdit, new Listener<GridEvent>() {
-
-			@Override
-			public void handleEvent(GridEvent be) {
-
-			}
-
-		});
 	}
 
 	@Override

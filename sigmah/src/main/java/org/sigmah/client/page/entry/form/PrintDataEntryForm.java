@@ -9,6 +9,10 @@ import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorGroup;
 import org.sigmah.shared.dto.SchemaDTO;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.resources.client.TextResource;
 
 public class PrintDataEntryForm {
@@ -20,13 +24,23 @@ public class PrintDataEntryForm {
 	private StringBuilder html;
 	private ActivityDTO activity;
 
+	final Button invisibleButton = new Button();
+	
 	public PrintDataEntryForm(ActivityDTO activity, Dispatcher service) {
 
 		super();
 		this.service = service;
 		this.activity = activity;
-
-		init();
+		
+		invisibleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				init();
+				print();
+			}
+		});
+		invisibleButton.fireEvent(Events.Select);
 	}
 
 	private void init() {
@@ -39,55 +53,64 @@ public class PrintDataEntryForm {
 				.replace("{$partnerName}", " ")
 				.replace("{$projectName}", " ")
 				.replace("{$startDate}", "")
-				.replace("{$endDate}", " ");
+				.replace("{$endDate}", " ")
+				.replace("{$indicators}", addIndicators())
+				.replace("{$attributes}", addAttributes());
 		
 		html = new StringBuilder();
-		
-		html.append(contents);
-
-		print();
+		html.append(contents);		
 	}
 
-	private void addIndicators() {
+	private String addIndicators() {
+		StringBuilder builder = new StringBuilder();
 		for (IndicatorGroup group : activity.groupIndicators()) {
 
 			if (group.getName() != null) {
-				html.append("<tr><td> <b> " + group.getName() + "</b></td><td></td></tr>");
+				builder.append("<h2> " + group.getName() + "</h2>");
 			}
-
+			builder.append("<table border=\"1px\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" class=\"form-detail\">");
+			builder.append("<tr>");
+			builder.append("<td>Indicator</td>");
+			builder.append("<td>Valeur</td>");
+			builder.append("<td>Units</td>");
+			builder.append("</tr>");
 			for (IndicatorDTO indicator : group.getIndicators()) {
-				addIndicator(indicator);
+				addIndicator(indicator, builder);
 			}
+			builder.append("</table>");
 		}
+		
+		return builder.toString();
 	}
 
-	private void addIndicator(IndicatorDTO indicator) {
-		html.append("<tr><td> <b> " + indicator.getName() + "</b></td><td></td></tr>");
-		if (indicator.getDescription() != null && !indicator.getDescription().isEmpty()) {
-			html.append("<tr><td> <b> " + indicator.getDescription() + "</b></td><td></td></tr>");
-		}
-		html.append("<tr><td> <b> " + indicator.getUnits() + "</b></td><td></td></tr>");
+	private void addIndicator(IndicatorDTO indicator, StringBuilder builder) {
+		builder.append("<tr>");
+		builder.append("<td>"+ indicator.getName() +"</td>");
+		builder.append("<td>&nbsp;</td>");
+		builder.append("<td>" + indicator.getUnits() + "</td>");
+		builder.append("</tr>");
 	}
 
-	private void addAttributes() {
+	private String addAttributes() {
 
+		StringBuilder builder = new StringBuilder();
 		for (AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
 
-			String group= AttributeCheckBoxGroup(attributeGroup);
-			html.append("<tr><td>  " + group + "</td><td></td></tr>");
-			
+			builder.append("<tr>");
+			builder.append("<td id=\"field-set\" valign=\"top\">" + attributeGroup.getName() + ":</td><td>");
+	      	
+			AttributeCheckBoxGroup(attributeGroup, builder);
+			builder.append("</td></tr>");
 		}
+		return builder.toString();
 	}
 
-	private String AttributeCheckBoxGroup(AttributeGroupDTO group) {
-		StringBuilder checkBoxGroup = new StringBuilder();
-		for (AttributeDTO attrib : group.getAttributes()) {
+	private void AttributeCheckBoxGroup(AttributeGroupDTO group, StringBuilder builder) {
 
-			checkBoxGroup.append("<input type=\'checkbox\' value=\'" + attrib.getPropertyName() + "\'>");
-			checkBoxGroup.append(attrib.getName() + "</input>");
-
+		for(AttributeDTO attribture : group.getAttributes()){
+			builder.append("[  ] "+ attribture.getName() +"<br />");
 		}
-		return checkBoxGroup.toString();
+
 	}
 	
 	private String getFormContents(){
@@ -102,7 +125,7 @@ public class PrintDataEntryForm {
 
 	native void printInPopup(String body) /*-{
 		OpenWindow = window.open("", "PrintForm",
-				"height=650, width=800,toolbar=no,scrollbars=" + scroll
+				"height=650, width=800,toolbar=no,scrollbars=1"
 						+ ",menubar=no");
 		OpenWindow.document.write(body)
 		OpenWindow.document.write("<script>window.print();</script></body>")

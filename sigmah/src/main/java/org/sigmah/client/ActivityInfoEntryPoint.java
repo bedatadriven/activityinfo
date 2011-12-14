@@ -61,6 +61,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.createMapLoader();
         injector.createConfigLoader();
         injector.createSearchLoader();
+        injector.createReportDesignLoader();
 
         injector.getUsageTracker();
         injector.getHistoryManager();

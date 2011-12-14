@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
@@ -17,12 +16,12 @@ import org.sigmah.client.page.common.grid.TreeGridView;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.UpdateIndicatorLink;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.IndicatorLinkDTO;
 import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.TargetValueDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Store;
@@ -44,7 +43,6 @@ public class LinkIndicatorPresenter extends
 	private UserDatabaseDTO db;
 	private TreeStore<ModelData> sourceTreeStore;
 
-
 	@ImplementedBy(IndicatorLinkView.class)
 	public interface View extends
 			TreeGridView<LinkIndicatorPresenter, ModelData> {
@@ -52,6 +50,8 @@ public class LinkIndicatorPresenter extends
 				TreeStore sourceStore);
 
 		public void addDatabasesToList(List<ModelData> models);
+		public void defaultSelectionForIndicatorTree();
+		public void clearAllCheckedDestinations();
 	}
 
 	@Inject
@@ -64,10 +64,10 @@ public class LinkIndicatorPresenter extends
 		this.view = view;
 	}
 
-	public void go(SchemaDTO schema,  DbPageState place) {
+	public void go(SchemaDTO schema, DbPageState place) {
 		this.schema = schema;
 		this.db = schema.getDatabaseById(place.getDatabaseId());
-		
+
 		sourceTreeStore = new TreeStore<ModelData>();
 
 		fillStore();
@@ -87,15 +87,15 @@ public class LinkIndicatorPresenter extends
 				Link actCategoryLink = categories.get(activity.getCategory());
 
 				if (actCategoryLink == null) {
-					
-					actCategoryLink =createCategoryLink(activity, categories);
+
+					actCategoryLink = createCategoryLink(activity, categories);
 					categories.put(activity.getCategory(), actCategoryLink);
 					sourceTreeStore.add(actCategoryLink, false);
 				}
 
 				sourceTreeStore.add(actCategoryLink, activity, false);
 				addIndicatorLinks(activity, activity);
-				
+
 			} else {
 				sourceTreeStore.add(activity, false);
 				addIndicatorLinks(activity, activity);
@@ -103,71 +103,103 @@ public class LinkIndicatorPresenter extends
 
 		}
 	}
-	
-	private void addIndicatorLinks(ActivityDTO activity, ModelData parent){
+
+	private void addIndicatorLinks(ActivityDTO activity, ModelData parent) {
 		Map<String, Link> indicatorCategories = new HashMap<String, Link>();
-		
 
 		for (IndicatorDTO indicator : activity.getIndicators()) {
-			
-			if(indicator.getCategory()!=null){
-				Link indCategoryLink = indicatorCategories.get(indicator.getCategory());
-				
-				if(indCategoryLink  == null){
-					indCategoryLink = createIndicatorCategoryLink(indicator, indicatorCategories);							
-					indicatorCategories.put(indicator.getCategory(), indCategoryLink);
+
+			if (indicator.getCategory() != null) {
+				Link indCategoryLink = indicatorCategories.get(indicator
+						.getCategory());
+
+				if (indCategoryLink == null) {
+					indCategoryLink = createIndicatorCategoryLink(indicator,
+							indicatorCategories);
+					indicatorCategories.put(indicator.getCategory(),
+							indCategoryLink);
 					sourceTreeStore.add(parent, indCategoryLink, false);
 				}
-					sourceTreeStore.add(indCategoryLink, indicator, false);	
-			}else{
-					sourceTreeStore.add(parent, indicator, false);
+				sourceTreeStore.add(indCategoryLink, indicator, false);
+			} else {
+				sourceTreeStore.add(parent, indicator, false);
 			}
 		}
 
 	}
-	
-	private IndicatorLinkDTO createIndicatorLinkModel(IndicatorDTO indicator){
-		IndicatorLinkDTO indicatorLinkDTO = new IndicatorLinkDTO();
-		
-		
-		return indicatorLinkDTO ;
-	}
-	
-	private Link createIndicatorCategoryLink(IndicatorDTO indicatorNode, Map<String, Link> categories){
+
+	private Link createIndicatorCategoryLink(IndicatorDTO indicatorNode,
+			Map<String, Link> categories) {
 		return Link.folderLabelled(indicatorNode.getCategory())
 				.usingKey(categoryKey(indicatorNode, categories))
 				.withIcon(IconImageBundle.ICONS.folder()).build();
 	}
-	
-	private Link createCategoryLink(ActivityDTO activity,Map<String, Link> categories) {
+
+	private Link createCategoryLink(ActivityDTO activity,
+			Map<String, Link> categories) {
 
 		return Link.folderLabelled(activity.getCategory())
 				.usingKey(categoryKey(activity, categories))
 				.withIcon(IconImageBundle.ICONS.folder()).build();
 	}
 
-	private String categoryKey(ActivityDTO activity, Map<String, Link> categories) {
-		return "category" + activity.getDatabase().getId()	+ activity.getCategory() + categories.size();
+	private String categoryKey(ActivityDTO activity,
+			Map<String, Link> categories) {
+		return "category" + activity.getDatabase().getId()
+				+ activity.getCategory() + categories.size();
 	}
 
-	private String categoryKey(IndicatorDTO indicatorNode, Map<String, Link> categories) {
-		return "category-indicator" +  indicatorNode.getCategory() + categories.size();
-	}
-	
-	
-
-	public void loadDestinationIndicators(int databaseId) {
-
+	private String categoryKey(IndicatorDTO indicatorNode,
+			Map<String, Link> categories) {
+		return "category-indicator" + indicatorNode.getCategory()
+				+ categories.size();
 	}
 
-	public UserDatabaseDTO loadDestinationDatabase(int databaseId){
+	public void updateIndicatorDestination(IndicatorDTO indicatorDTO) {
+		
+	}
+
+	public UserDatabaseDTO loadDestinationDatabase(int databaseId) {
 		return schema.getDatabaseById(databaseId);
 	}
-	
+
+	public void updateLinkIndicator(final IndicatorDTO sourceIndicator, final IndicatorDTO destinationIndicator,
+			final boolean checked) {
+
+		int srcId = sourceIndicator.getId();
+		int destId = destinationIndicator.getId();
+		
+		service.execute(new UpdateIndicatorLink(srcId, destId, !checked), null,
+				new AsyncCallback<VoidResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						//TODO errors?
+					}
+
+					@Override
+					public void onSuccess(VoidResult result) {
+						if(sourceIndicator.getIndicatorLinks()== null){
+							IndicatorLinkDTO linkDTO = new IndicatorLinkDTO();
+							linkDTO.setSourceIndicator(sourceIndicator.getId());
+							sourceIndicator.setIndicatorLinks(linkDTO);
+						}
+						
+						if(checked){
+							sourceIndicator.getIndicatorLinks().getDestinationIndicator().put(destinationIndicator.getId(), destinationIndicator.getName());
+						}else{
+							sourceIndicator.getIndicatorLinks().getDestinationIndicator().remove(destinationIndicator.getId());
+						}
+						
+						sourceTreeStore.update(sourceIndicator);
+						sourceTreeStore.commitChanges();
+					}
+				});
+	}
+
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
-		// TODO Auto-generated method stub
-
+		view.clearAllCheckedDestinations();
+		view.defaultSelectionForIndicatorTree();
 	}
 
 	@Override
