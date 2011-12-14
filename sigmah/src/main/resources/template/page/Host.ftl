@@ -91,6 +91,7 @@
 	</script>
 </head>
 <body>
+<iframe id="__printingFrame" style="width:0;height:0;border:0"></iframe>
 <div id="loading">
     <div id="loading-box">
         <div class="loading-indicator">
