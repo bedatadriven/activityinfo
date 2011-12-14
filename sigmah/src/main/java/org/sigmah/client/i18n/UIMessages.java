@@ -157,7 +157,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	 * @return translated
 	 *         "Found no existing locations. Make geography less specific, or add a new location."
 	 */
-	@DefaultMessage("Found no existing locations. Make geography less specific, or add a new location.")
+	@DefaultMessage("Found no existing sites. Make geography less specific, or add a new location.")
 	String noLocationsFound();
 
 	/**
@@ -257,13 +257,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("Showing locks for database [{0}], project [{1}] for activity [{2}]")
 	String showLockedPeriodsTitle(String arg0, String arg1, String arg2);
 
-	/**
-	 * Translated "Synchronizing {0} [{1} rows updated so far] ".
-	 * 
-	 * @return translated "Synchronizing {0} [{1} rows updated so far] "
-	 */
-	@DefaultMessage("Synchronizing {0} [{1} rows updated so far] ")
-	String synchronizerProgress(String arg0, String arg1);
 
 	/**
 	 * Translated
@@ -273,7 +266,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	 * @return translated
 	 *         "Too many ({0}) locations found. Please refine criteria to see possible locations.  "
 	 */
-	@DefaultMessage("Too many ({0}) locations found. Please refine criteria to see possible locations.  ")
+	@DefaultMessage("Too many ({0}) sites found. Please refine criteria to see possible sites.  ")
 	String tooManyLocationsFound(String arg0);
 
 	/**
@@ -284,13 +277,13 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("ActivityInfo r{0}")
 	String versionedActivityInfoTitle(String arg0);
 
-	@DefaultMessage("Add new site for activity ''{0}''")
+	@DefaultMessage("Add new intervention for activity ''{0}''")
 	String addNewSiteForActivity(String activityName);
 	
-	@DefaultMessage("{0,number} matching locations")
+	@DefaultMessage("{0,number} matching sites")
 	String matchingLocations(int count); 
 	
-	@DefaultMessage("Use location ''{0}''")
+	@DefaultMessage("Use site ''{0}''")
 	String useLocation(String name);
 	
 	@DefaultMessage("Targets for database {0}")
