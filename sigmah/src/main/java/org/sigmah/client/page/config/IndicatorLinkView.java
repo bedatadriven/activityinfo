@@ -107,6 +107,10 @@ public class IndicatorLinkView extends
 			@Override
 			public void selectionChanged(SelectionChangedEvent<ModelData> se) {
 				loadDestinationIndicators();
+				// only first load time sourceTree is not rendered so should have an if 
+				if(sourceTree.isRendered()){
+					defaultSelectionForIndicatorTree();	
+				}
 			}
 		});
 		
