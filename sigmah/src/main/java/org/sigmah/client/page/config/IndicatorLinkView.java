@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -106,6 +107,10 @@ public class IndicatorLinkView extends
 			@Override
 			public void selectionChanged(SelectionChangedEvent<ModelData> se) {
 				loadDestinationIndicators();
+				// only first load time sourceTree is not rendered so should have an if 
+				if(sourceTree.isRendered()){
+					defaultSelectionForIndicatorTree();	
+				}
 			}
 		});
 		
@@ -115,6 +120,20 @@ public class IndicatorLinkView extends
 	private void createDestinationContainer(){
 		indicatorTreePanel =  IndicatorTreePanel.forSingleDatabase(service);
 		indicatorTreePanel.setLeafCheckableOnly();
+		
+		addIndicatorTreeChangeListener();
+		addIndicatorTreeBeforeCheckListener();
+		
+		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.EAST);
+		layout.setSplit(true);
+		layout.setCollapsible(true);
+		layout.setSize(400);
+		layout.setMargins(new Margins(0, 0, 0, 5));
+
+		add(indicatorTreePanel, layout);
+	}
+
+	private void addIndicatorTreeChangeListener(){
 		indicatorTreePanel.addCheckChangedListener(new Listener<TreePanelEvent>() {
 
 			@Override
@@ -130,7 +149,9 @@ public class IndicatorLinkView extends
 				presenter.updateLinkIndicator(source, destination, be.isChecked());		
 			}
 		});
-		
+	}
+	
+	private void addIndicatorTreeBeforeCheckListener(){
 		indicatorTreePanel.addBeforeCheckedListener(new Listener<TreePanelEvent>() {
 
 			@Override
@@ -146,16 +167,7 @@ public class IndicatorLinkView extends
 				}
 			}
 		});
-		
-		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.EAST);
-		layout.setSplit(true);
-		layout.setCollapsible(true);
-		layout.setSize(400);
-		layout.setMargins(new Margins(0, 0, 0, 5));
-
-		add(indicatorTreePanel, layout);
 	}
-
 	private void cancelCheckedEvent(TreePanelEvent be){
 		be.setCancelled(true);
 	}
@@ -199,8 +211,8 @@ public class IndicatorLinkView extends
 	
 	public IndicatorDTO getSelectedSourceIndicator(){
 		IndicatorDTO dto = null;
-		
-		if(sourceTree.getSelectionModel().getSelectedItem() instanceof IndicatorDTO){
+
+		if(presenter.isSourceSelected() && sourceTree.getSelectionModel().getSelectedItem() instanceof IndicatorDTO){
 			dto = (IndicatorDTO)sourceTree.getSelectionModel().getSelectedItem();
 		}
 		
@@ -253,6 +265,7 @@ public class IndicatorLinkView extends
 			}
 		});
 
+		new QuickTip( sourceTree );
 		sourceIndicatorsContainer.add(sourceTree);
 		add(sourceIndicatorsContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
@@ -297,15 +310,17 @@ public class IndicatorLinkView extends
 						builder.appendEscaped(" | ");
 					}
 
-					setToolTip(builder.toSafeHtml().asString());
-					return "" + builder.toSafeHtml().asString();	
+					String tooltip =  builder.toSafeHtml().asString();
+					String html = "<span qtip='" + tooltip + "'>" + builder.toSafeHtml().asString() + "</span>";
+					
+					return html;	
 				}
 			}
 
 			return "";
 		}
 	}
-	
+
 	@Override
 	protected void initToolBar() {
 

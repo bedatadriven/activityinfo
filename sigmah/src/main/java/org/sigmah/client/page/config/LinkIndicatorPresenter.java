@@ -42,6 +42,7 @@ public class LinkIndicatorPresenter extends
 	private SchemaDTO schema;
 	private UserDatabaseDTO db;
 	private TreeStore<ModelData> sourceTreeStore;
+	private boolean sourceSelected = false;
 
 	@ImplementedBy(IndicatorLinkView.class)
 	public interface View extends
@@ -195,9 +196,14 @@ public class LinkIndicatorPresenter extends
 					}
 				});
 	}
+	
+	public boolean isSourceSelected(){
+			return sourceSelected;
+	}
 
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
+		sourceSelected = true;
 		view.clearAllCheckedDestinations();
 		view.defaultSelectionForIndicatorTree();
 	}

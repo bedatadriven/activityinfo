@@ -45,11 +45,11 @@ public class TargetIndicatorView extends
 		AbstractEditorTreeGridView<ModelData, TargetIndicatorPresenter> implements
 		TargetIndicatorPresenter.View {
 
-	protected final Dispatcher service;
+	private final Dispatcher service;
 
-	protected EditorTreeGrid<ModelData> tree;
-	TargetIndicatorPresenter presenter ;
-	protected UserDatabaseDTO db;
+	private EditorTreeGrid<ModelData> tree;
+	private TargetIndicatorPresenter presenter ;
+	private UserDatabaseDTO db;
 
 	@Inject
 	public TargetIndicatorView(Dispatcher service) {
