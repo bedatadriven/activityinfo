@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -253,6 +254,7 @@ public class IndicatorLinkView extends
 			}
 		});
 
+		new QuickTip( sourceTree );
 		sourceIndicatorsContainer.add(sourceTree);
 		add(sourceIndicatorsContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
@@ -297,15 +299,17 @@ public class IndicatorLinkView extends
 						builder.appendEscaped(" | ");
 					}
 
-					setToolTip(builder.toSafeHtml().asString());
-					return "" + builder.toSafeHtml().asString();	
+					String tooltip =  builder.toSafeHtml().asString();
+					String html = "<span qtip='" + tooltip + "'>" + builder.toSafeHtml().asString() + "</span>";
+					
+					return html;	
 				}
 			}
 
 			return "";
 		}
 	}
-	
+
 	@Override
 	protected void initToolBar() {
 
