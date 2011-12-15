@@ -120,6 +120,20 @@ public class IndicatorLinkView extends
 	private void createDestinationContainer(){
 		indicatorTreePanel =  IndicatorTreePanel.forSingleDatabase(service);
 		indicatorTreePanel.setLeafCheckableOnly();
+		
+		addIndicatorTreeChangeListener();
+		addIndicatorTreeBeforeCheckListener();
+		
+		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.EAST);
+		layout.setSplit(true);
+		layout.setCollapsible(true);
+		layout.setSize(400);
+		layout.setMargins(new Margins(0, 0, 0, 5));
+
+		add(indicatorTreePanel, layout);
+	}
+
+	private void addIndicatorTreeChangeListener(){
 		indicatorTreePanel.addCheckChangedListener(new Listener<TreePanelEvent>() {
 
 			@Override
@@ -135,7 +149,9 @@ public class IndicatorLinkView extends
 				presenter.updateLinkIndicator(source, destination, be.isChecked());		
 			}
 		});
-		
+	}
+	
+	private void addIndicatorTreeBeforeCheckListener(){
 		indicatorTreePanel.addBeforeCheckedListener(new Listener<TreePanelEvent>() {
 
 			@Override
@@ -151,16 +167,7 @@ public class IndicatorLinkView extends
 				}
 			}
 		});
-		
-		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.EAST);
-		layout.setSplit(true);
-		layout.setCollapsible(true);
-		layout.setSize(400);
-		layout.setMargins(new Margins(0, 0, 0, 5));
-
-		add(indicatorTreePanel, layout);
 	}
-
 	private void cancelCheckedEvent(TreePanelEvent be){
 		be.setCancelled(true);
 	}
@@ -204,8 +211,8 @@ public class IndicatorLinkView extends
 	
 	public IndicatorDTO getSelectedSourceIndicator(){
 		IndicatorDTO dto = null;
-		
-		if(sourceTree.getSelectionModel().getSelectedItem() instanceof IndicatorDTO){
+
+		if(presenter.isSourceSelected() && sourceTree.getSelectionModel().getSelectedItem() instanceof IndicatorDTO){
 			dto = (IndicatorDTO)sourceTree.getSelectionModel().getSelectedItem();
 		}
 		

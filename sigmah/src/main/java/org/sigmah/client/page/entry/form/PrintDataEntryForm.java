@@ -18,7 +18,6 @@ public class PrintDataEntryForm {
 		super();
 		this.activity = activity;
 		init();
-		print();
 	}
 
 	private void init() {
@@ -42,7 +41,7 @@ public class PrintDataEntryForm {
 		return formPage.getText();
 	}
 
-	private void print() {
+	public void print() {
 		Print.it(html.toString());
 	}
 
