@@ -5,6 +5,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.UIObject;
 
 public class Print {
+	
+	private Print(){
+		
+	}
+	
 	public static native void it()
 	/*-{
 		$wnd.print();
@@ -35,11 +40,7 @@ public class Print {
 	}-*/;
 
 	public static void it(String html) {
-		try {
 			doit(html);
-		} catch (Throwable exc) {
-			Window.alert(exc.getMessage());
-		}
 	}
 
 	public static void it(UIObject obj) {

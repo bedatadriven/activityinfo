@@ -33,7 +33,6 @@ public final class UserDatabaseDTO
 	private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
 	private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
 	private List<ProjectDTO> projects = new ArrayList<ProjectDTO>(0);
-	private List<TargetDTO> targets = new ArrayList<TargetDTO>(0);
 	
     public final static String entityName = "UserDatabase";
 
@@ -171,20 +170,6 @@ public final class UserDatabaseDTO
     
 	public void setProjects(List<ProjectDTO> projects) {
 		this.projects = projects;
-	}
-
-	 /**
-     * @return the list of Targets who belong to this UserDatabase
-     */
-	public List<TargetDTO> getTargets() {
-		return targets;
-	}
-
-	/**
-     * Sets the list of Targets who belong to this UserDatabase
-     */
-	public void setTargets(List<TargetDTO> targets) {
-		this.targets = targets;
 	}
 
 	/**
@@ -349,15 +334,6 @@ public final class UserDatabaseDTO
     	}
     	return null;
     }
-    
-    public TargetDTO getTargetById(int id) {
-    	for (TargetDTO target : getTargets()) {
-    		if (target.getId() == id) {
-    			return target;
-    		}
-    	}
-		return null;
-	}
     
     @Override
 	public String getKey() {

@@ -1,6 +1,5 @@
 package org.sigmah.client.page.entry.form;
 
-import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AttributeDTO;
@@ -11,18 +10,14 @@ import com.google.gwt.resources.client.TextResource;
 
 public class PrintDataEntryForm {
 
-	private final Dispatcher service;
-
 	private StringBuilder html;
 	private ActivityDTO activity;
 
-	public PrintDataEntryForm(ActivityDTO activity, Dispatcher service) {
+	public PrintDataEntryForm(ActivityDTO activity) {
 
 		super();
-		this.service = service;
 		this.activity = activity;
 		init();
-		print();
 	}
 
 	private void init() {
@@ -43,11 +38,10 @@ public class PrintDataEntryForm {
 
 	private String getFormContents() {
 		TextResource formPage = SiteFormResources.INSTANCE.collectionForm();
-		String text = formPage.getText();
-		return text;
+		return formPage.getText();
 	}
 
-	private void print() {
+	public void print() {
 		Print.it(html.toString());
 	}
 
@@ -56,7 +50,7 @@ public class PrintDataEntryForm {
 		for (IndicatorGroup group : activity.groupIndicators()) {
 
 			if (group.getName() != null) {
-				builder.append("<h2> " + group.getName() + "</h2>");
+				builder.append("<h3> " + group.getName() + "</h3>");
 			}
 			builder.append("<table border=\"1px\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" class=\"form-detail\">");
 			builder.append("<tr>");
@@ -90,13 +84,13 @@ public class PrintDataEntryForm {
 			builder.append("<td id=\"field-set\" valign=\"top\">"
 					+ attributeGroup.getName() + ":</td><td>");
 
-			AttributeCheckBoxGroup(attributeGroup, builder);
+			attributeCheckBoxGroup(attributeGroup, builder);
 			builder.append("</td></tr>");
 		}
 		return builder.toString();
 	}
 
-	private void AttributeCheckBoxGroup(AttributeGroupDTO group,
+	private void attributeCheckBoxGroup(AttributeGroupDTO group,
 			StringBuilder builder) {
 
 		for (AttributeDTO attribture : group.getAttributes()) {

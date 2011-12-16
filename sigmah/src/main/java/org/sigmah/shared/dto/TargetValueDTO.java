@@ -4,7 +4,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class TargetValueDTO extends BaseModelData implements EntityDTO{
 
-	public final static String entityName = "TargetValue";
+	public static final String entityName = "TargetValue";
 	
 	public void setTargetId(int targetId){
 		set("targetId", targetId);

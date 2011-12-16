@@ -29,8 +29,6 @@ import com.google.gwt.i18n.client.LocaleInfo;
 public class SubscribeForm extends FormPanel {
 
 	private ListStore<ReportSubscriber> store;
-	private static final String EMAIL_VALIDATION_REGEX = "[a-z0-9!#$%&'*+/ =?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
-
 	private TextField<String> title;
 	private Radio weekly;
 	private Radio monthly;
@@ -141,21 +139,18 @@ public class SubscribeForm extends FormPanel {
 
 		newEmail = new TextField<String>();
 		newEmail.setEmptyText(I18N.CONSTANTS.enterNewEmail());
-		newEmail.setRegex(EMAIL_VALIDATION_REGEX);
 		hp.add(newEmail);
 
 		addEmail = new Button();
 		addEmail.setText(I18N.CONSTANTS.add());
-		addEmail.setEnabled(false);
 		hp.add(addEmail);
 
 		addEmail.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				if (newEmail.validate()) {
+				if (newEmail.getValue() != null) {
 					store.add(new ReportSubscriber(newEmail.getValue()));
 					newEmail.setValue(null);
-					addEmail.setEnabled(false);
 				}
 			}
 		});

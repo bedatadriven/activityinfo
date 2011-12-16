@@ -17,7 +17,7 @@ import com.google.inject.Inject;
 public class UpdateIndicatorLinkHandler implements
 		CommandHandler<UpdateIndicatorLink> {
 
-	private final static Log LOG = LogFactory
+	private static final Log LOG = LogFactory
 			.getLog(UpdateIndicatorLinkHandler.class);
 
 	private final EntityManager entityManager;

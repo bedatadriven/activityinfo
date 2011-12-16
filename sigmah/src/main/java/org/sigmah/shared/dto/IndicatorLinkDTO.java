@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 
 public class IndicatorLinkDTO extends BaseModelData implements EntityDTO{
 
-	public final static String entityName = "IndicatorLink";
+	public static final String entityName = "IndicatorLink";
 	
 	
 	public void setSourceIndicator(int id){

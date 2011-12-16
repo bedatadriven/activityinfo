@@ -12,6 +12,7 @@ import org.sigmah.server.database.hibernate.entity.TargetValueId;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.UpdateTargetValue;
 import org.sigmah.shared.command.result.CommandResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
@@ -47,11 +48,11 @@ public class UpdateTargetValueHandler extends BaseEntityHandler implements
 				targetValue.setValue((Double.valueOf((String)cmd.getChanges().get("value"))));
 				entityManager().persist(targetValue);
 			
-				return null;
+				return new VoidResult();
 			}
 			
 			entityManager().remove(targetValue);			
-			return null;
+			return new VoidResult();
 		}catch(Exception e){
 			// ignore 
 		}
@@ -68,6 +69,6 @@ public class UpdateTargetValueHandler extends BaseEntityHandler implements
 		entityManager().persist(targetValue);
 		
 
-		return null;
+		return new VoidResult();
 	}
 }
