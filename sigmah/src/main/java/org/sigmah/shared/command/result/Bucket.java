@@ -1,5 +1,6 @@
 package org.sigmah.shared.command.result;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import org.sigmah.shared.report.model.Dimension;
 /**
  * Contains the aggregate value for an intersection of dimension categories.
  */
-public class Bucket {
+public class Bucket implements Serializable {
     private double value;
     private Map<Dimension, DimensionCategory> categories = new HashMap<Dimension, DimensionCategory>();
 

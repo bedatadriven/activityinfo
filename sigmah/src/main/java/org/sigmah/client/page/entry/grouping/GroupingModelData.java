@@ -9,6 +9,7 @@ class GroupingModelData extends BaseModelData {
 	
 	public static final GroupingModelData NONE = new GroupingModelData(I18N.CONSTANTS.none(), NullGroupingModel.INSTANCE);
  
+	public static final GroupingModelData TIME = new GroupingModelData(I18N.CONSTANTS.yearMonthGrouping(), TimeGroupingModel.INSTANCE);
 	
 	public GroupingModelData(String label, GroupingModel model) {
 		this.model = model;

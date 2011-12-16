@@ -17,7 +17,11 @@ public class YearBundler implements Bundler {
 
     @Override
     public void bundle(SqlResultSetRow rs, Bucket bucket)  {
-        bucket.setCategory(dimension, new YearCategory(
-                rs.getInt(yearAlias)));
+    	// the year can be null in cases where a site does not yet have a reporting period
+    	// and we query for site counts
+    	if(!rs.isNull(yearAlias)) {
+	        bucket.setCategory(dimension, new YearCategory(
+	                rs.getInt(yearAlias)));
+    	}
     }
 }

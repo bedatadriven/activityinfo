@@ -3,6 +3,7 @@ package org.sigmah.client.page.entry;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSchema;
@@ -13,6 +14,7 @@ import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.SchemaDTO;
+import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -26,19 +28,21 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Loads sites grouped by a set of AdminLevels
  */
-class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> {
+class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> implements SiteTreeLoader {
 
 	private TreeProxy treeProxy;
 	
-	public SiteAdminTreeLoader(Dispatcher dispatcher) {
+	public SiteAdminTreeLoader(Dispatcher dispatcher, AdminGroupingModel groupingModel) {
 		super(new TreeProxy(dispatcher));
 		treeProxy = (TreeProxy)proxy;
+		setAdminLeafLevelId(groupingModel.getAdminLevelId());
 	}
 	
 	public void setAdminLeafLevelId(int leafLevelId) {
 		treeProxy.setAdminLeafLevelId(leafLevelId);
 	}
 	
+	@Override
 	public void setFilter(Filter filter) {
 		treeProxy.setFilter(filter);
 	}
@@ -46,6 +50,18 @@ class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> {
 	@Override
 	public boolean hasChildren(ModelData parent) {
 		return parent instanceof AdminEntityDTO;
+	}
+	
+
+	@Override
+	public String getKey(ModelData model) {
+		if(model instanceof AdminEntityDTO) {
+			return "A" + ((AdminEntityDTO) model).getId();
+		} else if(model instanceof SiteDTO) {
+			return "S" + ((SiteDTO) model).getId();
+		} else {
+			return "X" + model.hashCode();
+		}
 	}
 		
 	private static class TreeProxy extends RpcProxy<List<ModelData>> {
@@ -180,4 +196,5 @@ class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> {
 			});
 		}
 	}
+
 }

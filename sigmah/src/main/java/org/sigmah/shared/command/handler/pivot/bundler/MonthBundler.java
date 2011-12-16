@@ -20,9 +20,13 @@ public class MonthBundler implements Bundler {
 
 	@Override
     public void bundle(SqlResultSetRow rs, Bucket bucket)  {
-        int year = rs.getInt(yearAlias);
-        int month = rs.getInt(monthAlias);
-
-        bucket.setCategory(dimension, new MonthCategory(year, month));
+        
+    	// the year can be null in cases where a site does not yet have a reporting period
+		if(!rs.isNull(yearAlias)) {
+			int year = rs.getInt(yearAlias);
+	        int month = rs.getInt(monthAlias);
+	
+	        bucket.setCategory(dimension, new MonthCategory(year, month));
+		}
     }
 }

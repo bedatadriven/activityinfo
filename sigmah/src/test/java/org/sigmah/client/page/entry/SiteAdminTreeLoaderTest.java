@@ -2,6 +2,7 @@ package org.sigmah.client.page.entry;
 
 import org.junit.Test;
 import org.sigmah.client.mock.DispatcherStub;
+import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
 import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.DTOs;
@@ -18,9 +19,8 @@ public class SiteAdminTreeLoaderTest {
 		dispatcher.setResult(new GetSchema(), DTOs.PEAR.SCHEMA);
 		dispatcher.setResult(new GetAdminEntities(1), DTOs.PROVINCES);
 		
-		SiteAdminTreeLoader loader = new SiteAdminTreeLoader(dispatcher);
-		loader.setAdminLeafLevelId(1);
-		
+		SiteAdminTreeLoader loader = new SiteAdminTreeLoader(dispatcher, new AdminGroupingModel(1));
+			
 		TreeStore<ModelData> store = new TreeStore<ModelData>(loader);
 		
 		loader.load();

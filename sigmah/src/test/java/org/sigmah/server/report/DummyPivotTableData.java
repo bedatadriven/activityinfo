@@ -38,7 +38,7 @@ public class DummyPivotTableData {
 
     public PivotTableData.Axis[] leafRows = new PivotTableData.Axis[4];
     public PivotTableData.Axis[] leafCols = new PivotTableData.Axis[5];
-    public PivotTableData table = new PivotTableData(rowDims, colDims);
+    public PivotTableData table = new PivotTableData();
     public PivotTableData.Axis row1 = table.getRootRow().addChild(partnerDim, new EntityCategory(1, "AVSI"), "AVSI", null);
     public PivotTableData.Axis row2 = table.getRootRow().addChild(partnerDim, new EntityCategory(1, "NRC"), "NRC", null);
     public PivotTableData.Axis col1 = table.getRootColumn().addChild(yearDim, new YearCategory(2007), "2007", null );

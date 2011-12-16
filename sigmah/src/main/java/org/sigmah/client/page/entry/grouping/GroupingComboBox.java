@@ -71,6 +71,7 @@ public class GroupingComboBox extends ComboBox<GroupingModelData> {
 				public void onSuccess(SchemaDTO result) {
 					List<GroupingModelData> models = Lists.newArrayList();
 					models.add(GroupingModelData.NONE);
+					models.add(GroupingModelData.TIME);
 					for(AdminLevelDTO level : adminLevels(result)) {
 						models.add(new GroupingModelData(level.getName(), new AdminGroupingModel(level.getId())));
 					}
@@ -94,5 +95,4 @@ public class GroupingComboBox extends ComboBox<GroupingModelData> {
 			}
 		}
 	}
-	
 }
