@@ -50,7 +50,7 @@ public class PrintDataEntryForm {
 		for (IndicatorGroup group : activity.groupIndicators()) {
 
 			if (group.getName() != null) {
-				builder.append("<h2> " + group.getName() + "</h2>");
+				builder.append("<h3> " + group.getName() + "</h3>");
 			}
 			builder.append("<table border=\"1px\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" class=\"form-detail\">");
 			builder.append("<tr>");
