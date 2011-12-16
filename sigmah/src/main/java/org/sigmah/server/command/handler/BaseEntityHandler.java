@@ -157,22 +157,22 @@ public class BaseEntityHandler {
         	target.setDate2((Date) changes.get("date2"));
         }
         
-        if (changes.containsKey("ProjectId")) {
+        if (changes.containsKey("projectId")) {
             target.setProject(
                     entityManager().getReference(Project.class,
-                            ((Project) changes.get("ProjectId")).getId()));
+                            changes.get("projectId")));
         }
        
-        if (changes.containsKey("PartnerId")) {
+        if (changes.containsKey("partnerId")) {
             target.setPartner(
                     entityManager().getReference(Partner.class,
-                            ((Partner) changes.get("PartnerId")).getId()));
+                             changes.get("partnerId")));
         }
         
         if (changes.containsKey("AdminEntityId")) {
             target.setAdminEntity(
                     entityManager().getReference(AdminEntity.class,
-                            ((AdminEntity) changes.get("AdminEntityId")).getId()));
+                             changes.get("AdminEntityId")));
         }
         
     }

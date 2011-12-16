@@ -1,6 +1,10 @@
 package org.sigmah.client.page.config.form;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
+import org.sigmah.client.page.common.widget.MappingComboBox;
+import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
+import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -45,37 +49,24 @@ public class TargetForm extends FormPanel {
 		binding.addFieldBinding(new FieldBinding(date2Field, "date2"));
 		this.add(date2Field);
 		
-		
-		ListStore<ProjectDTO> projectStore = new ListStore<ProjectDTO>();
-		projectStore.add(database.getProjects());
-		projectStore.sort("name", SortDir.ASC);
-		
-		ComboBox<ProjectDTO> projectCombo = new ComboBox<ProjectDTO>();
-		projectCombo.setName("project");
+		MappingComboBox<Integer> projectCombo = new MappingComboBox<Integer>();
 		projectCombo.setFieldLabel(constants.project());
-		projectCombo.setDisplayField("name");
-		projectCombo.setStore(projectStore);
-		projectCombo.setForceSelection(true);
-		projectCombo.setTriggerAction(TriggerAction.QUERY);
 		projectCombo.setAllowBlank(true);
-        binding.addFieldBinding(new FieldBinding(projectCombo, "project"));
+		for (ProjectDTO projectDTO : database.getProjects()) {
+			projectCombo.add(projectDTO.getId(), projectDTO.getName());
+        }
+        binding.addFieldBinding(new FieldBinding(projectCombo, "projectId"));
         this.add(projectCombo);
         
-		ListStore<PartnerDTO> partnerStore = new ListStore<PartnerDTO>();
-		partnerStore.add(database.getPartners());
-		partnerStore.sort("name", SortDir.ASC);
-		
-		ComboBox<PartnerDTO> partnerCombo = new ComboBox<PartnerDTO>();
-		partnerCombo.setName("partner");
-		partnerCombo.setFieldLabel(constants.partner());
-		partnerCombo.setDisplayField("name");
-		partnerCombo.setStore(partnerStore);
-		partnerCombo.setForceSelection(true);
-		partnerCombo.setTriggerAction(TriggerAction.QUERY);
-		partnerCombo.setAllowBlank(true);
-        binding.addFieldBinding(new FieldBinding(partnerCombo, "partner"));
-        this.add(partnerCombo);
         
+        MappingComboBox<Integer> partnerCombo = new MappingComboBox<Integer>();
+        for (PartnerDTO partner : database.getPartners()) {
+        	partnerCombo.add(partner.getId(), partner.getName());
+        }
+        partnerCombo.setAllowBlank(true);
+        partnerCombo.setFieldLabel(constants.partner());
+        binding.addFieldBinding(new MappingComboBoxBinding(partnerCombo, "partnerId"));
+        this.add(partnerCombo);
 	}
 
     public FormBinding getBinding() {

@@ -3,6 +3,9 @@ package org.sigmah.client.page.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.client.dispatch.AsyncMonitor;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
@@ -38,7 +41,8 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 	private Grid<TargetDTO> grid;
 	private ListStore<TargetDTO> store;
 	private ContentPanel targetValueContainer;
-
+	private AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this,I18N.CONSTANTS.loading());
+	
 	@Inject
 	public DbTargetGrid(UIConstants messages, IconImageBundle icons) {
 		this.messages = messages;
@@ -121,5 +125,10 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 		add(targetValueContainer, layout);
 
 	}
+	
+	@Override
+	public AsyncMonitor getLoadingMonitor() {
+		return loadingMonitor;
+	}	
 
 }

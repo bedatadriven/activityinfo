@@ -79,16 +79,6 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 		}
 		return null;
 	}
-
-	public TargetDTO getTargetById(int targetId) {
-		for(UserDatabaseDTO database : databases) {
-			TargetDTO target= getById(database.getTargets(), targetId);
-			if(target!=null) {
-                return target;
-            }
-		}
-		return null;
-	}
 	
 	public CountryDTO getCountryById(int countryId) {
 		return getById(countries, countryId);

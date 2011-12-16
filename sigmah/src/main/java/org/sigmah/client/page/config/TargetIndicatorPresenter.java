@@ -153,8 +153,7 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
 	}
 		
 	private TargetValueDTO getTargetValueByIndicatorId(int indicatorId){
-		TargetDTO target = db.getTargetById(targetDTO.getId());
-		List<TargetValueDTO> values =  target.getTargetValues();
+		List<TargetValueDTO> values =  targetDTO.getTargetValues();
 		
 		if(values == null){
 			return null;

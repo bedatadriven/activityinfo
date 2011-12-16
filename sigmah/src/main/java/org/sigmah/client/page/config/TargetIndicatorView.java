@@ -98,6 +98,15 @@ public class TargetIndicatorView extends
 			}
 		});
 	
+		addBeforeEditListener();
+		addAfterEditListener();
+		
+		add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
+
+		return tree;
+	}
+	
+	private void addBeforeEditListener(){
 		tree.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
 
 			@Override
@@ -108,6 +117,9 @@ public class TargetIndicatorView extends
 			}
 			
 		});
+	}
+	
+	private void addAfterEditListener(){
 
 		tree.addListener(Events.AfterEdit, new Listener<GridEvent>() {
 
@@ -122,10 +134,6 @@ public class TargetIndicatorView extends
 			}
 			
 		});
-		
-		add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
-
-		return tree;
 	}
 
 	@Override
