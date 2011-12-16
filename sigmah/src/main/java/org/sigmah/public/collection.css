@@ -5,10 +5,12 @@ body {
 	font-size:14px;
 	margin:0px;
 	padding:0px;
+	font-family: sans-serif;
 }
 #main {
 	width:900px;
 	margin:0px auto;
+	font-family: sans-serif;
 }
 #site-detail {
 	width:900px;
