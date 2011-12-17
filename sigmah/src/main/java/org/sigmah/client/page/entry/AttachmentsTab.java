@@ -142,10 +142,7 @@ public class AttachmentsTab extends TabItem implements
 					@Override
 					public void onSuccess(SiteAttachmentResult result) {
 						store.removeAll();
-						for (SiteAttachmentDTO attachment : result.getData()) {
-							store.add(attachment);
-						}
-
+						store.add(result.getData());
 					}
 				});
 

@@ -13,6 +13,9 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.google.inject.Inject;
 
 public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
@@ -27,7 +30,7 @@ public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 	@Override
 	public CommandResult execute(GetUploadUrl cmd, User user)
 			throws CommandException {
-		UploadUrlResult uploadUrl = new UploadUrlResult();
+		UploadUrlResult downloadFileUrl = new UploadUrlResult();
 
 		String bucketName = "site-attachments";
 		String key = cmd.getBlobId();
@@ -35,11 +38,16 @@ public class GetUploadUrlHandler implements CommandHandler<GetUploadUrl> {
 		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
 				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
 
-		URL presignedUrl = client.generatePresignedUrl(bucketName, key, null, HttpMethod.GET);
+		ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
+		responseHeaders.setContentDisposition(ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_DISPOSITION);
+		
+		GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
+		request.withResponseHeaders(responseHeaders);
+		
+		URL presignedUrl = client.generatePresignedUrl(request);
+		downloadFileUrl.setUrl(presignedUrl.toString());
 
-		uploadUrl.setUrl(presignedUrl.toString());
-
-		return uploadUrl;
+		return downloadFileUrl;
 	}
 
 }
