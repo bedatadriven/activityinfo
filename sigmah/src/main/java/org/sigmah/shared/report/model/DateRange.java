@@ -119,34 +119,33 @@ public final class DateRange implements Serializable {
     }
 
     public static DateRange intersection(DateRange a, DateRange b) {
+    	return new DateRange(
+    			max(a.getMinDate(), b.getMinDate()),
+    			min(a.getMaxDate(), b.getMaxDate()));
+    }
 
-        DateRange i = new DateRange();
+    private static Date min(Date a, Date b) {
+    	if(a == null && b == null) {
+    		return null;
+    	} else if(a != null && b != null) {
+    		return a.before(b) ? a : b;    		
+    	} else if(a != null) {
+    		return a;
+    	} else {
+    		return b;
+    	}
+    }
 
-		if(a.minDate == null && b.minDate != null) {
-			i.minDate = b.minDate;
-		} else if(a.minDate != null && b.minDate == null) {
-			i.minDate = a.minDate;
-		} else if(a.minDate != null && b.minDate != null) {
-			if(a.minDate.after(b.minDate)) {
-				i.minDate = a.minDate;
-			} else {
-				i.minDate = b.minDate;
-			}
-		}
-
-		if(a.maxDate == null && b.maxDate != null) {
-			i.maxDate = b.maxDate;
-		} else if(a.maxDate != null && b.maxDate == null) {
-			i.maxDate = a.maxDate;
-		} else if(a.maxDate != null && b.maxDate != null) {
-			if(a.maxDate.before(b.maxDate)) {
-				i.maxDate = a.maxDate;
-			} else {
-				i.maxDate = b.maxDate;
-			}
-		}
-
-        return i;
+    private static Date max(Date a, Date b) {
+    	if(a == null && b == null) {
+    		return null;
+    	} else if(a != null && b != null) {
+    		return a.after(b) ? a : b;    		
+    	} else if(a != null) {
+    		return a;
+    	} else {
+    		return b;
+    	}
     }
 
 	@Override

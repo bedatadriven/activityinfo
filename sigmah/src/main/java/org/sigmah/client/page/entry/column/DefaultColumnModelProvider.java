@@ -4,6 +4,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
 import org.sigmah.client.page.entry.grouping.GroupingModel;
 import org.sigmah.client.page.entry.grouping.NullGroupingModel;
+import org.sigmah.client.page.entry.grouping.TimeGroupingModel;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -62,9 +63,10 @@ public class DefaultColumnModelProvider implements ColumnModelProvider {
 	    		.maybeAddPartnerColumn(activity.getDatabase())
 	    		.maybeAddProjectColumn(activity.getDatabase())
 	    		.addAdminLevelColumns(activity)
-	    		.maybeAddLocationColumns(activity)
+	    		.maybeAddTwoLineLocationColumn(activity)
 	    		.build();
 		} else if(grouping instanceof AdminGroupingModel) {
+			
 			return new ColumnModelBuilder()
 	    	.maybeAddLockColumn(activity)
 			.addTreeNameColumn()
@@ -73,6 +75,17 @@ public class DefaultColumnModelProvider implements ColumnModelProvider {
     		.maybeAddProjectColumn(activity.getDatabase())
     		
     		.build();
+		} else if(grouping instanceof TimeGroupingModel) {
+			
+			return new ColumnModelBuilder()
+				.maybeAddLockColumn(activity)
+				.addTreeNameColumn()
+				.maybeAddDateColumn(activity)
+				.maybeAddPartnerColumn(activity.getDatabase())
+				.maybeAddProjectColumn(activity.getDatabase())
+				.maybeAddSingleLineLocationColumn(activity)
+				.addAdminLevelColumns(activity)
+				.build();
 		} else {
 			throw new IllegalArgumentException(grouping.toString());
 		}

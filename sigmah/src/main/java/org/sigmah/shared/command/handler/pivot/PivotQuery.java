@@ -7,6 +7,7 @@ import java.util.Set;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.PivotSites.PivotResult;
+import org.sigmah.shared.command.PivotSites.ValueType;
 import org.sigmah.shared.command.handler.pivot.bundler.Bundler;
 import org.sigmah.shared.command.handler.pivot.bundler.EntityBundler;
 import org.sigmah.shared.command.handler.pivot.bundler.MonthBundler;
@@ -34,11 +35,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PivotQuery {
+	private final PivotSites command;
 	private final Filter filter;
+	
 	private final Set<Dimension> dimensions;
 	private final int userId;
 	private final SqlDialect dialect;
-	
+		
 	private final SqlTransaction tx;
 	
 	private List<Bucket> buckets;	
@@ -51,10 +54,11 @@ public class PivotQuery {
 	
 	private int nextColumnIndex = 1;
 	
-    public PivotQuery(SqlTransaction tx, SqlDialect dialect, Filter filter, Set<Dimension> dimensions, int userId) {
+    public PivotQuery(SqlTransaction tx, SqlDialect dialect, PivotSites command, int userId) {
 		super();
-		this.filter = filter;
-		this.dimensions = dimensions;
+		this.command = command;
+		this.filter = command.getFilter();
+		this.dimensions = command.getDimensions();
 		this.userId = userId;
 		this.dialect = dialect;
 		this.tx = tx;
@@ -113,7 +117,7 @@ public class PivotQuery {
     	buildAndExecuteRestOfQuery();
     }
 
-    public void queryForSiteCounts() {
+    public void queryForSiteCountIndicators() {
 
         /* We're just going to go ahead and add all the tables we need to the SQL statement;
         * this saves us some work and hopefully the SQL server will optimze out any unused
@@ -141,7 +145,26 @@ public class PivotQuery {
 
         buildAndExecuteRestOfQuery();
     }
+    
+    public void queryForTotalSiteCounts() {
+        query.from(" Site " +
+                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
+                "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
+                "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
+                "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
+                "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
+                "LEFT JOIN ReportingPeriod Period ON (Period.SiteId = Site.SiteId) ");
 
+        /* First add the indicator to the query: we can't aggregate values from different
+        * indicators so this is a must
+        *
+        */
+        String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
+
+        bundlers.add(new SiteCountBundler(count));
+
+        buildAndExecuteRestOfQuery();
+    }
 
     protected void buildAndExecuteRestOfQuery() {
         /* Now add any other dimensions  */
@@ -243,12 +266,13 @@ public class PivotQuery {
 
         /* And start on our where clause... */
 
-        // don't include entities that have been deleted
-        query.whereTrue("Site.dateDeleted is null and " +
-                "Activity.dateDeleted is null and " +
-                "Indicator.dateDeleted is null and " +
-                "UserDatabase.dateDeleted is null ");
-
+        query.where("Site.dateDeleted").isNull();
+        query.where("Activity.dateDeleted").isNull();
+        query.where("UserDatabase.dateDeleted").isNull();
+        if(command.getValueType() == ValueType.INDICATOR) {
+        	query.where("Indicator.dateDeleted").isNull();
+        }
+        
         // and only allow results that are visible to this user.
         if(!GWT.isClient()) {
         	appendVisibilityFilter();
@@ -259,7 +283,7 @@ public class PivotQuery {
             query.where("Period.date2").greaterThanOrEqualTo(filter.getMinDate());
         }
         if (filter.getMaxDate() != null) {
-        	query.where("Period.date2").lessThanOrEqualTo(filter.getMinDate());
+        	query.where("Period.date2").lessThanOrEqualTo(filter.getMaxDate());
         }
 
         appendDimensionRestrictions();
@@ -305,13 +329,13 @@ public class PivotQuery {
 	}	
 
 	private void appendVisibilityFilter() {
-        StringBuilder filter = new StringBuilder();
-        filter.append("(UserDatabase.OwnerUserId = ").append(userId).append(" OR ")
+        StringBuilder securityFilter = new StringBuilder();
+        securityFilter.append("(UserDatabase.OwnerUserId = ").append(userId).append(" OR ")
              .append(userId).append(" in (select p.UserId from UserPermission p " +
                 "where p.AllowView and " +
                 "p.UserId=").append(userId).append(" AND p.DatabaseId = UserDatabase.DatabaseId))");
         
-        query.whereTrue(filter.toString());
+        query.whereTrue(securityFilter.toString());
     }
 
     private void appendDimensionRestrictions() {

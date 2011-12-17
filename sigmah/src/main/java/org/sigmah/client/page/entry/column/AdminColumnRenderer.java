@@ -8,6 +8,7 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AdminLevelPredicates;
 import org.sigmah.shared.dto.SiteDTO;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -19,7 +20,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * Renders the site's admin membership as a single cell, with a maximum
  * of three rows, with a quick tip for the rest.
  */
-public class AdminColumnRenderer implements GridCellRenderer<SiteDTO> {
+public class AdminColumnRenderer implements GridCellRenderer<ModelData> {
 
 	private List<AdminLevelDTO> levels;
 
@@ -30,11 +31,19 @@ public class AdminColumnRenderer implements GridCellRenderer<SiteDTO> {
 		super();
 		this.levels = AdminLevelPredicates.breadthFirstSort(levels);
 	}
-
+	
 	@Override
-	public Object render(SiteDTO model, String property, ColumnData config,
-			int rowIndex, int colIndex, ListStore<SiteDTO> store,
-			Grid<SiteDTO> grid) {
+	public Object render(ModelData model, String property, ColumnData config,
+			int rowIndex, int colIndex, ListStore<ModelData> store,
+			Grid<ModelData> grid) {
+		if(model instanceof SiteDTO) {
+			return render((SiteDTO)model);
+		} else {
+			return "";
+		}
+	}
+
+	private Object render(SiteDTO model) {
 		
 		StringBuilder qtip = new StringBuilder();
 		SafeHtmlBuilder summary = new SafeHtmlBuilder();

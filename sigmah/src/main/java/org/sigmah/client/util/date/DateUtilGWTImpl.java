@@ -21,7 +21,11 @@ import com.extjs.gxt.ui.client.util.DateWrapper;
  */
 public class DateUtilGWTImpl extends DateUtil {
 
-    public Month getCurrentMonth() {
+	
+	public static final DateUtilGWTImpl INSTANCE = new DateUtilGWTImpl(); 
+	
+    @Override
+	public Month getCurrentMonth() {
         DateWrapper today = new DateWrapper();
         return new Month(today.getFullYear(), today.getMonth());
     }

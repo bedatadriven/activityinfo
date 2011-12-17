@@ -22,7 +22,7 @@ public class PivotTableDataBuilder {
 	public PivotTableData build(PivotReportElement<?> element, List<Dimension> rowDims,
 			List<Dimension> colDims, List<Bucket> buckets) {
 		
-		PivotTableData table = new PivotTableData(rowDims, colDims);
+		PivotTableData table = new PivotTableData();
         Map<Dimension, Comparator<PivotTableData.Axis>> comparators =
                 createComparators(element.allDimensions());
 

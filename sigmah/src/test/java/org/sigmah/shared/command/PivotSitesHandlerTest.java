@@ -20,7 +20,8 @@ import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.TestDatabaseModule;
-import org.sigmah.shared.command.PivotSites;
+import org.sigmah.server.util.date.DateUtilCalendarImpl;
+import org.sigmah.shared.command.PivotSites.ValueType;
 import org.sigmah.shared.command.result.Bucket;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.content.DimensionCategory;
@@ -53,6 +54,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private List<Bucket> buckets;
     private Dimension projectDim = new Dimension(DimensionType.Project);
     private Dimension partnerDim;
+    private ValueType valueType = ValueType.INDICATOR;
 
 
     private static final int OWNER_USER_ID = 1;
@@ -75,6 +77,38 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         execute();
 
         assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
+    }
+    
+
+    @Test
+    public void testTotalSiteCount() {
+        forTotalSiteCounts();
+
+        execute();
+
+        assertThat().thereIsOneBucketWithValue(8);
+    }
+
+    @Test
+    public void testYears() {
+    	forTotalSiteCounts();
+    	dimensions.add(new DateDimension(DateUnit.YEAR));
+    	
+    	execute();
+    	
+    	assertThat().forYear(2008).thereIsOneBucketWithValue(1);
+    	assertThat().forYear(2009).thereIsOneBucketWithValue(4);
+    }
+    
+    @Test
+    public void testMonths() {
+    	forTotalSiteCounts();
+    	dimensions.add(new DateDimension(DateUnit.MONTH));
+    	filter.setDateRange( new DateUtilCalendarImpl().yearRange(2009));
+        	
+    	execute();
+    	
+    	assertThat().thereAre(3).buckets();
     }
 
 
@@ -305,6 +339,10 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         provinceDim = new AdminDimension(OWNER_USER_ID);
         territoireDim = new AdminDimension(2);
     }
+    
+    private void forTotalSiteCounts() {
+    	valueType = valueType.TOTAL_SITES;
+    }
 
     private void withIndicatorAsDimension() {
         indicatorDim = new Dimension(DimensionType.Indicator);
@@ -332,7 +370,9 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     	
     	setUser(OWNER_USER_ID);
     	try {
-			buckets = execute(new PivotSites(dimensions, filter)).getBuckets();
+			PivotSites pivot = new PivotSites(dimensions, filter);
+			pivot.setValueType(valueType);
+			buckets = execute(pivot).getBuckets();
 		} catch (CommandException e) {
 			throw new RuntimeException(e);
 		}
@@ -366,7 +406,13 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             return this;
         }
 
-        public AssertionBuilder forProject(int projectId) {
+        public AssertionBuilder forYear(int year) {
+        	criteria.append(" in year ").append(year);
+        	filter(new DateDimension(DateUnit.YEAR), Integer.toString(year));
+        	return this;
+		}
+
+		public AssertionBuilder forProject(int projectId) {
 			criteria.append(" with project ").append(projectId);
 			filter(projectDim, projectId);
 			return this;

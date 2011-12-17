@@ -17,23 +17,15 @@ import org.sigmah.shared.report.model.Dimension;
 
 public class PivotTableData implements Serializable {
 
-	private List<Dimension> rowDimensions;
-	private List<Dimension> colDimensions;
 	private Axis rootRow;
 	private Axis rootColumn;
 
-    @SuppressWarnings("unused")
-	private PivotTableData() {
-    }
 
     public interface CellVisitor {
         void onVisit(Axis row, Axis column, Cell cell);
     }
 
-	public PivotTableData(List<Dimension> rowDimensions, List<Dimension> columnDimensions) {
-		this.rowDimensions = rowDimensions;
-		this.colDimensions = columnDimensions;
-
+	public PivotTableData() {
         rootRow = new Axis();
 		rootColumn = new Axis();
 	}

@@ -3,14 +3,14 @@ package org.sigmah.client.page.entry;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
+import org.sigmah.client.page.entry.grouping.GroupingModel;
+import org.sigmah.client.page.entry.grouping.TimeGroupingModel;
 import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
-import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -26,7 +26,7 @@ final class SiteTreeGrid extends EditorTreeGrid<ModelData> implements SiteGridPa
 
 	public static final String ADMIN_STATE_ID = "sitetreegrid.admin";
 	
-	public SiteTreeGrid(Dispatcher dispatcher, AdminGroupingModel groupingModel, Filter filter, ColumnModel columnModel) {
+	public SiteTreeGrid(Dispatcher dispatcher, GroupingModel groupingModel, Filter filter, ColumnModel columnModel) {
 		super(createStore(dispatcher, groupingModel), columnModel);
 		setLoadMask(true); 
 		setStateful(true);
@@ -36,18 +36,16 @@ final class SiteTreeGrid extends EditorTreeGrid<ModelData> implements SiteGridPa
 		setIconProvider(new ModelIconProvider<ModelData>() {
 			@Override
 			public AbstractImagePrototype getIcon(ModelData model) {
-				if (model instanceof AdminEntityDTO) {
-					return IconImageBundle.ICONS.folder();
-				} else if (model instanceof SiteDTO) {
+				if (model instanceof SiteDTO) {
 					SiteDTO site = (SiteDTO)model;
 					if(site.hasCoords()) {
 						return IconImageBundle.ICONS.mapped();
 					} else {
 						return IconImageBundle.ICONS.unmapped();
 					}
+				} else {
+					return IconImageBundle.ICONS.folder();
 				}
-
-				return null;
 			}
 		});
 		
@@ -67,27 +65,26 @@ final class SiteTreeGrid extends EditorTreeGrid<ModelData> implements SiteGridPa
 		getLoader().setFilter(filter);
 	}
 
-	private static TreeStore<ModelData> createStore(Dispatcher dispatcher, AdminGroupingModel groupingModel) {
-		SiteAdminTreeLoader loader = new SiteAdminTreeLoader(dispatcher);
-		loader.setAdminLeafLevelId(groupingModel.getAdminLevelId());
-				
+	private static TreeStore<ModelData> createStore(Dispatcher dispatcher, GroupingModel groupingModel) {
+		
+		SiteTreeLoader loader;
+		
+		if(groupingModel instanceof AdminGroupingModel) {
+			loader = new SiteAdminTreeLoader(dispatcher, (AdminGroupingModel) groupingModel);
+		} else if(groupingModel instanceof TimeGroupingModel) {
+			loader = new SiteTimeTreeLoader(dispatcher);
+		} else {
+			throw new IllegalArgumentException("Invalid grouping model " + groupingModel);
+		}
+		
 		TreeStore<ModelData> treeStore = new TreeStore<ModelData>(loader);
-		treeStore.setKeyProvider(new ModelKeyProvider<ModelData>() {
-			
-			@Override
-			public String getKey(ModelData model) {
-				if(model instanceof AdminEntityDTO) {
-					return "A" + ((AdminEntityDTO)model).getId();
-				} else {
-					return "X" + model.hashCode();
-				}
-			}
-		});
+		treeStore.setKeyProvider(loader);
 		return treeStore;
 	}
+	
 
-	private SiteAdminTreeLoader getLoader() {
-		return (SiteAdminTreeLoader) getTreeStore().getLoader();
+	private SiteTreeLoader getLoader() {
+		return (SiteTreeLoader) getTreeStore().getLoader();
 	}
 
 	@Override

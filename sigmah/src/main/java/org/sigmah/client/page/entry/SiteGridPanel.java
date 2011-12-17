@@ -6,7 +6,6 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.entry.column.ColumnModelProvider;
 import org.sigmah.client.page.entry.column.DefaultColumnModelProvider;
-import org.sigmah.client.page.entry.grouping.AdminGroupingModel;
 import org.sigmah.client.page.entry.grouping.GroupingModel;
 import org.sigmah.client.page.entry.grouping.NullGroupingModel;
 import org.sigmah.shared.command.Filter;
@@ -84,9 +83,9 @@ public final class SiteGridPanel extends ContentPanel  {
 			panel.initGrid(filter, columnModel);
 			installGrid(panel);
 			
-		} else if(grouping instanceof AdminGroupingModel) {
-			SiteTreeGrid grid = new SiteTreeGrid(dispatcher, (AdminGroupingModel) grouping, filter, columnModel);	
-			grid.addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
+		} else {
+			SiteTreeGrid treeGrid = new SiteTreeGrid(dispatcher, grouping, filter, columnModel);	
+			treeGrid.addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
 
 				@Override
 				public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
@@ -94,10 +93,8 @@ public final class SiteGridPanel extends ContentPanel  {
 				}
 				
 			});
-			installGrid(grid);
-		} else {
-			throw new IllegalArgumentException(grouping.toString());
-		}
+			installGrid(treeGrid);
+		} 
 	}
 
 

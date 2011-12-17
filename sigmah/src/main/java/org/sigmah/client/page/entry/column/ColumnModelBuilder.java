@@ -129,7 +129,7 @@ public class ColumnModelBuilder {
         return indicatorColumn;
 	}
 	
-	public ColumnModelBuilder maybeAddLocationColumns(ActivityDTO activity) {
+	public ColumnModelBuilder maybeAddTwoLineLocationColumn(ActivityDTO activity) {
 		if(activity.getLocationType().getBoundAdminLevelId() == null) {
 	        ReadTextColumn column = new ReadTextColumn("locationName", activity.getLocationType().getName(), 100);
 	        column.setRenderer(new LocationColumnRenderer());
@@ -138,6 +138,15 @@ public class ColumnModelBuilder {
 		return this;
 	}
 	
+	public ColumnModelBuilder maybeAddSingleLineLocationColumn(ActivityDTO activity) {
+		if(activity.getLocationType().getBoundAdminLevelId() == null) {
+	        ReadTextColumn column = new ReadTextColumn("locationName", activity.getLocationType().getName(), 100);
+			columns.add(column);
+        }
+		return this;
+	}
+	
+	
 	public ColumnModelBuilder addLocationColumn() {
         return this;
 	}
@@ -145,11 +154,19 @@ public class ColumnModelBuilder {
 	public ColumnModelBuilder addAdminLevelColumns(ActivityDTO activity) {
 		return addAdminLevelColumns(getAdminLevels(activity));
 	}
+	
+	public ColumnModelBuilder addSingleAdminColumn(ActivityDTO activity) {
+		ColumnConfig admin = new ColumnConfig("admin", I18N.CONSTANTS.location(), 100);
+		admin.setRenderer(new AdminColumnRenderer(getAdminLevels(activity)));
+		columns.add(admin);		
+		return this;
+	}
 
 	public ColumnModelBuilder addAdminLevelColumns(List<AdminLevelDTO> adminLevels) {
-		ColumnConfig admin = new ColumnConfig("admin", I18N.CONSTANTS.location(), 100);
-		admin.setRenderer(new AdminColumnRenderer(adminLevels));
-		columns.add(admin);
+		for(AdminLevelDTO level : adminLevels) {
+			columns.add(new ColumnConfig(AdminLevelDTO.getPropertyName(level.getId()), level.getName(), 100));
+		}
+
 		return this;
 	}
 	
@@ -235,4 +252,6 @@ public class ColumnModelBuilder {
 		
 		return this;
 	}
+
+
 }

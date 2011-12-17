@@ -31,7 +31,7 @@ public class DummyPivotTableData2 {
 
 
     public PivotTableData.Axis[] leafRows = new PivotTableData.Axis[4];
-    public PivotTableData table = new PivotTableData(rowDims, colDims);
+    public PivotTableData table = new PivotTableData();
     public PivotTableData.Axis row1 = table.getRootRow().addChild(partnerDim, new EntityCategory(1, "AVSI"), "AVSI", null);
     public PivotTableData.Axis row2 = table.getRootRow().addChild(partnerDim, new EntityCategory(1, "NRC"), "NRC", null);
 
