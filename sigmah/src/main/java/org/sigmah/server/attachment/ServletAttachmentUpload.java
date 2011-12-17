@@ -94,6 +94,7 @@ public class ServletAttachmentUpload extends HttpServlet {
 		metadata = new ObjectMetadata();
 		metadata.setContentType(fileItem.getContentType());
 		metadata.setContentLength(fileItem.getSize());
+		metadata.setContentDisposition("Content-Disposition: attachment; filename=\"" + fileName + "\"");
 		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
 				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
 		client.putObject(new PutObjectRequest(bucketName, key, uploadingStream, metadata));

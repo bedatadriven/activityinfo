@@ -7,9 +7,9 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetSiteAttachments;
-import org.sigmah.shared.command.GetUploadUrl;
+import org.sigmah.shared.command.GetDownloadUrl;
 import org.sigmah.shared.command.result.SiteAttachmentResult;
-import org.sigmah.shared.command.result.UploadUrlResult;
+import org.sigmah.shared.command.result.S3UrlResult;
 import org.sigmah.shared.dto.SiteAttachmentDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
@@ -84,15 +84,15 @@ public class AttachmentsTab extends TabItem implements
 					public void handleEvent(
 							ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
-						dispatcher.execute(new GetUploadUrl(currentAttachment),
-								null, new AsyncCallback<UploadUrlResult>() {
+						dispatcher.execute(new GetDownloadUrl(currentAttachment),
+								null, new AsyncCallback<S3UrlResult>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										// callback.onFailure(caught);
 									}
 
 									@Override
-									public void onSuccess(UploadUrlResult result) {
+									public void onSuccess(S3UrlResult result) {
 										eventBus.fireEvent(new DownloadRequestEvent("attachment", result.getUrl()));
 									}
 								});
