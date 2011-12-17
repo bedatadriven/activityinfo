@@ -2,6 +2,7 @@ package org.sigmah.server.command;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -14,6 +15,7 @@ import org.sigmah.shared.command.AddTarget;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.GetTargets;
 import org.sigmah.shared.command.UpdateEntity;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
@@ -28,117 +30,121 @@ import org.sigmah.test.InjectionSupport;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class TargetTest extends CommandTestCase {
 
+	private static final int DATABASE_OWNER = 1;
+	private static UserDatabaseDTO db;
+	
 	@Before
 	public void setUser() {
-		setUser(1);
+		 setUser(DATABASE_OWNER);
+		 	/*
+			 * Initial data load
+			 */
+
+			SchemaDTO schema = execute(new GetSchema());
+			db = schema.getDatabaseById(1);
 	}
 
-    @Test
-    public void testTarget() throws CommandException {
+	@Test
+	public void testTarget() throws CommandException {
 
-        /*
-           * Initial data load
-           */
+		
 
-        SchemaDTO schema = execute(new GetSchema());
+		/*
+		 * Create a new Target
+		 */
 
-        UserDatabaseDTO db = schema.getDatabaseById(1);
-      
-        /*
-           * Create a new Target
-           */
-      
-        TargetDTO target = createTarget();
-        
-        CreateResult cresult = execute(new AddTarget(db.getId(), target));
+		TargetDTO target = createTarget();
 
-        int newId = cresult.getNewId();
+		CreateResult cresult = execute(new AddTarget(db.getId(), target));
 
-        /*
-           * Reload schema to verify the changes have stuck
-           */
+		int newId = cresult.getNewId();
 
-        schema = execute(new GetSchema());
+		/*
+		 * Load Targets to verify the changes have stuck
+		 */
 
-    //    target = schema.getTargetById(newId);
+		List<TargetDTO> targets = execute(new GetTargets(db.getId())).getData();
 
-    //  Assert.assertEquals("name", "Target0071", target.getName());
-    }
+		TargetDTO dto = getTargetById(targets, newId);
 
-    @Test
-    public void updateTargetNameTest() throws Throwable {
+		Assert.assertNotNull(dto);
+		Assert.assertEquals("name", "Target0071", dto.getName());
+	}
 
-        Map<String, Object> changes1 = new HashMap<String, Object>();
-        changes1.put("name", "newNameOfTarget");
+	@Test
+	public void updateTargetNameTest() throws Throwable {
 
-        execute(new BatchCommand(
-                new UpdateEntity("Target", 1, changes1)
-        ));
+		Map<String, Object> changes1 = new HashMap<String, Object>();
+		changes1.put("name", "newNameOfTarget");
 
-        SchemaDTO schema = execute(new GetSchema());
-   //     Assert.assertEquals("newNameOfTarget", schema.getDatabaseById(1).getTargets().get(0).getName());
-    }
-    
-    @Test
-    public void deleteTargetTest(){
-    	
-    	/*
-         * Initial data load
-         */
+		execute(new BatchCommand(new UpdateEntity("Target", 1, changes1)));
 
-      SchemaDTO schema = execute(new GetSchema());
+		List<TargetDTO> targets = execute(new GetTargets(db.getId())).getData();
 
-      UserDatabaseDTO db = schema.getDatabaseById(1);
-      
-      TargetDTO target = createTarget();
-      
-      CreateResult cresult = execute(new AddTarget(db.getId(), target));
+		TargetDTO dto = getTargetById(targets, 1);
 
-      int newId = cresult.getNewId();
+		Assert.assertEquals("newNameOfTarget", dto.getName());
+	}
 
-      /*
-         * Reload schema to verify the changes have stuck
-         */
+	@Test
+	public void deleteTargetTest() {
 
-      schema = execute(new GetSchema());
+		TargetDTO target = createTarget();
 
-//      target = schema.getTargetById(newId);
+		CreateResult cresult = execute(new AddTarget(db.getId(), target));
 
- //     Assert.assertEquals("name", "Target0071", target.getName());
-      
+		int newId = cresult.getNewId();
 
-      /*
-       * Delete new target now
-       */
-      
-   //   VoidResult result = execute(new Delete((EntityDTO) target));
-      
-      /*
-       * Verify if target is deleted.
-       */
-      
-       schema = execute(new GetSchema());
-       db = schema.getDatabaseById(1);
- 
-     // TODO(abid): fix compile error 
-     //  TargetDTO deleted = schema.getTargetById(newId);
-     // Assert.assertNull(deleted);
-       
-    }
-    
-    private TargetDTO createTarget(){
-    	Date date1 = new Date();
-        Date date2 = new Date();
-        /*
-           * Create a new Target
-           */
-      
-        TargetDTO target = new TargetDTO();
-        target.setName("Target0071");
-        target.setDate1(date1);
-        target.setDate2(date2);
-        
-        return target;
-    }
+		/*
+		 * Load Targets to verify the changes have stuck
+		 */
+
+		List<TargetDTO> targets = execute(new GetTargets(db.getId())).getData();
+
+		TargetDTO dto = getTargetById(targets, newId);
+
+		Assert.assertEquals("name", "Target0071", dto.getName());
+
+		/*
+		 * Delete new target now
+		 */
+
+		VoidResult result = execute(new Delete((EntityDTO) dto));
+
+		/*
+		 * Verify if target is deleted.
+		 */
+
+		targets = execute(new GetTargets()).getData();
+
+		TargetDTO deleted = getTargetById(targets, newId);
+
+		Assert.assertNull(deleted);
+
+	}
+
+	private TargetDTO createTarget() {
+		Date date1 = new Date();
+		Date date2 = new Date();
+		/*
+		 * Create a new Target
+		 */
+
+		TargetDTO target = new TargetDTO();
+		target.setName("Target0071");
+		target.setDate1(date1);
+		target.setDate2(date2);
+
+		return target;
+	}
+
+	private TargetDTO getTargetById(List<TargetDTO> targets, int id) {
+		for (TargetDTO dto : targets) {
+			if (id == dto.getId()) {
+				return dto;
+			}
+		}
+
+		return null;
+	}
 }
-
