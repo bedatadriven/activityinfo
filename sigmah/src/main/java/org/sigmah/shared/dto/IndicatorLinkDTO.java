@@ -10,6 +10,10 @@ public class IndicatorLinkDTO extends BaseModelData implements EntityDTO{
 	public static final String entityName = "IndicatorLink";
 	
 	
+	public IndicatorLinkDTO(){
+		
+	}
+	
 	public void setSourceIndicator(int id){
 		set("sourceIndicatorId" , id);
 	}

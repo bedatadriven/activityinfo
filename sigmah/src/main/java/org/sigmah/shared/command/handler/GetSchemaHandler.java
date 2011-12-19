@@ -56,7 +56,6 @@ public class GetSchemaHandler implements
 		private final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
 		private final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
 		private final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
-		private final Map<Integer, List<TargetValueDTO>> targetValues = new HashMap<Integer, List<TargetValueDTO>>();
 
 		private SqlTransaction tx;
 		private ExecutionContext context;

@@ -59,14 +59,14 @@ public class GetTargetsHandler implements
 							target.setDate1(row.getDate("Date1"));
 							target.setDate2(row.getDate("Date2"));
 
-							if(row.get("PartnerId") !=null){
+							if(!row.isNull("PartnerId")){
 								PartnerDTO partner = new PartnerDTO();
 								partner.setId(row.getInt("PartnerId"));
 								partner.setName(row.getString("partnerName"));
 								target.setPartner(partner);
 							}
 							
-							if(row.get("ProjectId") !=null){
+							if(row.isNull("ProjectId")){
 								ProjectDTO project = new ProjectDTO();
 								project.setId(row.getInt("ProjectId"));
 								project.setName(row.getString("projectName"));

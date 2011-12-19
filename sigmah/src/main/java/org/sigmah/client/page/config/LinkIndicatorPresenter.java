@@ -156,9 +156,6 @@ public class LinkIndicatorPresenter extends
 				+ categories.size();
 	}
 
-	public void updateIndicatorDestination(IndicatorDTO indicatorDTO) {
-		
-	}
 
 	public UserDatabaseDTO loadDestinationDatabase(int databaseId) {
 		return schema.getDatabaseById(databaseId);

@@ -1,5 +1,7 @@
 package org.activityinfo.embed.client;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.sigmah.client.i18n.I18N;
@@ -63,21 +65,39 @@ public class EmbedEntryPoint implements EntryPoint {
 
 	private Filter createFilter() {
 		Filter filter = new Filter();
-		
-		int activityId = Integer.valueOf(Location.getParameter("activityId"));
-		filter.addRestriction(DimensionType.Activity, activityId);
-		
 		Map<String, List<String>> parameterMap = Location.getParameterMap();
-		List<String> ids = parameterMap.get("partnerId");
-		if (ids != null) {
-			List<Integer> partnerIds = Lists.newArrayList();
-			for (String id : ids) {
-				partnerIds.add(Integer.valueOf(id));
-			}
-			filter.addRestriction(DimensionType.Partner, partnerIds);
-		}
 
+		filter.onDatabase(Integer.valueOf(Location.getParameter("databaseId")));
+		filter.onSite(Integer.valueOf(Location.getParameter("siteId")));
+		filter.setMaxDate(new Date(Long.valueOf(Location.getParameter("maxDate"))));
+		filter.setMinDate(new Date(Long.valueOf(Location.getParameter("minDate"))));
+
+		addToFilter(filter,DimensionType.Activity,"activityId",parameterMap);
+		addToFilter(filter,DimensionType.Partner,"partnerId",parameterMap);
+		addToFilter(filter,DimensionType.AdminLevel,"adminLevelId",parameterMap);
+		addToFilter(filter,DimensionType.Indicator,"indicatorId",parameterMap);
+		addToFilter(filter,DimensionType.Project,"projectId",parameterMap);
+		addToFilter(filter,DimensionType.Location,"locationId",parameterMap);
+
+//		ids = parameterMap.get("activityCategory");
+//		ids = parameterMap.get("status");
+//		ids = parameterMap.get("indicatorCategory");
+//		ids = parameterMap.get("attributeGroup");
+		
+		
 		return filter;
+	}
+	
+	private void addToFilter(Filter filter, DimensionType dimension, String paramName, Map<String, List<String>> parameterMap){
+		List<String> ids = parameterMap.get(paramName);
+		if (ids != null) {
+			List<Integer> values = Lists.newArrayList();
+			for (String id : ids) {
+				values.add(Integer.valueOf(id));
+			}
+			filter.addRestriction(dimension, values);
+		}
+		
 	}
 
 	private void addToRootPanel(Widget panel) {

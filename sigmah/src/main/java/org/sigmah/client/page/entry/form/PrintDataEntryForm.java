@@ -27,8 +27,6 @@ public class PrintDataEntryForm {
 		contents = contents.replace("{$activityName}", activity.getName())
 				.replace("{$databaseName}", activity.getDatabase().getName())
 				.replace("{$activityName}", activity.getName())
-				.replace("{$partnerName}", " ").replace("{$projectName}", " ")
-				.replace("{$startDate}", "").replace("{$endDate}", " ")
 				.replace("{$indicators}", addIndicators())
 				.replace("{$attributes}", addAttributes());
 
