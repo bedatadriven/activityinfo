@@ -47,12 +47,15 @@ public class PrintDataEntryForm {
 
 	private String addIndicators() {
 		StringBuilder builder = new StringBuilder();
+		
+		builder.append("<table border=\"1px\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" class=\"form-detail\">");
+		
 		for (IndicatorGroup group : activity.groupIndicators()) {
 
 			if (group.getName() != null) {
-				builder.append("<h3> " + group.getName() + "</h3>");
+				builder.append("<tr><td colspan='3'><h3 class='indicatorGroup'> " + group.getName() + "</h3><td></tr>");
 			}
-			builder.append("<table border=\"1px\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" class=\"form-detail\">");
+			
 			builder.append("<tr>");
 			builder.append("<td>Indicator</td>");
 			builder.append("<td>Valeur</td>");
@@ -61,9 +64,11 @@ public class PrintDataEntryForm {
 			for (IndicatorDTO indicator : group.getIndicators()) {
 				addIndicator(indicator, builder);
 			}
-			builder.append("</table>");
+			
 		}
-
+		
+		builder.append("</table>");
+		
 		return builder.toString();
 	}
 
