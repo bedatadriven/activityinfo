@@ -42,8 +42,10 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -258,7 +260,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		// currently the print form only does one activity
 		Set<Integer> activities = currentPlace.getFilter().getRestrictions(DimensionType.Activity);			
 		toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
-
+		toolBar.setActionEnabled(UIActions.EXPORT, activities.size() == 1);
 		
 		return true;
 	}
@@ -300,6 +302,9 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 					new PrintDataEntryForm(activity).print();
 				}
 			});
+		} else if(UIActions.EXPORT.equals(actionId)) {
+			Window.Location.assign(GWT.getModuleBaseURL() + "export?a=" +
+					currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity));
 		}
 	}
 }

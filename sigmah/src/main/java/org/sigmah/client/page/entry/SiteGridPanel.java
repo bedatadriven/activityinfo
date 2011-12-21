@@ -56,6 +56,7 @@ public final class SiteGridPanel extends ContentPanel  {
 		layout();
 		columnModelProvider.get(filter, grouping, new AsyncCallback<ColumnModel>() {
 			@Override
+			
 			public void onSuccess(ColumnModel columnModel) {
 				createGrid(grouping, filter, columnModel);
 			}

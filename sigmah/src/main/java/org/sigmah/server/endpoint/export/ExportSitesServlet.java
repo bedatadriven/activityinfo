@@ -11,25 +11,18 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.server.command.handler.HandlerUtil;
-import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
-import org.sigmah.server.database.hibernate.entity.Authentication;
-import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 /**
@@ -50,8 +43,10 @@ public class ExportSitesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Set<Integer> activities = new HashSet<Integer>();
-        for (String activity : req.getParameterValues("a")) {
-            activities.add(Integer.parseInt(activity));
+        if(req.getParameterValues("a") != null) {
+	        for (String activity : req.getParameterValues("a")) {
+	            activities.add(Integer.parseInt(activity));
+	        }
         }
 
         SchemaDTO schema = dispatcher.execute(new GetSchema());
