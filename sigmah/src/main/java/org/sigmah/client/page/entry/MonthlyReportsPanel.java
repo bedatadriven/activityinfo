@@ -8,15 +8,18 @@ package org.sigmah.client.page.entry;
 import java.util.ArrayList;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
+import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.common.widget.MappingComboBox;
-import org.sigmah.shared.command.Command;
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;
 import org.sigmah.shared.command.result.MonthlyReportResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.IndicatorRowDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
@@ -36,7 +39,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class MonthlyReportsPanel extends ContentPanel {
+public class MonthlyReportsPanel extends ContentPanel implements ActionListener {
     private final Dispatcher service;
 
     private ListLoader<MonthlyReportResult> loader;
@@ -46,6 +49,8 @@ public class MonthlyReportsPanel extends ContentPanel {
 	private MappingComboBox<Month> monthCombo;
     
 	private int currentSiteId;
+
+	private ActionToolBar toolBar;
 
     public MonthlyReportsPanel(Dispatcher service) {
         this.service = service;
@@ -65,7 +70,8 @@ public class MonthlyReportsPanel extends ContentPanel {
     }
     
     private void addToolBar() {
-    	ActionToolBar toolBar = new ActionToolBar();
+    	toolBar = new ActionToolBar();
+    	toolBar.setListener(this);
     	toolBar.addSaveSplitButton();
     	toolBar.add(new LabelToolItem(I18N.CONSTANTS.month() + ": "));
 
@@ -97,6 +103,7 @@ public class MonthlyReportsPanel extends ContentPanel {
 	}
 
 	public void load(SiteDTO site) {
+		this.currentSiteId = site.getId();
     	Month startMonth = getInitialStartMonth(site);
     	monthCombo.setMappedValue(startMonth);
     	grid.updateMonthColumns(startMonth);
@@ -131,8 +138,15 @@ public class MonthlyReportsPanel extends ContentPanel {
     	grid.updateMonthColumns(startMonth);
         loader.load();
     }
+    
+	@Override
+	public void onUIAction(String actionId) {
+		if(UIActions.SAVE.equals(actionId)) {
+			save();
+		}
+	}
 
-    private Command createSaveCommand() {
+    private void save() {
         ArrayList<UpdateMonthlyReports.Change> changes = new ArrayList<UpdateMonthlyReports.Change>();
         for (Record record : store.getModifiedRecords()) {
             IndicatorRowDTO report = (IndicatorRowDTO) record.getModel();
@@ -144,7 +158,18 @@ public class MonthlyReportsPanel extends ContentPanel {
                 changes.add(change);
             }
         }
-        return new UpdateMonthlyReports(currentSiteId, changes);
+        service.execute(new UpdateMonthlyReports(currentSiteId, changes), 
+        		new MaskingAsyncMonitor(this, I18N.CONSTANTS.save()), new AsyncCallback<VoidResult>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					// handled by monitor
+				}
+
+				@Override
+				public void onSuccess(VoidResult result) {
+				}
+        });
     }
     
     private class ReportingPeriodProxy extends RpcProxy<MonthlyReportResult> {
