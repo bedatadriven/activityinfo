@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -22,8 +23,10 @@ import org.sigmah.client.page.entry.form.SiteDialogCallback;
 import org.sigmah.client.page.entry.form.SiteDialogLauncher;
 import org.sigmah.client.page.entry.grouping.GroupingComboBox;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
+import org.sigmah.shared.command.Delete;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
@@ -285,6 +288,11 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 					gridPanel.refresh();
 				}
 			});
+			
+		} else if(UIActions.DELETE.equals(actionId)) {
+			
+			delete();
+		
 		} else if(UIActions.PRINT.equals(actionId)) {
 			dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 
@@ -302,9 +310,27 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 					new PrintDataEntryForm(activity).print();
 				}
 			});
+			
 		} else if(UIActions.EXPORT.equals(actionId)) {
 			Window.Location.assign(GWT.getModuleBaseURL() + "export?a=" +
 					currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity));
+		
 		}
+	}
+	
+	private void delete() {
+		dispatcher.execute(new Delete(gridPanel.getSelection()), new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
+				new AsyncCallback<VoidResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// handled by monitor
+			}
+
+			@Override
+			public void onSuccess(VoidResult result) {
+				gridPanel.refresh();
+			}
+		});
 	}
 }
