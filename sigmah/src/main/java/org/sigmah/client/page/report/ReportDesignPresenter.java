@@ -23,43 +23,51 @@ import com.google.inject.Inject;
 
 public class ReportDesignPresenter implements ActionListener, Page {
 	public static final PageId PAGE_ID = new PageId("reportdesign");
-	
+
 	private final EventBus eventBus;
 	private final Dispatcher service;
 	private final View view;
-	
+
 	@ImplementedBy(ReportDesignPage.class)
-	public interface View{
+	public interface View {
 		void init(ReportDesignPresenter presenter);
+
 		void setReportListStore(ReportDefinitionDTO dto);
-		 void setPreviewHtml(String html);
-		 AsyncMonitor getLoadingMonitor();
+
+		void setPreviewHtml(String html, String heading);
+
+		AsyncMonitor getLoadingMonitor();
+
 		ListStore<ReportDefinitionDTO> getReportListStore();
 
+		void setPreview();
+
 	}
-	
+
 	@Inject
-	public ReportDesignPresenter(EventBus eventBus, Dispatcher service, View view) {
+	public ReportDesignPresenter(EventBus eventBus, Dispatcher service,
+			View view) {
 		super();
 		this.eventBus = eventBus;
 		this.service = service;
 		this.view = view;
 		this.view.init(this);
-		
-		
+
+	}
+
+	public void go() {
+		loadReports();
 	}
 
 	@Override
 	public void onUIAction(String actionId) {
 		if (UIActions.ADDCHART.equals(actionId)) {
 
-          
+		}
 
-        }
-		
 	}
-	
-	public void setReportListStore(){
+
+	private void loadReports() {
 		GetUserReports getReports = new GetUserReports();
 
 		service.execute(getReports, null,
@@ -79,20 +87,27 @@ public class ReportDesignPresenter implements ActionListener, Page {
 					}
 				});
 	}
-	
-	public void generateReportPreview(int templateId){
-		  RenderReportHtml command = new RenderReportHtml(templateId, null);
-          service.execute(command, view.getLoadingMonitor(), new Got<HtmlResult>() {
-              @Override
-              public void got(HtmlResult result) {
-                  view.setPreviewHtml(result.getHtml());
-              }
-          });
+
+	public void generateReportPreview(final ReportDefinitionDTO selectedReport) {
+		RenderReportHtml command = new RenderReportHtml(selectedReport.getId(),
+				null);
+		service.execute(command, view.getLoadingMonitor(),
+				new Got<HtmlResult>() {
+					@Override
+					public void got(HtmlResult result) {
+						view.setPreviewHtml(result.getHtml(),
+								selectedReport.getTitle());
+					}
+				});
 	}
-	
+
+	public void loadReportComponents(int reportId) {
+
+	}
+
 	@Override
 	public void shutdown() {
-		
+
 	}
 
 	@Override
@@ -108,7 +123,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	@Override
 	public void requestToNavigateAway(PageState place,
 			NavigationCallback callback) {
-		callback.onDecided(true);		
+		callback.onDecided(true);
 	}
 
 	@Override

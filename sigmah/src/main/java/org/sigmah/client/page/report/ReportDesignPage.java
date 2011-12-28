@@ -5,6 +5,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 
@@ -20,16 +21,19 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class ReportDesignPage extends ContentPanel implements
@@ -41,13 +45,17 @@ public class ReportDesignPage extends ContentPanel implements
 	private ToolBar toolBar;
 	private ReportDesignPresenter presenter;
 	private ContentPanel reportListPane;
+	private LayoutContainer center;
 	private ContentPanel reportPreviewPanel;
 	private ListView<ReportDefinitionDTO> reportList;
 	protected ListStore<ReportDefinitionDTO> store;
-    private Html previewHtml;
+	private Html previewHtml;
 	private Button reportPreview;
-	private int currentReport;
-	
+	private ReportDefinitionDTO selectedReport;
+	private IndicatorTreePanel indicatorPanel;
+	private ReportDesignListPage reportPage;
+	private ReportDesignListPresenter reportPagePresenter;
+
 	@Inject
 	public ReportDesignPage(EventBus eventBus, Dispatcher service) {
 		this.eventBus = eventBus;
@@ -62,12 +70,20 @@ public class ReportDesignPage extends ContentPanel implements
 		createToolbar();
 		createListPane();
 		reportPreviewPane();
-		presenter.setReportListStore();
+
 	}
 
 	private void initializeComponent() {
 		setLayout(new BorderLayout());
 		setHeaderVisible(false);
+
+		previewHtml = new Html();
+		previewHtml.addStyleName("report");
+
+		reportPage = new ReportDesignListPage(service);
+
+		reportPagePresenter = new ReportDesignListPresenter(eventBus, service,
+				null, reportPage);
 	}
 
 	public void createToolbar() {
@@ -106,26 +122,26 @@ public class ReportDesignPage extends ContentPanel implements
 		VBoxLayout layout = new VBoxLayout();
 		layout.setPadding(new Padding(5));
 		layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-		
+
 		reportListPane = new ContentPanel();
 		reportListPane.setHeading(I18N.CONSTANTS.reports());
 		reportListPane.setLayout(layout);
-	
+
 		reportPreview = new Button(I18N.CONSTANTS.preview(), null,
 				new SelectionListener<ButtonEvent>() {
 					@Override
 					public void componentSelected(ButtonEvent ce) {
-						if(currentReport != 0){
-						presenter.generateReportPreview(currentReport);
+						if (selectedReport != null) {
+							presenter.generateReportPreview(selectedReport);
 						}
 					}
 				});
 		reportPreview.setWidth(100);
-		
+
 		VBoxLayoutData buttonLayout = new VBoxLayoutData();
-		buttonLayout.setMargins(new Margins(0, 0, 5, 0 ));
+		buttonLayout.setMargins(new Margins(0, 0, 5, 0));
 		reportListPane.add(reportPreview, buttonLayout);
-		
+
 		store = new ListStore<ReportDefinitionDTO>();
 
 		reportList = new ListView<ReportDefinitionDTO>();
@@ -140,46 +156,62 @@ public class ReportDesignPage extends ContentPanel implements
 					@Override
 					public void handleEvent(
 							ListViewEvent<ReportDefinitionDTO> event) {
-						currentReport = event.getModel().getId();
+						selectedReport = event.getModel();
+						reportPagePresenter.go(selectedReport);
+						addToPreviewPanel(
+								(Widget) reportPagePresenter.getWidget(),
+								selectedReport.getTitle());
 					}
 				});
-		
+
 		VBoxLayoutData listLayout = new VBoxLayoutData();
 		reportListPane.add(reportList, listLayout);
-		
-		BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST);
+
+		BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.30f);
 		west.setMinSize(250);
 		west.setSize(250);
 		west.setCollapsible(true);
 		west.setSplit(true);
-		west.setMargins(new Margins(0, 0, 0, 0));
+		west.setMargins(new Margins(0, 5, 0, 0));
 
 		add(reportListPane, west);
 
 	}
 
 	public void reportPreviewPane() {
+		center = new LayoutContainer();
+		center.setLayout(new BorderLayout());
+		add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
 		reportPreviewPanel = new ContentPanel();
 		reportPreviewPanel.setHeaderVisible(true);
+		reportPreviewPanel.setHeading(I18N.CONSTANTS.reportPreview());
 		reportPreviewPanel.setScrollMode(Scroll.AUTO);
+		reportPreviewPanel.setLayoutData(new FitData(new Margins(5, 5, 5, 5)));
 		reportPreviewPanel.setLayout(new FitLayout());
-		
-		previewHtml = new Html();
-        previewHtml.addStyleName("report");
-        reportPreviewPanel.add(previewHtml);
-		
-		add(reportPreviewPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
+		reportPreviewPanel.add((Widget) reportPagePresenter.getWidget());
+
+		center.add(reportPreviewPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
+
+	}
+
+	private void addToPreviewPanel(Widget w, String title) {
+		reportPreviewPanel.setHeading(I18N.CONSTANTS.reportPreview() + ": "
+				+ title);
+		reportPreviewPanel.removeAll();
+		reportPreviewPanel.add(w);
+		reportPreviewPanel.layout();
 	}
 
 	@Override
 	public void setReportListStore(ReportDefinitionDTO dto) {
 		store.add(dto);
-		
+
 	}
+
 	@Override
-	public ListStore<ReportDefinitionDTO> getReportListStore(){
+	public ListStore<ReportDefinitionDTO> getReportListStore() {
 		return store;
 	}
 
@@ -192,12 +224,19 @@ public class ReportDesignPage extends ContentPanel implements
 	}-*/;
 
 	@Override
-	public void setPreviewHtml(String html) {
-        previewHtml.setHtml(html);
-    }
+	public void setPreview() {
+
+	}
+
+	@Override
+	public void setPreviewHtml(String html, String heading) {
+		previewHtml.setHtml(html);
+		addToPreviewPanel(previewHtml, heading);
+	}
 
 	@Override
 	public AsyncMonitor getLoadingMonitor() {
-		 return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+		return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
 	}
+
 }

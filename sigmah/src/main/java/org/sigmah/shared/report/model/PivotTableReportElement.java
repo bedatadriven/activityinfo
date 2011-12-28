@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.report.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +16,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.sigmah.shared.report.content.PivotContent;
 
-public class PivotTableReportElement extends PivotReportElement<PivotContent> {
+public class PivotTableReportElement extends PivotReportElement<PivotContent> implements Serializable  {
 
 	private List<Dimension> columnDimensions = new ArrayList<Dimension>();
     private List<Dimension> rowDimensions = new ArrayList<Dimension>();
