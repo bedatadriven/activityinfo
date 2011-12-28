@@ -574,6 +574,7 @@
                             <modules>
 	                            <module>org.sigmah.ActivityInfoProduction</module>
 	                            <module>org.activityinfo.embed.Embed</module>
+	                            <module>org.activityinfo.login.Login</module>
                             </modules>
                         </configuration>
                     </execution>
@@ -606,6 +607,9 @@
                         <fileset>
                             <directory>war/Embed</directory>
                         </fileset>
+						<fileset>
+							<directory>war/Login</directory>
+						</fileset>
                         <fileset>
                             <directory>war/WEB-INF/lib</directory>
                         </fileset>

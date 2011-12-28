@@ -8,7 +8,6 @@ package org.sigmah.server.bootstrap;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -20,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.bootstrap.model.LoginPageModel;
 import org.sigmah.server.mail.MailSender;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 public class LoginControllerTest extends ControllerTestCase {
 
@@ -60,59 +58,4 @@ public class LoginControllerTest extends ControllerTestCase {
         assertTemplateUsed(LoginPageModel.class);
         assertEquals("#charts", lastLoginPageModel().getUrlSuffix());
     }
-
-
-    @Test
-    public void invalidEmailShouldResultInLoginPageWithErrorMessage() throws IOException, ServletException {
-
-        req.addParameter("email", "notreallyanemail@dot.com");
-        req.addParameter("password", WRONG_USER_PASS);
-        try {
-        	post();
-        }catch (Exception e) {
-        	//ignore
-        }
-
-        assertTemplateUsed(LoginPageModel.class);
-        assertTrue("error message is displayed", lastLoginPageModel().isLoginError());
-    }
-
-
-    @Test
-    public void invalidPasswordShouldResultInLoginPageWithErrorMessage() throws IOException, ServletException {
-
-        req.addParameter("email", USER_EMAIL);
-        req.addParameter("password", WRONG_USER_PASS);
-
-        post();
-
-        assertTemplateUsed(LoginPageModel.class);
-        assertTrue("error message is displayed", lastLoginPageModel().isLoginError());
-    }
-
-    @Test
-    public void correctLoginShouldRedirectToHostPage() throws IOException, ServletException {
-
-        req.addParameter("email", USER_EMAIL);
-        req.addParameter("password", CORRECT_USER_PASS);
-
-        post();
-
-        assertNotNull("redirected", resp.redirectUrl);
-        assertEquals("new auth token", NEW_AUTH_TOKEN, resp.getCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE));
-    }
-
-    @Test
-    public void bookmarkShouldBeSentToHostPage() throws IOException, ServletException {
-
-        req.addParameter("email", USER_EMAIL);
-        req.addParameter("password", CORRECT_USER_PASS);
-        req.addParameter("urlSuffix", "#map");
-
-        post();
-
-        assertTrue(resp.redirectUrl.endsWith("#map"));
-    }
-
-
 }
