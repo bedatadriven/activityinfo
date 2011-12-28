@@ -20,12 +20,14 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.codec.binary.Base64;
 import org.sigmah.server.authentication.Authenticator;
+import org.sigmah.server.authentication.ServerSideAuthProvider;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.html.HtmlWriter;
 import org.sigmah.server.util.xml.XmlBuilder;
+import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -57,6 +59,9 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
     @Inject
     private DispatcherSync dispatcher;
     
+    @Inject 
+    ServerSideAuthProvider authProvider;
+    
     public void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         PrintWriter out = res.getWriter();
@@ -74,6 +79,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
             return;
         }
 
+        authProvider.set(new AuthenticatedUser("", user.getId(), user.getEmail()));
 
         res.setContentType("application/vnd.google-earth.kml+xml");
 
@@ -119,7 +125,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         UserDAO userDAO = injector.getInstance(UserDAO.class);
         User user = null; 
         try {
-        	userDAO.findUserByEmail(emailPass[0]);
+        	user = userDAO.findUserByEmail(emailPass[0]);
         } catch (NoResultException e) {
         	return null;
         }
@@ -198,9 +204,12 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
                 xml.close();  // Description
 
                 kml.startTimeSpan();
-                kml.begin(pm.getDate1().atMidnightInMyTimezone());
-                kml.end(pm.getDate2().atMidnightInMyTimezone());
-                xml.close(); // Timespan
+                if(pm.getDate1() != null){
+                	kml.begin(pm.getDate1().atMidnightInMyTimezone());
+                    kml.end(pm.getDate2().atMidnightInMyTimezone());
+                    xml.close(); // Timespan
+                }
+                
 
                 kml.startPoint();
                 kml.coordinates(pm.getLongitude(), pm.getLatitude());
