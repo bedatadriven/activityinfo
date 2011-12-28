@@ -81,24 +81,33 @@ public class SiteDialog extends Window {
 		}
 		
 		addSection(FormSectionModel.forComponent(new ActivitySection(activity))
-				.withHeader("Site Details")
-				.withDescription("Choose the project and partner implementing this activity"));
+				.withHeader(I18N.CONSTANTS.siteDialogIntervention())
+				.withDescription(I18N.CONSTANTS.siteDialogInterventionDesc()));
 		
 		addSection(FormSectionModel.forComponent(locationForm)
 				.withHeader(I18N.CONSTANTS.location())
-				.withDescription("Choose the location of the activity site"));
-
-		addSection(FormSectionModel.forComponent(new AttributeSection(activity))
-				.withHeader(I18N.CONSTANTS.attributes())
-				.withDescription("Choose the attributes of this activity site"));
+				.withDescription(I18N.CONSTANTS.siteDialogSiteDesc()));
 		
-		addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
-				.withHeader(I18N.CONSTANTS.indicators())
-				.withDescription("Enter indicator results for this site"));
+		if(!activity.getAttributeGroups().isEmpty()) {
+	
+			addSection(FormSectionModel.forComponent(new AttributeSection(activity))
+					.withHeader(I18N.CONSTANTS.attributes())
+					.withDescription(I18N.CONSTANTS.siteDialogAttributes()));
+			
+		}
+		
+		if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE &&
+				!activity.getIndicators().isEmpty()) {
+		
+			addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
+					.withHeader(I18N.CONSTANTS.indicators())
+					.withDescription(I18N.CONSTANTS.siteDialogIndicators()));
+			
+		}
 		
 		addSection(FormSectionModel.forComponent(new CommentSection())
 				.withHeader(I18N.CONSTANTS.comments())
-				.withDescription("Add additional comments for this activity site"));
+				.withDescription(I18N.CONSTANTS.siteDialogComments()));
 		
 			
 		SiteFormResources.INSTANCE.style().ensureInjected();
