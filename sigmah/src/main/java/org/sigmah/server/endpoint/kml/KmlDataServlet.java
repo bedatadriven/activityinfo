@@ -35,11 +35,13 @@ import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.report.model.DimensionType;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import org.sigmah.shared.command.Filter;
 
 /**
  * Serves a KML (Google Earth) file containing the locations of all activities
@@ -66,6 +68,8 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
             throws ServletException, IOException {
         PrintWriter out = res.getWriter();
 
+        int activityId =Integer.valueOf(req.getParameter("activityId"));
+        
         // Get Authorization header
         String auth = req.getHeader("Authorization");
 
@@ -84,7 +88,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         res.setContentType("application/vnd.google-earth.kml+xml");
 
         try {
-            writeDocument(user, res.getWriter());
+            writeDocument(user, res.getWriter(), activityId);
 
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
@@ -138,7 +142,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-    protected void writeDocument(User user, PrintWriter out) throws TransformerConfigurationException, SAXException, CommandException {
+    protected void writeDocument(User user, PrintWriter out, int actvityId) throws TransformerConfigurationException, SAXException, CommandException {
 
         // TODO: rewrite using FreeMarker
 
@@ -149,7 +153,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         SchemaDTO schema = dispatcher.execute(new GetSchema());
         		
-        List<SiteDTO> sites = querySites(user, schema);
+        List<SiteDTO> sites = querySites(user, schema, actvityId);
 
         xml.startDocument();
 
@@ -157,40 +161,18 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         kml.startKml();
 
+        ActivityDTO activity = schema.getActivityById(actvityId); 
         kml.startDocument();
-        kml.name("ActivityInfo");
-        kml.open(true);
+     //   kml.name(activity.getName());
+    //   kml.open(true);
 
-        int lastDatabaseId = -1;
-        int lastActivityId = -1;
-        ActivityDTO activity = null;
-
+     //   kml.startFolder();
+    //    kml.name(activity.getName());
+    //    kml.open(false);
+        
         for (SiteDTO pm : sites) {
 
             if (pm.hasLatLong()) {
-
-                if (pm.getActivityId() != lastActivityId && lastActivityId != -1) {
-                    xml.close();
-                }
-
-//                if (pm.getDatabaseId() != lastDatabaseId) {
-//                    if (lastDatabaseId != -1) {
-//                        xml.close();
-//                    }
-//                    kml.startFolder();
-//                    kml.name(schema.getDatabaseById(pm.getDatabaseId()).getName());
-//                    kml.open(true);
-//                    lastDatabaseId = pm.getDatabaseId();
-//                }
-
-                if (pm.getActivityId() != lastActivityId) {
-                    kml.startFolder();
-                    kml.name(schema.getActivityById(pm.getActivityId()).getName());
-                    kml.open(false);
-
-                    activity = schema.getActivityById(pm.getActivityId());
-                    lastActivityId = activity.getId();
-                }
 
                 kml.startPlaceMark();
                 kml.name(pm.getLocationName());
@@ -219,12 +201,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
             }
         }
 
-        if (lastActivityId != -1) {
-            xml.close();
-        }
-        if (lastDatabaseId != -1) {
-            xml.close();
-        }
+   //     xml.close(); //
 
         xml.close(); // Document
         xml.close(); // kml
@@ -237,16 +214,18 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         return activity.getName() + " à " + pm.getLocationName() + " (" + pm.getPartnerName() + ")";
     }
 
-    private List<SiteDTO> querySites(User user, SchemaDTO schema) {
+    private List<SiteDTO> querySites(User user, SchemaDTO schema, int activityId) {
 
-    	GetSites query = new GetSites();
+    	Filter  filter = new Filter();
+    	filter.addRestriction(DimensionType.Activity, activityId);
+    	
     	
 //        List<SiteOrder> order = new ArrayList<SiteOrder>();
 //        order.add(SiteOrder.ascendingOn(SiteTableColumn.database_name.property()));
 //        order.add(SiteOrder.ascendingOn(SiteTableColumn.activity_name.property()));
 //        order.add(SiteOrder.ascendingOn(SiteTableColumn.date2.property()));
 
-        return dispatcher.execute(new GetSites()).getData();
+        return dispatcher.execute(new GetSites(filter)).getData();
     }
 
     private String renderDescription(ActivityDTO activity, SiteDTO data) {
