@@ -37,7 +37,9 @@ public class ReportDesignLoader implements PageLoader {
 
 	            @Override
 	            public void onSuccess() {
-	                callback.onSuccess(injector.getReportDesignPresenter());
+	            	ReportDesignPresenter presenter = injector.getReportDesignPresenter();
+	            	presenter.go();
+	                callback.onSuccess(presenter);
 	            }
 	        });
 		
