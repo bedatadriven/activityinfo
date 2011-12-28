@@ -66,7 +66,7 @@ public class GetTargetsHandler implements
 								target.setPartner(partner);
 							}
 							
-							if(row.isNull("ProjectId")){
+							if(!row.isNull("ProjectId")){
 								ProjectDTO project = new ProjectDTO();
 								project.setId(row.getInt("ProjectId"));
 								project.setName(row.getString("projectName"));
