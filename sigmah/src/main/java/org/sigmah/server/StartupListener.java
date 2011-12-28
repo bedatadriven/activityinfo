@@ -8,6 +8,7 @@ package org.sigmah.server;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import org.activityinfo.login.server.LoginModule;
 import org.apache.log4j.Logger;
 import org.sigmah.server.authentication.AuthenticationModule;
 import org.sigmah.server.bootstrap.BootstrapModule;
@@ -72,7 +73,8 @@ public class StartupListener extends GuiceServletContextListener {
                 new ExportModule(),
                 new JsonRpcModule(),
                 new KmlModule(),
-                new LocaleModule());
+                new LocaleModule(),
+                new LoginModule());
 
         context.setAttribute(INJECTOR_NAME, injector);   
         return injector;

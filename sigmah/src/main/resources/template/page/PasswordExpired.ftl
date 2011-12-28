@@ -19,8 +19,6 @@
             <div id="cap-body" style="height: 600px">
                 <div id="bar-top"></div>
 
-
-
                 <div id="branding"><img id="imgLogo" src="static/activityinfo.png" style="border-width:0;" title="ActivityInfo"/></div>
                 <img id="unicef-logo" src="static/unicef-120.png" alt="Un projet de l'UNICEF RDC" title="Un projet de l'UNICEF RDC">
 
@@ -58,8 +56,6 @@
             </div>
             <div id="cap-bottom"></div>
         </div>
-
-        <div id="copyrightBox" class="copyrightStatement">ActivityInfo, c'est <a href="http://code.google.com/p/activity-info">OpenSource</a>&nbsp;&nbsp;&nbsp;    </div>
     </form>
 </body>
 </html>

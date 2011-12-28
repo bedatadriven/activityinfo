@@ -7,7 +7,7 @@
 body.login {
     display: block;
     color: #333;
-    background: #d7d7d7;
+    background: white;
     font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
 }
 
@@ -15,54 +15,15 @@ a:link, a:visited, a:hover, a:active {
     color:#14527E;
 }
 
-
 div#login {
     margin: 34px auto 0;
     width: 851px;
 }
 
-div#cap-top {
-    position: relative;
-    background: url('box_top.png');
-    height: 28px;
-    width: 851px;
-}
-
-div#cap-body {
-
-    background: url('box_mid.png') repeat-y;
-    width: 851px;
-}
-
-#unicef-logo {
-    position: absolute;
-    width: 120px;
-    height: 29px;
-    left: 880px;
-    top: 530px;
-}
-
-div#cap-bottom {
-    background: url('box_bottom.png');
-    height: 28px;
-    width: 851px;
-}
-
-
 div#login div#panelLogin div {
     margin: 0 0 0 40px;
     padding-bottom: 8px;
     width: 410px;
-}
-
-div#login div#branding {
-    padding-top: 15px;
-    width: 400px;
-}
-
-div#login div#branding img {
-    display: block;
-    margin: 0 0 10px 40px;
 }
 
 div#login label {
@@ -72,7 +33,7 @@ div#login label {
     font-size: 12px;
 }
 
-div#login input#txtLogin, div#login input#txtPassword {
+div#login input#emailField, div#login input#passwordField {
     background: #fafafa;
     border: 1px solid #eee;
     font-size: 18px;
@@ -82,7 +43,7 @@ div#login input#txtLogin, div#login input#txtPassword {
     width: 400px;
 }
 
-div#login input#txtLogin:focus, div#login input#txtPassword:focus {
+div#login input#emailField:focus, div#login input#passwordField:focus {
     background: #fcfcfc;
     border: 1px solid #ccc;
 }
@@ -97,12 +58,6 @@ span#loginBox {
     display: block;
 }
 
-p#twitBug {
-    position: relative;
-    top: -142px;
-    right: 60px;
-    float: right;
-}
 
 .rememberBox {
     font-size: 12px;
@@ -134,32 +89,6 @@ a:hover {
     color: #1969bc;
 }
 
-#twitter_update_list {
-    position: absolute;
-    left: 55px;
-    top: 80px;
-    width: 250px;
-    height: 200px;
-    list-style-type: none;
-    padding-left: 5px;
-}
-
-#twitter-link {
-    position: absolute;
-    left: 75px;
-    top: 280px;
-    width: 230px;
-    text-align: right;
-}
-
-.copyrightStatement {
-    font-size: x-small;
-    color: gray;
-    margin: auto;
-    padding-left: 20px;
-    width: 851px;
-    clear: both;
-}
 
 .checkBox {
     vertical-align: middle;
@@ -187,12 +116,6 @@ a:hover {
     width: 121px;
 }
 
-#noteBg {
-    background: url('note_bg_fr.png') no-repeat;
-    width: 357px;
-    height: 442px;
-}
-
 #loginButton {
   
     display: block;
@@ -204,21 +127,13 @@ a:hover {
 #loginHelp {
     padding-bottom: 0 !important;
     padding-left: 50px !important;
+    
     padding-top: 2px !important;
     width: 140px !important;
-}
-
-div#whatsNew {
-    float: right;
-    position: relative;
-    margin: 0;
-    z-index: 50;
-    width: 375px;
-    height: 450px;
 }
 
 .instructions {
 	font-size: large;
 }
-}
+
 
