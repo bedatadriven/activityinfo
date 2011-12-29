@@ -48,6 +48,7 @@ import org.sigmah.client.page.search.SearchPresenter;
 import org.sigmah.client.page.table.PivotModule;
 import org.sigmah.client.page.table.PivotPageLoader;
 import org.sigmah.client.page.table.PivotPresenter;
+import org.sigmah.client.page.welcome.WelcomeLoader;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
@@ -141,5 +142,7 @@ public interface AppInjector extends Ginjector {
 	ReportDesignLoader createReportDesignLoader();
 
     ReportDesignPresenter getReportDesignPresenter();
+
+	WelcomeLoader createWelcomeLoader();
 	
 }

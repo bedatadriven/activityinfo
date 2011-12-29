@@ -9,6 +9,7 @@ import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
+import org.sigmah.client.page.welcome.WelcomePageState;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -71,20 +72,8 @@ public class HistoryManager {
             Log.debug("HistoryManager: firing initial placed based on intial token: " + History.getToken());
             History.fireCurrentHistoryState();
 
-//        } else if(Cookies.getCookie("lastPlace") != null) {
-//
-//            GWT.log("HistoryManager: firing initial placed based on cookie: " + Cookies.getCookie("lastPlace"), null);
-//
-//            PageState place = placeSerializer.deserialize(Cookies.getCookie("lastPlace"));
-//            if(place != null) {
-//
-//                 eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, place));
-//            } else {
-//                eventBus.fireEvent(new NavigationEvent(PageManager.NavigationRequested, new WelcomePageState()));
-//            }
-//        }
         } else {
-            History.newItem("dashboard", true);
+        	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new WelcomePageState()));
         }
     }
 

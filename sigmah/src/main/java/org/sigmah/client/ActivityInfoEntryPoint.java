@@ -53,7 +53,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         final AppInjector injector = GWT.create(AppInjector.class);
 
-
+        injector.createWelcomeLoader();
         injector.createDataEntryLoader();
         injector.createChartLoader();
         injector.createReportLoader();
@@ -62,6 +62,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.createConfigLoader();
         injector.createSearchLoader();
         injector.createReportDesignLoader();
+        
 
         injector.getUsageTracker();
         injector.getHistoryManager();
