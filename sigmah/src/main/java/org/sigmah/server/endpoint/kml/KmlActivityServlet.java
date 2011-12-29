@@ -95,7 +95,7 @@ public class KmlActivityServlet extends HttpServlet {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("links", links);
 
-		Template tpl = templateCfg.getTemplate("ftl/kml/ActivitiesNetworkLink.kml.ftl");
+		Template tpl = templateCfg.getTemplate("kml/ActivitiesNetworkLink.kml.ftl");
 		res.setContentType("application/vnd.google-earth.kml+xml; filename=ActivityInfo.kml");
 		res.setCharacterEncoding("UTF-8");
 
