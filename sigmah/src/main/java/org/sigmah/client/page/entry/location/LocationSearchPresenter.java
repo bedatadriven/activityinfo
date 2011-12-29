@@ -9,6 +9,7 @@ import org.sigmah.shared.command.result.LocationResult;
 import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
+import org.sigmah.shared.util.mapping.BoundingBoxDTO;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -35,6 +36,7 @@ public class LocationSearchPresenter extends BaseObservable {
 	private final ListStore<LocationDTO> store;
 	
 	private SearchLocations currentSearch;
+	private BoundingBoxDTO searchBounds;
 
 	private LocationDTO selection;
 	
@@ -63,7 +65,12 @@ public class LocationSearchPresenter extends BaseObservable {
 		return store;
 	}
 	
-	public void search(String name, Collection<Integer> collection) {
+	public BoundingBoxDTO getBounds() {
+		return searchBounds;
+	}
+	
+	public void search(String name, Collection<Integer> collection, BoundingBoxDTO bounds) {
+		searchBounds = bounds;
 		currentSearch = new SearchLocations()
 		.setName(name)
 		.setAdminEntityIds(collection)
@@ -122,7 +129,7 @@ public class LocationSearchPresenter extends BaseObservable {
 		
 				@Override
 				public void onSuccess(LocationResult locations) {
-					if(thisSearch == currentSearch) {
+					if(thisSearch.equals(currentSearch)) {
 						numberLocations(locations.getData());
 						callback.onSuccess(locations);
 					}

@@ -60,7 +60,7 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 		this.location = location;
 		this.isNew = isNew;
 		nameField.setValue(location.getName());
-		axeField.setValue(location.getName());
+		axeField.setValue(location.getAxe());
 		if(location.hasCoordinates()) {
 			coordinateFields.getLatitudeField().setValue(location.getLatitude());
 			coordinateFields.getLongitudeField().setValue(location.getLongitude());

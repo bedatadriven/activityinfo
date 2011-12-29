@@ -9,14 +9,14 @@ import com.extjs.gxt.ui.client.event.EventType;
  * An event that signals that the current selection within
  * {@link AdminFieldSetPresenter} has changed.
  */
-public class AdminSelectionEvent extends BaseEvent {
+public class AdminLevelSelectionEvent extends BaseEvent {
 	
 	public static final EventType TYPE = new EventType();
 	
 	private int levelId;
 	private AdminEntityDTO value;
 	
-	public AdminSelectionEvent(int levelId, AdminEntityDTO value) {
+	public AdminLevelSelectionEvent(int levelId, AdminEntityDTO value) {
 		super(TYPE);
 		this.levelId = levelId;
 		this.value = value;
@@ -50,7 +50,7 @@ public class AdminSelectionEvent extends BaseEvent {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		AdminSelectionEvent other = (AdminSelectionEvent) obj;
+		AdminLevelSelectionEvent other = (AdminLevelSelectionEvent) obj;
 		if (levelId != other.levelId) {
 			return false;
 		}

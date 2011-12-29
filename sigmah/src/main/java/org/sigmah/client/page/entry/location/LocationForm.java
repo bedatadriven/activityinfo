@@ -6,7 +6,7 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.client.page.entry.admin.AdminComboBox;
 import org.sigmah.client.page.entry.admin.AdminFieldSetPresenter;
-import org.sigmah.client.page.entry.admin.AdminSelectionEvent;
+import org.sigmah.client.page.entry.admin.AdminSelectionChangedEvent;
 import org.sigmah.client.page.entry.admin.BoundsChangedEvent;
 import org.sigmah.client.widget.CoordinateFields;
 import org.sigmah.shared.dto.AdminLevelDTO;
@@ -53,7 +53,9 @@ public class LocationForm extends LayoutContainer {
 	private int locationTypeId;
 	
 	
-	public LocationForm(Dispatcher dispatcher, int locationTypeId, final LocationSearchPresenter searchPresenter, final NewLocationPresenter newLocationPresenter) {
+	public LocationForm(Dispatcher dispatcher, int locationTypeId, 
+			final LocationSearchPresenter searchPresenter, 
+			final NewLocationPresenter newLocationPresenter) {
 		this.searchPresenter = searchPresenter;
 		this.newLocationPresenter = newLocationPresenter;
 		this.locationTypeId = locationTypeId;
@@ -70,9 +72,9 @@ public class LocationForm extends LayoutContainer {
 		addCoordFields();
 		addNewLocationButtons();	
 		
-		adminPresenter.addListener(AdminSelectionEvent.TYPE, new Listener<AdminSelectionEvent>() {
+		adminPresenter.addListener(AdminSelectionChangedEvent.TYPE, new Listener<AdminSelectionChangedEvent>() {
 			@Override
-			public void handleEvent(AdminSelectionEvent be) {
+			public void handleEvent(AdminSelectionChangedEvent be) {
 				search();
 				coordinateFields.validate();
 			}
@@ -232,7 +234,7 @@ public class LocationForm extends LayoutContainer {
 	}
 	
 	private void search() {
-		searchPresenter.search(nameField.getRawValue(), adminPresenter.getAdminEntityIds());
+		searchPresenter.search(nameField.getRawValue(), 
+				adminPresenter.getAdminEntityIds(), adminPresenter.getBounds());
 	}
-
 }

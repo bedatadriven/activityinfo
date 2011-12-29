@@ -108,7 +108,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
 			trace("updateSelection(" + newSelection + ")");
 					
 			this.selection = newSelection;
-    		fireEvent(new AdminSelectionEvent(level.getId(), newSelection));
+    		fireEvent(new AdminLevelSelectionEvent(level.getId(), newSelection));
     		
     		for(Level child : children) {
     			child.onParentSelectionChanged(newSelection);
@@ -210,6 +210,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     public void setSelection(int levelId, AdminEntityDTO selection) {
     	if( level(levelId).setSelection(selection) ) {
     		updateBounds();
+    		fireEvent(new AdminSelectionChangedEvent());
     	}
     }
     
@@ -222,6 +223,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     		level.setSelection(values.getAdminEntity(level.getId()));
     	}
     	updateBounds();
+    	fireEvent(new AdminSelectionChangedEvent());
     }
  
        

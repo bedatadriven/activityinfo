@@ -50,7 +50,7 @@ public class AdminFieldSetPresenterTest {
 
     private DispatcherStub dispatcher = new DispatcherStub();
 	private AdminFieldSetPresenter presenter;
-    private Listener<AdminSelectionEvent> selectionListener;
+    private Listener<AdminLevelSelectionEvent> selectionListener;
 	private Listener<LevelStateChangeEvent> levelStateChangeListener;
 	private Listener<BoundsChangedEvent> boundsListener;
 
@@ -187,7 +187,7 @@ public class AdminFieldSetPresenterTest {
 	private void expectSelections(Collection<AdminEntityDTO> values) {
 		resetToDefault(selectionListener);
 		for(AdminEntityDTO entity : values) {
-        	selectionListener.handleEvent(eq(new AdminSelectionEvent(entity.getLevelId(), entity)));
+        	selectionListener.handleEvent(eq(new AdminLevelSelectionEvent(entity.getLevelId(), entity)));
         }
 		replay(selectionListener);
 	}
@@ -232,7 +232,7 @@ public class AdminFieldSetPresenterTest {
     private void presenterForActivity(ActivityDTO activity) {
     	CountryDTO country = activity.getDatabase().getCountry();
     	presenter = new AdminFieldSetPresenter(dispatcher, country, country.getAdminLevels());
-    	presenter.addListener(AdminSelectionEvent.TYPE, selectionListener);
+    	presenter.addListener(AdminLevelSelectionEvent.TYPE, selectionListener);
     	presenter.addListener(LevelStateChangeEvent.TYPE, levelStateChangeListener);
     	presenter.addListener(BoundsChangedEvent.TYPE, boundsListener);
     }

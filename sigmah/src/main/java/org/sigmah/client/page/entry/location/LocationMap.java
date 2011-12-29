@@ -126,7 +126,12 @@ public class LocationMap extends GoogleMapsWidget {
 				searchMarkers.put(location, marker);
 			}
 		}
-		zoomToBounds(newLatLngBounds(bounds));
+		
+		if(searchMarkers.isEmpty()) {
+			zoomToBounds(newLatLngBounds(searchPresenter.getBounds()));
+		} else {
+			zoomToBounds(newLatLngBounds(bounds));
+		}
 	}
 
 	private void clearSearchMarkers() {

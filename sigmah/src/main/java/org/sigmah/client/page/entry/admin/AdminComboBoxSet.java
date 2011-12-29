@@ -64,9 +64,9 @@ public class AdminComboBoxSet implements Iterable<AdminComboBox>  {
                 }
             });
             
-            presenter.addListener(AdminSelectionEvent.TYPE, new Listener<AdminSelectionEvent>() {
+            presenter.addListener(AdminLevelSelectionEvent.TYPE, new Listener<AdminLevelSelectionEvent>() {
 				@Override
-				public void handleEvent(AdminSelectionEvent event) {
+				public void handleEvent(AdminLevelSelectionEvent event) {
 					comboBoxes.get(event.getLevelId()).setValue(event.getValue());
 				}
             });
