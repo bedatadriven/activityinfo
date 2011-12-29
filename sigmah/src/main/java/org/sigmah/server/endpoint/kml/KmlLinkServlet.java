@@ -48,8 +48,9 @@ public class KmlLinkServlet extends HttpServlet {
                     req.getServerPort() + "/" +  req.getRequestURI() + "/activities");
 
         Template tpl = templateCfg.getTemplate("kml/NetworkLink.kml.ftl");
-        resp.setContentType("application/vnd.google-earth.kml+xml; filename=ActivityInfo.kml");
-        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/vnd.google-earth.kml+xml;");
+        resp.setCharacterEncoding("UTF-8");		
+        resp.setHeader("Content-Disposition", "attachment; filename=ActivityInfo.kml");
 
         try {
             tpl.process(link, resp.getWriter());
