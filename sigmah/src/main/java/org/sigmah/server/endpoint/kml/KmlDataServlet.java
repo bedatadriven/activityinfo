@@ -7,27 +7,20 @@ package org.sigmah.server.endpoint.kml;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
-
-import org.apache.commons.codec.binary.Base64;
-import org.sigmah.server.authentication.Authenticator;
-import org.sigmah.server.authentication.ServerSideAuthProvider;
+import org.sigmah.server.authentication.BasicAuthentication;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.server.database.hibernate.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.html.HtmlWriter;
 import org.sigmah.server.util.xml.XmlBuilder;
-import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -39,7 +32,7 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import org.sigmah.shared.command.Filter;
 
@@ -55,14 +48,20 @@ import org.sigmah.shared.command.Filter;
 @Singleton
 public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
-    @Inject
-    private Injector injector;
-
-    @Inject
-    private DispatcherSync dispatcher;
+    private final DispatcherSync dispatcher;
+    private final BasicAuthentication authenticator;
     
-    @Inject 
-    ServerSideAuthProvider authProvider;
+    private final Provider<EntityManager> entityManager;
+    @Inject
+    public KmlDataServlet(
+    		Provider<EntityManager> entityManager,
+    		BasicAuthentication authenticator,
+			DispatcherSync dispatcher){
+    	
+    	this.entityManager = entityManager;
+    	this.authenticator = authenticator;
+		this.dispatcher = dispatcher;
+    }
     
     public void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -74,8 +73,8 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         String auth = req.getHeader("Authorization");
 
         // Do we allow that user?
-
-        User user = authenticate(auth);
+        User user = authenticator.doAuthentication(auth);
+        
         if (user == null) {
             // Not allowed, or no password provided so report unauthorized
             res.setHeader("WWW-Authenticate", "BASIC realm=\"Utilisateurs authorises\"");
@@ -83,8 +82,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
             return;
         }
 
-        authProvider.set(new AuthenticatedUser("", user.getId(), user.getEmail()));
-
+        
         res.setContentType("application/vnd.google-earth.kml+xml");
 
         try {
@@ -100,54 +98,13 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-    // This method checks the user information sent in the Authorization
-    // header against the database of users maintained in the users Hashtable.
-
-    protected User authenticate(String auth) throws IOException {
-        if (auth == null) {
-            return null;
-        }// no auth
-
-        if (!auth.toUpperCase().startsWith("BASIC ")) {
-            return null;
-        }// we only do BASIC
-
-        // Get encoded user and password, comes after "BASIC "
-        String emailpassEncoded = auth.substring(6);
-
-        // Decode it, using any base 64 decoder
-
-        byte[] emailpassDecodedBytes = Base64.decodeBase64(emailpassEncoded.getBytes());
-        String emailpassDecoded = new String(emailpassDecodedBytes, Charset.defaultCharset());
-        String[] emailPass = emailpassDecoded.split(":");
-
-        if (emailPass.length != 2) {
-            return null;
-        }
-
-        // look up the user in the database
-        UserDAO userDAO = injector.getInstance(UserDAO.class);
-        User user = null; 
-        try {
-        	user = userDAO.findUserByEmail(emailPass[0]);
-        } catch (NoResultException e) {
-        	return null;
-        }
-        
-        Authenticator checker = injector.getInstance(Authenticator.class);
-        if (!checker.check(user, emailPass[1])) {
-            return null;
-        }
-        return user;
-
-    }
+    
 
     protected void writeDocument(User user, PrintWriter out, int actvityId) throws TransformerConfigurationException, SAXException, CommandException {
 
         // TODO: rewrite using FreeMarker
 
-        EntityManager em = injector.getInstance(EntityManager.class);
-        DomainFilters.applyUserFilter(user, em);
+        DomainFilters.applyUserFilter(user, entityManager.get());
 
         XmlBuilder xml = new XmlBuilder(new StreamResult(out));
 
@@ -163,18 +120,19 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         ActivityDTO activity = schema.getActivityById(actvityId); 
         kml.startDocument();
-     //   kml.name(activity.getName());
-    //   kml.open(true);
-
-     //   kml.startFolder();
-    //    kml.name(activity.getName());
-    //    kml.open(false);
+        
+        kml.startStyle().at("id", "noDirectionsStyle");
+        kml.startBalloonStyle();
+        kml.text("$[description]");
+        xml.close();
+        xml.close();
         
         for (SiteDTO pm : sites) {
 
             if (pm.hasLatLong()) {
 
                 kml.startPlaceMark();
+                kml.styleUrl("#noDirectionsStyle");
                 kml.name(pm.getLocationName());
 
                 kml.startSnippet();
@@ -200,9 +158,6 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
                 xml.close();  // Placemark
             }
         }
-
-   //     xml.close(); //
-
         xml.close(); // Document
         xml.close(); // kml
         xml.endDocument();
@@ -218,12 +173,6 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     	Filter  filter = new Filter();
     	filter.addRestriction(DimensionType.Activity, activityId);
-    	
-    	
-//        List<SiteOrder> order = new ArrayList<SiteOrder>();
-//        order.add(SiteOrder.ascendingOn(SiteTableColumn.database_name.property()));
-//        order.add(SiteOrder.ascendingOn(SiteTableColumn.activity_name.property()));
-//        order.add(SiteOrder.ascendingOn(SiteTableColumn.date2.property()));
 
         return dispatcher.execute(new GetSites(filter)).getData();
     }

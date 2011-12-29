@@ -16,7 +16,7 @@ public class KmlModule extends ServletModule {
     protected void configureServlets() {
         serve("/kml").with(KmlLinkServlet.class);
         serve("/kml/activities").with(KmlActivityServlet.class);
-        serve("/kml/activities/data").with(KmlDataServlet.class);
+        serve("/kml/sites").with(KmlDataServlet.class);
     }
 
 

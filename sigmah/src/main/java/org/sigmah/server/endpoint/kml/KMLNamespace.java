@@ -58,6 +58,18 @@ public class KMLNamespace {
 
     }
 
+    public XmlElement startStyle() throws SAXException {
+        return e("Style");
+    }
+    
+    public XmlElement startBalloonStyle() throws SAXException {
+        return e("BalloonStyle");
+    }
+    
+    public KMLNamespace text(String value) throws SAXException {
+        return s("text", value);
+    }
+    
     public XmlElement startPlaceMark() throws SAXException {
         return e("Placemark");
     }

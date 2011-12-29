@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://earth.google.com/kml/2.2">
 <Document>
-<#list links as activity>
-<NetworkLink>
-<name>${activity.name}</name>
-<refreshVisibility>0</refreshVisibility>
-<flyToView>1</flyToView>
-<Link>
-<href>${activity.href}</href>
-</Link>
-</NetworkLink>
+<#list schema.databases as db>
+<Folder>
+	<name>${db.name}</name>
+	<open>1</open>
+	<#list db.activities as activity>
+		<NetworkLink>
+		<name>${activity.name}</name>
+		<refreshVisibility>0</refreshVisibility>
+		<flyToView>1</flyToView>
+		<Link>
+			<href>${baseURL}${activity.id}</href>
+		</Link>
+		</NetworkLink>
+	</#list>
+</Folder>
 </#list>
 </Document>
 </kml>
