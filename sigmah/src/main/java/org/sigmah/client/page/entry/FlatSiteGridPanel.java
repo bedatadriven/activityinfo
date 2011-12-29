@@ -14,6 +14,7 @@ import org.sigmah.shared.dto.SiteDTO;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -75,16 +76,20 @@ final class FlatSiteGridPanel extends ContentPanel implements SiteGridPanelView 
 			}
 			
 		});
+		loader.setRemoteSort(true);
+		loader.setSortField("date2");
+		loader.setSortDir(SortDir.DESC);
 		pagingToolBar.bind(loader);
+		
 		listStore = new ListStore<SiteDTO>(loader);
     	
     	if(editorGrid == null) {
     		editorGrid = new EditorGrid<SiteDTO>(listStore, columnModel);
 	    	editorGrid.setLoadMask(true);
-	    	editorGrid.setStateful(true);
+	    	//editorGrid.setStateful(true);
 			editorGrid.setClicksToEdit(ClicksToEdit.TWO);
 			editorGrid.setStripeRows(true);
-
+			
 	    	GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
 	        sm.setSelectionMode(SelectionMode.SINGLE);
 	        sm.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
@@ -95,8 +100,7 @@ final class FlatSiteGridPanel extends ContentPanel implements SiteGridPanelView 
 				}
 			});
 	        editorGrid.setSelectionModel(sm);
-	        
-	        
+	        	        
 	        QuickTip quickTip = new QuickTip(editorGrid);
 	        
 	        add(editorGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));

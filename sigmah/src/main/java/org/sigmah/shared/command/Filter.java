@@ -184,7 +184,7 @@ public class Filter implements Serializable {
 	}
 
 	public boolean isDimensionRestrictedToSingleCategory(DimensionType type) {
-		return getRestrictions(DimensionType.Activity).size() == 1;
+		return getRestrictions(type).size() == 1;
 	}
 	
 	/**

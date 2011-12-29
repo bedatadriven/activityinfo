@@ -9,7 +9,12 @@ import org.sigmah.client.page.entry.column.DefaultColumnModelProvider;
 import org.sigmah.client.page.entry.grouping.GroupingModel;
 import org.sigmah.client.page.entry.grouping.NullGroupingModel;
 import org.sigmah.shared.command.Filter;
+import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -67,8 +72,36 @@ public final class SiteGridPanel extends ContentPanel  {
 				
 			}
 		});
+		updateHeading(filter);
 	}
 	
+	private void updateHeading(final Filter filter) {
+		setHeading(I18N.CONSTANTS.sitesHeader());
+
+		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
+					int activityId = filter.getRestrictedCategory(DimensionType.Activity);
+					ActivityDTO activity = result.getActivityById(activityId);
+					setHeading(activity.getDatabase().getName() + " - " + activity.getName());
+				} else if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Database)) {
+					int databaseId = filter.getRestrictedCategory(DimensionType.Database);
+					UserDatabaseDTO db = result.getDatabaseById(databaseId);
+					setHeading(db.getName());
+				}
+			}
+		});
+		
+	}
+
 	public void refresh() {
 		if(grid != null) {
 			grid.refresh();

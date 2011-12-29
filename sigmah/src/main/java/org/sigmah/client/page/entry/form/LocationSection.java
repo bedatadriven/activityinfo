@@ -69,7 +69,6 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 		}
 	}
 
-
 	@Override
 	public void updateModel(SiteDTO site) {
 		site.setLocationId(location.getId());

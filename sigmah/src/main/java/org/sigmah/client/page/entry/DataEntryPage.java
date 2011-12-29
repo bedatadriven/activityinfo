@@ -30,6 +30,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -256,6 +257,37 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	@Override
 	public boolean navigate(PageState place) {
 		currentPlace = (DataEntryPlace) place;
+		if(!currentPlace.getFilter().isRestricted(DimensionType.Activity) &&
+		   !currentPlace.getFilter().isRestricted(DimensionType.Database)) {
+			
+			redirectToFirstActivity();
+		} else {
+			doNavigate();
+		}
+		return true;
+	}
+
+	private void redirectToFirstActivity() {
+		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				for(UserDatabaseDTO db : result.getDatabases()) {
+					if(!db.getActivities().isEmpty()) {
+						currentPlace.getFilter().addRestriction(DimensionType.Activity, db.getActivities().get(0).getId());
+						doNavigate();
+						return;
+					}
+				}
+			}
+		});
+	}
+
+	private void doNavigate() {
 		gridPanel.load(currentPlace.getGrouping(), currentPlace.getFilter());
 		groupingComboBox.setFilter(currentPlace.getFilter());
 		filterPane.getSet().applyBaseFilter(new Filter());
@@ -264,8 +296,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		Set<Integer> activities = currentPlace.getFilter().getRestrictions(DimensionType.Activity);			
 		toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
 		toolBar.setActionEnabled(UIActions.EXPORT, activities.size() == 1);
-		
-		return true;
 	}
 
 	@Override

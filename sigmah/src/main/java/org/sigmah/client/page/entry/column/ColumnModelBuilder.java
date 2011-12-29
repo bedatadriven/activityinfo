@@ -52,7 +52,7 @@ public class ColumnModelBuilder {
 	}
     
     public ColumnModelBuilder addActivityColumn(final SchemaDTO schema) {
-    	ColumnConfig config = new ColumnConfig("activityId", 100);
+    	ColumnConfig config = new ColumnConfig("activityId", I18N.CONSTANTS.activity(), 100);
     	config.setRenderer(new GridCellRenderer<SiteDTO>() {
 
 			@Override
@@ -67,6 +67,26 @@ public class ColumnModelBuilder {
     	columns.add(config);
     	return this;
     }
+    
+
+	public ColumnModelBuilder addDatabaseColumn(final SchemaDTO schema) {
+		ColumnConfig config = new ColumnConfig("activityId", I18N.CONSTANTS.activity(), 100);
+    	config.setRenderer(new GridCellRenderer<SiteDTO>() {
+
+			@Override
+			public Object render(SiteDTO model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<SiteDTO> store, Grid<SiteDTO> grid) {
+				
+				ActivityDTO activity = schema.getActivityById(model.getActivityId());
+				return activity == null ? "" : activity.getDatabase().getName();
+			}
+		});
+    	columns.add(config);
+    	return this;
+	}
+
+
 
 	public ColumnModel build() {
     	return new ColumnModel(columns);
@@ -148,12 +168,15 @@ public class ColumnModelBuilder {
 	
 	
 	public ColumnModelBuilder addLocationColumn() {
+        ReadTextColumn column = new ReadTextColumn("locationName", I18N.CONSTANTS.location(), 100);
+		columns.add(column);
         return this;
 	}
 
 	public ColumnModelBuilder addAdminLevelColumns(ActivityDTO activity) {
 		return addAdminLevelColumns(getAdminLevels(activity));
 	}
+	
 	
 	public ColumnModelBuilder addSingleAdminColumn(ActivityDTO activity) {
 		ColumnConfig admin = new ColumnConfig("admin", I18N.CONSTANTS.location(), 100);
@@ -185,8 +208,13 @@ public class ColumnModelBuilder {
 
 	public ColumnModelBuilder maybeAddPartnerColumn(UserDatabaseDTO database) {
 		if(database.isViewAllAllowed()) {
-            columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
+            addPartnerColumn();
         }
+		return this;
+	}
+
+	public ColumnModelBuilder addPartnerColumn() {
+		columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
 		return this;
 	}
 
@@ -252,6 +280,5 @@ public class ColumnModelBuilder {
 		
 		return this;
 	}
-
 
 }
