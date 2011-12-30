@@ -28,6 +28,7 @@ public class CreateLocationHandler implements CommandHandlerAsync<CreateLocation
 		    .value("Y", properties.get("latitude"))
 		    .value("dateCreated", timestamp)
 			.value("dateEdited", timestamp)
+			.value("timeEdited", timestamp.getTime())
 		    .execute(context.getTransaction());
 		
 		for(String property : properties.keySet()) {
@@ -38,8 +39,6 @@ public class CreateLocationHandler implements CommandHandlerAsync<CreateLocation
 			    .execute(context.getTransaction());
 			}
 		}
-		
 		callback.onSuccess(null);
 	}
-
 }

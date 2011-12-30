@@ -130,10 +130,11 @@ public class LocationForm extends LayoutContainer {
 			final LocationSearchPresenter searchPresenter) {
 		adminPresenter = new AdminFieldSetPresenter(dispatcher, 
 				searchPresenter.getCountry(), searchPresenter.getCountry().getAdminLevels());
+		
 		comboBoxes = new SearchAdminComboBoxSet(this, adminPresenter);
 		
 		for(AdminComboBox comboBox : comboBoxes) {
-			add(comboBox);
+			add(comboBox.asWidget());
 		}
 	}
 	

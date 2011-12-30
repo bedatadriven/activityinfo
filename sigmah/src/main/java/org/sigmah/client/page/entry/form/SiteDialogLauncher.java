@@ -1,6 +1,7 @@
 package org.sigmah.client.page.entry.form;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.client.page.entry.location.LocationDialog;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
@@ -37,11 +38,10 @@ public class SiteDialogLauncher {
 				public void onSuccess(SchemaDTO schema) {
 					final ActivityDTO activity = schema.getActivityById(
 							filter.getRestrictedCategory(DimensionType.Activity));
-					
 					Log.trace("adding site for activity " + activity + ", locationType = " + activity.getLocationType());
 					 
 					if(activity.getLocationType().isAdminLevel()) {
-						addNewSiteWithBoundLocation(activity);
+						addNewSiteWithBoundLocation(activity, callback);
 					} else {
 						chooseLocationThenAddSite(activity, callback);
 					}
@@ -54,10 +54,7 @@ public class SiteDialogLauncher {
 		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onFailure(Throwable caught) { }
 
 			@Override
 			public void onSuccess(SchemaDTO schema) {
@@ -87,11 +84,15 @@ public class SiteDialogLauncher {
 		});		
 	}
 	
-	private void addNewSiteWithBoundLocation(ActivityDTO activity) {
+	private void addNewSiteWithBoundLocation(ActivityDTO activity, SiteDialogCallback callback) {
 		SiteDTO newSite = new SiteDTO();
 		newSite.setActivityId(activity.getId());
+
+		LocationDTO location = new LocationDTO();
+		location.setId(new KeyGenerator().generateInt());
+		location.setLocationTypeId(activity.getLocationTypeId());
 		
 		SiteDialog dialog = new SiteDialog(dispatcher, activity);
-		dialog.show();
+		dialog.showNew(newSite, location, true, callback);
 	}
 }

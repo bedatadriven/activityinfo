@@ -44,7 +44,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 			.value("projectId", changes)
 			.value("partnerId", changes)
 			.value("locationId", changes)
-			.value("dateEdited", new Date())
+			.value("timeEdited", new Date().getTime())
 			.execute(tx);
 	}
 

@@ -113,7 +113,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 	        if(localVersion == serverVersion) {
 	            update.setComplete(true);
 	        } else {
-	            makeEntityLists(null);
+	            makeEntityLists();
 	            update.setSql(buildSql());
 	        }
 	        return update;
@@ -144,10 +144,14 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(LockedPeriod.class, allLockedPeriods);
 
         // TODO: this needs to be actually synchronized
-        builder.executeStatement("CREATE TABLE  target (targetId int, name text, date1 text, date2 text, projectId int, partnerId int, adminEntityId int, databaseId int)"); 
-        builder.executeStatement("CREATE TABLE  targetvalue (targetId int, IndicatorId int, value real)"); 
+        builder.executeStatement("CREATE TABLE IF NOT EXISTS  target (targetId int, name text, date1 text, date2 text, projectId int, partnerId int, adminEntityId int, databaseId int)"); 
+        builder.executeStatement("CREATE TABLE IF NOT EXISTS  targetvalue (targetId int, IndicatorId int, value real)"); 
+        
+        builder.executeStatement("CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int) ");
 
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
+        builder.executeStatement("delete from PartnerInDatabase");
+
         builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
         for(UserDatabase db : databases) {
             for(Partner partner : db.getPartners()) {
@@ -170,7 +174,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         return builder.asJson();
     }
 
-    private void makeEntityLists(User user) {
+    private void makeEntityLists() {
         for(UserDatabase database : databases) {
         	if(!userIds.contains(database.getOwner().getId())) {
         		User u = database.getOwner();

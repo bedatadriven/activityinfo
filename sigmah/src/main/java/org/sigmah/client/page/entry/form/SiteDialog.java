@@ -17,9 +17,8 @@ import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.ListViewEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -112,11 +111,13 @@ public class SiteDialog extends Window {
 			
 		SiteFormResources.INSTANCE.style().ensureInjected();
 		
-		navigationListView.addListener(Events.Select, new Listener<ListViewEvent<FormSectionModel<SiteDTO>>>() {
-
+		navigationListView.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<FormSectionModel>() {
+			
 			@Override
-			public void handleEvent(ListViewEvent<FormSectionModel<SiteDTO>> be) {
-				sectionLayout.setActiveItem(be.getModel().getComponent());
+			public void selectionChanged(SelectionChangedEvent<FormSectionModel> se) {
+				if(!se.getSelection().isEmpty()) {
+					sectionLayout.setActiveItem(se.getSelectedItem().getComponent());
+				}
 			}
 		});
 		
@@ -143,7 +144,10 @@ public class SiteDialog extends Window {
 		this.newSite = false;
 		this.site = site;
 		this.callback = callback;
-		locationForm.updateForm(site.getLocation(), false);
+		LocationDTO location = site.getLocation();
+		location.setLocationTypeId(activity.getLocationTypeId());
+		
+		locationForm.updateForm(location, false);
 		updateForms(site);
 		show();
 	}

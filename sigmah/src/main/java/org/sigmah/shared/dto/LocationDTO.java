@@ -7,11 +7,16 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-public class LocationDTO extends BaseModelData implements EntityDTO {
+public class LocationDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
+	
 	public LocationDTO() {
 		super();
 	}
 	
+	public LocationDTO(LocationDTO location) {
+		super(location.getProperties());
+	}
+
 	public static LocationDTO fromSqlRow(SqlResultSetRow row) {
 		String name = row.getString("Name");
 		String axe = row.isNull("Axe") ? null : row.getString("Axe");
@@ -88,7 +93,8 @@ public class LocationDTO extends BaseModelData implements EntityDTO {
 		return this;
 	}
 
-	public AdminEntityDTO getAdminEntityId(int levelId) {
+	@Override
+	public AdminEntityDTO getAdminEntity(int levelId) {
 		return (AdminEntityDTO)get(AdminLevelDTO.getPropertyName(levelId));
 	}
 	

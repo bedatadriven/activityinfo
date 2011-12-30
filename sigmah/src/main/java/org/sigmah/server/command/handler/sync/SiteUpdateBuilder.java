@@ -5,7 +5,6 @@
 
 package org.sigmah.server.command.handler.sync;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.json.JSONException;
-import org.sigmah.server.database.hibernate.dao.HibernateDAOProvider;
 import org.sigmah.server.database.hibernate.entity.AttributeValue;
 import org.sigmah.server.database.hibernate.entity.IndicatorValue;
 import org.sigmah.server.database.hibernate.entity.ReportingPeriod;
@@ -41,7 +39,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
 
     private final JpaUpdateBuilder builder;
-    private Timestamp localVersion;
+    private long localVersion;
 
     @Inject
     public SiteUpdateBuilder(EntityManagerFactory entityManagerFactory) {
@@ -84,7 +82,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 	        if(all.isEmpty()) {
 	            update.setVersion(request.getLocalVersion());
 	        } else {
-	            update.setVersion(TimestampHelper.toString(all.get(all.size()-1).getDateEdited()));
+	            update.setVersion(TimestampHelper.toString(all.get(all.size()-1).getTimeEdited()));
 	            update.setSql(builder.asJson());
 	        }
 	
@@ -96,12 +94,12 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     }
 
 
-    private void retrieveNextBatchOfModifiedSites(Timestamp localVersion) {
+    private void retrieveNextBatchOfModifiedSites(long localVersion) {
         all = entityManager.createQuery(
                 "select s from Site s " +
-                        "WHERE  (s.dateEdited > :localVersion) AND " +
+                        "WHERE  (s.timeEdited > :localVersion) AND " +
                         "(s.activity.database = :database)" +
-                        "ORDER BY s.dateEdited")
+                        "ORDER BY s.timeEdited")
                 .setMaxResults(MAX_RESULTS)
                 .setParameter("localVersion", localVersion)
                 .setParameter("database", entityManager.getReference(UserDatabase.class, databaseId))

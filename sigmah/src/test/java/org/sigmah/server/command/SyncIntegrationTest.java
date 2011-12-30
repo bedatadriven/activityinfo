@@ -14,13 +14,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.client.offline.command.handler.KeyGenerator;
@@ -55,18 +53,14 @@ import com.google.inject.Inject;
         LoggingModule.class
 })
 public class SyncIntegrationTest extends LocalHandlerTestCase {
-	private final KeyGenerator keyGenerator;
-
 	@Inject
-	public SyncIntegrationTest(KeyGenerator keyGenerator) {
-		this.keyGenerator = keyGenerator;
-	}
+	private KeyGenerator keyGenerator;
+
 	
     private long nowIsh;
 	private long awhileBack;
 
 	@Test
-	@Ignore("need to update rebar-sql")
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void run() throws SQLException, InterruptedException {
         synchronizeFirstTime();
@@ -88,7 +82,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         assertThat(queryInt("select PartnerId from partnerInDatabase where databaseid=2"), equalTo(1));
 
-        assertThat(queryInt("select AttributeGroupId from AttributeGroupInActivity where ActivityId=2"),
+        assertThat(queryInt("select AttributeGroupId  from AttributeGroupInActivity where ActivityId=2"),
                 equalTo(1));
         
         assertThat(queryInt("select count(*) from LockedPeriod"), equalTo(4));
@@ -103,7 +97,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         
         Map<String, Object> changes = Maps.newHashMap();
         changes.put(AttributeDTO.getPropertyName(1), true);
-        changes.put("locationName", "newName");
+        changes.put("comments", "newComments");
         executeRemotely(new UpdateSite(1, changes));
         
         synchronize();
@@ -112,8 +106,8 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         SiteDTO s1 = siteResult.getData().get(0);
         
         assertThat(s1.getAttributeValue(1), equalTo(true));
-        assertThat(s1.getAttributeValue(2), equalTo(true));
-        assertThat(s1.getLocationName(), equalTo("newName"));
+        assertThat(s1.getAttributeValue(2), equalTo(false));
+        assertThat(s1.getComments(), equalTo("newComments"));
         
         // Try deleting a site
         
@@ -122,7 +116,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         synchronize();
         
         siteResult = executeLocally(GetSites.byId(1));
-       
+        
         assertThat(siteResult.getData().size(), equalTo(0));
         
         
@@ -195,11 +189,11 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         entityManager.getTransaction().begin();
         Location loc2 = entityManager.find(Location.class, loc.getId());
 
-        String tsString = TimestampHelper.toString(loc2.getDateCreated());
-        Timestamp ts = TimestampHelper.fromString(tsString);
+        String tsString = TimestampHelper.toString(loc2.getTimeEdited());
+        long ts = TimestampHelper.fromString(tsString);
 
         assertFalse(loc2 == loc);
-        assertThat((Timestamp)loc2.getDateCreated(), equalTo(ts));
+        assertThat(loc2.getTimeEdited(), equalTo(ts));
         entityManager.getTransaction().commit();
         entityManager.clear();
 
@@ -207,8 +201,8 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         entityManager.getTransaction().begin();
         Location loc3 = entityManager.find(Location.class, loc.getId());
 
-        assertFalse(ts.after(loc3.getDateCreated()));
-        assertFalse(ts.before(loc3.getDateCreated()));
+        assertFalse(ts > loc3.getTimeEdited());
+        assertFalse(ts < loc3.getTimeEdited());
 
 
         entityManager.close();

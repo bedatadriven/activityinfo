@@ -43,6 +43,7 @@ public class Location implements java.io.Serializable {
 	private Set<AdminEntity> adminEntities = new HashSet<AdminEntity>(0);
     private Date dateCreated;
     private Date dateEdited;
+    private long timeEdited;
 
 	public Location() {
 	}
@@ -172,17 +173,29 @@ public class Location implements java.io.Serializable {
 
     public void setDateEdited(Date dateEdited) {
         this.dateEdited = dateEdited;
+        this.timeEdited = dateEdited.getTime();
     }
+    
+    public long getTimeEdited() {
+		return timeEdited;
+	}
 
-    @PrePersist
+	public void setTimeEdited(long timeEdited) {
+		this.timeEdited = timeEdited;
+	}
+
+	@PrePersist
     public void onCreate() {
         Date now = new Date();
         setDateCreated(now);
         setDateEdited(now);
+        setTimeEdited(now.getTime());
     }
 
     @PreUpdate
     public void onUpdate() {
-        setDateEdited(new Date());
+        Date now = new Date();
+		setDateEdited(now);
+        setTimeEdited(now.getTime());
     }
 }

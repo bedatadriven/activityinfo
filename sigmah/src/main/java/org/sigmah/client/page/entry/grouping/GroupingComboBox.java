@@ -6,6 +6,7 @@ import java.util.List;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
+import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.model.DimensionType;
@@ -84,7 +85,14 @@ public class GroupingComboBox extends ComboBox<GroupingModelData> {
 		private List<AdminLevelDTO> adminLevels(SchemaDTO schema) {
 			if(currentFilter.getRestrictions(DimensionType.Activity).size() == 1) {
 				int activityId = currentFilter.getRestrictedCategory(DimensionType.Activity);
-				return schema.getActivityById(activityId).getAdminLevels();
+				ActivityDTO activity = schema.getActivityById(activityId);
+				List<AdminLevelDTO> levels = Lists.newArrayList(activity.getAdminLevels());
+				if(activity.getLocationType().isAdminLevel()) {
+					// since the location type is actually bound to the leaf here,
+					// we don't want to repeat it in the hieararhcy
+					levels.remove(levels.size()-1);
+				} 
+				return levels;
 			} else if(currentFilter.getRestrictions(DimensionType.Database).size() == 1) {
 				int databaseId = currentFilter.getRestrictedCategory(DimensionType.Database);
 				return schema.getDatabaseById(databaseId).getCountry().getAdminLevels();

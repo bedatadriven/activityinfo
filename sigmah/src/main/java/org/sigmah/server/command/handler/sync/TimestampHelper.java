@@ -10,20 +10,16 @@ import java.util.Date;
 
 public class TimestampHelper {
 
-    public static String toString(Timestamp timestamp) {
-        return timestamp.getTime() + "." + timestamp.getNanos();
+    public static String toString(long timestamp) {
+        return Long.toString(timestamp);
     }
 
-    public static Timestamp fromString(String s) {
+    public static long fromString(String s) {
         if(s == null) {
-            return new Timestamp(0);
+            return 0;
         }
         String[] parts = s.split("\\.");
-        Timestamp timestamp = new Timestamp(Long.parseLong(parts[0]));
-        if(parts.length == 2) {
-            timestamp.setNanos(Integer.parseInt(parts[1]));
-        }
-        return timestamp;
+        return Long.parseLong(parts[0]);
     }
     
     public static Timestamp fromDate(Date d) {
@@ -35,7 +31,7 @@ public class TimestampHelper {
 
     public static String toString(Date date) {
         if(date instanceof Timestamp) {
-            return toString((Timestamp)date);
+            return toString(date);
         } else {
             return Long.toString(date.getTime());
         }

@@ -5,7 +5,6 @@
 
 package org.sigmah.server.command.handler.sync;
 
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,8 +54,8 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     }
 
 	private void queryChanged() {
-		locations = em.createQuery("select loc from Location loc where loc.dateEdited > :localDate " +
-                        "order by loc.dateEdited, loc.id")
+		locations = em.createQuery("select loc from Location loc where loc.timeEdited > :localDate " +
+                        "order by loc.timeEdited, loc.id")
                 .setParameter("localDate", localState.lastDate)
                 .setMaxResults(MAX_UPDATES + 1)
                 .getResultList();
@@ -64,8 +63,8 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 
 	private void assureTimestampsAreUnique() {
 		if(locations.size() == MAX_UPDATES + 1) {
-        	if(locations.get(MAX_UPDATES - 1).getDateEdited().equals(
-        			locations.get(MAX_UPDATES).getDateEdited())) {
+        	if(locations.get(MAX_UPDATES - 1).getTimeEdited() == 
+        			locations.get(MAX_UPDATES).getTimeEdited()) {
         		
         		throw new RuntimeException("dateEdited values on Location objects are not unique, cannot " +
         				"correctly batch updates");
@@ -119,15 +118,15 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 
 
     private class LocalState {
-        private Timestamp lastDate;
+        private long lastDate;
 
         public LocalState(Location lastLocation) {
-            lastDate = TimestampHelper.fromDate(lastLocation.getDateEdited());
+            lastDate = lastLocation.getTimeEdited();
         }
 
         public LocalState(String cookie) {
             if(cookie == null) {
-                lastDate = new Timestamp(0);
+                lastDate = 0;
             } else {
                 lastDate = TimestampHelper.fromString(cookie);
             }

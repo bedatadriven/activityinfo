@@ -62,6 +62,7 @@ public class Site implements java.io.Serializable, Deleteable {
 	private Date dateCreated;
 	private Date dateEdited;
 	private Date dateDeleted;
+	private long timeEdited;
 
 	private Date dateSynchronized;
 	
@@ -235,18 +236,27 @@ public class Site implements java.io.Serializable, Deleteable {
      */
 	public void setDateEdited(Date dateEdited) {
 		this.dateEdited = dateEdited;
+		this.timeEdited = dateEdited.getTime();
 	}
 
-    /**
+    public long getTimeEdited() {
+		return timeEdited;
+	}
+
+	public void setTimeEdited(long timeEdited) {
+		this.timeEdited = timeEdited;
+	}
+
+	/**
      *
-     * @return the plain-text comments associated with this Site
+     * @return the plain-text comments associatedsetDateEdited with this Site
      */
 	@Lob
 	public String getComments() {
 		return this.comments;
 	}
 
-    /**
+    /**setDateEdited
      * Sets the plain-text comments associated with this Site
      */
 	public void setComments(String comments) {
@@ -271,7 +281,6 @@ public class Site implements java.io.Serializable, Deleteable {
 	public void setDateSynchronized(Date dateSynchronized) {
 		this.dateSynchronized = dateSynchronized;
 	}
-
     /**
      * @return  the list of AttributeValues for this Site
      */

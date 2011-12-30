@@ -262,13 +262,13 @@
 	<!-- id=1 NFI Distribution at Penekusu, Sud Kivu 2 jan 2009 -->
 
 	<location locationId="1" name="Penekusu Kivu" locationTypeId="1"
-		X="1.532" Y="27.323" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		X="1.532" Y="27.323" DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="1" />
 	<locationAdminLink locationId="1" adminEntityId="2" />
 	<locationAdminLink locationId="1" adminEntityId="12" />
 
 	<site siteId="1" activityId="1" locationId="1" partnerId="1"
 		Date1="2009-01-01" Date2="2009-01-02"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" ProjectId="1" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3" ProjectId="1" />
 	<attributeValue siteId="1" attributeId="1" value="0" />
 	<attributeValue siteId="1" attributeId="2" value="0" />
 
@@ -284,13 +284,13 @@
 	<!-- id=2 NFI Distribution at Ngwshe, Sud Kivu 16 jan 2009 -->
 
 	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323"
-		Y="28.232" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		Y="28.232" DateCreated="2009-02-01" DateEdited="2009-02-01"  timeEdited="2" />
 	<locationAdminLink locationId="2" adminEntityId="2" />
 	<locationAdminLink locationId="2" adminEntityId="11" />
 
 	<site siteId="2" activityId="1" locationId="2" partnerId="1"
 		Date1="2009-01-15" Date2="2009-01-16"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" ProjectId="1" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3" ProjectId="1" />
 	<attributeValue siteId="2" attributeId="1" value="0" />
 	<attributeValue siteId="2" attributeId="2" value="1" />
 
@@ -305,12 +305,12 @@
 	<!-- id=3 NFI Distribution at Boga, Ituri 2008 -->
 
 	<location locationId="3" name="Boga" locationTypeId="1"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01"  timeEdited="300" />
 	<locationAdminLink locationId="3" adminEntityId="4" />
 	<locationAdminLink locationId="3" adminEntityId="21" />
 
 	<site siteId="3" activityId="1" locationId="3" partnerId="2"
-		Date1="2008-10-05" Date2="2008-10-06"
+		Date1="2008-10-05" Date2="2008-10-06" timeEdited="330"
 		DateCreated="2009-02-01" DateEdited="2009-02-01" ProjectId="2" />
 	<attributeValue siteId="3" attributeId="1" value="1" />
 	<attributeValue siteId="3" attributeId="2" value="0" />
@@ -327,13 +327,13 @@
 	<!-- PEAR Plus Health Center Support in Ngweshe -->
 
 	<location locationId="9" name="CS Ngweshe" locationTypeId="2"
-		X="3.23" Y="27.232" DateCreated="2009-01-01" DateEdited="2009-01-01" />
+		X="3.23" Y="27.232" DateCreated="2009-01-01" DateEdited="2009-01-01" timeEdited="400"/>
 	<locationAdminLink locationId="9" adminEntityId="2" />
 	<locationAdminLink locationId="9" adminEntityId="11" />
 
 	<site siteId="9" activityId="3" locationId="9" partnerId="1"
 		Date1="2009-01-01" Date2="2009-12-31"
-		DateCreated="2009-01-01" DateEdited="2009-01-01"
+		DateCreated="2009-01-01" DateEdited="2009-01-01" timeEdited="420"
 		comments="Some comment while noting Kivu here to hit a search result" />
 
 	<reportingPeriod reportingPeriodId="91" siteId="9"
@@ -357,18 +357,18 @@
 
 	<!-- Kit scolaires in Bukavu -->
 	<location locationId="4" name="Boga" locationTypeId="1" X="3.323"
-		Y="27.232" DateCreated="2009-10-05" DateEdited="2009-10-05" />
+		Y="27.232" DateCreated="2009-10-05" DateEdited="2009-10-05"  timeEdited="500" />
 	<locationAdminLink locationId="4" adminEntityId="2" />
 	<locationAdminLink locationId="4" adminEntityId="10" />
 
 	<site siteId="4" activityId="2" locationId="4" partnerId="2"
-		Date1="2008-10-06" Date2="2008-11-06"
+		Date1="2008-10-06" Date2="2008-11-06" timeEdited="510"
 		DateCreated="2009-10-05" DateEdited="2009-10-05" />
 
 	<!-- Kit scolaires in Boga Ituri -->
 
 	<site siteId="5" activityId="2" locationId="3" partnerId="1"
-		Date1="2008-10-05" Date2="2008-10-05"
+		Date1="2008-10-05" Date2="2008-10-05" timeEdited="530"
 		DateCreated="2009-02-01" DateEdited="2009-02-01" />
 
 
@@ -377,13 +377,13 @@
 	<!-- PEAR Plus child reunification in Walungu -->
 
 	<location locationId="6" name="Walungu" locationTypeId="3"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01"  timeEdited="550" />
 	<locationAdminLink locationId="6" adminEntityId="3" />
 	<locationAdminLink locationId="6" adminEntityId="11" />
 
 	<site siteId="6" activityId="4" locationId="6" partnerId="1"
 		Date1="2009-01-01" Date2="2009-01-31"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="570" />
 
 	<reportingPeriod reportingPeriodId="601" siteId="6"
 		date1="2009-01-01" date2="2009-01-31" DateCreated="2009-01-01"
@@ -401,13 +401,13 @@
 	<!-- PEAR Plus child reunification in Shabunda -->
 
 	<location locationId="7" name="Shabunda" locationTypeId="3"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01"  timeEdited="600" />
 	<locationAdminLink locationId="7" adminEntityId="3" />
 	<locationAdminLink locationId="7" adminEntityId="12" />
 
 	<site siteId="7" activityId="4" locationId="7" partnerId="1"
 		Date1="2009-01-01" Date2="2009-01-31"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="660" />
 
 
 

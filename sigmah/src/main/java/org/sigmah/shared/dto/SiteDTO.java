@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
@@ -488,7 +487,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 		for (String admin : location.getPropertyNames()) {
 			if (admin.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
 				int id = Integer.parseInt(admin.substring(admin.length()-1));
-				setAdminEntity(id, location.getAdminEntityId(id));
+				setAdminEntity(id, location.getAdminEntity(id));
 			}
 		}
 	}
@@ -502,13 +501,9 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 		location.setLatitude(getY());
 		location.setLongitude(getX());
 		
-	    for(Entry<String, Object> property : getProperties().entrySet()) {
-	    	if(property.getKey().startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-	    		int id=((AdminEntityDTO)property.getValue()).getId();
-	    		location.setAdminEntity(id, ((AdminEntityDTO)property.getValue()));
-	    	}
-	    }
-
+		for(AdminEntityDTO entity : getAdminEntities().values()) {
+			location.setAdminEntity(entity.getLevelId(), entity);
+		}
 		
 		return location;
 	}

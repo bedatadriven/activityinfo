@@ -17,7 +17,7 @@ public class CommentSection extends FormSectionWithFormLayout<SiteDTO> {
 		commentField = new TextArea();
         commentField.setName("comments");
         commentField.setFieldLabel(I18N.CONSTANTS.comments());
-        commentField.setHeight(350);
+        commentField.setWidth(350);
 		add(commentField);
 	}
 

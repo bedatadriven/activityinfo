@@ -11,8 +11,6 @@ import org.sigmah.shared.command.GetSites;
 import org.sigmah.shared.command.GetSitesWithoutCoordinates;
 import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.SearchLocations;
-import org.sigmah.shared.command.SitesPerAdminEntity;
-import org.sigmah.shared.command.SitesPerTime;
 import org.sigmah.shared.command.UpdateSite;
 import org.sigmah.shared.command.handler.CreateLocationHandler;
 import org.sigmah.shared.command.handler.CreateSiteHandler;
@@ -24,8 +22,6 @@ import org.sigmah.shared.command.handler.GetSitesHandler;
 import org.sigmah.shared.command.handler.GetSitesWithoutCoordinatesHandler;
 import org.sigmah.shared.command.handler.PivotSitesHandler;
 import org.sigmah.shared.command.handler.SearchLocationsHandler;
-import org.sigmah.shared.command.handler.SitesPerAdminEntityHandler;
-import org.sigmah.shared.command.handler.SitesPerTimeHandler;
 import org.sigmah.shared.command.handler.UpdateSiteHandler;
 
 import com.google.inject.Inject;
@@ -44,8 +40,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
             CreateSiteHandler createSiteHandler,
             UpdateSiteHandler updateSiteHandler,
             CreateLocationHandler createLocationHandler,
-            SitesPerAdminEntityHandler sitesPerAdminEntityHandler,
-            SitesPerTimeHandler sitesPerTimeHandler,
             SearchLocationsHandler getLocationsHandler,
             //SearchHandler searchHandler,
             GetSitesWithoutCoordinatesHandler sitesWithoutCoordinateHandler,
@@ -60,8 +54,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
     	registry.registerHandler(CreateSite.class, createSiteHandler);
     	registry.registerHandler(UpdateSite.class, updateSiteHandler);
     	registry.registerHandler(CreateLocation.class, createLocationHandler);
-    	registry.registerHandler(SitesPerAdminEntity.class, sitesPerAdminEntityHandler);
-    	registry.registerHandler(SitesPerTime.class, sitesPerTimeHandler);
     	//registry.registerHandler(Search.class, searchHandler);
     	registry.registerHandler(GetSitesWithoutCoordinates.class, sitesWithoutCoordinateHandler);
     	registry.registerHandler(SearchLocations.class, getLocationsHandler);

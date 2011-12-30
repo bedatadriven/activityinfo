@@ -42,7 +42,7 @@ public class MockHibernateModule extends HibernateModule {
                 	properties.setProperty("hibernate.connection.url",  TestConnectionProvider.getUrl());
                 	properties.setProperty("hibernate.connection.username", TestConnectionProvider.getUsername());
                 	properties.setProperty("hibernate.connection.password", TestConnectionProvider.getPassword());
-                	//properties.setProperty("hibernate.hbm2ddl.auto", "update");
+                	properties.setProperty("hibernate.hbm2ddl.auto", "none");
                                 	
                 	emf = Persistence.createEntityManagerFactory("activityInfo", properties);
                 	
