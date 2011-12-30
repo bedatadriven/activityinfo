@@ -12,8 +12,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.server.database.hibernate.dao.UserDAO;
-import org.sigmah.server.database.hibernate.dao.UserDAOImpl;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
@@ -26,12 +24,8 @@ import com.google.inject.Inject;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class UserDAOImplTest {
 
+	@Inject
     private UserDAO userDAO;
-
-    @Inject
-    public UserDAOImplTest(UserDAOImpl userDAO) {
-        this.userDAO = userDAO;
-    }
 
     @Test
     public void testDoesUserExist() throws Exception {

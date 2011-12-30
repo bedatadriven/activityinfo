@@ -72,12 +72,6 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    protected Object createTest() throws Exception {
-        scopeModule.getTestScope().enter();
-        return injector.getInstance(getTestClass().getJavaClass());
-    }
-
-    @Override
     protected Statement classBlock(RunNotifier notifier) {
         Statement statement = super.classBlock(notifier);
         for (Module module : modules) {
@@ -86,16 +80,36 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
         return statement;
     }
 
-    @Override
+	@Override
+	protected Statement withAfters(FrameworkMethod method, Object target,
+			Statement statement) {
+
+		// withAfters() is the last called, so it give us a chance to 
+		// add InjectDependencies as the outermost wrapper and ensure
+		// that class members are injected
+		
+		return new InjectDependencies(super.withAfters(method, target, statement), 
+				injector, scopeModule.getTestScope(), target);
+	}
+
+	@Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         Statement statement = super.methodInvoker(method, test);
-
-        statement = withLoadDataSets(method, statement, test);
-        statement = new ExitScope(statement, scopeModule.getTestScope());
+        statement = withLoadDatasets(method, statement, test);
         return statement;
     }
+		
 
-    private Statement withLoadDataSets(FrameworkMethod method, Statement statement, Object target) {
+    @Override
+	protected Statement withBefores(FrameworkMethod method, Object target,
+			Statement statement) {
+
+    	return withLoadDatasets(method, 
+    			super.withBefores(method, target, statement), 
+    			target);
+	}
+
+	private Statement withLoadDatasets(FrameworkMethod method, Statement statement, Object target) {
         OnDataSet ods = method.getAnnotation(OnDataSet.class);
 
         if (ods == null) {

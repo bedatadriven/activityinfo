@@ -15,7 +15,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.server.database.hibernate.dao.AdminDAO;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.AssertUtils;
@@ -31,12 +30,9 @@ import com.google.inject.Inject;
 @Modules({MockHibernateModule.class})
 public class AdminDAOImplTest {
 
+	@Inject
     private AdminDAO adminDAO;
 
-    @Inject
-    public AdminDAOImplTest(AdminDAO adminDAO) {
-        this.adminDAO = adminDAO;
-    }
 
     @Test
     public void queryRoot() throws CommandException {

@@ -51,7 +51,9 @@ public abstract class CommandTestCase {
 
     protected <T extends CommandResult> T execute(Command<T> command) throws CommandException {
         User user = em.find(User.class, AuthenticationModuleStub.getCurrentUser().getUserId());
-        assert user != null;
+        assert user != null : "cannot find user id " + 
+        	AuthenticationModuleStub.getCurrentUser().getUserId() + " in the database, have you " +
+        	" called execute() without a @OnDataset annotation?";
         Locale.setDefault(Locale.ENGLISH);
 
         List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));

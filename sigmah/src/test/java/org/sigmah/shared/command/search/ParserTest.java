@@ -20,23 +20,26 @@ import org.sigmah.shared.report.model.DimensionType;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 public class ParserTest {
+	
+	
+	
 	private final List<String> okQueries = new ArrayList<String>() {{ // new fancy i-dont-like collection initer
-			add("location:\"kivu1\" project:\"kivu2 kivu3\"");
-			add("location:\"kivu1\" project:kivu2 kivu3");
-			add("location:\"kivu1\" project:kivu2 kivu3 partner:kivu4 project:\"kivu5\"");
-			add("location:kivu1");
+			add("site:\"kivu1\" project:\"kivu2 kivu3\"");
+			add("site:\"kivu1\" project:kivu2 kivu3");
+			add("site:\"kivu1\" project:kivu2 kivu3 partner:kivu4 project:\"kivu5\"");
+			add("site:kivu1");
 			//"location:\":::\"",  <-- that one is nasty with the current parser impl
 			add("partner:some");
 	}};
 	
 	private final String[] evilQueries =  { 
-			"location::kivu",
-			"location:\"\"",
-			"location",
-			"location\"\"",
-			"location:",
-			"location:",
-			"location:" 
+			"site::kivu",
+			"site:\"\"",
+			"site",
+			"site\"\"",
+			"site:",
+			"site:",
+			"site:" 
 	};
 	
 	@BeforeClass 

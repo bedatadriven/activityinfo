@@ -9,6 +9,8 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.google.common.collect.Maps;
+
 /** Transforms a search query string into a Filter instance/ workable data structure
  * See related test class for OK/non OK queries
  */
@@ -18,6 +20,10 @@ public class QueryParser {
 	private static final String SPACE = " ";
 	private static final String COMMA = ",";
 	
+	
+	private HashMap<String, DimensionType> dimNameMap;
+	
+
 	private Filter filter = new Filter();
 	private List<Integer> colonPositions = new ArrayList<Integer>();
 	private List<Dimension> dimensions = new ArrayList<Dimension>();
@@ -30,9 +36,22 @@ public class QueryParser {
 	private String failReason = "";
 	private QueryChecker checker = new QueryChecker();
 	
+	
+	public QueryParser() {
+		dimNameMap = Maps.newHashMap();
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixActivity(), DimensionType.Activity);
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixProject(), DimensionType.Project);
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixPartner(), DimensionType.Partner);
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixDatabase(), DimensionType.Database);
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixAdminLevel(), DimensionType.AdminLevel);
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixIndicator(), DimensionType.Indicator);
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixLocation(), DimensionType.Location);
+		dimNameMap.put(I18N.CONSTANTS.searchPrefixAttrib(), DimensionType.AttributeGroup);
+	}
+	
+	
 	public void parse(String query) {
 		this.query=query;
-		
 		if (!checker.checkQuery(query)) { // Bugger out if the user fails to enter normal queries
 			hasFailed=true;
 			checker.getFails().get(0);
@@ -144,20 +163,11 @@ public class QueryParser {
 		
 		this.filter=filter;
 	}
-	
-	/** Transforms a localized dimension into a dimension we can use to parse using the DimensionType enum */
-	// TODO: implement
-	private DimensionType fromLocalizedDimension(String localizedDimension) {
-		return I18N.FROM_ENTITIES.fromLocalizedString(localizedDimension);
-	}
 
-	private DimensionType fromString(String dimensionString) throws Exception {
-		dimensionString = capitalizeFirstLetter(dimensionString.toLowerCase().trim());
-		try {
-			return Enum.valueOf(DimensionType.class, dimensionString);
-		} catch (Exception ex) {
-			throw ex;
-		}
+
+	private DimensionType fromString(String dimensionString) {
+		return Enum.valueOf(DimensionType.class, 
+				capitalizeFirstLetter(dimensionString.toLowerCase().trim()));
 	}
 	
 	private String capitalizeFirstLetter(String string) {
@@ -281,7 +291,7 @@ public class QueryParser {
 			}
 			dimension.setName(query.substring(dimension.getStartPosition(), dimension.getEndPosition()));
 			if (!dimension.isIdDimension()) {
-				dimension.setDimensionType(I18N.FROM_ENTITIES.fromLocalizedString(dimension.getName()));
+				dimension.setDimensionType(dimNameMap.get(dimension.getName()));
 			}
 			dimensions.add(dimension);
 		}

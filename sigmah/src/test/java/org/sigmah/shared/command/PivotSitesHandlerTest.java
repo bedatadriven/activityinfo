@@ -45,7 +45,9 @@ import com.google.inject.Inject;
 public class PivotSitesHandlerTest extends CommandTestCase2 {
 
 
+	@Inject
 	private SqlDatabase db;
+	
     private Set<Dimension> dimensions;
     private Dimension indicatorDim;
     private Filter filter;
@@ -60,10 +62,6 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private static final int OWNER_USER_ID = 1;
     private static final int NB_BENEFICIARIES_ID = 1;
 
-    @Inject
-    public PivotSitesHandlerTest(SqlDatabase db) {  
-    	this.db = db;
-    }
 
     @BeforeClass
     public static void setup() {
