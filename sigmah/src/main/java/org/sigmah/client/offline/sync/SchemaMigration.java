@@ -20,10 +20,9 @@ public class SchemaMigration {
 	public static final String[] MIGRATION_DDL = new String[] {
 		"ALTER TABLE Site ADD COLUMN timeEdited REAL",
 		"ALTER TABLE Location ADD COLUMN timeEdited REAL",
-		"CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int)"
+		"CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int)",
+		"CREATE TABLE IF NOT EXISTS  siteattachment (blobid TEXT, siteid INT, filename TEXT, uploadedBy INT, blobSize REAL, contentType TEXT)"
 	};
-	
-
 	
 	@Inject
 	public SchemaMigration(SqlDatabase database) {
