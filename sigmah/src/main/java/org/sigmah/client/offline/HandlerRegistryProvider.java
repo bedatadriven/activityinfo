@@ -8,7 +8,6 @@ import org.sigmah.shared.command.GetAdminEntities;
 import org.sigmah.shared.command.GetPartnersWithSites;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.GetSitesWithoutCoordinates;
 import org.sigmah.shared.command.PivotSites;
 import org.sigmah.shared.command.SearchLocations;
 import org.sigmah.shared.command.UpdateSite;
@@ -19,7 +18,6 @@ import org.sigmah.shared.command.handler.GetAdminEntitiesHandler;
 import org.sigmah.shared.command.handler.GetPartnersWithSitesHandler;
 import org.sigmah.shared.command.handler.GetSchemaHandler;
 import org.sigmah.shared.command.handler.GetSitesHandler;
-import org.sigmah.shared.command.handler.GetSitesWithoutCoordinatesHandler;
 import org.sigmah.shared.command.handler.PivotSitesHandler;
 import org.sigmah.shared.command.handler.SearchLocationsHandler;
 import org.sigmah.shared.command.handler.UpdateSiteHandler;
@@ -42,7 +40,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
             CreateLocationHandler createLocationHandler,
             SearchLocationsHandler getLocationsHandler,
             //SearchHandler searchHandler,
-            GetSitesWithoutCoordinatesHandler sitesWithoutCoordinateHandler,
             PivotSitesHandler pivotSitesHandler,
             GeneratePivotTableHandler generatePivotTableHandler) {
 		
@@ -55,7 +52,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
     	registry.registerHandler(UpdateSite.class, updateSiteHandler);
     	registry.registerHandler(CreateLocation.class, createLocationHandler);
     	//registry.registerHandler(Search.class, searchHandler);
-    	registry.registerHandler(GetSitesWithoutCoordinates.class, sitesWithoutCoordinateHandler);
     	registry.registerHandler(SearchLocations.class, getLocationsHandler);
     	registry.registerHandler(GeneratePivotTable.class, generatePivotTableHandler);
     	registry.registerHandler(PivotSites.class, pivotSitesHandler);
