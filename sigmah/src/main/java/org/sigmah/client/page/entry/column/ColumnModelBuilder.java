@@ -245,13 +245,15 @@ public class ColumnModelBuilder {
         return this;
 	}
 
-    public ColumnModelBuilder addKeyIndicatorColumns(ActivityDTO activity) {
+    public ColumnModelBuilder maybeAddKeyIndicatorColumns(ActivityDTO activity) {
     	// Only add indicators that have a queries heading
-        for (IndicatorDTO indicator : activity.getIndicators()) {
-            if(indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {
-                columns.add(addIndicatorColumn(indicator, indicator.getListHeader()));
-            }
-        }
+    	if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
+	        for (IndicatorDTO indicator : activity.getIndicators()) {
+	            if(indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {
+	                columns.add(addIndicatorColumn(indicator, indicator.getListHeader()));
+	            }
+	        }
+    	}
         return this;
     }
 
