@@ -30,7 +30,7 @@ public class SchemaMigration {
 		this.database = database;
 	}
 
-	public void migrate(AsyncCallback<Void> callback) {
+	public void migrate(final AsyncCallback<Void> callback) {
 		database.transaction(new SqlTransactionCallback() {
 			
 			@Override
@@ -44,12 +44,22 @@ public class SchemaMigration {
 
 						@Override
 						public boolean onFailure(SqlException e) {
-							// ignore errors resulting from ddl that has already been applied
+							// ignore errors resulting from ddl that has already been appsavelied
 							return SqlResultCallback.CONTINUE;
 						}
 							
 					});
 				}
+			}
+
+			@Override
+			public void onSuccess() {
+				callback.onSuccess(null);
+			}
+
+			@Override
+			public void onError(SqlException e) {
+				callback.onFailure(e);
 			}
 		});
 		
