@@ -19,7 +19,8 @@ public class SchemaMigration {
 	
 	public static final String[] MIGRATION_DDL = new String[] {
 		"ALTER TABLE Site ADD COLUMN timeEdited REAL",
-		"ALTER TABLE Location ADD COLUMN timeEdited REAL"
+		"ALTER TABLE Location ADD COLUMN timeEdited REAL",
+		"CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int)"
 	};
 	
 
