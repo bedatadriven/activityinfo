@@ -206,7 +206,7 @@ public class PivotPresenter implements Page {
     	report.setTitle(form.getTitle());
     	report.setFrequency(form.getReportFrequency());
 		
-		service.execute(new CreateReportDef(0, report), null, new AsyncCallback<CreateResult>() {
+		service.execute(new CreateReportDef(report), null, new AsyncCallback<CreateResult>() {
             public void onFailure(Throwable caught) {
             	dialog.onServerError();
             }
