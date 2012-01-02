@@ -21,13 +21,13 @@
     <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
 
 
-<!--     <extend-property name="log_level" values="TRACE" /> -->
-<!--     <set-property name="log_level" value="TRACE"/> -->
-<!-- 	<set-property name="compiler.emulatedStack" value="true" /> -->
-<!-- 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" -->
-<!-- 		value="true" /> -->
-<!-- 	<set-configuration-property name="compiler.emulatedStack.recordFileNames" -->
-<!-- 		value="true" /> -->
+     <extend-property name="log_level" values="TRACE" /> 
+     <set-property name="log_level" value="TRACE"/> 
+ 	<set-property name="compiler.emulatedStack" value="true" /> 
+ 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" 
+ 		value="true" /> 
+ 	<set-configuration-property name="compiler.emulatedStack.recordFileNames" 
+ 		value="true" /> 
 	
 </module>
 
