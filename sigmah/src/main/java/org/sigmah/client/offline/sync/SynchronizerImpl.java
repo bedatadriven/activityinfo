@@ -29,6 +29,7 @@ public class SynchronizerImpl implements Synchronizer {
     private final DownSynchronizer downSychronizer;
     private final UpdateSynchronizer updateSynchronizer;
     private final AuthenticatedUser auth;
+    private final SchemaMigration migrator;
 
 
     @Inject
@@ -38,13 +39,15 @@ public class SynchronizerImpl implements Synchronizer {
                        AppCacheSynchronizer appCache,
                        DownSynchronizer synchronizer,
                        UpdateSynchronizer updateSynchronizer,
-                       AuthenticatedUser auth) {
+                       AuthenticatedUser auth,
+                       SchemaMigration migrator) {
     	this.appCacheSynchronizer = appCache;
     	this.localDispatcher = localDispatcher;
         this.remoteDispatcher = remoteDispatcher;
         this.downSychronizer = synchronizer;
         this.updateSynchronizer = updateSynchronizer;
         this.auth = auth;
+        this.migrator = migrator;
     }
 
     @Override
@@ -92,7 +95,8 @@ public class SynchronizerImpl implements Synchronizer {
 				if(result == null) {
 					callback.onFailure(new RuntimeException("Never synchronized"));
 				} else {
-					callback.onSuccess(null);
+					// apply any changes made to the schema
+					migrator.migrate(callback);
 				}
 				
 			}
