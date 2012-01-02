@@ -11,7 +11,7 @@
 		</addColumn>
 		<!--  We need to salt the new value a bit because the resolution of the existing column is 
 			second-level or even day-level -->
-		<sql>update site set timeEdited = (UNIX_TIMESTAMP(dateEdited) * 1000) +
+		<sql>update location set timeEdited = (UNIX_TIMESTAMP(dateEdited) * 1000) +
 			CEILING(RAND() * 900)</sql>	
 			
 		<rollback>
