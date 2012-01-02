@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.shared.command.GetLocation;
 import org.sigmah.shared.command.SearchLocations;
 import org.sigmah.shared.command.result.LocationResult;
 import org.sigmah.shared.dto.CountryDTO;
@@ -106,7 +107,21 @@ public class LocationSearchPresenter extends BaseObservable {
 	}
 	
 	public void accept() {
-		fireEvent(ACCEPTED, new BaseEvent(ACCEPTED));
+		// retrieve the full version of this location
+		dispatcher.execute(new GetLocation(selection.getId()), null, new AsyncCallback<LocationDTO>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO !!
+			}
+
+			@Override
+			public void onSuccess(LocationDTO result) {
+				selection = result;
+				fireEvent(ACCEPTED, new BaseEvent(ACCEPTED));
+			}
+		});
+		
 	}
 	
 	public void addAcceptListener(Listener<BaseEvent> listener) {

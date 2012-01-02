@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.shared.command.GetSiteAttachments;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.result.SiteAttachmentResult;
 import org.sigmah.shared.dto.SiteAttachmentDTO;
 
-import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -23,7 +20,7 @@ public class GetSiteAttachmentsHandler implements CommandHandlerAsync<GetSiteAtt
 	
 	@Override
 	public void execute(GetSiteAttachments command, ExecutionContext context,
-			AsyncCallback<SiteAttachmentResult> callback) {
+			final AsyncCallback<SiteAttachmentResult> callback) {
 		
 		dtos = new  ArrayList<SiteAttachmentDTO>();
 		
@@ -45,16 +42,8 @@ public class GetSiteAttachmentsHandler implements CommandHandlerAsync<GetSiteAtt
 						
 						dtos.add(dto);
 					}
+					callback.onSuccess(new SiteAttachmentResult(dtos));
 				}
-
-				@Override
-				public boolean onFailure(SqlException e) {
-					return super.onFailure(e);
-				}
-			});
-		
-		callback.onSuccess(new SiteAttachmentResult(dtos));
-		
+			});	
 	}
-
 }

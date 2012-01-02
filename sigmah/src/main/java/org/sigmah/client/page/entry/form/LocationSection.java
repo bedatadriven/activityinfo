@@ -1,17 +1,22 @@
 package org.sigmah.client.page.entry.form;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.widget.CoordinateFields;
 import org.sigmah.shared.command.CreateLocation;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
+import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implements LocationFormSection {
@@ -22,14 +27,17 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 	private LabelField nameField;
 	private LabelField axeField;
 	private CoordinateFields coordinateFields;
+	private Map<Integer, LabelField> levelFields;
 	
 	public LocationSection(Dispatcher dispatcher, ActivityDTO activity) {
 		this.dispatcher = dispatcher;
 		
+		levelFields = Maps.newHashMap();
 		for(AdminLevelDTO level : activity.getDatabase().getCountry().getAdminLevels()) {
 			LabelField levelField = new LabelField();
 			levelField.setFieldLabel(level.getName());
 			add(levelField);
+			levelFields.put(level.getId(), levelField);
 		}
 
 		nameField = new LabelField();
@@ -61,6 +69,12 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 		this.isNew = isNew;
 		nameField.setValue(location.getName());
 		axeField.setValue(location.getAxe());
+		
+		for(Entry<Integer,LabelField> entry : levelFields.entrySet()) {
+			AdminEntityDTO entity = location.getAdminEntity(entry.getKey());
+			entry.getValue().setValue( entity == null ? null : entity.getName());
+		}
+		
 		if(location.hasCoordinates()) {
 			coordinateFields.getLatitudeField().setValue(location.getLatitude());
 			coordinateFields.getLongitudeField().setValue(location.getLongitude());
