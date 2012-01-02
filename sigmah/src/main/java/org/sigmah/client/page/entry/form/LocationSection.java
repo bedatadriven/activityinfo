@@ -5,6 +5,8 @@ import java.util.Map.Entry;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.entry.location.LocationDialog;
+import org.sigmah.client.page.entry.location.LocationDialog.Callback;
 import org.sigmah.client.widget.CoordinateFields;
 import org.sigmah.shared.command.CreateLocation;
 import org.sigmah.shared.command.result.VoidResult;
@@ -14,6 +16,8 @@ import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.dto.SiteDTO;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.common.collect.Maps;
@@ -22,6 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implements LocationFormSection {
 
 	private boolean isNew;
+	private ActivityDTO activity;
 	private LocationDTO location;
 	private Dispatcher dispatcher;
 	private LabelField nameField;
@@ -31,6 +36,7 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 	
 	public LocationSection(Dispatcher dispatcher, ActivityDTO activity) {
 		this.dispatcher = dispatcher;
+		this.activity = activity;
 		
 		levelFields = Maps.newHashMap();
 		for(AdminLevelDTO level : activity.getDatabase().getCountry().getAdminLevels()) {
@@ -53,7 +59,13 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 		add(coordinateFields.getLatitudeField());
 		add(coordinateFields.getLongitudeField());
 		
-		Button changeLocation = new Button(I18N.CONSTANTS.changeLocation());
+		Button changeLocation = new Button(I18N.CONSTANTS.changeLocation(), new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				changeLocation();
+			}
+		});
 		add(changeLocation);
 		
 	}
@@ -115,10 +127,17 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 		
 	}
 
-	@Override
-	public LocationDTO getLocation() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	private void changeLocation() {
+		LocationDialog dialog = new LocationDialog(dispatcher, activity.getDatabase().getCountry(),
+				activity.getLocationType());
+		dialog.show(new Callback() {
+			
+			@Override
+			public void onSelected(LocationDTO location, boolean isNew) {
+				updateForm(location, isNew);
+			}
+		});
 	}
 	
 }

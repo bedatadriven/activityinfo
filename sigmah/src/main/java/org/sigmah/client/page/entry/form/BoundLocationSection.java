@@ -111,11 +111,6 @@ public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO> imp
 	}
 
 	@Override
-	public LocationDTO getLocation() {
-		return location;
-	}
-
-	@Override
 	public void updateForm(SiteDTO m) {
 		
 	}
