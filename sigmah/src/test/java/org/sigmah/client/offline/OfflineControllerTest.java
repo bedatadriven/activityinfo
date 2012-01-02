@@ -5,14 +5,23 @@
 
 package org.sigmah.client.offline;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.resetToDefault;
+import static org.easymock.EasyMock.verify;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.util.Date;
 
 import org.easymock.Capture;
-import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
@@ -167,6 +176,9 @@ public class OfflineControllerTest {
         replay(remoteDispatcher);
         
         Synchronizer impl = createMock(Synchronizer.class);
+        Capture<AsyncCallback<Void>> validateCallback = new Capture<AsyncCallback<Void>>();
+        impl.validateOfflineInstalled(capture(validateCallback));
+        expectLastCall();
         
         OfflineController.View view = createMock(OfflineController.View.class);
         
@@ -186,7 +198,12 @@ public class OfflineControllerTest {
         OfflineController presenter = new OfflineController(view, eventBus, 
         		remoteDispatcher, provider(impl), stateManager, new WebKitCapabilityProfile(), uiConstants);
 
-        verify(view, impl);
+        verify(impl);
+        
+        // valid offline install
+        validateCallback.getValue().onSuccess(null);
+        
+        verify(view);
         
         // Now send a mutating command to the server
         
