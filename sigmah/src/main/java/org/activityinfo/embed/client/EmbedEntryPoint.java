@@ -67,23 +67,33 @@ public class EmbedEntryPoint implements EntryPoint {
 		Filter filter = new Filter();
 		Map<String, List<String>> parameterMap = Location.getParameterMap();
 
-		filter.onDatabase(Integer.valueOf(Location.getParameter("databaseId")));
-		filter.onSite(Integer.valueOf(Location.getParameter("siteId")));
-		filter.setMaxDate(new Date(Long.valueOf(Location.getParameter("maxDate"))));
-		filter.setMinDate(new Date(Long.valueOf(Location.getParameter("minDate"))));
-
+		String databaseId = Location.getParameter("databaseId");
+		
+		if(databaseId!=null){
+			filter.onDatabase(Integer.valueOf(databaseId));	
+		}
+		
+		String siteId = Location.getParameter("siteId"); 
+		if(siteId !=null){
+			filter.onSite(Integer.valueOf(siteId));	
+		}
+		
+		String maxDate = Location.getParameter("maxDate");
+		if(maxDate !=null){
+			filter.setMaxDate(new Date(Long.valueOf(maxDate)));
+		}
+		
+		String minDate = Location.getParameter("minDate");
+		if(minDate !=null){
+			filter.setMinDate(new Date(Long.valueOf(minDate)));	
+		}
+		
 		addToFilter(filter,DimensionType.Activity,"activityId",parameterMap);
 		addToFilter(filter,DimensionType.Partner,"partnerId",parameterMap);
 		addToFilter(filter,DimensionType.AdminLevel,"adminLevelId",parameterMap);
 		addToFilter(filter,DimensionType.Indicator,"indicatorId",parameterMap);
 		addToFilter(filter,DimensionType.Project,"projectId",parameterMap);
 		addToFilter(filter,DimensionType.Location,"locationId",parameterMap);
-
-//		ids = parameterMap.get("activityCategory");
-//		ids = parameterMap.get("status");
-//		ids = parameterMap.get("indicatorCategory");
-//		ids = parameterMap.get("attributeGroup");
-		
 		
 		return filter;
 	}
