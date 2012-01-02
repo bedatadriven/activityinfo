@@ -474,22 +474,23 @@ public class OfflineController implements Dispatcher {
 
 				@Override
 				public void onSuccess(final Synchronizer gateway) {
-					if (activeMode == OfflineMode.ONLINE) {
-						activateStrategy(new OnlineStrategy(gateway));
-					} else {
-						gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								abandonShip(caught);
-							}
 
-							@Override
-							public void onSuccess(Void result) {
+					gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							abandonShip(caught);
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							if (activeMode == OfflineMode.ONLINE) {
+								activateStrategy(new OnlineStrategy(gateway));
+							} else {
 								activateStrategy(new OfflineStrategy(gateway));
-								doDispatch(pending);
 							}
-						});
-					}
+							doDispatch(pending);
+						}
+					});
 				}
 			});
 			return this;
