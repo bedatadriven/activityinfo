@@ -5,14 +5,12 @@ import static org.easymock.EasyMock.replay;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.remote.DirectDispatcher;
 import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.mock.MockEventBus;
 import org.sigmah.client.offline.command.CommandQueue;
 import org.sigmah.client.offline.command.HandlerRegistry;
 import org.sigmah.client.offline.command.LocalDispatcher;
-import org.sigmah.database.ClientDatabaseStubs;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -55,8 +53,11 @@ public class SynchronizerImplTest {
 		
 		DownSynchronizer down = new DownSynchronizer(eventBus, remoteDispatcher, database, constants);
 		UpdateSynchronizer up = new UpdateSynchronizer(commandQueue, remoteDispatcher);
+		
+		
 
-		SynchronizerImpl sync = new SynchronizerImpl(localDispatcher, directDispatcher, appCache, down, up, auth);
+		SynchronizerImpl sync = new SynchronizerImpl(localDispatcher, directDispatcher, appCache, down, up, auth, 
+				new SchemaMigration(database));
 	}
 
 		
