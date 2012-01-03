@@ -142,6 +142,14 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
 		return datefieldMaxDate.getValue();
 	}
 
+	public void setMinDate(Date date){
+		datefieldMinDate.setValue(date);
+	}
+	
+	public void setMaxDate(Date date){
+		datefieldMaxDate.setValue(date);
+	}
+	
 	@Override
 	public void applyBaseFilter(Filter filter) {
 		

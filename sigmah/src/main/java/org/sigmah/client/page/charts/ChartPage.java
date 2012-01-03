@@ -344,6 +344,10 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         });
     }
 
+    public void bindReportElement(PivotChartReportElement element){
+    	
+    }
+    
 	@Override
 	public void shutdown() {
 	}

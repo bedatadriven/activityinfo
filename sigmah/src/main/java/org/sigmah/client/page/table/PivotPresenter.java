@@ -7,6 +7,7 @@ package org.sigmah.client.page.table;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -84,6 +85,8 @@ public class PivotPresenter implements Page {
         
         void setDimensionChecked(ModelData d, boolean checked);
         
+        void bindReportElement(PivotTableReportElement table);
+        
     }
 
     private final Dispatcher service;
@@ -128,6 +131,10 @@ public class PivotPresenter implements Page {
 
     }
 
+    public void bindReportElement(PivotTableReportElement table){
+    	view.bindReportElement(table);
+    }
+    
     protected PivotTableReportElement createElement() {
         PivotTableReportElement table = new PivotTableReportElement();
         table.setRowDimensions(view.getRowStore().getModels());

@@ -20,10 +20,12 @@ import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.CountryDTO;
+import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.CheckChangedEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -162,6 +164,15 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
         }
         return selected;
     }
+    
+	public void setSelection(int id, boolean select){
+		
+		for(ModelData model : tree.getStore().getAllItems()){
+			if(model instanceof AdminEntityDTO && ((AdminEntityDTO) model).getId() == id){
+				tree.setChecked((AdminEntityDTO) model, select);
+			}			
+		}
+	}
 
 	@Override
 	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Filter> handler) {
