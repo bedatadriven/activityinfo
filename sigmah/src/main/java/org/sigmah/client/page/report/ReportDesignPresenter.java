@@ -10,12 +10,14 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.shared.command.GetReport;
 import org.sigmah.shared.command.GetUserReports;
 import org.sigmah.shared.command.RenderReportHtml;
 import org.sigmah.shared.command.result.HtmlResult;
 import org.sigmah.shared.command.result.ReportTemplateResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
@@ -32,15 +34,17 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	public interface View {
 		void init(ReportDesignPresenter presenter);
 
-		void setReportListStore(ReportDefinitionDTO dto);
+		void setReportElement(ReportDefinitionDTO dto);
 
 		void setPreviewHtml(String html, String heading);
 
 		AsyncMonitor getLoadingMonitor();
 
-		ListStore<ReportDefinitionDTO> getReportListStore();
+		ListStore<ModelData> getReportElements();
 
 		void setPreview();
+
+		void setReport(ReportDefinitionDTO dto);
 
 	}
 
@@ -55,22 +59,25 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 	}
 
-	public void go() {
-		loadReports();
+	public void go(int reportId) {
+		loadReport(reportId);
 	}
 
 	@Override
 	public void onUIAction(String actionId) {
 		if (UIActions.ADDCHART.equals(actionId)) {
 
+		} else if(UIActions.ADDMAP.equals(actionId)){
+			
 		}
-
+		else if(UIActions.ADDTABLE.equals(actionId)){
+			
+		}
 	}
 
-	private void loadReports() {
-		GetUserReports getReports = new GetUserReports();
+	private void loadReport(int reportId) {
 
-		service.execute(getReports, null,
+		service.execute(new GetReport(reportId), null,
 				new AsyncCallback<ReportTemplateResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -79,9 +86,10 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 					@Override
 					public void onSuccess(ReportTemplateResult result) {
-						view.getReportListStore().removeAll();
+//						view.getReportListStore().removeAll();
 						for (ReportDefinitionDTO report : result.getData()) {
-							view.setReportListStore(report);
+							view.setReportElement(report);
+							view.setReport(report);
 						}
 
 					}

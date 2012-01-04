@@ -8,11 +8,14 @@ package org.sigmah.client.page.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.common.grid.AbstractEditorGridView;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.shared.command.GetSchema;
@@ -42,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.inject.Inject;
 
@@ -54,10 +58,15 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
     private MappingComboBox<Integer> dayCombo;
     private String[] weekdays;
     private final Dispatcher service;
+    private final EventBus eventBus;
+    public int selectedReportId;
+    private ReportDesignPage reportDesignPage;
+    private ReportDesignPresenter reportDesignPresenter;
 
     @Inject
-    public ReportListPageView(Dispatcher service) {
+    public ReportListPageView(EventBus eventBus, Dispatcher service) {
         super();
+        this.eventBus = eventBus;
         this.service = service;
 
         setLayout(new FitLayout());
@@ -68,6 +77,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
     @Override
 	public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store) {
         super.init(presenter, store);
+        reportDesignPage = new ReportDesignPage(eventBus, service);
+        reportDesignPresenter = new ReportDesignPresenter(eventBus, service, reportDesignPage);
     }
 
     @Override
@@ -105,6 +116,12 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
                     presenter.onTemplateSelected(event.getModel());
                 }
             }
+        });
+        
+        grid.addListener(Events.CellClick, new Listener<GridEvent<ReportDefinitionDTO>>() {
+            @Override
+			public void handleEvent(GridEvent<ReportDefinitionDTO> event) {
+            	selectedReportId = event.getModel().getId();            }
         });
 
         add(grid);
@@ -229,6 +246,16 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
         Button newButton = new Button(I18N.CONSTANTS.newText(), IconImageBundle.ICONS.add());
         newButton.setMenu(dbMenu);
         toolBar.add(newButton);
+        
+        Button editButton = new Button(I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit());
+        editButton.addListener(Events.OnClick, new Listener<BaseEvent>(){
+        	@Override
+        	public void handleEvent(BaseEvent be){
+        		eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ReportDesignPageState(selectedReportId)));        		
+        	}
+        });
+        
+        toolBar.add(editButton);
     }
 
 

@@ -1,5 +1,8 @@
 package org.sigmah.client.page.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -8,9 +11,16 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.TableElement;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
@@ -43,18 +53,17 @@ public class ReportDesignPage extends ContentPanel implements
 	private final Dispatcher service;
 
 	private ToolBar toolBar;
+	private TextField<String> titleField;
 	private ReportDesignPresenter presenter;
-	private ContentPanel reportListPane;
+	private ContentPanel elementListPane;
 	private LayoutContainer center;
 	private ContentPanel reportPreviewPanel;
-	private ListView<ReportDefinitionDTO> reportList;
-	protected ListStore<ReportDefinitionDTO> store;
+	private ListView<ModelData> reportElements;
+	protected ListStore<ModelData> store;
 	private Html previewHtml;
 	private Button reportPreview;
 	private ReportDefinitionDTO selectedReport;
 	private IndicatorTreePanel indicatorPanel;
-	private ReportDesignListPage reportPage;
-	private ReportDesignListPresenter reportPagePresenter;
 
 	@Inject
 	public ReportDesignPage(EventBus eventBus, Dispatcher service) {
@@ -80,17 +89,13 @@ public class ReportDesignPage extends ContentPanel implements
 		previewHtml = new Html();
 		previewHtml.addStyleName("report");
 
-		reportPage = new ReportDesignListPage(service);
-
-		reportPagePresenter = new ReportDesignListPresenter(eventBus, service,
-				null, reportPage);
 	}
 
 	public void createToolbar() {
 
 		toolBar = new ToolBar();
 
-		TextField<String> titleField = new TextField<String>();
+		titleField = new TextField<String>();
 		toolBar.add(titleField);
 
 		SelectionListener<ButtonEvent> listener = new SelectionListener<ButtonEvent>() {
@@ -123,9 +128,9 @@ public class ReportDesignPage extends ContentPanel implements
 		layout.setPadding(new Padding(5));
 		layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
 
-		reportListPane = new ContentPanel();
-		reportListPane.setHeading(I18N.CONSTANTS.reports());
-		reportListPane.setLayout(layout);
+		elementListPane = new ContentPanel();
+		elementListPane.setHeading(I18N.CONSTANTS.reports());
+		elementListPane.setLayout(layout);
 
 		reportPreview = new Button(I18N.CONSTANTS.preview(), null,
 				new SelectionListener<ButtonEvent>() {
@@ -140,32 +145,32 @@ public class ReportDesignPage extends ContentPanel implements
 
 		VBoxLayoutData buttonLayout = new VBoxLayoutData();
 		buttonLayout.setMargins(new Margins(0, 0, 5, 0));
-		reportListPane.add(reportPreview, buttonLayout);
+		elementListPane.add(reportPreview, buttonLayout);
 
-		store = new ListStore<ReportDefinitionDTO>();
+		store = new ListStore<ModelData>();
 
-		reportList = new ListView<ReportDefinitionDTO>();
-		reportList.setTemplate(getTemplate(GWT.getModuleBaseURL() + "image/"));
-		reportList.setBorders(false);
-		reportList.setStore(store);
-		reportList.setItemSelector("dd");
-		reportList.setOverStyle("over");
-		reportList.addListener(Events.Select,
-				new Listener<ListViewEvent<ReportDefinitionDTO>>() {
+		reportElements = new ListView<ModelData>();
+		reportElements.setTemplate(getTemplate(GWT.getModuleBaseURL() + "image/"));
+		reportElements.setBorders(false);
+		reportElements.setStore(store);
+		reportElements.setItemSelector("dd");
+		reportElements.setOverStyle("over");
+		reportElements.addListener(Events.Select,
+				new Listener<ListViewEvent<ModelData>>() {
 
 					@Override
 					public void handleEvent(
-							ListViewEvent<ReportDefinitionDTO> event) {
-						selectedReport = event.getModel();
-						reportPagePresenter.go(selectedReport);
-						addToPreviewPanel(
-								(Widget) reportPagePresenter.getWidget(),
-								selectedReport.getTitle());
+							ListViewEvent<ModelData> event) {
+//						selectedReport = event.getModel();
+//						reportPagePresenter.go(selectedReport);
+//						addToPreviewPanel(
+//								(Widget) reportPagePresenter.getWidget(),
+//								selectedReport.getTitle());
 					}
 				});
 
 		VBoxLayoutData listLayout = new VBoxLayoutData();
-		reportListPane.add(reportList, listLayout);
+		elementListPane.add(reportElements, listLayout);
 
 		BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.30f);
 		west.setMinSize(250);
@@ -174,7 +179,7 @@ public class ReportDesignPage extends ContentPanel implements
 		west.setSplit(true);
 		west.setMargins(new Margins(0, 5, 0, 0));
 
-		add(reportListPane, west);
+		add(elementListPane, west);
 
 	}
 
@@ -190,7 +195,7 @@ public class ReportDesignPage extends ContentPanel implements
 		reportPreviewPanel.setLayoutData(new FitData(new Margins(5, 5, 5, 5)));
 		reportPreviewPanel.setLayout(new FitLayout());
 
-		reportPreviewPanel.add((Widget) reportPagePresenter.getWidget());
+//		reportPreviewPanel.add((Widget) reportPagePresenter.getWidget());
 
 		center.add(reportPreviewPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
@@ -205,20 +210,41 @@ public class ReportDesignPage extends ContentPanel implements
 	}
 
 	@Override
-	public void setReportListStore(ReportDefinitionDTO dto) {
-		store.add(dto);
-
+	public void setReportElement(ReportDefinitionDTO dto) {
+		List<ModelData> reportElements = new ArrayList<ModelData>();
+		for(ReportElement element : dto.getReport().getElements()) {
+			reportElements.add(addReportElement(element));
+		}
+		store.removeAll();
+		store.add(reportElements);
 	}
 
+	private ModelData addReportElement(ReportElement element){
+		BaseModelData elm = new BaseModelData();
+		elm.set("element", element);
+		if(element.getTitle() == null || element.getTitle().equals("")){
+			 if (element instanceof PivotChartReportElement) {
+				 	elm.set("elementTitle", "Chart Element" );
+		        } else if (element instanceof PivotTableReportElement) {
+		        	elm.set("elementTitle", "Pivot Table Element" );
+		        } else if (element instanceof MapReportElement) {
+		        	elm.set("elementTitle", "Map Element" );
+		        } 
+		}else{
+			elm.set("elementTitle", element.getTitle() );
+		}	
+		return elm;
+	}
+	
 	@Override
-	public ListStore<ReportDefinitionDTO> getReportListStore() {
+	public ListStore<ModelData> getReportElements() {
 		return store;
 	}
 
 	private native String getTemplate(String base) /*-{
 		return [ '<dl><tpl for=".">', '<dd>',
-				'<img src="' + base + 'report.png" title="{title}">',
-				'<span>{title}</span>', '</tpl>',
+				'<img src="' + base + 'report.png" title="{elementTitle}">',
+				'<span>{elementTitle}</span>', '</tpl>',
 				'<div style="clear:left;"></div></dl>' ].join("");
 
 	}-*/;
@@ -229,6 +255,12 @@ public class ReportDesignPage extends ContentPanel implements
 	}
 
 	@Override
+	public void setReport(ReportDefinitionDTO dto){
+		selectedReport = dto;
+		titleField.setValue(dto.getTitle());
+	}
+	
+	@Override
 	public void setPreviewHtml(String html, String heading) {
 		previewHtml.setHtml(html);
 		addToPreviewPanel(previewHtml, heading);
@@ -238,5 +270,5 @@ public class ReportDesignPage extends ContentPanel implements
 	public AsyncMonitor getLoadingMonitor() {
 		return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
 	}
-
+	
 }

@@ -7,6 +7,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
+import org.sigmah.shared.dto.ReportDefinitionDTO;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -26,7 +27,7 @@ public class ReportDesignLoader implements PageLoader {
     }
 	
 	@Override
-	public void load(PageId pageId, PageState pageState,
+	public void load(PageId pageId, final PageState pageState,
 			final AsyncCallback<Page> callback) {
 		 
 		GWT.runAsync(new RunAsyncCallback() {
@@ -38,7 +39,8 @@ public class ReportDesignLoader implements PageLoader {
 	            @Override
 	            public void onSuccess() {
 	            	ReportDesignPresenter presenter = injector.getReportDesignPresenter();
-	            	presenter.go();
+	            	int reportId = ((ReportDesignPageState)pageState).reportId;
+	            	presenter.go(reportId);
 	                callback.onSuccess(presenter);
 	            }
 	        });

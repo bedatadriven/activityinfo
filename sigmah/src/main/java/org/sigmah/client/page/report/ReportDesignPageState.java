@@ -6,11 +6,18 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.shared.dto.ReportDefinitionDTO;
 
 public class ReportDesignPageState implements PageState {
 	
+	public int reportId;
+	
 	public ReportDesignPageState(){
 		
+	}
+	
+	public ReportDesignPageState(int reportId){
+		this.reportId = reportId;
 	}
 
 	@Override
