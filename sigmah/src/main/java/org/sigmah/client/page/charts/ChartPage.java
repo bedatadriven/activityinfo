@@ -64,6 +64,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 
 /**
  *
@@ -95,6 +96,9 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 	
 	private SubscribeForm form;
 	private FormDialogImpl dialog;
+	
+	private LabelToolItem categoryLabel;
+	private LabelToolItem legendLabel;
 
     @Inject
     public ChartPage(EventBus eventBus, Dispatcher service) {
@@ -133,6 +137,7 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 
 			@Override
 			public void handleEvent(BaseEvent be) {
+				updateLabels();
 				load();
 			}
         });
@@ -159,7 +164,7 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         center.setTopComponent(toolBar);
 
     }
-
+    
     private void createWest() {
 
         ContentPanel westPanel = new ContentPanel(new AccordionLayout());
@@ -218,7 +223,10 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         ToolBar dimBar = new ToolBar();
         ListStore<Dimension> store = DimensionStoreFactory.create(service);
 
-        dimBar.add(new LabelToolItem(I18N.CONSTANTS.categories()));
+        categoryLabel = new LabelToolItem();
+        updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
+        dimBar.add(categoryLabel);
+        
         categoryCombo = new ComboBox<Dimension>();
         categoryCombo.setForceSelection(true);
         categoryCombo.setEditable(false);
@@ -229,7 +237,10 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 
         dimBar.add(new FillToolItem());
 
-        dimBar.add(new LabelToolItem(I18N.CONSTANTS.legend()));
+        legendLabel = new LabelToolItem();
+        updateLegendComboLabel(I18N.CONSTANTS.bars());
+        dimBar.add(legendLabel);
+        
         legendCombo = new ComboBox<Dimension>();
         legendCombo.setForceSelection(true);
         legendCombo.setEditable(false);
@@ -240,6 +251,27 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         preview.setBottomComponent(dimBar);
     }
 
+    private void updateLabels(){
+    	Type type = typeGroup.getSelection();
+		if(type == Type.ClusteredBar){
+			updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
+			updateLegendComboLabel(I18N.CONSTANTS.bars());
+		}else if(type == Type.Line){
+			updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
+			updateLegendComboLabel(I18N.CONSTANTS.lines());
+		}else if(type == Type.Pie){
+			updateCategoryComboLabel(I18N.CONSTANTS.slices());
+			updateLegendComboLabel(I18N.CONSTANTS.disabled());
+		}
+    }
+    
+    private void updateCategoryComboLabel(String label){
+    	categoryLabel.setLabel(label);
+    }
+    
+    private void updateLegendComboLabel(String label){
+    	legendLabel.setLabel(label);
+    }
 
     public PivotChartReportElement getChartElement() {
         PivotChartReportElement element = new PivotChartReportElement();
