@@ -59,6 +59,7 @@ import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
 import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedListener;
@@ -68,6 +69,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.DelayedTask;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -593,38 +595,49 @@ public final class PivotPage extends LayoutContainer implements PivotPresenter.V
 		}
 	}
 	
-	 public void bindReportElement(PivotTableReportElement table){
-		 	List<Dimension> colDim =  table.getColumnDimensions();
-		 	getColStore().add(colDim);
-		 	
-		 	List<Dimension> rowDim  = table.getRowDimensions();
-		 	getRowStore().add(colDim);
-		 	
-	    	Set<Integer> indicators = table.getFilter().getRestrictions(DimensionType.Indicator);
-	    	Iterator<Integer> itr = indicators.iterator();
-	    	
-	    	while(itr.hasNext()){
-	    		this.indicatorPanel.setSelection(itr.next(), true);
-	    	}
-	    	
-	    	Set<Integer> adminLevels = table.getFilter().getRestrictions(DimensionType.AdminLevel);
-	    	itr = adminLevels.iterator();
-	    	
-	    	while(itr.hasNext()){
-	    		this.adminPanel.setSelection(itr.next(), true);
-	    	}
-	    	
-	    	Set<Integer> partners = table.getFilter().getRestrictions(DimensionType.Partner);
-	    	itr = partners.iterator();
-	    	
-	    	while(itr.hasNext()){
-	    		this.partnerPanel.setSelection(itr.next(), true);
-	    	}
+	 public void bindReportElement(final PivotTableReportElement table){
+		 
+	  	 new DelayedTask(new Listener<BaseEvent>() {
+	            @Override
+				public void handleEvent(BaseEvent be) {
+	            	List<Dimension> colDim =  table.getColumnDimensions();
+	    		 	getColStore().add(colDim);
+	    		 	
+	    		 	List<Dimension> rowDim  = table.getRowDimensions();
+	    		 	getRowStore().add(colDim);
+	    		 	
+	    	    	Set<Integer> indicators = table.getFilter().getRestrictions(DimensionType.Indicator);
+	    	    	Iterator<Integer> itr = indicators.iterator();
+	    	    	
+	    	    	while(itr.hasNext()){
+	    	    		indicatorPanel.setSelection(itr.next(), true);
+	    	    	}
+	    	    	
+	    	    	Set<Integer> adminLevels = table.getFilter().getRestrictions(DimensionType.AdminLevel);
+	    	    	itr = adminLevels.iterator();
+	    	    	
+	    	    	while(itr.hasNext()){
+	    	    		adminPanel.setSelection(itr.next(), true);
+	    	    	}
+	    	    	
+	    	    	Set<Integer> partners = table.getFilter().getRestrictions(DimensionType.Partner);
+	    	    	itr = partners.iterator();
+	    	    	
+	    	    	while(itr.hasNext()){
+	    	    		partnerPanel.setSelection(itr.next(), true);
+	    	    	}
 
-	    	Date minDate = table.getFilter().getMinDate();
-	    	datePanel.setMinDate(minDate);
-	    	
-	    	Date maxDate = table.getFilter().getMaxDate();
-	    	datePanel.setMaxDate(maxDate);
+	    	    	Date minDate = table.getFilter().getMinDate();
+	    	    	datePanel.setMinDate(minDate);
+	    	    	
+	    	    	Date maxDate = table.getFilter().getMaxDate();
+	    	    	datePanel.setMaxDate(maxDate);
+	           
+	    	    	presenter.onUIAction(UIActions.REFRESH);
+	           
+	            }
+	        }).delay(10000);
+	  	 
+		 	
 	 }
 }

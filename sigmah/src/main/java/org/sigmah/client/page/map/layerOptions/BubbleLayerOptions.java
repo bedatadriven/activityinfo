@@ -44,7 +44,7 @@ public class BubbleLayerOptions extends LayoutContainer implements LayerOptionsW
 		colorPicker.addListener(Events.Select, new Listener<ColorPaletteEvent>() {
 			@Override
 			public void handleEvent(ColorPaletteEvent be) {
-				bubbleMapLayer.setBubbletColor(colorPicker.getValue());
+				bubbleMapLayer.setBubbleColor(colorPicker.getValue());
 				ValueChangeEvent.fire(BubbleLayerOptions.this, bubbleMapLayer);
 		}});
 

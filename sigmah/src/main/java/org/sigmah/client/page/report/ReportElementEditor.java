@@ -72,16 +72,19 @@ public class ReportElementEditor {
 		}
 	}
 
-	public void createChart() {
+	public Object createChart() {
 		page = chartPageProvider.get();
+		return getWidget();
 	}
 
-	public void createMap() {
+	public Object createMap() {
 		page = mapPageProvider.get();
+		return getWidget();
 	}
 
-	public void createTable() {
+	public Object createTable() {
 		page = pivotPageProvider.get();
+		return getWidget();
 	}
 
 	public Object getWidget() {

@@ -5,6 +5,11 @@
 
 package org.sigmah.client.page.map;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -31,6 +36,8 @@ import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.layers.MapLayer;
@@ -38,6 +45,7 @@ import org.sigmah.shared.report.model.layers.MapLayer;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.util.DelayedTask;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteData;
@@ -273,7 +281,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     }
     
     public void bindReportElement(MapReportElement element){
-    	
+    	new DelayedTask(new Listener<BaseEvent>() {
+            @Override
+			public void handleEvent(BaseEvent be) {
+				aiMapWidget.setValue(mapReportElement);
+				layersWidget.setValue(mapReportElement);
+            }
+        }).delay(10000);
     }
 	
 	@Override

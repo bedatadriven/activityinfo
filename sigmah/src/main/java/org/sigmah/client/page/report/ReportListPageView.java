@@ -45,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.inject.Inject;
 
@@ -60,8 +59,6 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
     private final Dispatcher service;
     private final EventBus eventBus;
     public int selectedReportId;
-    private ReportDesignPage reportDesignPage;
-    private ReportDesignPresenter reportDesignPresenter;
 
     @Inject
     public ReportListPageView(EventBus eventBus, Dispatcher service) {
@@ -77,8 +74,6 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
     @Override
 	public void init(ReportListPagePresenter presenter, ListStore<ReportDefinitionDTO> store) {
         super.init(presenter, store);
-        reportDesignPage = new ReportDesignPage(eventBus, service);
-        reportDesignPresenter = new ReportDesignPresenter(eventBus, service, reportDesignPage);
     }
 
     @Override

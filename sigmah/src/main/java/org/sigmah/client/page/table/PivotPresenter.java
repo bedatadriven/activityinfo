@@ -167,18 +167,8 @@ public class PivotPresenter implements Page {
 
     public void onUIAction(String itemId) {
         if (UIActions.REFRESH.equals(itemId)) {
-            final PivotTableReportElement element = createElement();
-            service.execute(new GeneratePivotTable(element), view.getMonitor(), new AsyncCallback<PivotContent>() {
-                public void onFailure(Throwable throwable) {
-                    MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
-                }
-
-                public void onSuccess(PivotContent content) {
-                    element.setContent((PivotContent) content);
-                    view.setContent(element);
-                }
-            });
-
+        	onRefresh();
+        	
         } else if (UIActions.EXPORT.equals(itemId)) {
             service.execute(new RenderElement(createElement(), RenderElement.Format.Excel), view.getMonitor(),
                     new DownloadCallback(eventBus, "pivotTable"));
@@ -203,6 +193,20 @@ public class PivotPresenter implements Page {
 			});
         }
         
+    }
+    
+    private void onRefresh(){
+    	 final PivotTableReportElement element = createElement();
+         service.execute(new GeneratePivotTable(element), view.getMonitor(), new AsyncCallback<PivotContent>() {
+             public void onFailure(Throwable throwable) {
+                 MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
+             }
+
+             public void onSuccess(PivotContent content) {
+                 element.setContent((PivotContent) content);
+                 view.setContent(element);
+             }
+         });
     }
     
     public void createReport(){

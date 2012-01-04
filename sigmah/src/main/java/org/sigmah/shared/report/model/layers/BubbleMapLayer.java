@@ -65,7 +65,7 @@ public class BubbleMapLayer extends CircledMapLayer {
      * 
      * @param color the color used to draw the circles
      */
-    public void setBubbletColor(String color) {
+    public void setBubbleColor(String color) {
         this.bubbleColor = color;
     }
 

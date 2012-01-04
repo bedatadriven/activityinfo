@@ -5,6 +5,8 @@
 
 package org.sigmah.client.page.charts;
 
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
@@ -26,6 +28,7 @@ import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.table.PivotGridPanel;
+import org.sigmah.client.page.table.PivotGridPanel.PivotTableRow;
 import org.sigmah.client.report.DimensionStoreFactory;
 import org.sigmah.shared.command.CreateReportDef;
 import org.sigmah.shared.command.CreateSubscribe;
@@ -45,6 +48,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.DelayedTask;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -258,7 +262,6 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         return element;
     }
 
-    
     private void load() {
     	final PivotChartReportElement element = getChartElement();
 		service.execute(new GenerateElement<PivotChartContent>(element), null, new AsyncCallback<PivotChartContent>() {
@@ -344,9 +347,32 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         });
     }
 
-    public void bindReportElement(PivotChartReportElement element){
+    public void bindReportElement(final PivotChartReportElement element){
     	
-    }
+   	 new DelayedTask(new Listener<BaseEvent>() {
+            @Override
+			public void handleEvent(BaseEvent be) {
+            	typeGroup.setSelection(element.getType());
+            	
+            	if(element.getCategoryDimensions() != null && element.getCategoryDimensions().size() >0){
+            		categoryCombo.setValue((Dimension)element.getCategoryDimensions().get(0));
+            	}
+            	
+            	List<Integer> indicators = element.getIndicators();
+            	for(Integer id :indicators){
+            		indicatorPanel.setSelection(id, true);
+            	}
+        
+            	if(element.getSeriesDimension()!=null && element.getSeriesDimension().size()>0){
+            		legendCombo.setValue((Dimension)element.getSeriesDimension().get(0));	
+            	}
+            	
+            	load();
+            }
+        }).delay(10000);
+   	
+   }
+       
     
 	@Override
 	public void shutdown() {

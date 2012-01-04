@@ -69,7 +69,6 @@ public class ReportDesignPage extends ContentPanel implements
 	public ReportDesignPage(EventBus eventBus, Dispatcher service) {
 		this.eventBus = eventBus;
 		this.service = service;
-
 	}
 
 	@Override
@@ -79,7 +78,6 @@ public class ReportDesignPage extends ContentPanel implements
 		createToolbar();
 		createListPane();
 		reportPreviewPane();
-
 	}
 
 	private void initializeComponent() {
@@ -161,11 +159,11 @@ public class ReportDesignPage extends ContentPanel implements
 					@Override
 					public void handleEvent(
 							ListViewEvent<ModelData> event) {
-//						selectedReport = event.getModel();
-//						reportPagePresenter.go(selectedReport);
-//						addToPreviewPanel(
-//								(Widget) reportPagePresenter.getWidget(),
-//								selectedReport.getTitle());
+						ModelData model =  event.getModel();
+						ReportElement e =  model.get("element");
+						
+						presenter.createEditor(e);
+							
 					}
 				});
 
@@ -201,9 +199,12 @@ public class ReportDesignPage extends ContentPanel implements
 
 	}
 
+	public void addToCenterPanel(Widget w, String title){
+		addToPreviewPanel(w,title);
+	}
+	
 	private void addToPreviewPanel(Widget w, String title) {
-		reportPreviewPanel.setHeading(I18N.CONSTANTS.reportPreview() + ": "
-				+ title);
+		reportPreviewPanel.setHeading(title);
 		reportPreviewPanel.removeAll();
 		reportPreviewPanel.add(w);
 		reportPreviewPanel.layout();
