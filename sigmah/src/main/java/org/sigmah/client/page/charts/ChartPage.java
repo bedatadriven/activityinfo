@@ -20,6 +20,7 @@ import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
+import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
@@ -29,14 +30,17 @@ import org.sigmah.client.page.table.PivotGridPanel;
 import org.sigmah.client.report.DimensionStoreFactory;
 import org.sigmah.shared.command.CreateReportDef;
 import org.sigmah.shared.command.CreateSubscribe;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.Report;
 
@@ -85,6 +89,7 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
     private IndicatorTreePanel indicatorPanel;
     private AdminFilterPanel adminFilterPanel;
     private DateRangePanel dateFilterPanel;
+    private PartnerFilterPanel partnerFilterPanel;
 
 	private ComboBox<Dimension> legendCombo;
 	
@@ -170,6 +175,10 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         dateFilterPanel = new DateRangePanel();
         westPanel.add(dateFilterPanel);
 
+        partnerFilterPanel = new PartnerFilterPanel(service);
+        partnerFilterPanel.applyBaseFilter(new Filter());
+        westPanel.add(partnerFilterPanel);
+        
         BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.30f);
         west.setCollapsible(true);
         west.setSplit(true);
@@ -251,10 +260,17 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
             element.addIndicator(indicatorId);
         }
         
+        
         if(legendCombo.getValue() != null) {
         	element.addSeriesDimension(legendCombo.getValue());
         }
 
+        List<PartnerDTO> partners = partnerFilterPanel.getSelection();
+        for (PartnerDTO entity : partners) {
+        	element.getFilter().addRestriction(DimensionType.Partner, entity.getId());
+        }
+        
+        
         return element;
     }
 
