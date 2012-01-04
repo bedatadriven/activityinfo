@@ -7,7 +7,9 @@ package org.sigmah.client.page.table;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
@@ -590,4 +592,39 @@ public final class PivotPage extends LayoutContainer implements PivotPresenter.V
 			}
 		}
 	}
+	
+	 public void bindReportElement(PivotTableReportElement table){
+		 	List<Dimension> colDim =  table.getColumnDimensions();
+		 	getColStore().add(colDim);
+		 	
+		 	List<Dimension> rowDim  = table.getRowDimensions();
+		 	getRowStore().add(colDim);
+		 	
+	    	Set<Integer> indicators = table.getFilter().getRestrictions(DimensionType.Indicator);
+	    	Iterator<Integer> itr = indicators.iterator();
+	    	
+	    	while(itr.hasNext()){
+	    		this.indicatorPanel.setSelection(itr.next(), true);
+	    	}
+	    	
+	    	Set<Integer> adminLevels = table.getFilter().getRestrictions(DimensionType.AdminLevel);
+	    	itr = adminLevels.iterator();
+	    	
+	    	while(itr.hasNext()){
+	    		this.adminPanel.setSelection(itr.next(), true);
+	    	}
+	    	
+	    	Set<Integer> partners = table.getFilter().getRestrictions(DimensionType.Partner);
+	    	itr = partners.iterator();
+	    	
+	    	while(itr.hasNext()){
+	    		this.partnerPanel.setSelection(itr.next(), true);
+	    	}
+
+	    	Date minDate = table.getFilter().getMinDate();
+	    	datePanel.setMinDate(minDate);
+	    	
+	    	Date maxDate = table.getFilter().getMaxDate();
+	    	datePanel.setMaxDate(maxDate);
+	 }
 }

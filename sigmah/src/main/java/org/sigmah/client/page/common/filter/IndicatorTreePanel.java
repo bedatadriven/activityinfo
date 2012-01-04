@@ -7,6 +7,7 @@ package org.sigmah.client.page.common.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;

@@ -271,6 +271,10 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
             }
         });
     }
+    
+    public void bindReportElement(MapReportElement element){
+    	
+    }
 	
 	@Override
 	public PageId getPageId() {

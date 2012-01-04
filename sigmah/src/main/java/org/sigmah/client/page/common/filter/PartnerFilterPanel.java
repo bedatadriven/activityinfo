@@ -21,10 +21,12 @@ import org.sigmah.client.page.common.filter.FilterToolBar;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetPartnersWithSites;
 import org.sigmah.shared.command.result.PartnerResult;
+import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -163,6 +165,15 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 			list.add(model.getId());
 		}
 		return list;
+	}
+
+	public void setSelection(int id, boolean select){
+		
+		for(ModelData model : listView.getStore().getModels()){
+			if(model instanceof PartnerDTO && ((PartnerDTO) model).getId() == id){
+				listView.setChecked((PartnerDTO) model, select);
+			}			
+		}
 	}
 
 	@Override
