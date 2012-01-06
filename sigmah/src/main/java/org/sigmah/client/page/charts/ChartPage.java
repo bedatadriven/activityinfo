@@ -261,8 +261,8 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 			updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
 			updateLegendComboLabel(I18N.CONSTANTS.lines());
 		}else if(type == Type.Pie){
-			updateCategoryComboLabel(I18N.CONSTANTS.slices());
-			updateLegendComboLabel(I18N.CONSTANTS.disabled());
+			legendLabel.disable();
+			legendCombo.disable();
 		}
     }
     
