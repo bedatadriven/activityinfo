@@ -5,6 +5,8 @@
 
 package org.sigmah.client.page.charts;
 
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
@@ -42,6 +44,7 @@ import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 import org.sigmah.shared.report.model.Report;
 
 import com.extjs.gxt.ui.client.Style;
@@ -53,7 +56,6 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -64,7 +66,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 
 /**
  *
@@ -154,7 +155,7 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         	.withPng()
         	.callbackTo(new ExportCallback() {
             @Override
-			public void export(RenderElement.Format format) {
+			public final void export(RenderElement.Format format) {
                 ChartPage.this.export(format);
             }
         }));
@@ -364,11 +365,13 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
     	report.setFrequency(form.getReportFrequency());
 		
 		service.execute(new CreateReportDef(report), null, new AsyncCallback<CreateResult>() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
             	dialog.onServerError();
             }
 
-            public void onSuccess(CreateResult result) {
+            @Override
+			public void onSuccess(CreateResult result) {
             	subscribeEmail(result.getNewId());
             }
         });
@@ -382,11 +385,13 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 		sub.setEmailsList(form.getEmailList());
         
 		service.execute(sub, null, new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
             	dialog.onServerError();
             }
 
-            public void onSuccess(VoidResult result) {
+            @Override
+			public void onSuccess(VoidResult result) {
             	dialog.hide();
             }
         });
