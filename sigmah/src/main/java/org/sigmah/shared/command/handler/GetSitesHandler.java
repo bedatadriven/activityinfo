@@ -207,6 +207,9 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	
 	            } else if (type == DimensionType.Partner) {
 	                query.where("Site.PartnerId").in(filter.getRestrictions(type));
+	                
+	            } else if (type == DimensionType.Project) {
+	            	query.where("Site.ProjectId").in(filter.getRestrictions(type));
 	
 	            } else if (type == DimensionType.AdminLevel) {
 	                query.where("Site.LocationId").in(

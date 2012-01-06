@@ -263,4 +263,16 @@ public class GetSitesTest extends CommandTestCase2{
 		assertThat(s1.getId(), equalTo(1));
 		assertThat(s1.getProject().getId(), equalTo(1));
 	}
+	
+	@Test
+	public void filterOnPartner() {
+		setUser(1);
+		
+		GetSites cmd = new GetSites();
+		cmd.filter().addRestriction(DimensionType.Project, 2);
+
+		SiteResult result = execute(cmd);
+		
+		assertThat(result.getData().size(), equalTo(1));
+	}
 }
