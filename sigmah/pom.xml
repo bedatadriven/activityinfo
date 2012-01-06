@@ -32,13 +32,6 @@
 			<organization>bedatadriven</organization>
 			<organizationUrl>http://www.bedatadriven.com</organizationUrl>
 		</developer>
-		<developer>
-			<id>rpoutsma</id>
-			<name>Ruud Poutsma</name>
-			<email>ruud@bedatadriven.com</email>
-			<organization>bedatadriven</organization>
-			<organizationUrl>http://www.bedatadriven.com</organizationUrl>
-		</developer>
 	</developers>
 	<licenses>
 		<license>
@@ -741,7 +734,7 @@
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
 							<optionName>PARAM2</optionName>
-							<value>activityinfo22.production.properties</value>
+							<value>activityinfo25.production.properties</value>
 						</optionSetting>
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
