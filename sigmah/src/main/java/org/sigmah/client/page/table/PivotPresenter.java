@@ -16,6 +16,7 @@ import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageElement;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.SubscribeForm;
@@ -37,6 +38,7 @@ import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -51,7 +53,7 @@ import com.google.inject.Inject;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class PivotPresenter implements Page {
+public class PivotPresenter implements Page, PageElement {
     public static final PageId PAGE_ID = new PageId("pivot");
 
     @ImplementedBy(PivotPage.class)
@@ -130,10 +132,6 @@ public class PivotPresenter implements Page {
     public void onDimensionsChanged() {
 
     }
-
-    public void bindReportElement(PivotTableReportElement table){
-    	view.bindReportElement(table);
-    }
     
     protected PivotTableReportElement createElement() {
         PivotTableReportElement table = new PivotTableReportElement();
@@ -164,6 +162,7 @@ public class PivotPresenter implements Page {
         }
         return table;
     }
+    
 
     public void onUIAction(String itemId) {
         if (UIActions.REFRESH.equals(itemId)) {
@@ -269,5 +268,15 @@ public class PivotPresenter implements Page {
     public boolean navigate(PageState place) {
         return true;
     }
+
+	@Override
+	public void bindReportElement(ReportElement element) {
+		view.bindReportElement((PivotTableReportElement)element);
+	}
+	
+	@Override
+	public ReportElement retriveReportElement() {
+    	return createElement();
+	}
   
 }

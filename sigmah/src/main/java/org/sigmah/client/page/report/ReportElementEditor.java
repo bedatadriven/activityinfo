@@ -6,6 +6,7 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageElement;
 import org.sigmah.client.page.charts.ChartPage;
 import org.sigmah.client.page.map.MapPage;
 import org.sigmah.client.page.table.PivotPresenter;
@@ -90,21 +91,9 @@ public class ReportElementEditor {
 	public Object getWidget() {
 		return page.getWidget();
 	}
-
-	public void previewReport(int reportId) {
-		generateReportPreview(reportId);
-	}
-
-	private void generateReportPreview(final int reportId) {
-		RenderReportHtml command = new RenderReportHtml(reportId, null);
-		service.execute(command, null, new Got<HtmlResult>() {
-			@Override
-			public void got(HtmlResult result) {
-				// TODO display preview of this report
-				// view.setPreviewHtml(result.getHtml(),
-				// selectedReport.getTitle());
-			}
-		});
+	
+	public ReportElement retriveReportElement(){		
+		return ((PageElement) page).retriveReportElement();
 	}
 
 }

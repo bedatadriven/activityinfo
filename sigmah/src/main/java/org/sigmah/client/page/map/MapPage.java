@@ -19,6 +19,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageElement;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.SubscribeForm;
@@ -40,6 +41,7 @@ import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.report.model.layers.MapLayer;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -59,7 +61,7 @@ import com.google.inject.Inject;
 /**
  * Displays a map where the user can interactively create a map
  */
-public class MapPage extends ContentPanel implements Page, ExportCallback, ActionListener  {
+public class MapPage extends ContentPanel implements Page, ExportCallback, ActionListener, PageElement  {
 
 	public static final PageId PAGE_ID = new PageId("maps");
 
@@ -280,7 +282,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         });
     }
     
-    public void bindReportElement(MapReportElement element){
+    public void bindElement(MapReportElement element){
     	new DelayedTask(new Listener<BaseEvent>() {
             @Override
 			public void handleEvent(BaseEvent be) {
@@ -314,6 +316,16 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	@Override
 	public boolean navigate(PageState place) {
 		return true;
+	}
+
+	@Override
+	public void bindReportElement(ReportElement element) {
+		bindElement((MapReportElement)element);		
+	}
+
+	@Override
+	public ReportElement retriveReportElement() {
+		return mapReportElement;
 	}
 }
 

@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
@@ -43,6 +44,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -94,6 +96,12 @@ public class ReportDesignPage extends ContentPanel implements
 		toolBar = new ToolBar();
 
 		titleField = new TextField<String>();
+		titleField.addListener(Events.Change, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
+				presenter.updateReport(selectedReport.getId(), titleField.getValue(), null);
+			}
+		});
 		toolBar.add(titleField);
 
 		SelectionListener<ButtonEvent> listener = new SelectionListener<ButtonEvent>() {
@@ -117,6 +125,10 @@ public class ReportDesignPage extends ContentPanel implements
 		addTable.setItemId(UIActions.ADDTABLE);
 		toolBar.add(addTable);
 
+		Button save = new Button(I18N.CONSTANTS.save(), null, listener);
+		save.setItemId(UIActions.SAVE);
+		toolBar.add(save);
+		
 		setTopComponent(toolBar);
 	}
 
@@ -127,7 +139,7 @@ public class ReportDesignPage extends ContentPanel implements
 		layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
 
 		elementListPane = new ContentPanel();
-		elementListPane.setHeading(I18N.CONSTANTS.reports());
+		elementListPane.setHeading(I18N.CONSTANTS.reportElements());
 		elementListPane.setLayout(layout);
 
 		reportPreview = new Button(I18N.CONSTANTS.preview(), null,
@@ -159,7 +171,11 @@ public class ReportDesignPage extends ContentPanel implements
 					@Override
 					public void handleEvent(
 							ListViewEvent<ModelData> event) {
+
+						presenter.unEditElements();
+						
 						ModelData model =  event.getModel();
+						model.set("edited", true);
 						ReportElement e =  model.get("element");
 						
 						presenter.createEditor(e);
@@ -214,14 +230,15 @@ public class ReportDesignPage extends ContentPanel implements
 	public void setReportElement(ReportDefinitionDTO dto) {
 		List<ModelData> reportElements = new ArrayList<ModelData>();
 		for(ReportElement element : dto.getReport().getElements()) {
-			reportElements.add(addReportElement(element));
+			reportElements.add(addReportElement(element, false));
 		}
 		store.removeAll();
 		store.add(reportElements);
 	}
 
-	private ModelData addReportElement(ReportElement element){
+	private ModelData addReportElement(ReportElement element, boolean edited){
 		BaseModelData elm = new BaseModelData();
+		elm.set("edited", edited);
 		elm.set("element", element);
 		if(element.getTitle() == null || element.getTitle().equals("")){
 			 if (element instanceof PivotChartReportElement) {
@@ -232,9 +249,14 @@ public class ReportDesignPage extends ContentPanel implements
 		        	elm.set("elementTitle", "Map Element" );
 		        } 
 		}else{
-			elm.set("elementTitle", element.getTitle() );
+			elm.set("elementTitle", element.getTitle());
 		}	
 		return elm;
+	}
+	
+	@Override
+	public void addElement(ReportElement element, boolean edited){
+		store.add(addReportElement(element, edited));
 	}
 	
 	@Override
@@ -270,6 +292,11 @@ public class ReportDesignPage extends ContentPanel implements
 	@Override
 	public AsyncMonitor getLoadingMonitor() {
 		return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+	}
+
+	@Override
+	public int getReportId() {	
+		return selectedReport.getId();
 	}
 	
 }

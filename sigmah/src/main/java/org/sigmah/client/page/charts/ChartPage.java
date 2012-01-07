@@ -14,6 +14,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageElement;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.SubscribeForm;
@@ -46,6 +47,7 @@ import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -76,7 +78,7 @@ import org.sigmah.shared.report.model.PivotChartReportElement.Type;
  *
  * @author Alex Bertram
  */
-public class ChartPage extends LayoutContainer implements Page, ActionListener{
+public class ChartPage extends LayoutContainer implements Page, ActionListener, PageElement{
 
 	public static final PageId PAGE_ID = new PageId("charts");
 	
@@ -395,7 +397,7 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
         });
     }
 
-    public void bindReportElement(final PivotChartReportElement element){
+    public void bindElement(final PivotChartReportElement element){
     	
    	 new DelayedTask(new Listener<BaseEvent>() {
             @Override
@@ -452,5 +454,15 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 	@Override
 	public boolean navigate(PageState place) {
 		return true;
+	}
+
+	@Override
+	public void bindReportElement(ReportElement element) {
+		bindElement((PivotChartReportElement)element);
+	}
+
+	@Override
+	public ReportElement retriveReportElement() {
+		return getChartElement();
 	}
 }

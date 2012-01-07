@@ -35,7 +35,7 @@ public class CreateReportDef implements Command<CreateResult>{
 	
 	public CreateReportDef(Report report){
 		super();
-		this.databaseId = null;
+		this.databaseId = 0;
 		this.report = report;
 	}
 

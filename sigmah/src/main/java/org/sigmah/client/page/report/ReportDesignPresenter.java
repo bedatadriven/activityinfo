@@ -1,5 +1,8 @@
 package org.sigmah.client.page.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -14,8 +17,10 @@ import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.GetReport;
 import org.sigmah.shared.command.GetUserReports;
 import org.sigmah.shared.command.RenderReportHtml;
+import org.sigmah.shared.command.UpdateReport;
 import org.sigmah.shared.command.result.HtmlResult;
 import org.sigmah.shared.command.result.ReportTemplateResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
 import org.sigmah.shared.report.model.ReportElement;
 
@@ -51,6 +56,10 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		void setReport(ReportDefinitionDTO dto);
 		
 		void addToCenterPanel(Widget w, String title);
+		
+		int getReportId();
+
+		void addElement(ReportElement element, boolean edited);
 	}
 
 	@Inject
@@ -79,6 +88,9 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		else if(UIActions.ADDTABLE.equals(actionId)){
 			addTable();
 		}
+		else if(UIActions.SAVE.equals(actionId)){
+			updateReport(view.getReportId(), null, getReportElements());
+		}
 	}
 
 	private void loadReport(int reportId) {
@@ -92,7 +104,6 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 					@Override
 					public void onSuccess(ReportTemplateResult result) {
-//						view.getReportListStore().removeAll();
 						for (ReportDefinitionDTO report : result.getData()) {
 							view.setReportElement(report);
 							view.setReport(report);
@@ -121,24 +132,70 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	}
 	
 	public void addChart(){
+		unEditElements();
 		Widget w = (Widget) elementEditor.createChart();
 		view.addToCenterPanel(w,"New Chart");
+		view.addElement(elementEditor.retriveReportElement(), true);
 	}
 	
 	public void addTable(){
+		unEditElements();
 		Widget w = (Widget) elementEditor.createTable();
 		view.addToCenterPanel(w,"New Table");
+		view.addElement(elementEditor.retriveReportElement(), true);
 	}
 	
 	public void addMap(){
+		unEditElements();	
 		Widget w = (Widget) elementEditor.createMap();
 		view.addToCenterPanel(w,"New Map");
+		view.addElement(elementEditor.retriveReportElement(), true);
 	}
 	
 	public void loadReportComponents(int reportId) {
 
 	}
+	
+	public void updateReport(int id, String title, List<ReportElement> elements){
+		UpdateReport updateReport = new UpdateReport();
+		updateReport.setId(id);
+		updateReport.setTitle(title);
+		updateReport.setElement(elements);
+		
+		service.execute(updateReport, null,
+				new AsyncCallback<VoidResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						// callback.onFailure(caught);
+					}
 
+					@Override
+					public void onSuccess(VoidResult result) {
+						loadReport(view.getReportId());
+					}
+				});
+	}
+	
+	public List<ReportElement> getReportElements(){
+		List<ReportElement> elements = new ArrayList<ReportElement>();
+		List<ModelData> store = view.getReportElements().getModels();
+		for(int i = 0; i < store.size(); i++ ){
+			ModelData currentElm = store.get(i);
+			if(currentElm.get("edited")){
+				elements.add(elementEditor.retriveReportElement());
+			}else{
+				elements.add((ReportElement)currentElm.get("element"));
+			}
+		}
+		return elements;
+	}
+	
+	public void unEditElements(){
+		for(ModelData elm : view.getReportElements().getModels()){
+			elm.set("edited", false);
+		}
+	}
+	
 	@Override
 	public void shutdown() {
 

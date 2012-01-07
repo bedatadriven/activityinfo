@@ -58,7 +58,8 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
     private String[] weekdays;
     private final Dispatcher service;
     private final EventBus eventBus;
-    public int selectedReportId;
+    private int selectedReportId;
+    private Button editButton;
 
     @Inject
     public ReportListPageView(EventBus eventBus, Dispatcher service) {
@@ -116,7 +117,9 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
         grid.addListener(Events.CellClick, new Listener<GridEvent<ReportDefinitionDTO>>() {
             @Override
 			public void handleEvent(GridEvent<ReportDefinitionDTO> event) {
-            	selectedReportId = event.getModel().getId();            }
+            	editButton.setEnabled(true);
+            	selectedReportId = event.getModel().getId();            
+            	}
         });
 
         add(grid);
@@ -242,14 +245,14 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
         newButton.setMenu(dbMenu);
         toolBar.add(newButton);
         
-        Button editButton = new Button(I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit());
+        editButton = new Button(I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit());
         editButton.addListener(Events.OnClick, new Listener<BaseEvent>(){
         	@Override
         	public void handleEvent(BaseEvent be){
         		eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ReportDesignPageState(selectedReportId)));        		
         	}
         });
-        
+        editButton.setEnabled(false);
         toolBar.add(editButton);
     }
 
