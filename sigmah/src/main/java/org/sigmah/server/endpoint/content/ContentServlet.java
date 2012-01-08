@@ -33,7 +33,8 @@ public class ContentServlet extends HttpServlet {
 	
 	public static final String ROOT = "content/";
 	
-	public static final String[] HEADERS_TO_COPY = new String[] { "Cookie", "Accept-Language", "Accept-Encoding" };
+	public static final String[] HEADERS_TO_COPY = new String[] { "Cookie", "Accept-Language", 
+		"Accept-Encoding", "Host"};
 
 	@Override
 	protected void doGet(HttpServletRequest req, final HttpServletResponse resp)
