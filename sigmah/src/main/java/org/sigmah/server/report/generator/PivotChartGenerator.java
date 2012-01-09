@@ -113,6 +113,10 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement>
             return element.getValueAxisTitle();
         }
 
+        if(element.getIndicators() == null || element.getIndicators().size() <= 0){
+        	return "[Empty]";
+        }
+        
         int indicatorId = element.getIndicators().get(0);
 
         Indicator indicator = indicatorDAO.findById(indicatorId);
