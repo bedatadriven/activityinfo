@@ -8,6 +8,7 @@ import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
@@ -34,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -56,6 +58,7 @@ public class ReportDesignPage extends ContentPanel implements
 
 	private ToolBar toolBar;
 	private TextField<String> titleField;
+	private Button save;
 	private ReportDesignPresenter presenter;
 	private ContentPanel elementListPane;
 	private LayoutContainer center;
@@ -125,8 +128,9 @@ public class ReportDesignPage extends ContentPanel implements
 		addTable.setItemId(UIActions.ADDTABLE);
 		toolBar.add(addTable);
 
-		Button save = new Button(I18N.CONSTANTS.save(), null, listener);
+		save = new Button(I18N.CONSTANTS.save(), IconImageBundle.ICONS.save(), listener);
 		save.setItemId(UIActions.SAVE);
+		save.setEnabled(false);
 		toolBar.add(save);
 		
 		setTopComponent(toolBar);
@@ -171,15 +175,7 @@ public class ReportDesignPage extends ContentPanel implements
 					@Override
 					public void handleEvent(
 							ListViewEvent<ModelData> event) {
-
-						presenter.unEditElements();
-						
-						ModelData model =  event.getModel();
-						model.set("edited", true);
-						ReportElement e =  model.get("element");
-						
-						presenter.createEditor(e);
-							
+								loadElement(event.getModel());	
 					}
 				});
 
@@ -259,6 +255,20 @@ public class ReportDesignPage extends ContentPanel implements
 		store.add(addReportElement(element, edited));
 	}
 	
+	public void loadElement(ModelData model){
+		if(save.isEnabled()){
+			MessageBox.alert(I18N.CONSTANTS.error(), "Please save current report element.", null);
+		}else{
+			presenter.unEditElements();
+			
+			model.set("edited", true);
+			ReportElement e =  model.get("element");
+			
+			presenter.createEditor(e);
+			save.setEnabled(true);	
+		}
+	}
+	
 	@Override
 	public ListStore<ModelData> getReportElements() {
 		return store;
@@ -285,6 +295,7 @@ public class ReportDesignPage extends ContentPanel implements
 	
 	@Override
 	public void setPreviewHtml(String html, String heading) {
+		save.setEnabled(false);
 		previewHtml.setHtml(html);
 		addToPreviewPanel(previewHtml, heading);
 	}
@@ -299,4 +310,8 @@ public class ReportDesignPage extends ContentPanel implements
 		return selectedReport.getId();
 	}
 	
+	@Override
+	public Button getSaveButton(){
+		return save;
+	}
 }

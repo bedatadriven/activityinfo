@@ -26,6 +26,8 @@ import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
@@ -60,6 +62,8 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		int getReportId();
 
 		void addElement(ReportElement element, boolean edited);
+
+		Button getSaveButton();
 	}
 
 	@Inject
@@ -132,24 +136,36 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	}
 	
 	public void addChart(){
-		unEditElements();
-		Widget w = (Widget) elementEditor.createChart();
-		view.addToCenterPanel(w,"New Chart");
-		view.addElement(elementEditor.retriveReportElement(), true);
+		if(view.getSaveButton().isEnabled()){
+			MessageBox.alert(I18N.CONSTANTS.error(), "Please save current report element.", null);
+		}else{
+			unEditElements();
+			Widget w = (Widget) elementEditor.createChart();
+			view.addToCenterPanel(w,"New Chart");
+			view.addElement(elementEditor.retriveReportElement(), true);
+		}
 	}
 	
 	public void addTable(){
-		unEditElements();
-		Widget w = (Widget) elementEditor.createTable();
-		view.addToCenterPanel(w,"New Table");
-		view.addElement(elementEditor.retriveReportElement(), true);
+		if(view.getSaveButton().isEnabled()){
+			MessageBox.alert(I18N.CONSTANTS.error(), "Please save current report element.", null);
+		}else{
+			unEditElements();
+			Widget w = (Widget) elementEditor.createTable();
+			view.addToCenterPanel(w,"New Table");
+			view.addElement(elementEditor.retriveReportElement(), true);
+		}
 	}
 	
 	public void addMap(){
-		unEditElements();	
-		Widget w = (Widget) elementEditor.createMap();
-		view.addToCenterPanel(w,"New Map");
-		view.addElement(elementEditor.retriveReportElement(), true);
+		if(view.getSaveButton().isEnabled()){
+			MessageBox.alert(I18N.CONSTANTS.error(), "Please save current report element.", null);
+		}else{
+			unEditElements();	
+			Widget w = (Widget) elementEditor.createMap();
+			view.addToCenterPanel(w,"New Map");
+			view.addElement(elementEditor.retriveReportElement(), true);
+		}
 	}
 	
 	public void loadReportComponents(int reportId) {
@@ -172,6 +188,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 					@Override
 					public void onSuccess(VoidResult result) {
 						loadReport(view.getReportId());
+						view.getSaveButton().setEnabled(false);
 					}
 				});
 	}
