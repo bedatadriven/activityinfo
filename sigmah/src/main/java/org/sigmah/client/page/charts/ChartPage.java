@@ -142,6 +142,7 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 				load();
 			}
         });
+        typeGroup.setSelection(Type.Bar);
 
         toolBar.add(new LabelToolItem(I18N.CONSTANTS.chartType()));
         toolBar.add(typeGroup.getButtons());
@@ -257,13 +258,15 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener{
 		if(type == Type.ClusteredBar){
 			updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
 			updateLegendComboLabel(I18N.CONSTANTS.bars());
-		}else if(type == Type.Line){
+		} else if(type == Type.Line){
 			updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
 			updateLegendComboLabel(I18N.CONSTANTS.lines());
-		}else if(type == Type.Pie){
-			legendLabel.disable();
-			legendCombo.disable();
+		} else if(type == Type.Pie){
+			updateCategoryComboLabel(I18N.CONSTANTS.slices());
 		}
+		legendLabel.setEnabled(type != Type.Pie);
+		legendCombo.setEnabled(type != Type.Pie);
+
     }
     
     private void updateCategoryComboLabel(String label){
