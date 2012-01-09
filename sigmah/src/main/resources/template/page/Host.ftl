@@ -62,11 +62,7 @@
 		if(document.cookie.indexOf('authToken=') == -1) {
 			window.location = "/login";
 		}
-        var UserInfo = {
-            userId: ${auth.user.id},
-            authToken: "${auth.id}",
-            email: "${auth.user.email}"
-        };
+		
         var GoogleMapsAPI = {
             key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
         };

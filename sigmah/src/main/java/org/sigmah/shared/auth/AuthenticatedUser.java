@@ -26,6 +26,8 @@ public class AuthenticatedUser {
 	 * Authentication token.
 	 */
 	public static final String AUTH_TOKEN_COOKIE = "authToken";
+	public static final String EMAIL_COOKIE = "email";
+	public static final String USER_ID_COOKIE = "userId";
 	
 	public AuthenticatedUser(String authToken, int userId, String userEmail,
 			String userLocale) {
