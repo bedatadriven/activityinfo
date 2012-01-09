@@ -120,7 +120,7 @@ public class AppFrameSet implements Frame {
         Button logoutTool = new Button(I18N.CONSTANTS.logout(), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Window.Location.assign("/logout");
+                Window.Location.assign("/content/");
             }
         });
         topBar.add(logoutTool);
