@@ -23,5 +23,17 @@ public final class AuthCookieUtil {
         authCookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
         authCookie.setPath("/");
         response.addCookie(authCookie);
+        
+        // user info in cookies
+        Cookie emailCookie = new Cookie(AuthenticatedUser.EMAIL_COOKIE, auth.getUser().getEmail());
+        emailCookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
+        emailCookie.setPath("/");
+        response.addCookie(emailCookie);
+        
+        Cookie userIdCookie = new Cookie(AuthenticatedUser.USER_ID_COOKIE, String.valueOf(auth.getUser().getId()));
+        userIdCookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
+        userIdCookie.setPath("/");
+        response.addCookie(userIdCookie);
+        
     }
 }

@@ -5,7 +5,10 @@
 
 package org.sigmah.client.authentication;
 
+import java.util.Collection;
+
 import org.sigmah.shared.auth.AuthenticatedUser;
+import org.sigmah.shared.exception.InvalidAuthTokenException;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
@@ -24,30 +27,22 @@ public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
 
     public AuthenticatedUser get() {
 
-        if (Cookies.getCookie("authToken") != null &&
-                Cookies.getCookie("userId") != null &&
-                Cookies.getCookie("email") != null) {
+    	String authToken = Cookies.getCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE);
+    	String userId = Cookies.getCookie(AuthenticatedUser.USER_ID_COOKIE) ;
+    	String email = Cookies.getCookie(AuthenticatedUser.EMAIL_COOKIE);
+    	
+        if (authToken != null && userId != null && email != null) {
 
             return new AuthenticatedUser(
-                    Cookies.getCookie("authToken"),
-            		Integer.parseInt(Cookies.getCookie("userId")),
-                    Cookies.getCookie("email"),
+            		authToken,
+            		Integer.parseInt(userId),
+            		email,
                     currentLocale());
 
         }
 
-        Dictionary userInfo;
-        try {
-            userInfo = Dictionary.getDictionary("UserInfo");
-            return new AuthenticatedUser(
-                    userInfo.get("authToken"),
-            		Integer.parseInt(userInfo.get("userId")),
-                    userInfo.get("email"),
-                    currentLocale());
-        } catch (Exception e) {
-            Log.fatal("DictionaryAuthenticationProvider: exception retrieving dictionary from page", e);
-            throw new RuntimeException("Cannot retrieve user dictionary from page", e);
-        }
+       	throw new InvalidAuthTokenException("Request is not authenticated");
+
     }
     
     private String currentLocale() {
