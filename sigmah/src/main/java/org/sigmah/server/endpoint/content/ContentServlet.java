@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -39,10 +40,14 @@ public class ContentServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, final HttpServletResponse resp)
 			throws ServletException, IOException {
-		
+
+		String url = "http://activityinfo.dreamhosters.com" + req.getRequestURI();
+		if(!Strings.isNullOrEmpty(req.getQueryString())) {
+			url += "?" + req.getQueryString();
+		}
 		
         HttpClient httpclient = createClient();
-		HttpGet httpget = new HttpGet("http://activityinfo.dreamhosters.com" + req.getRequestURI());
+		HttpGet httpget = new HttpGet(url);
 		
 		passThroughHeaders(req, httpget);
         proxy(httpclient, httpget, resp);
@@ -64,6 +69,7 @@ public class ContentServlet extends HttpServlet {
 	private HttpClient createClient() {
 		HttpClient httpclient = new DefaultHttpClient();
         httpclient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
+        httpclient.getParams().setParameter(ClientPNames.VIRTUAL_HOST, new HttpHost("www.activityinfo.org"));
 		return httpclient;
 	}
 
@@ -75,6 +81,7 @@ public class ContentServlet extends HttpServlet {
 				method.addHeader(header, headerValue);
 			}		
 		}
+		method.addHeader("Host", "www.activityinfo.org");
 	}
 	
 	private void proxy(HttpClient httpclient, HttpRequestBase method,

@@ -50,7 +50,7 @@ public class HostController extends AbstractController {
 				writeView(resp, model);
             }
         } catch (NoValidAuthentication noValidAuthentication) {
-            resp.sendRedirect("/content/" + parseUrlSuffix(req));
+            resp.sendRedirect("/content/");
         }
     }
 
