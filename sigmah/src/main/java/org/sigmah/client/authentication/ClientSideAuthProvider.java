@@ -36,7 +36,7 @@ public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
             return new AuthenticatedUser(
             		authToken,
             		Integer.parseInt(userId),
-            		email,
+            		email.replaceAll("\"", ""),
                     currentLocale());
 
         }
