@@ -17,23 +17,22 @@ public final class AuthCookieUtil {
 	
     private static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
     private static final int THIS_SESSION = -1;
-
+    private static final String ROOT= "/";
+    
     public static void addAuthCookie(HttpServletResponse response, Authentication auth, boolean remember) {
-        Cookie authCookie = new Cookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, auth.getId());
-        authCookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
-        authCookie.setPath("/");
-        response.addCookie(authCookie);
         
-        // user info in cookies
-        Cookie emailCookie = new Cookie(AuthenticatedUser.EMAIL_COOKIE, auth.getUser().getEmail());
-        emailCookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
-        emailCookie.setPath("/");
-        response.addCookie(emailCookie);
+    	response.addCookie(createCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE,auth.getId(), remember ));
+
+    	response.addCookie(createCookie(AuthenticatedUser.USER_ID_COOKIE,String.valueOf(auth.getUser().getId()), remember ));
         
-        Cookie userIdCookie = new Cookie(AuthenticatedUser.USER_ID_COOKIE, String.valueOf(auth.getUser().getId()));
-        userIdCookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
-        userIdCookie.setPath("/");
-        response.addCookie(userIdCookie);
+    	response.addCookie(createCookie(AuthenticatedUser.EMAIL_COOKIE,auth.getUser().getEmail(), remember ));
+    }
+    
+    public static Cookie createCookie(String name, String value, boolean remember){
+    	Cookie cookie = new Cookie(name, value);
+    	cookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
+    	cookie.setPath(ROOT);
         
+        return cookie;
     }
 }
