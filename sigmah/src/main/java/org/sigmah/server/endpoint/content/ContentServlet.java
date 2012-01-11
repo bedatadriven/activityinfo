@@ -19,8 +19,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.CookiePolicy;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
@@ -35,7 +38,22 @@ public class ContentServlet extends HttpServlet {
 	public static final String ROOT = "content/";
 	
 	public static final String[] HEADERS_TO_COPY = new String[] { "Cookie", "Accept-Language", 
-		"Accept-Encoding"};
+		"Accept-Encoding", "Content-Type", "Content-Length"};
+
+	
+	private HttpClient httpclient;
+	
+	
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		
+		ClientConnectionManager conMan = new ThreadSafeClientConnManager();
+		httpclient = new DefaultHttpClient(conMan);
+        httpclient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
+        httpclient.getParams().setParameter(ClientPNames.VIRTUAL_HOST, new HttpHost("www.activityinfo.org"));
+        httpclient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, final HttpServletResponse resp)
@@ -46,31 +64,19 @@ public class ContentServlet extends HttpServlet {
 			url += "?" + req.getQueryString();
 		}
 		
-        HttpClient httpclient = createClient();
 		HttpGet httpget = new HttpGet(url);
 		
 		passThroughHeaders(req, httpget);
-        proxy(httpclient, httpget, resp);
+        proxy(httpget, resp);
 	}
 
 	@Override
 	protected void doPost(final HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
-	    HttpClient httpclient = createClient();
 		HttpPost httppost = new HttpPost("http://activityinfo.dreamhosters.com" + req.getRequestURI());
 		passThroughHeaders(req, httppost);
 		httppost.setEntity(new InputStreamEntity(req.getInputStream(), -1));
-		proxy(httpclient, httppost, resp);
-     
-	}
-
-
-	private HttpClient createClient() {
-		HttpClient httpclient = new DefaultHttpClient();
-        httpclient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
-        httpclient.getParams().setParameter(ClientPNames.VIRTUAL_HOST, new HttpHost("www.activityinfo.org"));
-		return httpclient;
+		proxy(httppost, resp);
 	}
 
 	
@@ -81,10 +87,9 @@ public class ContentServlet extends HttpServlet {
 				method.addHeader(header, headerValue);
 			}		
 		}
-		method.addHeader("Host", "www.activityinfo.org");
 	}
 	
-	private void proxy(HttpClient httpclient, HttpRequestBase method,
+	private void proxy(HttpRequestBase method,
 			final HttpServletResponse resp) throws IOException,
 			ClientProtocolException {
 		
