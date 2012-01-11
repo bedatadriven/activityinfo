@@ -38,7 +38,7 @@ public class ContentServlet extends HttpServlet {
 	public static final String ROOT = "content/";
 	
 	public static final String[] HEADERS_TO_COPY = new String[] { "Cookie", "Accept-Language", 
-		"Accept-Encoding", "Content-Type", "Content-Length"};
+		"Accept-Encoding", "Content-Type"};
 
 	
 	private HttpClient httpclient;
