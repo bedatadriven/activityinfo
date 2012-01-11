@@ -27,7 +27,6 @@ import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.TargetDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.DuplicatePartnerException;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -37,6 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /*
  * Displays a grid where users can add, remove and change Targets
@@ -61,15 +61,16 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	private UserDatabaseDTO db;
 	private ListStore<TargetDTO> store;
 	private TargetIndicatorPresenter targetIndicatorPresenter ;
-
+	
 	@Inject
-	public DbTargetEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
+	public DbTargetEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view, Provider<TargetIndicatorPresenter> targetIndicatorPresenterProvider) {
 
 		super(eventBus, stateMgr, view);
 		this.service = service;
 		this.eventBus = eventBus;
 		this.view = view;
 		this.stateMgr =stateMgr;
+		targetIndicatorPresenter = targetIndicatorPresenterProvider.get();
 	}
 
 	 public void go(UserDatabaseDTO db) {
@@ -85,7 +86,6 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	        view.setActionEnabled(UIActions.DELETE, false);
 	        view.setActionEnabled(UIActions.EDIT, false);
 	        
-	        targetIndicatorPresenter =  new TargetIndicatorPresenter(eventBus, service, stateMgr, new TargetIndicatorView(service), I18N.CONSTANTS);
 	        view.createTargetValueContainer((Widget)targetIndicatorPresenter.getWidget());
 	        targetIndicatorPresenter.go(db);
 	    }
@@ -135,11 +135,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 
 	                service.execute(new AddTarget(db.getId(), newTarget), dlg, new AsyncCallback<CreateResult>() {
 	                    public void onFailure(Throwable caught) {
-	                        if (caught instanceof DuplicatePartnerException) {
-	                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
-	                        } else {
-	                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
-	                        }
+	                        MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
 	                    }
 
 	                    public void onSuccess(CreateResult result) {

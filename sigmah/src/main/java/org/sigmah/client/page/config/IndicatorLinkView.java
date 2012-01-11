@@ -303,21 +303,25 @@ public class IndicatorLinkView extends
 					return I18N.CONSTANTS.notLinked();
 					
 				}else {
-					SafeHtmlBuilder builder = new SafeHtmlBuilder();
-					Collection<String> collection = dto.getIndicatorLinks().getDestinationIndicator().values();
-					for(String name : collection){
-						builder.appendHtmlConstant(name);
-						builder.appendEscaped(" | ");
-					}
-
-					String tooltip =  builder.toSafeHtml().asString();
-					String html = "<span qtip='" + tooltip + "'>" + builder.toSafeHtml().asString() + "</span>";
-					
-					return html;	
+					return buildToolTip(dto);	
 				}
 			}
 
 			return "";
+		}
+		
+		private String buildToolTip(IndicatorDTO dto){
+			SafeHtmlBuilder builder = new SafeHtmlBuilder();
+			Collection<String> collection = dto.getIndicatorLinks().getDestinationIndicator().values();
+			for(String name : collection){
+				builder.appendHtmlConstant(name);
+				builder.appendEscaped(" | ");
+			}
+
+			String tooltip =  builder.toSafeHtml().asString();
+			String html = "<span qtip='" + tooltip + "'>" + builder.toSafeHtml().asString() + "</span>";
+			
+			return html;
 		}
 	}
 

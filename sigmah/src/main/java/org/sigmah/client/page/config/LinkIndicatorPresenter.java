@@ -182,10 +182,11 @@ public class LinkIndicatorPresenter extends
 							sourceIndicator.setIndicatorLinks(linkDTO);
 						}
 						
+						HashMap<Integer, String> destIndicators = sourceIndicator.getIndicatorLinks().getDestinationIndicator();
 						if(checked){
-							sourceIndicator.getIndicatorLinks().getDestinationIndicator().put(destinationIndicator.getId(), destinationIndicator.getName());
+							destIndicators.put(destinationIndicator.getId(), destinationIndicator.getName());
 						}else{
-							sourceIndicator.getIndicatorLinks().getDestinationIndicator().remove(destinationIndicator.getId());
+							destIndicators.remove(destinationIndicator.getId());
 						}
 						
 						sourceTreeStore.update(sourceIndicator);

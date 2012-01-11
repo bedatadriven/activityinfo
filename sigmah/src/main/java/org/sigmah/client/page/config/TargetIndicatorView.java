@@ -33,7 +33,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 
@@ -144,7 +143,6 @@ public class TargetIndicatorView extends
 	@Override
 	protected void initToolBar() {
 
-
 	}
 
 	private ColumnModel createColumnModel() {
@@ -162,27 +160,31 @@ public class TargetIndicatorView extends
 		ColumnConfig valueColumn = new ColumnConfig("value",
 				I18N.CONSTANTS.targetValue(), 150);
 		valueColumn.setEditor(new CellEditor(valueField));
-		valueColumn.setRenderer(new GridCellRenderer<ModelData>() {
-
-			@Override
-			public Object render(ModelData model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ModelData> store, Grid<ModelData> grid) {
-				
-				if(model instanceof TargetValueDTO  && model.get("value")==null){
-					config.style = "color:gray;font-style:italic;";
-					return	I18N.CONSTANTS.noTarget();
-					
-				}else if(model.get("value")!=null){
-					
-					return model.get("value");
-				}
-				
-				return "";
-			}
-		});
+		valueColumn.setRenderer(new TargetValueCellRenderer());
 		columns.add(valueColumn);
 
 		return new ColumnModel(columns);
+	}
+	
+	private class TargetValueCellRenderer implements GridCellRenderer<ModelData>{		
+		
+		public TargetValueCellRenderer(){}
+
+		@Override
+		public Object render(ModelData model, String property,
+				ColumnData config, int rowIndex, int colIndex, ListStore store,
+				Grid grid) {
+			
+			if(model instanceof TargetValueDTO  && model.get("value")==null){
+				config.style = "color:gray;font-style:italic;";
+				return	I18N.CONSTANTS.noTarget();
+				
+			}else if(model.get("value")!=null){
+				
+				return model.get("value");
+			}
+			
+			return "";
+		}	
 	}
 }
