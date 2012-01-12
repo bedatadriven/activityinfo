@@ -54,6 +54,8 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.util.DelayedTask;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -403,6 +405,7 @@ public class ChartPage extends LayoutContainer implements Page, ActionListener, 
             @Override
 			public void handleEvent(BaseEvent be) {
             	typeGroup.setSelection(element.getType());
+            	updateLabels();
             	
             	if(element.getCategoryDimensions() != null && element.getCategoryDimensions().size() >0){
             		categoryCombo.setValue((Dimension)element.getCategoryDimensions().get(0));

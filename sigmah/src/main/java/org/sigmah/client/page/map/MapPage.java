@@ -248,7 +248,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	public void createReport(){
     	
     	final Report report = new Report();
-    	report.addElement(mapReportElement);
+    	report.addElement(aiMapWidget.getValue());
     	report.setDay(form.getDay());
     	report.setTitle(form.getTitle());
     	report.setFrequency(form.getReportFrequency());
@@ -282,14 +282,9 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         });
     }
     
-    public void bindElement(MapReportElement element){
-    	new DelayedTask(new Listener<BaseEvent>() {
-            @Override
-			public void handleEvent(BaseEvent be) {
-				aiMapWidget.setValue(mapReportElement);
-				layersWidget.setValue(mapReportElement);
-            }
-        }).delay(10000);
+    public void bindElement(final MapReportElement element){
+		aiMapWidget.setValue(element);
+		layersWidget.setValue(element);
     }
 	
 	@Override
@@ -325,7 +320,7 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 
 	@Override
 	public ReportElement retriveReportElement() {
-		return mapReportElement;
+		return aiMapWidget.getValue();
 	}
 }
 
