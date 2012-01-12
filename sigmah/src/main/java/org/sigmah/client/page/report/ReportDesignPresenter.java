@@ -198,7 +198,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		List<ModelData> store = view.getReportElements().getModels();
 		for(int i = 0; i < store.size(); i++ ){
 			ModelData currentElm = store.get(i);
-			if(currentElm.get("edited")){
+			if((Boolean)currentElm.get("edited")){
 				elements.add(elementEditor.retriveReportElement());
 			}else{
 				elements.add((ReportElement)currentElm.get("element"));
