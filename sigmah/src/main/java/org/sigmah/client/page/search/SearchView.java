@@ -11,7 +11,6 @@ import org.sigmah.shared.dto.SearchHitDTO;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.DimensionType;
 
-import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.ImplementedBy;
@@ -54,7 +53,7 @@ public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
 		}
 	}
 	
-	interface SearchHandler extends EventHandler {
+	interface SearchHandler extends com.google.gwt.event.shared.EventHandler {
 		void onSearch(SearchEvent searchEvent);
 	}
 }

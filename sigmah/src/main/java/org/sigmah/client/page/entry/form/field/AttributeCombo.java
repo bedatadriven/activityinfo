@@ -17,12 +17,17 @@ public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeF
 		store.add(attributeGroup.getAttributes());
 		
 		setStore(store);	
+		setDisplayField("name");
+		setFieldLabel(attributeGroup.getName());
+		setTriggerAction(TriggerAction.ALL);
+		setForceSelection(true);
 	}
 
 	@Override
 	public void updateForm(SiteDTO site) {
 		for(AttributeDTO attribute : getStore().getModels()) {
-			if(site.getAttributeValue(attribute.getId())) {
+			Boolean value = site.getAttributeValue(attribute.getId());
+			if(value != null && value) {
 				setValue(attribute);
 				return;
 			}
