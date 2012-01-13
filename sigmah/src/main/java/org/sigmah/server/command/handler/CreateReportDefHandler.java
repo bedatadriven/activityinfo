@@ -47,7 +47,10 @@ public class CreateReportDefHandler implements CommandHandler<CreateReportDef> {
                 reportDef.setXml(xml);
         	}
  	
-            reportDef.setDatabase(em.getReference(UserDatabase.class, cmd.getDatabaseId()));
+        	if(cmd.getDatabaseId() != null) { 
+        		reportDef.setDatabase(em.getReference(UserDatabase.class, cmd.getDatabaseId()));
+        	} 
+        	
             reportDef.setTitle(report.getTitle());
             reportDef.setDescription(report.getDescription());
             reportDef.setFrequency(report.getFrequency());
