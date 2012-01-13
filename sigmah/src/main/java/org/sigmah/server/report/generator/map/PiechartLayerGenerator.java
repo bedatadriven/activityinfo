@@ -30,15 +30,16 @@ import org.sigmah.shared.util.mapping.Extents;
 
 public class PiechartLayerGenerator extends AbstractLayerGenerator {
 
-    private PiechartMapLayer layer;
-	private List<SiteDTO> sites;
+    private final PiechartMapLayer layer;
+	private final List<SiteDTO> sites;
 
     public PiechartLayerGenerator(PiechartMapLayer layer, List<SiteDTO> sites) {
         this.layer = layer;
         this.sites=sites;
     }
 
-    public Extents calculateExtents() {
+    @Override
+	public Extents calculateExtents() {
 
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
@@ -52,7 +53,8 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         return extents;
     } 
 
-    public void generate(TiledMap map, MapContent content) {
+    @Override
+	public void generate(TiledMap map, MapContent content) {
 
         // create the list of input point values
         List<PointValue> points = new ArrayList<PointValue>();
@@ -87,7 +89,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for(Cluster cluster : clusters) {
             Point px = cluster.getPoint();
-            AiLatLng latlng = cluster.latLngCentroid();
+            AiLatLng latlng = map.fromPixelToLatLng(px);
             BubbleMapMarker marker = new PieMapMarker();
 
             sumSlices((PieMapMarker) marker, cluster.getPointValues());
@@ -169,13 +171,14 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
     }
 
     public static class IntersectionCalculator implements MarkerGraph.IntersectionCalculator {
-        private int radius;
+        private final int radius;
 
         public IntersectionCalculator(int radius) {
             this.radius = radius;
         }
 
-        public boolean intersects(MarkerGraph.Node a, MarkerGraph.Node b) {
+        @Override
+		public boolean intersects(MarkerGraph.Node a, MarkerGraph.Node b) {
             return a.getPoint().distance(b.getPoint()) < radius *2 &&
                     a.getPointValue().getSymbol().equals(b.getPointValue().getSymbol());
         }

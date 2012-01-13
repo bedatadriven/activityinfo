@@ -33,8 +33,8 @@ public class IconLayerGenerator
 
     private final IconMapLayer layer;
 
-    private MapIcon icon;
-	private List<SiteDTO> sites;
+    private final MapIcon icon;
+	private final List<SiteDTO> sites;
 
 
     public IconLayerGenerator(IconMapLayer layer, List<SiteDTO> sites) {
@@ -117,7 +117,7 @@ public class IconLayerGenerator
             IconMapMarker marker = new IconMapMarker();
             marker.setX(cluster.getPoint().getX());
             marker.setY(cluster.getPoint().getY());
-            AiLatLng latlng = cluster.latLngCentroid();
+            AiLatLng latlng = map.fromPixelToLatLng(cluster.getPoint());
             marker.setLat(latlng.getLat());
             marker.setLng(latlng.getLng());
             marker.setTitle(formatTitle(cluster));

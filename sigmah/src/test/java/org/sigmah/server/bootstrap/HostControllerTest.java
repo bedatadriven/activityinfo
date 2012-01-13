@@ -6,7 +6,6 @@
 package org.sigmah.server.bootstrap;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -19,7 +18,9 @@ import org.sigmah.shared.auth.AuthenticatedUser;
 
 public class HostControllerTest extends ControllerTestCase {
 
-    @Before
+    private static final String HOME_PAGE = "/content/";
+
+	@Before
     public void setupController() {
         controller = new HostController(injector, templateCfg);
         req.setRequestURL("http://www.activityinfo.org");
@@ -30,7 +31,7 @@ public class HostControllerTest extends ControllerTestCase {
 
         get();
 
-        assertEquals(resp.redirectUrl, LoginController.ENDPOINT);
+        assertEquals(resp.redirectUrl, HOME_PAGE);
     }
 
     @Test
@@ -48,16 +49,6 @@ public class HostControllerTest extends ControllerTestCase {
 
         get();
 
-        assertEquals(LoginController.ENDPOINT, resp.redirectUrl);
-    }
-
-    @Test
-    public void verifyThatBookmarksArePassedOnToLoginPage() throws IOException, ServletException {
-
-        req.setRequestURL("http://www.activityinfo.org/#charts");
-
-        get();
-
-        assertTrue(resp.redirectUrl.endsWith("#charts"));
+        assertEquals(HOME_PAGE, resp.redirectUrl);
     }
 }

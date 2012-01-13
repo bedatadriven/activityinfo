@@ -32,15 +32,16 @@ import org.sigmah.shared.util.mapping.Extents;
 
 public class BubbleLayerGenerator extends AbstractLayerGenerator {
 
-    private BubbleMapLayer layer;
-    private List<SiteDTO> sites;
+    private final BubbleMapLayer layer;
+    private final List<SiteDTO> sites;
 
     public BubbleLayerGenerator(BubbleMapLayer layer, List<SiteDTO> sites) {
         this.layer = layer;
         this.sites=sites;
     }
 
-    public Extents calculateExtents() {
+    @Override
+	public Extents calculateExtents() {
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
 
@@ -54,11 +55,13 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         return extents;
     }
 
-    public Margins calculateMargins() {
+    @Override
+	public Margins calculateMargins() {
         return new Margins(layer.getMaxRadius());
     }
 
-    public void generate(TiledMap map, MapContent content) {
+    @Override
+	public void generate(TiledMap map, MapContent content) {
         // define our symbol scaling
         RadiiCalculator radiiCalculator;
         if(layer.getScaling() == ScalingType.None ||
@@ -96,7 +99,7 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for(Cluster cluster : clusters) {
             Point px = cluster.getPoint();
-            AiLatLng latlng = cluster.latLngCentroid();
+            AiLatLng latlng = map.fromPixelToLatLng(px);
             BubbleMapMarker marker =  new BubbleMapMarker();
 
             for(PointValue pv : cluster.getPointValues()) {
@@ -130,7 +133,8 @@ public class BubbleLayerGenerator extends AbstractLayerGenerator {
         // (this assures that smaller symbols are drawn on
         // top of larger ones)
         Collections.sort(markers, new Comparator<MapMarker>() {
-            public int compare(MapMarker o1, MapMarker o2) {
+            @Override
+			public int compare(MapMarker o1, MapMarker o2) {
                 if (o1.getSize() > o2.getSize()) {
                     return -1;
                 } else if (o1.getSize() < o2.getSize()) {
