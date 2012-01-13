@@ -2,11 +2,11 @@
 <Document>
 <#list schema.databases as db>
 <Folder>
-	<name>${db.name}</name>
+	<name>${db.name?xml}</name>
 	<open>1</open>
 	<#list db.activities as activity>
 		<NetworkLink>
-		<name>${activity.name}</name>
+		<name>${activity.name?xml}</name>
 		<refreshVisibility>0</refreshVisibility>
 		<flyToView>1</flyToView>
 		<Link>
