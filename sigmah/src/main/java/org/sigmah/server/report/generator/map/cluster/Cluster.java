@@ -14,7 +14,7 @@ import org.sigmah.shared.report.model.PointValue;
  * are clustered together in a given chromosome
  */
 public class Cluster {
-    private List<PointValue> pointValues;
+    private final List<PointValue> pointValues;
     private double radius;
     private Point point;
     private Rectangle rectangle;
