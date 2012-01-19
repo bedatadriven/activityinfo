@@ -175,7 +175,7 @@ public class ReportListPageView extends AbstractEditorGridView<ReportDefinitionD
         });
         columns.add(day);
 
-        ColumnConfig subscribed = new ColumnConfig("subscribed", I18N.CONSTANTS.subscribed(), 100);
+        ColumnConfig subscribed = new ColumnConfig("subscribed", I18N.CONSTANTS.emailSubscription(), 100);
         subscribed.setRenderer(new GridCellRenderer<ReportDefinitionDTO>() {
             @Override
             public Object render(ReportDefinitionDTO model, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<ReportDefinitionDTO> store, Grid<ReportDefinitionDTO> grid) {

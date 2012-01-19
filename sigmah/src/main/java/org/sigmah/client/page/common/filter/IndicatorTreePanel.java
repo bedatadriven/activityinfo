@@ -73,24 +73,10 @@ public class IndicatorTreePanel extends ContentPanel {
 		this.monitor = monitor;
 
 		store = new TreeStore<ModelData>(new Loader());
-		store.setKeyProvider(new ModelKeyProvider<ModelData>() {
-
-			@Override
-			public String getKey(ModelData model) {
-				List<String> keys = new ArrayList<String>();
-				if (model instanceof ProvidesKey) {
-					return ((ProvidesKey) model).getKey();
-				} else if (model == null) {
-					throw new IllegalStateException(
-							"Did not expect model to be null: assigning keys in IndicatorTreePanel");
-				}
-				throw new IllegalStateException(
-						"Unknown type: expected activity, userdb, indicator or indicatorgroup");
-			}
-		});
-
+		
+		setStoreKeyProvider();
+		
 		tree = new TreePanel<ModelData>(store);
-		tree.setCheckable(true);
 
 		setAllNodesCheckable();
 		
@@ -106,23 +92,11 @@ public class IndicatorTreePanel extends ContentPanel {
 		
 		tree.getStyle().setNodeCloseIcon(null);
 		tree.getStyle().setNodeOpenIcon(null);
-		tree.setLabelProvider(new ModelStringProvider<ModelData>() {
-			@Override
-			public String getStringValue(ModelData model, String property) {
-				String name = model.get("name");
-				if (model instanceof IndicatorDTO) {
-					return name;
-				} else {
-					if (name == null) {
-						name = "noname";
-					}
-					return "<b>" + name + "</b>";
-				}
-			}
-		});
-		tree.setStateId("indicatorPanel");
-		tree.setStateful(true);
-		tree.setAutoSelect(true);
+		
+		setTreeLabelProvider();
+				
+		setTreeConfigurations();
+		
 		tree.addListener(Events.BrowserEvent,
 				new Listener<TreePanelEvent<ModelData>>() {
 
@@ -151,7 +125,29 @@ public class IndicatorTreePanel extends ContentPanel {
 		this.setScrollMode(Style.Scroll.NONE);
 
 		this.store = new TreeStore<ModelData>();
-		this.store.setKeyProvider(new ModelKeyProvider<ModelData>() {
+		
+		setStoreKeyProvider();
+		
+		tree = new TreePanel<ModelData>(this.store);
+				
+		setTreeLabelProvider();
+		
+		setTreeConfigurations();
+		
+		add(tree);
+	}
+	
+	
+	private void setTreeConfigurations(){
+		tree.setCheckable(true);
+		tree.expandAll();
+		tree.setStateId("indicatorPanel");
+		tree.setStateful(true);
+		tree.setAutoSelect(true);
+	}
+	
+	private void setStoreKeyProvider(){
+		store.setKeyProvider(new ModelKeyProvider<ModelData>() {
 
 			@Override
 			public String getKey(ModelData model) {
@@ -166,10 +162,9 @@ public class IndicatorTreePanel extends ContentPanel {
 						"Unknown type: expected activity, userdb, indicator or indicatorgroup");
 			}
 		});
-
-		tree = new TreePanel<ModelData>(this.store);
-		tree.setCheckable(true);
-		tree.expandAll();
+	}
+	
+	private void setTreeLabelProvider(){
 		tree.setLabelProvider(new ModelStringProvider<ModelData>() {
 			@Override
 			public String getStringValue(ModelData model, String property) {
@@ -184,11 +179,6 @@ public class IndicatorTreePanel extends ContentPanel {
 				}
 			}
 		});
-		tree.setStateId("indicatorPanel");
-		tree.setStateful(true);
-		tree.setAutoSelect(true);
-		
-		add(tree);
 	}
 	
 	public void loadSingleDatabase(UserDatabaseDTO database){

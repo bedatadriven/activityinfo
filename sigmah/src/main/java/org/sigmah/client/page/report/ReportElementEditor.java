@@ -1,17 +1,13 @@
 package org.sigmah.client.page.report;
 
-import javax.xml.bind.annotation.XmlElement;
-
-import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.callback.Got;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageElement;
 import org.sigmah.client.page.charts.ChartPage;
 import org.sigmah.client.page.map.MapPage;
+import org.sigmah.client.page.report.editor.AbstractEditor;
+import org.sigmah.client.page.report.editor.ChartEditor;
 import org.sigmah.client.page.table.PivotPresenter;
-import org.sigmah.shared.command.RenderReportHtml;
-import org.sigmah.shared.command.result.HtmlResult;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;
@@ -27,21 +23,22 @@ public class ReportElementEditor {
 
 	private Provider<PivotPresenter> pivotPageProvider;
 	private Provider<MapPage> mapPageProvider;
-	private Provider<ChartPage> chartPageProvider;
+	private Provider<ChartEditor> chartEditorProvider;
 
 	private ReportElement reportElement;
 	private Page page;
+	private AbstractEditor editor;
 
 	@Inject
 	public ReportElementEditor(Dispatcher service,
 			Provider<PivotPresenter> pivotPageProvider,
 			Provider<MapPage> mapPageProvider,
-			Provider<ChartPage> chartPageProvider) {
+			Provider<ChartEditor> chartEditorProvider) {
 
 		this.service = service;
 		this.pivotPageProvider = pivotPageProvider;
 		this.mapPageProvider = mapPageProvider;
-		this.chartPageProvider = chartPageProvider;
+		this.chartEditorProvider = chartEditorProvider;
 	}
 
 	public Object createEditor(ReportElement reportElement) {
@@ -55,7 +52,7 @@ public class ReportElementEditor {
 	private void createEditor() {
 		if (this.reportElement instanceof PivotChartReportElement) {
 			createChart();
-			((ChartPage)page).bindReportElement((PivotChartReportElement)this.reportElement);
+			//((ChartPage)page).bindReportElement((PivotChartReportElement)this.reportElement);
 			
 		} else if (this.reportElement instanceof PivotTableReportElement) {
 			createTable();
@@ -74,8 +71,8 @@ public class ReportElementEditor {
 	}
 
 	public Object createChart() {
-		page = chartPageProvider.get();
-		return getWidget();
+		editor = chartEditorProvider.get();
+		return editor.getWidget();
 	}
 
 	public Object createMap() {

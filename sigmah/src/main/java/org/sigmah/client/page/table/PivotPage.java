@@ -390,7 +390,7 @@ public final class PivotPage extends LayoutContainer implements PivotPresenter.V
 		export.setItemId(UIActions.EXPORT);
 		gridToolBar.add(export);
 
-		Button subscribe = new Button(I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.email(), listener);
+		Button subscribe = new Button(I18N.CONSTANTS.emailSubscription(), IconImageBundle.ICONS.email(), listener);
 		subscribe.setItemId(UIActions.SUBSCRIBE);
 		gridToolBar.add(subscribe);
 		
