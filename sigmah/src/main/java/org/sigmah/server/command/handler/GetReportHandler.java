@@ -2,12 +2,14 @@ package org.sigmah.server.command.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBException;
 
 import org.sigmah.server.database.hibernate.entity.ReportDefinition;
+import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.shared.command.GetReport;
@@ -39,26 +41,30 @@ public class GetReportHandler implements CommandHandler<GetReport> {
 						"select r from ReportDefinition r where r.id in (:id)")
 				.setParameter("id", cmd.getReportTemplateId());
 
-		List<ReportDefinition> results = query.getResultList();
+		ReportDefinition result = (ReportDefinition) query.getSingleResult();
 
 		List<ReportDefinitionDTO> dtos = new ArrayList<ReportDefinitionDTO>();
+		List<String> emails = new ArrayList<String>(); 
 
 		try {
-		for (ReportDefinition template : results) {
-
 			ReportDefinitionDTO dto = new ReportDefinitionDTO();
-			dto.setId(template.getId());
-			dto.setOwnerName(template.getOwner().getName());
-			dto.setAmOwner(template.getOwner().getId() == user.getId());
-			dto.setTitle(template.getTitle());
-			dto.setFrequency(template.getFrequency());
-			dto.setDay(template.getDay());
-			dto.setDescription(template.getDescription());
+			dto.setId(result.getId());
+			dto.setOwnerName(result.getOwner().getName());
+			dto.setAmOwner(result.getOwner().getId() == user.getId());
+			dto.setTitle(result.getTitle());
+			dto.setFrequency(result.getFrequency());
+			dto.setDay(result.getDay());
+			dto.setDescription(result.getDescription());
 			dto.setEditAllowed(dto.getAmOwner());
-			dto.setSubscribed(true);	
+			dto.setSubscribed(true);
+			
+			for(ReportSubscription sub : result.getSubscriptions()){
+				emails.add(sub.getUser().getEmail());
+			}
+			dto.setSubscribers(emails);
+			
 			Report report = new Report();
-	
-			report = ReportParserJaxb.parseXml(template.getXml());
+			report = ReportParserJaxb.parseXml(result.getXml());
 
 			List<TableElement> tbles = Lists.newArrayList();
 			
@@ -72,7 +78,7 @@ public class GetReportHandler implements CommandHandler<GetReport> {
 			dto.setReport(report);
 			
 			dtos.add(dto);
-		}
+			
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

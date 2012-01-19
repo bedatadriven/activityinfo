@@ -180,6 +180,11 @@ public class SubscribeForm extends FormPanel {
 		return title.getValue();
 	}
 
+	public void setReadOnlyTitle(String text){
+		title.setValue(text);
+		title.setReadOnly(true);
+	}
+	
 	public ReportFrequency getReportFrequency() {
 		if (monthly.getValue()) {
 			return ReportFrequency.Monthly;
@@ -200,6 +205,12 @@ public class SubscribeForm extends FormPanel {
 
 		return store.getModels();
 
+	}
+	
+	public void setEmailList(List<String> emails){
+		for(String email : emails){
+			store.add(new ReportSubscriber(email));
+		}
 	}
 
 	public boolean validListField() {

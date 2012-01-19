@@ -6,7 +6,9 @@
 package org.sigmah.shared.dto;
 
 import java.util.List;
+import java.util.Set;
 
+import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.report.model.ReportFrequency;
@@ -20,7 +22,8 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  */
 public final class ReportDefinitionDTO extends BaseModelData implements DTO {
 
-	Report report;
+	private Report report;
+	private List<String> subscribers;
     /**
      * Dummy reference to assure that GWT includes ReportFrequency is included
      * in the list of classes to serialize.
@@ -176,4 +179,13 @@ public final class ReportDefinitionDTO extends BaseModelData implements DTO {
     public void setReport(Report report){
     	this.report =report;
     }
+
+	public List<String> getSubscribers() {
+		return subscribers;
+	}
+
+	public void setSubscribers(List<String> subscribers) {
+		this.subscribers = subscribers;
+	}
+    
 }

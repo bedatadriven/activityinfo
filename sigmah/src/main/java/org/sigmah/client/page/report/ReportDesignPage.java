@@ -133,6 +133,10 @@ public class ReportDesignPage extends ContentPanel implements
 		save.setEnabled(false);
 		toolBar.add(save);
 		
+		Button subscribe = new Button(I18N.CONSTANTS.subscribed(), IconImageBundle.ICONS.email(), listener);
+		subscribe.setItemId(UIActions.SUBSCRIBE);
+		toolBar.add(subscribe);
+		
 		setTopComponent(toolBar);
 	}
 
@@ -306,8 +310,8 @@ public class ReportDesignPage extends ContentPanel implements
 	}
 
 	@Override
-	public int getReportId() {	
-		return selectedReport.getId();
+	public ReportDefinitionDTO getReport() {	
+		return selectedReport;
 	}
 	
 	@Override

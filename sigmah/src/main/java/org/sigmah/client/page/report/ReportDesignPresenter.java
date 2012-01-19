@@ -12,8 +12,12 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.common.SubscribeForm;
+import org.sigmah.client.page.common.dialog.FormDialogCallback;
+import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.GetReport;
 import org.sigmah.shared.command.GetUserReports;
 import org.sigmah.shared.command.RenderReportHtml;
@@ -40,6 +44,9 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	private final Dispatcher service;
 	private final View view;
 	private final ReportElementEditor elementEditor;
+	
+    private SubscribeForm form;
+    private FormDialogImpl dialog;
 
 	@ImplementedBy(ReportDesignPage.class)
 	public interface View {
@@ -59,7 +66,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		
 		void addToCenterPanel(Widget w, String title);
 		
-		int getReportId();
+		ReportDefinitionDTO getReport();
 
 		void addElement(ReportElement element, boolean edited);
 
@@ -93,7 +100,10 @@ public class ReportDesignPresenter implements ActionListener, Page {
 			addTable();
 		}
 		else if(UIActions.SAVE.equals(actionId)){
-			updateReport(view.getReportId(), null, getReportElements());
+			updateReport(view.getReport().getId(), null, getReportElements());
+		}
+		else if(UIActions.SUBSCRIBE.equals(actionId)){
+			createSubscribeForm();
 		}
 	}
 
@@ -143,6 +153,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 			Widget w = (Widget) elementEditor.createChart();
 			view.addToCenterPanel(w,"New Chart");
 			view.addElement(elementEditor.retriveReportElement(), true);
+			view.getSaveButton().setEnabled(true);
 		}
 	}
 	
@@ -154,6 +165,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 			Widget w = (Widget) elementEditor.createTable();
 			view.addToCenterPanel(w,"New Table");
 			view.addElement(elementEditor.retriveReportElement(), true);
+			view.getSaveButton().setEnabled(true);
 		}
 	}
 	
@@ -165,6 +177,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 			Widget w = (Widget) elementEditor.createMap();
 			view.addToCenterPanel(w,"New Map");
 			view.addElement(elementEditor.retriveReportElement(), true);
+			view.getSaveButton().setEnabled(true);
 		}
 	}
 	
@@ -187,8 +200,9 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 					@Override
 					public void onSuccess(VoidResult result) {
-						loadReport(view.getReportId());
+						loadReport(view.getReport().getId());
 						view.getSaveButton().setEnabled(false);
+						view.addToCenterPanel(null, I18N.CONSTANTS.reportPreview());
 					}
 				});
 	}
@@ -212,6 +226,45 @@ public class ReportDesignPresenter implements ActionListener, Page {
 			elm.set("edited", false);
 		}
 	}
+	
+	public void createSubscribeForm(){
+		form = new SubscribeForm();
+		form.setReadOnlyTitle(view.getReport().getTitle());
+		form.setEmailList(view.getReport().getSubscribers());
+    	
+		dialog = new FormDialogImpl(form);
+		dialog.setWidth(450);
+		dialog.setHeight(400);
+		dialog.setHeading(I18N.CONSTANTS.SubscribeTitle());
+		
+		dialog.show(new FormDialogCallback() {
+			@Override
+			public void onValidated() {
+				if(form.validListField()){
+					subscribeEmail(view.getReport().getId());	
+				} else{
+					MessageBox.alert(I18N.CONSTANTS.error(), I18N.MESSAGES.noEmailAddress(), null);
+				}
+            }
+		});
+	}
+	
+	public void subscribeEmail(int reportId){
+    	
+    	CreateSubscribe sub = new CreateSubscribe();
+		sub.setReportTemplateId(reportId);
+		sub.setEmailsList(form.getEmailList());
+        
+		service.execute(sub, dialog, new AsyncCallback<VoidResult>() {
+            public void onFailure(Throwable caught) {
+            	dialog.onServerError();
+            }
+
+            public void onSuccess(VoidResult result) {
+            	dialog.hide();
+            }
+        });
+    }
 	
 	@Override
 	public void shutdown() {

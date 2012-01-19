@@ -2,7 +2,7 @@ package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.ReportTemplateResult;
 
-public class GetReport extends GetListCommand<ReportTemplateResult> {
+public class GetReport implements Command<ReportTemplateResult> {
 	
 	private int reportTemplateId;
 	

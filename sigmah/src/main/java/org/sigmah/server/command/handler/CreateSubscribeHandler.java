@@ -1,7 +1,9 @@
 package org.sigmah.server.command.handler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -20,6 +22,7 @@ import com.google.inject.Inject;
 public class CreateSubscribeHandler implements CommandHandler<CreateSubscribe> {
 
 	private final EntityManager em;
+	private ReportDefinition reportDef;
 
 	@Inject
 	public CreateSubscribeHandler(EntityManager em) {
@@ -35,29 +38,41 @@ public class CreateSubscribeHandler implements CommandHandler<CreateSubscribe> {
 		for (ReportSubscriber email : emailList) {
 			emails.add(email.getEmail());
 		}
-		Query query = em.createQuery(
+		
+		Query getUser = em.createQuery(
 				"select u from User u where u.email in (:email)").setParameter(
 				"email", emails);
 
-		List<User> users = query.getResultList();
+		Query getSubscriptions = em.createQuery(
+				"select r from ReportDefinition r where r.id in (:id)")
+				.setParameter("id", cmd.getReportTemplateId());
 
-		for (ReportSubscriber email : emailList) {
+		List<User> users = getUser.getResultList();
+		
+		reportDef = (ReportDefinition) getSubscriptions
+				.getSingleResult();
+		
+		Set<ReportSubscription> subs = new HashSet<ReportSubscription>(0);
+		
+		for(ReportSubscription sub : reportDef.getSubscriptions()){
+			subs.add(sub);
+		}
+
+		for (ReportSubscriber newSub : emailList) {
 
 			User newUser = new User();
-			newUser.setEmail(email.getEmail());
+			newUser.setEmail(newSub.getEmail());
 
 			if (users.contains(newUser)) {
 
 				int userId = users.get(users.indexOf(newUser)).getId();
-				ReportSubscription sub = new ReportSubscription(
-						em.getReference(ReportDefinition.class,
-								cmd.getReportTemplateId()), em.getReference(
-								User.class, userId));
-				sub.setSubscribed(true);
-				sub.setInvitingUser(executingUser);
-
-				em.persist(sub);
-
+				
+				for( ReportSubscription rs  : subs ){
+					if(rs.getUser().equals(newUser)){
+						rs.setSubscribed(newSub.isSubscribed());
+					}	
+				}
+				
 			} else {
 
 				newUser.setName("");
@@ -78,7 +93,8 @@ public class CreateSubscribeHandler implements CommandHandler<CreateSubscribe> {
 				em.persist(sub);
 			}
 		}
-
+		reportDef.setSubscriptions(subs);
+		em.persist(reportDef);
 		return new VoidResult();
 	}
 
