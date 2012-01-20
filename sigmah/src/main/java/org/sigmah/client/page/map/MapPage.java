@@ -34,7 +34,7 @@ import com.google.inject.Inject;
 /**
  * Displays a map where the user can interactively create a map
  */
-public class MapPage extends AbstactMap implements Page, ExportCallback {
+public class MapPage extends AbstractMap implements Page, ExportCallback {
 
 	public static final PageId PAGE_ID = new PageId("maps");
 

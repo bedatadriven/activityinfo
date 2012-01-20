@@ -81,5 +81,4 @@ public class ReportElementEditor {
 	public ReportElement retriveReportElement(){		
 		return editor.getReportElement();
 	}
-
 }

@@ -2,13 +2,13 @@ package org.sigmah.client.page.report.editor;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.page.map.AbstactMap;
+import org.sigmah.client.page.map.AbstractMap;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
 
-public class MapEditor extends AbstactMap implements AbstractEditor {
+public class MapEditor extends AbstractMap implements AbstractEditor {
 
 	@Inject
 	public MapEditor(Dispatcher dispatcher, EventBus eventBus) {

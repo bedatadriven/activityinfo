@@ -17,7 +17,6 @@ public class PivotEditor implements AbstractEditor {
 		
 	}
 
-	
 		
 	@Override
 	public Object getWidget() {

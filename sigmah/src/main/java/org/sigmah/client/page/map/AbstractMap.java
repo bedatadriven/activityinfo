@@ -23,7 +23,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
 import com.google.inject.Inject;
 
-public abstract class AbstactMap extends ContentPanel implements ActionListener {
+public abstract class AbstractMap extends ContentPanel implements ActionListener {
 
 	protected static final int CONTROL_TOP_MARGIN = 10;
 	protected static final int LAYERS_STYLE_TOP_MARGIN = 50;
@@ -43,7 +43,7 @@ public abstract class AbstactMap extends ContentPanel implements ActionListener 
 	protected AbsoluteLayout layout;
 
 	@Inject
-	public AbstactMap(Dispatcher dispatcher, EventBus eventBus) {
+	public AbstractMap(Dispatcher dispatcher, EventBus eventBus) {
 		this.dispatcher = dispatcher;
 		this.eventBus = eventBus;
 
