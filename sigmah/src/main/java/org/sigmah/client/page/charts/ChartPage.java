@@ -4,9 +4,6 @@
  */
 
 package org.sigmah.client.page.charts;
-
-import java.util.List;
-
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
@@ -14,7 +11,6 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
-import org.sigmah.client.page.PageElement;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.SubscribeForm;
@@ -28,12 +24,7 @@ import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.Report;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.util.DelayedTask;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -179,13 +170,4 @@ public class ChartPage extends AbstractChart implements Page {
 		return true;
 	}
 
-//	@Override
-//	public void bindReportElement(ReportElement element) {
-//		bindElement((PivotChartReportElement) element);
-//	}
-//
-//	@Override
-//	public ReportElement retriveReportElement() {
-//		return getChartElement();
-//	}
 }

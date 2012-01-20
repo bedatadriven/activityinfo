@@ -101,7 +101,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     private boolean apiLoadFailed = false;
 
     private final Dispatcher dispatcher;
-	private MapPage mapPage;
+	private AbstactMap abstractMap;
 
 	private LargeMapControl zoomControl;
 	private int zoomControlOffsetX = 5;
@@ -339,7 +339,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 			isFirstLayerUpdate = false;
 		}
 		
-		Component maskingComponent = mapPage == null ? this : mapPage;
+		Component maskingComponent = abstractMap == null ? this : abstractMap;
     	
     	dispatcher.execute(new GenerateElement<MapContent>(mapReportElement), new MaskingAsyncMonitor(maskingComponent, I18N.CONSTANTS.loadingMap()), new AsyncCallback<MapContent>() {
 			@Override
@@ -500,8 +500,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 	}
 	
 
-	public void setMaster(MapPage mapPage) {
-		this.mapPage = mapPage;
+	public void setMaster(AbstactMap mapPage) {
+		this.abstractMap = mapPage;
 	}
 	
 	private void addClusteringMessage(BubbleMapMarker marker, StringBuilder builder) {

@@ -11,16 +11,14 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.DelayedTask;
 
 public class PivotEditor implements AbstractEditor {
-		
-	ReportElement element;
+
 	
 	public PivotEditor(ReportElement element) {
 		
 	}
 
 	
-	
-	
+		
 	@Override
 	public Object getWidget() {
 		return null;
@@ -32,7 +30,7 @@ public class PivotEditor implements AbstractEditor {
 
 	@Override
 	public ReportElement getReportElement() {
-		return element;
+		return null;
 	}
 
 }
