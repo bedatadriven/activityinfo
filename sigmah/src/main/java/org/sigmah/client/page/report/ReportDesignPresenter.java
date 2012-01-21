@@ -147,42 +147,40 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	}
 
 	public void addChart() {
-		addNewElement ("New Chart", PivotChartReportElement.class );
+		addNewElement("New Chart", (Widget) elementEditor.createChart());	
 	}
 
 	public void addTable() {
-		addNewElement ("New Table", PivotTableReportElement.class );
+		addNewElement("New Table", (Widget) elementEditor.createTable());
 	}
 
 	public void addMap() {
-		addNewElement ("New Map", MapReportElement.class );
+		addNewElement("New Map", (Widget) elementEditor.createMap());		
 	}
 
-	private void addNewElement(String heading, Class type) {
+	private void addNewElement(String heading, Widget w) {
+		if(isSaved()){
+			unEditElements();
+			addElementToView(w, heading);
+		}		
+	}
 
+	private boolean isSaved(){
+		
 		if (view.getSaveButton().isEnabled()) {
 			MessageBox.alert(I18N.CONSTANTS.error(), "Please save current report element.", null);
-		} else {
-			unEditElements();
-			Widget w = null;
-			
-			if (type.equals(MapReportElement.class)) {
-				w = (Widget) elementEditor.createMap();
-			} else if (type.equals(PivotTableReportElement.class)) {
-				w = (Widget) elementEditor.createTable();
-			} else if (type.equals(PivotChartReportElement.class)) {
-				w = (Widget) elementEditor.createChart();
-			}else{
-				throw new RuntimeException("Unknown element type "
-						+ ReportDesignPage.class.getName());
-			}
-
-			view.addToCenterPanel(w, "New Map");
-			view.addElement(elementEditor.retriveReportElement(), true);
-			view.getSaveButton().setEnabled(true);
+			return false;
 		}
+		return true;
 	}
+	
+	private void addElementToView(Widget w, String heading){
 
+		view.addToCenterPanel(w, heading);
+		view.addElement(elementEditor.retriveReportElement(), true);
+		view.getSaveButton().setEnabled(true);
+	}
+	
 	public void loadReportComponents(int reportId) {
 
 	}
