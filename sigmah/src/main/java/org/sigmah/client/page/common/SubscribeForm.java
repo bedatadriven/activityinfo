@@ -1,5 +1,6 @@
 package org.sigmah.client.page.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
@@ -39,11 +40,12 @@ public class SubscribeForm extends FormPanel {
 	private TextField<String> newEmail;
 	private Button addEmail;
 	private Button removeEmail;
+	
+	private List<ReportSubscriber> unsubscribers;
 
 	public SubscribeForm() {
-
+		unsubscribers = new ArrayList<ReportSubscriber>();
 		createLayout();
-
 	}
 
 	public void createLayout() {
@@ -73,6 +75,7 @@ public class SubscribeForm extends FormPanel {
 
 		dayOfWeek = new MappingComboBox();
 		dayOfWeek.setAllowBlank(false);
+		dayOfWeek.setEditable(false);
 		dayOfWeek.setFieldLabel(I18N.CONSTANTS.dayOfWeek());
 		
 		String[] weekDays = LocaleInfo.getCurrentLocale().getDateTimeConstants().weekdays();
@@ -82,6 +85,7 @@ public class SubscribeForm extends FormPanel {
 		add(dayOfWeek);
 
 		dayOfMonth = new MappingComboBox();
+		dayOfMonth.setEditable(false);
 		dayOfMonth.hide();
 		dayOfMonth.setFieldLabel(I18N.CONSTANTS.dayOfMonth());
 		for (int i = 1; i <= 31; i++) {
@@ -93,16 +97,10 @@ public class SubscribeForm extends FormPanel {
 			@Override
 			public void handleEvent(BaseEvent be) {
 				if (weekly.getValue()) {
-					dayOfMonth.hide();
-					dayOfMonth.setAllowBlank(true);
-					dayOfWeek.setAllowBlank(false);
-					dayOfWeek.show();
+					showWeek();
 
 				} else if (monthly.getValue()) {
-					dayOfWeek.hide();
-					dayOfWeek.setAllowBlank(true);
-					dayOfMonth.setAllowBlank(false);
-					dayOfMonth.show();
+					showMonth();
 				}
 			}
 		});
@@ -167,7 +165,10 @@ public class SubscribeForm extends FormPanel {
 		removeEmail.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				store.remove(subscribers.getSelection().get(0));
+				ReportSubscriber removeSub = subscribers.getSelection().get(0);
+				removeSub.setSubscribed(false);
+				unsubscribers.add(removeSub);
+				store.remove(removeSub);
 				removeEmail.setEnabled(false);
 			}
 		});
@@ -200,9 +201,32 @@ public class SubscribeForm extends FormPanel {
 			return (Integer) ((ModelData) dayOfWeek.getSelection().get(0)).get("value");
 		}
 	}
+	
+	public void setFrequency(ReportFrequency freq, int day){
+		if(freq.equals(ReportFrequency.Weekly)){
+			ModelData selectedDay = (ModelData) dayOfWeek.getStore().getModels().get((day - 1));
+			dayOfWeek.setMappedValue(selectedDay.get("value"));
+			weekly.setValue(true);
+			monthly.setValue(false);
+			
+			showWeek();
+		}
+		else if(freq.equals(ReportFrequency.Monthly)){
+			ModelData selectedDay = (ModelData) dayOfMonth.getStore().getModels().get(day);
+			dayOfMonth.setMappedValue(selectedDay.get("value"));
+			weekly.setValue(false);
+			monthly.setValue(true);
+			
+			showMonth();
+		}
+	}
 
 	public List<ReportSubscriber> getEmailList() {
-
+		if(unsubscribers.size() > 0 ){
+			for(ReportSubscriber unSub : unsubscribers){
+				store.add(unSub);
+			}
+		}
 		return store.getModels();
 
 	}
@@ -220,5 +244,18 @@ public class SubscribeForm extends FormPanel {
 			return true;
 		}
 	}
-
+	
+	public void showWeek(){
+		dayOfMonth.hide();
+		dayOfMonth.setAllowBlank(true);
+		dayOfWeek.setAllowBlank(false);
+		dayOfWeek.show();
+	}
+	
+	public void showMonth(){
+		dayOfWeek.hide();
+		dayOfWeek.setAllowBlank(true);
+		dayOfMonth.setAllowBlank(false);
+		dayOfMonth.show();
+	}
 }

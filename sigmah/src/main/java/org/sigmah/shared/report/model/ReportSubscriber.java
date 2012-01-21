@@ -21,11 +21,11 @@ public class ReportSubscriber extends BaseModelData{
 		return (String) get("email");
 	}
 	
-	public void setSubscribed(boolean subscribed){
+	public void setSubscribed(Boolean subscribed){
 		set("subscribed", subscribed);
 	}
 	
-	public boolean isSubscribed(){
+	public Boolean isSubscribed(){
 		return get("subscribed");
 	}
 }

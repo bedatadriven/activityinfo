@@ -70,7 +70,17 @@ public class CreateSubscribeHandler implements CommandHandler<CreateSubscribe> {
 				for( ReportSubscription rs  : subs ){
 					if(rs.getUser().equals(newUser)){
 						rs.setSubscribed(newSub.isSubscribed());
-					}	
+					}
+					else{
+						ReportSubscription sub = new ReportSubscription(
+								em.getReference(ReportDefinition.class,
+										cmd.getReportTemplateId()), em.getReference(
+										User.class, userId));
+						sub.setSubscribed(newSub.isSubscribed());
+						sub.setInvitingUser(executingUser);
+						
+						em.persist(sub);
+					}
 				}
 				
 			} else {
@@ -94,6 +104,8 @@ public class CreateSubscribeHandler implements CommandHandler<CreateSubscribe> {
 			}
 		}
 		reportDef.setSubscriptions(subs);
+		reportDef.setFrequency(cmd.getReportFrequency());
+		reportDef.setDay(cmd.getDay());
 		em.persist(reportDef);
 		return new VoidResult();
 	}

@@ -230,6 +230,9 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		form = new SubscribeForm();
 		form.setReadOnlyTitle(view.getReport().getTitle());
 		form.setEmailList(view.getReport().getSubscribers());
+		if(view.getReport().getFrequency() != null && view.getReport().getDay() != null ){
+			form.setFrequency(view.getReport().getFrequency(), view.getReport().getDay());
+		}
 
 		dialog = new FormDialogImpl(form);
 		dialog.setWidth(450);
@@ -254,6 +257,8 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		CreateSubscribe sub = new CreateSubscribe();
 		sub.setReportTemplateId(reportId);
 		sub.setEmailsList(form.getEmailList());
+		sub.setReportFrequency(form.getReportFrequency());
+		sub.setDay(form.getDay());
 
 		service.execute(sub, dialog, new AsyncCallback<VoidResult>() {
 			public void onFailure(Throwable caught) {
@@ -262,6 +267,8 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 			public void onSuccess(VoidResult result) {
 				dialog.hide();
+				loadReport(view.getReport().getId());
+				
 			}
 		});
 	}

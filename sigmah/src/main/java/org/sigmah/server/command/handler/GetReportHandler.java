@@ -59,7 +59,9 @@ public class GetReportHandler implements CommandHandler<GetReport> {
 			dto.setSubscribed(true);
 			
 			for(ReportSubscription sub : result.getSubscriptions()){
-				emails.add(sub.getUser().getEmail());
+				if(sub.isSubscribed()){
+					emails.add(sub.getUser().getEmail());
+				}	
 			}
 			dto.setSubscribers(emails);
 			
