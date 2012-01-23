@@ -261,24 +261,7 @@ public class ContentServlet extends HttpServlet {
 		// Check if the proxy response is a redirect
 		// The following code is adapted from org.tigris.noodle.filters.CheckForRedirect
 		// Hooray for open source software
-		if(intProxyResponseCode >= HttpServletResponse.SC_MULTIPLE_CHOICES /* 300 */
-				&& intProxyResponseCode < HttpServletResponse.SC_NOT_MODIFIED /* 304 */) {
-
-			String stringStatusCode = Integer.toString(intProxyResponseCode);
-			String stringLocation = httpMethodProxyRequest.getResponseHeader(STRING_LOCATION_HEADER).getValue();
-			if(stringLocation == null) {
-					throw new ServletException("Recieved status code: " + stringStatusCode 
-							+ " but no " +  STRING_LOCATION_HEADER + " header was found in the response");
-			}
-			// Modify the redirect to go to this proxy servlet rather that the proxied host
-			String stringMyHostName = httpServletRequest.getServerName();
-			if(httpServletRequest.getServerPort() != 80) {
-				stringMyHostName += ":" + httpServletRequest.getServerPort();
-			}
-			stringMyHostName += httpServletRequest.getContextPath();
-			httpServletResponse.sendRedirect(stringLocation.replace(getProxyHostAndPort() + this.getProxyPath(), stringMyHostName));
-			return;
-		} else if(intProxyResponseCode == HttpServletResponse.SC_NOT_MODIFIED) {
+		if(intProxyResponseCode == HttpServletResponse.SC_NOT_MODIFIED) {
 			// 304 needs special handling.  See:
 			// http://www.ics.uci.edu/pub/ietf/http/rfc1945.html#Code304
 			// We get a 304 whenever passed an 'If-Modified-Since'
