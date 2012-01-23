@@ -31,6 +31,7 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.http.client.params.ClientPNames;
 
 import com.google.inject.Singleton;
 
@@ -78,7 +79,7 @@ public class ContentServlet extends HttpServlet {
 	/**
 	 * The (optional) path on the proxy host to wihch we are proxying requests. Default value is "".
 	 */
-	private String stringProxyPath = "";
+	private String stringProxyPath = "/content";
 	/**
 	 * The maximum size for uploaded files in bytes. Default value is 5MB.
 	 */
@@ -250,6 +251,7 @@ public class ContentServlet extends HttpServlet {
     			throws IOException, ServletException {
 		// Create a default HttpClient
     	HttpClient httpClient = new HttpClient();
+    	httpClient.getParams().setParameter(ClientPNames.VIRTUAL_HOST, "www.activityinfo.org");
 		httpMethodProxyRequest.setFollowRedirects(false);
 		// Execute the request
 		int intProxyResponseCode = httpClient.executeMethod(httpMethodProxyRequest);
