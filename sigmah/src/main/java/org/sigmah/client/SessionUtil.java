@@ -1,12 +1,17 @@
 package org.sigmah.client;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Location;
 
-public class SessionUtil {
+public final class SessionUtil {
+	
+	private SessionUtil() {}
 
 	public static void forceLogin() {
-		Window.Location.assign("/login");
+		Window.Location.assign("/content/");
+	}
+
+	public static void logout() {
+		Window.Location.assign("/logout");
 	}
 
 }

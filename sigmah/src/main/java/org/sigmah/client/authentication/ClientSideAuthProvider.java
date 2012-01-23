@@ -5,13 +5,9 @@
 
 package org.sigmah.client.authentication;
 
-import java.util.Collection;
-
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.exception.InvalidAuthTokenException;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Cookies;
 import com.google.inject.Provider;
@@ -25,7 +21,8 @@ import com.google.inject.Provider;
  */
 public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
 
-    public AuthenticatedUser get() {
+    @Override
+	public AuthenticatedUser get() {
 
     	String authToken = Cookies.getCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE);
     	String userId = Cookies.getCookie(AuthenticatedUser.USER_ID_COOKIE) ;
@@ -40,7 +37,6 @@ public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
                     currentLocale());
 
         }
-
        	throw new InvalidAuthTokenException("Request is not authenticated");
 
     }

@@ -31,7 +31,7 @@ public class LogoutController extends AbstractController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logUserOut(resp);
-        resp.sendRedirect("/login");
+        resp.sendRedirect("/content/");
     }
 
     protected void logUserOut(HttpServletResponse resp) {

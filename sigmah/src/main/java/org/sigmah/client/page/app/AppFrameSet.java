@@ -6,6 +6,7 @@
 package org.sigmah.client.page.app;
 
 import org.sigmah.client.EventBus;
+import org.sigmah.client.SessionUtil;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
@@ -120,13 +121,19 @@ public class AppFrameSet implements Frame {
         Button logoutTool = new Button(I18N.CONSTANTS.logout(), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Window.Location.assign("/content/");
+                SessionUtil.logout();
             }
+
         });
         topBar.add(logoutTool);
 
         viewport.add(topBar, new RowData(1.0, 30));
     }
+    
+
+	private static void logout() {
+		Window.Location.assign("/content/");
+	}
 
 	private void addSearchBox() {
 		final SearchField searchBox = new SearchField();
