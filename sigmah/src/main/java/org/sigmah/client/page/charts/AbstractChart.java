@@ -32,6 +32,8 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -43,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class AbstractChart extends LayoutContainer implements
@@ -165,7 +168,7 @@ public abstract class AbstractChart extends LayoutContainer implements
 	protected void createDimBar() {
 		ToolBar dimBar = new ToolBar();
 		ListStore<Dimension> store = DimensionStoreFactory.create(service);
-
+			
 		categoryLabel = new LabelToolItem();
 		updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
 		dimBar.add(categoryLabel);

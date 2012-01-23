@@ -29,6 +29,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.ModelStringProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
@@ -395,4 +396,8 @@ public class IndicatorTreePanel extends ContentPanel {
 	}
 
 
+	public void addListenerToStore(EventType event, Listener listener){
+		store.addListener(event, listener);
+	}
+	
 }

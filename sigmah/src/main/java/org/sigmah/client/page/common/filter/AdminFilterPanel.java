@@ -28,6 +28,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.CheckChangedEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedListener;
+import com.extjs.gxt.ui.client.event.EventType;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -226,4 +228,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 		}
 	}
 	
+	public void addListenerToStore(EventType event, Listener listener){
+		store.addListener(event, listener);
+	}
 }

@@ -27,6 +27,7 @@ import org.sigmah.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -205,4 +206,8 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 			ValueChangeHandler<Filter> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
+	
+	public void addListenerToStore(EventType event, Listener listener){
+		store.addListener(event, listener);
+	}	
 }
