@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
@@ -252,6 +253,7 @@ public class ContentServlet extends HttpServlet {
 		// Create a default HttpClient
     	HttpClient httpClient = new HttpClient();
     	httpClient.getParams().setParameter(ClientPNames.VIRTUAL_HOST, "www.activityinfo.org");
+    	httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES );
 		httpMethodProxyRequest.setFollowRedirects(false);
 		// Execute the request
 		int intProxyResponseCode = httpClient.executeMethod(httpMethodProxyRequest);
@@ -261,6 +263,7 @@ public class ContentServlet extends HttpServlet {
 		// Hooray for open source software
 		if(intProxyResponseCode >= HttpServletResponse.SC_MULTIPLE_CHOICES /* 300 */
 				&& intProxyResponseCode < HttpServletResponse.SC_NOT_MODIFIED /* 304 */) {
+
 			String stringStatusCode = Integer.toString(intProxyResponseCode);
 			String stringLocation = httpMethodProxyRequest.getResponseHeader(STRING_LOCATION_HEADER).getValue();
 			if(stringLocation == null) {
