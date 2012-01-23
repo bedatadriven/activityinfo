@@ -176,7 +176,7 @@ public class ContentServlet extends HttpServlet {
     				);
     				// Add the part to the list
     				listParts.add(stringPart);
-    			} else {kie:wordpress_test_cookie=WP+Cookie+check; qtrans_cookie_test=qTranslate+Cookie+Test; __cfduid=db362cd172cb0c66337f79d78b16904f61327315244; __cfduid=db362cd172cb0c66337f79d78b16904f61327315244; authToken=dd029fcb0c7aa26c7cd45fb57054afad; userId=3; email="akbertram@gmail.com"; lastPlace=welcome; __utma=165213999.1640212456.1327317485.1327326446.1327329744.3; __utmc=165213999; __utmz=165213999.1327317485.1.1.utmcsr=activityinfo.dreamhosters.com|utmccn=(referral)|utmcmd=referral|utmcct=/wp-admin; __utmv=165213999.|1=gears=not%20installed=1; AWSELB=496B5D370AB89D9CB8AAB4ADFE62A98BFA396154CBD19331FA06D9C1DAD57AEC381911A3C777B3CC1C99366E30DB212B3426182A80E7A20F50FD18E3773C42EF6131670DE8
+    			} else {
     				// The item is a file upload, so we create a FilePart
     				FilePart filePart = new FilePart(
     						fileItemCurrent.getFieldName(),    // The field name
