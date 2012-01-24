@@ -32,6 +32,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -123,12 +124,12 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 					List<Integer> ids = getSelectedIds();
 					store.removeAll();
 					store.add(result.getData());
+					
 					for(PartnerDTO partner : store.getModels()) {
 						if(ids.contains(partner.getId())) {
 							listView.setChecked(partner, true);
 						}
 					}
-					
 				}
 			});
 		}
@@ -209,5 +210,6 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 	
 	public void addListenerToStore(EventType event, Listener listener){
 		store.addListener(event, listener);
+		listView.getStore().addListener(event, listener);
 	}	
 }

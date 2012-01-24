@@ -8,6 +8,7 @@ import java.util.Set;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.report.editor.AbstractEditor.FilterPanelHandler;
 import org.sigmah.client.page.table.AbstractPivot;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.report.model.Dimension;
@@ -28,95 +29,28 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 	@Inject
 	public PivotEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr) {
 		super(eventBus, service, stateMgr);
-		
-		addIndicatorPanelListener();
-		addPartnerPanelListener();
-		addAdminPanelListener();
 	}
 
-	private void addIndicatorPanelListener() {
-		indicatorPanel.addListenerToStore(Store.DataChanged,
-				new Listener<BaseEvent>() {
-
-					@Override
-					public void handleEvent(BaseEvent be) {
-
-						if (table != null) {
-							
-							Set<Integer> indicators = table.getFilter().getRestrictions(
-									DimensionType.Indicator);
-							Iterator<Integer> itr = indicators.iterator();
-
-							while (itr.hasNext()) {
-								indicatorPanel.setSelection(itr.next(), true);
-							}
-						}
-
-					}
-				});
-	}
 	
-
-	private void addPartnerPanelListener() {
-		partnerPanel.addListenerToStore(Store.DataChanged,
-				new Listener<BaseEvent>() {
-
-					@Override
-					public void handleEvent(BaseEvent be) {
-
-						if (table != null) {
-							Set<Integer> partners = table.getFilter().getRestrictions(
-									DimensionType.Partner);
-							Iterator<Integer> itr = partners.iterator();
-
-							while (itr.hasNext()) {
-								partnerPanel.setSelection(itr.next(), true);
-							}
-						}
-
-					}
-				});
-	}
-	
-	private void addAdminPanelListener() {
-		adminPanel.addListenerToStore(Store.DataChanged,
-				new Listener<BaseEvent>() {
-
-					@Override
-					public void handleEvent(BaseEvent be) {
-
-						if (table != null) {
-							Set<Integer> adminLevels = table.getFilter().getRestrictions(
-									DimensionType.AdminLevel);
-							
-							Iterator<Integer> itr = adminLevels.iterator();
-
-							while (itr.hasNext()) {
-								adminPanel.setSelection(itr.next(), true);
-							}
-						}
-
-					}
-				});
-	}
 	
 	public void bindReportElement(final PivotTableReportElement table) {
 
 		this.table = table;
-		Date minDate = table.getFilter().getMinDate();
-		datePanel.setMinDate(minDate);
-
-		Date maxDate = table.getFilter().getMaxDate();
-		datePanel.setMaxDate(maxDate);
-		
+				
 		List<Dimension> colDim = table.getColumnDimensions();
 		getColStore().add(colDim);
 
 		List<Dimension> rowDim = table.getRowDimensions();
-		getRowStore().add(colDim);
+		getRowStore().add(rowDim);
 
+		FilterPanelHandler filtesUpdater = new FilterPanelHandler(table);
+		filtesUpdater.addAdminPanelListener(adminPanel);
+		filtesUpdater.addIndicatorPanelListener(indicatorPanel);
+		filtesUpdater.addPartnerPanelListener(partnerPanel);
+		filtesUpdater.updateDate(datePanel);
 		
 		onUIAction(UIActions.REFRESH);
+
 	}
 
 	@Override
