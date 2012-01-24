@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.ListViewSelectionModel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -69,7 +70,9 @@ public class ReportDesignPage extends ContentPanel implements
 	private Button reportPreview;
 	private ReportDefinitionDTO selectedReport;
 	private IndicatorTreePanel indicatorPanel;
-
+	
+	private int mapCounter, pivotCounter, chartCounter = 0;
+	
 	@Inject
 	public ReportDesignPage(EventBus eventBus, Dispatcher service) {
 		this.eventBus = eventBus;
@@ -173,6 +176,7 @@ public class ReportDesignPage extends ContentPanel implements
 		reportElements.setStore(store);
 		reportElements.setItemSelector("dd");
 		reportElements.setOverStyle("over");
+		
 		reportElements.addListener(Events.Select,
 				new Listener<ListViewEvent<ModelData>>() {
 
@@ -242,11 +246,14 @@ public class ReportDesignPage extends ContentPanel implements
 		elm.set("element", element);
 		if(element.getTitle() == null || element.getTitle().equals("")){
 			 if (element instanceof PivotChartReportElement) {
-				 	elm.set("elementTitle", "Chart Element" );
+				 	chartCounter++;
+				 	elm.set("elementTitle", "Chart " + chartCounter );
 		        } else if (element instanceof PivotTableReportElement) {
-		        	elm.set("elementTitle", "Pivot Table Element" );
+		        	pivotCounter++;
+		        	elm.set("elementTitle", "Table " + pivotCounter );
 		        } else if (element instanceof MapReportElement) {
-		        	elm.set("elementTitle", "Map Element" );
+		        	mapCounter++;
+		        	elm.set("elementTitle", "Map "  + mapCounter);
 		        } 
 		}else{
 			elm.set("elementTitle", element.getTitle());
@@ -269,7 +276,9 @@ public class ReportDesignPage extends ContentPanel implements
 			ReportElement e =  model.get("element");
 			
 			presenter.createEditor(e);
-			save.setEnabled(true);	
+			save.setEnabled(true);
+			reportElements.getSelectionModel().select(1, false);
+
 		}
 	}
 	
@@ -302,6 +311,13 @@ public class ReportDesignPage extends ContentPanel implements
 		save.setEnabled(false);
 		previewHtml.setHtml(html);
 		addToPreviewPanel(previewHtml, heading);
+	}
+	
+	@Override
+	public void resetCounter(){
+		mapCounter = 0;
+		pivotCounter = 0; 
+		chartCounter = 0;
 	}
 
 	@Override

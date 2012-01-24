@@ -74,6 +74,8 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		void addElement(ReportElement element, boolean edited);
 
 		Button getSaveButton();
+
+		void resetCounter();
 	}
 
 	@Inject
@@ -109,7 +111,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 	private void loadReport(int reportId) {
 
-		service.execute(new GetReport(reportId), null,
+		service.execute(new GetReport(reportId), view.getLoadingMonitor(),
 				new AsyncCallback<ReportTemplateResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -118,6 +120,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 					@Override
 					public void onSuccess(ReportTemplateResult result) {
+						view.resetCounter();
 						for (ReportDefinitionDTO report : result.getData()) {
 							view.setReportElement(report);
 							view.setReport(report);
