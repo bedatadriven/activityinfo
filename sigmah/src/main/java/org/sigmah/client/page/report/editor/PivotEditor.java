@@ -43,11 +43,11 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 		List<Dimension> rowDim = table.getRowDimensions();
 		getRowStore().add(rowDim);
 
-		FilterPanelHandler filtesUpdater = new FilterPanelHandler(table);
-		filtesUpdater.addAdminPanelListener(adminPanel);
-		filtesUpdater.addIndicatorPanelListener(indicatorPanel);
-		filtesUpdater.addPartnerPanelListener(partnerPanel);
-		filtesUpdater.updateDate(datePanel);
+		FilterPanelHandler filtersUpdater = new FilterPanelHandler(table);
+		filtersUpdater.addAdminPanelListener(adminPanel);
+		filtersUpdater.addIndicatorPanelListener(indicatorPanel);
+		filtersUpdater.addPartnerPanelListener(partnerPanel);
+		filtersUpdater.updateDate(datePanel);
 		
 		onUIAction(UIActions.REFRESH);
 
@@ -60,7 +60,7 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 
 	@Override
 	public void bindReportElement(ReportElement element) {
-		bindReportElement(element);
+		bindReportElement((PivotTableReportElement) element);
 	}
 
 	@Override
