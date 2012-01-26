@@ -1,25 +1,21 @@
 package org.sigmah.client.page.report.editor;
 
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.report.editor.AbstractEditor.FilterPanelHandler;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.table.AbstractPivot;
 import org.sigmah.client.util.state.StateProvider;
+import org.sigmah.shared.command.GeneratePivotTable;
+import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.util.DelayedTask;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class PivotEditor extends AbstractPivot implements AbstractEditor {
@@ -36,12 +32,44 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 	public void bindReportElement(final PivotTableReportElement table) {
 
 		this.table = table;
-				
-		List<Dimension> colDim = table.getColumnDimensions();
-		getColStore().add(colDim);
+		
+		treePanel.getSelectionModel().deselectAll();
+		
+		List<ModelData> dimStore = getDimensionStore().getModels();		
+		List<Dimension> colDims = table.getColumnDimensions();
+		List<Dimension> rowDims = table.getRowDimensions();
+		
+		for(ModelData dim : dimStore){
+			
+			if(rowDims.contains(dim)){
+				treePanel.setChecked(dim, true);
+			}
+			
+			if(colDims.contains(dim)){
+				treePanel.setChecked(dim, true);
+			}
 
-		List<Dimension> rowDim = table.getRowDimensions();
-		getRowStore().add(rowDim);
+				
+		}
+		
+		getColStore().removeAll();
+		getRowStore().removeAll();
+		
+		for(ModelData dim : dimStore){
+			
+			if(rowDims.contains(dim)){
+				treePanel.setChecked(dim, true);
+				getRowStore().add((Dimension) dim);
+			}
+			
+			if(colDims.contains(dim)){
+				treePanel.setChecked(dim, true);
+				getColStore().add((Dimension) dim);
+			}
+				
+		}
+		
+		treePanel.expandAll();
 
 		FilterPanelHandler filtersUpdater = new FilterPanelHandler(table);
 		filtersUpdater.addAdminPanelListener(adminPanel);
@@ -49,7 +77,20 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 		filtersUpdater.addPartnerPanelListener(partnerPanel);
 		filtersUpdater.updateDate(datePanel);
 		
-		onUIAction(UIActions.REFRESH);
+//		onUIAction(UIActions.REFRESH);
+		
+		service.execute(new GeneratePivotTable(table), getMonitor(),
+				new AsyncCallback<PivotContent>() {
+					public void onFailure(Throwable throwable) {
+						MessageBox.alert(I18N.CONSTANTS.error(),
+								I18N.CONSTANTS.errorOnServer(), null);
+					}
+
+					public void onSuccess(PivotContent content) {
+						table.setContent((PivotContent) content);
+						setContent(table);
+					}
+				});
 
 	}
 
