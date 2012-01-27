@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.sigmah.client.AppEvents;
+import org.sigmah.client.EventBus;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
@@ -13,6 +15,7 @@ import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.Store;
 
 public interface AbstractEditor {
@@ -29,6 +32,16 @@ public interface AbstractEditor {
 		
 		public FilterPanelHandler(ReportElement element){
 			this.element = element;
+		}
+		
+		public void addIndicatorTreeChangeListener(final IndicatorTreePanel indicatorPanel, final EventBus eventBus){
+			indicatorPanel.addCheckChangedListener(new Listener<TreePanelEvent>() {
+
+				@Override
+				public void handleEvent(TreePanelEvent be) {
+					eventBus.fireEvent(AppEvents.REPORT_CHANGED);
+				}
+			});
 		}
 		
 		public void addIndicatorPanelListener(final IndicatorTreePanel indicatorPanel) {

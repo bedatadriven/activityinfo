@@ -59,6 +59,7 @@ import com.extjs.gxt.ui.client.dnd.ListViewDropTarget;
 import com.extjs.gxt.ui.client.event.CheckChangedEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedListener;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -308,6 +309,7 @@ public class AbstractPivot extends LayoutContainer implements ActionListener{
 		filterPane.add(indicatorPanel);
 	}
 
+	
 	private void createAdminFilter() {
 		adminPanel = new AdminFilterPanel(service);
 		adminPanel.setHeading(I18N.CONSTANTS.filterByGeography());

@@ -26,8 +26,6 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 	public PivotEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr) {
 		super(eventBus, service, stateMgr);
 	}
-
-	
 	
 	public void bindReportElement(final PivotTableReportElement table) {
 
@@ -74,6 +72,7 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 		FilterPanelHandler filtersUpdater = new FilterPanelHandler(table);
 		filtersUpdater.addAdminPanelListener(adminPanel);
 		filtersUpdater.addIndicatorPanelListener(indicatorPanel);
+		filtersUpdater.addIndicatorTreeChangeListener(indicatorPanel, eventBus);
 		filtersUpdater.addPartnerPanelListener(partnerPanel);
 		filtersUpdater.updateDate(datePanel);
 		

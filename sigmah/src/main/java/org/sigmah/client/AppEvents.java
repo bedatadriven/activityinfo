@@ -23,5 +23,7 @@ public final class AppEvents {
 
 
     public static final EventType DRILL_DOWN = new EventBus.NamedEventType("Drilldown");
+    
+    public static final EventType REPORT_CHANGED = new EventBus.NamedEventType("ReportChanged");
 
 }

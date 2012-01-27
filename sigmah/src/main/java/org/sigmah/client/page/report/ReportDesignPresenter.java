@@ -3,6 +3,7 @@ package org.sigmah.client.page.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -32,6 +33,8 @@ import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -87,10 +90,21 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		this.view = view;
 		this.view.init(this);
 		this.elementEditor = elementEditor;
-
+		
+		addReportChangeListener();
+	}
+	
+	private void addReportChangeListener(){
+		eventBus.addListener(AppEvents.REPORT_CHANGED, new Listener<BaseEvent>() {
+            @Override
+			public void handleEvent(BaseEvent be) {
+            	updateReport(view.getReport().getId(), null, getReportElements());
+            }
+        });
 	}
 
 	public void go(int reportId) {
+		// TODO if report id is not valid one, should create new report and dont send command to server.
 		loadReport(reportId);
 	}
 
@@ -204,7 +218,6 @@ public class ReportDesignPresenter implements ActionListener, Page {
 			public void onSuccess(VoidResult result) {
 				loadReport(view.getReport().getId());
 				view.getSaveButton().setEnabled(false);
-				view.addToCenterPanel(null, I18N.CONSTANTS.reportPreview());
 			}
 		});
 	}

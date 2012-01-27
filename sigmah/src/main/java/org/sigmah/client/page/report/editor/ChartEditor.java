@@ -68,6 +68,7 @@ public class ChartEditor extends AbstractChart implements AbstractEditor {
 		FilterPanelHandler filtersUpdater = new FilterPanelHandler(element);
 		filtersUpdater.addAdminPanelListener(adminFilterPanel);
 		filtersUpdater.addIndicatorPanelListener(indicatorPanel);
+		filtersUpdater.addIndicatorTreeChangeListener(indicatorPanel, eventBus);
 		filtersUpdater.addPartnerPanelListener(partnerFilterPanel);
 		filtersUpdater.updateDate(dateFilterPanel);
 		
