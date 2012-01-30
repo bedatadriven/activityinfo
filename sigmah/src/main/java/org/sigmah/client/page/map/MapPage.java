@@ -20,6 +20,8 @@ import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.report.SubsciberUtil;
+import org.sigmah.client.page.report.SubsciberUtil.Callback;
 import org.sigmah.shared.command.CreateReportDef;
 import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.RenderElement;
@@ -37,9 +39,6 @@ import com.google.inject.Inject;
 public class MapPage extends AbstractMap implements Page, ExportCallback {
 
 	public static final PageId PAGE_ID = new PageId("maps");
-
-    private SubscribeForm form;
-    private FormDialogImpl dialog;
 
     @Inject
     public MapPage(Dispatcher dispatcher, EventBus eventBus) {
@@ -79,21 +78,18 @@ public class MapPage extends AbstractMap implements Page, ExportCallback {
 		if (actionId.equals(UIActions.EXPORT_DATA)) {
 			export(Format.Excel_Data);
 		} else if (actionId.equals(UIActions.SUBSCRIBE)) {
-			form = new SubscribeForm();
 			
-			dialog = new FormDialogImpl(form);
-			dialog.setWidth(450);
-			dialog.setHeight(400);
-			dialog.setHeading(I18N.CONSTANTS.SubscribeTitle());
-			
-			dialog.show(new FormDialogCallback() {
+			SubsciberUtil subscriberUtil = new SubsciberUtil(dispatcher);
+	    	subscriberUtil.showForm(aiMapWidget.getValue(), new Callback() {
+				
 				@Override
-				public void onValidated() {
-					if(form.validListField()){
-						createReport();	
-					} else{
-						MessageBox.alert(I18N.CONSTANTS.error(), I18N.MESSAGES.noEmailAddress(), null);
-					}
+				public void onSuccess() {
+				
+				}
+				
+				@Override
+				public void onFailure() {
+					
 				}
 			});
 		}
@@ -106,45 +102,6 @@ public class MapPage extends AbstractMap implements Page, ExportCallback {
 		renderElement.setFormat(format);
 		dispatcher.execute(renderElement, null, new DownloadCallback(eventBus));
 	}
-
-	public void createReport(){
-    	
-    	final Report report = new Report();
-    	report.addElement(aiMapWidget.getValue());
-    	report.setDay(form.getDay());
-    	report.setTitle(form.getTitle());
-    	report.setFrequency(form.getReportFrequency());
-		
-    	dispatcher.execute(new CreateReportDef(report), null, new AsyncCallback<CreateResult>() {
-            public void onFailure(Throwable caught) {
-            	dialog.onServerError();
-            }
-
-            public void onSuccess(CreateResult result) {
-            	subscribeEmail(result.getNewId());
-            }
-        });
-    	
-    }
-
-    public void subscribeEmail(int templateId){
-    	
-    	CreateSubscribe sub = new CreateSubscribe();
-		sub.setReportTemplateId(templateId);
-		sub.setEmailsList(form.getEmailList());
-        
-		dispatcher.execute(sub, null, new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
-            	dialog.onServerError();
-            }
-
-            public void onSuccess(VoidResult result) {
-            	dialog.hide();
-            }
-        });
-    }
-    
-  
 	
 	@Override
 	public PageId getPageId() {
