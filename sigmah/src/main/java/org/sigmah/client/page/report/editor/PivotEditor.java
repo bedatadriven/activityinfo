@@ -14,7 +14,11 @@ import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -25,6 +29,55 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 	@Inject
 	public PivotEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr) {
 		super(eventBus, service, stateMgr);
+		
+		addDimensionDataChangeListener();		
+	}
+	
+	
+	private void addDimensionDataChangeListener(){
+		treePanel.getStore().addListener(Store.DataChanged, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+		
+				List<ModelData> dimStore = getDimensionStore().getModels();		
+				List<Dimension> colDims = table.getColumnDimensions();
+				List<Dimension> rowDims = table.getRowDimensions();
+				
+//				getColStore().add(colDims);
+//				getRowStore().add(rowDims);
+//				
+//				for(ModelData dim : dimStore){
+//					
+//					if(rowDims.contains(dim)){
+//						treePanel.setChecked(dim, true);
+//					}
+//					
+//					if(colDims.contains(dim)){
+//						treePanel.setChecked(dim, true);
+//					}						
+//				}
+//				
+				getColStore().removeAll();
+				getRowStore().removeAll();
+				
+				for(ModelData dim : dimStore){
+					
+					if(rowDims.contains(dim)){
+						treePanel.setChecked(dim, true);
+						getRowStore().add((Dimension) dim);
+					}
+					
+					if(colDims.contains(dim)){
+						treePanel.setChecked(dim, true);
+						getColStore().add((Dimension) dim);
+					}
+						
+				}
+
+			}
+			
+		});
 	}
 	
 	public void bindReportElement(final PivotTableReportElement table) {
@@ -33,42 +86,6 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 		
 		treePanel.getSelectionModel().deselectAll();
 		
-		List<ModelData> dimStore = getDimensionStore().getModels();		
-		List<Dimension> colDims = table.getColumnDimensions();
-		List<Dimension> rowDims = table.getRowDimensions();
-		
-		for(ModelData dim : dimStore){
-			
-			if(rowDims.contains(dim)){
-				treePanel.setChecked(dim, true);
-			}
-			
-			if(colDims.contains(dim)){
-				treePanel.setChecked(dim, true);
-			}
-
-				
-		}
-		
-		getColStore().removeAll();
-		getRowStore().removeAll();
-		
-		for(ModelData dim : dimStore){
-			
-			if(rowDims.contains(dim)){
-				treePanel.setChecked(dim, true);
-				getRowStore().add((Dimension) dim);
-			}
-			
-			if(colDims.contains(dim)){
-				treePanel.setChecked(dim, true);
-				getColStore().add((Dimension) dim);
-			}
-				
-		}
-		
-		treePanel.expandAll();
-
 		FilterPanelHandler filtersUpdater = new FilterPanelHandler(table);
 		filtersUpdater.addAdminPanelListener(adminPanel);
 		filtersUpdater.addIndicatorPanelListener(indicatorPanel);
