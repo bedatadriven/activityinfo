@@ -44,20 +44,22 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 				List<Dimension> colDims = table.getColumnDimensions();
 				List<Dimension> rowDims = table.getRowDimensions();
 				
-//				getColStore().add(colDims);
-//				getRowStore().add(rowDims);
-//				
-//				for(ModelData dim : dimStore){
-//					
-//					if(rowDims.contains(dim)){
-//						treePanel.setChecked(dim, true);
-//					}
-//					
-//					if(colDims.contains(dim)){
-//						treePanel.setChecked(dim, true);
-//					}						
-//				}
-//				
+				//TODO this code ???
+				getColStore().add(colDims);
+				getRowStore().add(rowDims);
+				
+				for(ModelData dim : dimStore){
+					
+					if(rowDims.contains(dim)){
+						treePanel.setChecked(dim, true);
+					}
+					
+					if(colDims.contains(dim)){
+						treePanel.setChecked(dim, true);
+					}						
+				}
+				// above
+				
 				getColStore().removeAll();
 				getRowStore().removeAll();
 				
