@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.filter.AdminFilterPanel;
 import org.sigmah.client.page.common.filter.DateRangePanel;
@@ -17,7 +16,6 @@ import org.sigmah.client.page.table.PivotGridPanel;
 import org.sigmah.client.report.DimensionStoreFactory;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GenerateElement;
-import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.dto.PartnerDTO;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.model.DateDimension;
@@ -32,8 +30,6 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -45,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class AbstractChart extends LayoutContainer implements
@@ -86,6 +81,7 @@ public abstract class AbstractChart extends LayoutContainer implements
 		createGridPane();
 	}
 
+	
 	protected void createWest() {
 
 		ContentPanel westPanel = new ContentPanel(new AccordionLayout());
@@ -207,8 +203,9 @@ public abstract class AbstractChart extends LayoutContainer implements
 			updateLegendComboLabel(I18N.CONSTANTS.lines());
 		} else if (type == Type.Pie) {
 			updateCategoryComboLabel(I18N.CONSTANTS.slices());
-			updateLegendComboLabel(I18N.CONSTANTS.disabled());
 		}
+		legendCombo.setEnabled(type != Type.Pie);
+		legendLabel.setEnabled(type != Type.Pie);
 	}
 
 	protected void updateCategoryComboLabel(String label) {
