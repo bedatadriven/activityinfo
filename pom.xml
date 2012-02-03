@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.activityinfo</groupId>
-    <artifactId>activityinfo-parent</artifactId>
-    <packaging>pom</packaging>
-    <version>2.5.1-SNAPSHOT</version>
-    <name>ActivityInfo Parent POM</name>
-    <licenses>
-        <license>
-            <name>GPLv3</name>
-            <url>http://www.gnu.org/licenses/gpl.html</url>
-        </license>
-    </licenses>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.activityinfo</groupId>
+	<artifactId>activityinfo-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>2.6.1-SNAPSHOT</version>
+	<name>ActivityInfo Parent POM</name>
+	<licenses>
+		<license>
+			<name>GPLv3</name>
+			<url>http://www.gnu.org/licenses/gpl.html</url>
+		</license>
+	</licenses>
 
-    <scm>
-       <connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
-       <url>scm:git:git@github.com:akbertram/activityinfo.git</url>
-       <developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
-    </scm>
+	<scm>
+		<connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
+		<url>scm:git:git@github.com:akbertram/activityinfo.git</url>
+		<developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
+	</scm>
 
-    <distributionManagement>
-        <repository>
-            <id>bedatadriven-oss</id>
-            <name>bedatadriven Open-Source releases</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>bedatadriven-snapshots</id>
-            <name>bedatadriven Open-Source snapshots</name>
-            <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>bedatadriven-oss</id>
+			<name>bedatadriven Open-Source releases</name>
+			<url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>bedatadriven-snapshots</id>
+			<name>bedatadriven Open-Source snapshots</name>
+			<url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
-    <modules>
-      <module>sigmah</module>
-    </modules>
+	<modules>
+		<module>sigmah</module>
+	</modules>
 </project>
