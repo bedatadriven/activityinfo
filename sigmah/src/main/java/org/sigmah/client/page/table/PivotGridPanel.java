@@ -168,6 +168,7 @@ public class PivotGridPanel extends ContentPanel {
                 label = I18N.CONSTANTS.value();
             }
             ColumnConfig column = new ColumnConfig(id, label, 75);
+            
             column.setNumberFormat(NumberFormat.getFormat("#,##0"));
             column.setAlignment(Style.HorizontalAlignment.RIGHT);
             column.setSortable(false);
@@ -186,20 +187,9 @@ public class PivotGridPanel extends ContentPanel {
         int row = 0;
 
         for(int d = 1; d<=depth; ++d) {
-
             List<PivotTableData.Axis> children = data.getRootColumn().getDescendantsAtDepth(d);
-
-            // first add a group identifying the dimension
-
-            Dimension dim = children.get(0).getDimension();
-            String name = dim.get("caption") == null ? dim.toString() : (String)dim.get("caption");
-
-            columnModel.addHeaderGroup(row++, 1, new HeaderGroupConfig(name, 1, leaves.size()));
-
-            // now add child columsn
-
+     
             if(d < depth) {
-
                 int col = 1;
                 for(PivotTableData.Axis child : children) {
 
@@ -207,14 +197,10 @@ public class PivotGridPanel extends ContentPanel {
                     columnModel.addHeaderGroup(row, col, new HeaderGroupConfig(child.getLabel(), 1, colSpan) );
 
                     col += colSpan;
-
                 }
                 row++;
-
             }
-
         }
         return columnModel;
     }
-
 }
