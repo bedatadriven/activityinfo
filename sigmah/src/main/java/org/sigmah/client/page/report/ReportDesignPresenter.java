@@ -1,6 +1,7 @@
 package org.sigmah.client.page.report;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.sigmah.client.AppEvents;
@@ -20,7 +21,6 @@ import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.GetReport;
-import org.sigmah.shared.command.GetUserReports;
 import org.sigmah.shared.command.RenderReportHtml;
 import org.sigmah.shared.command.UpdateReport;
 import org.sigmah.shared.command.result.HtmlResult;
@@ -31,8 +31,6 @@ import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.ReportElement;
-
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -53,18 +51,21 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 	private SubscribeForm form;
 	private FormDialogImpl dialog;
+	
+	private int mapCounter, pivotCounter, chartCounter , id =  0;
+	private int current = -1;
 
 	@ImplementedBy(ReportDesignPage.class)
 	public interface View {
 		void init(ReportDesignPresenter presenter);
 
-		void setReportElement(ReportDefinitionDTO dto);
+		void setStore(List<ReportElementModel> elements);
 
 		void setPreviewHtml(String html, String heading);
 
 		AsyncMonitor getLoadingMonitor();
 
-		ListStore<ModelData> getReportElements();
+		ListStore<ReportElementModel> getListViewStore();
 
 		void setPreview();
 
@@ -74,11 +75,9 @@ public class ReportDesignPresenter implements ActionListener, Page {
 
 		ReportDefinitionDTO getReport();
 
-		void addElement(ReportElement element, boolean edited);
+		void addElementInStore(ReportElementModel element);
 
 		Button getSaveButton();
-
-		void resetCounter();
 	}
 
 	@Inject
@@ -98,7 +97,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		eventBus.addListener(AppEvents.REPORT_CHANGED, new Listener<BaseEvent>() {
             @Override
 			public void handleEvent(BaseEvent be) {
-            	updateReport(view.getReport().getId(), null, getReportElements());
+            	updateCurrentElementInStore();
             }
         });
 	}
@@ -129,14 +128,15 @@ public class ReportDesignPresenter implements ActionListener, Page {
 				new AsyncCallback<ReportTemplateResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						// callback.onFailure(caught);
+						// TODO show appropriate message.
 					}
 
 					@Override
 					public void onSuccess(ReportTemplateResult result) {
-						view.resetCounter();
+						resetCounter();
+						
 						for (ReportDefinitionDTO report : result.getData()) {
-							view.setReportElement(report);
+							view.setStore(createReportElementList(report));
 							view.setReport(report);
 						}
 
@@ -144,6 +144,95 @@ public class ReportDesignPresenter implements ActionListener, Page {
 				});
 	}
 
+	private List<ReportElementModel> createReportElementList(ReportDefinitionDTO dto) {
+		List<ReportElementModel> elements = new ArrayList<ReportElementModel>();
+		for(ReportElement element : dto.getReport().getElements()) {
+			elements.add(addReportElement(element, false));
+		}
+		
+		return elements;
+	}
+	
+	private ReportElementModel addReportElement(ReportElement element, boolean edited){
+		ReportElementModel model = new ReportElementModel();
+		model.setEdited(edited);
+		model.setReportElement(element);
+		model.setId(getNextId());
+		
+		if(element.getTitle() == null || element.getTitle().equals("")){
+		
+			if (element instanceof PivotChartReportElement) {
+				 	chartCounter++;
+				 	model.setElementTitle(I18N.CONSTANTS.chart() + " " + chartCounter );
+		        } else if (element instanceof PivotTableReportElement) {
+		        	pivotCounter++;
+		        	model.setElementTitle(I18N.CONSTANTS.table() + " " + pivotCounter );
+		        } else if (element instanceof MapReportElement) {
+		        	mapCounter++;
+		        	model.setElementTitle(I18N.CONSTANTS.map()  + " " + mapCounter);
+		        } 
+		}else{
+			model.setElementTitle(element.getTitle());
+		}
+		
+		return model;
+	}
+	
+	private int getNextId(){
+		id++;
+		return id;
+	}
+	
+	public void updateCurrentElementInStore(){
+		for(ReportElementModel model :  view.getListViewStore().getModels()){
+			if(model.getId() == current){
+				model.setReportElement(elementEditor.retriveReportElement());
+			}
+		}
+	}
+	
+	public void loadElementInEditor(ReportElementModel model){
+		updateCurrentElementInStore();
+		createEditor(model.getReportElement());
+		current = model.getId();
+	}
+	
+	private void createEditor(ReportElement e) {
+		Widget w = (Widget) elementEditor.createEditor(e);
+		view.addToCenterPanel(w, I18N.CONSTANTS.reportElementEditor());
+	}
+
+	public void addChart() {
+		addNewElement(I18N.CONSTANTS.newChart(), (Widget) elementEditor.createChart());	
+	}
+
+	public void addTable() {
+		addNewElement(I18N.CONSTANTS.newTable(), (Widget) elementEditor.createTable());
+	}
+
+	public void addMap() {
+		addNewElement(I18N.CONSTANTS.newMap(), (Widget) elementEditor.createMap());		
+	}
+
+	private void addNewElement(String heading, Widget w) {
+		updateCurrentElementInStore();
+		addElementToView(w, heading);
+	}
+	
+	private void addElementToView(Widget w, String heading){
+		view.addToCenterPanel(w, heading);
+		view.addElementInStore(addReportElement(elementEditor.retriveReportElement(), true));
+	}
+	
+	private boolean isSaved(){
+		
+		if (view.getSaveButton().isEnabled()) {
+			MessageBox.alert(I18N.CONSTANTS.error(), "Please save current report element.", null);
+			return false;
+		}
+		return true;
+	}
+	
 	public void generateReportPreview(final ReportDefinitionDTO selectedReport) {
 		RenderReportHtml command = new RenderReportHtml(selectedReport.getId(),
 				null);
@@ -156,46 +245,6 @@ public class ReportDesignPresenter implements ActionListener, Page {
 										+ selectedReport.getTitle());
 					}
 				});
-	}
-
-	public void createEditor(ReportElement e) {
-		Widget w = (Widget) elementEditor.createEditor(e);
-		view.addToCenterPanel(w, "Report Element Editor");
-	}
-
-	public void addChart() {
-		addNewElement("New Chart", (Widget) elementEditor.createChart());	
-	}
-
-	public void addTable() {
-		addNewElement("New Table", (Widget) elementEditor.createTable());
-	}
-
-	public void addMap() {
-		addNewElement("New Map", (Widget) elementEditor.createMap());		
-	}
-
-	private void addNewElement(String heading, Widget w) {
-		if(isSaved()){
-			unEditElements();
-			addElementToView(w, heading);
-		}		
-	}
-
-	private boolean isSaved(){
-		
-		if (view.getSaveButton().isEnabled()) {
-			MessageBox.alert(I18N.CONSTANTS.error(), "Please save current report element.", null);
-			return false;
-		}
-		return true;
-	}
-	
-	private void addElementToView(Widget w, String heading){
-
-		view.addToCenterPanel(w, heading);
-		view.addElement(elementEditor.retriveReportElement(), true);
-		view.getSaveButton().setEnabled(true);
 	}
 	
 	public void loadReportComponents(int reportId) {
@@ -217,28 +266,26 @@ public class ReportDesignPresenter implements ActionListener, Page {
 			@Override
 			public void onSuccess(VoidResult result) {
 				loadReport(view.getReport().getId());
-				view.getSaveButton().setEnabled(false);
 			}
 		});
 	}
 
 	public List<ReportElement> getReportElements() {
+		updateCurrentElementInStore();
+		
 		List<ReportElement> elements = new ArrayList<ReportElement>();
-		List<ModelData> store = view.getReportElements().getModels();
-		for (int i = 0; i < store.size(); i++) {
-			ModelData currentElm = store.get(i);
-			if ((Boolean) currentElm.get("edited")) {
-				elements.add(elementEditor.retriveReportElement());
-			} else {
-				elements.add((ReportElement) currentElm.get("element"));
-			}
+		List<ReportElementModel> models = view.getListViewStore().getModels();	
+		
+		for(ReportElementModel m : models){
+			elements.add((ReportElement) m.getReportElement());
 		}
+
 		return elements;
 	}
 
 	public void unEditElements() {
-		for (ModelData elm : view.getReportElements().getModels()) {
-			elm.set("edited", false);
+		for (ReportElementModel e : view.getListViewStore().getModels()) {
+			e.setEdited(false);
 		}
 	}
 
@@ -287,6 +334,12 @@ public class ReportDesignPresenter implements ActionListener, Page {
 				
 			}
 		});
+	}
+	
+	public void resetCounter(){
+		mapCounter = 0;
+		pivotCounter = 0; 
+		chartCounter = 0;
 	}
 
 	@Override
