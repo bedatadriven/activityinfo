@@ -6,6 +6,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.PartnerDTO;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
@@ -17,8 +18,9 @@ public class PartnerComboBox extends ComboBox<PartnerDTO> {
 	
 	public PartnerComboBox(List<PartnerDTO> partners) {
 		
-		ListStore<PartnerDTO> store = new ListStore<PartnerDTO>();
+		ListStore<PartnerDTO> store = new ListStore<PartnerDTO>();	
 		store.add(partners);
+		store.sort("name", SortDir.ASC);
 		
 		setName("partner");
 		setDisplayField("name");
