@@ -48,7 +48,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertThat("database count", schema.getDatabases().size(), equalTo(3));
+        assertThat("database count", schema.getDatabases().size(), equalTo(4));
         assertThat("database list is sorted", schema.getDatabases().get(0).getName(), equalTo("Alpha"));
         
         assertTrue("ALEX(owner) in PEAR", schema.getDatabaseById(1) != null);     // PEAR
@@ -86,7 +86,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertThat(schema.getDatabases().size(), equalTo(1));
+        assertThat(schema.getDatabases().size(), equalTo(2));
         assertThat("BAVON in PEAR", schema.getDatabaseById(1), is(not(nullValue())));
         assertThat(schema.getDatabaseById(1).getMyPartnerId(), equalTo(1));
         assertThat(schema.getDatabaseById(1).isEditAllowed(), equalTo(true));
@@ -135,7 +135,7 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertTrue("no attributes case", schema.getActivityById(3).getAttributeGroups().size() == 0);
 
         ActivityDTO nfi = schema.getActivityById(1);
-        AttributeDTO[] attributes = nfi.getAttributeGroups().get(0).getAttributes().toArray(new AttributeDTO[0]);
+        AttributeDTO[] attributes = nfi.getAttributeGroupById(1).getAttributes().toArray(new AttributeDTO[0]);
 
         assertTrue("attributes are present", attributes.length == 2);
 
