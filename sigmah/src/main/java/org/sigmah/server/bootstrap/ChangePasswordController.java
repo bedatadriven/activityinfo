@@ -16,6 +16,7 @@ import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LogException;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -67,6 +68,8 @@ public class ChangePasswordController extends AbstractController {
 
     @Transactional
     private void processForm(HttpServletRequest req, HttpServletResponse resp, User user) {
+    	Preconditions.checkNotNull(user, "user");
+    	
         changePassword(req, user);
 
         Authentication auth = createNewAuthToken(user);
@@ -76,6 +79,7 @@ public class ChangePasswordController extends AbstractController {
 
     @Transactional
     protected void changePassword(HttpServletRequest request, User user) throws IncompleteFormException {
+    	Preconditions.checkNotNull(user, "user");
         String password = getRequiredParameter(request, "password");         
         user.changePassword(password);
         user.clearChangePasswordKey();
