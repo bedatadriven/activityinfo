@@ -49,7 +49,7 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 				getRowStore().add(rowDims);
 				
 				for(ModelData dim : dimStore){
-					
+					treePanel.setChecked(dim, false);
 					if(rowDims.contains(dim)){
 						treePanel.setChecked(dim, true);
 					}

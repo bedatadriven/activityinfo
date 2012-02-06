@@ -145,6 +145,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	}
 
 	private List<ReportElementModel> createReportElementList(ReportDefinitionDTO dto) {
+		id = 0;
 		List<ReportElementModel> elements = new ArrayList<ReportElementModel>();
 		for(ReportElement element : dto.getReport().getElements()) {
 			elements.add(addReportElement(element, false));
@@ -215,6 +216,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	}
 
 	private void addNewElement(String heading, Widget w) {
+		current = ++id;
 		updateCurrentElementInStore();
 		addElementToView(w, heading);
 	}
