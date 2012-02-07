@@ -374,5 +374,8 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	public boolean navigate(PageState place) {
 		return false;
 	}
-
+	
+	public int getElementInViewId(){
+		return current;
+	}
 }

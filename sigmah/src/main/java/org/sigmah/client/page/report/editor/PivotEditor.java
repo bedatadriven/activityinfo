@@ -18,7 +18,6 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -44,39 +43,30 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 				List<Dimension> colDims = table.getColumnDimensions();
 				List<Dimension> rowDims = table.getRowDimensions();
 				
-				//TODO this code ???
-				getColStore().add(colDims);
-				getRowStore().add(rowDims);
-				
 				for(ModelData dim : dimStore){
-					treePanel.setChecked(dim, false);
+					treePanel.setChecked(dim, false);	
 					if(rowDims.contains(dim)){
 						treePanel.setChecked(dim, true);
 					}
-					
 					if(colDims.contains(dim)){
 						treePanel.setChecked(dim, true);
 					}						
 				}
-				// above
 				
 				getColStore().removeAll();
 				getRowStore().removeAll();
 				
 				for(ModelData dim : dimStore){
-					
+
 					if(rowDims.contains(dim)){
 						treePanel.setChecked(dim, true);
 						getRowStore().add((Dimension) dim);
 					}
-					
 					if(colDims.contains(dim)){
 						treePanel.setChecked(dim, true);
 						getColStore().add((Dimension) dim);
-					}
-						
+					}	
 				}
-
 			}
 			
 		});
@@ -94,9 +84,7 @@ public class PivotEditor extends AbstractPivot implements AbstractEditor {
 		filtersUpdater.addIndicatorTreeChangeListener(indicatorPanel, eventBus);
 		filtersUpdater.addPartnerPanelListener(partnerPanel);
 		filtersUpdater.updateDate(datePanel);
-		
-//		onUIAction(UIActions.REFRESH);
-		
+				
 		service.execute(new GeneratePivotTable(table), getMonitor(),
 				new AsyncCallback<PivotContent>() {
 					public void onFailure(Throwable throwable) {

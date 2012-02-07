@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.AttributeGroupDimension;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
@@ -46,6 +47,9 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
 
         @XmlAttribute
         private String dateUnit;
+        
+        @XmlAttribute
+        private Integer attributeGroupId;
 
         @XmlElement(name="category")
         private List<CategoryElement> categories = new ArrayList<CategoryElement>(0);
@@ -56,6 +60,8 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
             return new AdminDimension(element.levelId);
          } else if("date".equals(element.type)) {
              return new DateDimension(findEnumValue(DateUnit.values(), element.dateUnit));
+         } else if("attribute".equals(element.type)) {
+        	 return new AttributeGroupDimension(element.attributeGroupId);
          } else {
             return new Dimension(findEnumValue(DimensionType.values(), element.type));
         }
@@ -106,6 +112,9 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
         } else if(dim instanceof DateDimension) {
             element.type = "date";
             element.dateUnit = ((DateDimension) dim).getUnit().toString().toLowerCase();
+        } else if(dim instanceof AttributeGroupDimension){
+        	element.type = "attribute";
+        	element.attributeGroupId = ((AttributeGroupDimension) dim).getAttributeGroupId();
         }
         return element;
     }
