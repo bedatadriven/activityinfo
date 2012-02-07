@@ -190,8 +190,9 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 
 					@Override
 					public void handleEvent(ListViewEvent<ReportElementModel> event) {
-						
-						loadElementEditor(event.getModel());	
+						if(event.getModel().getId() != presenter.getElementInViewId()){
+							loadElementEditor(event.getModel());	
+						}	
 					}
 				});
 

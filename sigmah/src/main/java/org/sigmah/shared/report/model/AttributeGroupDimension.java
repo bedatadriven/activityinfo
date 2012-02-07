@@ -12,7 +12,7 @@ public class AttributeGroupDimension extends Dimension {
 	private int attributeGroupId;
 
     public AttributeGroupDimension() {
-		super();
+		super(DimensionType.AttributeGroup );
 	}
 
     public AttributeGroupDimension(int groupId) {
@@ -47,11 +47,7 @@ public class AttributeGroupDimension extends Dimension {
             return false;
         }
         AttributeGroupDimension that = (AttributeGroupDimension)other;
-        if (this.attributeGroupId == that.attributeGroupId) {
-        	return true;
-        } else {
-        	return false;
-        }
+        return this.attributeGroupId == that.attributeGroupId ;
     }
 
 	@Override
