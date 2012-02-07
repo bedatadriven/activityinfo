@@ -1,5 +1,6 @@
 package org.sigmah.client.page.report;
 
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.inject.AppInjector;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
@@ -26,6 +27,7 @@ public class ReportDesignLoader implements PageLoader {
         placeSerializer.registerParser(ReportDesignPresenter.PAGE_ID, new ReportDesignPageState.Parser());
     }
 	
+    
 	@Override
 	public void load(PageId pageId, final PageState pageState,
 			final AsyncCallback<Page> callback) {
@@ -39,7 +41,7 @@ public class ReportDesignLoader implements PageLoader {
 	            @Override
 	            public void onSuccess() {
 	            	ReportDesignPresenter presenter = injector.getReportDesignPresenter();
-	            	int reportId = ((ReportDesignPageState)pageState).reportId;
+	            	int reportId = ((ReportDesignPageState)pageState).getReportId();
 	            	presenter.go(reportId);
 	                callback.onSuccess(presenter);
 	            }

@@ -9,7 +9,7 @@ import org.sigmah.client.page.PageStateParser;
 
 public class ReportDesignPageState implements PageState {
 
-	public int reportId;
+	private int reportId;
 
 	public ReportDesignPageState() {
 
@@ -34,11 +34,14 @@ public class ReportDesignPageState implements PageState {
 		return Arrays.asList(ReportDesignPresenter.PAGE_ID);
 	}
 
+	public int getReportId() {
+		return reportId;
+	}
+
 	public static class Parser implements PageStateParser {
 		@Override
 		public PageState parse(String token) {
-			return new ReportDesignPageState();
+			return new ReportDesignPageState(Integer.parseInt(token));
 		}
 	}
-
 }
