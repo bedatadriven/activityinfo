@@ -56,7 +56,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 	public static final PageId PAGE_ID = new PageId("maps");
 
     private static final int CONTROL_TOP_MARGIN = 10;
-    private static final int LAYERS_STYLE_TOP_MARGIN = 50;
     private static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
     private EventBus eventBus;
 	
@@ -102,7 +101,6 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-				int l = mapReportElement.getLayers().indexOf(event.getValue());
 				aiMapWidget.setValue(mapReportElement);
 				layersWidget.setValue(mapReportElement);
 			}
@@ -155,11 +153,11 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
         // Ugly hack to prevent call avalanches
         aiMapWidget.setMaster(this);
 
-    	AbsoluteData layout = new AbsoluteData();
-    	layout.setLeft(0);
-    	layout.setTop(0);
-    	layout.setAnchorSpec("100% 100%");
-        add(aiMapWidget, layout);
+    	AbsoluteData layoutData = new AbsoluteData();
+    	layoutData.setLeft(0);
+    	layoutData.setTop(0);
+    	layoutData.setAnchorSpec("100% 100%");
+        add(aiMapWidget, layoutData);
     }
 
     protected void createToolBar() {
@@ -244,11 +242,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
     	report.setFrequency(form.getReportFrequency());
 		
     	dispatcher.execute(new CreateReportDef(report), null, new AsyncCallback<CreateResult>() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
             	dialog.onServerError();
             }
 
-            public void onSuccess(CreateResult result) {
+            @Override
+			public void onSuccess(CreateResult result) {
             	subscribeEmail(result.getNewId());
             }
         });
@@ -262,11 +262,13 @@ public class MapPage extends ContentPanel implements Page, ExportCallback, Actio
 		sub.setEmailsList(form.getEmailList());
         
 		dispatcher.execute(sub, null, new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
+            @Override
+			public void onFailure(Throwable caught) {
             	dialog.onServerError();
             }
 
-            public void onSuccess(VoidResult result) {
+            @Override
+			public void onSuccess(VoidResult result) {
             	dialog.hide();
             }
         });

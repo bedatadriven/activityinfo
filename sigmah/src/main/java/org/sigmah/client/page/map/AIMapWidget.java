@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.common.base.Objects;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -66,16 +67,18 @@ import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 
 /**
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
  * Displays the content of a MapElement using Google Maps.
  * Named AIMapWidget because of a naming conflict with com.google.gwt.maps.client.MapWidget
  */
 public class AIMapWidget extends ContentPanel implements HasValue<MapReportElement> {
+	private static final int RDC_CENTER_LONG = 25;
+	private static final int RDC_CENTER_LAT = -1;
 	private MapWidget mapWidget = null;
     private BaseMap currentBaseMap = null;
     private LatLngBounds pendingZoom = null;
@@ -104,9 +107,12 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 	private MapPage mapPage;
 
 	private LargeMapControl zoomControl;
-	private int zoomControlOffsetX = 5;
-    private static final int zoomControlOffsetY = 5;
 
+	
+	private static final int DEFAULT_ZOOM_CONTROL_OFFSET_X = 5;
+    private static final int ZOOM_CONTROL_OFFSET_Y = 5;
+
+	private int zoomControlOffsetX = DEFAULT_ZOOM_CONTROL_OFFSET_X;
     
     public AIMapWidget(Dispatcher dispatcher) {
 
@@ -162,43 +168,44 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
             new AsyncCallback<Void>() {
                 @Override
                 public void onSuccess(Void result) {
-                    apiLoadFailed = false;
-                    isGoogleMapsInitialized = true;
-                    
-                    createGoogleMapWidget();
-                    
-                    // clear the error message content
-                    removeAll();
-                    add(mapWidget);
-                    updateMapToContent();
-                    
-                    if (currentBaseMap != null) {
-                    	setBaseMap(currentBaseMap);
-                    }
+                    onApiLoaded();
                 }
-
                 @Override
                 public void onFailure(Throwable caught) {
                     handleApiLoadFailure();
                 }
             });
 	}
-    
-    public void setBaseMap(BaseMap baseMap) {
+
+	private void onApiLoaded() {
+		apiLoadFailed = false;
+        isGoogleMapsInitialized = true;
+        
+        createGoogleMapWidget();
+        
+        // clear the error message content
+        removeAll();
+        add(mapWidget);
+        updateMapToContent();
+        
+        if (currentBaseMap != null) {
+        	setBaseMap(currentBaseMap);
+        }
+	}
+	
+    private void setBaseMap(BaseMap baseMap) {
     	if (!isGoogleMapsInitialized) {
     		currentBaseMap = baseMap;
     		return;
     	}
-    	if (baseMap != null) {
-	        if (currentBaseMap == null || !currentBaseMap.equals(baseMap)) {
-	            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
-	            mapWidget.removeMapType(MapType.getNormalMap());
-	            mapWidget.removeMapType(MapType.getHybridMap());
-	            mapWidget.addMapType(baseMapType);
-	            mapWidget.setCurrentMapType(baseMapType);
-	            currentBaseMap = baseMap;
-	            layout();
-	        }
+    	if (!Objects.equal(baseMap, currentBaseMap)) {
+            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
+            mapWidget.removeMapType(MapType.getNormalMap());
+            mapWidget.removeMapType(MapType.getHybridMap());
+            mapWidget.addMapType(baseMapType);
+            mapWidget.setCurrentMapType(baseMapType);
+            currentBaseMap = baseMap;
+            layout();
     	}
     }
     
@@ -259,6 +266,8 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
         if (zoomLevel == 0) {
             Log.debug("MapPreview: deferring zoom.");
             pendingZoom = bounds;
+            
+            
         } else {
         	
         	// we want to be careful not to frustrate the user by pulling back 
@@ -268,16 +277,9 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
         		zoomLevel = mapWidget.getZoomLevel();
         	}
         	
-        	
             Log.debug("MapPreview: zooming to level " + zoomLevel);
             mapWidget.setCenter(bounds.getCenter(), zoomLevel);
             pendingZoom = null;
-            DeferredCommand.addCommand(new Command() {
-				@Override
-				public void execute() {
-					zoomToBounds(pendingZoom);
-				}
-			});
         }
     }
 
@@ -299,7 +301,9 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 		mapWidget = new MapWidget();
         zoomControl = new LargeMapControl();
 		mapWidget.addControl(zoomControl, zoomControlPosition());
-        mapWidget.panTo(LatLng.newInstance(-1, 25));
+		
+		// TODO: generalize
+        mapWidget.panTo(LatLng.newInstance(RDC_CENTER_LAT, RDC_CENTER_LONG));
         
         mapWidget.addMapClickHandler(new MapClickHandler() {
 			@Override
@@ -310,7 +314,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 	}
 
 	private ControlPosition zoomControlPosition() {
-		return new ControlPosition(ControlAnchor.TOP_LEFT, zoomControlOffsetX, zoomControlOffsetY);
+		return new ControlPosition(ControlAnchor.TOP_LEFT, zoomControlOffsetX, ZOOM_CONTROL_OFFSET_Y);
 	}
     
     /**
