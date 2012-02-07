@@ -1,5 +1,6 @@
 package org.sigmah.client.page.entry.form.field;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
@@ -9,16 +10,26 @@ import org.sigmah.shared.dto.PartnerDTO;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 public class PartnerComboBox extends ComboBox<PartnerDTO> {
 
 	public PartnerComboBox(ActivityDTO activity) {
-		this(activity.getDatabase().getPartners());
+		this(allowablePartners(activity));
+	}
+	
+	private static List<PartnerDTO> allowablePartners(ActivityDTO activity) {
+		if(activity.getDatabase().isEditAllAllowed()) {
+			return activity.getDatabase().getPartners();
+		} else {
+			return Collections.singletonList(activity.getDatabase().getMyPartner());
+		}
 	}
 	
 	public PartnerComboBox(List<PartnerDTO> partners) {
 		
-		ListStore<PartnerDTO> store = new ListStore<PartnerDTO>();	
+		final ListStore<PartnerDTO> store = new ListStore<PartnerDTO>();	
 		store.add(partners);
 		store.sort("name", SortDir.ASC);
 		
@@ -32,7 +43,13 @@ public class PartnerComboBox extends ComboBox<PartnerDTO> {
 		setAllowBlank(false);
 		
 		if(store.getCount() == 1) {
-			setValue(store.getAt(0));
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				
+				@Override
+				public void execute() {
+					setValue(store.getAt(0));
+				}
+			});
 		}
 	}
 	
