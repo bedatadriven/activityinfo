@@ -1,0 +1,70 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:data field="backgroundImage" src="resources/background.gif"></ui:data>
+	<ui:data field="gearImage" src="resources/gear.png"></ui:data>
+	<ui:data field="homeImage" src="resources/home.png"></ui:data>
+
+	<ui:style type="org.sigmah.client.page.app.SectionTabStrip.MyStyle">
+		@url backgroundUrl backgroundImage;
+		@url gearUrl gearImage;
+		@url homeUrl homeImage;
+				
+		.sections {
+			padding-left: 10px;
+			padding-top: 5px;
+			width: 7000px;
+			height: 35px;
+			border-bottom: 1px solid #99BBE8;
+		}
+		
+		.section {
+			font-family: tahoma, arial, verdana, sans-serif;
+			color: #15428B;
+			font-size: 16px;
+			font-weight: bold;
+			float: left;
+			margin-right: 20px;
+			padding-left: 10px;
+			padding-right: 10px;
+			padding-top: 10px;
+			height: 25px;
+			cursor: pointer;
+			border: 1px solid transparent;
+		}
+		
+		.activeSection {
+			background: white;
+			border-left: 1px solid #99BBE8;
+			border-top: 1px solid #99BBE8;
+			border-right: 1px solid #99BBE8;
+			background: #dfe8f6;
+		}
+		
+		.hoverSection {
+			background: white;
+			border-left: 1px solid #99BBE8;
+			border-top: 1px solid #99BBE8;
+			border-right: 1px solid #99BBE8;
+		}
+		
+		.settingsTab {
+			float: right;
+		}
+		
+		.settingsMenu {
+			width: 17px;
+			height: 16px;
+			background-image: gearUrl;
+		}
+	</ui:style>
+	<div class="{style.sections}" ui:field="sectionDiv">
+		<div class="{style.section} {style.activeSection}">Home</div>
+		<div class="{style.section}">Data Entry</div>
+		<div class="{style.section}">Reports</div>
+		<div class="{style.section}">Design</div>
+		<div class="{style.section} {style.settingsTab}">
+			<div class="{style.settingsMenu}"/>
+		</div>
+	</div>
+</ui:UiBinder> 

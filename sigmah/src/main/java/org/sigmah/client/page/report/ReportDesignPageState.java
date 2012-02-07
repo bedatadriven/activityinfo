@@ -6,6 +6,7 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.app.Section;
 
 public class ReportDesignPageState implements PageState {
 
@@ -43,5 +44,10 @@ public class ReportDesignPageState implements PageState {
 		public PageState parse(String token) {
 			return new ReportDesignPageState(Integer.parseInt(token));
 		}
+	}
+
+	@Override
+	public Section getSection() {
+		return Section.ANALYSIS;
 	}
 }

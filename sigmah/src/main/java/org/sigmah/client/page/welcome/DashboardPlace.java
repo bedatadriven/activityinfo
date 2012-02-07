@@ -10,12 +10,13 @@ import java.util.List;
 
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.app.Section;
 
-public class WelcomePageState implements PageState {
+public class DashboardPlace implements PageState {
 
     @Override
 	public PageId getPageId() {
-        return Welcome.PAGE_ID;
+        return DashboardPage.PAGE_ID;
     }
 
     @Override
@@ -25,7 +26,12 @@ public class WelcomePageState implements PageState {
 
     @Override
 	public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(Welcome.PAGE_ID);
+        return Arrays.asList(DashboardPage.PAGE_ID);
     }
+
+	@Override
+	public Section getSection() {
+		return Section.HOME;
+	}
     
 }

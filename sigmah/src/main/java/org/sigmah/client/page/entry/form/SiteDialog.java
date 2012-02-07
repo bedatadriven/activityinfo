@@ -9,6 +9,7 @@ import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.command.CreateSite;
 import org.sigmah.shared.command.UpdateSite;
+import org.sigmah.shared.command.exception.NotAuthorizedException;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
@@ -188,7 +189,6 @@ public class SiteDialog extends Window {
 	}
 
 	private void saveLocation() {
-		// start save
 		locationForm.save(new AsyncCallback<Void>() {
 			
 			@Override
@@ -229,8 +229,7 @@ public class SiteDialog extends Window {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				showError(caught);
 			}
 
 			@Override
@@ -251,8 +250,7 @@ public class SiteDialog extends Window {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				showError(caught);
 			}
 
 			@Override
@@ -262,5 +260,13 @@ public class SiteDialog extends Window {
 			}
 		});
 	}
+	
 
+	private void showError(Throwable caught) {
+		if(caught instanceof NotAuthorizedException) {
+			MessageBox.alert(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.notAuthorized(), null);	
+		} else {
+			MessageBox.alert(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.serverError(), null);
+		}
+	}
 }

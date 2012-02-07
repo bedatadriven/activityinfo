@@ -9,6 +9,7 @@ import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.app.Section;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,5 +51,10 @@ public class AccountPageState implements PageState {
             return new AccountPageState();
         }
     }
+
+	@Override
+	public Section getSection() {
+		return Section.DESIGN;
+	}
 
 }

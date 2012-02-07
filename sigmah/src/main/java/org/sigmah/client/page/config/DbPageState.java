@@ -9,6 +9,7 @@ import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.app.Section;
 import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 
 import java.util.Arrays;
@@ -88,6 +89,11 @@ public class DbPageState extends AbstractPagingGridPageState {
             return new DbPageState(pageId, Integer.parseInt(token));
         }
     }
+
+	@Override
+	public Section getSection() {
+		return Section.DESIGN;
+	}
 
 
 }

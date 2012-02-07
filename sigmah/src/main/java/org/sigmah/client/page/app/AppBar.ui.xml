@@ -1,0 +1,19 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:b="urn:import:org.sigmah.client.page.app"
+	xmlns:x="urn:import:com.extjs.gxt.ui.client.widget">
+	<ui:style>
+		.bar {
+			/*background: #dfe8f6 backgroundUrl repeat-x top;*/
+			background-color: #dfe8f6;
+			position: relative;
+		}
+	</ui:style>
+	<g:LayoutPanel styleName="{style.bar}">
+		<g:layer top='7px' bottom='0px'>
+			<b:SectionTabStrip ui:field="sectionTabStrip"/>		
+		</g:layer>
+
+	</g:LayoutPanel>
+</ui:UiBinder> 

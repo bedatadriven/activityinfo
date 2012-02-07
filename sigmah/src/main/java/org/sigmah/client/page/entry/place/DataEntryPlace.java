@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.app.Section;
 import org.sigmah.client.page.common.grid.AbstractPagingGridPageState;
 import org.sigmah.client.page.entry.DataEntryPage;
 import org.sigmah.client.page.entry.grouping.GroupingModel;
@@ -130,6 +131,11 @@ public class DataEntryPlace extends AbstractPagingGridPageState {
 	public DataEntryPlace setFilter(Filter filter) {
 		this.filter = filter;
 		return this;
+	}
+
+	@Override
+	public Section getSection() {
+		return Section.DATA_ENTRY;
 	}
 
 }

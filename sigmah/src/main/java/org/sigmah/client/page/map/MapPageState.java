@@ -7,6 +7,7 @@ package org.sigmah.client.page.map;
 
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.app.Section;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,5 +28,10 @@ public class MapPageState implements PageState {
     public List<PageId> getEnclosingFrames() {
         return Arrays.asList(getPageId());
     }
+
+	@Override
+	public Section getSection() {
+		return Section.ANALYSIS;
+	}
 
 }

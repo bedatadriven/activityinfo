@@ -9,7 +9,7 @@ import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
-import org.sigmah.client.page.welcome.WelcomePageState;
+import org.sigmah.client.page.welcome.DashboardPlace;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -73,7 +73,7 @@ public class HistoryManager {
             History.fireCurrentHistoryState();
 
         } else {
-        	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new WelcomePageState()));
+        	eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DashboardPlace()));
         }
     }
 

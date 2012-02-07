@@ -60,9 +60,7 @@ public class MapPage extends AbstractMap implements Page, ExportCallback {
         toolbarMapActions.addButton(UIActions.EXPORT_DATA, I18N.CONSTANTS.exportData(),
                 IconImageBundle.ICONS.excel());
         toolbarMapActions.setActionEnabled(UIActions.EXPORT_DATA, false);
-        toolbarMapActions.addButton(UIActions.SUBSCRIBE, I18N.CONSTANTS.emailSubscription(), IconImageBundle.ICONS.email());
-        
-      
+        toolbarMapActions.addButton(UIActions.SUBSCRIBE, I18N.CONSTANTS.emailSubscription(), IconImageBundle.ICONS.email()); 
     }
 
 

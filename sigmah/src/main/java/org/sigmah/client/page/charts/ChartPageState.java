@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.app.Section;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -40,5 +41,10 @@ public class ChartPageState implements PageState {
     public int hashCode() {
         return 0;
     }
+
+	@Override
+	public Section getSection() {
+		return Section.ANALYSIS;
+	}
 
 }
