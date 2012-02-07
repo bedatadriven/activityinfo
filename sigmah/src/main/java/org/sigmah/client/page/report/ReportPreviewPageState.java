@@ -11,6 +11,7 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.app.Section;
 
 /**
  * Page state object for the ReportPreview page
@@ -45,4 +46,9 @@ public class ReportPreviewPageState implements PageState {
             return new ReportPreviewPageState(Integer.parseInt(token));
         }
     }
+
+	@Override
+	public Section getSection() {
+		return Section.ANALYSIS;
+	}
 }

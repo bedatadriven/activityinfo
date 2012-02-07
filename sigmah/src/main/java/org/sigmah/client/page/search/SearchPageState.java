@@ -6,6 +6,7 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.app.Section;
 
 public class SearchPageState implements PageState {
 
@@ -75,5 +76,10 @@ public class SearchPageState implements PageState {
             return new SearchPageState(query);
         }
     }
+
+	@Override
+	public Section getSection() {
+		return Section.HOME;
+	}
 	
 }

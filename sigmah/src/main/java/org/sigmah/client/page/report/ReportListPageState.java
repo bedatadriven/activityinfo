@@ -7,6 +7,7 @@ package org.sigmah.client.page.report;
 
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.app.Section;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,5 +30,10 @@ public class ReportListPageState implements PageState {
     public List<PageId> getEnclosingFrames() {
         return Arrays.asList(ReportListPagePresenter.REPORT_HOME_PAGE_ID);
     }
+
+	@Override
+	public Section getSection() {
+		return Section.ANALYSIS;
+	}
 
 }

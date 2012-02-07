@@ -11,6 +11,7 @@ import java.util.List;
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.app.Section;
 
 public class DbListPageState implements PageState {
 
@@ -42,4 +43,9 @@ public class DbListPageState implements PageState {
     public int hashCode() {
         return 0;
     }
+
+	@Override
+	public Section getSection() {
+		return Section.DESIGN;
+	}
 }

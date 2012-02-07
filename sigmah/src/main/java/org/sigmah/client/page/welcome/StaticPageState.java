@@ -12,6 +12,7 @@ import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.app.Section;
 
 public final class StaticPageState implements PageState {
 
@@ -47,6 +48,11 @@ public final class StaticPageState implements PageState {
             return new StaticPageState(token);
         }
     }
+
+	@Override
+	public Section getSection() {
+		return Section.HOME;
+	}
 
 
 }

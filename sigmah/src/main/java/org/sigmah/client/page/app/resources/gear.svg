@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="511.59332"
+   height="474.33304"
+   id="svg3910"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="gear.svg"
+   inkscape:export-filename="/home/alexander/dev/activityinfo-2.6/sigmah/src/main/java/org/sigmah/client/page/app/resources/gear.png"
+   inkscape:export-xdpi="3.0358417"
+   inkscape:export-ydpi="3.0358417">
+  <metadata
+     id="metadata3923">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Gear</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3921" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1045"
+     inkscape:window-height="586"
+     id="namedview3919"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.45625"
+     inkscape:cx="-86.35496"
+     inkscape:cy="240.58584"
+     inkscape:window-x="477"
+     inkscape:window-y="213"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g3914" />
+  <title
+     id="title3912">Gear</title>
+  <g
+     id="g3914"
+     transform="translate(-3.067289,-6.252803)">
+    <title
+       id="title3916">Layer 1</title>
+    <path
+       stroke-miterlimit="4"
+       id="path908"
+       d="m 228.99368,6.252803 -13.7955,99.508347 c -10.72572,2.91836 -21.00488,6.79364 -30.63002,11.67851 L 98.356222,56.822623 56.849748,95.306088 122.86824,174.57169 c -5.30041,8.95346 -9.47246,18.52755 -12.63588,28.51041 l -107.165071,13.64347 0,54.38851 107.085091,12.75368 c 3.15814,10.02666 7.36329,19.63059 12.67588,28.62162 l -65.218753,79.74757 41.506474,38.48349 85.292229,-61.09902 c 9.71219,4.94425 20.0751,8.88767 30.90993,11.82681 l 14.7152,99.13761 58.70089,0 13.71552,-99.17468 c 10.83588,-2.94512 21.19806,-6.87597 30.90993,-11.82682 l 85.972,60.43168 41.50647,-38.48349 -65.89853,-79.15437 c 5.2932,-8.97803 9.48941,-18.57591 12.63588,-28.58455 l 107.08512,-13.64347 0,-54.42558 -107.16509,-12.75369 c -3.16577,-9.96298 -7.42102,-19.49985 -12.71586,-28.43625 L 460.11839,94.638748 418.6119,56.15528 l -85.57211,61.2473 c -9.6264,-4.87879 -19.90434,-8.72894 -30.63002,-11.64143 l -14.7552,-99.508347 -58.66089,0 z m 110.9282,237.166547 c 0,41.48516 -36.31394,75.15433 -81.05793,75.15433 -44.74401,0 -81.05796,-33.66917 -81.05796,-75.15433 0,-41.48522 36.31395,-75.15437 81.05796,-75.15437 44.74399,0 81.05793,33.66915 81.05793,75.15437 z"
+       style="fill:#15428b;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

@@ -7,6 +7,8 @@ package org.sigmah.client.page;
 
 import java.util.List;
 
+import org.sigmah.client.page.app.Section;
+
 /**
  * Describes the state of a Page.
  *
@@ -40,5 +42,12 @@ public interface PageState {
      * @return
      */
 	List<PageId> getEnclosingFrames();
+	
+	
+	/**
+	 * 
+	 * @return the section to which this place belongs
+	 */
+	Section getSection();
 
 }

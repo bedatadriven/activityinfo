@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.sigmah.client.dispatch.monitor.NullAsyncMonitor;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.mock.MockEventBus;
+import org.sigmah.client.page.app.Section;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -165,6 +166,10 @@ public class NavigationHandlerTest {
         public PageId getPageId() { return pageId;  }
         public String serializeAsHistoryToken() { return null; }
         public List<PageId> getEnclosingFrames() { return viewPath; }
+		@Override
+		public Section getSection() {
+			return Section.HOME;
+		}
     }
 
     @Test

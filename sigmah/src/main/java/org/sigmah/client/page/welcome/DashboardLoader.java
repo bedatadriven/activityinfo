@@ -16,15 +16,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class WelcomeLoader implements PageLoader {
-    private final Provider<Welcome> welcomeProvider;
+public class DashboardLoader implements PageLoader {
+    private final Provider<DashboardPage> welcomeProvider;
 
     @Inject
-    public WelcomeLoader(NavigationHandler pageManager, PageStateSerializer placeSerializer, Provider<Welcome> welcomeProvider) {
+    public DashboardLoader(NavigationHandler pageManager, PageStateSerializer placeSerializer, Provider<DashboardPage> welcomeProvider) {
         this.welcomeProvider = welcomeProvider;
 
-        pageManager.registerPageLoader(Welcome.PAGE_ID, this);
-        placeSerializer.registerStatelessPlace(Welcome.PAGE_ID, new WelcomePageState());
+        pageManager.registerPageLoader(DashboardPage.PAGE_ID, this);
+        placeSerializer.registerStatelessPlace(DashboardPage.PAGE_ID, new DashboardPlace());
     }
 
     @Override

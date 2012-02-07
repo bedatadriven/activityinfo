@@ -8,8 +8,6 @@ package org.sigmah.client.page.app;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.event.NavigationEvent;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.offline.ui.OfflineView;
 import org.sigmah.client.page.Frame;
 import org.sigmah.client.page.NavigationCallback;
@@ -17,35 +15,29 @@ import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.charts.ChartPageState;
 import org.sigmah.client.page.common.SearchField;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.DbListPageState;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
-import org.sigmah.client.page.map.MapPageState;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.search.SearchPageState;
-import org.sigmah.client.page.table.PivotPageState;
+import org.sigmah.client.page.welcome.DashboardPlace;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,80 +49,81 @@ import com.google.inject.Singleton;
 @Singleton
 public class AppFrameSet implements Frame {
 
-    private EventBus eventBus;
-    private Viewport viewport;
+	private EventBus eventBus;
+	private Viewport viewport;
 
-    private ToolBar topBar;
-    private AuthenticatedUser auth;
-    private OfflineView offlineMenu;
+	private TabPanel tabPanel;
+	private AuthenticatedUser auth;
+	private OfflineView offlineMenu;
 
-    private Widget activeWidget;
-    private Page activePage;
+	private Widget activeWidget;
+	private Page activePage;
+	private AppBar appBar;
 
 
-    @Inject
-    public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, OfflineView offlineMenu) {
+	@Inject
+	public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, OfflineView offlineMenu) {
 
-        Log.trace("AppFrameSet constructor starting");
+		Log.trace("AppFrameSet constructor starting");
 
-        this.eventBus = eventBus;
-        this.auth = auth;
-        this.offlineMenu = offlineMenu;
+		this.eventBus = eventBus;
+		this.auth = auth;
+		this.offlineMenu = offlineMenu;
 
-        viewport = new Viewport();
-        viewport.setLayout(new RowLayout());
+		viewport = new Viewport();
+		viewport.setLayout(new RowLayout());
 
-        createToolBar();
+		createToolBar();
 
-        Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
+		Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
 
-        RootPanel.get().add(viewport);
+		RootPanel.get().add(viewport);
 
-        Log.trace("AppFrameSet now added to RootPanel");
+		Log.trace("AppFrameSet now added to RootPanel");
 
-    }
+	}
 
-    private void createToolBar() {
+	private void createToolBar() {
+		appBar = new AppBar();
+		appBar.getSectionTabStrip().addSelectionHandler(new SelectionHandler<Section>() {
 
-        topBar = new ToolBar();
+			@Override
+			public void onSelection(SelectionEvent<Section> event) {
+				onSectionClicked(event.getSelectedItem());
+			}
+		});
+		eventBus.addListener(NavigationHandler.NavigationAgreed, new Listener<NavigationEvent>() {
 
-        VersionLabel appCacheMenu = new VersionLabel();
-        topBar.add(appCacheMenu);
+			@Override
+			public void handleEvent(NavigationEvent event) {
+				appBar.getSectionTabStrip().setSelection(event.getPlace().getSection());				
+			}
+			
+		});
+		viewport.add(appBar, new RowData(1.0, AppBar.HEIGHT));
+	}
 
-        topBar.add(new SeparatorToolItem());
+	private void onSectionClicked(Section selectedItem) {
+		switch(selectedItem) {
+		case HOME:
+			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DashboardPlace()));
+			break;
+		case DATA_ENTRY:
+			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DataEntryPlace()));
+			break;
+		case ANALYSIS:
+			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ReportListPageState()));
+			break;
+		case DESIGN:
+			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DbListPageState()));
+			break;
+		}
 
-       // addNavLink(I18N.CONSTANTS.welcome(), IconImageBundle.ICONS.dashboard(), new DashboardPageState());
-        addNavLink(I18N.CONSTANTS.dataEntry(), IconImageBundle.ICONS.dataEntry(), new DataEntryPlace());
-        addNavLink(I18N.CONSTANTS.reports(), IconImageBundle.ICONS.report(), new ReportListPageState());
-        addNavLink(I18N.CONSTANTS.charts(), IconImageBundle.ICONS.barChart(), new ChartPageState());
-        addNavLink(I18N.CONSTANTS.maps(), IconImageBundle.ICONS.map(), new MapPageState());
-        addNavLink(I18N.CONSTANTS.tables(), IconImageBundle.ICONS.table(), new PivotPageState());
-        addNavLink(I18N.CONSTANTS.setup(), IconImageBundle.ICONS.setup(), new DbListPageState());
-        
-        addSearchBox();
-
-        topBar.add(new FillToolItem());
-        
-        LabelToolItem emailLabel = new LabelToolItem(auth.getEmail());
-        emailLabel.setStyleAttribute("fontWeight", "bold");
-        topBar.add(emailLabel);
-
-        topBar.add(offlineMenu);
-
-        Button logoutTool = new Button(I18N.CONSTANTS.logout(), new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                Window.Location.assign("/content/");
-            }
-        });
-        topBar.add(logoutTool);
-
-        viewport.add(topBar, new RowData(1.0, 30));
-    }
+	}
 
 	private void addSearchBox() {
 		final SearchField searchBox = new SearchField();
-        searchBox.addKeyListener(new KeyListener() {
+		searchBox.addKeyListener(new KeyListener() {
 			@Override
 			public void componentKeyUp(ComponentEvent event) {
 				super.componentKeyUp(event);
@@ -139,87 +132,92 @@ public class AppFrameSet implements Frame {
 				}
 			}
 		});
-        searchBox.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
+		searchBox.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
 				search(searchBox.getValue());
 			}
 		});
-        
-        topBar.add(searchBox);
+
+		//topBar.add(searchBox);
 	}
 
-    protected void search(String value) {
-        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SearchPageState(value)));
+	protected void search(String value) {
+		eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SearchPageState(value)));
 	}
 
 	private void addNavLink(String text, AbstractImagePrototype icon, final PageState place) {
-        Button button = new Button(text, icon, new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, place));
-            }
-        });
-        topBar.add(button);
-    }
+		//		TabItem tab = new TabItem(text);
+		//		tab.setIcon(icon);
+		//		tabPanel.add(tab);
+		//		tab.add
+		//        Button button = new Button(text, icon, new SelectionListener<ButtonEvent>() {
+		//            @Overridelement.
+		//            public void componentSelected(ButtonEvent ce) {
+		//                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, place));
+		//            }
+		//        });
+		//        topBar.add(button);
+	}
 
-    public void setWidget(Widget widget) {
+	public void setWidget(Widget widget) {
 
-        if (activeWidget != null) {
-            viewport.remove(activeWidget);
-        }
-        viewport.add(widget, new RowData(1.0, 1.0));
-        activeWidget = widget;
-        viewport.layout();
-    }
+		if (activeWidget != null) {
+			viewport.remove(activeWidget);
+		}
+		viewport.add(widget, new RowData(1.0, 1.0));
+		activeWidget = widget;
+		viewport.layout();
+	}
 
-    @Override
-    public void setActivePage(Page page) {
-        setWidget((Widget) page.getWidget());
-        activePage = page;
-    }
+	@Override
+	public void setActivePage(Page page) {
+		setWidget((Widget) page.getWidget());
+		activePage = page;
+	}
 
-    @Override
-    public Page getActivePage() {
-        return activePage;
-    }
+	@Override
+	public Page getActivePage() {
+		return activePage;
+	}
 
-    @Override
-    public AsyncMonitor showLoadingPlaceHolder(PageId pageId, PageState loadingPlace) {
-        activePage = null;
-        LoadingPlaceHolder placeHolder = new LoadingPlaceHolder();
-        setWidget(placeHolder);
-        return placeHolder;
-    }
+	@Override
+	public AsyncMonitor showLoadingPlaceHolder(PageId pageId, PageState loadingPlace) {
+		activePage = null;
+		LoadingPlaceHolder placeHolder = new LoadingPlaceHolder();
+		setWidget(placeHolder);
+		return placeHolder;
+	}
 
-    @Override
-    public PageId getPageId() {
-        return null;
-    }
+	@Override
+	public PageId getPageId() {
+		return null;
+	}
 
-    @Override
-    public Object getWidget() {
-        return viewport;
-    }
+	@Override
+	public Object getWidget() {
+		return viewport;
+	}
 
-    @Override
-    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
-        callback.onDecided(true);
-    }
+	@Override
+	public void requestToNavigateAway(PageState place, NavigationCallback callback) {
+		callback.onDecided(true);
+	}
 
-    @Override                          
-    public String beforeWindowCloses() {
-        return null;
-    }
+	@Override                          
+	public String beforeWindowCloses() {
+		return null;
+	}
 
-    @Override
-    public boolean navigate(PageState place) {
-        return true;
-    }
+	@Override
+	public boolean navigate(PageState place) {
+		appBar.getSectionTabStrip().setSelection(place.getSection());
+		return true;
+	}
 
-    @Override
-    public void shutdown() {
+	@Override
+	public void shutdown() {
 
-    }
+	}
 
 }

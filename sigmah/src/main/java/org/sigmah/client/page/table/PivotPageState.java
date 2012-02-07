@@ -8,6 +8,7 @@ package org.sigmah.client.page.table;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
+import org.sigmah.client.page.app.Section;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,4 +39,9 @@ public class PivotPageState implements PageState {
             return new PivotPageState();
         }
     }
+
+	@Override
+	public Section getSection() {
+		return Section.ANALYSIS;
+	}
 }
