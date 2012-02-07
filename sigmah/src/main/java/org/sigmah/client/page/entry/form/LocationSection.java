@@ -114,6 +114,7 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 
 				@Override
 				public void onSuccess(VoidResult result) {
+					isNew = false;
 					callback.onSuccess(null);
 				}
 			});
