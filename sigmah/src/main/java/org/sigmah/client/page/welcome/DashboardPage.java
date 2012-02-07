@@ -9,6 +9,7 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.welcome.portlets.NewsPortlet;
 
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -28,13 +29,12 @@ public class DashboardPage extends Portal implements Page {
 
     @Inject
     public DashboardPage() {
-    	super(3);
+    	super(2);
         Portal portal = this;  
         portal.setBorders(true);  
         portal.setStyleAttribute("backgroundColor", "white");  
-        portal.setColumnWidth(0, .33);  
+        portal.setColumnWidth(0, .63);  
         portal.setColumnWidth(1, .33);  
-        portal.setColumnWidth(2, .33);  
       
         Portlet portlet = new Portlet();  
         portlet.setHeading("Grid in a Portlet");  
@@ -42,15 +42,23 @@ public class DashboardPage extends Portal implements Page {
         portlet.setLayout(new FitLayout());  
         portlet.add(createGrid());  
         portlet.setHeight(250);  
-      
+  
+        portal.add(portlet, 0);  
+        
+        portlet = new Portlet();  
+        portlet.setHeading("Another Panel 1");  
+        configPanel(portlet);  
+        portlet.addText(getBogusText());
+        portlet.setHeight(250);
         portal.add(portlet, 0);  
       
         portlet = new Portlet();  
         portlet.setHeading("Another Panel 1");  
         configPanel(portlet);  
-        portlet.addText(getBogusText());  
+        portlet.addText(getBogusText());
+        portlet.setHeight(250);
         portal.add(portlet, 0);  
-      
+        
         portlet = new Portlet();  
         portlet.setHeading("Panel 2");  
         configPanel(portlet);  
@@ -62,14 +70,13 @@ public class DashboardPage extends Portal implements Page {
         configPanel(portlet);  
         portlet.addText(getBogusText());  
         portal.add(portlet, 1);  
+        
+        portal.add(new NewsPortlet(), 1);
+        
+        
       
-        portlet = new Portlet();  
-        portlet.setHeading("Panel 3");  
-        configPanel(portlet);  
-        portlet.addText(getBogusText());  
-        portal.add(portlet, 2);  
 //    	
-//        this.view = view;
+//        this.view = view;http://www.activityinfo.org/content/?
 //        this.view.setHeading(I18N.CONSTANTS.welcomeMessage());
 //        this.view.setIntro(I18N.CONSTANTS.selectCategory());
 //
@@ -102,8 +109,6 @@ public class DashboardPage extends Portal implements Page {
 	}
 
 	private void configPanel(final ContentPanel panel) {  
-        panel.setCollapsible(true);  
-        panel.setAnimCollapse(false);  
         panel.getHeader().addTool(new ToolButton("x-tool-gear"));  
         panel.getHeader().addTool(  
             new ToolButton("x-tool-close", new SelectionListener<IconButtonEvent>() {  
