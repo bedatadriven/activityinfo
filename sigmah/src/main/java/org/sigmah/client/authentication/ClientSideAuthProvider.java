@@ -42,7 +42,6 @@ public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
         }
 
        	throw new InvalidAuthTokenException("Request is not authenticated");
-
     }
     
     private String currentLocale() {

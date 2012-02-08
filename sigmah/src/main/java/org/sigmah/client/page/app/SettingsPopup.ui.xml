@@ -1,0 +1,54 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.panel {
+			background-color: white;
+			border-top: 1px solid #99BBE8;
+			
+		}
+		.email {
+			font-weight: bold;
+		}
+		.group {
+			border-left: 1px solid #99BBE8;
+			border-right: 1px solid #99BBE8;
+			border-bottom: 1px solid #99BBE8;
+			padding-bottom: 5px;
+			padding-top: 5px;
+		}
+		.menuRow {
+			font-family: tahoma, arial, verdana, sans-serif;
+			font-size: 11px;
+			color: black;
+			margin-bottom: 3px;
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+				
+		.action {
+			text-decoration: underline;
+			cursor: pointer;
+			display: inline;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="{style.panel}">
+		<div class="{style.group}">
+			<div class="{style.menuRow}">Application version <span ui:field="versionLabel">2.5.1</span></div>
+			<div class="{style.menuRow}" ui:field="appCacheStatusRow"><span ui:field="cacheStatus"/> 
+				<g:Label text="Refresh your browser now" ui:field="refreshLink" styleName="{style.action}"/></div>
+		</div>
+	
+<!--		<div class="{style.group}">	-->
+<!--			<div class="{style.menuRow}">Offline not installed</div>-->
+<!--			<div class="{style.menuRow}"><g:Label text="Install" styleName="{style.action}"/></div>-->
+<!--			<div class="{style.menuRow}">Having problems with offline mode? Click to -->
+<!--					<g:Label text="Reinstall offline mode" styleName="{style.action}"/>.</div>-->
+<!--		</div>-->
+<!--		-->
+		<div class="{style.group}">
+			<div class="{style.menuRow}">Logged in as <span class="{style.email}" ui:field="emailLabel"/></div>
+			<div class="{style.menuRow}"><g:Label text="Logout" styleName="{style.action}" ui:field="logoutLink"/></div>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

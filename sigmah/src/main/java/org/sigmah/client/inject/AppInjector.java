@@ -38,7 +38,7 @@ import org.sigmah.client.page.map.MapLoader;
 import org.sigmah.client.page.map.MapModule;
 import org.sigmah.client.page.report.ReportDesignLoader;
 import org.sigmah.client.page.report.ReportDesignPresenter;
-import org.sigmah.client.page.report.ReportListPagePresenter;
+import org.sigmah.client.page.report.ReportsPage;
 import org.sigmah.client.page.report.ReportLoader;
 import org.sigmah.client.page.report.ReportModule;
 import org.sigmah.client.page.report.ReportPreviewPresenter;
@@ -81,7 +81,7 @@ public interface AppInjector extends Ginjector {
 
     HistoryManager getHistoryManager();
 
-    ReportListPagePresenter getReportHomePresenter();
+    ReportsPage getReportHomePresenter();
 
     ConfigNavigator getConfigNavigator();
 

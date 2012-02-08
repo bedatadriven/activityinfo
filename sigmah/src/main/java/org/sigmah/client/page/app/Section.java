@@ -5,7 +5,6 @@ package org.sigmah.client.page.app;
  *
  */
 public enum Section {
-
 	HOME,
 	DATA_ENTRY,
 	ANALYSIS,

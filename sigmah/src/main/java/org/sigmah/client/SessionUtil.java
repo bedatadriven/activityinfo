@@ -8,5 +8,9 @@ public class SessionUtil {
 	public static void forceLogin() {
 		Window.Location.assign("/login");
 	}
+	
+	public static void logout() {
+		Window.Location.assign("/logout");
+	}
 
 }

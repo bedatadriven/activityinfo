@@ -1,5 +1,7 @@
 package org.sigmah.client.page.welcome.portlets;
 
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.JsonLoadResultReader;
@@ -60,6 +62,16 @@ public class NewsPortlet extends Portlet {
 				XTemplate tpl = XTemplate.create(TEMPLATES.newsTemplate().getText());
 				ListLoadResult<ModelData> result = le.getData();
 				tpl.overwrite(html.getElement(), Util.getJsObjects(result.getData(), 3));
+			}
+
+			@Override
+			public void loaderBeforeLoad(LoadEvent le) {
+				html.setHtml(I18N.CONSTANTS.loading());
+			}
+
+			@Override
+			public void loaderLoadException(LoadEvent le) {
+				html.setHtml(I18N.CONSTANTS.connectionProblem());
 			}
 
 		});
