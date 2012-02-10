@@ -1,8 +1,6 @@
 package org.sigmah.client.page.report;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
@@ -12,14 +10,14 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.report.resources.ReportResources;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
-import org.sigmah.shared.report.model.ReportElement;
+
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.EditorEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -32,14 +30,12 @@ import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -49,9 +45,6 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 	private final EventBus eventBus;
 	private final Dispatcher service;
 
-	private ToolBar toolBar;
-	private TextField<String> titleField;
-	private Button save;
 	private ReportDesignPresenter presenter;
 	private ContentPanel elementListPane;
 	private LayoutContainer center;
@@ -65,11 +58,14 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 
 	
 	private boolean reportEdited;
+	private ReportBar reportBar;
 	
 	@Inject
 	public ReportDesignPage(EventBus eventBus, Dispatcher service) {
 		this.eventBus = eventBus;
 		this.service = service;
+		
+		ReportResources.INSTANCE.style().ensureInjected();
 	}
 
 	@Override
@@ -91,18 +87,39 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 	}
 
 	public void createToolbar() {
-
-		toolBar = new ToolBar();
-
-		titleField = new TextField<String>();
-		titleField.addListener(Events.Change, new Listener<BaseEvent>() {
+		reportBar = new ReportBar();
+		BorderLayoutData reportBarLayout = new BorderLayoutData(LayoutRegion.NORTH);
+		reportBarLayout.setSize(35);
+		add(reportBar, reportBarLayout);
+				
+		reportBar.addTitleEditCompleteListener(new Listener<EditorEvent>() {
 			@Override
-			public void handleEvent(BaseEvent be) {
-				presenter.updateReport(selectedReport.getId(), titleField.getValue(), null);
+			public void handleEvent(EditorEvent be) {
+				presenter.updateReport(selectedReport.getId(), (String)be.getValue(), null);
+				reportBar.setReportTitle((String)be.getValue());
 			}
 		});
-		toolBar.add(titleField);
+		
+		reportBar.getSaveButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				if(presenter != null) {
+					presenter.onUIAction(UIActions.SAVE);
+				}
+			}
+		});
+	}
 
+	public void createElementListPane() {
+
+
+		elementListPane = new ContentPanel();
+		elementListPane.setHeading(I18N.CONSTANTS.reportElements());
+		elementListPane.setLayout(createVBoxLayout());
+
+		createReportPreviewButton();
+		
 		SelectionListener<ButtonEvent> listener = new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -112,37 +129,18 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 			}
 		};
 
-		Button addChart = new Button(I18N.CONSTANTS.addChart(), null, listener);
+		Button addChart = new Button(I18N.CONSTANTS.addChart(), IconImageBundle.ICONS.barChart(), listener);
 		addChart.setItemId(UIActions.ADDCHART);
-		toolBar.add(addChart);
+		elementListPane.add(addChart);
 
-		Button addMap = new Button(I18N.CONSTANTS.addMap(), null, listener);
+		Button addMap = new Button(I18N.CONSTANTS.addMap(),  IconImageBundle.ICONS.map(), listener);
 		addMap.setItemId(UIActions.ADDMAP);
-		toolBar.add(addMap);
+		elementListPane.add(addMap);
 
-		Button addTable = new Button(I18N.CONSTANTS.addTable(), null, listener);
+		Button addTable = new Button(I18N.CONSTANTS.addTable(), IconImageBundle.ICONS.table(), listener);
 		addTable.setItemId(UIActions.ADDTABLE);
-		toolBar.add(addTable);
+		elementListPane.add(addTable);
 
-		save = new Button(I18N.CONSTANTS.save(), IconImageBundle.ICONS.save(), listener);
-		save.setItemId(UIActions.SAVE);
-		save.setEnabled(true);
-		toolBar.add(save);
-		
-		Button subscribe = new Button(I18N.CONSTANTS.emailSubscription(), IconImageBundle.ICONS.email(), listener);
-		subscribe.setItemId(UIActions.SUBSCRIBE);
-		toolBar.add(subscribe);
-		
-		setTopComponent(toolBar);
-	}
-
-	public void createElementListPane() {
-
-		elementListPane = new ContentPanel();
-		elementListPane.setHeading(I18N.CONSTANTS.reportElements());
-		elementListPane.setLayout(createVBoxLayout());
-
-		createReportPriviewButton();
 		creteReportElementListView();
 
 		add(elementListPane, createBorderWestLayout());
@@ -156,7 +154,7 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 		return layout;
 	}
 	
-	private void createReportPriviewButton(){
+	private void createReportPreviewButton(){
 		reportPreview = new Button(I18N.CONSTANTS.preview(), null,
 				new SelectionListener<ButtonEvent>() {
 					@Override
@@ -255,7 +253,7 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 	
 	private void loadElementEditor(ReportElementModel model){
 		
-		save.setEnabled(true);
+		reportBar.getSaveButton().setEnabled(true);
 		model.setEdited(true);
 	
 		presenter.loadElementInEditor(model);
@@ -291,7 +289,7 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 	@Override
 	public void setReport(ReportDefinitionDTO dto){
 		selectedReport = dto;
-		titleField.setValue(dto.getTitle());
+		reportBar.setReportTitle(dto.getTitle());
 	}
 	
 	@Override
@@ -313,6 +311,6 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 	
 	@Override
 	public Button getSaveButton(){
-		return save;
+		return reportBar.getSaveButton();
 	}
 }

@@ -17,7 +17,7 @@
    inkscape:export-filename="/home/alexander/dev/activityinfo-2.6/sigmah/src/main/java/org/sigmah/client/page/app/resources/help.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
-   sodipodi:docname="New document 16">
+   sodipodi:docname="help.svg">
   <defs
      id="defs4532" />
   <sodipodi:namedview
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.197802"
-     inkscape:cx="-1.0565076"
-     inkscape:cy="3.9604005"
+     inkscape:zoom="16"
+     inkscape:cx="10.597601"
+     inkscape:cy="-8.5374593"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -38,8 +38,8 @@
      inkscape:guide-bbox="true"
      inkscape:window-width="988"
      inkscape:window-height="764"
-     inkscape:window-x="329"
-     inkscape:window-y="224"
+     inkscape:window-x="313"
+     inkscape:window-y="274"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata4535">
@@ -57,17 +57,12 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <path
-       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#15428f;fill-opacity:0.94117647;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
-       d="M 7.983368,0 C 3.5642819,0 0,3.5642819 0,7.983368 0,12.402453 3.5642819,16 7.983368,16 12.402454,16 16,12.402453 16,7.983368 16,3.5642819 12.402454,0 7.983368,0 z m 0,1.0644491 c 3.843815,0 6.952184,3.0751038 6.952184,6.9189189 0,3.843815 -3.108369,6.952183 -6.952184,6.952183 -3.8438152,0 -6.918919,-3.108368 -6.918919,-6.952183 0,-3.8438151 3.0751038,-6.9189189 6.918919,-6.9189189 z"
-       id="path4542"
-       inkscape:connector-curvature="0" />
     <g
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:0%;letter-spacing:-0.03000000000000000px;word-spacing:0px;fill:#15428f;fill-opacity:0.94117647;stroke:none;font-family:Sans"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:0%;letter-spacing:-0.03px;word-spacing:0px;fill:#15428f;fill-opacity:0.94117647;stroke:none;font-family:Sans"
        id="text5052"
-       transform="matrix(0.37665398,-0.06777075,0.06327211,0.35165159,13.660186,5.2159234)">
+       transform="matrix(0.37665398,-0.06092829,0.06327211,0.31614717,13.847686,5.7316692)">
       <g
-         style="font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:0px;fill:#15428f;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS Bold;fill-opacity:0.94117647"
+         style="font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:0px;fill:#15428f;fill-opacity:0.94117647;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS Bold"
          id="text5059"
          transform="translate(-13.109406,6.0366337)">
         <path
@@ -86,6 +81,16 @@
        sodipodi:rx="1.2104828"
        sodipodi:ry="1.1945554"
        d="m 8.4096701,12.320769 a 1.2104828,1.1945554 0 1 1 -2.4209657,0 1.2104828,1.1945554 0 1 1 2.4209657,0 z"
-       transform="translate(0.80081272,0.42730724)" />
+       transform="matrix(1.0326458,0,0,1.0464144,0.56578949,-0.64263074)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#15428f;stroke-opacity:0.94117647000000004;stroke-width:1.49653462;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path5133"
+       sodipodi:cx="8.3341589"
+       sodipodi:cy="8.3415842"
+       sodipodi:rx="6.9826732"
+       sodipodi:ry="6.9826732"
+       d="m 15.316832,8.3415842 a 6.9826732,6.9826732 0 1 1 -13.9653463,0 6.9826732,6.9826732 0 1 1 13.9653463,0 z"
+       transform="matrix(1.0023156,0,0,1.0023156,-0.35345748,-0.36089998)" />
   </g>
 </svg>
