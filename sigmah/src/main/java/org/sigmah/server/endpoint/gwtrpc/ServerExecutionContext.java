@@ -1,5 +1,7 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
+import javax.persistence.EntityManager;
+
 import org.sigmah.server.command.handler.CommandHandler;
 import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.server.database.hibernate.entity.User;
@@ -94,8 +96,9 @@ public class ServerExecutionContext implements ExecutionContext {
 		final AuthenticatedUser user = injector.getInstance(AuthenticatedUser.class);
 		
 		if(handler instanceof CommandHandler) {
-			
-			return ((CommandHandler) handler).execute(command, new User(user));
+			EntityManager em = injector.getInstance(EntityManager.class);
+			User userEntity = em.find(User.class, user.getId());
+			return ((CommandHandler) handler).execute(command, userEntity);
 		}
 		
 		// TODO: log here, if there is something in the queue there is a problem somewhere.
@@ -138,6 +141,7 @@ public class ServerExecutionContext implements ExecutionContext {
 		
 		return result.result;
 	}
+
 
 	private static class ResultCollector<R> implements AsyncCallback<R> {
 
