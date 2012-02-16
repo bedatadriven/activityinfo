@@ -12,6 +12,7 @@ import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.report.resources.ReportResources;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.report.model.TableElement;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -37,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -188,7 +190,9 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 
 					@Override
 					public void handleEvent(ListViewEvent<ReportElementModel> event) {
-						if(event.getModel().getId() != presenter.getElementInViewId()){
+						if(event.getModel().getReportElement()instanceof TableElement){
+							Window.alert("Editing this type of element is not supported");
+						} else if(event.getModel().getId() != presenter.getElementInViewId()){
 							loadElementEditor(event.getModel());	
 						}	
 					}

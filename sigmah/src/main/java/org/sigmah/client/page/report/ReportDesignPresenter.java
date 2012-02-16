@@ -31,6 +31,8 @@ import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.TableElement;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -52,7 +54,7 @@ public class ReportDesignPresenter implements ActionListener, Page {
 	private SubscribeForm form;
 	private FormDialogImpl dialog;
 	
-	private int mapCounter, pivotCounter, chartCounter , id =  0;
+	private int mapCounter, pivotCounter, chartCounter, tableCounter, id =  0;
 	private int current = -1;
 
 	@ImplementedBy(ReportDesignPage.class)
@@ -167,11 +169,14 @@ public class ReportDesignPresenter implements ActionListener, Page {
 				 	model.setElementTitle(I18N.CONSTANTS.chart() + " " + chartCounter );
 		        } else if (element instanceof PivotTableReportElement) {
 		        	pivotCounter++;
-		        	model.setElementTitle(I18N.CONSTANTS.table() + " " + pivotCounter );
+		        	model.setElementTitle(I18N.CONSTANTS.pivotTable() + " " + pivotCounter );
 		        } else if (element instanceof MapReportElement) {
 		        	mapCounter++;
-		        	model.setElementTitle(I18N.CONSTANTS.map()  + " " + mapCounter);
-		        } 
+		        	model.setElementTitle(I18N.CONSTANTS.map() + " " + mapCounter);
+		        } else if (element instanceof TableElement){
+		        	tableCounter++;
+		        	model.setElementTitle(I18N.CONSTANTS.table() + " " + tableCounter);
+		        }
 		}else{
 			model.setElementTitle(element.getTitle());
 		}

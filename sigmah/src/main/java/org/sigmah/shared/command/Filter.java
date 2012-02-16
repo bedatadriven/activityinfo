@@ -142,6 +142,9 @@ public class Filter implements Serializable {
 	}
 	
 	public boolean isDateRestricted() {
+		if(dateRange == null){
+			return false;
+		}
 		return dateRange.getMinDate()!=null || dateRange.getMaxDate()!=null;
 	}
 
@@ -149,7 +152,7 @@ public class Filter implements Serializable {
         return new HashSet<DimensionType>(restrictions.keySet());
     }
 
-    private Map<DimensionType, Set<Integer>> getRestrictions() {
+    public Map<DimensionType, Set<Integer>> getRestrictions() {
         return restrictions;
     }
 
