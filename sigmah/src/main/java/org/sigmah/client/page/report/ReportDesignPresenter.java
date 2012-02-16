@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.ImplementedBy;
@@ -118,7 +119,11 @@ public class ReportDesignPresenter implements ActionListener, Page {
 		} else if (UIActions.ADDTABLE.equals(actionId)) {
 			addTable();
 		} else if (UIActions.SAVE.equals(actionId)) {
-			updateReport(view.getReport().getId(), null, getReportElements());
+			if(view.getReport().getAmOwner()){
+				updateReport(view.getReport().getId(), null, getReportElements());
+			} else{
+				Window.alert("You are not authorize to save changes in this report.");
+			}
 		} else if (UIActions.SUBSCRIBE.equals(actionId)) {
 			createSubscribeForm();
 		}

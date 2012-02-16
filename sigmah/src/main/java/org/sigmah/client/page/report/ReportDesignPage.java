@@ -97,8 +97,12 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 		reportBar.addTitleEditCompleteListener(new Listener<EditorEvent>() {
 			@Override
 			public void handleEvent(EditorEvent be) {
-				presenter.updateReport(selectedReport.getId(), (String)be.getValue(), null);
-				reportBar.setReportTitle((String)be.getValue());
+				if(selectedReport.getAmOwner()){
+					presenter.updateReport(selectedReport.getId(), (String)be.getValue(), null);
+					reportBar.setReportTitle((String)be.getValue());
+				} else{
+					Window.alert("You are not authorize to save changes in this report.");
+				}
 			}
 		});
 		
