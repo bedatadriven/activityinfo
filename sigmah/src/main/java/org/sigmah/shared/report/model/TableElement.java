@@ -5,6 +5,7 @@
 
 package org.sigmah.shared.report.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import org.sigmah.shared.report.content.TableContent;
 
 
-public class TableElement extends ReportElement<TableContent> {
+public class TableElement extends ReportElement<TableContent> implements Serializable {
 
     private TableColumn rootColumn = new TableColumn();
     private List<TableColumn> sortBy = new ArrayList<TableColumn>();
