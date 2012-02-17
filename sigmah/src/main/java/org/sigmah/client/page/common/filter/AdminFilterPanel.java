@@ -30,6 +30,8 @@ import com.extjs.gxt.ui.client.event.CheckChangedEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedListener;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -55,8 +57,8 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
     private TreePanel<AdminEntityDTO> tree;
     
-    private Filter baseFilter = null;
-    private Filter filter = new Filter();
+    private Filter baseFilter = new Filter();
+    private Filter value = new Filter();
     
     private FilterToolBar filterToolBar;
 
@@ -69,12 +71,12 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
         createAdminEntitiesTree();
         createFilterToolBar();
         
-        getData();
+        loadData();
         
         layout(true);
     }
 
-	private void getData() {
+	private void loadData() {
 		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -83,7 +85,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
 			@Override
 			public void onSuccess(SchemaDTO result) {
-				Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);
+				Set<Integer> activities = value.getRestrictions(DimensionType.Activity);
 				if(!activities.isEmpty()) {
 					loadCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
 				} else if(!result.getCountries().isEmpty()) {
@@ -96,12 +98,26 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 	
 	private void loadCountry(CountryDTO country) {
 		loader.setCountry(country);
-		loader.setFilter(filter);
+		loader.setFilter(baseFilter);
 		loader.load();
 	}
 
 	private void createAdminEntitiesTree() {
-		tree = new TreePanel<AdminEntityDTO>(store);
+		tree = new TreePanel<AdminEntityDTO>(store) {
+
+			@Override
+			protected String register(AdminEntityDTO m) {
+				String result = super.register(m);
+				
+				// at this point we know the TreeNode has been created
+				// so we can set the check state
+				if(value.getRestrictions(DimensionType.AdminLevel).contains(m.getId())) {
+					tree.setChecked(m, true);
+				}
+				
+				return result;
+			}
+		};
 
         tree.setCheckable(true);
         tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
@@ -181,14 +197,13 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 	
-
 	private void applyFilter() {
 		List<AdminEntityDTO> selection = getSelection();
-		filter = new Filter();
+		value = new Filter();
 		for(AdminEntityDTO entity : selection) {
-			filter.addRestriction(DimensionType.AdminLevel, entity.getId());
+			value.addRestriction(DimensionType.AdminLevel, entity.getId());
 		}
-		ValueChangeEvent.fire(this, filter);
+		ValueChangeEvent.fire(this, value);
 		filterToolBar.setRemoveFilterEnabled(true);
 	}
 
@@ -198,25 +213,33 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 			tree.setChecked(entity, false);
 		}
 			
-		filter = new Filter();
-		ValueChangeEvent.fire(this, filter);
+		value = new Filter();
+		ValueChangeEvent.fire(this, value);
 		filterToolBar.setRemoveFilterEnabled(false);
 	}
 	
 	@Override
 	public Filter getValue() {
-		return filter;
+		return value;
 	}
 
 	@Override
 	public void setValue(Filter value) {
-		
+		setValue(value, false);
 	}
 
 	@Override
 	public void setValue(Filter value, boolean fireEvents) {
-		// TODO Auto-generated method stub
+		this.value = new Filter();
+		this.value.addRestriction(DimensionType.AdminLevel, value.getRestrictions(DimensionType.AdminLevel));
+		applyInternalState();
 		
+		filterToolBar.setApplyFilterEnabled(false);
+		filterToolBar.setRemoveFilterEnabled(value.isRestricted(DimensionType.AdminLevel));
+		
+		if(fireEvents) {
+			ValueChangeEvent.fire(this, value);
+		}
 	}
 
 	@Override
@@ -228,7 +251,10 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 		}
 	}
 	
-	public void addListenerToStore(EventType event, Listener listener){
-		store.addListener(event, listener);
+	private void applyInternalState() {
+		for(AdminEntityDTO treeNode : tree.getStore().getAllItems()) {
+			tree.setChecked(treeNode, value.getRestrictions(DimensionType.AdminLevel).contains(treeNode.getId()));
+		}
 	}
+	
 }

@@ -40,7 +40,6 @@ import com.google.gwt.user.client.Element;
 public class ChartOFCView extends ContentPanel implements ChartView {
 
 	private static final String TRANSPARENT_BG = "-1";
-	
 
 	private Chart chart;
 	private ChartModel chartModel;
@@ -49,6 +48,7 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 		setHeaderVisible(false);
 		setLayout(new FitLayout());
 	}
+
 
 	@Override
 	protected void onRender(Element parent, int pos) {
@@ -95,7 +95,7 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 	 * @param element
 	 */
 	@Override
-	public void setContent(PivotChartReportElement element) {
+	public void show(PivotChartReportElement element) {
 
 		PivotChartContent content = element.getContent();
 		PivotTableData table = element.getContent().getData();
@@ -122,10 +122,10 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 			addLineSeries(cm, categories, series);
 			break;
 		}
-		
+
 		setModel(cm);
 	}
-	
+
 
 	private YAxis createYAxis(PivotChartContent content, PivotTableData table) {
 		YAxis ya = new YAxis();
@@ -149,12 +149,12 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 		}
 		return xa;
 	}
-	
+
 
 	private void addBarSeries(ChartModel cm,
 			List<PivotTableData.Axis> categories, 
 			List<PivotTableData.Axis> series) {
-		
+
 		for(PivotTableData.Axis s : series) { 
 
 			FilledBarChart bchart = new FilledBarChart("6666ff", "000066");
@@ -171,11 +171,11 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 	private void addLineSeries(ChartModel cm,
 			List<PivotTableData.Axis> categories,
 			List<PivotTableData.Axis> series) {
-		
+
 		for(PivotTableData.Axis s : series) {
 			LineChart lineChart = new LineChart();
 			lineChart.setTooltip("#x_label#<br>#val#");
-			
+
 			for (PivotTableData.Axis category : categories) {
 				PivotTableData.Cell cell = category.getCell(s);
 				lineChart.addValues(cell == null ? 0 : cell.getValue());
@@ -187,10 +187,10 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 	private void addPieChart(ChartModel cm,
 			List<PivotTableData.Axis> categories, 
 			List<PivotTableData.Axis> series) {
-		
+
 		PieChart pieChart = new PieChart();
 		List<PieChart.Slice> slices = Lists.newArrayList();
-		
+
 		for (PivotTableData.Axis category : categories) {
 			PivotTableData.Cell cell = category.getCell(series.get(0));
 			if(cell != null) {
@@ -203,12 +203,13 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 			public int compare(Slice o1, Slice o2) {
 				double d1 = o1.getValue().doubleValue();
 				double d2 = o2.getValue().doubleValue();
-				
+
 				return Double.compare(d2, d1);
 			}
 		});
 		pieChart.addSlices(slices);
-		
+
 		cm.addChartConfig(pieChart);
 	}
+
 }

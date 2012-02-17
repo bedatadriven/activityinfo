@@ -13,14 +13,12 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
-import org.sigmah.shared.command.GetReportTemplates;
-import org.sigmah.shared.command.result.ReportTemplateResult;
-import org.sigmah.shared.dto.ReportDefinitionDTO;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Loader for the Report pages
@@ -29,20 +27,22 @@ import com.google.inject.Inject;
  */
 public class ReportLoader implements PageLoader {
 
-    private final AppInjector injector;
-    private final Dispatcher service;
+	private Provider<ReportsPage> reportsPage;
+	private Provider<ReportDesignPage> reportDesignPage;
 
     @Inject
-    public ReportLoader(AppInjector injector, Dispatcher service, NavigationHandler pageManager,
-                        PageStateSerializer placeSerializer) {
-        this.injector = injector;
-        this.service = service;
+    public ReportLoader(Dispatcher service, NavigationHandler pageManager,
+                        PageStateSerializer placeSerializer,
+                        Provider<ReportsPage> reportsPage,
+                        Provider<ReportDesignPage> reportDesignPage) {
+        this.reportsPage = reportsPage;
+        this.reportDesignPage = reportDesignPage;
 
-        pageManager.registerPageLoader(ReportsPage.REPORT_HOME_PAGE_ID, this);
-        pageManager.registerPageLoader(ReportPreviewPresenter.ReportPreview, this);
-
-        placeSerializer.registerStatelessPlace(ReportsPage.REPORT_HOME_PAGE_ID, new ReportListPageState());
-        placeSerializer.registerParser(ReportPreviewPresenter.ReportPreview, new ReportPreviewPageState.Parser());
+        pageManager.registerPageLoader(ReportsPage.PAGE_ID, this);
+        placeSerializer.registerStatelessPlace(ReportsPage.PAGE_ID, new ReportListPageState());
+        
+        pageManager.registerPageLoader(ReportDesignPage.PAGE_ID, this);
+        placeSerializer.registerParser(ReportDesignPage.PAGE_ID, new ReportDesignPageState.Parser());
     }
 
     public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
@@ -55,41 +55,18 @@ public class ReportLoader implements PageLoader {
 
             @Override
             public void onSuccess() {
-                if (ReportPreviewPresenter.ReportPreview.equals(pageId)) {
-                    loadPreview((ReportPreviewPageState) pageState, callback);
+                if (ReportsPage.PAGE_ID.equals(pageId)) {
+                    callback.onSuccess(reportsPage.get());
 
-                } else if (ReportsPage.REPORT_HOME_PAGE_ID.equals(pageId)) {
-
-                    callback.onSuccess(injector.getReportHomePresenter());
+                } else if(ReportDesignPage.PAGE_ID.equals(pageId)) {
+                	ReportDesignPage page = reportDesignPage.get();
+                	page.navigate(pageState);
+					callback.onSuccess(page);
+					
                 } else {
                     GWT.log("ReportLoader received a request it didn't know how to handle: " +
                             pageState.toString(), null);
                 }
-            }
-        });
-
-
-    }
-
-    private void loadPreview(final ReportPreviewPageState place, final AsyncCallback<Page> callback) {
-        service.execute(GetReportTemplates.byTemplateId(place.getReportId()), null, new AsyncCallback<ReportTemplateResult>() {
-
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-
-            }
-
-            public void onSuccess(final ReportTemplateResult result) {
-
-                for (ReportDefinitionDTO dto : result.getData()) {
-                    if (dto.getId() == place.getReportId()) {
-                        ReportPreviewPresenter presenter = injector.getReportPreviewPresenter();
-                        presenter.go(dto);
-
-                        callback.onSuccess(presenter);
-                    }
-                }
-
             }
         });
     }

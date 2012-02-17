@@ -26,7 +26,7 @@ import com.google.inject.Inject;
  * @author Alex Bertram
  */
 public class ReportsPage extends LayoutContainer implements Page {
-    public static final PageId REPORT_HOME_PAGE_ID = new PageId("reports");
+    public static final PageId PAGE_ID = new PageId("reports");
 
 
     @Inject
@@ -53,7 +53,7 @@ public class ReportsPage extends LayoutContainer implements Page {
 
     @Override
 	public PageId getPageId() {
-        return REPORT_HOME_PAGE_ID;
+        return PAGE_ID;
     }
 
     @Override

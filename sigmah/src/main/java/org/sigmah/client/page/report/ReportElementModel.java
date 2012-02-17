@@ -4,8 +4,13 @@ import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-class ReportElementModel extends BaseModelData{
-	
+public class ReportElementModel extends BaseModelData{
+		
+	public ReportElementModel(ReportElement element) {
+		setElementTitle(element.getTitle());
+		setReportElement(element);
+	}
+
 	public void setId(int id){
 		set("id", id);
 	}

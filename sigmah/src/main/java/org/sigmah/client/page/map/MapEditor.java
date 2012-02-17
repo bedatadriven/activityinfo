@@ -10,11 +10,13 @@ import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.map.layerOptions.LayerOptionsPanel;
+import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.MapLayer;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteData;
 import com.extjs.gxt.ui.client.widget.layout.AbsoluteLayout;
@@ -23,7 +25,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
 import com.google.inject.Inject;
 
-public abstract class AbstractMap extends ContentPanel implements ActionListener {
+public class MapEditor extends ContentPanel implements ActionListener, ReportElementEditor<MapReportElement> {
 
 	protected static final int CONTROL_TOP_MARGIN = 10;
 	protected static final int LAYERS_STYLE_TOP_MARGIN = 50;
@@ -39,11 +41,10 @@ public abstract class AbstractMap extends ContentPanel implements ActionListener
 	protected LayersWidget layersWidget;
 	protected LayerOptionsPanel optionsPanel;
 	protected MapReportElement mapReportElement = new MapReportElement();
-	protected ExportMenuButton exportMenu;
 	protected AbsoluteLayout layout;
 
 	@Inject
-	public AbstractMap(Dispatcher dispatcher, EventBus eventBus) {
+	public MapEditor(Dispatcher dispatcher, EventBus eventBus) {
 		this.dispatcher = dispatcher;
 		this.eventBus = eventBus;
 
@@ -70,7 +71,6 @@ public abstract class AbstractMap extends ContentPanel implements ActionListener
 
 			@Override
 			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-				int l = mapReportElement.getLayers().indexOf(event.getValue());
 				aiMapWidget.setValue(mapReportElement);
 				layersWidget.setValue(mapReportElement);
 			}
@@ -111,7 +111,6 @@ public abstract class AbstractMap extends ContentPanel implements ActionListener
 								.isEmpty();
 						toolbarMapActions.setActionEnabled(
 								UIActions.EXPORT_DATA, canExport);
-						exportMenu.setEnabled(canExport);
 					}
 				});
 
@@ -162,6 +161,21 @@ public abstract class AbstractMap extends ContentPanel implements ActionListener
 	@Override
 	public void onUIAction(String actionId) {
 
+	}
+
+	@Override
+	public void bind(MapReportElement model) {
+		this.mapReportElement = model;
+	}
+	
+	@Override
+	public MapReportElement getModel() {
+		return mapReportElement;
+	}
+
+	@Override
+	public Component getWidget() {
+		return this;
 	}
 
 }

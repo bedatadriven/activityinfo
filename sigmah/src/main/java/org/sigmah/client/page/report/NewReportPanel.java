@@ -5,6 +5,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.report.template.ChartTemplate;
+import org.sigmah.client.page.report.template.PivotTableTemplate;
 import org.sigmah.client.page.report.template.ReportTemplate;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -32,6 +33,7 @@ public class NewReportPanel extends ContentPanel {
 		
 		store = new ListStore<ReportTemplate>();
 		store.add(new ChartTemplate(dispatcher));
+		store.add(new PivotTableTemplate(dispatcher));
 //		store.add(createReportModel("Map", "Create tables crossing any variables", "map.png"));
 //		store.add(createReportModel("Chart", "Create pivot charts", "time.png"));
 //		store.add(createReportModel("Custom Report", "Create a report definition that includes a combination of pivot tables, maps, and charts.", "time.png"));
@@ -87,7 +89,7 @@ public class NewReportPanel extends ContentPanel {
       '<dd>',
       '<img src="' + base + 'reports/{path}" title="{name}">',
       '<div>',
-      '<h4>{name}</h4><p>{desc}</p></div>',
+      '<h4>{name}</h4><p>{description}</p></div>',
       '</tpl>',
       '<div style="clear:left;"></div></dl>'].join("");
 

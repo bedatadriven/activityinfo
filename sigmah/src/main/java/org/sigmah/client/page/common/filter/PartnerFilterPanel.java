@@ -33,6 +33,8 @@ import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -51,6 +53,8 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 	private final Dispatcher service;
 	private FilterToolBar filterToolBar;
 	private Filter baseFilter = null;
+	
+	private Filter value = new Filter();
 	
 	private ListStore<PartnerDTO> store;
 	private CheckBoxListView<PartnerDTO> listView;
@@ -107,6 +111,7 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 			}
 		});
 		add(listView);
+
 	}
 	
 	@Override
@@ -124,6 +129,7 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 					List<Integer> ids = getSelectedIds();
 					store.removeAll();
 					store.add(result.getData());
+					applyInternalValue();
 					
 					for(PartnerDTO partner : store.getModels()) {
 						if(ids.contains(partner.getId())) {
@@ -140,27 +146,29 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 		for(PartnerDTO partner : listView.getStore().getModels()) {
 			listView.setChecked(partner, false);
 		}
-		ValueChangeEvent.fire(this, getValue());
+		value = new Filter();
+		ValueChangeEvent.fire(this, value);
 		filterToolBar.setApplyFilterEnabled(false);
 		filterToolBar.setRemoveFilterEnabled(false);
 	}
 
 	protected void applyFilter() {
-		ValueChangeEvent.fire(this, getValue());
+		
+		value = new Filter();
+		if(isRendered()) {
+			List<Integer> selectedIds = getSelectedIds();
+			if (selectedIds.size() > 0) {
+				value.addRestriction(DimensionType.Partner, getSelectedIds());
+			}
+		}
+	
+		ValueChangeEvent.fire(this, value);
 		filterToolBar.setApplyFilterEnabled(false);
 		filterToolBar.setRemoveFilterEnabled(true);
 	}
 
-	public List<PartnerDTO> getSelection() {
-		List<PartnerDTO> list = new ArrayList<PartnerDTO>();
 
-		for (PartnerDTO model : listView.getChecked()) {
-			list.add(model);
-		}
-		return list;
-	}
-
-	public List<Integer> getSelectedIds() {
+	private List<Integer> getSelectedIds() {
 		List<Integer> list = new ArrayList<Integer>();
 
 		for (PartnerDTO model : listView.getChecked()) {
@@ -169,37 +177,30 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 		return list;
 	}
 
-	public void setSelection(int id, boolean select){
-		
-		for(ModelData model : listView.getStore().getModels()){
-			if(model instanceof PartnerDTO && ((PartnerDTO) model).getId() == id){
-				listView.setChecked((PartnerDTO) model, select);
-			}			
-		}
-	}
-
 	@Override
 	public Filter getValue() {
-		Filter filter = new Filter();
-		if(isRendered()) {
-			List<Integer> selectedIds = getSelectedIds();
-			if (selectedIds.size() > 0) {
-				filter.addRestriction(DimensionType.Partner, getSelectedIds());
-			}
-		}
-		return filter;
+		return value;
 	}
 
 	@Override
 	public void setValue(Filter value) {
-		// TODO Auto-generated method stub
-		
+		setValue(value, false);
 	}
 
 	@Override
 	public void setValue(Filter value, boolean fireEvents) {
-		// TODO Auto-generated method stub
-		
+		this.value = new Filter();
+		this.value.addRestriction(DimensionType.Partner, value.getRestrictions(DimensionType.Partner));
+		applyInternalValue();
+		ValueChangeEvent.fire(this, value);
+	}
+
+	private void applyInternalValue() {
+		for(PartnerDTO model : listView.getStore().getModels()){
+			listView.setChecked((PartnerDTO) model, value.getRestrictions(DimensionType.Partner).contains(model.getId()));
+		}
+		filterToolBar.setApplyFilterEnabled(false);
+		filterToolBar.setRemoveFilterEnabled(value.isRestricted(DimensionType.Partner));
 	}
 
 	@Override
@@ -207,9 +208,4 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 			ValueChangeHandler<Filter> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
-	
-	public void addListenerToStore(EventType event, Listener listener){
-		store.addListener(event, listener);
-		listView.getStore().addListener(event, listener);
-	}	
 }

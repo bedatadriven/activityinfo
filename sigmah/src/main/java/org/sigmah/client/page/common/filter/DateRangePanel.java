@@ -125,13 +125,19 @@ public class DateRangePanel extends ContentPanel implements HasValue<Filter>, Fi
 
 	@Override
 	public void setValue(Filter value) {
-		
+		setValue(value, false);
 	}
 
 	@Override
 	public void setValue(Filter value, boolean fireEvents) {
-		// TODO Auto-generated method stub
+		datefieldMinDate.setValue(value.getMinDate());
+		datefieldMaxDate.setValue(value.getMaxDate());
 		
+		filterToolBar.setRemoveFilterEnabled(value.isDateRestricted());
+		
+		if(fireEvents) {
+			ValueChangeEvent.fire(this, getValue());
+		}
 	}
 
 	public Date getMinDate() {

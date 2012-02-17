@@ -14,6 +14,7 @@ import org.sigmah.client.AppEvents;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.event.PivotCellEvent;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.charts.ReportView;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.Dimension;
@@ -38,11 +39,8 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.inject.Inject;
 
-/**
- * 
- * @author Alex Bertram
- */
-public class PivotGridPanel extends ContentPanel {
+
+public class PivotGridPanel extends ContentPanel implements ReportView<PivotReportElement> {
 
     private final EventBus eventBus;
 
@@ -57,9 +55,7 @@ public class PivotGridPanel extends ContentPanel {
     public PivotGridPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setLayout(new FitLayout());
-
     }
-
 
     public class PivotTableRow extends BaseTreeModel {
 
@@ -83,7 +79,8 @@ public class PivotGridPanel extends ContentPanel {
         }
     }
 
-    public void setData(final PivotReportElement element) {
+    @Override
+    public void show(final PivotReportElement element) {
         if(grid != null) {
             removeAll();
         }

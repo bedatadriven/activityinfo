@@ -44,7 +44,6 @@ public class ReportBar extends LayoutContainer {
 	private void addTitle() {
 		
 		titleWidget = new ReportTitleWidget();
-		titleWidget.setText("PEAR Rapport IV");
 		
 		HBoxLayoutData titleLayout = new HBoxLayoutData(0, 0, 0, 7);
 		titleLayout.setFlex(1);

@@ -183,7 +183,7 @@ public class IndicatorLinkView extends
 	public void clearAllCheckedDestinations(){
 		for(Integer id : indicatorTreePanel.getSelectedIds()){
 			defaultSelectedIndicator =id;
-			indicatorTreePanel.setSelection(id, false);
+			indicatorTreePanel.select(id, false);
 		}
 	}
 	
@@ -203,7 +203,7 @@ public class IndicatorLinkView extends
 			
 			for(Integer id : map.keySet()){
 				defaultSelectedIndicator = id;
-				indicatorTreePanel.setSelection(id, true);
+				indicatorTreePanel.select(id, true);
 			}
 		}
 		

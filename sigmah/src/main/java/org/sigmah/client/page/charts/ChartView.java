@@ -12,6 +12,6 @@ import org.sigmah.shared.report.model.PivotChartReportElement;
  *
  * @author Alex Bertram
  */
-public interface ChartView {
-    void setContent(PivotChartReportElement element);
+public interface ChartView extends ReportView<PivotChartReportElement> {
+    void show(PivotChartReportElement element);
 }

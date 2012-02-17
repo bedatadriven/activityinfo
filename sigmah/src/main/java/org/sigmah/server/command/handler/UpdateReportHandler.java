@@ -10,7 +10,7 @@ import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.shared.command.UpdateReport;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.exception.UnexpectedCommandException;
 
 import com.google.inject.Inject;
 
@@ -32,21 +32,11 @@ public class UpdateReportHandler implements CommandHandler<UpdateReport> {
 				.setParameter("id", cmd.getId());
 
 		ReportDefinition result = (ReportDefinition) query.getSingleResult();
-		if(cmd.getTitle() != null){
-			result.setTitle(cmd.getTitle());
-		}
+		result.setTitle(cmd.getModel().getTitle());
 		try{
-			if(cmd.getElement() != null){
-				Report report = new Report();
-				
-				report = ReportParserJaxb.parseXml(result.getXml());
-				report.setElements(cmd.getElement());
-				
-				String xml = ReportParserJaxb.createXML(report);
-				result.setXml(xml);	
-			}
+			result.setXml(ReportParserJaxb.createXML(cmd.getModel()));
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			throw new UnexpectedCommandException(e);
 		}
 		
 		em.persist(result);

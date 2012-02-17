@@ -1,89 +1,83 @@
 package org.sigmah.client.page.report;
 
-import java.util.List;
-
 import org.sigmah.client.EventBus;
-import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.filter.IndicatorTreePanel;
-import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.NavigationCallback;
+import org.sigmah.client.page.Page;
+import org.sigmah.client.page.PageId;
+import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.common.SubscribeForm;
+import org.sigmah.client.page.common.dialog.FormDialogCallback;
+import org.sigmah.client.page.common.dialog.FormDialogImpl;
+import org.sigmah.client.page.report.editor.CompositeEditor;
+import org.sigmah.client.page.report.editor.ReportElementEditor;
+import org.sigmah.client.page.report.editor.EditorProvider;
 import org.sigmah.client.page.report.resources.ReportResources;
+import org.sigmah.shared.command.CreateSubscribe;
+import org.sigmah.shared.command.GetReport;
+import org.sigmah.shared.command.UpdateReport;
+import org.sigmah.shared.command.result.ReportTemplateResult;
+import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.report.model.Report;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.EditorEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.common.base.Strings;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class ReportDesignPage extends ContentPanel implements ReportDesignPresenter.View {
+public class ReportDesignPage extends ContentPanel implements Page {
+
+	public static final PageId PAGE_ID = new PageId("reportdesign");
 
 	private final EventBus eventBus;
-	private final Dispatcher service;
+	private final Dispatcher dispatcher;
+	private final EditorProvider editorProvider;
 
-	private ReportDesignPresenter presenter;
-	private ContentPanel elementListPane;
-	private LayoutContainer center;
-	private ContentPanel reportPreviewPanel;
-	private ListView<ReportElementModel> reportElements;
-	protected ListStore<ReportElementModel> store;
-	private Html previewHtml;
-	private Button reportPreview;
-	private ReportDefinitionDTO selectedReport;
-	private IndicatorTreePanel indicatorPanel;
-
-	
 	private boolean reportEdited;
 	private ReportBar reportBar;
+
+	/**
+	 * The id of the model being edited on this page
+	 */
+	private int currentReportId;
+	
+	/**
+	 * The model being edited on this page
+	 */
+	private Report currentModel;
+	
+
+	/**
+	 * The editor for the model
+	 */
+	private ReportElementEditor currentEditor;
+
 	
 	@Inject
-	public ReportDesignPage(EventBus eventBus, Dispatcher service) {
+	public ReportDesignPage(EventBus eventBus, Dispatcher service, EditorProvider editorProvider) {
 		this.eventBus = eventBus;
-		this.service = service;
-		
+		this.dispatcher = service;
+		this.editorProvider = editorProvider;
+
 		ReportResources.INSTANCE.style().ensureInjected();
-	}
 
-	@Override
-	public void init(ReportDesignPresenter presenter) {
-		this.presenter = presenter;
-		initializeComponent();
-		createToolbar();
-		createElementListPane();
-		reportPreviewPane();
-	}
-
-	private void initializeComponent() {
 		setLayout(new BorderLayout());
 		setHeaderVisible(false);
 
-		previewHtml = new Html();
-		previewHtml.addStyleName("report");
-
+		createToolbar();
 	}
 
 	public void createToolbar() {
@@ -91,226 +85,197 @@ public class ReportDesignPage extends ContentPanel implements ReportDesignPresen
 		BorderLayoutData reportBarLayout = new BorderLayoutData(LayoutRegion.NORTH);
 		reportBarLayout.setSize(35);
 		add(reportBar, reportBarLayout);
-				
+
 		reportBar.addTitleEditCompleteListener(new Listener<EditorEvent>() {
 			@Override
 			public void handleEvent(EditorEvent be) {
-				presenter.updateReport(selectedReport.getId(), (String)be.getValue(), null);
-				reportBar.setReportTitle((String)be.getValue());
+				String newTitle = (String)be.getValue();
+				if(newTitle != null && !newTitle.equals(currentModel.getTitle())) {
+					currentModel.setTitle(newTitle);
+					reportBar.setReportTitle(newTitle);
+					save();
+				}
 			}
 		});
-		
+
 		reportBar.getSaveButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				if(currentModel.getTitle()==null) {
+					promptForTitle();
+				} else {
+					save();
+				}
+			}
+		});
+	}
+
+	@Override
+	public boolean navigate(PageState place) {
+		if(place instanceof ReportDesignPageState) {
+			go(((ReportDesignPageState) place).getReportId());
+			return true;
+		}
+		return false;
+	}
+
+
+	public void go(int reportId) {
+		// TODO if report id is not valid one, should create new report and dont send command to server.
+		loadReport(reportId);
+	}
+
+	private void loadReport(int reportId) {
+
+		dispatcher.execute(new GetReport(reportId), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
+				new AsyncCallback<ReportTemplateResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO show appropriate message.
+			}
+
+			@Override
+			public void onSuccess(ReportTemplateResult result) {						
+				onModelLoaded(result.getData().get(0));
+			}
+		});
+	}
+
+	private void onModelLoaded(ReportDefinitionDTO report) {
+		this.currentReportId = report.getId();
+		this.currentModel = report.getReport();
+		reportBar.setReportTitle(currentModel.getTitle());
+		
+		if(currentModel.getElements().size() == 1) {
+			ReportElementEditor editor = editorProvider.create(currentModel.getElement(0));
+			editor.bind(currentModel.getElement(0));
+			installEditor( editor );
+		} else {
+			CompositeEditor editor = (CompositeEditor)editorProvider.create(currentModel);
+			editor.bind(currentReportId, currentModel);
+			installEditor( editor );
+		}
+		
+	}
+
+	private void installEditor(ReportElementEditor editor) {
+		if(currentEditor != null) {
+			remove(currentEditor.getWidget());
+		}
+		add(editor.getWidget(), new BorderLayoutData(LayoutRegion.CENTER));
+		this.currentEditor = editor;
+		layout();
+	}
+
+	public void save() {
+		UpdateReport updateReport = new UpdateReport();
+		updateReport.setId(currentReportId);
+		updateReport.setModel(currentModel);
+
+		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// callback.onFailure(caught);
+			}
+
+			@Override
+			public void onSuccess(VoidResult result) {
+				//loadReport(view.getReport().getId());
+			}
+		});
+	}
+	
+	public void promptForTitle() {
+		MessageBox.prompt(I18N.CONSTANTS.save(), I18N.CONSTANTS.chooseReportTitle(), new Listener<MessageBoxEvent>() {
 			
 			@Override
-			public void componentSelected(ButtonEvent ce) {
-				if(presenter != null) {
-					presenter.onUIAction(UIActions.SAVE);
+			public void handleEvent(MessageBoxEvent be) {
+				String newTitle = be.getMessageBox().getTextBox().getValue();
+				if(!Strings.isNullOrEmpty(newTitle)) {
+					currentModel.setTitle(newTitle);
+					reportBar.setReportTitle(newTitle);
+					save();
 				}
 			}
 		});
 	}
 
-	public void createElementListPane() {
-
-
-		elementListPane = new ContentPanel();
-		elementListPane.setHeading(I18N.CONSTANTS.reportElements());
-		elementListPane.setLayout(createVBoxLayout());
-
-		createReportPreviewButton();
-		
-		SelectionListener<ButtonEvent> listener = new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				if (presenter != null && ce.getButton().getItemId() != null) {
-					presenter.onUIAction(ce.getButton().getItemId());
-				}
-			}
-		};
-
-		Button addChart = new Button(I18N.CONSTANTS.addChart(), IconImageBundle.ICONS.barChart(), listener);
-		addChart.setItemId(UIActions.ADDCHART);
-		elementListPane.add(addChart);
-
-		Button addMap = new Button(I18N.CONSTANTS.addMap(),  IconImageBundle.ICONS.map(), listener);
-		addMap.setItemId(UIActions.ADDMAP);
-		elementListPane.add(addMap);
-
-		Button addTable = new Button(I18N.CONSTANTS.addTable(), IconImageBundle.ICONS.table(), listener);
-		addTable.setItemId(UIActions.ADDTABLE);
-		elementListPane.add(addTable);
-
-		creteReportElementListView();
-
-		add(elementListPane, createBorderWestLayout());
-	}
-
-	private VBoxLayout createVBoxLayout(){
-		VBoxLayout layout = new VBoxLayout();
-		layout.setPadding(new Padding(5));
-		layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-		
-		return layout;
-	}
-	
-	private void createReportPreviewButton(){
-		reportPreview = new Button(I18N.CONSTANTS.preview(), null,
-				new SelectionListener<ButtonEvent>() {
-					@Override
-					public void componentSelected(ButtonEvent ce) {
-						if (selectedReport != null) {
-							presenter.generateReportPreview(selectedReport);
-						}
-					}
-				});
-		reportPreview.setWidth(100);
-
-		VBoxLayoutData buttonLayout = new VBoxLayoutData();
-		buttonLayout.setMargins(new Margins(0, 0, 5, 0));
-		
-		elementListPane.add(reportPreview, buttonLayout);
-	}
-	
-	private void creteReportElementListView(){
-
-		store = new ListStore<ReportElementModel>();
-		
-		reportElements = new ListView<ReportElementModel>();
-		reportElements.setTemplate(getTemplate(GWT.getModuleBaseURL() + "image/"));
-		reportElements.setBorders(false);
-		reportElements.setStore(store);
-		reportElements.setItemSelector("dd");
-		reportElements.setOverStyle("over");
-		
-		reportElements.addListener(Events.Select,
-				new Listener<ListViewEvent<ReportElementModel>>() {
-
-					@Override
-					public void handleEvent(ListViewEvent<ReportElementModel> event) {
-						if(event.getModel().getId() != presenter.getElementInViewId()){
-							loadElementEditor(event.getModel());	
-						}	
-					}
-				});
-
-
-		VBoxLayoutData listLayout = new VBoxLayoutData();
-		elementListPane.add(reportElements, listLayout);
-	}
-	
-	private BorderLayoutData createBorderWestLayout(){
-		BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST, 0.30f);
-		west.setMinSize(250);
-		west.setSize(250);
-		west.setCollapsible(true);
-		west.setSplit(true);
-		west.setMargins(new Margins(0, 5, 0, 0));
-		
-		return west;
-	}
-	
-	public void reportPreviewPane() {
-		center = new LayoutContainer();
-		center.setLayout(new BorderLayout());
-		add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
-
-		reportPreviewPanel = new ContentPanel();
-		reportPreviewPanel.setHeaderVisible(true);
-		reportPreviewPanel.setHeading(I18N.CONSTANTS.reportPreview());
-		reportPreviewPanel.setScrollMode(Scroll.AUTO);
-		reportPreviewPanel.setLayoutData(new FitData(new Margins(5, 5, 5, 5)));
-		reportPreviewPanel.setLayout(new FitLayout());
-
-//		reportPreviewPanel.add((Widget) reportPagePresenter.getWidget());
-
-		center.add(reportPreviewPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
-
-	}
-
-	public void addToCenterPanel(Widget w, String title){
-		addToPreviewPanel(w,title);
-	}
-	
-	private void addToPreviewPanel(Widget w, String title) {
-		reportPreviewPanel.setHeading(title);
-		reportPreviewPanel.removeAll();
-		reportPreviewPanel.add(w);
-		reportPreviewPanel.layout();
-	}
-
-	
-	@Override
-	public void setStore(List<ReportElementModel> elements){
-		store.removeAll();
-		store.add(elements);
-	}
-	
-	@Override
-	public void addElementInStore(ReportElementModel element){
-		store.add(element);
-	}
-	
-	private void loadElementEditor(ReportElementModel model){
-		
-		reportBar.getSaveButton().setEnabled(true);
-		model.setEdited(true);
-	
-		presenter.loadElementInEditor(model);
-		reportElements.getSelectionModel().select(1, false);
-	}
-	
 	public void setReportEdited(boolean edited){
 		reportEdited = edited;
 	}
-	
+
 	public boolean reportEdited(){
 		return reportEdited;
 	}
-	
-	@Override
-	public ListStore<ReportElementModel> getListViewStore() {
-		return store;
-	}
-
-	private native String getTemplate(String base) /*-{
-		return [ '<dl><tpl for=".">', '<dd>',
-				'<img src="' + base + 'report.png" title="{elementTitle}">',
-				'<span>{elementTitle}</span>', '</tpl>',
-				'<div style="clear:left;"></div></dl>' ].join("");
-
-	}-*/;
 
 	@Override
-	public void setPreview() {
+	public void shutdown() {
+		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setReport(ReportDefinitionDTO dto){
-		selectedReport = dto;
-		reportBar.setReportTitle(dto.getTitle());
-	}
-	
-	@Override
-	public void setPreviewHtml(String html, String heading) {
-		previewHtml.setHtml(html);
-		addToPreviewPanel(previewHtml, heading);
-	}
-	
-
-	@Override
-	public AsyncMonitor getLoadingMonitor() {
-		return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+	public PageId getPageId() {
+		return PAGE_ID;
 	}
 
 	@Override
-	public ReportDefinitionDTO getReport() {	
-		return selectedReport;
+	public Object getWidget() {
+		return this;
 	}
-	
+
 	@Override
-	public Button getSaveButton(){
-		return reportBar.getSaveButton();
+	public void requestToNavigateAway(PageState place,
+			NavigationCallback callback) {
+		callback.onDecided(true);
+	}
+
+	@Override
+	public String beforeWindowCloses() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void createSubscribeForm() {
+		final SubscribeForm form = new SubscribeForm();
+		//form.updateForm(currentReportId);
+
+		final FormDialogImpl<SubscribeForm> dialog = new FormDialogImpl<SubscribeForm>(form);
+		dialog.setWidth(450);
+		dialog.setHeight(400);
+		dialog.setHeading(I18N.CONSTANTS.SubscribeTitle());
+
+		dialog.show(new FormDialogCallback() {
+			@Override
+			public void onValidated() {
+				if (form.validListField()) {
+					subscribeEmail(dialog, currentReportId);
+				} else {
+					MessageBox.alert(I18N.CONSTANTS.error(),
+							I18N.MESSAGES.noEmailAddress(), null);
+				}
+			}
+		});
+	}
+
+	public void subscribeEmail(final FormDialogImpl<SubscribeForm> dialog, int reportId) {
+
+		CreateSubscribe sub = new CreateSubscribe();
+		sub.setReportTemplateId(reportId);
+		sub.setEmailsList(dialog.getForm().getEmailList());
+		sub.setReportFrequency(dialog.getForm().getReportFrequency());
+		sub.setDay(dialog.getForm().getDay());
+
+		dispatcher.execute(sub, dialog, new AsyncCallback<VoidResult>() {
+			public void onFailure(Throwable caught) {
+				dialog.onServerError();
+			}
+
+			public void onSuccess(VoidResult result) {
+				dialog.hide();
+				//loadReport(selectedReport.getId());
+			}
+		});
 	}
 }

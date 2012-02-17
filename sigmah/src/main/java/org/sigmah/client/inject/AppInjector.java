@@ -18,7 +18,6 @@ import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.offline.OfflineController;
 import org.sigmah.client.offline.OfflineModule;
 import org.sigmah.client.page.DownloadManager;
-import org.sigmah.client.page.charts.ChartLoader;
 import org.sigmah.client.page.config.AccountEditor;
 import org.sigmah.client.page.config.ConfigLoader;
 import org.sigmah.client.page.config.ConfigModule;
@@ -34,20 +33,13 @@ import org.sigmah.client.page.config.LockedPeriodsPresenter;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.client.page.entry.DataEntryLoader;
 import org.sigmah.client.page.entry.EntryModule;
-import org.sigmah.client.page.map.MapLoader;
 import org.sigmah.client.page.map.MapModule;
-import org.sigmah.client.page.report.ReportDesignLoader;
-import org.sigmah.client.page.report.ReportDesignPresenter;
-import org.sigmah.client.page.report.ReportsPage;
 import org.sigmah.client.page.report.ReportLoader;
 import org.sigmah.client.page.report.ReportModule;
-import org.sigmah.client.page.report.ReportPreviewPresenter;
+import org.sigmah.client.page.report.ReportsPage;
 import org.sigmah.client.page.search.SearchLoader;
 import org.sigmah.client.page.search.SearchModule;
 import org.sigmah.client.page.search.SearchPresenter;
-import org.sigmah.client.page.table.PivotModule;
-import org.sigmah.client.page.table.PivotPageLoader;
-import org.sigmah.client.page.table.PivotPresenter;
 import org.sigmah.client.page.welcome.DashboardLoader;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.auth.AuthenticatedUser;
@@ -66,7 +58,6 @@ import com.google.gwt.inject.client.Ginjector;
         ReportModule.class,
         EntryModule.class,
         MapModule.class,
-        PivotModule.class,
         ConfigModule.class,
         OfflineModule.class,
         SearchModule.class
@@ -100,24 +91,14 @@ public interface AppInjector extends Ginjector {
     LinkIndicatorPresenter getLinkIndicatorPresenter();
     
     DataEntryLoader createDataEntryLoader();
-
-    MapLoader createMapLoader();
         
     LockedPeriodsPresenter getLockedPeriodsEditor();
-
-    ChartLoader createChartLoader();
 
     ReportLoader createReportLoader();
 
     ConfigLoader createConfigLoader();
 
-    PivotPageLoader createPivotLoader();
-
-    PivotPresenter getPivotPresenter();
-
     UIConstants getMessages();
-
-    ReportPreviewPresenter getReportPreviewPresenter();
 
     OfflineController createOfflineController();
     
@@ -139,10 +120,6 @@ public interface AppInjector extends Ginjector {
 
 	SearchLoader createSearchLoader();
 	
-	ReportDesignLoader createReportDesignLoader();
-
-    ReportDesignPresenter getReportDesignPresenter();
-
 	DashboardLoader createWelcomeLoader();
 	
 }

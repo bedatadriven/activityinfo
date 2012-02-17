@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.sigmah.shared.command.Filter;
+import org.sigmah.shared.command.HasFilter;
 import org.sigmah.shared.report.content.Content;
 
 /**
@@ -55,7 +56,7 @@ import org.sigmah.shared.report.content.Content;
  * @see org.sigmah.shared.report.content.Content
  * @see org.sigmah.server.report.renderer.Renderer
  */
-public abstract class ReportElement<ContentT extends Content> implements Serializable {
+public abstract class ReportElement<ContentT extends Content> implements Serializable, HasFilter {
 
     private Filter filter = new Filter();
     private String title;

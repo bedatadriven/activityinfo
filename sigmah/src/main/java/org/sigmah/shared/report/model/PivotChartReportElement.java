@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.sigmah.shared.exception.ReportModelException;
 import org.sigmah.shared.report.content.PivotChartContent;
 
+import com.google.common.collect.Lists;
+
 public class PivotChartReportElement extends PivotReportElement<PivotChartContent> {
 
     public enum Type {
@@ -27,7 +29,7 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
         Pie
 	}
 
-	private Type type;
+	private Type type = Type.Bar;
 	private List<Dimension> categoryDimensions = new ArrayList<Dimension>();
 	private List<Dimension> seriesDimension = new ArrayList<Dimension>();
 	private String categoryAxisTitle;
@@ -89,6 +91,10 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
 	public void addSeriesDimension(Dimension dimension) {
 		this.seriesDimension.add(dimension);
 	}
+	
+	public void setSeriesDimension(Dimension dimension) {
+		this.seriesDimension = Lists.newArrayList(dimension);
+	}
 
     @XmlElement(name="dimension")
     @XmlElementWrapper(name="categories")
@@ -99,6 +105,12 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
 	public void setCategoryDimensions(List<Dimension> categoryDimensions) {
 		this.categoryDimensions = categoryDimensions;
 	}
+	
+
+	public void setCategoryDimension(Dimension dimension) {
+		this.categoryDimensions = Lists.newArrayList(dimension);
+	}
+
 	
 	public void addCategoryDimension(Dimension dimension) {
 		this.categoryDimensions.add(dimension);
@@ -136,4 +148,5 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
             throw new ReportModelException("Bar charts that are not stacked/clustered cannot have legend dimensions.", this);
         }
 	}
+
 }

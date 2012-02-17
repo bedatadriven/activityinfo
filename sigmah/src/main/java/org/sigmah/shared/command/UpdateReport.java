@@ -1,15 +1,12 @@
 package org.sigmah.shared.command;
 
-import java.util.List;
-
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.report.model.ReportElement;
+import org.sigmah.shared.report.model.Report;
 
 public class UpdateReport implements Command<VoidResult>{
 
 	private int id;
-	private String title;
-	private List<ReportElement> elements;
+	private Report model;
 	
 	public UpdateReport(){
 		
@@ -23,20 +20,11 @@ public class UpdateReport implements Command<VoidResult>{
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
+	public Report getModel() {
+		return model;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setModel(Report model) {
+		this.model = model;
 	}
-	
-	public List<ReportElement> getElement() {
-		return elements;
-	}
-
-	public void setElement(List<ReportElement> elements) {
-		this.elements = elements;
-	}
-	
 }

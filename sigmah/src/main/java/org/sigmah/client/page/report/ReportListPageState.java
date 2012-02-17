@@ -20,7 +20,7 @@ import java.util.List;
 public class ReportListPageState implements PageState {
 
     public PageId getPageId() {
-        return ReportsPage.REPORT_HOME_PAGE_ID;
+        return ReportsPage.PAGE_ID;
     }
 
     public String serializeAsHistoryToken() {
@@ -28,7 +28,7 @@ public class ReportListPageState implements PageState {
     }
 
     public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(ReportsPage.REPORT_HOME_PAGE_ID);
+        return Arrays.asList(ReportsPage.PAGE_ID);
     }
 
 	@Override

@@ -104,7 +104,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
     private boolean apiLoadFailed = false;
 
     private final Dispatcher dispatcher;
-	private AbstractMap abstractMap;
+	private MapEditor abstractMap;
 
 	private LargeMapControl zoomControl;
 
@@ -504,7 +504,7 @@ public class AIMapWidget extends ContentPanel implements HasValue<MapReportEleme
 	}
 	
 
-	public void setMaster(AbstractMap mapPage) {
+	public void setMaster(MapEditor mapPage) {
 		this.abstractMap = mapPage;
 	}
 	

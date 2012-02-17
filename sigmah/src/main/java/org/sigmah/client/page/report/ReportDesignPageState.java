@@ -22,7 +22,7 @@ public class ReportDesignPageState implements PageState {
 
 	@Override
 	public PageId getPageId() {
-		return ReportDesignPresenter.PAGE_ID;
+		return ReportDesignPage.PAGE_ID;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class ReportDesignPageState implements PageState {
 
 	@Override
 	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(ReportDesignPresenter.PAGE_ID);
+		return Arrays.asList(ReportDesignPage.PAGE_ID);
 	}
 
 	public int getReportId() {

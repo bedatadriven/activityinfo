@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -21,6 +22,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.typeadapter.FilterAdapter;
+
+import com.google.common.collect.Sets;
 
 /**
  * Defines a filter of activity data as a date range and a set of restrictions on
@@ -120,8 +123,10 @@ public class Filter implements Serializable {
 	}
 	
 	public void addRestriction(DimensionType type, Collection<Integer> categoryIds) {
-		Set<Integer> set = getRestrictionSet(type, true);
-		set.addAll(categoryIds);
+		if(!categoryIds.isEmpty()) {
+			Set<Integer> set = getRestrictionSet(type, true);
+			set.addAll(categoryIds);
+		}
 	}
 	
 	public void clearRestrictions(DimensionType type) {
@@ -146,7 +151,13 @@ public class Filter implements Serializable {
 	}
 
     public Set<DimensionType> getRestrictedDimensions() {
-        return new HashSet<DimensionType>(restrictions.keySet());
+    	Set<DimensionType> dims = Sets.newHashSet();
+    	for(Entry<DimensionType, Set<Integer>> entries : restrictions.entrySet()) {
+    		if(!entries.getValue().isEmpty()) {
+    			dims.add(entries.getKey());
+    		}
+    	}
+        return dims;
     }
 
     private Map<DimensionType, Set<Integer>> getRestrictions() {

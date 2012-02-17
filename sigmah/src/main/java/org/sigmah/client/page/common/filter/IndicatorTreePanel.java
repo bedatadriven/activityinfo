@@ -29,11 +29,12 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.ModelStringProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
@@ -42,6 +43,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -60,6 +63,12 @@ public class IndicatorTreePanel extends ContentPanel {
 	private StoreFilterField filter;
 	private AsyncMonitor monitor;
 	private boolean multipleSelection;
+	
+	/**
+	 * Keep our own copy of our selection state that is indepedent of the 
+	 * loading process
+	 */
+	private Set<Integer> selection = Sets.newHashSet();
 	
 	private int databaseId ;
 
@@ -114,6 +123,30 @@ public class IndicatorTreePanel extends ContentPanel {
 
 		add(tree);
 		createFilterBar();
+		
+		tree.getStore().addStoreListener(new StoreListener<ModelData>(){
+
+			@Override
+			public void storeDataChanged(StoreEvent<ModelData> se) {
+				// apply our internal state to the newly loaded list
+				applySelection();	
+			}
+		});
+		
+		addCheckChangedListener(new Listener<TreePanelEvent>() {
+			
+			@Override
+			public void handleEvent(TreePanelEvent be) {
+				if(be.getItem() instanceof IndicatorDTO) {
+					IndicatorDTO indicator = (IndicatorDTO)be.getItem();
+					if(be.isChecked()) {
+						selection.add(indicator.getId());
+					} else {
+						selection.remove(indicator.getId());
+					}
+				}
+			}
+		});
 	}
 	
 	public static IndicatorTreePanel forSingleDatabase(Dispatcher service){
@@ -298,13 +331,28 @@ public class IndicatorTreePanel extends ContentPanel {
 		return list;
 	}
 	
-	public void setSelection(int indicatorId, boolean select){
+	public void select(int indicatorId, boolean select) {
+
+		if(select) {
+			if(!multipleSelection) {
+				selection.clear();
+			}
+			selection.add(indicatorId);
+		} else {
+			selection.remove(indicatorId);
+		}
 		
+		// apply directly if the indicators are loaded
 		for(ModelData model : tree.getStore().getAllItems()){
 			if(model instanceof IndicatorDTO && ((IndicatorDTO) model).getId() == indicatorId){
 				setChecked((IndicatorDTO)model,select);		
 			}			
 		}
+	}
+	
+	public void setSelection(Iterable<Integer> indicatorIds) {
+		selection = Sets.newHashSet(indicatorIds);
+		applySelection();
 	}
 
 	public void addCheckChangedListener(Listener<TreePanelEvent> listener) {
@@ -320,14 +368,7 @@ public class IndicatorTreePanel extends ContentPanel {
 	 * @return the list of the ids of selected indicators
 	 */
 	public List<Integer> getSelectedIds() {
-		List<Integer> list = new ArrayList<Integer>();
-
-		for (ModelData model : tree.getCheckedSelection()) {
-			if (model instanceof IndicatorDTO) {
-				list.add(((IndicatorDTO) model).getId());
-			}
-		}
-		return list;
+		return Lists.newArrayList(selection);
 	}
 
 	public void setMultipleSelection(boolean multipleSelection) {
@@ -395,9 +436,15 @@ public class IndicatorTreePanel extends ContentPanel {
 		tree.setCheckStyle(CheckCascade.CHILDREN);
 	}
 
-
-	public void addListenerToStore(EventType event, Listener listener){
-		store.addListener(event, listener);
+	private void applySelection() {
+		for(ModelData model : tree.getStore().getAllItems()){
+			if(model instanceof IndicatorDTO) {
+				IndicatorDTO indicator = (IndicatorDTO)model;
+				if(model instanceof IndicatorDTO) {
+					setChecked(indicator, selection.contains(indicator.getId()));		
+				}
+			}
+		}
 	}
 	
 }
