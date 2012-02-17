@@ -1,5 +1,7 @@
 package org.sigmah.client.page.report;
 
+import org.sigmah.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.Style.AutoSizeMode;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.EditorEvent;
@@ -39,6 +41,8 @@ public class ReportTitleWidget extends Widget implements HasText {
 	MyStyle style;
 
 	private Editor titleEditor;
+	
+	private String text;
 
 	public ReportTitleWidget() {
 		setElement(uiBinder.createAndBindUi(this));
@@ -59,12 +63,13 @@ public class ReportTitleWidget extends Widget implements HasText {
 
 	@Override
 	public String getText() {
-		return titleSpan.getInnerText();
+		return text;
 	}
 
 	@Override
 	public void setText(String text) {
-		titleSpan.setInnerText(text);
+		this.text = text;
+		titleSpan.setInnerText(text == null ? I18N.CONSTANTS.untitledReport() : text);
 	}
 
 	@Override
@@ -72,7 +77,7 @@ public class ReportTitleWidget extends Widget implements HasText {
 		Element clicked = event.getEventTarget().cast();
 		if(clicked.getClassName().equals(style.reportTitle()) ||
 		   clicked.getClassName().equals(style.changeTitleText())) {
-			titleEditor.startEdit(  (com.google.gwt.user.client.Element) titleSpan.cast(), titleSpan.getInnerText());
+			titleEditor.startEdit(  (com.google.gwt.user.client.Element) titleSpan.cast(), text);
 		}
 	}
 

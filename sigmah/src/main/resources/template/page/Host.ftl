@@ -67,7 +67,8 @@
             key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
         };
         var VersionInfo = {
-            revision: '$[display.version]'
+            display: '$[display.version]',
+            commitId: '$[git.commit.id]'
         };
     </script>
 

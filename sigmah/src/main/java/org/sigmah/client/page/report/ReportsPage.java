@@ -39,9 +39,7 @@ public class ReportsPage extends LayoutContainer implements Page {
     	savedLayout.setMargins(new Margins(0, 5, 0, 0));
     	add(new SavedReportsPanel(eventBus, dispatcher), savedLayout);
     	
-    	ContentPanel templatesPanel = new ContentPanel();
-    	templatesPanel.setHeading("Report Templates");
-    	add(templatesPanel, new BorderLayoutData(LayoutRegion.CENTER));
+    	add(new NewReportPanel(eventBus, dispatcher), new BorderLayoutData(LayoutRegion.CENTER));
     		
     }
 

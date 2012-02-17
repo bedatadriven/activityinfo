@@ -19,8 +19,9 @@
 			cursor: pointer;
 		}
 	</ui:style>
+	<ui:with field="i18n" type="org.sigmah.client.i18n.UIConstants"/>
 	<div>
 		<span class="{style.reportTitle}" ui:field="titleSpan" />
-		<span class="{style.changeTitleText}">[change]</span>
+		<span class="{style.changeTitleText}">[<ui:text from='{i18n.changeTitle}'/>]</span>
 	</div>
 </ui:UiBinder>

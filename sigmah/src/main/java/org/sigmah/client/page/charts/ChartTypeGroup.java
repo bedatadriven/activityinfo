@@ -52,6 +52,10 @@ public class ChartTypeGroup extends BaseObservable {
 	}
 	
 	public void setSelection(PivotChartReportElement.Type type) {
+		if(type == null) {
+			type = PivotChartReportElement.Type.Bar;
+		}
+		
 		for(ToggleButton button : buttons) {
 			if(type.equals(button.getData(TYPE_DATA))) {
 				button.toggle(true);

@@ -9,10 +9,23 @@ import com.google.gwt.i18n.client.Dictionary;
 
 public final class VersionInfo {
 
+	private static final Dictionary DICTIONARY = Dictionary.getDictionary("VersionInfo");
+
 	private VersionInfo() { }
 	
-    public static String getRevision() {
-        Dictionary versionInfo = Dictionary.getDictionary("VersionInfo");
-        return versionInfo.get("revision");
+	/**
+	 * 
+	 * @return the display name of the loaded version (e.g. "2.5.6")
+	 */
+    public static String getDisplayName() {
+        return DICTIONARY.get("display");
+    }
+    
+    /**
+     * 
+     * @return the git commit id of the loaded version
+     */
+    public static String getCommitId() {
+        return DICTIONARY.get("commitId");
     }
 }

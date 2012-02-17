@@ -25,6 +25,10 @@
 			padding-left: 5px;
 			padding-right: 5px;
 		}
+		
+		.appCacheStatus {
+			font-style: italic;
+		}
 				
 		.action {
 			text-decoration: underline;
@@ -32,11 +36,16 @@
 			display: inline;
 		}
 	</ui:style>
+	<ui:with field="constants" type="org.sigmah.client.i18n.UIConstants"/>
+	
 	<g:HTMLPanel styleName="{style.panel}">
 		<div class="{style.group}">
-			<div class="{style.menuRow}">Application version <span ui:field="versionLabel">2.5.1</span></div>
-			<div class="{style.menuRow}" ui:field="appCacheStatusRow"><span ui:field="cacheStatus"/> 
-				<g:Label text="Refresh your browser now" ui:field="refreshLink" styleName="{style.action}"/></div>
+			<div class="{style.menuRow}"><ui:text from="{constants.appVersion}"/> <span ui:field="versionLabel">2.5.1</span></div>
+			<div class="{style.menuRow}"><span ui:field="versionStatus"/></div>
+			<div class="{style.menuRow}"><span ui:field="appCacheStatus" styleName="{style.appCacheStatus}"/></div>
+			<div class="{style.menuRow}">
+				<g:Label text="{constants.loadNewVersionNow}" ui:field="refreshLink" styleName="{style.action}"/>
+			</div>
 		</div>
 	
 <!--		<div class="{style.group}">	-->
@@ -48,7 +57,7 @@
 <!--		-->
 		<div class="{style.group}">
 			<div class="{style.menuRow}">Logged in as <span class="{style.email}" ui:field="emailLabel"/></div>
-			<div class="{style.menuRow}"><g:Label text="Logout" styleName="{style.action}" ui:field="logoutLink"/></div>
+			<div class="{style.menuRow}"><g:Label text="{constants.logout}" styleName="{style.action}" ui:field="logoutLink"/></div>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

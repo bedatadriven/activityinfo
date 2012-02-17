@@ -648,6 +648,12 @@
 				<configuration>
 					<warSourceDirectory>${basedir}/war</warSourceDirectory>
 					<warSourceExcludes>ActivityInfo/compile-report,*.log</warSourceExcludes>
+					<webResources>
+						<resource>
+							<directory>deploy</directory>
+							<filtering>true</filtering>
+						</resource>						
+					</webResources>
 				</configuration>
 			</plugin>
 

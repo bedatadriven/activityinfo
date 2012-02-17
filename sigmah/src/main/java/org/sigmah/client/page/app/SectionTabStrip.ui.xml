@@ -41,10 +41,12 @@
 		}
 		
 	</ui:style>
+	<ui:with field="constants" type="org.sigmah.client.i18n.UIConstants"/>
+	
 	<div class="{style.sections}" ui:field="sectionDiv">
-		<div class="{style.section} {style.activeSection}">Dashboard</div>
-		<div class="{style.section}">Data Entry</div>
-		<div class="{style.section}">Reports</div>
-		<div class="{style.section}">Design</div>
+		<div class="{style.section} {style.activeSection}"><ui:text from="{constants.dashboard}"/></div>
+		<div class="{style.section}"><ui:text from="{constants.dataEntry}"/></div>
+		<div class="{style.section}"><ui:text from="{constants.reports}"/></div>
+		<div class="{style.section}"><ui:text from="{constants.design}"/></div>
 	</div>
 </ui:UiBinder> 
