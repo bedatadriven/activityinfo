@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase;
 import org.sigmah.server.database.OnDataSet;
+import org.sigmah.server.i18n.LocaleModule;
 import org.sigmah.shared.command.Search;
 import org.sigmah.shared.command.handler.search.AllSearcher;
 import org.sigmah.shared.command.handler.search.AttributeGroupSearcher;
@@ -18,6 +19,7 @@ import org.sigmah.shared.command.result.SearchResult;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
+import org.sigmah.test.Modules;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
@@ -75,12 +77,18 @@ public class SearchTest extends CommandTestCase {
 		assertHasRestrictionWithIds(DimensionType.Location, result, 1);
 	}
 	
+	@Test
+	public void testBadSyntax() {
+		SearchResult result = execute(new Search("y:y"));
+		
+	}
+	
 	public static void assertHasDimension(DimensionType type, SearchResult result) {
 		if (!result.getPivotTabelData().getEffectiveFilter().isRestricted(type)) {
 			fail("expected DimensionType \"" + type.toString() + "\" in filter of searchresult");
 		}
 	}
-	
+		
 	private void assertHasRestrictionWithIds(DimensionType type, SearchResult result, int... ids) {
 		for (int id : ids) {
 			if (!result.getPivotTabelData().getEffectiveFilter()

@@ -67,6 +67,9 @@ public class SearchPageState implements PageState {
 	public static class Parser implements PageStateParser {
         @Override
         public PageState parse(String token) { 
+        	if(token == null) {
+        		return new SearchPageState();
+        	}
         	String query = "";
         	if (token.startsWith("q")) {
         		try {
@@ -79,7 +82,7 @@ public class SearchPageState implements PageState {
 
 	@Override
 	public Section getSection() {
-		return Section.HOME;
+		return null;
 	}
 	
 }

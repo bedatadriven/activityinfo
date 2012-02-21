@@ -60,7 +60,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	}
 
 	private void initializeComponent() {
-		setHeading("Search results");
+		setHeaderVisible(false);
 		setLayout(new BorderLayout());
 
 		SearchResources.INSTANCE.searchStyles().ensureInjected();

@@ -16,6 +16,7 @@ import org.sigmah.server.authentication.AuthenticationModuleStub;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
+import org.sigmah.server.i18n.LocaleModule;
 import org.sigmah.server.util.TemplateModule;
 import org.sigmah.server.util.beanMapping.BeanMappingModule;
 import org.sigmah.shared.command.Command;
@@ -32,7 +33,8 @@ import com.google.inject.Injector;
         TemplateModule.class,
         BeanMappingModule.class,
         GwtRpcModule.class,
-        AuthenticationModuleStub.class
+        AuthenticationModuleStub.class,
+        LocaleModule.class
 })
 public abstract class CommandTestCase {
 

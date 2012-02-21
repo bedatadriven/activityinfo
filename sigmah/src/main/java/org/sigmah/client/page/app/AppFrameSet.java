@@ -84,7 +84,7 @@ public class AppFrameSet implements Frame {
 	}
 
 	private void createToolBar() {
-		appBar = new AppBar();
+		appBar = new AppBar(eventBus);
 		appBar.getSectionTabStrip().addSelectionHandler(new SelectionHandler<Section>() {
 
 			@Override

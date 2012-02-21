@@ -31,7 +31,7 @@ public class PageStateSerializer {
     private final Map<String, PageStateParser> parsers = new HashMap<String, PageStateParser>();
 
 
-    public String serialize(PageState place) {
+    public static String serialize(PageState place) {
         StringBuilder sb = new StringBuilder();
         sb.append(place.getPageId());
 
@@ -41,6 +41,10 @@ public class PageStateSerializer {
         }
 
         return sb.toString();
+    }
+    
+    public static String asLink(PageState place) {
+    	return "#" + serialize(place);
     }
 
     public PageState deserialize(String token) {

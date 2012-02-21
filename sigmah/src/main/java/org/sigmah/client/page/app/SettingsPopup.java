@@ -90,7 +90,7 @@ public class SettingsPopup extends PopupPanel {
 				if(response.getStatusCode() != 200) {
 					versionStatus.setInnerText(I18N.CONSTANTS.versionConnectionProblem());
 				
-				} else if(VersionInfo.getCommitId().equals(response.getText())) {
+				} else if(response.getText().startsWith(VersionInfo.getCommitId())) {
 					versionStatus.setInnerText(I18N.CONSTANTS.versionLatest());
 					
 				} else {

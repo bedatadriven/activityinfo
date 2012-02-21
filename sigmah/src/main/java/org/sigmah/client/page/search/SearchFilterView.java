@@ -166,7 +166,7 @@ public class SearchFilterView extends ContentPanel {
 			listviewEntities.addListener(Events.Select, new Listener<ListViewEvent>() {
 				@Override
 				public void handleEvent(ListViewEvent be) {
-					if (be.getTargetEl().hasStyleName("searchSmall")) { // icon: add to search box
+					if (be.getTargetEl().findParent(".searchSmall", 3)  != null) { // icon: add to search box
 						eventBus.fireEvent(new DimensionAddedEvent(
 								(SearchResultEntity) be.getModel()));
 					}

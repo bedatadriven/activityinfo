@@ -3,6 +3,9 @@ package org.sigmah.client.page.search;
 import java.util.List;
 
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.PageStateSerializer;
+import org.sigmah.client.page.entry.place.DataEntryPlace;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.content.EntityCategory;
 import org.sigmah.shared.report.content.PivotTableData.Axis;
 
@@ -77,8 +80,9 @@ public class SearchResultItem  extends LayoutContainer {
 			panelChild.add(image);
 			panelAll.add(panelChild);
 			
-			Hyperlink link = new Hyperlink(axis.getLabel(),
-					"site-grid/" + ((EntityCategory)axis.getCategory()).getId());
+			EntityCategory activity = (EntityCategory)axis.getCategory();		
+			Hyperlink link = new Hyperlink(axis.getLabel(), 
+					PageStateSerializer.serialize(new DataEntryPlace(Filter.filter().onActivity(activity.getId()))));
 			link.setStylePrimaryName("link");
 			panelChild.add(link);
 			

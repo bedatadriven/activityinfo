@@ -80,7 +80,7 @@ public class HistoryManager {
 
     private void onNavigationCompleted(PageState place) {
 
-        String token = placeSerializer.serialize(place);
+        String token = PageStateSerializer.serialize(place);
 
         /*
          * If it's a duplicate, we're not totally interested

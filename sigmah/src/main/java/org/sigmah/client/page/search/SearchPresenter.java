@@ -12,6 +12,8 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.PageStateSerializer;
+import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.page.search.SearchView.SearchEvent;
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GetSchema;
@@ -162,7 +164,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 				if (schema != null) {
 					ActivityDTO activity = schema.getActivityById(site.getActivityId());
 					recent.setActivityName(activity.getName());
-					recent.setActivityLink(GWT.getHostPageBaseURL() + "#site-grid/" + activity.getId());
+					recent.setActivityLink(PageStateSerializer.asLink(new DataEntryPlace(activity)));
 					recent.setDatabaseName(activity.getDatabase().getName() == null ? "[Database]" : activity.getDatabase().getName());
 				}
 				result.add(recent);
