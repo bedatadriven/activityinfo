@@ -11,16 +11,25 @@ import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.widget.Component;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Keeps a report view in sync with a ReportElement being edited. 
+ */
 public class ReportViewBinder<C extends Content, R extends ReportElement<C>> implements HasReportElement<R> {
 	
+	private static final int UPDATE_DELAY = 100;
 	
 	private final ReportEventHelper events;
 	private final Dispatcher dispatcher;
 	private final ReportView<R> view;
 	
+	private Timer updateTimer;
+	
 	private R elementModel;
+	
+	private GenerateElement<C> lastRequest;
 	
 	public static <C extends Content, R extends ReportElement<C>> ReportViewBinder<C, R> 
 			create(EventBus eventBus, Dispatcher dispatcher, ReportView<R> view) {
@@ -37,9 +46,17 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>> imp
 			
 			@Override
 			public void onChanged() {
-				load();
+				updateTimer.schedule(UPDATE_DELAY);
 			}
 		});
+		
+		updateTimer = new Timer() {
+			
+			@Override
+			public void run() {
+				load();
+			}
+		};
 	}
 
 	@Override
@@ -59,7 +76,9 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>> imp
 	
 	private void load() {
 		if(!elementModel.getFilter().getRestrictions(DimensionType.Indicator).isEmpty()) {
-			dispatcher.execute(new GenerateElement<C>(elementModel), null,
+			GenerateElement<C> request = new GenerateElement<C>(elementModel);
+			
+			dispatcher.execute(request, null,
 					new AsyncCallback<C>() {
 	
 				@Override

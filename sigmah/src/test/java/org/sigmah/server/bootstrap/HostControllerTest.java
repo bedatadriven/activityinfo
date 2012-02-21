@@ -15,10 +15,13 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.bootstrap.model.HostPageModel;
+import org.sigmah.server.endpoint.content.ContentServlet;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
 public class HostControllerTest extends ControllerTestCase {
 
+	private static final String CONTENT_ROOT = "/content/";
+	
     @Before
     public void setupController() {
         controller = new HostController(injector, templateCfg);
@@ -30,7 +33,7 @@ public class HostControllerTest extends ControllerTestCase {
 
         get();
 
-        assertEquals(resp.redirectUrl, LoginController.ENDPOINT);
+        assertEquals(resp.redirectUrl, CONTENT_ROOT);
     }
 
     @Test
@@ -48,7 +51,7 @@ public class HostControllerTest extends ControllerTestCase {
 
         get();
 
-        assertEquals(LoginController.ENDPOINT, resp.redirectUrl);
+        assertEquals(CONTENT_ROOT, resp.redirectUrl);
     }
 
     @Test

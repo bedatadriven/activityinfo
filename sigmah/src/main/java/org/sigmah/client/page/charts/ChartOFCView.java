@@ -25,6 +25,7 @@ import com.extjs.gxt.charts.client.model.charts.PieChart.Slice;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.MarginData;
@@ -80,10 +81,11 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 	private void setModel(ChartModel chartModel) {
 		this.chartModel = chartModel;
 
-		if(this.isRendered() && chart == null) {
-			createChart();
-			layout();
-		} else {
+		if(this.isRendered()) {
+			if(chart == null) {
+				createChart();
+				layout();
+			}
 			chart.setChartModel(chartModel);
 		}       
 	}
@@ -211,5 +213,13 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 
 		cm.addChartConfig(pieChart);
 	}
+
+
+	@Override
+	public Component asComponent() {
+		return this;
+	}
+	
+	
 
 }

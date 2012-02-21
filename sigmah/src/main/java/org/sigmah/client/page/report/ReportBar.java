@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
@@ -17,6 +18,7 @@ public class ReportBar extends LayoutContainer {
 
 	private ReportTitleWidget titleWidget;
 	private Button saveButton;
+	private ToggleButton dashboardButton;
 	
 	public ReportBar() {
 		setStyleName(ReportResources.INSTANCE.style().bar());
@@ -29,6 +31,9 @@ public class ReportBar extends LayoutContainer {
 		setMonitorWindowResize(true);
 		
 		addTitle();
+		
+		dashboardButton = new ToggleButton("Pin to dashboard");
+		add(dashboardButton);
 		
 		Button shareButton = new Button("Share");
 		add(shareButton);
@@ -62,5 +67,9 @@ public class ReportBar extends LayoutContainer {
 	
 	public Button getSaveButton() {
 		return saveButton;
+	}
+	
+	public ToggleButton getDashboardButton() {
+		return dashboardButton;
 	}
 }

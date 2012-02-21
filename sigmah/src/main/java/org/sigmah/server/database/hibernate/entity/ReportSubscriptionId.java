@@ -12,23 +12,23 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class ReportSubscriptionId implements Serializable {
 
-    private int reportTemplateId;
+    private int reportId;
     private int userId;
 
     public ReportSubscriptionId() {
     }
 
-    public ReportSubscriptionId(int reportTemplateId, int userId) {
-        this.reportTemplateId = reportTemplateId;
+    public ReportSubscriptionId(int reportId, int userId) {
+        this.reportId = reportId;
         this.userId = userId;
     }
 
-    public int getReportTemplateId() {
-        return reportTemplateId;
+    public int getReportId() {
+        return reportId;
     }
 
-    public void setReportTemplateId(int reportTemplateId) {
-        this.reportTemplateId = reportTemplateId;
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
     }
 
     public int getUserId() {

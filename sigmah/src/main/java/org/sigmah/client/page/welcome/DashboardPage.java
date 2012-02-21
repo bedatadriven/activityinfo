@@ -5,121 +5,66 @@
 
 package org.sigmah.client.page.welcome;
 
+import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.welcome.portlets.NewsPortlet;
+import org.sigmah.client.page.welcome.portlets.ReportPortlet;
+import org.sigmah.shared.command.GetReports;
+import org.sigmah.shared.command.result.ReportsResult;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.custom.Portal;
-import com.extjs.gxt.ui.client.widget.custom.Portlet;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class DashboardPage extends Portal implements Page {
 
 
     public static final PageId PAGE_ID = new PageId("dashboard");
+	private Dispatcher dispatcher;
+	private EventBus eventBus;
 
     @Inject
-    public DashboardPage() {
+    public DashboardPage(Dispatcher dispatcher, EventBus eventBus) {
     	super(2);
-        Portal portal = this;  
-        portal.setBorders(true);  
-        portal.setStyleAttribute("backgroundColor", "white");  
-        portal.setColumnWidth(0, .63);  
-        portal.setColumnWidth(1, .33);  
+    	this.dispatcher = dispatcher;
+    	this.eventBus = eventBus;
+    	
+        setBorders(true);  
+        setStyleAttribute("backgroundColor", "white");  
+        setColumnWidth(0, .63);  
+        setColumnWidth(1, .33);  
       
-        Portlet portlet = new Portlet();  
-        portlet.setHeading("Grid in a Portlet");  
-        configPanel(portlet);  
-        portlet.setLayout(new FitLayout());  
-        portlet.add(createGrid());  
-        portlet.setHeight(250);  
-  
-        portal.add(portlet, 0);  
+        add(new NewsPortlet(), 1);
         
-        portlet = new Portlet();  
-        portlet.setHeading("Another Panel 1");  
-        configPanel(portlet);  
-        portlet.addText(getBogusText());
-        portlet.setHeight(250);
-        portal.add(portlet, 0);  
-      
-        portlet = new Portlet();  
-        portlet.setHeading("Another Panel 1");  
-        configPanel(portlet);  
-        portlet.addText(getBogusText());
-        portlet.setHeight(250);
-        portal.add(portlet, 0);  
+        loadReports();
         
-        portlet = new Portlet();  
-        portlet.setHeading("Panel 2");  
-        configPanel(portlet);  
-        portlet.addText(getBogusText());  
-        portal.add(portlet, 1);  
-      
-        portlet = new Portlet();  
-        portlet.setHeading("Another Panel 2");  
-        configPanel(portlet);  
-        portlet.addText(getBogusText());  
-        portal.add(portlet, 1);  
-        
-        portal.add(new NewsPortlet(), 1);
-        
-        
-      
-//    	
-//        this.view = view;http://www.activityinfo.org/content/?
-//        this.view.setHeading(I18N.CONSTANTS.welcomeMessage());
-//        this.view.setIntro(I18N.CONSTANTS.selectCategory());
-//
-////        this.view.add(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.dataEntryDescription(), 
-////        		"form.png", new DashboardPageState());
-//
-//        this.view.add(I18N.CONSTANTS.dataEntry(), I18N.CONSTANTS.dataEntryDescription(), 
-//        		"form.png", new DataEntryPlace());
-//
-//        this.view.add(I18N.CONSTANTS.siteLists(), I18N.CONSTANTS.siteListsDescriptions(),
-//                "grid.png", new DataEntryPlace());
-//
-//        this.view.add(I18N.CONSTANTS.pivotTables(), I18N.CONSTANTS.pivotTableDescription(),
-//                "pivot.png", new PivotPageState());
-//
-//        this.view.add(I18N.CONSTANTS.charts(), I18N.CONSTANTS.chartsDescription(),
-//                "charts/time.png", new ChartPageState());
-//createGrid
-//        this.view.add(I18N.CONSTANTS.maps(), I18N.CONSTANTS.mapsDescription(),
-//                "map.png", new MapPageState());
+    }
+    
+    private void loadReports() {
+    	dispatcher.execute(new GetReports(), null, new AsyncCallback<ReportsResult>() {
 
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(ReportsResult result) {
+				for(ReportMetadataDTO report : result.getData()) {
+					if(report.isDashboard()) {
+						add(new ReportPortlet(dispatcher, eventBus, report), 0);
+					}
+				}
+				layout();
+			}
+		});
     }
 
-    private Widget createGrid() {
-		return new Label("foo");
-	}
-
-	private String getBogusText() {
-		return "the quick brown fox jumped over the slow lazy dog";
-	}
-
-	private void configPanel(final ContentPanel panel) {  
-        panel.getHeader().addTool(new ToolButton("x-tool-gear"));  
-        panel.getHeader().addTool(  
-            new ToolButton("x-tool-close", new SelectionListener<IconButtonEvent>() {  
-      
-              @Override  
-              public void componentSelected(IconButtonEvent ce) {  
-                panel.removeFromParent();  
-              }  
-      
-            }));  
-      }  
     
     @Override
 	public PageId getPageId() {

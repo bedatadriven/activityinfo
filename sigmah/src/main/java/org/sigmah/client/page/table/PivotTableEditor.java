@@ -104,7 +104,7 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 		center.setLayout(new BorderLayout());
 		add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
-		gridPanel = new PivotGridPanel(eventBus);
+		gridPanel = new PivotGridPanel();
 		gridPanel.setHeaderVisible(true);
 		gridPanel.setHeading(I18N.CONSTANTS.preview());
 

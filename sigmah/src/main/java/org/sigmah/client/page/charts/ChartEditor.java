@@ -100,7 +100,7 @@ public class ChartEditor extends LayoutContainer implements ReportElementEditor<
 		south.setSplit(true);
 		south.setMargins(new Margins(5, 0, 0, 0));
 
-		gridPanel = new PivotGridPanel(eventBus);
+		gridPanel = new PivotGridPanel();
 		gridPanel.setHeading("Table");
 
 		center.add(gridPanel, south);

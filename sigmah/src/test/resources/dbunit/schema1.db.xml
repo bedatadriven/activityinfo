@@ -113,7 +113,7 @@
 			&lt;title&gt;Report 1&lt;/title&gt;
 		&lt;/report&gt;"/>
 
-    <reportSubscription userId="1" reportTemplateId="1" subscribed="1"/>
+    <reportSubscription userId="1" reportId="1" subscribed="1"/>
 
 
 </dataset>

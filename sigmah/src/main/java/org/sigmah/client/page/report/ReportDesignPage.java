@@ -17,10 +17,9 @@ import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.page.report.resources.ReportResources;
 import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.GetReportModel;
-import org.sigmah.shared.command.UpdateReport;
-import org.sigmah.shared.command.result.ReportsResult;
+import org.sigmah.shared.command.UpdateReportModel;
+import org.sigmah.shared.command.UpdateReportSubscription;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.report.model.Report;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -103,7 +102,16 @@ public class ReportDesignPage extends ContentPanel implements Page {
 				}
 			}
 		});
+		
+		reportBar.getDashboardButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				pinToDashboard(reportBar.getDashboardButton().isPressed());
+			}
+		});
 	}
+
 
 	@Override
 	public boolean navigate(PageState place) {
@@ -162,7 +170,7 @@ public class ReportDesignPage extends ContentPanel implements Page {
 	}
 
 	public void save() {
-		UpdateReport updateReport = new UpdateReport();
+		UpdateReportModel updateReport = new UpdateReportModel();
 		updateReport.setModel(currentModel);
 
 		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
@@ -177,6 +185,29 @@ public class ReportDesignPage extends ContentPanel implements Page {
 			}
 		});
 	}
+	
+	private void pinToDashboard(boolean pressed) {
+		UpdateReportSubscription update = new UpdateReportSubscription();
+		update.setReportId(currentModel.getId());
+		update.setPinnedToDashboard(pressed);
+		
+		dispatcher.execute(update, null, new AsyncCallback<VoidResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(VoidResult result) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
+
 	
 	public void promptForTitle() {
 		MessageBox.prompt(I18N.CONSTANTS.save(), I18N.CONSTANTS.chooseReportTitle(), new Listener<MessageBoxEvent>() {

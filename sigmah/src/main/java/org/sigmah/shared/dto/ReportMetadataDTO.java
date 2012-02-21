@@ -63,27 +63,6 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
 	}
 
     /**
-     * Sets the description of this ReportDefinition
-     */
-	public void setDescription(String description) {
-		set("description", description);
-	}
-
-    /**
-     * @return  the description of this ReportDefinition
-     */
-	public String getDescription() {
-		return get("description");
-	}
-
-    /**
-     * Sets the name of the UserDatabase which this ReportDefinition references.
-     * If this ReportDefinition references multiple UserDatabases, name should be null.
-     */
-    public void setDatabaseName(String name) {
-        set("databaseName", name);
-    }
-    /**
      *
      * @return true if the current user permission to edit this report definition
      */
@@ -177,6 +156,15 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
 
 	public void setSubscribers(List<String> subscribers) {
 		this.subscribers = subscribers;
+	}
+	
+
+	public void setDashboard(boolean dashboard) {
+		set("dashboard", dashboard);
+	}
+	
+	public boolean isDashboard() {
+		return (Boolean)get("dashboard");
 	}
     
 }

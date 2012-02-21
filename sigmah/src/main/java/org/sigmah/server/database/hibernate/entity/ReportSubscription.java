@@ -42,7 +42,7 @@ public class ReportSubscription implements Serializable {
 
     @EmbeddedId
     @AttributeOverrides( {                                                          
-            @AttributeOverride(name = "reportTemplateId", column = @Column(name = "reportTemplateId", nullable = false)),
+            @AttributeOverride(name = "reportId", column = @Column(name = "reportId", nullable = false)),
             @AttributeOverride(name = "userId", column = @Column(name = "userId", nullable = false)) })
     public ReportSubscriptionId getId() {
         return this.id;
@@ -59,7 +59,7 @@ public class ReportSubscription implements Serializable {
      * @return the ReportTemplate to which the user is subscribed
      */
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "reportTemplateId", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "reportId", nullable = false, insertable = false, updatable = false)
 	public ReportDefinition getTemplate() {
 		return this.template;
 	}

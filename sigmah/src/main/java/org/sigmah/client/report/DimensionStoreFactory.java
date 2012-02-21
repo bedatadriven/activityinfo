@@ -41,6 +41,7 @@ public class DimensionStoreFactory {
                 list.add(createDimension(DimensionType.Database, I18N.CONSTANTS.database()));
                 list.add(createDimension(DimensionType.Activity, I18N.CONSTANTS.activity()));
                 list.add(createDimension(DimensionType.Indicator, I18N.CONSTANTS.indicators()));
+                list.add(createDimension(DimensionType.Partner, I18N.CONSTANTS.partners()));
 
                 list.add(createDimension(DateUnit.YEAR, I18N.CONSTANTS.year()));
                 list.add(createDimension(DateUnit.QUARTER, I18N.CONSTANTS.quarter()));

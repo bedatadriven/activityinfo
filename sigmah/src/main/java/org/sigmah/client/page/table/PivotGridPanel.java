@@ -29,6 +29,7 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.util.DelayedTask;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -42,8 +43,6 @@ import com.google.inject.Inject;
 
 public class PivotGridPanel extends ContentPanel implements ReportView<PivotReportElement> {
 
-    private final EventBus eventBus;
-
     private PivotReportElement element;
     private TreeGrid<PivotTableRow> grid;
     private TreeStore<PivotTableRow> store;
@@ -51,9 +50,7 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
     private Map<PivotTableData.Axis, String> propertyMap;
     private Map<Integer, PivotTableData.Axis> columnMap;
 
-    @Inject
-    public PivotGridPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public PivotGridPanel() {
         setLayout(new FitLayout());
     }
 
@@ -109,10 +106,10 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
             @Override
 			public void handleEvent(GridEvent<PivotTableRow> ge) {
                 if(ge.getColIndex() != 0) {
-                    eventBus.fireEvent(new PivotCellEvent(AppEvents.DRILL_DOWN,
-                            element,
-                            ge.getModel().getRowAxis(),
-                            columnMap.get(ge.getColIndex())));
+//                    eventBus.fireEvent(new PivotCellEvent(AppEvents.DRILL_DOWN,
+//                            element,
+//                            ge.getModel().getRowAxis(),
+//                            columnMap.get(ge.getColIndex())));
                 }
             }
         });
@@ -200,4 +197,9 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
         }
         return columnModel;
     }
+
+	@Override
+	public Component asComponent() {
+		return this;
+	}
 }
