@@ -18,10 +18,10 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.SearchField;
 import org.sigmah.client.page.common.widget.LoadingPlaceHolder;
 import org.sigmah.client.page.config.DbListPageState;
+import org.sigmah.client.page.dashboard.DashboardPlace;
 import org.sigmah.client.page.entry.place.DataEntryPlace;
 import org.sigmah.client.page.report.ReportListPageState;
 import org.sigmah.client.page.search.SearchPageState;
-import org.sigmah.client.page.welcome.DashboardPlace;
 import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;

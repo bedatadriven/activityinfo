@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.page.welcome;
+package org.sigmah.client.page.dashboard;
 
 import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.NavigationCallback;

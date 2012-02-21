@@ -9,7 +9,7 @@ import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
-import org.sigmah.client.page.welcome.DashboardPlace;
+import org.sigmah.client.page.dashboard.DashboardPlace;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;

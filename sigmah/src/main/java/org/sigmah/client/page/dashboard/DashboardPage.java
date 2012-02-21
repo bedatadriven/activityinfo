@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.page.welcome;
+package org.sigmah.client.page.dashboard;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -11,8 +11,8 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.welcome.portlets.NewsPortlet;
-import org.sigmah.client.page.welcome.portlets.ReportPortlet;
+import org.sigmah.client.page.dashboard.portlets.NewsPortlet;
+import org.sigmah.client.page.dashboard.portlets.ReportPortlet;
 import org.sigmah.shared.command.GetReports;
 import org.sigmah.shared.command.result.ReportsResult;
 import org.sigmah.shared.dto.ReportMetadataDTO;

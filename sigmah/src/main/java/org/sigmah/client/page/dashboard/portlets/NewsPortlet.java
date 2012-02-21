@@ -1,4 +1,4 @@
-package org.sigmah.client.page.welcome.portlets;
+package org.sigmah.client.page.dashboard.portlets;
 
 import org.sigmah.client.i18n.I18N;
 
