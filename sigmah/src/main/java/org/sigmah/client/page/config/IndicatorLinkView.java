@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.filter.IndicatorTreePanel;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.common.filter.IndicatorTreePanel;
 import org.sigmah.client.page.common.grid.AbstractEditorTreeGridView;
 import org.sigmah.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
 import org.sigmah.client.page.common.nav.Link;
-import org.sigmah.client.page.common.widget.MappingComboBox;
+import org.sigmah.client.widget.MappingComboBox;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;

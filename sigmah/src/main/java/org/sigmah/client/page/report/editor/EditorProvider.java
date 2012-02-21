@@ -1,8 +1,8 @@
 package org.sigmah.client.page.report.editor;
 
-import org.sigmah.client.page.charts.ChartEditor;
-import org.sigmah.client.page.map.MapEditor;
-import org.sigmah.client.page.table.PivotTableEditor;
+import org.sigmah.client.report.editor.chart.ChartEditor;
+import org.sigmah.client.report.editor.map.MapEditor;
+import org.sigmah.client.report.editor.pivotTable.PivotTableEditor;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;

@@ -12,7 +12,6 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogTether;
-import org.sigmah.client.page.common.dialog.MailingListDialog;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.GridPresenter;
 import org.sigmah.client.page.common.grid.GridView;

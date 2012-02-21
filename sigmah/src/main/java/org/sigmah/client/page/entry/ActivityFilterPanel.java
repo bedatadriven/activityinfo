@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.filter.FilterPanel;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.common.filter.FilterPanel;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.nav.LinkTreePanel;
 import org.sigmah.client.page.common.nav.Navigator;

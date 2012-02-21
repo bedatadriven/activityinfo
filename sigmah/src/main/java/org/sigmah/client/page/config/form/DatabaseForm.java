@@ -7,7 +7,7 @@ package org.sigmah.client.page.config.form;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.RemoteComboBox;
+import org.sigmah.client.widget.RemoteComboBox;
 import org.sigmah.shared.command.GetCountries;
 import org.sigmah.shared.command.result.CountryResult;
 import org.sigmah.shared.dto.CountryDTO;

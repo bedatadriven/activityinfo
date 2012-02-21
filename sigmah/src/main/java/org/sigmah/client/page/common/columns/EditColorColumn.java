@@ -1,9 +1,9 @@
 package org.sigmah.client.page.common.columns;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.ColorField;
-import org.sigmah.client.page.map.layerOptions.PiechartLayerOptions;
-import org.sigmah.client.page.map.layerOptions.PiechartLayerOptions.NamedSlice;
+import org.sigmah.client.report.editor.map.layerOptions.PiechartLayerOptions;
+import org.sigmah.client.report.editor.map.layerOptions.PiechartLayerOptions.NamedSlice;
+import org.sigmah.client.widget.ColorField;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;

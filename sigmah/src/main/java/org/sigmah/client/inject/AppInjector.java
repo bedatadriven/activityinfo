@@ -34,13 +34,13 @@ import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.client.page.dashboard.DashboardLoader;
 import org.sigmah.client.page.entry.DataEntryLoader;
 import org.sigmah.client.page.entry.EntryModule;
-import org.sigmah.client.page.map.MapModule;
 import org.sigmah.client.page.report.ReportLoader;
 import org.sigmah.client.page.report.ReportModule;
 import org.sigmah.client.page.report.ReportsPage;
 import org.sigmah.client.page.search.SearchLoader;
 import org.sigmah.client.page.search.SearchModule;
 import org.sigmah.client.page.search.SearchPresenter;
+import org.sigmah.client.report.editor.map.MapModule;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.auth.AuthenticatedUser;
 

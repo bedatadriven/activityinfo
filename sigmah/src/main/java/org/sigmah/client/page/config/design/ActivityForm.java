@@ -8,8 +8,8 @@ package org.sigmah.client.page.config.design;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.MappingComboBox;
-import org.sigmah.client.page.common.widget.MappingComboBoxBinding;
+import org.sigmah.client.widget.MappingComboBox;
+import org.sigmah.client.widget.MappingComboBoxBinding;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.LocationTypeDTO;
 import org.sigmah.shared.dto.Published;

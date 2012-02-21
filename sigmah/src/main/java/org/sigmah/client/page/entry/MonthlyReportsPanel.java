@@ -14,7 +14,7 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.client.page.common.widget.MappingComboBox;
+import org.sigmah.client.widget.MappingComboBox;
 import org.sigmah.shared.command.GetMonthlyReports;
 import org.sigmah.shared.command.Month;
 import org.sigmah.shared.command.UpdateMonthlyReports;

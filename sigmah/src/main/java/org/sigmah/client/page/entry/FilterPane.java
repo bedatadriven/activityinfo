@@ -1,11 +1,11 @@
 package org.sigmah.client.page.entry;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.filter.AdminFilterPanel;
+import org.sigmah.client.filter.DateRangePanel;
+import org.sigmah.client.filter.FilterPanelSet;
+import org.sigmah.client.filter.PartnerFilterPanel;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.filter.AdminFilterPanel;
-import org.sigmah.client.page.common.filter.DateRangePanel;
-import org.sigmah.client.page.common.filter.FilterPanelSet;
-import org.sigmah.client.page.common.filter.PartnerFilterPanel;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;

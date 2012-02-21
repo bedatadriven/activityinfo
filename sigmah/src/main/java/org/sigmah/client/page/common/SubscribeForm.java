@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.widget.MappingComboBox;
+import org.sigmah.client.widget.MappingComboBox;
 import org.sigmah.server.database.hibernate.dao.ReportDefinitionDAO;
 import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.report.model.ReportFrequency;
