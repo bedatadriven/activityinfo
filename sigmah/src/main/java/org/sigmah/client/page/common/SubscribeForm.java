@@ -6,7 +6,7 @@ import java.util.List;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.widget.MappingComboBox;
 import org.sigmah.server.database.hibernate.dao.ReportDefinitionDAO;
-import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.report.model.ReportFrequency;
 import org.sigmah.shared.report.model.ReportSubscriber;
 
@@ -260,7 +260,7 @@ public class SubscribeForm extends FormPanel {
 		dayOfMonth.show();
 	}
 	
-	public void updateForm(ReportDefinitionDTO report) {
+	public void updateForm(ReportMetadataDTO report) {
 		setReadOnlyTitle(report.getTitle());
 		setEmailList(report.getSubscribers());
 		if(report.getFrequency() != null && report.getDay() != null ){

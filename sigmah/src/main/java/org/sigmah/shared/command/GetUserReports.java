@@ -1,8 +1,8 @@
 package org.sigmah.shared.command;
 
-import org.sigmah.shared.command.result.ReportTemplateResult;
+import org.sigmah.shared.command.result.ReportsResult;
 
-public class GetUserReports extends GetListCommand<ReportTemplateResult> {
+public class GetUserReports extends GetListCommand<ReportsResult> {
 
 	public GetUserReports(){
 		

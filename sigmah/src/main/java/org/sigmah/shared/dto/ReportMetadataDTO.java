@@ -20,9 +20,8 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
-public final class ReportDefinitionDTO extends BaseModelData implements DTO {
+public final class ReportMetadataDTO extends BaseModelData implements DTO {
 
-	private Report report;
 	private List<String> subscribers;
     /**
      * Dummy reference to assure that GWT includes ReportFrequency is included
@@ -30,7 +29,7 @@ public final class ReportDefinitionDTO extends BaseModelData implements DTO {
      */
     private ReportFrequency freq_;
 
-    public ReportDefinitionDTO() {
+    public ReportMetadataDTO() {
 		setFrequency(ReportFrequency.NotDateBound);
 	}
 
@@ -172,14 +171,6 @@ public final class ReportDefinitionDTO extends BaseModelData implements DTO {
         set("subscribed", subscribed);
     }
     
-    public Report getReport(){
-    	return report;
-    }
-    
-    public void setReport(Report report){
-    	this.report =report;
-    }
-
 	public List<String> getSubscribers() {
 		return subscribers;
 	}

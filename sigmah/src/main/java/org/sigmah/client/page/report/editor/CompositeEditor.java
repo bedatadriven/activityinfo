@@ -32,8 +32,6 @@ public class CompositeEditor extends LayoutContainer implements ReportElementEdi
 	private ElementListPanel elementListPanel;
 	
 	private Component center;
-
-	private int reportId;
 	private Report model;
 
 	@Inject
@@ -79,7 +77,7 @@ public class CompositeEditor extends LayoutContainer implements ReportElementEdi
 
 	private void installPreview() {
 		PreviewPanel preview = new PreviewPanel(dispatcher);
-		preview.loadPreview(reportId);
+		preview.loadPreview(model.getId());
 		
 		installCenter(preview);
 	}
@@ -92,11 +90,6 @@ public class CompositeEditor extends LayoutContainer implements ReportElementEdi
 		center = component;
 		add(center, new BorderLayoutData(LayoutRegion.CENTER));
 		layout();
-	}
-
-	public void bind(int reportId, Report model) {
-		this.reportId = reportId;
-		bind(model);
 	}
 	
 	@Override 

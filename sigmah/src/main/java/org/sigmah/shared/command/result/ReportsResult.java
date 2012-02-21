@@ -7,18 +7,18 @@ package org.sigmah.shared.command.result;
 
 import java.util.List;
 
-import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 
 /**
  * 
  * @author Alex Bertram
  */
-public class ReportTemplateResult extends ListResult<ReportDefinitionDTO> {
+public class ReportsResult extends ListResult<ReportMetadataDTO> {
     
-    public ReportTemplateResult() {
+    public ReportsResult() {
     }
 
-    public ReportTemplateResult(List<ReportDefinitionDTO> data) {
+    public ReportsResult(List<ReportMetadataDTO> data) {
         super(data);
     }
 

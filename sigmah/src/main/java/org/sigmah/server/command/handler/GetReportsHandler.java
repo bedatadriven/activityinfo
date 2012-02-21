@@ -14,38 +14,40 @@ import javax.persistence.Query;
 import org.sigmah.server.database.hibernate.entity.ReportDefinition;
 import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.GetReportTemplates;
+import org.sigmah.shared.command.GetReports;
 import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.ReportTemplateResult;
-import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.command.result.ReportsResult;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.GetReportTemplates
+ * @see org.sigmah.shared.command.GetReports
  */
-public class GetReportTemplatesHandler implements CommandHandler<GetReportTemplates> {
+public class GetReportsHandler implements CommandHandler<GetReports> {
     private EntityManager em;
 
     @Inject
-    public GetReportTemplatesHandler(EntityManager em) {
+    public GetReportsHandler(EntityManager em) {
         this.em = em;
     }
 
     @Override
-    public CommandResult execute(GetReportTemplates cmd, User user) throws CommandException {
+    public CommandResult execute(GetReports cmd, User user) throws CommandException {
 
-        Query query = em.createQuery("select r from ReportDefinition r");
+    	// note that we are excluding reports with a null title-- these
+    	// reports have not yet been explicitly saved by the user
+        Query query = em.createQuery("select r from ReportDefinition r where r.owner.id = :userId and r.title is not null")
+        	.setParameter("userId", user.getId());
 
         List<ReportDefinition> results = query.getResultList();
-
-        List<ReportDefinitionDTO> dtos = new ArrayList<ReportDefinitionDTO>();
+        List<ReportMetadataDTO> dtos = new ArrayList<ReportMetadataDTO>();
 
         for (ReportDefinition template : results) {
 
-            ReportDefinitionDTO dto = new ReportDefinitionDTO();
+            ReportMetadataDTO dto = new ReportMetadataDTO();
             dto.setId(template.getId());
             dto.setDatabaseName(template.getDatabase() == null ? null : template.getDatabase().getName());
             dto.setOwnerName(template.getOwner().getName());
@@ -65,6 +67,6 @@ public class GetReportTemplatesHandler implements CommandHandler<GetReportTempla
             }
             dtos.add(dto);
         }
-        return new ReportTemplateResult(dtos);
+        return new ReportsResult(dtos);
     }
 }

@@ -12,15 +12,15 @@ import org.sigmah.client.page.common.SubscribeForm;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.report.editor.CompositeEditor;
-import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.page.report.editor.EditorProvider;
+import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.page.report.resources.ReportResources;
 import org.sigmah.shared.command.CreateSubscribe;
-import org.sigmah.shared.command.GetReport;
+import org.sigmah.shared.command.GetReportModel;
 import org.sigmah.shared.command.UpdateReport;
-import org.sigmah.shared.command.result.ReportTemplateResult;
+import org.sigmah.shared.command.result.ReportsResult;
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.report.model.Report;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -29,7 +29,6 @@ import com.extjs.gxt.ui.client.event.EditorEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -48,11 +47,6 @@ public class ReportDesignPage extends ContentPanel implements Page {
 
 	private boolean reportEdited;
 	private ReportBar reportBar;
-
-	/**
-	 * The id of the model being edited on this page
-	 */
-	private int currentReportId;
 	
 	/**
 	 * The model being edited on this page
@@ -128,23 +122,22 @@ public class ReportDesignPage extends ContentPanel implements Page {
 
 	private void loadReport(int reportId) {
 
-		dispatcher.execute(new GetReport(reportId), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
-				new AsyncCallback<ReportTemplateResult>() {
+		dispatcher.execute(new GetReportModel(reportId), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
+				new AsyncCallback<Report>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO show appropriate message.
 			}
 
 			@Override
-			public void onSuccess(ReportTemplateResult result) {						
-				onModelLoaded(result.getData().get(0));
+			public void onSuccess(Report result) {						
+				onModelLoaded(result);
 			}
 		});
 	}
 
-	private void onModelLoaded(ReportDefinitionDTO report) {
-		this.currentReportId = report.getId();
-		this.currentModel = report.getReport();
+	private void onModelLoaded(Report report) {
+		this.currentModel = report;
 		reportBar.setReportTitle(currentModel.getTitle());
 		
 		if(currentModel.getElements().size() == 1) {
@@ -153,7 +146,7 @@ public class ReportDesignPage extends ContentPanel implements Page {
 			installEditor( editor );
 		} else {
 			CompositeEditor editor = (CompositeEditor)editorProvider.create(currentModel);
-			editor.bind(currentReportId, currentModel);
+			editor.bind(currentModel);
 			installEditor( editor );
 		}
 		
@@ -170,7 +163,6 @@ public class ReportDesignPage extends ContentPanel implements Page {
 
 	public void save() {
 		UpdateReport updateReport = new UpdateReport();
-		updateReport.setId(currentReportId);
 		updateReport.setModel(currentModel);
 
 		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
@@ -250,7 +242,7 @@ public class ReportDesignPage extends ContentPanel implements Page {
 			@Override
 			public void onValidated() {
 				if (form.validListField()) {
-					subscribeEmail(dialog, currentReportId);
+					subscribeEmail(dialog, currentModel.getId());
 				} else {
 					MessageBox.alert(I18N.CONSTANTS.error(),
 							I18N.MESSAGES.noEmailAddress(), null);

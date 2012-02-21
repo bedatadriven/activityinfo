@@ -29,7 +29,7 @@ public class UpdateReportHandler implements CommandHandler<UpdateReport> {
 		Query query = em
 				.createQuery(
 						"select r from ReportDefinition r where r.id in (:id)")
-				.setParameter("id", cmd.getId());
+				.setParameter("id", cmd.getModel().getId());
 
 		ReportDefinition result = (ReportDefinition) query.getSingleResult();
 		result.setTitle(cmd.getModel().getTitle());

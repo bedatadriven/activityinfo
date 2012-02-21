@@ -8,9 +8,9 @@ import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
-import org.sigmah.shared.command.GetReportTemplates;
-import org.sigmah.shared.command.result.ReportTemplateResult;
-import org.sigmah.shared.dto.ReportDefinitionDTO;
+import org.sigmah.shared.command.GetReports;
+import org.sigmah.shared.command.result.ReportsResult;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoader;
@@ -34,15 +34,15 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		toolBar.addDeleteButton();
 		setTopComponent(toolBar);
 		
-		ListLoader<ReportTemplateResult> loader = new BaseListLoader<ReportTemplateResult>(new ReportsProxy(dispatcher));
-		ListStore<ReportDefinitionDTO> store = new ListStore<ReportDefinitionDTO>(loader);
+		ListLoader<ReportsResult> loader = new BaseListLoader<ReportsResult>(new ReportsProxy(dispatcher));
+		ListStore<ReportMetadataDTO> store = new ListStore<ReportMetadataDTO>(loader);
 		
-		ListView<ReportDefinitionDTO> listView = new ListView<ReportDefinitionDTO>(store);
+		ListView<ReportMetadataDTO> listView = new ListView<ReportMetadataDTO>(store);
 		listView.setSimpleTemplate("{title}");
-		listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<ReportDefinitionDTO>>() {
+		listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<ReportMetadataDTO>>() {
 
 			@Override
-			public void handleEvent(ListViewEvent<ReportDefinitionDTO> be) {
+			public void handleEvent(ListViewEvent<ReportMetadataDTO> be) {
 				
 				eventBus.fireEvent(new NavigationEvent(
 						NavigationHandler.NavigationRequested,
@@ -56,7 +56,7 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		loader.load();
 	}
 
-	private class ReportsProxy extends RpcProxy<ReportTemplateResult> {
+	private class ReportsProxy extends RpcProxy<ReportsResult> {
 
 		private final Dispatcher dispatcher;
 		
@@ -67,9 +67,9 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 
 		@Override
 		protected void load(Object loadConfig,
-				final AsyncCallback<ReportTemplateResult> callback) {
+				final AsyncCallback<ReportsResult> callback) {
 			
-			dispatcher.execute(new GetReportTemplates(), null, new AsyncCallback<ReportTemplateResult>() {
+			dispatcher.execute(new GetReports(), null, new AsyncCallback<ReportsResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -77,7 +77,7 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 				}
 
 				@Override
-				public void onSuccess(ReportTemplateResult result) {
+				public void onSuccess(ReportsResult result) {
 					callback.onSuccess(result);
 				}
 			});

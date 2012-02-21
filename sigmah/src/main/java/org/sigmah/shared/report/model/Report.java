@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.report.content.ReportContent;
 
 /**
@@ -24,11 +25,13 @@ import org.sigmah.shared.report.content.ReportContent;
  * @see org.sigmah.shared.report.model.ReportElement
  */
 @XmlRootElement(name="report")
-public class Report extends ReportElement<ReportContent> implements Serializable {
+public class Report extends ReportElement<ReportContent> implements Serializable, CommandResult {
 
 
     private List<ReportElement> elements = new ArrayList<ReportElement>();
 
+    private int id;
+    
 	private String fileName;
     private String description;
 
@@ -40,8 +43,18 @@ public class Report extends ReportElement<ReportContent> implements Serializable
     public Report() {
 		
 	}
+    
+    public int getId() {
+		return id;
+	}
+    
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    @XmlElement
+
+
+	@XmlElement
     public String getDescription() {
         return description;
     }
