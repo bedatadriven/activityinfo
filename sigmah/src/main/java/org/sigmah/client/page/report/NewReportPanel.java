@@ -3,9 +3,11 @@ package org.sigmah.client.page.report;
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.report.template.ChartTemplate;
 import org.sigmah.client.page.report.template.CompositeTemplate;
+import org.sigmah.client.page.report.template.MapTemplate;
 import org.sigmah.client.page.report.template.PivotTableTemplate;
 import org.sigmah.client.page.report.template.ReportTemplate;
 
@@ -29,17 +31,14 @@ public class NewReportPanel extends ContentPanel {
 	public NewReportPanel(EventBus eventBus, Dispatcher dispatcher) {
 		this.eventBus = eventBus;
 
-		setHeading("Create new report");
+		setHeading(I18N.CONSTANTS.createNewReport());
 		setLayout(new FitLayout());
 		
 		store = new ListStore<ReportTemplate>();
 		store.add(new ChartTemplate(dispatcher));
 		store.add(new PivotTableTemplate(dispatcher));
+		store.add(new MapTemplate(dispatcher));
 		store.add(new CompositeTemplate(dispatcher));
-		
-//		store.add(createReportModel("Map", "Create tables crossing any variables", "map.png"));
-//		store.add(createReportModel("Chart", "Create pivot charts", "time.png"));
-//		store.add(createReportModel("Custom Report", "Create a report definition that includes a combination of pivot tables, maps, and charts.", "time.png"));
 				
 		ListView<ReportTemplate> view = new ListView<ReportTemplate>();
         view.setStyleName("gallery");
