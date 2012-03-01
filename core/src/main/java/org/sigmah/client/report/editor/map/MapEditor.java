@@ -12,6 +12,8 @@ import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.report.ReportChangeHandler;
+import org.sigmah.client.page.report.ReportEventHelper;
 import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.report.editor.map.layerOptions.LayerOptionsPanel;
 import org.sigmah.shared.command.RenderElement.Format;
@@ -29,35 +31,41 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
 import com.google.inject.Inject;
 
-public class MapEditor extends ContentPanel implements ActionListener, ReportElementEditor<MapReportElement> {
+public class MapEditor extends ContentPanel implements ReportElementEditor<MapReportElement> {
 
-	protected static final int CONTROL_TOP_MARGIN = 10;
-	protected static final int LAYERS_STYLE_TOP_MARGIN = 50;
-	protected static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
-	protected EventBus eventBus;
+	private static final int CONTROL_TOP_MARGIN = 10;
+	private static final int LAYERS_STYLE_TOP_MARGIN = 50;
+	private static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
 
-	// Data mechanics
-	protected final Dispatcher dispatcher;
- 
+	private final Dispatcher dispatcher;
+	private final ReportEventHelper events;
+	private final EventBus eventBus;
+
 	// Contained widgets
-	protected AIMapWidget aiMapWidget;
-	protected ActionToolBar toolbarMapActions;
-	protected LayersWidget layersWidget;
-	protected LayerOptionsPanel optionsPanel;
-	protected MapReportElement mapReportElement = new MapReportElement();
-	protected AbsoluteLayout layout;
+	private MapEditorMapView mapPanel;
+	private LayersWidget layersWidget;
+	private LayerOptionsPanel optionsPanel;
+	private MapReportElement mapReportElement = new MapReportElement();
+	private AbsoluteLayout layout;
 
 	@Inject
 	public MapEditor(Dispatcher dispatcher, EventBus eventBus) {
 		this.dispatcher = dispatcher;
 		this.eventBus = eventBus;
+		this.events = new ReportEventHelper(eventBus, this);
+		this.events.listen(new ReportChangeHandler() {
+			
+			@Override
+			public void onChanged() {
+				onChanged();
+			}
+		});
 
 		MapResources.INSTANCE.style().ensureInjected();
 
 		initializeComponent();
 
 		createMap();
-		createToolBar();
 		createLayersOptionsPanel();
 		createLayersWidget();
 	}
@@ -71,20 +79,12 @@ public class MapEditor extends ContentPanel implements ActionListener, ReportEle
 	protected void createLayersOptionsPanel() {
 		optionsPanel = new LayerOptionsPanel(dispatcher);
 		optionsPanel.setVisible(false);
-		optionsPanel.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-				aiMapWidget.setValue(mapReportElement);
-				layersWidget.setValue(mapReportElement);
-			}
-		});
 
 		optionsPanel.addListener(Events.Hide, new Listener<BaseEvent>() {
 
 			@Override
 			public void handleEvent(BaseEvent be) {
-				aiMapWidget.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
+				mapPanel.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
 			}
 		});
 
@@ -92,31 +92,28 @@ public class MapEditor extends ContentPanel implements ActionListener, ReportEle
 
 			@Override
 			public void handleEvent(BaseEvent be) {
-				aiMapWidget.setZoomControlOffsetX(LayerOptionsPanel.WIDTH
+				mapPanel.setZoomControlOffsetX(LayerOptionsPanel.WIDTH
 						+ ZOOM_CONTROL_LEFT_MARGIN);
+			}
+		});
+		
+		optionsPanel.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<MapLayer> event) {
+				events.fireChange();
 			}
 		});
 
 		add(optionsPanel, new AbsoluteData(0, CONTROL_TOP_MARGIN));
 	}
+	
+	private void onChanged() {
+		
+	}
 
 	protected void createLayersWidget() {
-		layersWidget = new LayersWidget(dispatcher, optionsPanel);
-		layersWidget.setValue(mapReportElement);
-
-		layersWidget
-				.addValueChangeHandler(new ValueChangeHandler<MapReportElement>() {
-					@Override
-					public void onValueChange(
-							ValueChangeEvent<MapReportElement> event) {
-						aiMapWidget.setValue(event.getValue());
-						layersWidget.setValue(event.getValue());
-						boolean canExport = !event.getValue().getLayers()
-								.isEmpty();
-						toolbarMapActions.setActionEnabled(
-								UIActions.EXPORT_DATA, canExport);
-					}
-				});
+		layersWidget = new LayersWidget(dispatcher, eventBus, optionsPanel);
 
 		// positioning is actually only set when setSize() is called below
 		add(layersWidget, new AbsoluteData());
@@ -124,28 +121,19 @@ public class MapEditor extends ContentPanel implements ActionListener, ReportEle
 
 	protected void createMap() {
 
-		aiMapWidget = new AIMapWidget(dispatcher);
-		aiMapWidget.setHeading(I18N.CONSTANTS.preview());
-		aiMapWidget.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
-
-		// Ugly hack to prevent call avalanches
-		aiMapWidget.setMaster(this);
+		mapPanel = new MapEditorMapView(dispatcher, eventBus);
+		mapPanel.setHeading(I18N.CONSTANTS.preview());
+		mapPanel.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
 
 		AbsoluteData layout = new AbsoluteData();
 		layout.setLeft(0);
 		layout.setTop(0);
 		layout.setAnchorSpec("100% 100%");
-		add(aiMapWidget, layout);
-	}
-
-	protected void createToolBar() {
-		toolbarMapActions = new ActionToolBar(this);
-	
-		setTopComponent(toolbarMapActions);
+		add(mapPanel, layout);
 	}
 
 	public AsyncMonitor getMapLoadingMonitor() {
-		return new MaskingAsyncMonitor(aiMapWidget, I18N.CONSTANTS.loading());
+		return new MaskingAsyncMonitor(mapPanel, I18N.CONSTANTS.loading());
 	}
 
 	@Override
@@ -163,13 +151,11 @@ public class MapEditor extends ContentPanel implements ActionListener, ReportEle
 	}
 
 	@Override
-	public void onUIAction(String actionId) {
-
-	}
-
-	@Override
 	public void bind(MapReportElement model) {
 		this.mapReportElement = model;
+	
+		layersWidget.bind(model);
+		mapPanel.bind(model);
 	}
 	
 	@Override
@@ -186,6 +172,4 @@ public class MapEditor extends ContentPanel implements ActionListener, ReportEle
 	public List<Format> getExportFormats() {
 		return Arrays.asList(Format.PowerPoint, Format.Word, Format.PDF, Format.PNG);
 	}
-
-
 }

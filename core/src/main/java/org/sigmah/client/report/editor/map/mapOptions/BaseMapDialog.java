@@ -154,6 +154,4 @@ public class BaseMapDialog extends Dialog {
 			}
 		}
 	}
-	
-	
 }

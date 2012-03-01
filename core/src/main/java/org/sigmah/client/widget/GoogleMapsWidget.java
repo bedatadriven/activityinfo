@@ -6,21 +6,24 @@
 package org.sigmah.client.widget;
 
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.MapApiLoader;
-import org.sigmah.client.map.MapTypeFactory;
-import org.sigmah.shared.dto.CountryDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
+import org.sigmah.shared.util.mapping.Extents;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ContainerEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.SmallMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.user.client.Element;
@@ -29,110 +32,141 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Base class for integrating GoogleMaps widget into a GXT component
  */
-public class GoogleMapsWidget extends LayoutContainer {
-    private MapWidget map = null;
+public class GoogleMapsWidget extends ContentPanel {
+	private MapWidget map = null;
 
-    private LatLngBounds pendingZoom = null;
-    private final CountryDTO country;
+	private LatLngBounds pendingZoom = null;
 
-    public GoogleMapsWidget(CountryDTO country) {
-        this.country = country;
-        
-        setLayout(new FitLayout());
-        setHeight(250);
-    }
-    
-    
+	private boolean apiLoadFailed;
 
-    @Override
+	public GoogleMapsWidget() {       
+		setLayout(new FitLayout());
+	}
+
+	@Override
 	protected void onRender(Element parent, int index) {
 		super.onRender(parent, index);
-		
+
 		loadMapAsync();
 	}
 
-
-
 	private void loadMapAsync() {
-    	MapApiLoader.load(null, new AsyncCallback<Void>() {
+		MapApiLoader.load(null, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 				createMapWidget();				
 			}
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
 				Log.error("Failed to load google Maps", caught);
+				handleApiLoadFailure();
 			}
 		});
+	}
+
+	/**
+	 * Handles the failure of the Google Maps API to load.
+	 */
+	private void handleApiLoadFailure() {
+		apiLoadFailed = true;
+		
+		if (this.getItemCount() == 0) {
+			add(new Html(I18N.CONSTANTS.cannotLoadMap()));
+
+			add(new Button(I18N.CONSTANTS.retry(), new SelectionListener<ButtonEvent>() {
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					loadMapAsync();
+				}
+			}));
+
+			layout();
+		}
 	}
 
 	private void createMapWidget() {
 		map = new MapWidget();
 
-        map.addControl(new SmallMapControl());
-        map.setCenter(LatLng.newInstance(
-                country.getBounds().getCenterY(),
-                country.getBounds().getCenterX()));
-        map.setZoomLevel(6);
+		configureMap(map);
 
-        MapType adminMap = MapTypeFactory.createLocalisationMapType(country);
-        map.addMapType(adminMap);
-        map.setCurrentMapType(adminMap);
+		this.addListener(Events.AfterLayout, new Listener<ContainerEvent>() {
 
-        this.addListener(Events.AfterLayout, new Listener<ContainerEvent>() {
+			@Override
+			public void handleEvent(ContainerEvent be) {
+				map.checkResizeAndCenter();
+				if (pendingZoom != null) {
+					zoomToBounds(pendingZoom);
+				}
+			}
+		});
+		removeAll();
+		add(map);
+		layout();
 
-            @Override
-            public void handleEvent(ContainerEvent be) {
-                map.checkResizeAndCenter();
-                if (pendingZoom != null) {
-                    zoomToBounds(pendingZoom);
-                }
-            }
-        });
-        add(map);
-	    layout();
-	    
-	    onMapInitialized();
+		onMapInitialized();
 	}
-	
+
+
+
+	protected void configureMap(MapWidget map) {
+
+	}
+
 	protected void onMapInitialized() {
-		
+
 	}
 
-    public final void zoomToBounds(LatLngBounds llbounds) {
+	public final void zoomToBounds(LatLngBounds llbounds) {
 
-        int zoomLevel = map.getBoundsZoomLevel(llbounds);
+		int zoomLevel = map.getBoundsZoomLevel(llbounds);
 
-        if (zoomLevel == 0) {
-            pendingZoom = llbounds;
-        } else {
-            map.setCenter(llbounds.getCenter());
-            map.setZoomLevel(zoomLevel);
-            pendingZoom = null;
-        }
-    }
+		if (zoomLevel == 0) {
+			pendingZoom = llbounds;
+		} else {
+			map.setCenter(llbounds.getCenter());
+			map.setZoomLevel(zoomLevel);
+			pendingZoom = null;
+		}
+	}
 
-    protected final LatLngBounds newLatLngBounds(BoundingBoxDTO bounds) {
-        return LatLngBounds.newInstance(
-                LatLng.newInstance(bounds.getY1(), bounds.getX1()),
-                LatLng.newInstance(bounds.getY2(), bounds.getX2()));
-    }
+	public final void zoomToBounds(Extents extents) {
+		zoomToBounds(newLatLngBounds(extents));
+	}
 
-    protected final LatLng newLatLng(AiLatLng latLng) {
+	protected final LatLngBounds newLatLngBounds(BoundingBoxDTO bounds) {
+		return LatLngBounds.newInstance(
+				LatLng.newInstance(bounds.getY1(), bounds.getX1()),
+				LatLng.newInstance(bounds.getY2(), bounds.getX2()));
+	}
+
+	protected final LatLng newLatLng(AiLatLng latLng) {
 		return LatLng.newInstance(latLng.getLat(), latLng.getLng());
 	}
-    
-    protected final BoundingBoxDTO createBounds(LatLngBounds latlngbounds) {
-        return new BoundingBoxDTO(latlngbounds.getNorthEast().getLongitude(),
-                latlngbounds.getSouthWest().getLatitude(),
-                latlngbounds.getSouthWest().getLongitude(),
-                latlngbounds.getNorthEast().getLatitude());
-    }
 
-    protected final MapWidget getMapWidget() {
-    	return map;
-    }
+	protected final LatLngBounds newLatLngBounds(Extents extents) {
+		return LatLngBounds.newInstance(
+				LatLng.newInstance(extents.getMinLat(), extents.getMinLon()),
+				LatLng.newInstance(extents.getMaxLat(), extents.getMaxLon()));
+	}
 
+	protected final BoundingBoxDTO createBounds(LatLngBounds latlngbounds) {
+		return new BoundingBoxDTO(latlngbounds.getNorthEast().getLongitude(),
+				latlngbounds.getSouthWest().getLatitude(),
+				latlngbounds.getSouthWest().getLongitude(),
+				latlngbounds.getNorthEast().getLatitude());
+	}
+
+	protected final MapWidget getMapWidget() {
+		return map;
+	}
+
+	public final boolean isMapLoaded() {
+		return map != null;
+	}
+	
+	public final boolean hasMapLoadFailed() {
+		return apiLoadFailed;
+	}
 
 }

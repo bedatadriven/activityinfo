@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.report.HasReportElement;
+import org.sigmah.client.page.report.ReportChangeHandler;
+import org.sigmah.client.page.report.ReportEventHelper;
 import org.sigmah.client.report.editor.map.layerOptions.LayerOptionsPanel;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.clustering.NoClustering;
@@ -34,20 +38,18 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
 /**
  * Displays a list of layers selected by the user 
  */
-public final class LayersWidget extends LayoutContainer implements HasValue<MapReportElement> {
+public final class LayersWidget extends LayoutContainer implements HasReportElement<MapReportElement> {
 
 	public static final int WIDTH = 225;
 
 	private static final int CONTEXT_MENU_WIDTH = 150;
-
+	private final ReportEventHelper events;
 	
 	private Dispatcher service;
 	private MapReportElement mapElement;
@@ -62,11 +64,20 @@ public final class LayersWidget extends LayoutContainer implements HasValue<MapR
 	private Menu layerMenu;
 	
 	@Inject
-	public LayersWidget(Dispatcher service, LayerOptionsPanel optionsPanel) {
+	public LayersWidget(Dispatcher service, EventBus eventBus, LayerOptionsPanel optionsPanel) {
 		super();
 		
 		this.service = service;
+		this.events = new ReportEventHelper(eventBus, this);
+		this.events.listen(new ReportChangeHandler() {
+			
+			@Override
+			public void onChanged() {
+				updateStore();
+			}
+		});
 		this.optionsPanel = optionsPanel;
+		
 		
 		createDefaultMapReportElement();
 		
@@ -142,7 +153,7 @@ public final class LayersWidget extends LayoutContainer implements HasValue<MapR
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				mapElement.setBaseMapId(event.getValue());
-				ValueChangeEvent.fire(LayersWidget.this, mapElement);
+				events.fireChange();
 			}
 		});
 	
@@ -186,7 +197,7 @@ public final class LayersWidget extends LayoutContainer implements HasValue<MapR
 				boolean newSetting = !layerModel.isVisible();
 				layerModel.setVisible(newSetting);
 				layerModel.getMapLayer().setVisible(newSetting);
-				ValueChangeEvent.fire(LayersWidget.this, mapElement);
+				events.fireChange();
 				store.update(layerModel);
 			}
 		} else {
@@ -275,7 +286,7 @@ public final class LayersWidget extends LayoutContainer implements HasValue<MapR
 	
 	private void removeLayer(MapLayer mapLayer) {
 		mapElement.getLayers().remove(mapLayer);				
-		ValueChangeEvent.fire(this, mapElement);
+		events.fireChange();
 		updateStore();
 		
 		if(optionsPanel.getValue() == mapLayer) {
@@ -284,28 +295,18 @@ public final class LayersWidget extends LayoutContainer implements HasValue<MapR
 	}
 
 	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<MapReportElement> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
-
-	@Override
-	public MapReportElement getValue() {
-		return mapElement;
-	}
-
-	@Override
-	public void setValue(MapReportElement value) {
-		setValue(value, false);
-	}
-
-	@Override
-	public void setValue(MapReportElement value, boolean fireEvents) {
-		this.mapElement=value;
-		this.baseMapPanel.setValue(value.getBaseMapId());
+	public void bind(MapReportElement model) {
+		this.mapElement = model;
+		this.baseMapPanel.setValue(model.getBaseMapId());
 		updateStore();
 	}
 
+	@Override
+	public MapReportElement getModel() {
+		return mapElement;
+	}
+
+	
 	private void updateStore() {
 		// Save the selecteditem, because removing all items from the store triggers
 		// a selecteditem change
@@ -333,7 +334,7 @@ public final class LayersWidget extends LayoutContainer implements HasValue<MapR
 	public void addLayer(MapLayer layer) {
 		layer.setClustering(new NoClustering());
 		mapElement.getLayers().add(layer);
-		ValueChangeEvent.fire(this, mapElement);
+		events.fireChange();
 		updateStore();
 	}
 	
@@ -366,7 +367,7 @@ public final class LayersWidget extends LayoutContainer implements HasValue<MapR
 				draggedItemIndexDrop--;
 			} 
 			Collections.swap(mapElement.getLayers(), draggedItemIndexStart, draggedItemIndexDrop);
-			ValueChangeEvent.fire(LayersWidget.this, mapElement);
+			events.fireChange();
 		}
 	}
 

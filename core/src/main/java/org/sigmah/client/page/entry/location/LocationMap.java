@@ -1,6 +1,7 @@
 package org.sigmah.client.page.entry.location;
 
 import org.sigmah.client.map.GoogleChartsIconBuilder;
+import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.widget.GoogleMapsWidget;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.report.content.AiLatLng;
@@ -14,6 +15,9 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
+import com.google.gwt.maps.client.MapType;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.control.SmallMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.event.MarkerDragEndHandler;
@@ -32,9 +36,25 @@ public class LocationMap extends GoogleMapsWidget {
 	private Marker newLocationMarker;
 	
 	public LocationMap(LocationSearchPresenter presenter, NewLocationPresenter newLocationPresenter) {
-		super(presenter.getCountry());
+		super();
 		this.searchPresenter = presenter;
 		this.newLocationPresenter = newLocationPresenter;
+		
+        setHeaderVisible(false);
+	}
+
+	@Override
+	protected void configureMap(MapWidget map) {
+		BoundingBoxDTO countryBounds = searchPresenter.getCountry().getBounds();
+		map.addControl(new SmallMapControl());
+        map.setCenter(LatLng.newInstance(
+                countryBounds.getCenterY(),
+                countryBounds.getCenterX()));
+        map.setZoomLevel(6);
+
+        MapType adminMap = MapTypeFactory.createLocalisationMapType(searchPresenter.getCountry());
+        map.addMapType(adminMap);
+        map.setCurrentMapType(adminMap);
 	}
 
 	@Override
