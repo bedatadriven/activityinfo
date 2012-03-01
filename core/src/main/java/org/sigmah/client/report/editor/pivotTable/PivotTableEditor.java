@@ -1,5 +1,8 @@
 package org.sigmah.client.report.editor.pivotTable;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -15,6 +18,7 @@ import org.sigmah.client.report.view.ReportViewBinder;
 import org.sigmah.client.util.date.DateUtilGWTImpl;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.Filter;
+import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.content.PivotContent;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 
@@ -41,7 +45,7 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 	private LayoutContainer center;
 	private PivotGridPanel gridPanel;
 	
-	private PivotTableReportElement model;
+	private PivotTableReportElement model; 
 
 	@Inject
 	public PivotTableEditor(EventBus eventBus, Dispatcher service,
@@ -155,4 +159,11 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 	public Component getWidget() {
 		return this;
 	}
+
+	@Override
+	public List<Format> getExportFormats() {
+		return Arrays.asList(Format.Excel, Format.Word, Format.PDF);
+	}
+	
+	
 }

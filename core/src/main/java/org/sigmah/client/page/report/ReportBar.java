@@ -2,7 +2,9 @@ package org.sigmah.client.page.report;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
+import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.report.resources.ReportResources;
+import org.sigmah.shared.command.RenderElement.Format;
 
 import com.extjs.gxt.ui.client.event.EditorEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -18,7 +20,8 @@ public class ReportBar extends LayoutContainer {
 
 	private ReportTitleWidget titleWidget;
 	private Button saveButton;
-	private ToggleButton dashboardButton;
+	private ToggleButton dashboardButton; 
+	private ExportMenuButton exportButton;
 	
 	public ReportBar() {
 		setStyleName(ReportResources.INSTANCE.style().bar());
@@ -38,7 +41,7 @@ public class ReportBar extends LayoutContainer {
 		Button shareButton = new Button("Share");
 		add(shareButton);
 		
-		Button exportButton = new Button(I18N.CONSTANTS.export(), IconImageBundle.ICONS.pdf());
+		exportButton = new ExportMenuButton();
 		add(exportButton);
 		
 		saveButton = new Button(I18N.CONSTANTS.save(),  IconImageBundle.ICONS.save());
@@ -71,5 +74,10 @@ public class ReportBar extends LayoutContainer {
 	
 	public ToggleButton getDashboardButton() {
 		return dashboardButton;
+	}
+
+	public ExportMenuButton getExportButton() {
+		return exportButton;
+		
 	}
 }

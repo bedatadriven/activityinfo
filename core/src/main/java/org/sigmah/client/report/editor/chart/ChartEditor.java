@@ -1,5 +1,8 @@
 package org.sigmah.client.report.editor.chart;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
@@ -8,6 +11,7 @@ import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.report.view.ChartOFCView;
 import org.sigmah.client.report.view.PivotGridPanel;
 import org.sigmah.client.report.view.ReportViewBinder;
+import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import com.extjs.gxt.ui.client.Style;
@@ -25,7 +29,7 @@ public class ChartEditor extends LayoutContainer implements ReportElementEditor<
 
 	private final EventBus eventBus;
 	private final Dispatcher dispatcher;
-	
+	 
 	private ActionToolBar toolBar;
 
 	private ChartTypeGroup typeGroup;
@@ -131,6 +135,12 @@ public class ChartEditor extends LayoutContainer implements ReportElementEditor<
 	@Override
 	public Component getWidget() {
 		return this;
+	}
+
+
+	@Override
+	public List<Format> getExportFormats() {
+		return Arrays.asList(Format.PowerPoint, Format.Word, Format.PDF, Format.PNG);
 	}
 
 }

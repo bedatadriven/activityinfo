@@ -2,6 +2,7 @@ package org.sigmah.client.page.report;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationCallback;
@@ -11,14 +12,18 @@ import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.SubscribeForm;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
+import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.report.editor.CompositeEditor;
 import org.sigmah.client.page.report.editor.EditorProvider;
 import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.page.report.resources.ReportResources;
 import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.GetReportModel;
+import org.sigmah.shared.command.RenderElement;
+import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.command.UpdateReportModel;
 import org.sigmah.shared.command.UpdateReportSubscription;
+import org.sigmah.shared.command.result.RenderResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.report.model.Report;
 
@@ -36,7 +41,7 @@ import com.google.common.base.Strings;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class ReportDesignPage extends ContentPanel implements Page {
+public class ReportDesignPage extends ContentPanel implements Page, ExportCallback {
 
 	public static final PageId PAGE_ID = new PageId("reportdesign");
 
@@ -51,7 +56,7 @@ public class ReportDesignPage extends ContentPanel implements Page {
 	 * The model being edited on this page
 	 */
 	private Report currentModel;
-	
+	 
 
 	/**
 	 * The editor for the model
@@ -79,6 +84,9 @@ public class ReportDesignPage extends ContentPanel implements Page {
 		reportBarLayout.setSize(35);
 		add(reportBar, reportBarLayout);
 
+		reportBar.getExportButton().setCallback(this);
+
+		
 		reportBar.addTitleEditCompleteListener(new Listener<EditorEvent>() {
 			@Override
 			public void handleEvent(EditorEvent be) {
@@ -164,6 +172,9 @@ public class ReportDesignPage extends ContentPanel implements Page {
 		if(currentEditor != null) {
 			remove(currentEditor.getWidget());
 		}
+		
+		reportBar.getExportButton().setFormats(editor.getExportFormats());
+		
 		add(editor.getWidget(), new BorderLayoutData(LayoutRegion.CENTER));
 		this.currentEditor = editor;
 		layout();
@@ -300,5 +311,10 @@ public class ReportDesignPage extends ContentPanel implements Page {
 				//loadReport(selectedReport.getId());
 			}
 		});
+	}
+
+	@Override
+	public void export(Format format) {
+		dispatcher.execute(new RenderElement(currentEditor.getModel(), format), null, new DownloadCallback(eventBus));
 	}
 }

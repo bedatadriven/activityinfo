@@ -1,9 +1,13 @@
 package org.sigmah.client.page.report.editor;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.report.ReportElementModel;
+import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
 
@@ -168,14 +172,11 @@ public class CompositeEditor extends LayoutContainer implements ReportElementEdi
 		return this;
 	}
 
+	@Override
+	public List<Format> getExportFormats() {
+		return Arrays.asList(Format.Word, Format.PDF);
+	} 
 
-	//
-	//	public void setPreviewHtml(String html, String heading) {
-	//		previewHtml.setHtml(html);
-	//		addToPreviewPanel(previewHtml, heading);
-	//	}
-	//
-	//
 
 
 }

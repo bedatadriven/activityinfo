@@ -1,5 +1,8 @@
 package org.sigmah.client.report.editor.map;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
@@ -11,6 +14,7 @@ import org.sigmah.client.page.common.toolbar.ExportMenuButton;
 import org.sigmah.client.page.common.toolbar.UIActions;
 import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.report.editor.map.layerOptions.LayerOptionsPanel;
+import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.layers.MapLayer;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -34,7 +38,7 @@ public class MapEditor extends ContentPanel implements ActionListener, ReportEle
 
 	// Data mechanics
 	protected final Dispatcher dispatcher;
-
+ 
 	// Contained widgets
 	protected AIMapWidget aiMapWidget;
 	protected ActionToolBar toolbarMapActions;
@@ -177,5 +181,11 @@ public class MapEditor extends ContentPanel implements ActionListener, ReportEle
 	public Component getWidget() {
 		return this;
 	}
+
+	@Override
+	public List<Format> getExportFormats() {
+		return Arrays.asList(Format.PowerPoint, Format.Word, Format.PDF, Format.PNG);
+	}
+
 
 }
