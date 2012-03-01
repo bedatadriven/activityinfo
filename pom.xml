@@ -15,11 +15,42 @@
 		</license>
 	</licenses>
 
+
+	<description>Web-based database platform for program monitoring and reporting for the UN,
+        NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
+	<issueManagement>
+		<system>PivotalTracker</system>
+		<url>https://www.pivotaltracker.com/projects/303613</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://build.bedatadriven.com/job/ActivityInfo/</url>
+	</ciManagement>
+	<inceptionYear>2009</inceptionYear>
+
 	<scm>
 		<connection>scm:git:git@github.com:akbertram/activityinfo.git</connection>
 		<url>scm:git:git@github.com:akbertram/activityinfo.git</url>
 		<developerConnection>scm:git:git@github.com:akbertram/activityinfo.git</developerConnection>
 	</scm>
+
+	<properties>
+		<netbeans.hint.license>gpl3</netbeans.hint.license>
+
+		<!-- convenience to define GWT version in one place -->
+		<gwtVersion>2.3.0</gwtVersion>
+		<rebarVersion>2.2.4-SNAPSHOT</rebarVersion>
+
+		<!-- tell the compiler we can use 1.6 -->
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+
+
+		<!-- Allow the build to continue even if there are test failures -->
+		<maven.test.failure.ignore>true</maven.test.failure.ignore>
+
+	</properties>
+
 
 	<distributionManagement>
 		<repository>
@@ -34,7 +65,110 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>bedatadriven-public</id>
+			<name>Bedatadriven Public Repo</name>
+			<url>http://nexus.bedatadriven.com/content/groups/public</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>http://repo1.maven.org/maven2/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>bedatadriven-public</id>
+			<name>Bedatadriven Public Repo</name>
+			<url>http://nexus.bedatadriven.com/content/groups/public</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>modafocus</id>
+			<name>Sonatype</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+
 	<modules>
-		<module>sigmah</module>
+		<module>core</module>
+		<module>chrome-app</module>
+		<module>server</module>
 	</modules>
+
+	<dependencies>
+
+		<!-- Common libraries -->
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r09</version>
+			<classifier>gwt</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r09</version>
+		</dependency>
+
+		<!-- Logging facades -->
+
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+
+		<!-- Testing utils -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>gwt-maven-plugin</artifactId>
+					<version>2.3.0-1</version>
+					<configuration>
+						<gwtVersion>${gwtVersion}</gwtVersion>
+					</configuration>
+
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
 </project>

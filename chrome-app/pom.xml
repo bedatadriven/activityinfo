@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>activityinfo-chrome-app</artifactId>
+	<name>ActivityInfo Chrome WebApp</name>
+	<packaging>crx</packaging>
+
+	<parent>
+		<groupId>org.activityinfo</groupId>
+		<artifactId>activityinfo-parent</artifactId>
+		<version>2.6.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		<chromeAppVersion>1.0</chromeAppVersion>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.activityinfo</groupId>
+			<artifactId>activityinfo-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- Generate compiled stuff in the folder used for developing mode -->
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>com.google.code</groupId>
+				<artifactId>crx-maven-plugin</artifactId>
+				<version>1.2.0-SNAPSHOT</version>
+				<extensions>true</extensions>
+				<configuration>
+					<excludes>WEB-INF/**,greet/hosted.html</excludes>
+					<pemKey>key.pem</pemKey>
+					<pemCert>cert.pem</pemCert>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<configuration>
+					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<modules>
+						<module>org.activityinfo.chrome.ActivityInfoChromeApp</module>
+					</modules>
+				</configuration>
+				<executions>
+					<execution>
+						<id>gwt-compile</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<hostedWebapp>${webappDirectory}</hostedWebapp>
+							<modules>
+								<module>org.activityinfo.chrome.ActivityInfoChromeApp</module>
+							</modules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Copy static web files before executing gwt:run -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+					<webResources>
+						<resource>
+							<directory>src/main/manifest</directory>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>release-build</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<chromeAppVersion>${project.version}</chromeAppVersion>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>

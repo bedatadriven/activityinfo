@@ -1,0 +1,23 @@
+{
+  "name": "ActivityInfo Offline",
+  "description": "ActivityInfo that allows offline data entry",
+  "version": "${chromeAppVersion}",
+  "icons": { 
+  	"16": "App/desktopicons/16x16.png",
+  	"32": "App/desktopicons/32x32.png",
+  	"48": "App/desktopicons/48x48.png",
+  	"64": "App/desktopicons/64x64.png",
+  	"128": "App/desktopicons/128x128.png"
+
+  	},
+  "app": {
+    "launch": {
+      "local_path": "ActivityInfo.html"
+    }
+  },
+  "permissions": [
+  		"notifications",
+  		"http://*.activityinfo.org/",
+  		"http://*/"
+  ]
+}
