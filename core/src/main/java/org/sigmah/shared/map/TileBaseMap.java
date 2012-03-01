@@ -5,10 +5,6 @@
 
 package org.sigmah.shared.map;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
 
 /**
  * Defines a custom base map (or "background map") that is 
@@ -19,11 +15,6 @@ import javax.persistence.Table;
  * 
  * @author Alex Bertram
  */
-// FIXME: Support upgrading without model change after refactoring BaseMap into 
-// TileBaseMap and other subclases of BaseMap 
-// Same goes for overridden methods
-@Entity(name="BaseMap")
-@Table(name="BaseMap")
 public class TileBaseMap extends BaseMap  {
 
     private String tileUrlPattern = "";
@@ -43,7 +34,6 @@ public class TileBaseMap extends BaseMap  {
      * impose on the number of open connections for a given host.
      * 
      */
-    @Lob
     public String getTileUrlPattern() {
 		return tileUrlPattern;
 	}
@@ -60,7 +50,6 @@ public class TileBaseMap extends BaseMap  {
 				.replace("{z}", Integer.toString(zoom));
 	}
 
-	@Id
 	@Override
 	public String getId() {
 		return id;
@@ -70,7 +59,6 @@ public class TileBaseMap extends BaseMap  {
 		this.id = id;
 	}
 
-	@Lob
 	public String getCopyright() {
 		return copyright;
 	}
