@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.server.database.hibernate.dao.BaseMapDAO;
 import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.User;
@@ -24,7 +23,9 @@ import org.sigmah.server.report.generator.map.Margins;
 import org.sigmah.server.report.generator.map.PiechartLayerGenerator;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.shared.command.Filter;
+import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.map.BaseMap;
@@ -50,15 +51,13 @@ import com.google.inject.Inject;
  */
 public class MapGenerator extends ListGenerator<MapReportElement> {
 
-	private final BaseMapDAO baseMapDAO;
 	private final IndicatorDAO indicatorDAO;
 
     private static final Logger logger = Logger.getLogger(MapGenerator.class);
         
     @Inject
-    public MapGenerator(DispatcherSync dispatcher, BaseMapDAO baseMapDAO, IndicatorDAO indicatorDAO) {
+    public MapGenerator(DispatcherSync dispatcher, IndicatorDAO indicatorDAO) {
         super(dispatcher);
-        this.baseMapDAO = baseMapDAO;
         this.indicatorDAO = indicatorDAO;
     }
 
@@ -124,11 +123,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         } else if(PredefinedBaseMaps.isPredefinedMap(element.getBaseMapId())) {
         	baseMap = PredefinedBaseMaps.forId(element.getBaseMapId());
         } else {
-        	baseMap = baseMapDAO.getBaseMap(element.getBaseMapId());
-            if (baseMap == null) {
-            	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
-    			logger.error("Could not find base map id=" + element.getBaseMapId());
-            }
+        	baseMap = getBaseMap(element.getBaseMapId());
         } 
                 
         if (zoom < baseMap.getMinZoom()) {
@@ -174,4 +169,16 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         element.setContent(content);
 
     }
+
+	private BaseMap getBaseMap(String baseMapId) {
+		BaseMapResult maps = dispatcher.execute(new GetBaseMaps());
+		for(TileBaseMap map : maps.getBaseMaps()) {
+			if(map.getId().equals(baseMapId)) {
+				return map;
+			}
+		}
+		logger.error("Could not find base map id=" +  baseMapId);
+		
+    	return TileBaseMap.createNullMap(baseMapId);
+	}
 }

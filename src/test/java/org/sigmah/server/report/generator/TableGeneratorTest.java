@@ -12,6 +12,7 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -21,10 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.server.report.generator.map.MockBaseMapDAO;
+import org.sigmah.shared.command.GetBaseMaps;
 import org.sigmah.shared.command.GetSites;
+import org.sigmah.shared.command.result.BaseMapResult;
 import org.sigmah.shared.command.result.SiteResult;
 import org.sigmah.shared.dto.SiteDTO;
+import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.BubbleMapMarker;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.TableData;
@@ -123,10 +126,21 @@ public class TableGeneratorTest {
 		expect(dispatcher.execute(isA(GetSites.class)))
 		.andReturn(new SiteResult(dummySite()))
 		.anyTimes();
+	
+        TileBaseMap baseMap1 = new TileBaseMap();
+        baseMap1.setId("map1");
+        baseMap1.setMinZoom(0);
+        baseMap1.setMaxZoom(12);
+        baseMap1.setCopyright("(C)");
+        baseMap1.setName("Grand Canyon");
+        baseMap1.setTileUrlPattern("http://s/test.png");
+		
+		expect(dispatcher.execute(isA(GetBaseMaps.class)))
+			.andReturn(new BaseMapResult(Collections.singletonList(baseMap1)));
 
 		replay(dispatcher);
 
-		TableGenerator gtor = new TableGenerator(dispatcher, new MapGenerator(dispatcher, new MockBaseMapDAO(), new MockIndicatorDAO()));
+		TableGenerator gtor = new TableGenerator(dispatcher, new MapGenerator(dispatcher,  new MockIndicatorDAO()));
 		gtor.generate(user, table, null, null);
 
 		MapContent mapContent = map.getContent();
