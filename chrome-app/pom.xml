@@ -52,7 +52,7 @@
 			<plugin>
 				<groupId>com.google.code</groupId>
 				<artifactId>crx-maven-plugin</artifactId>
-				<version>1.2.0-SNAPSHOT</version>
+				<version>1.1.0</version>
 				<extensions>true</extensions>
 				<configuration>
 					<excludes>WEB-INF/**,greet/hosted.html</excludes>
@@ -111,6 +111,13 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>crx-maven</id>
+			<url>http://crx-maven-plugin.googlecode.com/svn/maven2/</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<profiles>
 		<profile>
