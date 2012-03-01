@@ -91,33 +91,6 @@ public class Cluster {
         return new Point((minX + maxX)/2, (minY + maxY)/2);
     }
 
-	public AiLatLng latLngCentroid() {
-        double latSum=0;
-        double lngSum=0;
-        double count=0;
-
-        for(PointValue pointValue : pointValues) {
-            latSum += pointValue.getSite().getLatitude();
-            lngSum += pointValue.getSite().getLongitude();
-            count++;
-        }
-
-        return new AiLatLng(latSum / count, lngSum / count);
-
-    }
-
-	public Point weightedCentroid() {
-        double weightSum = 0;
-        double x = 0;
-        double y = 0;
-        for(PointValue pointValue : pointValues) {
-            weightSum += pointValue.getValue();
-            x += pointValue.getPx().getX() * pointValue.getValue();
-            y += pointValue.getPx().getY() * pointValue.getValue();
-        }
-
-        return new Point((int)Math.round(x / weightSum), (int)Math.round(y / weightSum));
-    }
 
 	public double getRadius() {
         return radius;
