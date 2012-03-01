@@ -15,6 +15,7 @@ import org.sigmah.server.bootstrap.BootstrapModule;
 import org.sigmah.server.database.ServerDatabaseModule;
 import org.sigmah.server.database.hibernate.dao.HibernateModule;
 import org.sigmah.server.endpoint.content.ContentModule;
+import org.sigmah.server.endpoint.crx.CrxModule;
 import org.sigmah.server.endpoint.export.ExportModule;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.endpoint.jsonrpc.JsonRpcModule;
@@ -73,6 +74,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new ExportModule(),
                 new JsonRpcModule(),
                 new KmlModule(),
+                new CrxModule(),
                 new LocaleModule(),
                 new LoginModule());
 
