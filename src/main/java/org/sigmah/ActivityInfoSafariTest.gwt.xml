@@ -1,0 +1,27 @@
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<!-- This is a drop-in replacement for the ApplicationModule that
+     can be used to quickly test a compilation on Safari/Webkit
+
+     e.g.:  mvn gwt:compile -P safari 
+     
+     -->
+
+<module rename-to="ActivityInfo">
+
+    <inherits name="org.sigmah.ActivityInfo"/>
+
+    <!-- ie6, gecko, gecko1_8, safari or opera -->
+    <set-property name="user.agent" value="safari"/>
+    <set-property name="locale" value="en"/>
+    
+    <extend-property name="log_level" values="TRACE" />
+    <set-property name="log_level" value="TRACE"/>
+    <set-property name="log_DivLogger" value="DISABLED" />
+
+    <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
+
+</module>

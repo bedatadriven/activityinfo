@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<changeSet author="umad" id="003-01">
+        <createTable tableName="siteattachment">
+            <column name="blobid" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="siteid" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filename" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uploadedby" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+	</changeSet>
+	<changeSet author="umad" id="003-02">
+		<modifyDataType tableName="siteattachment" columnName="uploadedby" newDataType="INT"/>
+       	<addColumn tableName="siteattachment">
+			<column name="blobsize" type="INT" />
+		</addColumn>
+		<addColumn tableName="siteattachment">
+			<column name="contenttype" type="VARCHAR(255)" />
+		</addColumn>
+	</changeSet>
+	<changeSet  author="umad" id="003-03">
+				<modifyDataType tableName="siteattachment" columnName="blobsize" newDataType="DOUBLE"/>
+	</changeSet>
+	<changeSet author="umad" id="003-04">
+		<addColumn tableName="reportsubscription">
+			<column name="subscriberemail" type="VARCHAR(255)" />
+		</addColumn>
+	</changeSet>
+	<changeSet author="umad" id="003-05">
+		<dropColumn tableName="reportsubscription" columnName="subscriberemail" />
+	</changeSet>
+</databaseChangeLog>

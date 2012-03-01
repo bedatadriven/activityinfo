@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<dataset>
+
+    <userLogin userId="2"
+               name="Bavon"
+               email="bavon@nrcdrc.org"
+               locale="fr"
+               newUser="1"
+               password="$2a$10$/A6O/S4jDQMCXtP8dicJL.0LJmg9PjqKmrk1dn9F58kitlHQIzyRS"
+               />
+    <!-- "monday" -->
+
+    <userLogin userId="3"
+               name="Stefan"
+               email="stefan@irc.org"
+               locale="fr"
+               newUser="1"
+               password="$2a$10$EtQt1mcO7CXwBfIORjsN5OByNMzc48I2LfUjDa9iKfE2FVxaIBPwq"
+               />
+    <!-- tuesday -->
+
+    <!--  Our expired session here -->
+    <authentication authToken="12345678123456781234567812345678" dateCreated="2008-01-01" dateLastActive="2008-01-02"
+                    UserId="2"/>
+
+</dataset>

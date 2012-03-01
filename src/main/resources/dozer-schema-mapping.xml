@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ~ All Sigmah code is released under the GNU General Public License v3 
+	~ See COPYRIGHT.txt and LICENSE.txt. -->
+
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net beanmapping.xsd ">
+
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.database.hibernate.entity.UserDatabase</class-a>
+		<class-b>org.sigmah.shared.dto.UserDatabaseDTO</class-b>
+
+		<field>
+			<a>owner.name</a>
+			<b>ownerName</b>
+		</field>
+
+		<field>
+			<a>owner.email</a>
+			<b>ownerEmail</b>
+		</field>
+
+	</mapping>
+
+	<mapping wildcard="true">
+
+		<class-a>org.sigmah.server.database.hibernate.entity.Activity</class-a>
+		<class-b>org.sigmah.shared.dto.ActivityDTO</class-b>
+
+		<field-exclude>
+			<a>database</a>
+			<b>database</b>
+		</field-exclude>
+
+		<field>
+			<a>locationType.id</a>
+			<b>locationTypeId</b>
+		</field>
+
+	</mapping>
+
+
+	<mapping wildcard="true">
+
+		<class-a>org.sigmah.server.database.hibernate.entity.AttributeGroup</class-a>
+		<class-b>org.sigmah.shared.dto.AttributeGroupDTO</class-b>
+
+	</mapping>
+
+	<mapping wildcard="true">
+
+		<class-a>org.sigmah.server.database.hibernate.entity.Attribute</class-a>
+		<class-b>org.sigmah.shared.dto.AttributeDTO</class-b>
+
+	</mapping>
+	
+		<mapping wildcard="true">
+
+		<class-a>org.sigmah.server.database.hibernate.entity.AdminLevel</class-a>
+		<class-b>org.sigmah.shared.dto.AdminLevelDTO</class-b>
+		
+		<field>
+			<a>country.id</a>
+			<b>countryId</b>
+		</field>
+
+	</mapping>
+
+
+	<mapping wildcard="true">
+
+		<class-a>org.sigmah.server.database.hibernate.entity.UserPermission</class-a>
+		<class-b>org.sigmah.shared.dto.UserPermissionDTO</class-b>
+
+		<field>
+			<a>user.name</a>
+			<b>name</b>
+		</field>
+
+		<field>
+			<a>user.firstName</a>
+			<b>firstName</b>
+		</field>
+
+		<field>
+			<a>user.email</a>
+			<b>email</b>
+		</field>
+	</mapping>
+
+	<mapping wildcard="true">
+
+		<class-a>org.sigmah.server.database.hibernate.entity.Indicator</class-a>
+		<class-b>org.sigmah.shared.dto.IndicatorDTO</class-b>
+
+		<field type="one-way">
+			<a>id</a>
+			<b>id</b>
+		</field>
+
+	</mapping>
+
+</mappings>

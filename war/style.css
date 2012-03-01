@@ -1,0 +1,190 @@
+/*
+ * All Sigmah code is released under the GNU General Public License v3
+ * See COPYRIGHT.txt and LICENSE.txt.
+ */
+
+/* ---------------------- YUI supplement ---------------------- */
+#doc,#doc1,#doc2,#doc3,#doc4{background-color: #fff;border-left: dotted 1px #E5E5E5;border-right: dotted 1px #E5E5E5;}
+#bd{padding: 20px 10px;}
+#ft{padding: 20px 10px 10px 10px;}
+/* ---------------------- END YUI supplement ---------------------- */
+
+/* ---------------------- HTML tag styles ---------------------- */
+body{font:13px/1.22 "trebuchet MS", Verdana, Arial, Helvetica, sans-serif, sans-serif;*font-size:small;*font:x-small;color:#696969;line-height:131%;background-color: #fff;}/* 13pt */
+h1{font-family:font:Georgia, "Times New Roman", Times, serif;font-size:174%;;margin-top:10px;margin-bottom:10px;}/* 23pt */
+h2{font-family:font:Georgia, "Times New Roman", Times, serif;font-size:138.5%;margin-bottom:.4em;color:#689D4B;}/* 18pt */
+h3{font-family:Georgia, "Times New Roman", Times, serif;font-size:138.5%;color:#143D55;margin-top:10px;margin-bottom:10px;}/* 18pt */
+h4{font-weight:bold;}/* 13pt */
+h5{font-size:77%;}/* 10pt */
+p,fieldset,table{margin-bottom:1em;}
+a{color:#2E7FAD;}
+a:hover{color:#A0B842;}
+em {font-style:italic;}
+strong,b{font-weight:bold;}
+abbr,acronym {border-bottom:1px dotted #555;cursor:help;} 
+blockquote{margin:1em;}
+ol,ul{margin-left:2em;margin-bottom:2em;}
+ol li {list-style: decimal outside;}
+ul li {list-style: disc outside;margin-bottom:.7em;}
+dl{margin:10px;}
+dt{margin-top:.5em;font-weight:bold;padding:5px 2px;}
+dd{font-size:92%;margin:0;padding:0 5px;}
+table {font-size:inherit;font:100%;}
+pre{background-color:#EFF7FF;border:1px dashed #333333;font-family:"Courier New",Courier,mono;font-size:12px;margin-bottom:5px;margin-right:10px;margin-top:5px;overflow:auto;padding:5px;width:575px; min-height:35px;}
+code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:99%;}
+label{margin: 7px 0;display: block;float:left;}
+fieldset{border:1px solid #D9D9D9; padding:10px 15px; margin:0px 10px 0px 10px;}
+legend{padding:5px 20px; margin:10px 0px;font-weight:bold;border:1px solid #D9D9D9; background:#143D55;color:#FFF;}
+/* ---------------------- END HTML tag styles ---------------------- */
+
+.clear{clear:both;height:1px;line-height:0;font-size:0;}
+.hidden{position:absolute;left:0px;top:-500px;width:1px;height:1px;overflow:hidden;}
+.logo {padding: 10px 25px;}
+.rss{float:right;padding:5px;}
+.search{ width:250px;color:#fff;background:#143D55;height:33px;padding: 3px 20px;text-transform:uppercase;font-weight:bold;float: right;}
+.search input{ margin-left: 5px; margin-top: 3px; } 
+a.button, a.button:visited {background:transparent url(../images/template/btn_off.gif) repeat scroll 50%;border:1px solid #478b38;color:#FFFFFF;padding:2px 8px;position:relative;text-decoration:none;}
+a.button:hover {background:transparent url(../images/template/btn_on.gif) repeat scroll 50%;border:1px solid #d27d00;color:#FFFFFF;}
+
+/* ---------------------- menu nav ---------------------- */
+
+/* ---------------------- END menu nav ---------------------- */
+
+/* ---------------------- Side Menu ---------------------- */
+#subnav ul{margin:0;padding:0px;padding-bottom:20px;}
+#subnav ul li{list-style:none;margin:0;padding:0px;}
+#subnav ul li a{display:block;padding:7px 10px;text-decoration:none;border-bottom: 1px #ddd solid; }
+#subnav ul li a:hover{background-color:#eee;border-bottom: 1px solid #eee;color:#2E7FAD;}
+#subnav ul li.active a {color:#143D55;border-bottom: 1px #ddd solid; font-weight: bold;}
+#subnav ul li.active ul li a {border-bottom:1px none;color:#2E7FAD;font-weight: normal;padding-left:27px;font-size:12px;padding-top:4px;padding-bottom:4px;}
+#subnav ul li.active ul li a:hover {background-color:#eee;color:#2E7FAD;}
+#subnav ul li.active ul {padding-bottom: 5px;border-bottom: 1px #ddd solid; }
+#subnav ul li.active ul li.active a {border-bottom:1px none;color:#143D55;font-weight: bold;}
+#subnav ul li.active ul li.active  a:hover {background-color:#eee;border-bottom:1px none;}
+/* ---------------------- End Side Menu ---------------------- */
+
+/* ------------------------ Crumb trail ------------------------ */
+#crumbtrail {font-size:85%;background-image:url(../images/template/shaded_Bg.png);border:1px solid #ccc;height:17px;margin-bottom:1em;}
+#crumbtrail ul{margin:0;}
+#crumbtrail ul li{display:block;float:left;margin-left:10px;}
+#crumbtrail ul li a{display:block;text-decoration:none;padding-right:15px;background:url(../images/template/icon_arrow.png) no-repeat right;}
+#crumbtrail ul li a:hover{color:#2E7FAD;text-decoration:underline;}
+/* ----------------------- End crumb trail --------------------- */
+
+/* ---------------------- site tools ---------------------- */
+#sitetools {float:right;}
+#sitetools ul{margin:0;}
+#sitetools ul li{padding:0px 10px 0px 10px;display:block;float:left;margin-top:10px;border:0px solid red;;height: 20px;}
+#sitetools ul li a{text-decoration:none;}
+#sitetools ul li a:hover{color:#2E7FAD;text-decoration:underline;}
+/* ---------------------- END site tools ---------------------- */
+
+/* ---------------------- shaded box ---------------------- */
+.shadebox{background-image:url(../images/template/shaded_Bg.png);border:1px solid #E5E5E5;background-repeat:repeat-x;padding:5px 10px;margin-bottom:1em;}
+/* ---------------------- END shaded box ---------------------- */
+
+/* ---------------------- image box ---------------------- */
+.imageboxHome{background-image:url(../images/template/sample.jpg);background-repeat:no-repeat;height:225px;}
+.imageboxBody{background-image:url(../images/template/sample.jpg);background-repeat:no-repeat;background-position:center;height:200px;border:1px solid #E5E5E5;margin-bottom: 1em;}
+/* ---------------------- END image box ---------------------- */
+
+/* ---------------------- Footer ---------------------- */
+#footer-address{height: 20px;padding-left:10px;padding-right:10px; }
+#footer-address a{text-decoration:none;}
+.fat-footer-column{float:left;font-weight: bold;width: 150px;border: 0px red solid;}
+.fat-footer-column ul{margin-left:5px;}
+.fat-footer-column li{height: 20px;font-weight: normal;text-decoration: none;border: 0px red solid;margin:0px;display: block;}
+.fat-footer-column a{text-decoration: none;}
+#fat-footer{font-size: 11px;clear: both;height: 125px;font-weight: bold;margin:10px 10px 10px 20px;border-bottom: 1px #ddd solid;}
+/* ---------------------- End Footer ---------------------- */
+
+
+
+
+/* ============================================================= */
+/* ========================= WIDGETS =========================== */
+/* ============================================================= */
+
+/* ---------------------- Title Generator ---------------------- */
+#dotCMS-titleGenerator{clear:right;margin:5px 0;}
+/* -------------------- End Title Generator -------------------- */
+
+/* -------------------------- Toolbar -------------------------- */
+#dotCMS-toolbar li.dotCMS-btn a{display:block;height:20px;width:35px;margin:0 1px;background-image:url(/global/images/widgets/buttonBG.gif);background-repeat:no-repeat;background-position:0 -20px;}
+#dotCMS-toolbar li.dotCMS-btn a:hover{background-position:0 0;}
+#dotCMS-toolbar{border-top:1px solid #ccc;border-bottom:1px solid #ccc;}
+#dotCMS-toolbar img{border:none;}
+#dotCMS-toolbar ul{margin:0;padding:0;float:right;margin:3px;}
+#dotCMS-toolbar ul li{display:block;float:left;list-style:none;margin:0;padding:0;}
+#dotCMS-toolbar ul li a{display:block;text-decoration:none;}
+#dotCMS-toolbar ul li a:hover{background-color:#eee;color:#2E7FAD;}
+/* -------------------------- End Toolbar -------------------------- */
+
+/* ----------------------- Social Bookmarks ----------------------- */
+#socialBookmarks{background-color:#f1f1f1;border:1px solid #ccc;width:150px;position:absolute;right:25px;z-index:100;}
+#dotCMS-socialBookmarks img{border:none;}
+#socialBookmarks ul li{list-style:none;float:none;}
+#socialBookmarks ul li a{text-decoration:none;display:block;}
+#socialBookmarks ul li a:hover{background-color:#eee;}
+/* --------------------- End Social Bookmarks --------------------- */
+
+/* ----------------------- Comment Form ----------------------- */
+#commentForm label{margin: 0px;width:50px;padding:5px;clear:left;}
+#commentForm input{margin: 0px;clear:left;}
+#commentForm .CheckBox{width:300px;}
+#comments b{color:#2E7FAD;}
+#comments h5{color:#A0B842;font-size:138.5%;padding: 5px 0;border-bottom:1px dashed #666;margin-bottom:5px;}
+.output{background-color:#FFFFFF; border:solid 1px; padding:5px;margin-top:1em; width:575px;}
+/* ----------------------- End Comment Form ----------------------- */
+
+/* ----------------------- User Rating ----------------------- */
+#dotCMS-userRating{width:260px;height:24px;float:right;overflow:hidden;border:1px solid #E5E5E5;background-color:#fff;padding: 8px 0 0 8px;}
+/* ----------------------- End User Rating ----------------------- */
+
+/* ----------------------- Photo Gallery ----------------------- */
+.photoGalleryImage{float:left;padding: 20px;width:200px;text-align:center;}
+/* ----------------------- End Photo Gallery ----------------------- */
+
+
+/* ----------------------- ActivityInfo.org Customization ---------------- */
+#hd {
+background:url(../images/template/header950.gif) 0 0 no-repeat;
+height:95px;
+width:950px;
+}
+body { margin-top: 0px; }
+
+#menunav {
+height:35px;
+line-height:35px;
+}
+
+#menunav-links {
+float:left;
+width:600px;
+font-size:16px;
+padding:0 0 0 20px;
+font-weight:bold;
+}
+
+#menunav-links a{
+text-decoration:none;
+color:#000000;
+padding:0 6px;
+}
+
+#menunav-lang {
+float:right;
+width:135px;
+font-size:14px;
+}
+
+#menunav-lang a{
+text-decoration:none;
+color:#000000;
+}
+#menunav a:hover {
+text-decoration:underline;
+}
+#menunav ul{margin:0;}
+#menunav ul li{display:block;float:left;}

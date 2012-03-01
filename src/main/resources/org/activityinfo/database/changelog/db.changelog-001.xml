@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="001" author="alex">
+		<dropColumn tableName="indicator" columnName="collectIntervention" />
+		<dropColumn tableName="indicator" columnName="collectMonitoring" />
+		<dropColumn tableName="indicator" columnName="sector" />
+		<dropColumn tableName="indicator" columnName="id_quality_criterion" />
+
+		<dropColumn tableName="partner" columnName="planned_budget" />
+		<dropColumn tableName="partner" columnName="spend_budget" />
+		<dropColumn tableName="partner" columnName="received_budget" />
+		<dropColumn tableName="partner" columnName="calendarId" />
+		<dropColumn tableName="partner" columnName="office_country_id" />
+		<dropColumn tableName="partner" columnName="parent_PartnerId" />
+	</changeSet>
+
+	<changeSet id="001-2" author="alex">
+		<dropNotNullConstraint tableName="LockedPeriod"
+			columnName="UserDatabaseId" columnDataType="int" />
+		<comment>
+			Not sure why this was incorrectly marked as not-null, but it should be nullable.
+		</comment>
+	</changeSet>
+
+
+	<changeSet id="001-3" author="alex">
+		<dropColumn tableName="ReportingPeriod" columnName="monitoring" />
+		<comment>
+			Not used.
+		</comment>
+	</changeSet>
+
+	<changeSet id="001-4" author="alex">
+		<dropColumn tableName="Activity" columnName="IsAssessment" />
+		<dropColumn tableName="Site" columnName="AssessmentSiteId" />
+		<dropColumn tableName="Site" columnName="Status" />
+		<dropColumn tableName="Site" columnName="target" />
+	</changeSet>
+
+</databaseChangeLog> 

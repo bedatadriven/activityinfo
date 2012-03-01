@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<report frequency="adhoc">
+
+   <elements>
+       <pivotTable>
+           <rows>
+                <dimension type="indicator"/>
+                <dimension type="admin" levelId="91"/>
+           </rows>
+       </pivotTable>
+   </elements>
+</report>
+

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		xmlns:rpt="http://www.activityinfo.org/report-def" 
+		targetNamespace="http://www.activityinfo.org/report-def" xmlns:Q1="http://www.activityinfo.org/report-def.xsd">
+
+
+    <complexType name="reportType">
+    	<sequence>
+    		<element name="title" type="string"></element>
+            <element name="filename" type="string"></element>
+            <element name="parameters" type="rpt:parametersType"
+    			maxOccurs="1" minOccurs="0" />
+            <element name="filter" type="rpt:filterType" maxOccurs="1"
+            	minOccurs="0" />
+            <element name="body" type="rpt:bodyType" maxOccurs="1"
+    			minOccurs="1" />
+
+    	</sequence>
+    </complexType>
+    
+    
+    <complexType name="parametersType">
+    	<sequence>
+    		<element name="parameter">
+    			<complexType>
+    				<attribute name="type"
+    					type="rpt:parameterDataType">
+    				</attribute>
+    				<attribute name="date-unit"
+    					type="rpt:dateUnitType">
+    				</attribute>
+    				<attribute name="name" type="string"></attribute>
+    			</complexType></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="bodyType">
+    	<sequence>
+    		<element name="title" type="string" maxOccurs="1" minOccurs="1"></element>
+            <element name="sheetTitle" type="string" maxOccurs="1" minOccurs="0"></element>
+            <choice maxOccurs="unbounded" minOccurs="1">
+                <element name="chart" type="rpt:chartType" />
+    			<element name="pivotTable" type="rpt:pivotTableType" />
+    			<element name="table" type="rpt:tableType" />
+
+    		</choice>
+
+    	</sequence>
+    </complexType>
+
+	
+    <complexType name="chartType">
+    	<complexContent>
+    		<extension base="rpt:bodyElementType">
+    			<sequence>
+    				<element name="dimensions" maxOccurs="1"
+    					minOccurs="1">
+    					<complexType>
+    						<sequence>
+    							<element name="category"
+    								type="rpt:dimensionCollectionType">
+    							</element>
+    							<element name="legend" type="string">
+    							</element>
+    						</sequence>
+    					</complexType>
+    				</element>
+    				<element name="values"
+    					type="string">
+    				</element>
+    			</sequence>
+    			
+    			<attribute name="type" type="rpt:chartTypeType"></attribute>
+
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="pivotTableType"></complexType>
+
+    <complexType name="tableType">
+    	<complexContent>
+    		<extension base="rpt:bodyElementType">
+    			<sequence>
+    				<element name="columns" maxOccurs="1"
+    					minOccurs="1">
+    					<complexType>
+    						<sequence>
+    							<element name="column"
+    								type="rpt:columnTreeType">
+    							</element>
+    						</sequence>
+    					</complexType>
+    				</element>
+
+    				<element name="sortBy"
+    					type="rpt:orderedColumnCollectionType" maxOccurs="1"
+    					minOccurs="0">
+    				</element>
+    				<element name="groupBy" type="rpt:orderedColumnCollectionType" maxOccurs="1"
+    					minOccurs="0">
+    				</element>
+    				<element name="panelBy" type="rpt:orderedColumnCollectionType" maxOccurs="1"
+    					minOccurs="0">
+    				</element>
+
+    			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+	
+
+
+    <complexType name="narrativeType">
+    	<complexContent>
+    		<extension base="rpt:bodyElementType"></extension>
+    	</complexContent>
+    </complexType>
+
+    <simpleType name="dateUnitType">
+    	<restriction base="string">
+    		<enumeration value="day"></enumeration>
+    		<enumeration value="month"></enumeration>
+    		<enumeration value="year"></enumeration>
+    		<enumeration value="quarter"></enumeration>
+    		<enumeration value="week"></enumeration>
+    	</restriction>
+    </simpleType>
+    
+    <complexType name="dateRangeType">
+    	<attribute use="optional" name="min" type="string"></attribute>
+    	<attribute name="max" type="string" use="optional"></attribute>
+    	<attribute name="date-unit" type="rpt:dateUnitType" use="optional"></attribute>
+    	<attribute name="last" type="int" use="optional"></attribute>
+    </complexType>
+
+
+    <complexType name="bodyElementType">
+    	<sequence>
+    		<element name="title" type="string"></element>
+            <element name="sheetTitle" type="string"></element>
+            <element name="filter" type="string"></element>
+    	</sequence>
+    </complexType>
+
+
+    <complexType name="dimensionCollectionType">
+    	<sequence>
+    		<element name="dimension" type="rpt:dimensionType"/>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="dimensionType">
+    	<attribute name="type">
+    		<simpleType>
+    			<restriction base="string">
+    				<enumeration value="partner"></enumeration>
+    				<enumeration value="date1"></enumeration>
+    				<enumeration value="date2"></enumeration>
+    			   	<enumeration value="location"></enumeration>
+    		  		<enumeration value="location2"></enumeration>
+    		  		<enumeration value="admin"></enumeration>
+    		  		<enumeration value="indicator"/>
+    		 		<enumeration value="admin"/>
+    		 		<enumeration value="attribute"/>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+ 
+    	<attribute name="level" type="int"/>
+    	<attribute name="id" type="int"/>    
+  
+    </complexType>
+
+
+    <simpleType name="chartTypeType">
+    	<restriction base="string"></restriction>
+    </simpleType>
+
+
+
+    <element name="report" type="rpt:reportType"></element>
+
+    <simpleType name="parameterDataType">
+    	<restriction base="string">
+    		<enumeration value="date"></enumeration>
+    		<enumeration value="activity"></enumeration>
+    		<enumeration value="database"></enumeration>
+    		<enumeration value="indicator"></enumeration>
+    		<enumeration value="admin-entity"></enumeration>
+    		<enumeration value="admin-level"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="parameterizedValueType">
+    	<attribute name="literalValue" type="string"></attribute>
+    	<attribute name="parameterRef" type="string"></attribute>
+    </complexType>
+
+    <complexType name="filterType">
+    	<sequence>
+    		<element name="dimension">
+    			<complexType>
+    				<sequence>
+    					<element name="include" maxOccurs="unbounded"
+    						minOccurs="0">
+    						<complexType>
+    							<attribute name="id" type="int">
+    							</attribute>
+    						</complexType>
+    					</element>
+    				</sequence>
+    				<attribute name="type"
+    					type="rpt:dimensionTypeType">
+    				</attribute>
+
+    			</complexType>
+    		</element>
+    		<element name="dateRange" type="rpt:dateRangeType"></element>
+    	</sequence>
+    </complexType>
+
+    <simpleType name="dimensionTypeType">
+    	<restriction base="string">
+    		<enumeration value="database"></enumeration>
+    		<enumeration value="indicator"></enumeration>
+    		<enumeration value="admin"></enumeration>
+    		<enumeration value="activity"></enumeration>
+    		<enumeration value="partner"></enumeration>
+    		<enumeration value="status"></enumeration>
+    		<enumeration value="date"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="columnType">
+    	<attribute name="source" type="rpt:columnSourceType"></attribute>
+    </complexType>
+
+    <simpleType name="columnSourceType">
+    	<restriction base="string">
+    		<enumeration value="date1"></enumeration>
+    		<enumeration value="date2"></enumeration>
+    		<enumeration value="location.name"></enumeration>
+    		<enumeration value="location.axe"></enumeration>
+    		<enumeration value="location.x"></enumeration>
+    		<enumeration value="location.y"></enumeration>
+    		<enumeration value="admin"></enumeration>
+    		<enumeration value="partner"></enumeration>
+    		<enumeration value="status"></enumeration>
+    		<enumeration value="indicator"></enumeration>
+    		<enumeration value="attribute"></enumeration>
+    		<enumeration value="attributeGroup"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="columnTreeType">
+    	<complexContent>
+    		<extension base="rpt:columnType">
+    			<sequence>
+    				<element name="column" type="rpt:columnTreeType" maxOccurs="1" minOccurs="0"></element>
+    			</sequence>
+
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+
+    <complexType name="orderedColumnCollectionType">
+    	<sequence>
+    		<element name="column" type="rpt:orderedColumnType"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="orderedColumnType">
+    	<complexContent>
+    		<extension base="rpt:columnType">
+    			<attribute name="order" type="rpt:orderType"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <simpleType name="orderType">
+    	<restriction base="string">
+    		<enumeration value="ascending"></enumeration>
+    		<enumeration value="descending"></enumeration>
+    	</restriction>
+    </simpleType>
+</schema>

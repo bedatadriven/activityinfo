@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<report frequency="adhoc">
+
+    <filter>
+        <restriction dimension="indicator">
+            <category>21</category>
+        </restriction>
+        <dateRange min="2008-12-01" max="2009-05-01"/>
+    </filter>
+</report>
+

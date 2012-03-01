@@ -1,0 +1,33 @@
+<report frequency="Monthly" day="25">
+<title>Phase one apple report</title>
+<description>Apples come in different shapes, colors and taste</description>
+
+<filter>
+<restriction dimension="database">
+<category>15</category>
+</restriction>
+<dateRange min="2009-01-01"/>
+</filter>
+
+<elements>
+
+<pivotTable>	
+<title>Apples, bananas and oranges</title>
+
+<filter>
+<dateRange min="2009-01-01"/>
+</filter>
+
+<rows>
+<dimension type="activitycategory"/>
+<dimension type="activity"/>
+<dimension type="indicator"/> 
+</rows>
+<columns>
+<dimension type="date" dateUnit="Month"/>
+</columns>
+</pivotTable>
+
+</elements>
+
+</report>

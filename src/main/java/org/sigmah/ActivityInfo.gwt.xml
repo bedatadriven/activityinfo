@@ -1,0 +1,12 @@
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<module rename-to="ActivityInfo">
+
+	<inherits name='org.sigmah.ActivityInfoCore'/>
+	
+	<inherits name="com.bedatadriven.rebar.appcache.AppCacheLinker"/>
+	
+</module>

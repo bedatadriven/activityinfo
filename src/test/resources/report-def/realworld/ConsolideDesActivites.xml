@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report frequency="Adhoc">
+  <filter>
+    <restriction dimension="database">
+      <!--PEAR-->
+      <category>2</category>
+      <!--RRM-->
+      <category>1</category>
+      <!--Educ-->
+      <category>27</category>
+      <!--Pear+-->
+      <category>15</category>
+    </restriction>
+    <dateRange min="2010-01-01" />
+  </filter>
+  <title>ACTIVITY INFO - Education - Rapport consolide des activites</title>
+  <description>Rapport d'activites extrait de Activity Info</description>
+  <elements>
+    <pivotTable>
+      <filter>
+        <restriction dimension="activity">
+          <category>25</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>26</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>6</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>15</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>86</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>90</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>91</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>92</category>
+        </restriction>
+      </filter>
+      <title>Synthese des interventions en Education</title>
+      <sheetTitle>Activites CLuster Education</sheetTitle>
+      <rows>
+        <dimension type="database"></dimension>
+        <dimension type="activity"></dimension>
+        <dimension type="indicator"></dimension>
+      </rows>
+      <!--<columns><dimension type="admin" levelId="3"></dimension>/*<dimension type="partner"></dimension>*/</columns>-->
+    </pivotTable>
+    <pivotTable>
+      <filter>
+        <restriction dimension="activity">
+          <category>25</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>26</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>6</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>15</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>86</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>90</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>91</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>92</category>
+        </restriction>
+      </filter>
+      <title>Synthese des interventions en Education par Province/territoire</title>
+      <sheetTitle>Activites Cluster Education</sheetTitle>
+      <rows>
+        <dimension type="database"></dimension>
+        <dimension type="activity"></dimension>
+        <dimension type="indicator"></dimension>
+      </rows>
+      <columns>
+        <dimension type="admin" levelId="1"></dimension>
+        <dimension type="admin" levelId="3"></dimension>
+        <!--<dimension type="partner"></dimension>-->
+      </columns>
+    </pivotTable>
+    <table>
+      <title>Education: Construction et Rehabilitation Ecoles</title>
+      <filter>
+        <restriction dimension="activity">
+          <category>90</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>15</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>26</category>
+        </restriction>
+      </filter>
+      <columns>
+        <!--frozen="4"-->
+        <column label="Carte" source="map" />
+        <column label="Periode">
+          <column label="Debut" source="site.date1" />
+          <column label="Fin" source="site.date2" />
+        </column>
+        <column label="Partenaire" source="partner.name"></column>
+        <column label="Territoire" source="admin" sourceId="3"></column>
+        <column label="Site" source="location.name"></column>
+        <column label="Classes rehabilites">
+          <column label="EP" source="indicator" sourceId="341"></column>
+          <column label="ECE" source="indicator" sourceId="338"></column>
+          <column label="CRS" source="indicator" sourceId="342"></column>
+          <column label="Informel" source="indicator" sourceId="343"></column>
+        </column>
+        <column label="Classes Construites">
+          <column label="ECE" source="indicator" sourceId="312"></column>
+          <column label="CRS" source="indicator" sourceId="314"></column>
+          <column label="Informel" source="indicator" sourceId="315"></column>
+        </column>
+        <column label="Classes EP Construites">
+          <column label="" source="indicator" sourceId="313"></column>
+          <column label="" source="indicator" sourceId="42"></column>
+          <column label="" source="indicator" sourceId="54"></column>
+        </column>
+        <column label="Latrines Constr.">
+          <column label="" source="indicator" sourceId="319"></column>
+          <column label="" source="indicator" sourceId="44"></column>
+          <column label="" source="indicator" sourceId="56"></column>
+        </column>
+        <column label="Latrines Rehab." source="indicator" sourceId="344"></column>
+        <column label="Points Eau">
+          <column label="" source="indicator" sourceId="326"></column>
+          <column label="" source="indicator" sourceId="45"></column>
+        </column>
+        <column label="Nb. Eleves">
+          <column label="" source="indicator" sourceId="563"></column>
+          <column label="" source="indicator" sourceId="47"></column>
+          <column label="" source="indicator" sourceId="59"></column>
+        </column>
+        <column label="Commentaire" source="site.comments" />
+      </columns>
+      <map>
+        <tileBaseMap>zs.gray.cd</tileBaseMap>
+        <layers>
+          <bubbles>
+            <arabicNumberSequence/>
+            <minRadius>8</minRadius>
+            <maxRadius>14</maxRadius>
+            <scaling>Graduated</scaling>
+          </bubbles>
+        </layers>
+      </map>
+    </table>
+    <table>
+      <title>Education: Distribution de materiel et equipements scolaires</title>
+      <filter>
+        <restriction dimension="activity">
+          <category>27</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>25</category>
+        </restriction>
+        <restriction dimension="activity">
+          <category>6</category>
+        </restriction>
+      </filter>
+      <columns>
+        <!--frozen="4"-->
+        <column label="Carte" source="map" />
+        <column label="Periode">
+          <column label="Debut" source="site.date1" />
+          <column label="Fin" source="site.date2" />
+        </column>
+        <column label="Partenaire" source="partner.name"></column>
+        <column label="Territoire" source="admin" sourceId="3" />
+        <column label="Site" source="location.name"></column>
+        <column label="Kits Scolaires">
+          <column label="" source="indicator" sourceId="341"></column>
+          <column label="" source="indicator" sourceId="49"></column>
+          <column label="" source="indicator" sourceId="51"></column>
+        </column>
+        <column label="Kits Enseignants">
+          <column label="" source="indicator" sourceId="331"></column>
+          <column label="" source="indicator" sourceId="61"></column>
+          <column label="" source="indicator" sourceId="52"></column>
+        </column>
+        <column label="Kits Didactiques">
+          <column label="" source="indicator" sourceId="335"></column>
+          <column label="" source="indicator" sourceId="62"></column>
+          <column label="" source="indicator" sourceId="67"></column>
+        </column>
+        <column label="Kits Recreatifs">
+          <column label="" source="indicator" sourceId="334"></column>
+          <column label="" source="indicator" sourceId="63"></column>
+          <column label="" source="indicator" sourceId="53"></column>
+        </column>
+        <column label="Beneficiaires">
+          <column label="Eleves G" source="indicator" sourceId="318"></column>
+          <column label="Eleves F" source="indicator" sourceId="317"></column>
+        </column>
+        <column label="Tot.Eleves">
+          <column label="" source="indicator" sourceId="20"></column>
+          <column label="" source="indicator" sourceId="50"></column>
+        </column>
+        <column label="Enseignants">
+          <column label="F" source="indicator" sourceId="332"></column>
+          <column label="H" source="indicator" sourceId="333"></column>
+        </column>
+      </columns>
+      <map>
+        <tileBaseMap>zs.gray.cd</tileBaseMap>
+        <layers>
+          <bubbles>
+            <arabicNumberSequence/>
+            <minRadius>8</minRadius>
+            <maxRadius>14</maxRadius>
+            <scaling>Graduated</scaling>
+          </bubbles>
+        </layers>
+      </map>
+    </table>
+    <table>
+      <title>Education: Formations</title>
+      <filter>
+        <restriction dimension="activity">
+          <category>86</category>
+        </restriction>
+      </filter>
+      <columns>
+        <!--frozen="4"-->
+        <column label="Carte" source="map" />
+        <column label="Periode">
+          <column label="Debut" source="site.date1" />
+          <column label="Fin" source="site.date2" />
+        </column>
+        <column label="Partenaire" source="partner.name"></column>
+        <column label="Territoire" source="admin" sourceId="3" />
+        <column label="Site" source="location.name"></column>
+        <column label="Formation du personnel Education et des Parents Eleves">
+          <column label="Enseignants" source="indicator" sourceId="296"></column>
+          <column label="Directeurs" source="indicator" sourceId="303"></column>
+          <column label="Inspecteurs" source="indicator" sourceId="327"></column>
+          <column label="Membres COPA" source="indicator" sourceId="309"></column>
+          <column label="Membres CAPE" source="indicator" sourceId="446"></column>
+        </column>
+        <column label="Formation des Enfants et Adolescents">
+          <column label="EP" source="indicator" sourceId="306"></column>
+          <column label="ECE" source="indicator" sourceId="449"></column>
+          <column label="CRS" source="indicator" sourceId="452"></column>
+          <column label="Membres COPA" source="indicator" sourceId="1040"></column>
+          <column label="Membres CAPE" source="indicator" sourceId="446"></column>
+        </column>
+        <column label="Commentaire" source="site.comments" />
+      </columns>
+      <map>
+        <tileBaseMap>zs.gray.cd</tileBaseMap>
+        <layers>
+          <bubbles>
+            <arabicNumberSequence/>
+            <minRadius>8</minRadius>
+            <maxRadius>14</maxRadius>
+            <scaling>Graduated</scaling>
+          </bubbles>
+        </layers>
+      </map>
+    </table>
+  </elements>
+</report>

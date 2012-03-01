@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dozer.sourceforge.net beanmapping.xsd ">
+
+    <!-- This mapping is for the GetCountries command, it maps only the id and
+         name of the Country object, leaving other fields blanks -->
+    <mapping wildcard="false" map-id="countryNameOnly">
+        <class-a>org.sigmah.server.database.hibernate.entity.Country</class-a>
+        <class-b>org.sigmah.shared.dto.CountryDTO</class-b>
+        <field>
+            <a>id</a>
+            <b>id</b>
+        </field>
+        <field>
+            <a>name</a>
+            <b>name</b>
+        </field>
+        <!-- Adds the ISO code to this mapping to display countries full name -->
+        <field>
+            <a>codeISO</a>
+            <b>codeISO</b>
+        </field>
+    </mapping>
+    
+	<mapping wildcard="true">
+		
+		<class-a>org.sigmah.server.database.hibernate.entity.AdminLevel</class-a>
+		<class-b>org.sigmah.shared.dto.AdminLevelDTO</class-b>
+	
+		<field>
+			<a>parent.id</a>
+			<b>parentLevelId</b>
+		</field>
+	</mapping>
+
+	<mapping wildcard="true">
+	
+		<class-a>org.sigmah.server.database.hibernate.entity.AdminEntity</class-a>
+		<class-b>org.sigmah.shared.dto.AdminEntityDTO</class-b>
+		
+		<field>
+			<a>level.id</a>
+			<b>levelId</b>
+		</field>
+		
+		<field>
+			<a>parent.id</a>
+			<b>parentId</b>
+		</field>
+	</mapping>
+	
+	<mapping wildcard="true">
+		<class-a>org.sigmah.server.database.hibernate.entity.LocationType</class-a>
+		<class-b>org.sigmah.shared.dto.LocationTypeDTO</class-b>
+	
+		<field>
+			<a>boundAdminLevel.id</a>
+			<b>boundAdminLevelId</b>
+		</field>
+	
+	</mapping>
+	
+</mappings>

@@ -1,0 +1,10 @@
+<module rename-to="Embed">
+	<inherits name='com.google.gwt.user.User' />	
+	<inherits name="org.sigmah.ActivityInfoCore"/>
+	
+    <entry-point class="org.activityinfo.embed.client.EmbedEntryPoint"/>
+
+	<source path='client' />
+	<source path="shared" />
+
+</module>

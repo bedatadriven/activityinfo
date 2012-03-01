@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+  ~ All Sigmah code is released under the GNU General Public License v3
+  ~ See COPYRIGHT.txt and LICENSE.txt.
+  -->
+
+<dataset>
+
+	<!--  This is test data used for the SchemaBuilderTest cases -->
+
+	<userLogin userId="1" name="Alex" email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." locale="fr" newUser="1" />
+	
+	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
+
+	<adminLevel countryId="1" adminLevelId="1" name="Province" AllowAdd="0"	/>
+	<adminLevel countryId="1" adminLevelId="2" name="Territoire" AllowAdd="0" ParentId="1"/>
+	
+	<adminEntity adminLevelId="1" adminEntityId="1" name="Kinshasa" code="10" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="2" name="Sud Kivu" code="20" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="3" name="Nord Kivu" code="30" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="1" adminEntityId="4" name="Bandundu" code="40" x1="1" y1="2" x2="3" y2="4"/>
+
+	<adminEntity adminLevelId="2" adminEntityId="11" adminEntityParentId="2" name="Walungu" code="201" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="2" adminEntityId="12" adminEntityParentId="2" name="Shabunda" code="202" x1="0" y1="0" x2="0" y2="0"/>
+	<adminEntity adminLevelId="2" adminEntityId="13" adminEntityParentId="2" name="Kalehe" code="203" x1="0" y1="0" x2="0" y2="0"/>
+
+	
+	
+
+</dataset>
