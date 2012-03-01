@@ -87,7 +87,7 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for(Cluster cluster : clusters) {
             Point px = cluster.getPoint();
-            AiLatLng latlng = cluster.latLngCentroid();
+            AiLatLng latlng = map.fromPixelToLatLng(px);
             BubbleMapMarker marker = new PieMapMarker();
 
             sumSlices((PieMapMarker) marker, cluster.getPointValues());
