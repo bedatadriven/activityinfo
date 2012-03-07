@@ -15,21 +15,19 @@ import com.google.inject.Singleton;
 public class CrxFilter implements Filter {
 
 	@Override
-	public void destroy() {
-	
-	}
-
-	@Override
-	public void doFilter(ServletRequest arg0, ServletResponse arg1,
-			FilterChain arg2) throws IOException, ServletException {
-
-		arg1.setContentType("application/x-chrome-extension");
-	}
-
-	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+			FilterChain filterChain) throws IOException, ServletException {
+
+		servletResponse.setContentType("application/x-chrome-extension");
+		filterChain.doFilter(servletRequest, servletResponse);
+	}
+
+	@Override
+	public void destroy() {
 	}
 
 }

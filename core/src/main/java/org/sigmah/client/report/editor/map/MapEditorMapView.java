@@ -12,12 +12,13 @@ import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.map.GoogleMapsReportOverlays;
 import org.sigmah.client.map.IconFactory;
 import org.sigmah.client.map.MapTypeFactory;
 import org.sigmah.client.page.report.HasReportElement;
 import org.sigmah.client.page.report.ReportChangeHandler;
 import org.sigmah.client.page.report.ReportEventHelper;
-import org.sigmah.client.widget.GoogleMapsWidget;
+import org.sigmah.client.widget.GoogleMapsPanel;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Displays the content of a MapElement using Google Maps.
  */
-public class MapEditorMapView extends GoogleMapsWidget implements HasReportElement<MapReportElement> {
+public class MapEditorMapView extends GoogleMapsPanel implements HasReportElement<MapReportElement> {
     
 	private static final int DEFAULT_ZOOM_CONTROL_OFFSET_X = 5;
     private static final int ZOOM_CONTROL_OFFSET_Y = 5;
@@ -65,12 +66,11 @@ public class MapEditorMapView extends GoogleMapsWidget implements HasReportEleme
 	private final ReportEventHelper events;
 		
 	private BaseMap currentBaseMap = null;
-	private SchemaDTO schema;
 
-    private final Map<Overlay, MapMarker> overlays = new HashMap<Overlay, MapMarker>();
     private final Status statusWidget;
 
     private MapReportElement model = new MapReportElement();
+    private GoogleMapsReportOverlays overlays; 
     
     // Model of a the map
     private MapContent content;
@@ -98,9 +98,6 @@ public class MapEditorMapView extends GoogleMapsWidget implements HasReportEleme
         ToolBar toolBar = new ToolBar();
         toolBar.add(statusWidget);
         setBottomComponent(toolBar);
-       
-        
-        getSchema();
     }
         
 	@Override
@@ -134,43 +131,16 @@ public class MapEditorMapView extends GoogleMapsWidget implements HasReportEleme
 			}
         });
 	}
-
-	private void getSchema() {
-		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Handle failure
-			}
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				schema=result;
-			}
-		});
-	}
-	
 	
     @Override
 	protected void onMapInitialized() {
+    	
+    	// initialize our overlay manager
+    	this.overlays = new GoogleMapsReportOverlays(getMapWidget());
+    	
         loadContent();
         
-        if (currentBaseMap != null) {
-        	setBaseMap(currentBaseMap);
-        }
 	}
-
-	private void setBaseMap(BaseMap baseMap) {
-    	if (!isMapLoaded()) {
-    		currentBaseMap = baseMap;
-    	} else if (!Objects.equal(baseMap, currentBaseMap)) {
-            MapType baseMapType = MapTypeFactory.mapTypeForBaseMap(baseMap);
-            getMapWidget().removeMapType(MapType.getNormalMap());
-            getMapWidget().removeMapType(MapType.getHybridMap());
-            getMapWidget().addMapType(baseMapType);
-            getMapWidget().setCurrentMapType(baseMapType);
-            currentBaseMap = baseMap;
-            layout();
-    	}
-    }
     
     public void setZoomControlOffsetX(int offset) {
     	zoomControlOffsetX = offset;
@@ -240,11 +210,11 @@ public class MapEditorMapView extends GoogleMapsWidget implements HasReportEleme
 		Log.debug("MapPreview: Received content");
 
 		content = result;
-		setBaseMap(result.getBaseMap());
 
 		statusWidget.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 
-		Extents extents = putMarkersOnMap(result);
+		overlays.setBaseMap(result.getBaseMap());
+		Extents extents = overlays.addMarkers(result.getMarkers());
 		
 		// can we zoom in further and still see all the markers?
 		if(getMapWidget().getBounds().containsBounds(newLatLngBounds(extents))) {
@@ -252,26 +222,10 @@ public class MapEditorMapView extends GoogleMapsWidget implements HasReportEleme
 		}
 	}
     
-	private Extents putMarkersOnMap(MapContent result) {
-		Extents extents = Extents.emptyExtents();
-		for (MapMarker marker : result.getMarkers()) {
-            Icon icon = IconFactory.createIcon(marker);
-            LatLng latLng = LatLng.newInstance(marker.getLat(), marker.getLng());
-            extents.grow(marker.getLat(), marker.getLng());
-            MarkerOptions options = MarkerOptions.newInstance();
-            options.setIcon(icon);
-            options.setTitle(marker.getTitle());
-            Marker overlay = new Marker(latLng, options);
-            
-            getMapWidget().addOverlay(overlay);
-            overlays.put(overlay, marker);
-        }
-		return extents;
-	}
 	
 	private void onMapClick(MapClickEvent event) {
 		if(event.getOverlay() != null) {
-			MapMarker marker = overlays.get(event.getOverlay());
+			MapMarker marker = overlays.getMapMarker(event.getOverlay());
 			if (marker != null) {
 				getMapWidget().getInfoWindow().open((Marker)event.getOverlay(), 
 						new InfoWindowContent(I18N.CONSTANTS.loading()));

@@ -8,6 +8,7 @@ import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.report.ReportDesignPageState;
 import org.sigmah.client.report.view.ChartOFCView;
+import org.sigmah.client.report.view.MapReportView;
 import org.sigmah.client.report.view.PivotGridPanel;
 import org.sigmah.client.report.view.ReportView;
 import org.sigmah.shared.command.GenerateElement;
@@ -16,6 +17,7 @@ import org.sigmah.shared.command.UpdateReportSubscription;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.report.content.Content;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.Report;
@@ -34,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.custom.Portlet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.dom.client.MapElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ReportPortlet extends Portlet {
@@ -161,6 +164,9 @@ public class ReportPortlet extends Portlet {
 			PivotGridPanel gridPanel = new PivotGridPanel();
 			gridPanel.setHeaderVisible(false);
 			return gridPanel;
+		} else if(element instanceof MapReportElement) {
+			MapReportView mapView = new MapReportView();
+			return mapView;
 		} else {
 			return null;
 		}
