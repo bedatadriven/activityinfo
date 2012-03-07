@@ -32,14 +32,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Base class for integrating GoogleMaps widget into a GXT component
  */
-public class GoogleMapsWidget extends ContentPanel {
+public class GoogleMapsPanel extends ContentPanel {
 	private MapWidget map = null;
 
 	private LatLngBounds pendingZoom = null;
 
 	private boolean apiLoadFailed;
 
-	public GoogleMapsWidget() {       
+	public GoogleMapsPanel() {       
 		setLayout(new FitLayout());
 	}
 

@@ -2,7 +2,7 @@ package org.sigmah.client.page.entry.location;
 
 import org.sigmah.client.map.GoogleChartsIconBuilder;
 import org.sigmah.client.map.MapTypeFactory;
-import org.sigmah.client.widget.GoogleMapsWidget;
+import org.sigmah.client.widget.GoogleMapsPanel;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.report.content.AiLatLng;
 import org.sigmah.shared.util.mapping.BoundingBoxDTO;
@@ -27,7 +27,7 @@ import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 
-public class LocationMap extends GoogleMapsWidget {
+public class LocationMap extends GoogleMapsPanel {
 
 	private final LocationSearchPresenter searchPresenter;
 	private final NewLocationPresenter newLocationPresenter;
