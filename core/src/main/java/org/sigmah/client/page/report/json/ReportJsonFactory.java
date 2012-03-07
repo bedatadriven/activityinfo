@@ -22,18 +22,20 @@ import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
 import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.clustering.AutomaticClustering;
+import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
+import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
+import org.sigmah.shared.report.model.layers.ScalingType;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-
-
 
 public class ReportJsonFactory implements ReportSerializer {
 
@@ -163,21 +165,21 @@ public class ReportJsonFactory implements ReportSerializer {
 		JsonObject element = new JsonObject();
 
 		element.addProperty("elementType", "pivotChart");
-		if(rp.getTitle() != null) {
+		if (rp.getTitle() != null) {
 			element.addProperty("title", (String) rp.getTitle());
 		}
-		if(rp.getSheetTitle() != null) {
+		if (rp.getSheetTitle() != null) {
 			element.addProperty("sheetTitle", (String) rp.getSheetTitle());
 		}
-		if(rp.getType() != null){
-			element.addProperty("type", ((PivotChartReportElement) rp).getType()
-					.toString());
+		if (rp.getType() != null) {
+			element.addProperty("type", ((PivotChartReportElement) rp)
+					.getType().toString());
 		}
-		if(rp.getCategoryAxisTitle() != null){
+		if (rp.getCategoryAxisTitle() != null) {
 			element.addProperty("categoryAxisTitle",
 					((PivotChartReportElement) rp).getCategoryAxisTitle());
 		}
-		if(rp.getValueAxisTitle() != null){
+		if (rp.getValueAxisTitle() != null) {
 			element.addProperty("valueAxisTitle",
 					((PivotChartReportElement) rp).getValueAxisTitle());
 		}
@@ -309,35 +311,93 @@ public class ReportJsonFactory implements ReportSerializer {
 		for (int i = 0; i < layers.size(); i++) {
 			MapLayer layer = layers.get(i);
 			JsonObject jsonLayer = new JsonObject();
-			if(layer instanceof BubbleMapLayer){
-				jsonLayer.addProperty("layerType", "bubbles");
-				jsonLayer.addProperty("name", layer.getName());
-				jsonLayer.addProperty("filter", encodeFilter(layer.getFilter()));
-				jsonLayer.addProperty("indicatorIds", layer.getIndicatorIds()
-						.toString());
-				jsonLayer.addProperty("cluster", (Boolean) layer.getClustering()
-						.isClustered());
-			}else if(layer instanceof PiechartMapLayer){
-				jsonLayer.addProperty("layerType", "pie");
-				jsonLayer.addProperty("name", layer.getName());
-				jsonLayer.addProperty("filter", encodeFilter(layer.getFilter()));
-				jsonLayer.addProperty("indicatorIds", layer.getIndicatorIds()
-						.toString());
-				jsonLayer.addProperty("cluster", (Boolean) layer.getClustering()
-						.isClustered());
-			}else if(layer instanceof IconMapLayer){
-				jsonLayer.addProperty("layerType", "icon");
-				jsonLayer.addProperty("name", layer.getName());
-				jsonLayer.addProperty("filter", encodeFilter(layer.getFilter()));
-				jsonLayer.addProperty("indicatorIds", layer.getIndicatorIds()
-						.toString());
-				jsonLayer.addProperty("cluster", (Boolean) layer.getClustering()
-						.isClustered());
+			if (layer instanceof BubbleMapLayer) {
+				jsonLayer.addProperty("layerType", layer.getTypeName());
+
+				jsonLayer.addProperty("colorDimensions",
+						encodeDimensionList(((BubbleMapLayer) layer)
+								.getColorDimensions()));
+				jsonLayer.addProperty("bubbleColor",
+						((BubbleMapLayer) layer).getBubbleColor());
+				jsonLayer.addProperty("labelColor",
+						((BubbleMapLayer) layer).getLabelColor());
+
+				jsonLayer.addProperty("minRadius",
+						(Integer) ((BubbleMapLayer) layer).getMinRadius());
+				jsonLayer.addProperty("maxRadius",
+						(Integer) ((BubbleMapLayer) layer).getMaxRadius());
+				jsonLayer.addProperty("alpha",
+						(Double) ((BubbleMapLayer) layer).getAlpha());
+				jsonLayer.addProperty("scaling", ((BubbleMapLayer) layer)
+						.getScaling().toString());
+
+			} else if (layer instanceof PiechartMapLayer) {
+				jsonLayer.addProperty("layerType", layer.getTypeName());
+
+				jsonLayer
+						.addProperty("slices",
+								encodeSlicesList(((PiechartMapLayer) layer)
+										.getSlices()));
+
+				jsonLayer.addProperty("minRadius",
+						(Integer) ((PiechartMapLayer) layer).getMinRadius());
+				jsonLayer.addProperty("maxRadius",
+						(Integer) ((PiechartMapLayer) layer).getMaxRadius());
+				jsonLayer.addProperty("alpha",
+						(Double) ((PiechartMapLayer) layer).getAlpha());
+				jsonLayer.addProperty("scaling", ((PiechartMapLayer) layer)
+						.getScaling().toString());
+
+			} else if (layer instanceof IconMapLayer) {
+				jsonLayer.addProperty("layerType", layer.getTypeName());
+
+				jsonLayer.addProperty("activityIds",
+						encodeIntegerList(((IconMapLayer) layer)
+								.getActivityIds()));
+				jsonLayer.addProperty("icon", ((IconMapLayer) layer).getIcon());
+
 			}
+			jsonLayer.addProperty("isVisible", (Boolean) layer.isVisible());
+			jsonLayer.addProperty("indicatorIds",
+					encodeIntegerList(layer.getIndicatorIds()));
+			jsonLayer.addProperty("labelSequence", layer.getLabelSequence()
+					.next());
+			jsonLayer.addProperty("cluster", (Boolean) layer.isClustered());
+			jsonLayer.addProperty("name", layer.getName());
+			jsonLayer.addProperty("filter", encodeFilter(layer.getFilter()));
+
 			jsonLayers.add(jsonLayer);
 		}
 
 		return jsonLayers.toString();
+	}
+
+	private String encodeSlicesList(List<Slice> slices) {
+
+		JsonArray jsonSlices = new JsonArray();
+		for (int i = 0; i < slices.size(); i++) {
+			Slice slice = slices.get(i);
+			JsonObject jsonSlice = new JsonObject();
+			if (slice.getColor() != null) {
+				jsonSlice.addProperty("color", slice.getColor());
+			}
+			jsonSlice.addProperty("indicatorId", slice.getIndicatorId());
+
+			jsonSlices.add(jsonSlice);
+		}
+
+		return jsonSlices.toString();
+	}
+
+	private String encodeIntegerList(List<Integer> indicatorIds) {
+
+		JsonArray jsonIntList = new JsonArray();
+		for (int i = 0; i < indicatorIds.size(); i++) {
+			Integer integer = indicatorIds.get(i);
+			jsonIntList.add(new JsonPrimitive(integer));
+		}
+
+		return jsonIntList.toString();
 	}
 
 	private List<ReportElement> decodeElements(JsonElement elements) {
@@ -552,15 +612,146 @@ public class ReportJsonFactory implements ReportSerializer {
 	}
 
 	public List<MapLayer> decodeLayers(JsonElement layers) {
-		JsonArray jsonDimList = (JsonArray) parser.parse(layers.getAsString());
-		Iterator<JsonElement> it = jsonDimList.iterator();
+		JsonArray jsonLayers = (JsonArray) parser.parse(layers.getAsString());
+		Iterator<JsonElement> it = jsonLayers.iterator();
 
-		while(it.hasNext()){
-			JsonObject jsaonLayer = it.next().getAsJsonObject();
-			// TODO get Layers from Json to List<MapLayer>
+		List<MapLayer> mapLayers = new ArrayList<MapLayer>();
+
+		while (it.hasNext()) {
+			JsonObject jsonLayer = it.next().getAsJsonObject();
+
+			if ("Bubble".equals(jsonLayer.get("type"))) {
+				BubbleMapLayer layer = new BubbleMapLayer();
+
+				JsonElement colorDimensions = jsonLayer.get("colorDimensions");
+				if (colorDimensions != null) {
+					layer.setColorDimensions(decodeDimensionList(colorDimensions));
+				}
+				JsonElement bubbleColor = jsonLayer.get("bubbleColor");
+				if (bubbleColor != null) {
+					layer.setBubbleColor(bubbleColor.getAsString());
+				}
+				JsonElement labelColor = jsonLayer.get("labelColor");
+				if (labelColor != null) {
+					layer.setLabelColor(labelColor.getAsString());
+				}
+				JsonElement minRadius = jsonLayer.get("minRadius");
+				if (minRadius != null) {
+					layer.setMinRadius(minRadius.getAsInt());
+				}
+				JsonElement maxRadius = jsonLayer.get("maxRadius");
+				if (maxRadius != null) {
+					layer.setMaxRadius(maxRadius.getAsInt());
+				}
+				JsonElement alpha = jsonLayer.get("alpha");
+				if (alpha != null) {
+					layer.setAlpha(alpha.getAsDouble());
+				}
+				JsonElement scaling = jsonLayer.get("scaling");
+				if (scaling != null) {
+					layer.setScaling(ScalingType.valueOf(scaling.getAsString()));
+				}
+
+				layer.setVisible(jsonLayer.get("isVisible").getAsBoolean());
+				JsonArray indicators = jsonLayer.get("indicatorIds")
+						.getAsJsonArray();
+				Iterator<JsonElement> itr = indicators.iterator();
+				while (itr.hasNext()) {
+					layer.addIndicator(itr.next().getAsInt());
+				}
+
+				// TODO implement label sequence
+
+				if (jsonLayer.get("cluster").getAsBoolean()) {
+					layer.setClustering(new AutomaticClustering());
+				} else {
+					layer.setClustering(new NoClustering());
+				}
+
+				layer.setName(jsonLayer.get("name").getAsString());
+				layer.setFilter(decodeFilter(jsonLayer.get("filter")));
+
+				mapLayers.add(layer);
+
+			} else if ("Piechart".equals(jsonLayer.get("type"))) {
+				PiechartMapLayer layer = new PiechartMapLayer();
+
+				JsonElement minRadius = jsonLayer.get("minRadius");
+				if (minRadius != null) {
+					layer.setMinRadius(minRadius.getAsInt());
+				}
+				JsonElement maxRadius = jsonLayer.get("maxRadius");
+				if (maxRadius != null) {
+					layer.setMaxRadius(maxRadius.getAsInt());
+				}
+				JsonElement alpha = jsonLayer.get("alpha");
+				if (alpha != null) {
+					layer.setAlpha(alpha.getAsDouble());
+				}
+				JsonElement scaling = jsonLayer.get("scaling");
+				if (scaling != null) {
+					layer.setScaling(ScalingType.valueOf(scaling.getAsString()));
+				}
+
+				layer.setVisible(jsonLayer.get("isVisible").getAsBoolean());
+				JsonArray indicators = jsonLayer.get("indicatorIds")
+						.getAsJsonArray();
+				Iterator<JsonElement> itr = indicators.iterator();
+				while (itr.hasNext()) {
+					layer.addIndicatorId(itr.next().getAsInt());
+				}
+
+				// TODO implement label sequence
+
+				if (jsonLayer.get("cluster").getAsBoolean()) {
+					layer.setClustering(new AutomaticClustering());
+				} else {
+					layer.setClustering(new NoClustering());
+				}
+
+				layer.setName(jsonLayer.get("name").getAsString());
+				layer.setFilter(decodeFilter(jsonLayer.get("filter")));
+
+				mapLayers.add(layer);
+
+			} else if ("Bubble".equals(jsonLayer.get("type"))) {
+				IconMapLayer layer = new IconMapLayer();
+
+				JsonArray activityIds = jsonLayer.get("activityIds")
+						.getAsJsonArray();
+				Iterator<JsonElement> activityIrtator = activityIds.iterator();
+				while (activityIrtator.hasNext()) {
+					layer.addActivityId(activityIrtator.next().getAsInt());
+				}
+				JsonElement icon = jsonLayer.get("icon");
+				if (icon != null) {
+					layer.setIcon(icon.getAsString());
+				}
+
+				layer.setVisible(jsonLayer.get("isVisible").getAsBoolean());
+				JsonArray indicators = jsonLayer.get("indicatorIds")
+						.getAsJsonArray();
+				Iterator<JsonElement> itr = indicators.iterator();
+				while (itr.hasNext()) {
+					layer.addIndicatorId(itr.next().getAsInt());
+				}
+
+				// TODO implement label sequence
+
+				if (jsonLayer.get("cluster").getAsBoolean()) {
+					layer.setClustering(new AutomaticClustering());
+				} else {
+					layer.setClustering(new NoClustering());
+				}
+
+				layer.setName(jsonLayer.get("name").getAsString());
+				layer.setFilter(decodeFilter(jsonLayer.get("filter")));
+
+				mapLayers.add(layer);
+
+			}
 		}
-		
-		return null;
+		return mapLayers;
 	}
 
 }
