@@ -5,6 +5,9 @@
 
 package org.sigmah.client.page.report;
 
+import org.sigmah.client.page.report.json.ReportJsonFactory;
+import org.sigmah.client.page.report.json.ReportSerializer;
+
 import com.google.gwt.inject.client.AbstractGinModule;
 
 /**
@@ -16,5 +19,6 @@ public class ReportModule extends AbstractGinModule {
     @Override
     protected void configure() {
         // bind views to their implementations
+    	bind(ReportSerializer.class).to(ReportJsonFactory.class);
     }
 }

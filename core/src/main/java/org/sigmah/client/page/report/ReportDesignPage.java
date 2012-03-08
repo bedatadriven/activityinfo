@@ -16,7 +16,9 @@ import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.report.editor.CompositeEditor;
 import org.sigmah.client.page.report.editor.EditorProvider;
 import org.sigmah.client.page.report.editor.ReportElementEditor;
+import org.sigmah.client.page.report.json.ReportSerializer;
 import org.sigmah.client.page.report.resources.ReportResources;
+import org.sigmah.client.report.editor.chart.ChartEditor;
 import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.GetReportModel;
 import org.sigmah.shared.command.RenderElement;
@@ -38,8 +40,10 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class ReportDesignPage extends ContentPanel implements Page, ExportCallback {
 
@@ -49,8 +53,11 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	private final Dispatcher dispatcher;
 	private final EditorProvider editorProvider;
 
+	private final ReportSerializer reportSerializer;
+	
 	private boolean reportEdited;
 	private ReportBar reportBar;
+	
 	
 	/**
 	 * The model being edited on this page
@@ -65,10 +72,11 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	
 	@Inject
-	public ReportDesignPage(EventBus eventBus, Dispatcher service, EditorProvider editorProvider) {
+	public ReportDesignPage(EventBus eventBus, Dispatcher service, EditorProvider editorProvider, ReportSerializer reportSerializer) {
 		this.eventBus = eventBus;
 		this.dispatcher = service;
 		this.editorProvider = editorProvider;
+		this.reportSerializer = reportSerializer;
 
 		ReportResources.INSTANCE.style().ensureInjected();
 
@@ -184,6 +192,10 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		UpdateReportModel updateReport = new UpdateReportModel();
 		updateReport.setModel(currentModel);
 
+		//TODO use serialized data to save and update models, now onwards
+		//String json = reportSerializer.serialize(currentModel);
+		//GWT.log(json);
+		
 		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
 			@Override
 			public void onFailure(Throwable caught) {

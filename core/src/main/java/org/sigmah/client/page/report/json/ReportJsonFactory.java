@@ -36,16 +36,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.inject.Inject;
 
 public class ReportJsonFactory implements ReportSerializer {
 
 	private final JsonParser parser;
 
-	public ReportJsonFactory() {
-		parser = new JsonParser();
+	@Inject
+	public ReportJsonFactory(JsonParser parser) {
+		this.parser =parser;
 	}
 
-	@Override
 	public String serialize(Report report) {
 		JsonObject jsonReport = new JsonObject();
 
@@ -95,9 +97,12 @@ public class ReportJsonFactory implements ReportSerializer {
 		return jsonReport.toString();
 	}
 
-	@Override
 	public Report deserialize(String json) {
 
+		if(json == null || json.length()<1){
+			return null;
+		}
+		
 		JsonObject jsonObject = (JsonObject) parser.parse(json);
 
 		Report report = new Report();
