@@ -38,4 +38,9 @@
 	<changeSet author="umad" id="003-05">
 		<dropColumn tableName="reportsubscription" columnName="subscriberemail" />
 	</changeSet>
+	<changeSet author="umad" id="003-06">
+		<addColumn tableName="reporttemplate">
+			<column name="json" type="LONGTEXT" />
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>
