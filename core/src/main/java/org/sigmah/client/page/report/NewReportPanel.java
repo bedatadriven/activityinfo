@@ -5,6 +5,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.NavigationHandler;
+import org.sigmah.client.page.report.json.ReportSerializer;
 import org.sigmah.client.page.report.template.ChartTemplate;
 import org.sigmah.client.page.report.template.CompositeTemplate;
 import org.sigmah.client.page.report.template.MapTemplate;
@@ -27,18 +28,20 @@ public class NewReportPanel extends ContentPanel {
 
 	private ListStore<ReportTemplate> store;
 	private EventBus eventBus;
+	private ReportSerializer reportSerializer;
 
-	public NewReportPanel(EventBus eventBus, Dispatcher dispatcher) {
+	public NewReportPanel(EventBus eventBus, Dispatcher dispatcher, ReportSerializer reportSerializer) {
 		this.eventBus = eventBus;
+		this.reportSerializer = reportSerializer;
 
 		setHeading(I18N.CONSTANTS.createNewReport());
 		setLayout(new FitLayout());
 		
 		store = new ListStore<ReportTemplate>();
-		store.add(new ChartTemplate(dispatcher));
-		store.add(new PivotTableTemplate(dispatcher));
-		store.add(new MapTemplate(dispatcher));
-		store.add(new CompositeTemplate(dispatcher));
+		store.add(new ChartTemplate(dispatcher, reportSerializer));
+		store.add(new PivotTableTemplate(dispatcher, reportSerializer));
+		store.add(new MapTemplate(dispatcher, reportSerializer));
+		store.add(new CompositeTemplate(dispatcher, reportSerializer));
 				
 		ListView<ReportTemplate> view = new ListView<ReportTemplate>();
         view.setStyleName("gallery");

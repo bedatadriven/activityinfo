@@ -12,8 +12,11 @@ import java.util.Set;
 
 import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.report.content.DimensionCategory;
+import org.sigmah.shared.report.model.AdminDimension;
 import org.sigmah.shared.report.model.CategoryProperties;
+import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapReportElement;
@@ -45,7 +48,7 @@ public class ReportJsonFactory implements ReportSerializer {
 
 	@Inject
 	public ReportJsonFactory(JsonParser parser) {
-		this.parser =parser;
+		this.parser = parser;
 	}
 
 	public String serialize(Report report) {
@@ -53,7 +56,9 @@ public class ReportJsonFactory implements ReportSerializer {
 
 		// write custom maker
 		jsonReport.addProperty("id", (Integer) report.getId());
-		jsonReport.addProperty("title", report.getTitle());
+		if(report.getTitle() != null){
+			jsonReport.addProperty("title", report.getTitle());
+		}
 		if (report.getSheetTitle() != null) {
 			jsonReport.addProperty("sheetTitle", report.getSheetTitle());
 		}
@@ -70,6 +75,7 @@ public class ReportJsonFactory implements ReportSerializer {
 		if (report.getDay() != null) {
 			jsonReport.addProperty("day", (Integer) report.getDay());
 		}
+		jsonReport.add("filter", encodeFilter(report.getFilter()));
 		if (report.getElements() != null) {
 
 			List<ReportElement> reportElements = report.getElements();
@@ -99,17 +105,19 @@ public class ReportJsonFactory implements ReportSerializer {
 
 	public Report deserialize(String json) {
 
-		if(json == null || json.length()<1){
+		if (json == null || json.length() < 1) {
 			return null;
 		}
-		
+
 		JsonObject jsonObject = (JsonObject) parser.parse(json);
 
 		Report report = new Report();
 
 		report.setId(jsonObject.get("id").getAsInt());
-		report.setTitle(jsonObject.get("title").getAsString());
-
+		JsonElement title = jsonObject.get("title");
+		if (title != null) {
+			report.setTitle(title.getAsString());
+		}
 		JsonElement sheetTitle = jsonObject.get("sheetTitle");
 		if (sheetTitle != null) {
 			report.setSheetTitle(sheetTitle.getAsString());
@@ -130,8 +138,12 @@ public class ReportJsonFactory implements ReportSerializer {
 		if (day != null) {
 			report.setDay(day.getAsInt());
 		}
-		JsonElement elements = jsonObject.get("elements");
-		if (elements != null) {
+		JsonObject filter = jsonObject.get("filter").getAsJsonObject();
+		if(filter != null){
+			report.setFilter(decodeFilter(filter));
+		}
+		JsonArray elements = jsonObject.get("elements").getAsJsonArray();
+		if (elements.size() > 0) {
 			report.setElements(decodeElements(elements));
 		}
 
@@ -144,21 +156,21 @@ public class ReportJsonFactory implements ReportSerializer {
 
 		element.addProperty("elementType", "pivotTable");
 		if (rp.getTitle() != null) {
-			element.addProperty("title", (String) rp.getTitle());
+			element.addProperty("title", rp.getTitle());
 		}
 		if (rp.getSheetTitle() != null) {
-			element.addProperty("sheetTitle", (String) rp.getSheetTitle());
+			element.addProperty("sheetTitle", rp.getSheetTitle());
 		}
-		element.addProperty("filter", encodeFilter(rp.getFilter()));
+		element.add("filter", encodeFilter(rp.getFilter()));
 		if (rp.getColumnDimensions() != null) {
-			element.addProperty("columnDimensions",
+			element.add("columnDimensions",
 					encodeDimensionList(((PivotTableReportElement) rp)
 							.getColumnDimensions()));
 		} else {
-			element.addProperty("columnDimensions", new JsonObject().toString());
+			element.add("columnDimensions", new JsonArray());
 		}
 
-		element.addProperty("rowDimensions",
+		element.add("rowDimensions",
 				encodeDimensionList(((PivotTableReportElement) rp)
 						.getRowDimensions()));
 
@@ -171,10 +183,10 @@ public class ReportJsonFactory implements ReportSerializer {
 
 		element.addProperty("elementType", "pivotChart");
 		if (rp.getTitle() != null) {
-			element.addProperty("title", (String) rp.getTitle());
+			element.addProperty("title", rp.getTitle());
 		}
 		if (rp.getSheetTitle() != null) {
-			element.addProperty("sheetTitle", (String) rp.getSheetTitle());
+			element.addProperty("sheetTitle", rp.getSheetTitle());
 		}
 		if (rp.getType() != null) {
 			element.addProperty("type", ((PivotChartReportElement) rp)
@@ -188,18 +200,17 @@ public class ReportJsonFactory implements ReportSerializer {
 			element.addProperty("valueAxisTitle",
 					((PivotChartReportElement) rp).getValueAxisTitle());
 		}
-		element.addProperty("filter", encodeFilter(rp.getFilter()));
+		element.add("filter", encodeFilter(rp.getFilter()));
 		if (rp.getCategoryDimensions().size() > 0
 				&& rp.getCategoryDimensions().get(0) != null) {
-			element.addProperty("categoryDimensions",
+			element.add("categoryDimensions",
 					encodeDimensionList(((PivotChartReportElement) rp)
 							.getCategoryDimensions()));
-		} else {
-			element.addProperty("categoryDimensions",
-					new JsonObject().toString());
 		}
-
-		element.addProperty("seriesDimensions",
+		else{
+			element.add("categoryDimensions", new JsonArray());
+		}
+		element.add("seriesDimensions",
 				encodeDimensionList(((PivotChartReportElement) rp)
 						.getSeriesDimension()));
 
@@ -212,10 +223,10 @@ public class ReportJsonFactory implements ReportSerializer {
 
 		element.addProperty("elementType", "map");
 		if (rp.getTitle() != null) {
-			element.addProperty("title", (String) rp.getTitle());
+			element.addProperty("title", rp.getTitle());
 		}
 		if (rp.getSheetTitle() != null) {
-			element.addProperty("sheetTitle", (String) rp.getSheetTitle());
+			element.addProperty("sheetTitle", rp.getSheetTitle());
 		}
 		element.addProperty("baseMapId", ((MapReportElement) rp).getBaseMapId());
 		element.addProperty("width",
@@ -224,16 +235,18 @@ public class ReportJsonFactory implements ReportSerializer {
 				(Integer) ((MapReportElement) rp).getHeight());
 		element.addProperty("zoomLevel",
 				(Integer) ((MapReportElement) rp).getZoomLevel());
-		element.addProperty("center", ((MapReportElement) rp).getCenter()
-				.toString());
-		element.addProperty("layers",
+		if(rp.getCenter() !=  null){
+			element.addProperty("center", ((MapReportElement) rp).getCenter()
+					.toString());
+		}
+		element.add("layers",
 				encodeLayers(((MapReportElement) rp).getLayers()));
-		element.addProperty("filter", encodeFilter(rp.getFilter()));
+		element.add("filter", encodeFilter(rp.getFilter()));
 
 		return element;
 	}
 
-	public String encodeFilter(Filter filter) {
+	public JsonElement encodeFilter(Filter filter) {
 
 		JsonObject jsonFilter = new JsonObject();
 		if (filter.getMinDate() != null) {
@@ -243,13 +256,13 @@ public class ReportJsonFactory implements ReportSerializer {
 			jsonFilter.addProperty("maxDate", filter.getMaxDate().getTime());
 		}
 		jsonFilter.addProperty("isOr", (Boolean) filter.isOr());
-		jsonFilter.addProperty("restrictions",
+		jsonFilter.add("restrictions",
 				encodeRestrictions(filter.getRestrictions()));
 
-		return jsonFilter.toString();
+		return jsonFilter;
 	}
 
-	public String encodeRestrictions(
+	public JsonArray encodeRestrictions(
 			Map<DimensionType, Set<Integer>> restrictions) {
 
 		JsonArray jsonRestrictions = new JsonArray();
@@ -268,31 +281,70 @@ public class ReportJsonFactory implements ReportSerializer {
 			jsonRestrictions.add(jsonEntry);
 		}
 
-		return jsonRestrictions.toString();
+		return jsonRestrictions;
 	}
 
-	public String encodeDimensionList(List<Dimension> dims) {
+	public JsonArray encodeDimensionList(List<Dimension> dims) {
 
 		JsonArray jsonDims = new JsonArray();
 		for (int i = 0; i < dims.size(); i++) {
-			Dimension colDim = dims.get(i);
+
 			JsonObject jsonDim = new JsonObject();
-			jsonDim.addProperty("type", colDim.getType().toString());
-			if (colDim.getColor() != null) {
-				jsonDim.addProperty("color", colDim.getColor());
-			}
-			if (!colDim.getCategories().isEmpty()) {
-				jsonDim.addProperty("categories",
-						encodeCategories(colDim.getCategories()));
+
+			DimensionType type = dims.get(i).getType();
+			if (type.equals(DimensionType.Date)) {
+				DateDimension dim = (DateDimension) dims.get(i);
+				jsonDim.addProperty("type", dim.getType().toString());
+				jsonDim.addProperty("caption",
+						dim.get(Dimension.CAPTION_PROPERTY).toString());
+
+				jsonDim.addProperty("dateUnit", dim.getUnit().toString());
+
+				if (dim.getColor() != null) {
+					jsonDim.addProperty("color", dim.getColor());
+				}
+				if (!dim.getCategories().isEmpty()) {
+					jsonDim.add("categories",
+							encodeCategories(dim.getCategories()));
+				}
+			} else if (type.equals(DimensionType.AdminLevel)) { 
+				AdminDimension dim = (AdminDimension) dims.get(i);
+				jsonDim.addProperty("type", dim.getType().toString());
+				jsonDim.addProperty("caption",
+						dim.get(Dimension.CAPTION_PROPERTY).toString());
+				
+				jsonDim.addProperty("level", (Integer)dim.getLevelId());
+				
+				if (dim.getColor() != null) {
+					jsonDim.addProperty("color", dim.getColor());
+				}
+				if (!dim.getCategories().isEmpty()) {
+					jsonDim.add("categories",
+							encodeCategories(dim.getCategories()));
+				}
+			} else {
+				Dimension dim = dims.get(i);
+
+				jsonDim.addProperty("type", dim.getType().toString());
+				jsonDim.addProperty("caption",
+						dim.get(Dimension.CAPTION_PROPERTY).toString());
+
+				if (dim.getColor() != null) {
+					jsonDim.addProperty("color", dim.getColor());
+				}
+				if (!dim.getCategories().isEmpty()) {
+					jsonDim.add("categories",
+							encodeCategories(dim.getCategories()));
+				}
 			}
 
 			jsonDims.add(jsonDim);
 		}
 
-		return jsonDims.toString();
+		return jsonDims;
 	}
 
-	public String encodeCategories(
+	public JsonArray encodeCategories(
 			Map<DimensionCategory, CategoryProperties> categories) {
 
 		JsonArray jsonCats = new JsonArray();
@@ -308,10 +360,10 @@ public class ReportJsonFactory implements ReportSerializer {
 			jsonCats.add(jsonEntry);
 		}
 
-		return jsonCats.toString();
+		return jsonCats;
 	}
 
-	public String encodeLayers(List<MapLayer> layers) {
+	public JsonArray encodeLayers(List<MapLayer> layers) {
 		JsonArray jsonLayers = new JsonArray();
 		for (int i = 0; i < layers.size(); i++) {
 			MapLayer layer = layers.get(i);
@@ -319,7 +371,7 @@ public class ReportJsonFactory implements ReportSerializer {
 			if (layer instanceof BubbleMapLayer) {
 				jsonLayer.addProperty("layerType", layer.getTypeName());
 
-				jsonLayer.addProperty("colorDimensions",
+				jsonLayer.add("colorDimensions",
 						encodeDimensionList(((BubbleMapLayer) layer)
 								.getColorDimensions()));
 				jsonLayer.addProperty("bubbleColor",
@@ -340,7 +392,7 @@ public class ReportJsonFactory implements ReportSerializer {
 				jsonLayer.addProperty("layerType", layer.getTypeName());
 
 				jsonLayer
-						.addProperty("slices",
+						.add("slices",
 								encodeSlicesList(((PiechartMapLayer) layer)
 										.getSlices()));
 
@@ -356,28 +408,28 @@ public class ReportJsonFactory implements ReportSerializer {
 			} else if (layer instanceof IconMapLayer) {
 				jsonLayer.addProperty("layerType", layer.getTypeName());
 
-				jsonLayer.addProperty("activityIds",
+				jsonLayer.add("activityIds",
 						encodeIntegerList(((IconMapLayer) layer)
 								.getActivityIds()));
 				jsonLayer.addProperty("icon", ((IconMapLayer) layer).getIcon());
 
 			}
 			jsonLayer.addProperty("isVisible", (Boolean) layer.isVisible());
-			jsonLayer.addProperty("indicatorIds",
+			jsonLayer.add("indicatorIds",
 					encodeIntegerList(layer.getIndicatorIds()));
 			jsonLayer.addProperty("labelSequence", layer.getLabelSequence()
 					.next());
 			jsonLayer.addProperty("cluster", (Boolean) layer.isClustered());
 			jsonLayer.addProperty("name", layer.getName());
-			jsonLayer.addProperty("filter", encodeFilter(layer.getFilter()));
+			jsonLayer.add("filter", encodeFilter(layer.getFilter()));
 
 			jsonLayers.add(jsonLayer);
 		}
 
-		return jsonLayers.toString();
+		return jsonLayers;
 	}
 
-	private String encodeSlicesList(List<Slice> slices) {
+	private JsonArray encodeSlicesList(List<Slice> slices) {
 
 		JsonArray jsonSlices = new JsonArray();
 		for (int i = 0; i < slices.size(); i++) {
@@ -391,10 +443,10 @@ public class ReportJsonFactory implements ReportSerializer {
 			jsonSlices.add(jsonSlice);
 		}
 
-		return jsonSlices.toString();
+		return jsonSlices;
 	}
 
-	private String encodeIntegerList(List<Integer> indicatorIds) {
+	private JsonArray encodeIntegerList(List<Integer> indicatorIds) {
 
 		JsonArray jsonIntList = new JsonArray();
 		for (int i = 0; i < indicatorIds.size(); i++) {
@@ -402,26 +454,26 @@ public class ReportJsonFactory implements ReportSerializer {
 			jsonIntList.add(new JsonPrimitive(integer));
 		}
 
-		return jsonIntList.toString();
+		return jsonIntList;
 	}
 
-	private List<ReportElement> decodeElements(JsonElement elements) {
+	private List<ReportElement> decodeElements(JsonArray elements) {
+		List<ReportElement> reportElements = new ArrayList<ReportElement>();
 
-		JsonArray elementArray = (JsonArray) parser.parse(elements.toString());
-		for (int i = 0; i < elementArray.size(); i++) {
-			JsonObject element = (JsonObject) elementArray.get(i);
+		for (int i = 0; i < elements.size(); i++) {
+			JsonObject element = (JsonObject) elements.get(i);
 			String type = element.get("elementType").getAsString();
 
 			if ("pivotTable".equals(type)) {
-				decodePivotTableReportElement(element);
+				reportElements.add(decodePivotTableReportElement(element));
 			} else if ("pivotChart".equals(type)) {
-				decodePivotChartReportElement(element);
+				reportElements.add(decodePivotChartReportElement(element));
 			} else if ("map".equals(type)) {
-				decodeMapReportElement(element);
+				reportElements.add(decodeMapReportElement(element));
 			}
 		}
 
-		return null;
+		return reportElements;
 	}
 
 	public PivotTableReportElement decodePivotTableReportElement(
@@ -437,16 +489,16 @@ public class ReportJsonFactory implements ReportSerializer {
 		if (sheetTitle != null) {
 			pivotTableElement.setSheetTitle(sheetTitle.getAsString());
 		}
-		JsonElement filter = element.get("filter");
+		JsonObject filter = element.get("filter").getAsJsonObject();
 		pivotTableElement.setFilter(decodeFilter(filter));
 
-		JsonElement colDims = element.get("columnDimensions");
-		if (colDims != null) {
+		JsonArray colDims = element.get("columnDimensions").getAsJsonArray();
+		if (colDims.size() > 0) {
 			pivotTableElement.setColumnDimensions(decodeDimensionList(colDims));
 
 		}
-		JsonElement rowDims = element.get("rowDimensions");
-		if (rowDims != null) {
+		JsonArray rowDims = element.get("rowDimensions").getAsJsonArray();
+		if (rowDims.size() > 0) {
 			pivotTableElement.setRowDimensions(decodeDimensionList(rowDims));
 		}
 
@@ -480,15 +532,15 @@ public class ReportJsonFactory implements ReportSerializer {
 		if (valueAxisTitle != null) {
 			pivotChartElement.setValueAxisTitle(valueAxisTitle.getAsString());
 		}
-		JsonElement filter = element.get("filter");
+		JsonObject filter = element.get("filter").getAsJsonObject();
 		pivotChartElement.setFilter(decodeFilter(filter));
-		JsonElement categoryDimensions = element.get("categoryDimensions");
-		if (categoryDimensions != null) {
+		JsonArray categoryDimensions = element.get("categoryDimensions").getAsJsonArray();
+		if (categoryDimensions.size() > 0) {
 			pivotChartElement
 					.setCategoryDimensions(decodeDimensionList(categoryDimensions));
 		}
-		JsonElement seriesDimensions = element.get("seriesDimensions");
-		if (seriesDimensions != null) {
+		JsonArray seriesDimensions = element.get("seriesDimensions").getAsJsonArray();
+		if (seriesDimensions.size() > 0) {
 			pivotChartElement
 					.setSeriesDimension(decodeDimensionList(seriesDimensions));
 		}
@@ -527,23 +579,22 @@ public class ReportJsonFactory implements ReportSerializer {
 		if (center != null) {
 			mapElement.setBaseMapId(center.getAsString());
 		}
-		JsonElement layers = element.get("layers");
-		if (layers != null) {
+		JsonArray layers = element.get("layers").getAsJsonArray();
+		if (layers.size() > 0) {
 			mapElement.setLayers(decodeLayers(layers));
 		}
-		JsonElement filter = element.get("filter");
+		JsonObject filter = element.get("filter").getAsJsonObject();
 		mapElement.setFilter(decodeFilter(filter));
 
 		return mapElement;
 	}
 
-	public Filter decodeFilter(JsonElement filter) {
+	public Filter decodeFilter(JsonObject filter) {
 
-		JsonObject jsonFilter = (JsonObject) parser.parse(filter.getAsString());
 		Filter elementFilter = new Filter();
 
-		JsonElement jsonMinDate = jsonFilter.get("minDate");
-		JsonElement jsonMaxDate = jsonFilter.get("maxDate");
+		JsonElement jsonMinDate = filter.get("minDate");
+		JsonElement jsonMaxDate = filter.get("maxDate");
 		DateRange dateRange = new DateRange();
 		if (jsonMinDate != null) {
 			long min = jsonMinDate.getAsLong();
@@ -556,10 +607,11 @@ public class ReportJsonFactory implements ReportSerializer {
 		}
 
 		elementFilter.setDateRange(dateRange);
-		elementFilter.setOr(jsonFilter.get("isOr").getAsBoolean());
+		elementFilter.setOr(filter.get("isOr").getAsBoolean());
+		
+		JsonArray restrictions = (JsonArray) filter.get(
+				"restrictions");
 
-		JsonArray restrictions = (JsonArray) parser.parse(jsonFilter.get(
-				"restrictions").getAsString());
 		for (int i = 0; i < restrictions.size(); i++) {
 			JsonObject rest = (JsonObject) restrictions.get(i);
 			JsonArray arr = rest.get("set").getAsJsonArray();
@@ -577,27 +629,61 @@ public class ReportJsonFactory implements ReportSerializer {
 		return elementFilter;
 	}
 
-	public List<Dimension> decodeDimensionList(JsonElement dimensions) {
-		JsonArray jsonDimList = (JsonArray) parser.parse(dimensions
-				.getAsString());
+	public List<Dimension> decodeDimensionList(JsonArray dimensions) {
 
-		Iterator<JsonElement> it = jsonDimList.iterator();
+		Iterator<JsonElement> it = dimensions.iterator();
 		List<Dimension> dimensionsList = new ArrayList<Dimension>();
 		while (it.hasNext()) {
 			JsonObject dim = it.next().getAsJsonObject();
+			String type = dim.get("type").getAsString();
+			String caption = dim.get("caption").getAsString();
+			
+			if (type.equals(DimensionType.Date.toString())) {
+				String dateUnit = dim.get("dateUnit").getAsString();
+				DateDimension dimension = new DateDimension(DateUnit.valueOf(dateUnit));
+				dimension.set("caption", caption);
+				JsonElement color = dim.get("color");
+				if (color != null) {
+					dimension.setColor(color.getAsString());
+				}
+				JsonElement categories = dim.get("categories");
+				if (categories != null) {
+					dimension.setCategories(decodeCategories(categories));
+				}
+				dimensionsList.add(dimension);
 
-			Dimension dimension = new Dimension(DimensionType.valueOf(dim.get(
-					"type").getAsString()));
-			JsonElement color = dim.get("color");
-			if (color != null) {
-				dimension.setColor(color.getAsString());
-			}
-			JsonElement categories = dim.get("categories");
-			if (categories != null) {
-				dimension.setCategories(decodeCategories(categories));
+			} else if(type.equals(DimensionType.AdminLevel.toString())){
+				Integer level = dim.get("level").getAsInt();
+				AdminDimension dimension = new AdminDimension(level);
+				dimension.set("caption", caption);
+				JsonElement color = dim.get("color");
+				if (color != null) {
+					dimension.setColor(color.getAsString());
+				}
+				JsonElement categories = dim.get("categories");
+				if (categories != null) {
+					dimension.setCategories(decodeCategories(categories));
+				}
+				
+				dimensionsList.add(dimension);
+				
+			} else
+			{
+				Dimension dimension = new Dimension(DimensionType.valueOf(dim
+						.get("type").getAsString()));
+				dimension.set("caption", caption);
+				JsonElement color = dim.get("color");
+				if (color != null) {
+					dimension.setColor(color.getAsString());
+				}
+				JsonElement categories = dim.get("categories");
+				if (categories != null) {
+					dimension.setCategories(decodeCategories(categories));
+				}
+				
+				dimensionsList.add(dimension);
 			}
 
-			dimensionsList.add(dimension);
 		}
 		return dimensionsList;
 	}
@@ -616,9 +702,9 @@ public class ReportJsonFactory implements ReportSerializer {
 		return cats;
 	}
 
-	public List<MapLayer> decodeLayers(JsonElement layers) {
-		JsonArray jsonLayers = (JsonArray) parser.parse(layers.getAsString());
-		Iterator<JsonElement> it = jsonLayers.iterator();
+	public List<MapLayer> decodeLayers(JsonArray layers) {
+
+		Iterator<JsonElement> it = layers.iterator();
 
 		List<MapLayer> mapLayers = new ArrayList<MapLayer>();
 
@@ -628,8 +714,8 @@ public class ReportJsonFactory implements ReportSerializer {
 			if ("Bubble".equals(jsonLayer.get("type"))) {
 				BubbleMapLayer layer = new BubbleMapLayer();
 
-				JsonElement colorDimensions = jsonLayer.get("colorDimensions");
-				if (colorDimensions != null) {
+				JsonArray colorDimensions = jsonLayer.get("colorDimensions").getAsJsonArray();
+				if (colorDimensions.size() > 0) {
 					layer.setColorDimensions(decodeDimensionList(colorDimensions));
 				}
 				JsonElement bubbleColor = jsonLayer.get("bubbleColor");
@@ -674,7 +760,7 @@ public class ReportJsonFactory implements ReportSerializer {
 				}
 
 				layer.setName(jsonLayer.get("name").getAsString());
-				layer.setFilter(decodeFilter(jsonLayer.get("filter")));
+				layer.setFilter(decodeFilter(jsonLayer.get("filter").getAsJsonObject()));
 
 				mapLayers.add(layer);
 
@@ -715,7 +801,7 @@ public class ReportJsonFactory implements ReportSerializer {
 				}
 
 				layer.setName(jsonLayer.get("name").getAsString());
-				layer.setFilter(decodeFilter(jsonLayer.get("filter")));
+				layer.setFilter(decodeFilter(jsonLayer.get("filter").getAsJsonObject()));
 
 				mapLayers.add(layer);
 
@@ -750,7 +836,7 @@ public class ReportJsonFactory implements ReportSerializer {
 				}
 
 				layer.setName(jsonLayer.get("name").getAsString());
-				layer.setFilter(decodeFilter(jsonLayer.get("filter")));
+				layer.setFilter(decodeFilter(jsonLayer.get("filter").getAsJsonObject()));
 
 				mapLayers.add(layer);
 

@@ -190,11 +190,8 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	public void save() {
 		UpdateReportModel updateReport = new UpdateReportModel();
-		updateReport.setModel(currentModel);
-
-		//TODO use serialized data to save and update models, now onwards
-		//String json = reportSerializer.serialize(currentModel);
-		//GWT.log(json);
+		updateReport.setReportJsonModel(reportSerializer
+				.serialize(currentModel));
 		
 		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
 			@Override

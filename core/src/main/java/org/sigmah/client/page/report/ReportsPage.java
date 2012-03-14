@@ -11,6 +11,7 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.report.json.ReportSerializer;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -30,7 +31,7 @@ public class ReportsPage extends LayoutContainer implements Page {
 
 
     @Inject
-    public ReportsPage(EventBus eventBus, Dispatcher dispatcher) {
+    public ReportsPage(EventBus eventBus, Dispatcher dispatcher, ReportSerializer reportSerializer) {
 
     	setLayout(new BorderLayout());
     	
@@ -39,7 +40,7 @@ public class ReportsPage extends LayoutContainer implements Page {
     	savedLayout.setMargins(new Margins(0, 5, 0, 0));
     	add(new SavedReportsPanel(eventBus, dispatcher), savedLayout);
     	
-    	add(new NewReportPanel(eventBus, dispatcher), new BorderLayoutData(LayoutRegion.CENTER));
+    	add(new NewReportPanel(eventBus, dispatcher, reportSerializer), new BorderLayoutData(LayoutRegion.CENTER));
     		
     }
 
