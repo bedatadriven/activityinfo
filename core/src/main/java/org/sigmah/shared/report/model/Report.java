@@ -8,15 +8,19 @@ package org.sigmah.shared.report.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.report.content.ReportContent;
+
+import com.google.common.collect.Sets;
 
 /**
  * Describes a document that contains a series of <code>ReportElement</code>s
@@ -163,4 +167,14 @@ public class Report extends ReportElement<ReportContent> implements Serializable
     public void setDay(Integer day) {
         this.day = day;
     }
+
+	@Override
+	@XmlTransient
+	public Set<Integer> getIndicators() {
+		Set<Integer> ids = Sets.newHashSet();
+		for(ReportElement element : getElements()) {
+			ids.addAll(element.getIndicators());
+		}
+		return ids;
+	}
 }

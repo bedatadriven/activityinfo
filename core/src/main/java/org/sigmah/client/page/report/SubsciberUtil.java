@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.common.SubscribeForm;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.shared.command.CreateReportDef;

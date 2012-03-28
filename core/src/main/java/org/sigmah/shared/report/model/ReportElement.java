@@ -6,6 +6,7 @@
 package org.sigmah.shared.report.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -154,4 +155,10 @@ public abstract class ReportElement<ContentT extends Content> implements Seriali
     public void setContent(ContentT content) {
         this.content = content;
     }
+    
+    /**
+     * @return the list of indicators used as a source for this report
+     */
+    @XmlTransient
+    public abstract Set<Integer> getIndicators();
 }

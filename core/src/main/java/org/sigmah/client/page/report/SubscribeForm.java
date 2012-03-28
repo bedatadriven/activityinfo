@@ -1,4 +1,4 @@
-package org.sigmah.client.page.common;
+package org.sigmah.client.page.report;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,11 @@ import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.i18n.client.LocaleInfo;
 
+/**
+ * Allows users with design priviledges to share with other users who have 
+ * access to database. 
+ * 
+ */
 public class SubscribeForm extends FormPanel {
 
 	private ListStore<ReportSubscriber> store;
@@ -53,58 +58,52 @@ public class SubscribeForm extends FormPanel {
 
 		setLabelWidth(110);
 
-		title = new TextField<String>();
-		title.setWidth("300px");
-		title.setFieldLabel(I18N.CONSTANTS.title());
-		title.setAllowBlank(false);
-		title.setName("title");
-		add(title);
 
-		weekly = new Radio();
-		weekly.setBoxLabel(I18N.CONSTANTS.weekly());
-		weekly.setValue(true);
-		monthly = new Radio();
-		monthly.setBoxLabel(I18N.CONSTANTS.monthly());
-
-		emailFrequency = new RadioGroup();
-		emailFrequency.setFieldLabel(I18N.CONSTANTS.emailFrequency());
-		emailFrequency.setOrientation(Orientation.VERTICAL);
-		emailFrequency.add(weekly);
-		emailFrequency.add(monthly);
-
-		add(emailFrequency);
-
-		dayOfWeek = new MappingComboBox();
-		dayOfWeek.setAllowBlank(false);
-		dayOfWeek.setEditable(false);
-		dayOfWeek.setFieldLabel(I18N.CONSTANTS.dayOfWeek());
-		
-		String[] weekDays = LocaleInfo.getCurrentLocale().getDateTimeConstants().weekdays();
-		for(int i=0;i!=weekDays.length;++i) {
-			dayOfWeek.add(i+1, weekDays[i]);
-		}
-		add(dayOfWeek);
-
-		dayOfMonth = new MappingComboBox();
-		dayOfMonth.setEditable(false);
-		dayOfMonth.hide();
-		dayOfMonth.setFieldLabel(I18N.CONSTANTS.dayOfMonth());
-		for (int i = 1; i <= 31; i++) {
-			dayOfMonth.add(i, String.valueOf(i));
-		}
-		add(dayOfMonth);
-
-		emailFrequency.addListener(Events.Change, new Listener<BaseEvent>() {
-			@Override
-			public void handleEvent(BaseEvent be) {
-				if (weekly.getValue()) {
-					showWeek();
-
-				} else if (monthly.getValue()) {
-					showMonth();
-				}
-			}
-		});
+//		weekly = new Radio();
+//		weekly.setBoxLabel(I18N.CONSTANTS.weekly());
+//		weekly.setValue(true);
+//		monthly = new Radio();
+//		monthly.setBoxLabel(I18N.CONSTANTS.monthly());
+//
+//		emailFrequency = new RadioGroup();
+//		emailFrequency.setFieldLabel(I18N.CONSTANTS.emailFrequency());
+//		emailFrequency.setOrientation(Orientation.VERTICAL);
+//		emailFrequency.add(weekly);
+//		emailFrequency.add(monthly);
+//
+//		add(emailFrequency);
+//
+//		dayOfWeek = new MappingComboBox();
+//		dayOfWeek.setAllowBlank(false);
+//		dayOfWeek.setEditable(false);
+//		dayOfWeek.setFieldLabel(I18N.CONSTANTS.dayOfWeek());
+//		
+//		String[] weekDays = LocaleInfo.getCurrentLocale().getDateTimeConstants().weekdays();
+//		for(int i=0;i!=weekDays.length;++i) {
+//			dayOfWeek.add(i+1, weekDays[i]);
+//		}
+//		add(dayOfWeek);
+//
+//		dayOfMonth = new MappingComboBox();
+//		dayOfMonth.setEditable(false);
+//		dayOfMonth.hide();
+//		dayOfMonth.setFieldLabel(I18N.CONSTANTS.dayOfMonth());
+//		for (int i = 1; i <= 31; i++) {
+//			dayOfMonth.add(i, String.valueOf(i));
+//		}
+//		add(dayOfMonth);
+//
+//		emailFrequency.addListener(Events.Change, new Listener<BaseEvent>() {
+//			@Override
+//			public void handleEvent(BaseEvent be) {
+//				if (weekly.getValue()) {
+//					showWeek();
+//
+//				} else if (monthly.getValue()) {
+//					showMonth();
+//				}
+//			}
+//		});
 
 		store = new ListStore<ReportSubscriber>();
 

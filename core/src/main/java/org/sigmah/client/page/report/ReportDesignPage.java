@@ -9,7 +9,6 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.common.SubscribeForm;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
@@ -109,6 +108,15 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 					save();
 				}
 			}
+		});
+		
+		reportBar.getShareButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				showShareForm();
+			}
+			
 		});
 		
 		reportBar.getDashboardButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -271,26 +279,10 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		return null;
 	}
 
-	public void createSubscribeForm() {
-		final SubscribeForm form = new SubscribeForm();
+	public void showShareForm() {
+		final ShareReportDialog dialog = new ShareReportDialog(dispatcher);
 		//form.updateForm(currentReportId);
-
-		final FormDialogImpl<SubscribeForm> dialog = new FormDialogImpl<SubscribeForm>(form);
-		dialog.setWidth(450);
-		dialog.setHeight(400);
-		dialog.setHeading(I18N.CONSTANTS.SubscribeTitle());
-
-		dialog.show(new FormDialogCallback() {
-			@Override
-			public void onValidated() {
-				if (form.validListField()) {
-					subscribeEmail(dialog, currentModel.getId());
-				} else {
-					MessageBox.alert(I18N.CONSTANTS.error(),
-							I18N.MESSAGES.noEmailAddress(), null);
-				}
-			}
-		});
+		dialog.show(currentModel);
 	}
 
 	public void subscribeEmail(final FormDialogImpl<SubscribeForm> dialog, int reportId) {

@@ -60,11 +60,6 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
 		this.type = type;
 	}
 
-    @XmlTransient
-	public List<Integer> getIndicators() {
-		return new ArrayList<Integer>(getFilter().getRestrictions(DimensionType.Indicator));
-	}
-
     public void setIndicator(int indicatorId) {
 		getFilter().clearRestrictions(DimensionType.Indicator);
 		addIndicator(indicatorId);
@@ -135,7 +130,7 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
 	}
 	
 	public void validateModel() {
-        if (getIndicators().size() == 0) {
+        if (getIndicators().isEmpty()) {
             throw new ReportModelException("No indicators specified for chart", this);
         } else if (getIndicators().size() > 1 &&
                 !allDimensionTypes().contains(DimensionType.Indicator)) {

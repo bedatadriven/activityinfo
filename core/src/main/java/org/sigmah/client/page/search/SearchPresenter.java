@@ -29,6 +29,7 @@ import org.sigmah.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -67,7 +68,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 	
 	@Override
 	public void onSearch(SearchEvent searchEvent) {
-		if (searchEvent.getQuery()!= null && searchEvent.getQuery().length() > 2) {
+		if (!Strings.isNullOrEmpty(searchEvent.getQuery())) {
 			view.setSearchQuery(searchEvent.getQuery());
 			view.getLoadingMonitor().beforeRequest();
 			

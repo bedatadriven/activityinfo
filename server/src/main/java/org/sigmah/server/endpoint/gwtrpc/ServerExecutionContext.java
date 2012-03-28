@@ -148,12 +148,18 @@ public class ServerExecutionContext implements ExecutionContext {
 		@Override
 		public void onFailure(Throwable caught) {
 			this.callbackCount++;
+			if(callbackCount > 1) {
+				throw new RuntimeException("Callback called multiple times");
+			}
 			this.caught = caught;
 		}
 
 		@Override
 		public void onSuccess(R result) {
 			callbackCount ++;
+			if(callbackCount > 1) {
+				throw new RuntimeException("Callback called multiple times");
+			}
 			this.result = result;
 		}
 	

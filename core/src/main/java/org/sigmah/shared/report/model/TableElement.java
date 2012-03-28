@@ -7,10 +7,13 @@ package org.sigmah.shared.report.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.sigmah.shared.report.content.TableContent;
 
@@ -64,4 +67,10 @@ public class TableElement extends ReportElement<TableContent> implements Seriali
     public void addColumn(TableColumn tableColumn) {
         getRootColumn().addChild(tableColumn);
     }
+    
+	@Override
+	@XmlTransient
+	public Set<Integer> getIndicators() {
+		return Collections.emptySet();
+	}
 }

@@ -8,6 +8,8 @@ package org.sigmah.shared.report.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.sigmah.shared.report.content.PivotContent;
 
 /**
@@ -49,5 +51,12 @@ public abstract class PivotReportElement<ContentT extends PivotContent> extends 
 		return super.getContent();
 	}
 
+	@Override
+	@XmlTransient
+	public Set<Integer> getIndicators() {
+		return getFilter().getRestrictions(DimensionType.Indicator);
+	}
+
+	
     
 }

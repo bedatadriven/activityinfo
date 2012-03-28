@@ -48,8 +48,6 @@ public class ReportsPage extends LayoutContainer implements Page {
 
     }
 
-//    public void onSelectionChanged(ReportDefinitionDTO selectedItem) {
-//    }
 
     @Override
 	public PageId getPageId() {

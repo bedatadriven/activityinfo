@@ -1,6 +1,10 @@
 package org.sigmah.shared.report.model;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.sigmah.shared.report.content.NullContent;
 
@@ -30,6 +34,12 @@ public class TextReportElement extends ReportElement<NullContent> {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	@Override
+	@XmlTransient
+	public Set<Integer> getIndicators() {
+		return Collections.emptySet();
 	}
 
 }

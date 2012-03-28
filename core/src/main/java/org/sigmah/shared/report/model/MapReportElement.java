@@ -8,6 +8,7 @@ package org.sigmah.shared.report.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -21,6 +22,8 @@ import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.shared.report.model.layers.IconMapLayer;
 import org.sigmah.shared.report.model.layers.MapLayer;
 import org.sigmah.shared.report.model.layers.PiechartMapLayer;
+
+import com.google.common.collect.Sets;
 
 /**
  * Models a map element within a report
@@ -114,6 +117,16 @@ public class MapReportElement extends ReportElement<MapContent> {
 
 	public void setZoomLevel(int zoomLevel) {
 		this.zoomLevel = zoomLevel;
+	}
+
+	@Override
+	@XmlTransient
+	public Set<Integer> getIndicators() {
+		Set<Integer> ids = Sets.newHashSet();
+		for(MapLayer layer : layers) {
+			ids.addAll(layer.getIndicatorIds());
+		}
+		return ids;
 	}
     
     

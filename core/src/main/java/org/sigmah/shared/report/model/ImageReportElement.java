@@ -1,5 +1,8 @@
 package org.sigmah.shared.report.model;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlElement;
 
 import org.sigmah.shared.report.content.NullContent;
@@ -26,4 +29,11 @@ public class ImageReportElement extends ReportElement<NullContent>{
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	@Override
+	public Set<Integer> getIndicators() {
+		return Collections.emptySet();
+	}
+	
+	
 }

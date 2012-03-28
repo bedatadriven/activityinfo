@@ -20,17 +20,11 @@ public class QueryChecker {
 		this.query=query;
 		
 		checkIsEmpty();
-		checkIsTooShort();
 
 		return fails.isEmpty();
 	}
 	
-	private void checkIsTooShort() {
-		if (query != null && query.length() < 3) {
-			fails.add(new TooShortQuery());
-		}
-	}
-
+	
 	private void checkIsEmpty() {
 		if (Strings.isNullOrEmpty(query)) {
 			fails.add(new EmptyQuery());

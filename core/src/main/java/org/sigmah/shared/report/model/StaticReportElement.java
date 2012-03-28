@@ -1,8 +1,11 @@
 package org.sigmah.shared.report.model;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.sigmah.shared.report.content.TableContent;
 
@@ -28,5 +31,10 @@ public class StaticReportElement extends ReportElement < TableContent > implemen
 	public void setImg(String img) {
 		this.img = img;
 	}
-
+	
+	@Override
+	@XmlTransient
+	public Set<Integer> getIndicators() {
+		return Collections.emptySet();
+	}
 }
