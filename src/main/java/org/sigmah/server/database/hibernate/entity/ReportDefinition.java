@@ -63,6 +63,7 @@ public class ReportDefinition implements Serializable {
     private ReportFrequency frequency;
     private Integer day;
     private Set<ReportSubscription> subscriptions = new HashSet<ReportSubscription>(0);
+    private String json;
     
 	public ReportDefinition(){
 		
@@ -172,5 +173,15 @@ public class ReportDefinition implements Serializable {
 
 	public void setDateDeleted(Date dateDeleted) {
 		this.dateDeleted = dateDeleted;
+	}
+	
+	@Lob
+	@Column(nullable=true)
+	public String getJson() {
+		return json;
+	}
+
+	public void setJson(String json) {
+		this.json = json;
 	}
 }
