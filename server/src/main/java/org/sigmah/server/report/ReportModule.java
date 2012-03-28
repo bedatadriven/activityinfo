@@ -10,6 +10,10 @@ import java.io.File;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.sigmah.client.page.report.json.ReportJsonFactory;
+import org.sigmah.client.page.report.json.ReportSerializer;
+import org.sigmah.server.mail.MailSender;
+import org.sigmah.server.mail.MailSenderImpl;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
 
@@ -26,7 +30,10 @@ public class ReportModule extends AbstractModule {
 
 	@Override
     protected void configure() {
-        bind(String.class)
+		
+		bind(ReportSerializer.class).to(ReportJsonFactory.class);
+		
+		bind(String.class)
 	        .annotatedWith(MapIconPath.class)
 	        .toProvider(MapIconPathProvider.class)
 	        .in(Singleton.class);

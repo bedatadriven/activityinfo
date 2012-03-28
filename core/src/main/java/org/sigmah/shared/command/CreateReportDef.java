@@ -22,9 +22,14 @@ public class CreateReportDef implements Command<CreateResult>{
 	private String xml;
 	private Integer databaseId;
 	private Report report;
+	private String reportJsonModel;
 	
 	protected CreateReportDef() {
 		
+	}
+	
+	public CreateReportDef(String reportJsonModel){
+		this.reportJsonModel = reportJsonModel;
 	}
 
 	public CreateReportDef(int databaseId, String xml) {
@@ -61,6 +66,14 @@ public class CreateReportDef implements Command<CreateResult>{
 
 	public void setReport(Report report) {
 		this.report = report;
+	}
+
+	public String getReportJsonModel() {
+		return reportJsonModel;
+	}
+
+	public void setReportJsonModel(String reportJsonModel) {
+		this.reportJsonModel = reportJsonModel;
 	}
 
 }

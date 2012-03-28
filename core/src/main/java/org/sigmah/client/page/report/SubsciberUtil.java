@@ -6,6 +6,7 @@ import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
+import org.sigmah.client.page.report.json.ReportSerializer;
 import org.sigmah.shared.command.CreateReportDef;
 import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.result.CreateResult;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class SubsciberUtil {
 
 	final Dispatcher service;
+	final ReportSerializer reportSerializer;
 	
     private SubscribeForm form;
     private FormDialogImpl dialog;
@@ -30,8 +32,9 @@ public class SubsciberUtil {
 		void onSuccess();
 	}
 	
-	public SubsciberUtil(Dispatcher service){
+	public SubsciberUtil(Dispatcher service, ReportSerializer reportSerializer){
 		this.service = service;
+		this.reportSerializer = reportSerializer;
 	}
 	
 	public void showForm(final ReportElement element, final Callback callback){
@@ -62,7 +65,7 @@ public class SubsciberUtil {
 	    	report.setTitle(form.getTitle());
 	    	report.setFrequency(form.getReportFrequency());
 			
-			service.execute(new CreateReportDef(report), null, new AsyncCallback<CreateResult>() {
+			service.execute(new CreateReportDef(reportSerializer.serialize(report)), null, new AsyncCallback<CreateResult>() {
 	            public void onFailure(Throwable caught) {
 	            	dialog.onServerError();
 	            }
