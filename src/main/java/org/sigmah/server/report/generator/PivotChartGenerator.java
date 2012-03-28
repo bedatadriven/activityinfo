@@ -117,7 +117,7 @@ public class PivotChartGenerator extends PivotGenerator<PivotChartReportElement>
         	return "[Empty]";
         }
         
-        int indicatorId = element.getIndicators().get(0);
+        int indicatorId = element.getIndicators().iterator().next();
 
         Indicator indicator = indicatorDAO.findById(indicatorId);
 
