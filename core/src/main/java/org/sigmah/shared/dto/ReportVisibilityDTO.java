@@ -5,8 +5,6 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 public class ReportVisibilityDTO extends BaseModelData {
 	
 	private int databaseId;
-	private boolean defaultDashboard;
-	
 
 	public int getDatabaseId() {
 		return databaseId;
@@ -27,10 +25,11 @@ public class ReportVisibilityDTO extends BaseModelData {
 		set("visible", visible);
 	}
 	public boolean isDefaultDashboard() {
-		return defaultDashboard;
+		return (Boolean)get("defaultDashboard", false);
 	}
+	
 	public void setDefaultDashboard(boolean defaultDashboard) {
-		this.defaultDashboard = defaultDashboard;
+		set("defaultDashboard", defaultDashboard);
 	}
 	
 	

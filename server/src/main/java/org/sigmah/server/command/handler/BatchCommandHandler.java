@@ -6,15 +6,20 @@
 package org.sigmah.server.command.handler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.Command;
+import org.sigmah.shared.command.handler.CommandHandlerAsync;
+import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.result.BatchResult;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
 
+import com.google.common.primitives.Primitives;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -22,7 +27,7 @@ import com.google.inject.Injector;
  * @author Alex Bertram
  * @see org.sigmah.shared.command.BatchCommand
  */
-public class BatchCommandHandler implements CommandHandler<BatchCommand> {
+public class BatchCommandHandler implements CommandHandlerAsync<BatchCommand, BatchResult> {
 
     private final Injector injector;
 
@@ -31,19 +36,45 @@ public class BatchCommandHandler implements CommandHandler<BatchCommand> {
         this.injector = injector;
     }
 
-    public CommandResult execute(BatchCommand batch, User user) throws CommandException {
+    @Override
+	public void execute(BatchCommand batch, ExecutionContext context,
+			final AsyncCallback<BatchResult> callback) {
+    	
+    	final ArrayList<CommandResult> results = new ArrayList<CommandResult>();
+    	for(Command command : batch.getCommands()) {
+    		results.add(null);
+    	}
+    	final boolean finished[] = new boolean[batch.getCommands().size()];
+    	
+    	for(int i=0; i!=batch.getCommands().size();++i) {
+    		final int commandIndex = i;
+    		context.execute(batch.getCommands().get(i), new AsyncCallback<CommandResult>() {
 
-        List<CommandResult> results = new ArrayList<CommandResult>();
+				@Override
+				public void onFailure(Throwable caught) {
+					callback.onFailure(caught);
+				}
 
-        for (Command cmd : batch.getCommands()) {
+				@Override
+				public void onSuccess(CommandResult result) {
+					results.set(commandIndex, result);
+					finished[commandIndex] = true;
+					if(all(finished)) {
+						callback.onSuccess(new BatchResult(results));
+					}
+				}
+    			
+    		});
+    		
+    	}
+	}
 
-            CommandHandler etor = (CommandHandler) injector.getInstance(
-                    HandlerUtil.handlerForCommand(cmd));
-
-            results.add(etor.execute(cmd, user));
-
-        }
-
-        return new BatchResult(results);
+    private boolean all(boolean[] finished) {
+    	for(int i=0;i!=finished.length;++i) {
+    		if(!finished[i]) {
+    			return false;
+    		}
+    	} 
+    	return true;
     }
 }

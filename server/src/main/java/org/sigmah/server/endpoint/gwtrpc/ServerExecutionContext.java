@@ -78,8 +78,17 @@ public class ServerExecutionContext implements ExecutionContext {
 	}
 
 	private <C extends Command<R>, R extends CommandResult> void onAuthorized(C command, final AsyncCallback<R> callback) {
-		CommandHandlerAsync<C,R> handler = injector.getInstance(HandlerUtil.asyncHandlerForCommand(command));
-		handler.execute(command, this, callback);
+		Object handler = injector.getInstance(HandlerUtil.asyncHandlerForCommand(command));
+		if(handler instanceof CommandHandlerAsync) {
+			((CommandHandlerAsync<C,R>)handler).execute(command, this, callback);
+		} else if(handler instanceof CommandHandler) {
+			try {
+				callback.onSuccess((R) ((CommandHandler)handler).execute(command, new User(user)));
+				
+			} catch(Exception e) {
+				callback.onFailure(e);
+			}
+		}
 	}
 	
 	

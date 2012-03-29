@@ -38,7 +38,7 @@ public class ReportBar extends LayoutContainer {
 		dashboardButton = new ToggleButton("Pin to dashboard");
 		add(dashboardButton);
 		
-		shareButton = new Button("Share");
+		shareButton = new Button(I18N.CONSTANTS.share(), IconImageBundle.ICONS.group());
 		add(shareButton);
 		
 		exportButton = new ExportMenuButton();

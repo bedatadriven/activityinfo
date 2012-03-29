@@ -151,8 +151,9 @@ public class GetSchemaHandler implements
 									.from("UserPermission")
 									.where("UserPermission.UserId")
 										.equalTo(context.getUser().getId()), "p")
-					.on("p.DatabaseId = d.DatabaseId").leftJoin("UserLogin o")
-					.on("d.OwnerUserId = o.UserId").where("d.DateDeleted")
+						.on("p.DatabaseId = d.DatabaseId")
+					.leftJoin("UserLogin o")
+						.on("d.OwnerUserId = o.UserId").where("d.DateDeleted")
 					.isNull().whereTrue("(o.userId = ? or p.AllowView = 1 or (d.DatabaseId in (select pa.DatabaseId from activity pa where pa.published>0)))")
 					.appendParameter(context.getUser().getId())
 					.orderBy("d.Name");

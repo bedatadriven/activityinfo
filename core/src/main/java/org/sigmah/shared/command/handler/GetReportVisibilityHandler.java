@@ -35,6 +35,7 @@ public class GetReportVisibilityHandler implements CommandHandlerAsync<GetReport
 						dto.setDatabaseId(row.getInt("databaseId"));
 						dto.setDatabaseName(row.getString("name"));
 						dto.setDefaultDashboard(row.getBoolean("defaultDashboard"));
+						dto.setVisible(true);
 						list.add(dto);
 					}
 					callback.onSuccess(new ReportVisibilityResult(list));

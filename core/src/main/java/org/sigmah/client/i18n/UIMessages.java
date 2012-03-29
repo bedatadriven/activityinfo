@@ -291,4 +291,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 
 	@DefaultMessage("Please enter email address to subscribe.")
 	String noEmailAddress();
+	
+	@DefaultMessage("{0} Users")
+	String users(String groupName);
 }
