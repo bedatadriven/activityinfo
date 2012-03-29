@@ -22,4 +22,13 @@ public class ReportsResult extends ListResult<ReportMetadataDTO> {
         super(data);
     }
 
+	public ReportMetadataDTO forId(int id) {
+		for(ReportMetadataDTO report : getData()) {
+			if(report.getId() == id) {
+				return report;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+
 }

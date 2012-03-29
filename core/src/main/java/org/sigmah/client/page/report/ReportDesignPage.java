@@ -9,23 +9,23 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.common.dialog.FormDialogCallback;
-import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.report.editor.CompositeEditor;
 import org.sigmah.client.page.report.editor.EditorProvider;
 import org.sigmah.client.page.report.editor.ReportElementEditor;
 import org.sigmah.client.page.report.json.ReportSerializer;
 import org.sigmah.client.page.report.resources.ReportResources;
-import org.sigmah.client.report.editor.chart.ChartEditor;
-import org.sigmah.shared.command.CreateSubscribe;
+import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.GetReportModel;
+import org.sigmah.shared.command.GetReports;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.RenderElement.Format;
 import org.sigmah.shared.command.UpdateReportModel;
 import org.sigmah.shared.command.UpdateReportSubscription;
-import org.sigmah.shared.command.result.RenderResult;
+import org.sigmah.shared.command.result.BatchResult;
+import org.sigmah.shared.command.result.ReportsResult;
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.report.model.Report;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -39,10 +39,8 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.common.base.Strings;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 public class ReportDesignPage extends ContentPanel implements Page, ExportCallback {
 
@@ -68,6 +66,8 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	 * The editor for the model
 	 */
 	private ReportElementEditor currentEditor;
+
+	private ReportMetadataDTO currentMetadata;
 
 	
 	@Inject
@@ -154,23 +154,30 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	private void loadReport(int reportId) {
 
-		dispatcher.execute(new GetReportModel(reportId), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
-				new AsyncCallback<Report>() {
+		BatchCommand batch = new BatchCommand();
+		batch.add(new GetReportModel(reportId));
+		batch.add(new GetReports());
+		
+		dispatcher.execute(batch, new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
+				new AsyncCallback<BatchResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO show appropriate message.
 			}
 
 			@Override
-			public void onSuccess(Report result) {						
-				onModelLoaded(result);
+			public void onSuccess(BatchResult result) {						
+				onModelLoaded((Report) result.getResult(0), (ReportsResult)result.getResult(1));
 			}
 		});
 	}
 
-	private void onModelLoaded(Report report) {
+	private void onModelLoaded(Report report, ReportsResult reportsResult) {
+		this.currentMetadata = reportsResult.forId(report.getId());
 		this.currentModel = report;
+		
 		reportBar.setReportTitle(currentModel.getTitle());
+		reportBar.getDashboardButton().toggle(currentMetadata.isDashboard());
 		
 		if(currentModel.getElements().size() == 1) {
 			ReportElementEditor editor = editorProvider.create(currentModel.getElement(0));
@@ -294,25 +301,6 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		dialog.show(currentModel);
 	}
 
-	public void subscribeEmail(final FormDialogImpl<SubscribeForm> dialog, int reportId) {
-
-		CreateSubscribe sub = new CreateSubscribe();
-		sub.setReportTemplateId(reportId);
-		sub.setEmailsList(dialog.getForm().getEmailList());
-		sub.setReportFrequency(dialog.getForm().getReportFrequency());
-		sub.setDay(dialog.getForm().getDay());
-
-		dispatcher.execute(sub, dialog, new AsyncCallback<VoidResult>() {
-			public void onFailure(Throwable caught) {
-				dialog.onServerError();
-			}
-
-			public void onSuccess(VoidResult result) {
-				dialog.hide();
-				//loadReport(selectedReport.getId());
-			}
-		});
-	}
 
 	@Override
 	public void export(Format format) {

@@ -3,7 +3,6 @@ package org.sigmah.client.page.report;
 import org.sigmah.client.i18n.I18N;
 
 import com.extjs.gxt.ui.client.Style.AutoSizeMode;
-import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.EditorEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;

@@ -135,7 +135,7 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
      * @return true if the current user is subscribed to this ReportDefinition
      */
     public boolean isSubscribed() {
-        return (Boolean)get("subscribed");
+        return (Boolean)get("subscribed", false);
     }
 
     /**

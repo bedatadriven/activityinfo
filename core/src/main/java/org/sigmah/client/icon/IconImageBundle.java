@@ -265,4 +265,7 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype folder();
     AbstractImagePrototype printer();
     AbstractImagePrototype email();
+
+    AbstractImagePrototype star();
+    AbstractImagePrototype starWhite();
 }

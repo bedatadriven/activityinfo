@@ -32,7 +32,7 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
 
 
 	@Override
-	public void execute(GetReports command, ExecutionContext context,
+	public void execute(GetReports command, final ExecutionContext context,
 			final AsyncCallback<ReportsResult> callback) {
     	// note that we are excluding reports with a null title-- these
     	// reports have not yet been explicitly saved by the user
@@ -58,6 +58,7 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
     		.appendColumn("r.reportTemplateId", "reportId")
     		.appendColumn("r.title", "title")
     		.appendColumn("r.ownerUserId", "ownerUserId")
+    		.appendColumn("o.name", "ownerName")
     		.appendColumn("s.dashboard", "dashboard")
     		.appendColumn(
     				SqlQuery.selectSingle("max(defaultDashboard)")
@@ -66,6 +67,7 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
     					.whereTrue("v.reportid=r.reportTemplateId"),
     				"defaultDashboard")
     		.from("reporttemplate", "r")
+    		.leftJoin("userlogin o").on("o.userid=r.ownerUserId")
     		.leftJoin(mySubscriptions, "s").on("r.reportTemplateId=s.reportId")
     		.whereTrue("r.title is not null")
     		.where("r.ownerUserId").equalTo(context.getUser().getId())
@@ -82,7 +84,8 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
 			        for(SqlResultSetRow row : results.getRows()) {
 			        	   ReportMetadataDTO dto = new ReportMetadataDTO();
 			               dto.setId(row.getInt("reportId"));
-			               dto.setAmOwner(true);
+			               dto.setAmOwner(row.getInt("ownerUserId") == context.getUser().getId());
+			               dto.setOwnerName(row.getString("ownerName"));
 			               dto.setTitle(row.getString("title"));
 			               dto.setEditAllowed(dto.getAmOwner());
 			               if(row.isNull("dashboard")) {

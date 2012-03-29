@@ -35,12 +35,15 @@ public class ReportsPage extends LayoutContainer implements Page {
 
     	setLayout(new BorderLayout());
     	
-    	BorderLayoutData savedLayout = new BorderLayoutData(LayoutRegion.EAST);
-    	savedLayout.setSize(0.33f);
-    	savedLayout.setMargins(new Margins(0, 5, 0, 0));
-    	add(new SavedReportsPanel(eventBus, dispatcher), savedLayout);
+    	BorderLayoutData newLayout = new BorderLayoutData(LayoutRegion.EAST);
+    	newLayout.setSize(0.40f);
+    	newLayout.setMargins(new Margins(0, 5, 0, 0));
+    	newLayout.setSplit(true);
+    	newLayout.setCollapsible(true);
+    	add(new NewReportPanel(eventBus, dispatcher, reportSerializer), newLayout);
+    
+    	add(new SavedReportsPanel(eventBus, dispatcher), new BorderLayoutData(LayoutRegion.CENTER));
     	
-    	add(new NewReportPanel(eventBus, dispatcher, reportSerializer), new BorderLayoutData(LayoutRegion.CENTER));
     		
     }
 

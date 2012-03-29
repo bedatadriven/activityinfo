@@ -294,4 +294,10 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	
 	@DefaultMessage("{0} Users")
 	String users(String groupName);
+	
+	@DefaultMessage("Report ''{0}'' added to dashboard.")
+	String addedToDashboard(String reportName);
+	
+	@DefaultMessage("Report ''{0}'' removed from dashboard.")
+	String removedFromDashboard(String reportName);
 }

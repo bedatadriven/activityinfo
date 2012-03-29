@@ -18,11 +18,15 @@ public class UpdateReportSubscriptionHandler implements CommandHandlerAsync<Upda
 	public void execute(final UpdateReportSubscription command,
 			final ExecutionContext context, final AsyncCallback<VoidResult> callback) {
 	
-		SqlUpdate.update("ReportSubscription")
+		SqlUpdate update = SqlUpdate.update("ReportSubscription")
 			.valueIfNotNull("dashboard", command.getPinnedToDashboard())
 			.where("reportId", command.getReportId())
-			.where("userId", context.getUser().getId())
-			.execute(context.getTransaction(), new SqlResultCallback() {
+			.where("userId", context.getUser().getId());
+		
+		if(update.isEmpty()) {
+			callback.onSuccess(null);
+		} else {
+			update.execute(context.getTransaction(), new SqlResultCallback() {
 				
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
@@ -54,6 +58,7 @@ public class UpdateReportSubscriptionHandler implements CommandHandlerAsync<Upda
 					
 				}
 			});	
+		}
 	}
 
 	
