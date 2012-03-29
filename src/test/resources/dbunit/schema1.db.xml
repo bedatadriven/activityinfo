@@ -112,6 +112,12 @@
 		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
 			&lt;title&gt;Report 1&lt;/title&gt;
 		&lt;/report&gt;"/>
+		
+	<reportTemplate reportTemplateId="2" ownerUserId="2" visibility="1" title="Report 1" frequency="Monthly" day="28"
+                    XML="
+		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
+			&lt;title&gt;Report 1&lt;/title&gt;
+		&lt;/report&gt;"/>
 
     <reportSubscription userId="1" reportId="1" subscribed="1"/>
 

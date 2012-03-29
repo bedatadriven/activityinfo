@@ -14,6 +14,7 @@ import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
 import org.sigmah.shared.report.model.Report;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class GetReportModelHandler implements CommandHandler<GetReportModel> {
@@ -37,7 +38,7 @@ public class GetReportModelHandler implements CommandHandler<GetReportModel> {
 		Report report = new Report();
 		
 		String json = entity.getJson();
-		if (json.length() != 0) {
+		if (!Strings.isNullOrEmpty(json)) {
 			report = reportSerializer.deserialize(entity.getJson());
 		} else {
 			try {

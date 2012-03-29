@@ -29,12 +29,6 @@ import com.google.inject.Inject;
  * @see org.sigmah.shared.command.GetReports
  */
 public class GetReportsHandler implements CommandHandlerAsync<GetReports, ReportsResult> {
-    private EntityManager em;
-
-    @Inject
-    public GetReportsHandler(EntityManager em) {
-        this.em = em;
-    }
 
 
 	@Override
@@ -43,15 +37,42 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
     	// note that we are excluding reports with a null title-- these
     	// reports have not yet been explicitly saved by the user
     	
+		SqlQuery mySubscriptions = 	
+			SqlQuery.selectAll()
+				.from("reportsubscription")
+				.where("userId").equalTo(context.getUser().getUserId());
+		
+		SqlQuery myDatabases = 
+			SqlQuery.selectSingle("d.databaseid")
+			.from("userdatabase", "d")
+			.leftJoin(
+				SqlQuery.selectAll()
+					.from("UserPermission")
+					.where("UserPermission.UserId")
+						.equalTo(context.getUser().getId()), "p")
+				.on("p.DatabaseId = d.DatabaseId")
+				.where("d.ownerUserId").equalTo(context.getUser().getUserId())
+					.or("p.AllowView").equalTo(1);
+		
     	SqlQuery.select()
     		.appendColumn("r.reportTemplateId", "reportId")
     		.appendColumn("r.title", "title")
     		.appendColumn("r.ownerUserId", "ownerUserId")
     		.appendColumn("s.dashboard", "dashboard")
+    		.appendColumn(
+    				SqlQuery.selectSingle("max(defaultDashboard)")
+    					.from("reportvisibility", "v")
+    					.where("v.databaseId").in(myDatabases)
+    					.whereTrue("v.reportid=r.reportTemplateId"),
+    				"defaultDashboard")
     		.from("reporttemplate", "r")
-    		.leftJoin("reportsubscription", "s").on("r.reportTemplateId=s.reportId")
+    		.leftJoin(mySubscriptions, "s").on("r.reportTemplateId=s.reportId")
     		.whereTrue("r.title is not null")
     		.where("r.ownerUserId").equalTo(context.getUser().getId())
+    			.or("r.reportTemplateId").in(
+    					SqlQuery.select("reportId") 
+    						.from("reportvisibility", "v")
+    						.where("v.databaseid").in( myDatabases ))
     		.execute(context.getTransaction(), new SqlResultCallback() {
 				
 				@Override
@@ -64,7 +85,12 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
 			               dto.setAmOwner(true);
 			               dto.setTitle(row.getString("title"));
 			               dto.setEditAllowed(dto.getAmOwner());
-			               dto.setDashboard(!row.isNull("dashboard") && row.getBoolean("dashboard"));
+			               if(row.isNull("dashboard")) {
+			            	   // inherited from database-wide visibility
+			            	   dto.setDashboard(!row.isNull("defaultDashboard") && row.getBoolean("defaultDashboard"));
+			               } else {
+			            	   dto.setDashboard(row.getBoolean("dashboard"));
+			               }
 			               dtos.add(dto);
 			        }
 			        
