@@ -1,7 +1,7 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 
 /**
  * Updates the relationship between a user and a report
@@ -12,9 +12,8 @@ public class UpdateReportSubscription implements Command<VoidResult>{
 	private String userEmail;
 	
 	private Boolean pinnedToDashboard;
-	private Boolean subscribed;
-	private Integer day;
-	private ReportFrequency frequency;
+	private Integer emailDay;
+	private EmailDelivery frequency;
 
 	public int getReportId() {
 		return reportId;
@@ -40,30 +39,20 @@ public class UpdateReportSubscription implements Command<VoidResult>{
 		this.pinnedToDashboard = pinnedToDashboard;
 	}
 
-	public Boolean getSubscribed() {
-		return subscribed;
+
+	public Integer getEmailDay() {
+		return emailDay;
 	}
 
-	public void setSubscribed(Boolean subscribed) {
-		this.subscribed = subscribed;
+	public void setEmailDay(Integer day) {
+		this.emailDay = day;
 	}
 
-	public Integer getDay() {
-		return day;
-	}
-
-	public void setDay(Integer day) {
-		this.day = day;
-	}
-
-	public ReportFrequency getFrequency() {
+	public EmailDelivery getEmailDelivery() {
 		return frequency;
 	}
 
-	public void setFrequency(ReportFrequency frequency) {
+	public void setEmailDelivery(EmailDelivery frequency) {
 		this.frequency = frequency;
 	}
-	
-	
-	
 }

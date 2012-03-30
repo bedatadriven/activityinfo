@@ -300,4 +300,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	
 	@DefaultMessage("Report ''{0}'' removed from dashboard.")
 	String removedFromDashboard(String reportName);
+
+	@DefaultMessage("The report ''{0}'' has been saved.")
+	String reportSaved(String name);
 }

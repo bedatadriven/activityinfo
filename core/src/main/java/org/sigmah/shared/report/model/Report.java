@@ -39,7 +39,7 @@ public class Report extends ReportElement<ReportContent> implements Serializable
 	private String fileName;
     private String description;
 
-    private ReportFrequency frequency;
+    private EmailDelivery frequency;
     private Integer day = null;
 
     public static final int LAST_DAY_OF_MONTH = 28;
@@ -127,7 +127,7 @@ public class Report extends ReportElement<ReportContent> implements Serializable
      * @return the frequency of this report
      */
     @XmlAttribute(name="frequency")
-    public ReportFrequency getFrequency() {
+    public EmailDelivery getFrequency() {
         return frequency;
     }
 
@@ -136,7 +136,7 @@ public class Report extends ReportElement<ReportContent> implements Serializable
      *
      * @param frequency The frequency of this report
      */
-    public void setFrequency(ReportFrequency frequency) {
+    public void setFrequency(EmailDelivery frequency) {
         this.frequency = frequency;
     }
 

@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -43,6 +44,24 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class ReportDesignPage extends ContentPanel implements Page, ExportCallback {
+
+	private class SaveCallback implements AsyncCallback<VoidResult> {
+		@Override
+		public final void onSuccess(VoidResult result) {
+			Info.display(I18N.CONSTANTS.saved(), I18N.MESSAGES.reportSaved(currentModel.getTitle()));
+			onSaved();
+		}
+
+		@Override
+		public final void onFailure(Throwable caught) {
+			MessageBox.alert(I18N.CONSTANTS.serverError(), caught.getMessage(), null);
+		}
+		
+		public void onSaved() {
+			
+		}
+	}
+
 
 	public static final PageId PAGE_ID = new PageId("reportdesign");
 
@@ -101,7 +120,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 				if(newTitle != null && !newTitle.equals(currentModel.getTitle())) {
 					currentModel.setTitle(newTitle);
 					reportBar.setReportTitle(newTitle);
-					save();
+					save(new SaveCallback());
 				}
 			}
 		});
@@ -110,10 +129,10 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				if(currentModel.getTitle()==null) {
-					promptForTitle();
+				if(untitled()) {
+					promptForTitle(new SaveCallback());
 				} else {
-					save();
+					save(new SaveCallback());
 				}
 			}
 		});
@@ -173,7 +192,12 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	}
 
 	private void onModelLoaded(Report report, ReportsResult reportsResult) {
-		this.currentMetadata = reportsResult.forId(report.getId());
+		try {
+			this.currentMetadata = reportsResult.forId(report.getId());
+		} catch(IllegalArgumentException e) {
+			this.currentMetadata = new ReportMetadataDTO();
+			this.currentMetadata.setId(report.getId());
+		}
 		this.currentModel = report;
 		
 		reportBar.setReportTitle(currentModel.getTitle());
@@ -203,7 +227,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		layout();
 	}
 
-	public void save() {
+	public void save(final AsyncCallback<VoidResult> callback) {
 		UpdateReportModel updateReport = new UpdateReportModel();
 		updateReport.setReportJsonModel(reportSerializer
 				.serialize(currentModel));
@@ -211,40 +235,31 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				// callback.onFailure(caught);
+				callback.onFailure(caught);
 			}
 
 			@Override
 			public void onSuccess(VoidResult result) {
-				//loadReport(view.getReport().getId());
+				callback.onSuccess(result);
 			}
 		});
 	}
 	
-	private void pinToDashboard(boolean pressed) {
-		UpdateReportSubscription update = new UpdateReportSubscription();
-		update.setReportId(currentModel.getId());
-		update.setPinnedToDashboard(pressed);
-		
-		dispatcher.execute(update, null, new AsyncCallback<VoidResult>() {
-
+	private void pinToDashboard(final boolean pressed) {
+		ensureTitled(new SaveCallback() {
 			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+			public void onSaved() {
+				UpdateReportSubscription update = new UpdateReportSubscription();
+				update.setReportId(currentModel.getId());
+				update.setPinnedToDashboard(pressed);
 				
-			}
-
-			@Override
-			public void onSuccess(VoidResult result) {
-				// TODO Auto-generated method stub
-				
+				dispatcher.execute(update, null, new SaveCallback());
 			}
 		});
-		
 	}
 
 	
-	public void promptForTitle() {
+	public void promptForTitle(final AsyncCallback<VoidResult> callback) {
 		MessageBox.prompt(I18N.CONSTANTS.save(), I18N.CONSTANTS.chooseReportTitle(), new Listener<MessageBoxEvent>() {
 			
 			@Override
@@ -253,7 +268,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 				if(!Strings.isNullOrEmpty(newTitle)) {
 					currentModel.setTitle(newTitle);
 					reportBar.setReportTitle(newTitle);
-					save();
+					save(callback);
 				}
 			}
 		});
@@ -294,16 +309,34 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public void showShareForm() {
-		final ShareReportDialog dialog = new ShareReportDialog(dispatcher);
-		//form.updateForm(currentReportId);
-		dialog.show(currentModel);
+	
+	private void ensureTitled(SaveCallback callback) {
+		if(untitled()) {
+			promptForTitle(callback);
+		} else {
+			callback.onSaved();
+		}
 	}
 
+	public void showShareForm() {
+		ensureTitled(new SaveCallback() {
+
+			@Override
+			public void onSaved() {
+				final ShareReportDialog dialog = new ShareReportDialog(dispatcher);
+				//form.updateForm(currentReportId);
+				dialog.show(currentModel);
+				
+			}
+		});
+	}
 
 	@Override
 	public void export(Format format) {
 		dispatcher.execute(new RenderElement(currentEditor.getModel(), format), null, new DownloadCallback(eventBus));
+	}
+
+	private boolean untitled() {
+		return currentModel.getTitle()==null;
 	}
 }

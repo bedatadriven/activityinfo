@@ -28,7 +28,7 @@ import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.RtfReportRenderer;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
@@ -75,7 +75,7 @@ public class ReportMailerJob {
         for (ReportDefinition template : reports) {
             try {
                 Report report = ReportParserJaxb.parseXml(template.getXml());
-                if (report.getFrequency() == ReportFrequency.Monthly) {
+                if (report.getFrequency() == EmailDelivery.MONTHLY) {
                     if (ReportMailerHelper.mailToday(today, report)) {
                         execute(today, template, report);
                     }

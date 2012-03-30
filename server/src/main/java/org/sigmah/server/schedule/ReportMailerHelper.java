@@ -17,7 +17,7 @@ import org.sigmah.server.util.html.HtmlWriter;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 import org.sigmah.shared.util.date.DateUtil;
 
 /*
@@ -40,13 +40,10 @@ public class ReportMailerHelper {
         Calendar today = Calendar.getInstance();
         today.setTime(dateToday);
 
-        if(report.getFrequency() == ReportFrequency.Daily) {
-            return true;
-
-        } else if(report.getFrequency() == ReportFrequency.Weekly) {
+        if(report.getFrequency() == EmailDelivery.WEEKLY) {
             return today.get(Calendar.DAY_OF_WEEK) == report.getDay()+1;
 
-        } else if(report.getFrequency() == ReportFrequency.Monthly) {
+        } else if(report.getFrequency() == EmailDelivery.MONTHLY) {
             if(report.getDay() == Report.LAST_DAY_OF_MONTH) {
                 return today.get(Calendar.DATE) == today.getActualMaximum(Calendar.DATE);
             } else {
@@ -58,10 +55,10 @@ public class ReportMailerHelper {
 
     public static DateRange computeDateRange(Report report, Date today) {
 
-        if(report.getFrequency() == ReportFrequency.Monthly) {
+        if(report.getFrequency() == EmailDelivery.MONTHLY) {
             return DATE_UTIL.lastCompleteMonthRange(today);
 
-        } else if(report.getFrequency() == ReportFrequency.Weekly) {
+        } else if(report.getFrequency() == EmailDelivery.WEEKLY) {
             DateRange lastWeek = new DateRange();
             lastWeek.setMaxDate(today);
             lastWeek.setMinDate(DATE_UTIL.add(today, DateUnit.WEEK, -1));
@@ -75,12 +72,10 @@ public class ReportMailerHelper {
 
 
 
-    public static String frequencyString(ResourceBundle messages, ReportFrequency frequency) {
-        if(frequency == ReportFrequency.Daily) {
-            return messages.getString("daily");
-        } else if(frequency == ReportFrequency.Weekly) {
+    public static String frequencyString(ResourceBundle messages, EmailDelivery frequency) {
+        if(frequency == EmailDelivery.WEEKLY) {
             return messages.getString("weekly");
-        } else if(frequency == ReportFrequency.Monthly) {
+        } else if(frequency == EmailDelivery.MONTHLY) {
             return messages.getString("monthly");
         } else {
             throw new IllegalArgumentException("Invalid frequency = " + frequency);

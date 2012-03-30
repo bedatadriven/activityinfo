@@ -16,7 +16,6 @@ import org.sigmah.shared.command.UpdateReportSubscription;
 import org.sigmah.shared.command.result.ReportsResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ReportMetadataDTO;
-import org.sigmah.shared.report.model.ReportFrequency;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoader;
@@ -33,10 +32,10 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -56,7 +55,9 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		toolBar = new ActionToolBar(this);
 		toolBar.addButton(UIActions.PRINT, "Open", IconImageBundle.ICONS.pdf());
 		toolBar.addDeleteButton();
+		toolBar.addButton("share", "Sharing options...", IconImageBundle.ICONS.group());
 		toolBar.addButton("email", "Email options...", IconImageBundle.ICONS.email());
+	
 		setTopComponent(toolBar);
 		
 		ListLoader<ReportsResult> loader = new BaseListLoader<ReportsResult>(new ReportsProxy(dispatcher));
@@ -67,6 +68,7 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		grid.setAutoExpandColumn("title");
 		grid.setSelectionModel(new GridSelectionModel<ReportMetadataDTO>());
 		grid.setClicksToEdit(ClicksToEdit.ONE);
+		grid.setLoadMask(true);
 		grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<ReportMetadataDTO>>() {
 
 			@Override
@@ -151,16 +153,14 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<ReportMetadataDTO> store, Grid<ReportMetadataDTO> grid) {
 
-				if(model.isSubscribed()) {
-					switch(model.getFrequency()) {
-					case Monthly:
-						return I18N.CONSTANTS.monthly();
-					case Weekly:
-					default:
-						return I18N.CONSTANTS.weekly();
-					}
-				} else {
+				switch(model.getEmailDelivery()) {
+				case NONE:
 					return "<i>" + I18N.CONSTANTS.none() + "</i>";
+				case MONTHLY:
+					return I18N.CONSTANTS.monthly();
+				case WEEKLY:
+				default:
+					return I18N.CONSTANTS.weekly();
 				}
 			}
 		});
@@ -228,9 +228,24 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		if(UIActions.PRINT.equals(actionId)) {
 			open(grid.getSelectionModel().getSelectedItem());
 		} else if("email".equals(actionId)) {
-			EmailDialog dialog = new EmailDialog(dispatcher);
+			showEmailDialog();
+		} else if("share".equals(actionId)) {
+			ShareReportDialog dialog = new ShareReportDialog(dispatcher);
 			dialog.show(grid.getSelectionModel().getSelectedItem());
 		}
+	}
+
+
+	private void showEmailDialog() {
+		EmailDialog dialog = new EmailDialog(dispatcher);
+		final ReportMetadataDTO selected = grid.getSelectionModel().getSelectedItem();
+		dialog.show(selected, new EmailDialog.Callback() {
+			
+			@Override
+			public void onUpdated() {
+				store.update(selected);
+			}
+		});
 	}
 
 	private void open(ReportMetadataDTO model) {

@@ -7,7 +7,7 @@ package org.sigmah.shared.dto;
 
 import java.util.List;
 
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -23,10 +23,10 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
      * Dummy reference to assure that GWT includes ReportFrequency is included
      * in the list of classes to serialize.
      */
-    private ReportFrequency freq_;
+    private EmailDelivery freq_;
 
     public ReportMetadataDTO() {
-		setFrequency(ReportFrequency.NotDateBound);
+		setEmailDelivery(EmailDelivery.NONE);
 	}
 
     /**
@@ -104,22 +104,22 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
     /**
      * @return the ReportFrequency of this ReportDefinition
      */
-    public ReportFrequency getFrequency() {
-        return get("frequency");
+    public EmailDelivery getEmailDelivery() {
+        return get("emailDelivery", EmailDelivery.NONE);
     }
 
     /**
      * Sets the ReportFrequency of this ReportDefinition
      */
-    public void setFrequency(ReportFrequency frequency) {
-        set("frequency", frequency);
+    public void setEmailDelivery(EmailDelivery frequency) {
+        set("emailDelivery", frequency);
     }
 
     /**
      * @return the day of the month [1, 31] on which this ReportDefinition is to be published
      */
     public Integer getDay() {
-        return get("day");
+        return get("day", 0);
     }
 
     /**
@@ -127,23 +127,6 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
      */
     public void setDay(Integer day) {
         set("day", day);
-    }
-
-    /**
-     * See {@link org.sigmah.server.database.hibernate.entity.ReportSubscription#isSubscribed()}
-     *
-     * @return true if the current user is subscribed to this ReportDefinition
-     */
-    public boolean isSubscribed() {
-        return (Boolean)get("subscribed", false);
-    }
-
-    /**
-     * Sets whether the current user is subscribed to this ReportDefinition.
-     * See {@link org.sigmah.server.database.hibernate.entity.ReportSubscription#setSubscribed(boolean)}
-     */
-    public void setSubscribed(boolean subscribed) {
-        set("subscribed", subscribed);
     }
     
 	public List<String> getSubscribers() {
@@ -160,7 +143,7 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
 	}
 	
 	public boolean isDashboard() {
-		return (Boolean)get("dashboard");
+		return (Boolean)get("dashboard", false);
 	}
     
 }

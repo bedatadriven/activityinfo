@@ -24,7 +24,7 @@ import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 import org.sigmah.shared.report.model.clustering.AutomaticClustering;
 import org.sigmah.shared.report.model.clustering.NoClustering;
 import org.sigmah.shared.report.model.layers.BubbleMapLayer;
@@ -132,7 +132,7 @@ public class ReportJsonFactory implements ReportSerializer {
 		}
 		JsonElement frequency = jsonObject.get("frequency");
 		if (frequency != null) {
-			report.setFrequency(ReportFrequency.valueOf(frequency.getAsString()));
+			report.setFrequency(EmailDelivery.valueOf(frequency.getAsString()));
 		}
 		JsonElement day = jsonObject.get("day");
 		if (day != null) {

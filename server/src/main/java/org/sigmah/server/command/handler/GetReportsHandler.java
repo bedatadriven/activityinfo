@@ -14,6 +14,7 @@ import org.sigmah.shared.command.handler.CommandHandlerAsync;
 import org.sigmah.shared.command.handler.ExecutionContext;
 import org.sigmah.shared.command.result.ReportsResult;
 import org.sigmah.shared.dto.ReportMetadataDTO;
+import org.sigmah.shared.report.model.EmailDelivery;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -60,6 +61,8 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
     		.appendColumn("r.ownerUserId", "ownerUserId")
     		.appendColumn("o.name", "ownerName")
     		.appendColumn("s.dashboard", "dashboard")
+    		.appendColumn("s.emaildelivery", "emaildelivery")
+    		.appendColumn("s.emailday", "emailday")
     		.appendColumn(
     				SqlQuery.selectSingle("max(defaultDashboard)")
     					.from("reportvisibility", "v")
@@ -88,6 +91,14 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
 			               dto.setOwnerName(row.getString("ownerName"));
 			               dto.setTitle(row.getString("title"));
 			               dto.setEditAllowed(dto.getAmOwner());
+			               if(!row.isNull("emaildelivery")) {
+			            	   dto.setEmailDelivery(EmailDelivery.valueOf(row.getString("emaildelivery")));
+			               }
+			               if(row.isNull("emailday")) {
+			            	   dto.setDay(1);
+			               } else {
+			            	   dto.setDay(row.getInt("emailday"));
+			               }
 			               if(row.isNull("dashboard")) {
 			            	   // inherited from database-wide visibility
 			            	   dto.setDashboard(!row.isNull("defaultDashboard") && row.getBoolean("defaultDashboard"));

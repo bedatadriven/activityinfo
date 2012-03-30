@@ -13,7 +13,7 @@ import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.report.model.Report;
 import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 import org.sigmah.shared.report.model.ReportSubscriber;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;

@@ -12,4 +12,11 @@
 		</createTable>
 	</changeSet>
 
+	<changeSet author="alex" id="006-02">
+		<addColumn tableName="reportsubscription">
+			<column name="emaildelivery" defaultValue="NONE" type="nvarchar(25)" />
+			<column name="emailday" defaultValue="1" type="int"/>
+		</addColumn>
+	</changeSet>
+
 </databaseChangeLog>

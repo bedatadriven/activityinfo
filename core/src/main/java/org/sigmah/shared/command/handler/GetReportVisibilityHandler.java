@@ -25,6 +25,7 @@ public class GetReportVisibilityHandler implements CommandHandlerAsync<GetReport
 			.appendColumn("v.defaultDashboard", "defaultDashboard")
 			.from("reportvisibility", "v")
 			.leftJoin("userdatabase", "d").on("v.databaseId=d.databaseId")
+			.where("v.reportId").equalTo(command.getReportId())
 			.execute(context.getTransaction(), new SqlResultCallback() {
 				
 				@Override

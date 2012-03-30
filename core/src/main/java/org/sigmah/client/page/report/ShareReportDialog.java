@@ -10,6 +10,7 @@ import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.shared.command.BatchCommand;
+import org.sigmah.shared.command.GetReportModel;
 import org.sigmah.shared.command.GetReportVisibility;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.command.UpdateReportVisibility;
@@ -18,13 +19,17 @@ import org.sigmah.shared.command.result.ReportVisibilityResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ActivityDTO;
 import org.sigmah.shared.dto.IndicatorDTO;
+import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.dto.ReportVisibilityDTO;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.shared.report.model.Report;
 
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -108,6 +113,33 @@ public class ShareReportDialog extends Dialog {
 		return columnModel;
 	}
 	
+	public void show(ReportMetadataDTO metadata) {
+		super.show();
+
+		BatchCommand batch = new BatchCommand();
+		batch.add(new GetReportModel(metadata.getId()));
+		batch.add(new GetSchema());
+		batch.add(new GetReportVisibility(currentReport.getId()));
+		
+		dispatcher.execute(batch, new MaskingAsyncMonitor(grid, I18N.CONSTANTS.loading()),
+				new AsyncCallback<BatchResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onSuccess(BatchResult batch) {
+
+				currentReport = batch.getResult(0);
+				
+				populateGrid((SchemaDTO)batch.getResult(1), 
+							 (ReportVisibilityResult)batch.getResult(2));
+			}
+		});
+	}
+	
 	public void show(final Report report) {
 		super.show();
 		
@@ -156,6 +188,17 @@ public class ShareReportDialog extends Dialog {
 				}
 			}
 		}	
+		
+		if(gridStore.getCount() == 0) {
+			MessageBox.alert(I18N.CONSTANTS.share(), "This report is still empty, so it can't yet be shared.", 
+					new Listener<MessageBoxEvent>() {
+				
+				@Override
+				public void handleEvent(MessageBoxEvent be) {
+					hide();
+				}
+			});
+		}
 	}
 
 	protected boolean hasAny(UserDatabaseDTO db, Set<Integer> indicators) {
@@ -203,7 +246,6 @@ public class ShareReportDialog extends Dialog {
 						hide();
 					}
 				});
-			
 		}
 	}
 

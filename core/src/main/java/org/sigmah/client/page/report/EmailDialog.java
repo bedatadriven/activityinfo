@@ -3,11 +3,12 @@ package org.sigmah.client.page.report;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.page.report.EmailDialog.Callback;
 import org.sigmah.client.widget.MappingComboBox;
 import org.sigmah.shared.command.UpdateReportSubscription;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ReportMetadataDTO;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -37,6 +38,15 @@ public class EmailDialog extends Dialog {
 	private RadioGroup emailFrequency;
 	private MappingComboBox<Integer> dayOfWeek;
 	private MappingComboBox<Integer> dayOfMonth;
+
+	private ReportMetadataDTO reportMetadata;
+
+	private Callback callback;
+	
+	
+	public interface Callback {
+		void onUpdated();
+	}
 	
 	public EmailDialog(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
@@ -107,23 +117,23 @@ public class EmailDialog extends Dialog {
 
 	}
 
-	public void show(ReportMetadataDTO report) {
+	public void show(ReportMetadataDTO report, Callback callback) {
 		super.show();
-		if(report.isSubscribed()) {
+		this.reportMetadata = report;
+		this.callback = callback;
+		
+		if(report.getEmailDelivery().equals(EmailDelivery.WEEKLY)){
+			dayOfWeek.setMappedValue(report.getDay());
+			weekly.setValue(true);
+			monthly.setValue(false);
 			
-			if(report.getFrequency().equals(ReportFrequency.Weekly)){
-				dayOfWeek.setMappedValue(report.getDay());
-				weekly.setValue(true);
-				monthly.setValue(false);
-				
-				showWeek();
-			} else if(report.getFrequency().equals(ReportFrequency.Monthly)){
-				dayOfMonth.setMappedValue(report.getDay());
-				weekly.setValue(false);
-				monthly.setValue(true);
-				
-				showMonth();
-			}
+			showWeek();
+		} else if(report.getEmailDelivery().equals(EmailDelivery.MONTHLY)){
+			dayOfMonth.setMappedValue(report.getDay());
+			weekly.setValue(false);
+			monthly.setValue(true);
+			
+			showMonth();
 		} else {
 			dayOfWeek.hide();
 			dayOfMonth.hide();
@@ -147,27 +157,36 @@ public class EmailDialog extends Dialog {
 
 	@Override
 	protected void onButtonPressed(Button button) {
-		UpdateReportSubscription update = new UpdateReportSubscription();
-		update.setSubscribed(!none.getValue());
-		if(weekly.getValue()) {
-			update.setFrequency(ReportFrequency.Weekly);
-			update.setDay(dayOfWeek.getMappedValue());
-		} else if(monthly.getValue()) {
-			update.setFrequency(ReportFrequency.Monthly);
-			update.setDay(dayOfMonth.getMappedValue());
+		if(button.getItemId().equals(OK)) {
+			final UpdateReportSubscription update = new UpdateReportSubscription();
+			update.setReportId(reportMetadata.getId());
+			if(weekly.getValue()) {
+				update.setEmailDelivery(EmailDelivery.WEEKLY);
+				update.setEmailDay(dayOfWeek.getMappedValue());
+			} else if(monthly.getValue()) {
+				update.setEmailDelivery(EmailDelivery.MONTHLY);
+				update.setEmailDay(dayOfMonth.getMappedValue());
+			} else {
+				update.setEmailDelivery(EmailDelivery.NONE);
+			}
+			dispatcher.execute(update, new MaskingAsyncMonitor(this, I18N.CONSTANTS.saving()), new AsyncCallback<VoidResult>() {
+	
+				@Override
+				public void onFailure(Throwable caught) {
+					
+				}
+	
+				@Override
+				public void onSuccess(VoidResult result) {
+					hide();
+					reportMetadata.setEmailDelivery(update.getEmailDelivery());
+					reportMetadata.setDay(update.getEmailDay());
+					callback.onUpdated();
+				}
+			});
+		} else if(button.getItemId().equals(CANCEL)) {
+			hide();
 		}
-		dispatcher.execute(update, new MaskingAsyncMonitor(this, I18N.CONSTANTS.saving()), new AsyncCallback<VoidResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				
-			}
-
-			@Override
-			public void onSuccess(VoidResult result) {
-				hide();
-			}
-		});
 	}
 	
 }

@@ -3,7 +3,7 @@ package org.sigmah.shared.command;
 import java.util.List;
 
 import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 import org.sigmah.shared.report.model.ReportSubscriber;
 
 public class CreateSubscribe implements Command<VoidResult> {
@@ -11,7 +11,7 @@ public class CreateSubscribe implements Command<VoidResult> {
 	private int reportTemplateId;
 	private List<ReportSubscriber> emailsList;
 	private int day;
-	private ReportFrequency reportFrequency;
+	private EmailDelivery reportFrequency;
 	
 	public CreateSubscribe() {
 	}
@@ -40,11 +40,11 @@ public class CreateSubscribe implements Command<VoidResult> {
 		this.day = day;
 	}
 
-	public ReportFrequency getReportFrequency() {
+	public EmailDelivery getReportFrequency() {
 		return reportFrequency;
 	}
 
-	public void setReportFrequency(ReportFrequency reportFrequency) {
+	public void setReportFrequency(EmailDelivery reportFrequency) {
 		this.reportFrequency = reportFrequency;
 	}
 	
