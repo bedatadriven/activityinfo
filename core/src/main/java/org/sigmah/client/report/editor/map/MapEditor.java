@@ -57,7 +57,6 @@ public class MapEditor extends ContentPanel implements ReportElementEditor<MapRe
 			
 			@Override
 			public void onChanged() {
-				onChanged();
 			}
 		});
 
