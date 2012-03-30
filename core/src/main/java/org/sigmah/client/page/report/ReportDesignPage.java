@@ -47,7 +47,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	private class SaveCallback implements AsyncCallback<VoidResult> {
 		@Override
-		public final void onSuccess(VoidResult result) {
+		public void onSuccess(VoidResult result) {
 			Info.display(I18N.CONSTANTS.saved(), I18N.MESSAGES.reportSaved(currentModel.getTitle()));
 			onSaved();
 		}
@@ -68,8 +68,6 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	private final EventBus eventBus;
 	private final Dispatcher dispatcher;
 	private final EditorProvider editorProvider;
-
-	private final ReportSerializer reportSerializer;
 	
 	private boolean reportEdited;
 	private ReportBar reportBar;
@@ -79,6 +77,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	 * The model being edited on this page
 	 */
 	private Report currentModel;
+	private ReportMetadataDTO currentMetadata;
 	 
 
 	/**
@@ -86,16 +85,15 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	 */
 	private ReportElementEditor currentEditor;
 
-	private ReportMetadataDTO currentMetadata;
 
 	
 	@Inject
-	public ReportDesignPage(EventBus eventBus, Dispatcher service, EditorProvider editorProvider, ReportSerializer reportSerializer) {
+	public ReportDesignPage(EventBus eventBus, Dispatcher service, EditorProvider editorProvider) {
 		this.eventBus = eventBus;
 		this.dispatcher = service;
 		this.editorProvider = editorProvider;
-		this.reportSerializer = reportSerializer;
-
+		
+		
 		ReportResources.INSTANCE.style().ensureInjected();
 
 		setLayout(new BorderLayout());
@@ -167,7 +165,6 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 
 	public void go(int reportId) {
-		// TODO if report id is not valid one, should create new report and dont send command to server.
 		loadReport(reportId);
 	}
 
@@ -248,11 +245,24 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		ensureTitled(new SaveCallback() {
 			@Override
 			public void onSaved() {
-				UpdateReportSubscription update = new UpdateReportSubscription();
+				final UpdateReportSubscription update = new UpdateReportSubscription();
 				update.setReportId(currentModel.getId());
 				update.setPinnedToDashboard(pressed);
 				
-				dispatcher.execute(update, null, new SaveCallback());
+				dispatcher.execute(update, null, new SaveCallback() {
+
+					@Override
+					public void onSuccess(VoidResult result) {
+						if(update.getPinnedToDashboard()) {
+							Info.display(I18N.CONSTANTS.saved(), 
+									I18N.MESSAGES.addedToDashboard(currentModel.getTitle()));
+						} else {
+							Info.display(I18N.CONSTANTS.saved(), 
+									I18N.MESSAGES.removedFromDashboard(currentModel.getTitle()));
+						}
+					}
+					
+				});
 			}
 		});
 	}
