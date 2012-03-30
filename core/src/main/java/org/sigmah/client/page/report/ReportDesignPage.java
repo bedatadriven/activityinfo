@@ -229,8 +229,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	public void save(final AsyncCallback<VoidResult> callback) {
 		UpdateReportModel updateReport = new UpdateReportModel();
-		updateReport.setReportJsonModel(reportSerializer
-				.serialize(currentModel));
+		updateReport.setModel(currentModel);
 		
 		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
 			@Override

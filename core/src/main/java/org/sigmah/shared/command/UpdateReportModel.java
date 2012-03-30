@@ -1,21 +1,22 @@
 package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.VoidResult;
+import org.sigmah.shared.report.model.Report;
 
 public class UpdateReportModel implements Command<VoidResult>{
 
-	private String reportJsonModel;
+	private Report model;
 	
 	public UpdateReportModel() {
 		
 	}
 
-	public String getReportJsonModel() {
-		return reportJsonModel;
+	public Report getModel() {
+		return model;
 	}
 
-	public void setReportJsonModel(String reportJsonModel) {
-		this.reportJsonModel = reportJsonModel;
+	public void setModel(Report model) {
+		this.model = model;
 	}
 
 }

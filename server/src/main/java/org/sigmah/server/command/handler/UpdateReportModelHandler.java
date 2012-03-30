@@ -30,23 +30,21 @@ public class UpdateReportModelHandler implements CommandHandler<UpdateReportMode
 	@Override
 	public CommandResult execute(UpdateReportModel cmd, User user)
 			throws CommandException {
-		
-		Report report = reportJsonFactory.deserialize(cmd.getReportJsonModel());
-		
+				
 		Query query = em
 				.createQuery(
 						"select r from ReportDefinition r where r.id in (:id)")
-				.setParameter("id", report.getId());
+				.setParameter("id", cmd.getModel().getId());
 
 		ReportDefinition result = (ReportDefinition) query.getSingleResult();
 		
-		result.setTitle(report.getTitle());
-		result.setJson(cmd.getReportJsonModel());
-//		try{
-//			result.setXml(ReportParserJaxb.createXML(cmd.getModel()));
-//		} catch (JAXBException e) {
-//			throw new UnexpectedCommandException(e);
-//		}
+		result.setTitle(cmd.getModel().getTitle());
+//		result.setJson(cmd.getReportJsonModel());
+		try{
+			result.setXml(ReportParserJaxb.createXML(cmd.getModel()));
+		} catch (JAXBException e) {
+			throw new UnexpectedCommandException(e);
+		}
 		
 		em.persist(result);
 		
