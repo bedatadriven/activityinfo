@@ -26,7 +26,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 
 /**
  * Defines a Report and its subscriptions.
@@ -60,7 +60,7 @@ public class ReportDefinition implements Serializable {
     private Date dateDeleted;
     private String title;
     private String description;
-    private ReportFrequency frequency;
+    private EmailDelivery frequency;
     private Integer day;
     private Set<ReportSubscription> subscriptions = new HashSet<ReportSubscription>(0);
     private String json;
@@ -118,11 +118,11 @@ public class ReportDefinition implements Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    public ReportFrequency getFrequency() {
+    public EmailDelivery getFrequency() {
         return frequency;
     }
 
-    public void setFrequency(ReportFrequency frequency) {
+    public void setFrequency(EmailDelivery frequency) {
         this.frequency = frequency;
     }
 

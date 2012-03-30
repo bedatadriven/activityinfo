@@ -15,27 +15,19 @@ import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 
 /**
  * @author Alex Bertram
  */
 public class ReportMailerTest {
 
-    @Test
-    public void testDailyCheck() {
-
-        Report sub = new Report();
-        sub.setFrequency(ReportFrequency.Daily);
-
-        Assert.assertTrue("Daily report always goes out", ReportMailerHelper.mailToday(new Date(), sub));
-    }
 
     @Test
     public void testWeeklyCheck() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.Weekly);
+        report.setFrequency(EmailDelivery.WEEKLY);
         report.setDay(0); // Sunday
 
         Calendar cal = Calendar.getInstance();
@@ -58,7 +50,7 @@ public class ReportMailerTest {
     public void testMonthly() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.Monthly);
+        report.setFrequency(EmailDelivery.MONTHLY);
         report.setDay(11);
 
         Calendar cal = Calendar.getInstance();
@@ -77,7 +69,7 @@ public class ReportMailerTest {
     public void testLastDayOfMonth() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.Monthly);
+        report.setFrequency(EmailDelivery.MONTHLY);
         report.setDay(Report.LAST_DAY_OF_MONTH);
 
         Calendar cal = Calendar.getInstance();
@@ -100,7 +92,7 @@ public class ReportMailerTest {
     public void testDateParameters() {
 
         Report report = new Report();
-        report.setFrequency(ReportFrequency.Monthly);
+        report.setFrequency(EmailDelivery.MONTHLY);
 
 
         Calendar today = Calendar.getInstance();
@@ -134,7 +126,7 @@ public class ReportMailerTest {
 
         Report report = new Report();
         report.setTitle("Rapport RRM Mensuelle");
-        report.setFrequency(ReportFrequency.Weekly);
+        report.setFrequency(EmailDelivery.WEEKLY);
         report.setDay(1);
 
         String text = ReportMailerHelper.composeTextEmail(sub, report);

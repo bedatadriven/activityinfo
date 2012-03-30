@@ -20,8 +20,13 @@ public class UpdateReportSubscriptionHandler implements CommandHandlerAsync<Upda
 	
 		SqlUpdate update = SqlUpdate.update("ReportSubscription")
 			.valueIfNotNull("dashboard", command.getPinnedToDashboard())
+			.valueIfNotNull("emailday", command.getEmailDay())
 			.where("reportId", command.getReportId())
 			.where("userId", context.getUser().getId());
+		
+		if(command.getEmailDelivery() != null) {
+			update.value("emaildelivery",  command.getEmailDelivery().name());
+		}
 		
 		if(update.isEmpty()) {
 			callback.onSuccess(null);

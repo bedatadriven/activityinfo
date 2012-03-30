@@ -22,7 +22,7 @@ import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotTableReportElement;
 import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportFrequency;
+import org.sigmah.shared.report.model.EmailDelivery;
 import org.sigmah.shared.report.model.TableElement;
 import org.sigmah.shared.report.model.TextReportElement;
 
@@ -50,7 +50,7 @@ public class JaxbParseTest {
     public void testReport() throws JAXBException {
         Report report = parseXml("report.xml");
         Assert.assertEquals("My Title", report.getTitle());
-        Assert.assertEquals(ReportFrequency.Monthly, report.getFrequency());
+        Assert.assertEquals(EmailDelivery.MONTHLY, report.getFrequency());
     }                        
 
     @Test
