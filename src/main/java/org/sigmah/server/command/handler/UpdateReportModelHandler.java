@@ -12,7 +12,6 @@ import org.sigmah.shared.command.UpdateReportModel;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
-import org.sigmah.shared.report.model.Report;
 
 import com.google.inject.Inject;
 
