@@ -58,7 +58,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 	@Override
 	public void execute(final Search command, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
 		QueryParser parser = new QueryParser();
-		parser.parse(command.getSearchQuery());
+		parser.parse(command.getSearchQuery().trim());
 		if (parser.hasFailed()) {
 			callback.onFailure(new SearchParserException(parser.getFailReason()));
 		} else if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries 
