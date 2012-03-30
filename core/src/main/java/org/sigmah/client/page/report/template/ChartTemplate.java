@@ -10,11 +10,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ChartTemplate extends ReportTemplate {
 
-	private ReportSerializer reportSerializer;
 	
-	public ChartTemplate(Dispatcher dispatcher, ReportSerializer reportSerializer) {
-		super(dispatcher, reportSerializer);
-		this.reportSerializer = reportSerializer;
+	public ChartTemplate(Dispatcher dispatcher) {
+		super(dispatcher);
 		
 		setName(I18N.CONSTANTS.charts());
 		setDescription(I18N.CONSTANTS.chartsDescription());

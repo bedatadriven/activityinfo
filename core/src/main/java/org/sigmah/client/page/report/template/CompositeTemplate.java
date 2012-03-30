@@ -10,11 +10,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CompositeTemplate extends ReportTemplate {
 
-	private ReportSerializer reportSerializer;
 
-	public CompositeTemplate(Dispatcher dispatcher, ReportSerializer reportSerializer) {
-		super(dispatcher, reportSerializer);
-		this.reportSerializer = reportSerializer;
+	public CompositeTemplate(Dispatcher dispatcher) {
+		super(dispatcher);
 
 		setName(I18N.CONSTANTS.customReport());
 		setDescription(I18N.CONSTANTS.customReportDescription());

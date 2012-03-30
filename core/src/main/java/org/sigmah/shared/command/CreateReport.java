@@ -17,40 +17,21 @@ import org.sigmah.shared.report.model.Report;
  *
  * @author Alex Bertram
  */
-public class CreateReportDef implements Command<CreateResult>{
+public class CreateReport implements Command<CreateResult>{
 	
-	private String xml;
 	private Integer databaseId;
 	private Report report;
-	private String reportJsonModel;
-	
-	protected CreateReportDef() {
+
+	protected CreateReport() {
 		
 	}
 	
-	public CreateReportDef(String reportJsonModel){
-		this.reportJsonModel = reportJsonModel;
-	}
-
-	public CreateReportDef(int databaseId, String xml) {
-		super();
-		this.databaseId = databaseId;
-		this.xml = xml;
-	}
-	
-	public CreateReportDef(Report report){
+	public CreateReport(Report report){
 		super();
 		this.databaseId = null;
 		this.report = report;
 	}
 
-	public String getXml() {
-		return xml;
-	}
-
-	public void setXml(String xml) {
-		this.xml = xml;
-	}
 
 	public Integer getDatabaseId() {
 		return databaseId;
@@ -66,14 +47,6 @@ public class CreateReportDef implements Command<CreateResult>{
 
 	public void setReport(Report report) {
 		this.report = report;
-	}
-
-	public String getReportJsonModel() {
-		return reportJsonModel;
-	}
-
-	public void setReportJsonModel(String reportJsonModel) {
-		this.reportJsonModel = reportJsonModel;
 	}
 
 }

@@ -24,7 +24,7 @@ import com.extjs.gxt.ui.client.data.RpcMap;
  * <ul>
  * <li>{@link org.sigmah.shared.command.AddPartner}</li>
  * <li>{@link UpdateUserPermissions}</li>
- * <li>{@link org.sigmah.shared.command.CreateReportDef}</li>
+ * <li>{@link org.sigmah.shared.command.CreateReport}</li>
  * </ul>
  * <p/>
  * Returns {@link org.sigmah.shared.command.result.CreateResult}

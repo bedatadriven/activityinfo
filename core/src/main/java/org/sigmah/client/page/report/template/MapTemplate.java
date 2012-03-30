@@ -10,11 +10,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class MapTemplate extends ReportTemplate {
 	
-	private ReportSerializer reportSerializer;
-
-	public MapTemplate(Dispatcher dispatcher, ReportSerializer reportSerializer) {
-		super(dispatcher, reportSerializer);
-		this.reportSerializer = reportSerializer;
+	public MapTemplate(Dispatcher dispatcher) {
+		super(dispatcher);
 		setName(I18N.CONSTANTS.maps());
 		setDescription(I18N.CONSTANTS.mapsDescription());
 		setImagePath("map.png");

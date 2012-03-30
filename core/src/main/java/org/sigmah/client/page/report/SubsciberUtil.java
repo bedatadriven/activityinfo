@@ -7,7 +7,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.common.dialog.FormDialogCallback;
 import org.sigmah.client.page.common.dialog.FormDialogImpl;
 import org.sigmah.client.page.report.json.ReportSerializer;
-import org.sigmah.shared.command.CreateReportDef;
+import org.sigmah.shared.command.CreateReport;
 import org.sigmah.shared.command.CreateSubscribe;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.command.result.VoidResult;

@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * Result of commands which create a new entity.
  * 
  * @see org.sigmah.shared.command.CreateEntity
- * @see org.sigmah.shared.command.CreateReportDef
+ * @see org.sigmah.shared.command.CreateReport
  * 
  * @author Alex Bertram
  */

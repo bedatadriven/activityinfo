@@ -10,11 +10,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PivotTableTemplate extends ReportTemplate {
 
-	private ReportSerializer reportSerializer;
-
-	public PivotTableTemplate(Dispatcher dispatcher, ReportSerializer reportSerializer) {
-		super(dispatcher, reportSerializer);
-		this.reportSerializer = reportSerializer;
+	public PivotTableTemplate(Dispatcher dispatcher) {
+		super(dispatcher);
 		
 		setName(I18N.CONSTANTS.pivotTables());
 		setDescription(I18N.CONSTANTS.pivotTableDescription());

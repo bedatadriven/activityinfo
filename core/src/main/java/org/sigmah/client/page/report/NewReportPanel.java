@@ -38,10 +38,10 @@ public class NewReportPanel extends ContentPanel {
 		setLayout(new FitLayout());
 		
 		store = new ListStore<ReportTemplate>();
-		store.add(new ChartTemplate(dispatcher, reportSerializer));
-		store.add(new PivotTableTemplate(dispatcher, reportSerializer));
-		store.add(new MapTemplate(dispatcher, reportSerializer));
-		store.add(new CompositeTemplate(dispatcher, reportSerializer));
+		store.add(new ChartTemplate(dispatcher));
+		store.add(new PivotTableTemplate(dispatcher));
+		store.add(new MapTemplate(dispatcher));
+		store.add(new CompositeTemplate(dispatcher));
 				
 		ListView<ReportTemplate> view = new ListView<ReportTemplate>();
         view.setStyleName("gallery");

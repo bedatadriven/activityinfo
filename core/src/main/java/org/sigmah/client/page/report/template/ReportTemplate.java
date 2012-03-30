@@ -2,7 +2,7 @@ package org.sigmah.client.page.report.template;
 
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.page.report.json.ReportSerializer;
-import org.sigmah.shared.command.CreateReportDef;
+import org.sigmah.shared.command.CreateReport;
 import org.sigmah.shared.command.result.CreateResult;
 import org.sigmah.shared.report.model.Report;
 
@@ -13,13 +13,11 @@ import com.google.inject.Inject;
 public abstract class ReportTemplate extends BaseModelData {
 	
 	protected final Dispatcher dispatcher;
-	protected final ReportSerializer reportSerializer;
 	
 	@Inject
-	public ReportTemplate(Dispatcher dispatcher, ReportSerializer reportSerializer) {
+	public ReportTemplate(Dispatcher dispatcher) {
 		super();
 		this.dispatcher = dispatcher;
-		this.reportSerializer = reportSerializer;
 	}
 
 	public void setName(String name) {
@@ -39,8 +37,8 @@ public abstract class ReportTemplate extends BaseModelData {
 
 	protected final void save(Report report, final AsyncCallback<Integer> callback) {	
 		
-		String jsonModel = reportSerializer.serialize(report);
-		dispatcher.execute(new CreateReportDef(jsonModel), null, new AsyncCallback<CreateResult>() {
+
+		dispatcher.execute(new CreateReport(report), null, new AsyncCallback<CreateResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
