@@ -4,7 +4,6 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.shared.dto.AdminLevelDTO;
 import org.sigmah.shared.dto.AttributeGroupDTO;
 import org.sigmah.shared.report.model.AdminDimension;
-import org.sigmah.shared.report.model.AttributeDimension;
 import org.sigmah.shared.report.model.AttributeGroupDimension;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;

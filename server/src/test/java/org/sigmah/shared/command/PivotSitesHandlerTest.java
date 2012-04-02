@@ -298,8 +298,6 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         final Dimension quarterDim = new DateDimension(DateUnit.QUARTER);
         dimensions.add(quarterDim);
 
-        Filter filter = new Filter();
-
         execute();
         
         assertEquals(3, buckets.size());
@@ -307,7 +305,33 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         assertEquals(3600, (int)findBucketByQuarter(buckets, 2009, 2).doubleValue());
         assertEquals(10000, (int)findBucketByQuarter(buckets, 2008, 4).doubleValue());
     }
+    
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinked() {
+    	
+  
+    	withIndicatorAsDimension();
+    	filter.addRestriction(DimensionType.Indicator, 1);
+    	
+    	execute();
+    	
+    	assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
+    }
 
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedValuesAreDuplicated() {
+    	
+  
+    	withIndicatorAsDimension();
+    	
+    	execute();
+    	
+    	assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
+    	assertThat().forIndicator(3).thereIsOneBucketWithValue(1500);
+    	
+    }
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets, Dimension dim, DimensionCategory cat) {
         List<Bucket> matching = new ArrayList<Bucket>();
         for (Bucket bucket : buckets) {
