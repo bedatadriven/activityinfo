@@ -1,7 +1,10 @@
 package org.sigmah.client.page.entry.location;
 
+import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.map.GoogleChartsIconBuilder;
 import org.sigmah.client.map.MapTypeFactory;
+import org.sigmah.client.widget.CoordinateEditor;
+import org.sigmah.client.widget.CoordinateField.Axis;
 import org.sigmah.client.widget.GoogleMapsPanel;
 import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.shared.report.content.AiLatLng;
@@ -15,6 +18,8 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
+import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.SmallMapControl;
@@ -107,7 +112,7 @@ public class LocationMap extends GoogleMapsPanel {
 
 			@Override
 			public void onClick(MapClickEvent event) {
-				if(event.getOverlay() != null) {
+				if(event.getOverlay() instanceof Marker) {
 					onMarkerClicked((Marker)event.getOverlay());
 				}
 			}
@@ -171,6 +176,9 @@ public class LocationMap extends GoogleMapsPanel {
 		LocationDTO location = searchMarkers.inverse().get(overlay);
 		if(location != null) {
 			searchPresenter.select(this, location);
+			getMapWidget().getInfoWindow().open(overlay, 
+					createContent(location));
+		
 		}
 	}
 	
@@ -220,5 +228,32 @@ public class LocationMap extends GoogleMapsPanel {
 		if(!getMapWidget().getBounds().containsLatLng(newLocationMarker.getLatLng())) {
 			getMapWidget().panTo(newLocationMarker.getLatLng());
 		}
+	}
+
+	private InfoWindowContent createContent(LocationDTO dto) {
+		
+		NumberFormat decimalFormat = NumberFormat.getFormat("0.00000");
+		CoordinateEditor longEditor = new CoordinateEditor(Axis.LONGITUDE);
+		CoordinateEditor latEditor = new CoordinateEditor(Axis.LATITUDE);
+		
+		StringBuilder html = new StringBuilder();
+		html.append("<b>")
+			.append(dto.getName())
+			.append("</b><br>");
+		html.append(I18N.CONSTANTS.latitude())
+			.append(": ")
+			.append(latEditor.formatAsDMS(dto.getLatitude()))
+			.append(" (")
+			.append(decimalFormat.format(dto.getLatitude()))
+			.append(")<br>");
+			
+		html.append(I18N.CONSTANTS.longitude())
+			.append(": ")
+			.append(longEditor.formatAsDMS(dto.getLongitude()))
+			.append(" (")
+			.append(decimalFormat.format(dto.getLongitude()))
+			.append(")");
+		
+		return new InfoWindowContent(html.toString());
 	}
 }
