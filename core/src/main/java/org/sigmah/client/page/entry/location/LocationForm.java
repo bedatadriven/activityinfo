@@ -106,7 +106,7 @@ public class LocationForm extends LayoutContainer {
 
 	private void addNameField() {
 		nameField = new TextField<String>();
-		nameField.setFieldLabel(I18N.CONSTANTS.location());
+		nameField.setFieldLabel(I18N.CONSTANTS.searchLocation());
 		nameField.setMaxLength(50);
 		add(nameField);
 		
@@ -222,6 +222,7 @@ public class LocationForm extends LayoutContainer {
 	}
 
 	private void setNewFormActive(boolean active) {
+		nameField.setFieldLabel(active ? I18N.CONSTANTS.location() : I18N.CONSTANTS.searchLocation());
 		axeField.setVisible(active);
 		coordinateFields.setVisible(active);
 		newFormButtonContainer.setVisible(active);
