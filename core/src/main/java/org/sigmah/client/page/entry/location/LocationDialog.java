@@ -139,6 +139,10 @@ public class LocationDialog extends Window {
 		
 		container.add(formHeader = newHeader(I18N.CONSTANTS.searchLocations()));
 		container.add(new LocationForm(dispatcher, locationType.getId(), searchPresenter, newLocationPresenter));
+			
+		container.add(newHeader(I18N.CONSTANTS.searchResults()));
+		container.add(new SearchListView(searchPresenter));
+		container.add(new SearchStatusView(searchPresenter));
 		
 		container.add(addLocationHeader = newHeader(I18N.CONSTANTS.addLocation()));
 		container.add(addLocationHelp = newExplanation(I18N.CONSTANTS.addLocationDescription()));
@@ -150,11 +154,8 @@ public class LocationDialog extends Window {
 			}
 		}));
 		addLocationButton.addStyleName(SiteFormResources.INSTANCE.style().addLocationButton());
+
 		
-		container.add(newHeader(I18N.CONSTANTS.searchResults()));
-		container.add(new SearchListView(searchPresenter));
-		container.add(new SearchStatusView(searchPresenter));
-				
 		BorderLayoutData layout = new BorderLayoutData(LayoutRegion.WEST);
 		layout.setSize(350);
 		
