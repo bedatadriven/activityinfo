@@ -37,16 +37,16 @@ public class GetReportModelHandler implements CommandHandler<GetReportModel> {
 		
 		Report report = new Report();
 		
-		String json = entity.getJson();
-		if (!Strings.isNullOrEmpty(json)) {
-			report = reportSerializer.deserialize(entity.getJson());
-		} else {
+//		String json = entity.getJson();
+//		if (!Strings.isNullOrEmpty(json)) {
+//			report = reportSerializer.deserialize(entity.getJson());
+//		} else {
 			try {
 				report = ReportParserJaxb.parseXml(entity.getXml());
 			} catch (JAXBException e) {
 				throw new UnexpectedCommandException(e);
 			}
-		}
+		//}
 
 		report.setId(cmd.getReportId());
 		return report;

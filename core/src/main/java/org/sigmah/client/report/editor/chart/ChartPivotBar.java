@@ -9,7 +9,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.report.HasReportElement;
 import org.sigmah.client.page.report.ReportChangeHandler;
 import org.sigmah.client.page.report.ReportEventHelper;
-import org.sigmah.client.report.DimensionStoreFactory;
+import org.sigmah.client.report.editor.DimensionStoreFactory;
 import org.sigmah.shared.report.model.DateDimension;
 import org.sigmah.shared.report.model.DateUnit;
 import org.sigmah.shared.report.model.Dimension;

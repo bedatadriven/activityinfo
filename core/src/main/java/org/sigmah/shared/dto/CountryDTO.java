@@ -160,4 +160,23 @@ public final class CountryDTO extends BaseModelData implements DTO {
         sb.append(this.getBounds());
         return sb.toString();
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) {
+			return false;
+		}
+		if(obj.getClass() != getClass()) {
+			return false;
+		}
+		CountryDTO other = (CountryDTO)obj;
+		return getId() == other.getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return getId();
+	}
+    
+    
 }

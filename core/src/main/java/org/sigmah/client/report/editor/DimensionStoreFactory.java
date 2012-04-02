@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.sigmah.client.report;
+package org.sigmah.client.report.editor;
 
 import java.util.ArrayList;
 import java.util.List;
