@@ -16,7 +16,6 @@ import org.sigmah.server.database.hibernate.dao.UserPermissionDAO;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
-import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.mail.InvitationMessage;
 import org.sigmah.server.mail.MailSender;
 import org.sigmah.shared.command.UpdateUserPermissions;
@@ -96,6 +95,14 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
     private User createNewUser(User executingUser, UserPermissionDTO dto) throws CommandException {
         User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
         userDAO.persist(user);
+        
+        if(executingUser.getId() == 0) {
+        	throw new AssertionError("executingUser.id == 0!");
+        }
+        if(executingUser.getName() == null) {
+        	throw new AssertionError("executingUser.name == null!");
+        }
+        
         try {
         	mailSender.send(new InvitationMessage(user, executingUser));
         } catch (Exception e) {

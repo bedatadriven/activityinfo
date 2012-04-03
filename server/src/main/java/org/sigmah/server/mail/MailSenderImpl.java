@@ -46,7 +46,7 @@ public class MailSenderImpl implements MailSender {
 	        mail.addBcc("akbertram@gmail.com"); // for testing purposes
 	        mail.setSubject(getSubject(message));
 	        mail.setMsg(composeMessage(message));
-	
+	        mail.setCharset("utf-8"); // https://issues.apache.org/jira/browse/EMAIL-79
 	        send(mail);
     	} catch(Exception e) {
     		throw new RuntimeException("Exception while sending message: " + e.getMessage(), e);
