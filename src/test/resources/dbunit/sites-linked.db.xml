@@ -175,7 +175,7 @@
 		Date1="2009-01-01" Date2="2009-01-02"
 		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3" ProjectId="1" />
 
-	<reportingPeriod reportingPeriodId="2" siteId="1"
+	<reportingPeriod reportingPeriodId="2" siteId="2"
 		date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01"
 		DateEdited="2009-02-01" />
 	<indicatorValue reportingPeriodId="2" indicatorId="1"

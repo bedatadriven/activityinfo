@@ -275,4 +275,33 @@ public class GetSitesTest extends CommandTestCase2{
 		
 		assertThat(result.getData().size(), equalTo(1));
 	}
+	
+	@Test
+	@OnDataSet("/dbunit/sites-linked.db.xml")
+	public void linkedSites() {
+		setUser(1);
+		
+		GetSites cmd = new GetSites();
+		cmd.filter().addRestriction(DimensionType.Activity, 1);
+		cmd.setSortInfo(new SortInfo("locationName", SortDir.ASC));
+		
+		SiteResult result = execute(cmd);
+		assertThat(result.getData().size(), equalTo(2));
+		
+		SiteDTO site1 = result.getData().get(0);
+		SiteDTO site2 = result.getData().get(1);
+		
+		System.out.println(site1.getProperties());
+		System.out.println(site2.getProperties());
+		
+		assertThat(site1.getId(), equalTo(1));
+		assertThat(site1.getLocationName(), equalTo("Penekusu Kivu"));
+		assertThat(site1.getActivityId(), equalTo(1));
+		assertThat(site1.getIndicatorValue(1), equalTo(1500d));
+
+		assertThat(site2.getId(), equalTo(2));
+		assertThat(site2.getLocationName(), equalTo("Penekusu Kivu 2"));
+		assertThat(site2.getActivityId(), equalTo(1));
+		assertThat(site2.getIndicatorValue(1), equalTo(400d));
+	}
 }
