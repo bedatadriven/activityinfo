@@ -4,6 +4,7 @@ import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.page.entry.form.resources.SiteFormResources;
 import org.sigmah.shared.command.result.LocationResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -11,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.Html;
 public class SearchStatusView extends Html {
 
 	public SearchStatusView(LocationSearchPresenter presenter) {
+		addStyleName(SiteFormResources.INSTANCE.style().locationDialogHelp());
 		presenter.getStore().getLoader().addLoadListener(new LoadListener() {
 
 			
@@ -22,6 +24,7 @@ public class SearchStatusView extends Html {
 
 			@Override
 			public void loaderLoadException(LoadEvent le) {
+				Log.error("Search load exception", le.exception);
 				setHtml(I18N.CONSTANTS.connectionProblem());
 			}
 
