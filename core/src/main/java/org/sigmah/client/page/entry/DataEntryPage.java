@@ -206,8 +206,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	private void updateSelection(ActivityDTO activity, SiteDTO site) {
 		
 		boolean permissionToEdit = activity.getDatabase().isAllowedToEdit(site);
-		toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit);
-		toolBar.setActionEnabled(UIActions.DELETE, permissionToEdit);
+		toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit && !site.isLinked());
+		toolBar.setActionEnabled(UIActions.DELETE, permissionToEdit && !site.isLinked());
 		
 		detailTab.setSite(site);
 		attachmentsTab.setSite(site);

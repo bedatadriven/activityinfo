@@ -23,7 +23,9 @@ public class LockedColumnRenderer implements
 		if (model instanceof SiteDTO) {
 			SiteDTO siteModel = (SiteDTO) model;
 	    	StringBuilder builder = new StringBuilder();
-	    	if (siteModel.fallsWithinLockedPeriod(activity)) {
+	    	if (siteModel.isLinked()) {
+	    		return IconImageBundle.ICONS.link().getHTML();
+	    	} else if (siteModel.fallsWithinLockedPeriod(activity)) {
 	    		//String tooltip = buildTooltip(model, activity);
 	    		
 	    		//builder.append("<span qtip='");
@@ -32,11 +34,8 @@ public class LockedColumnRenderer implements
 	    		builder.append(IconImageBundle.ICONS.lockedPeriod().getHTML());
 	    		//builder.append("</span>");
 	    		return builder.toString();
-	    	} else {
-	    		return "";
-	    	}
-	    } else {
-	    	return " ";
-	    }
+	    	} 
+	    } 
+	    return "";
 	}
 }

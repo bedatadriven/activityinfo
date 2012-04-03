@@ -59,13 +59,12 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	private void doQuery(final GetSites command, final ExecutionContext context,
 			final AsyncCallback<SiteResult> callback) {
 		final SqlQuery query = SqlQuery.select("site.SiteId")
+			.appendColumn("site.Linked", "Linked")
 			.appendColumn("activity.ActivityId")
 			.appendColumn("activity.name", "ActivityName")
 			.appendColumn("UserDatabase.DatabaseId", "DatabaseId")
 			.appendColumn("site.Date1", "Date1")
 			.appendColumn("site.Date2", "Date2")
-			.appendColumn("site.DateEdited", "DateEdited")
-			.appendColumn("site.DateCreated", "DateCreated")
 			.appendColumn("partner.PartnerId", "PartnerId")
 			.appendColumn("partner.name", "PartnerName")
 			.appendColumn("site.projectId", "ProjectId")
@@ -115,7 +114,18 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 
 	private void applyJoins(final SqlQuery query) {
-		query.from("Site")
+		query.from("( " +
+			
+				"(SELECT s.SiteId, 0 as Linked, s.Date1, s.Date2, s.DateEdited, s.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
+					"FROM Site s WHERE s.dateDeleted IS NULL) " +
+					"UNION ALL" +
+				"(SELECT s.SiteId, 1 as Linked, s.Date1, s.Date2, s.DateEdited, di.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
+				    "FROM Site s " +
+				    "INNER JOIN indicator si ON (si.activityid=s.activityid) " +
+				    "INNER JOIN indicatorlink link ON (si.indicatorid=link.sourceindicatorid) " +
+				    "INNER JOIN indicator di on (link.destinationindicatorid=di.indicatorid)  " +
+				    "WHERE s.dateDeleted IS NULL)" +
+			   ") Site ")
 			.leftJoin("Activity").on("Site.ActivityId = Activity.ActivityId")
 			.leftJoin("UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId")
 			.leftJoin("Location").on("Site.LocationId = Location.LocationId")
@@ -140,8 +150,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		// during synchronization
 
 		if(!GWT.isClient()) {    
-			query.whereTrue("Site.DateDeleted IS NULL")
-				.and("Activity.DateDeleted IS NULL")
+			query.whereTrue("Activity.DateDeleted IS NULL")
 				.and("UserDatabase.DateDeleted IS NULL");
 			query.whereTrue(
 					"(UserDatabase.OwnerUserId = ? OR " +
@@ -308,10 +317,18 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	
 	private void joinIndicatorValues(SqlTransaction tx, final Map<Integer, SiteDTO> siteMap) {
 
-    	SqlQuery.select("P.SiteId", "V.IndicatorId", "V.Value")
+    	SqlQuery.select()
+    		.appendColumn("P.SiteId", "SiteId")
+    		.appendColumn("V.IndicatorId", "SourceIndicatorId")
+    		.appendColumn("I.ActivityId", "SourceActivityId")
+    		.appendColumn("D.IndicatorId", "DestIndicatorId")
+    		.appendColumn("D.ActivityId", "DestActivityId")
+    		.appendColumn("V.Value")
             .from("ReportingPeriod", "P")
             	.innerJoin("IndicatorValue", "V").on("P.ReportingPeriodId = V.ReportingPeriodId")
             	.innerJoin("Indicator", "I").on("I.IndicatorId = V.IndicatorId")
+            	.leftJoin("IndicatorLink", "L").on("L.SourceIndicatorId=I.IndicatorId")
+            	.leftJoin("Indicator", "D").on("L.DestinationIndicatorId=D.IndicatorId")
             .where("P.SiteId").in(siteMap.keySet())
             .and("I.dateDeleted IS NULL")
             .execute(tx, new SqlResultCallback() {
@@ -320,10 +337,20 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 					for(SqlResultSetRow row : results.getRows()) {
 						SiteDTO site = siteMap.get( row.getInt("SiteId") );
-						int indicatorId = row.getInt("IndicatorId");
-			            double indicatorValue = row.getDouble("Value");
+						
+						double indicatorValue = row.getDouble("Value");
 
-						site.setIndicatorValue(indicatorId, indicatorValue);
+						int sourceActivityid = row.getInt("SourceActivityId");
+						if(sourceActivityid == site.getActivityId()) {
+							int indicatorId = row.getInt("SourceIndicatorId");
+							site.setIndicatorValue(indicatorId, indicatorValue);
+						} else if(!row.isNull("DestActivityId")) {
+							int destActivityId = row.getInt("DestActivityId");
+							if(site.getActivityId() == destActivityId) {
+								int indicatorId = row.getInt("DestIndicatorId");
+								site.setIndicatorValue(indicatorId, indicatorValue);
+							}
+						}
 					}		
 				}
 			});
@@ -355,11 +382,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	private SiteDTO toSite(SqlResultSetRow row) {
 	    SiteDTO model = new SiteDTO();
         model.setId( row.getInt("SiteId") );
+        model.setLinked( row.getBoolean("Linked"));
         model.setActivityId( row.getInt("ActivityId") );
         model.setDate1( row.getDate("Date1") );
         model.setDate2( row.getDate("Date2") );
-        model.setDateEdited(row.getDate("DateEdited"));
-        model.setDateCreated(row.getDate("DateCreated"));
         model.setLocationId(row.getInt("LocationId"));
         model.setLocationName( row.getString("LocationName") );
         model.setLocationAxe( row.getString("LocationAxe") );

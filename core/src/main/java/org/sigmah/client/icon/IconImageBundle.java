@@ -198,30 +198,6 @@ public interface IconImageBundle extends ImageBundle {
 	@Resource(value = "adminlevel1.png")
 	AbstractImagePrototype adminlevel1();	
     
-	@Resource(value = "adminlevel2.png")
-	AbstractImagePrototype adminlevel2();	
-    
-	@Resource(value = "adminlevel3.png")
-	AbstractImagePrototype adminlevel3();	
-    
-	@Resource(value = "adminlevel4.png")
-	AbstractImagePrototype adminlevel4();	
-    
-	@Resource(value = "adminlevel5.png")
-	AbstractImagePrototype adminlevel5();	
-    
-	@Resource(value = "adminlevel6.png")
-	AbstractImagePrototype adminlevel6();	
-    
-	@Resource(value = "adminlevel7.png")
-	AbstractImagePrototype adminlevel7();	
-    
-	@Resource(value = "adminlevel8.png")
-	AbstractImagePrototype adminlevel8();	
-    
-	@Resource(value = "adminlevel9.png")
-	AbstractImagePrototype adminlevel9();
-    
 	@Resource(value = "partner.png")
 	AbstractImagePrototype partner();	
     
@@ -268,4 +244,5 @@ public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype star();
     AbstractImagePrototype starWhite();
+    AbstractImagePrototype link();
 }

@@ -143,23 +143,14 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 	public void setDate2(LocalDate date2) {
 		set("date2", date2);
 	}
-
-	public Date getDateEdited() {
-		return get("dateEdited");
-	}
-
-	public void setDateEdited(Date dateEdited) {
-		set("dateEdited", dateEdited);
+	
+	public boolean isLinked() {
+		return get("linked", false);
 	}
 	
-	public Date getDateCreated() {
-		return get("dateCreated");
+	public void setLinked(boolean linked) {
+		set("linked", linked);
 	}
-
-	public void setDateCreated(Date dateCreated) {
-		set("dateCreated", dateCreated);
-	}
-	
     /**
      * 
      * @return the name of the Partner who owns this Site
@@ -462,10 +453,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 		return affectedLockedPeriods;
 	}
 
-	public boolean isEditedOneOrMoreTimes() {
-		return getDateCreated().equals(getDateEdited());
-	}
-	
 	/**
 	 * Returns the location in the format of [LocationName (LocationAxe)]
 	 */
