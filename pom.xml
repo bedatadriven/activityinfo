@@ -194,7 +194,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
-			<version>1.1</version>
+			<version>1.2</version>
 			<exclusions>
 				<!-- Because the JDK1.6 already include the Java Activation API, otherwise 
 					this could generate ClassLoading en Linkage errors -->
