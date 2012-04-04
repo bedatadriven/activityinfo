@@ -303,4 +303,11 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 
 	@DefaultMessage("The report ''{0}'' has been saved.")
 	String reportSaved(String name);
+	
+	@DefaultMessage("Link \"{0}\" to \"{1}\"")
+	String link(String source, String dest);
+	
+	
+	@DefaultMessage("Unlink \"{0}\" to \"{1}\"")
+	String unlink(String source, String dest);
 }

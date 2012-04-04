@@ -12,6 +12,7 @@ import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.GalleryView;
 import org.sigmah.client.page.config.design.DesignPresenter;
+import org.sigmah.client.page.config.link.IndicatorLinkPage;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.google.inject.Inject;
@@ -56,7 +57,7 @@ public class DbConfigPresenter implements Page {
         
         if (db.isDesignAllowed()) {
 	        view.add(I18N.CONSTANTS.linkIndicators(), I18N.CONSTANTS.linkIndicatorsDescription(),
-        			"db-link-indicators.png", new DbPageState(LinkIndicatorPresenter.PAGE_ID, db.getId()));
+        			"db-link-indicators.png", new DbPageState(IndicatorLinkPage.PAGE_ID, db.getId()));
         }
         
 //        view.add("Cibles", "Définer les cibles pour les indicateurs.", "db-targets",
