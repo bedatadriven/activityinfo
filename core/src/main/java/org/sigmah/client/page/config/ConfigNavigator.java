@@ -16,6 +16,7 @@ import org.sigmah.client.i18n.UIConstants;
 import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.common.nav.Link;
 import org.sigmah.client.page.common.nav.Navigator;
+import org.sigmah.client.page.config.link.IndicatorLinkPlace;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
@@ -62,17 +63,17 @@ public class ConfigNavigator implements Navigator {
 
         if (parent == null) {
 
-            Link accountLink = Link
-                    .to(new AccountPageState())
-                    .labeled(messages.mySettings())
-                    .withIcon(icons.setup()).build();
-
             Link dbListLink = Link
                     .to(new DbListPageState())
                     .labeled(messages.databases())
                     .withIcon(icons.database()).build();
+            
+            Link dbLinksLink = Link
+            		.to(new IndicatorLinkPlace())
+            		.labeled(messages.linkIndicators())
+            		.withIcon(icons.link()).build();
 
-            callback.onSuccess(Arrays.asList(accountLink, dbListLink)); 
+            callback.onSuccess(Arrays.asList(dbListLink, dbLinksLink)); 
 
         } else {
             Link link = (Link) parent;
@@ -102,7 +103,7 @@ public class ConfigNavigator implements Navigator {
 		for (UserDatabaseDTO db : result.getDatabases()) {
 		    if (db.isDesignAllowed() || db.isManageUsersAllowed()) {
 		        Link link = Link
-		                .to(new DbPageState(DbConfigPresenter.DatabaseConfig, db.getId()))
+		                .to(new DbPageState(DbConfigPresenter.PAGE_ID, db.getId()))
 		                .labeled(db.getName())
 		                .withIcon(icons.database()).build();
 		        link.set("db", db);
@@ -111,6 +112,4 @@ public class ConfigNavigator implements Navigator {
 		}
 		callback.onSuccess(list);
 	}
-
-
 }

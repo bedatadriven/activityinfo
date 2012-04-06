@@ -1,9 +1,4 @@
-/*
- * All Sigmah code is released under the GNU General Public License v3
- * See COPYRIGHT.txt and LICENSE.txt.
- */
-
-package org.sigmah.client.page.config;
+package org.sigmah.client.page.config.link;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,26 +6,24 @@ import java.util.List;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.app.Section;
+import org.sigmah.client.page.config.ConfigFrameSet;
+import org.sigmah.client.page.config.DbListPageState;
 
-public class DbListPageState implements PageState {
+public class IndicatorLinkPlace implements PageState {
 
-    public DbListPageState() {
-        
-    }
-
-    @Override
-    public String serializeAsHistoryToken() {
-        return null;
-    }
+	@Override
+	public String serializeAsHistoryToken() {
+		return null;
+	}
 
 	@Override
 	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(ConfigFrameSet.PAGE_ID, DbListPresenter.PAGE_ID);
+		return Arrays.asList(ConfigFrameSet.PAGE_ID, IndicatorLinkPage.PAGE_ID);
 	}
 
 	@Override
 	public PageId getPageId() {
-		return DbListPresenter.PAGE_ID;
+		return IndicatorLinkPage.PAGE_ID;
 	}
 
     @Override
@@ -47,4 +40,5 @@ public class DbListPageState implements PageState {
 	public Section getSection() {
 		return Section.DESIGN;
 	}
+
 }

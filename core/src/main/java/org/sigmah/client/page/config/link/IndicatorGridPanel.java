@@ -49,6 +49,7 @@ public class IndicatorGridPanel extends ContentPanel {
 				return model instanceof IndicatorDTO;
 			}
 		});
+		grid.getView().setEmptyText(I18N.CONSTANTS.selectDatabaseHelp());
 		grid.setAutoExpandColumn("name");
 		grid.setHideHeaders(true);
 		

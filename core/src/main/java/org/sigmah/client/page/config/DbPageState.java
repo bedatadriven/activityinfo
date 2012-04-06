@@ -5,7 +5,6 @@
 
 package org.sigmah.client.page.config;
 
-import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateParser;
@@ -48,7 +47,7 @@ public class DbPageState extends AbstractPagingGridPageState {
     }
 
     public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(Frames.CONFIG_FRAME_SET, pageId);
+        return Arrays.asList(ConfigFrameSet.PAGE_ID, pageId);
     }
 
     @Override

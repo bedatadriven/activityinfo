@@ -15,7 +15,5 @@ public final class Frames {
 
 	private Frames() {}
 	
-    public static final FrameId CONFIG_FRAME_SET = new FrameId("config");
-
     public static final PageId STATIC = new PageId("static");
 }

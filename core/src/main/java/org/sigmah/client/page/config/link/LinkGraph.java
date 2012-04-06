@@ -1,5 +1,6 @@
 package org.sigmah.client.page.config.link;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -9,12 +10,17 @@ import org.sigmah.shared.command.result.IndicatorLink;
 import org.sigmah.shared.dto.IndicatorDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class LinkGraph {
 
 	private List<IndicatorLink> links;
 
+	public LinkGraph() {
+		links = Collections.emptyList();
+	}
+	
 	public LinkGraph(List<IndicatorLink> links) {
 		this.links = links;
 	}

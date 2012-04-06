@@ -39,8 +39,8 @@ import com.google.inject.Inject;
 /**
  * @author Alex Bertram
  */
-public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
-    public static final PageId DatabasePartners = new PageId("partners");
+public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> implements DbPage {
+    public static final PageId PAGE_ID = new PageId("partners");
 
     @ImplementedBy(DbPartnerGrid.class)
     public interface View extends GridView<DbPartnerEditor, PartnerDTO> {
@@ -66,6 +66,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
         this.view = view;
     }
 
+    @Override
     public void go(UserDatabaseDTO db) {
         this.db = db;
 
@@ -135,7 +136,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
 
     @Override
 	public PageId getPageId() {
-        return DatabasePartners;
+        return PAGE_ID;
     }
 
     @Override
@@ -145,7 +146,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> {
 
     @Override
 	public boolean navigate(PageState place) {
-        return false;
+    	return false;
     }
 
     @Override

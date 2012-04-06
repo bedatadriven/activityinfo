@@ -40,8 +40,8 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
 public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO> implements
-		GridPresenter<UserPermissionDTO> {
-	public static final PageId DatabaseUsers = new PageId("dbusers");
+		GridPresenter<UserPermissionDTO>, DbPage {
+	public static final PageId PAGE_ID = new PageId("dbusers");
 
 	@ImplementedBy(DbUserGrid.class)
 	public interface View extends GridView<DbUserEditor, UserPermissionDTO> {
@@ -68,12 +68,13 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 		this.view = view;
 	}
 
-	public void go(UserDatabaseDTO db, DbPageState place) {
+	@Override
+	public void go(UserDatabaseDTO db) {
 		this.db = db;
 
 		loader = new PagingCmdLoader<UserResult>(service);
 		loader.setCommand(new GetUsers(db.getId()));
-		initLoaderDefaults(loader, place, new SortInfo("name", Style.SortDir.ASC));
+//		initLoaderDefaults(loader, new, new SortInfo("name", Style.SortDir.ASC));
 
 		store = new ListStore<UserPermissionDTO>(loader);
 		store.setKeyProvider(new ModelKeyProvider<UserPermissionDTO>() {
@@ -109,15 +110,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 	@Override
 	public boolean navigate(PageState place) {
-		DbPageState userPlace = (DbPageState) place;
-
-		if (userPlace.getDatabaseId() == db.getId()) {
-			// internal nav
-			handleGridNavigation(loader, userPlace);
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	@Override
@@ -225,7 +218,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 	@Override
 	public PageId getPageId() {
-		return DatabaseUsers;
+		return PAGE_ID;
 	}
 
 	@Override

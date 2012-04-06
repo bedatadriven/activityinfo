@@ -34,8 +34,9 @@ import com.google.inject.Inject;
 /*
  * Displays a grid where users can add, remove and change projects
  */
-public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
-	public static final PageId DatabaseProjects = new PageId("projects");
+public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> implements DbPage {
+	
+	public static final PageId PAGE_ID = new PageId("projects");
 	
     @ImplementedBy(DbProjectGrid.class)
     public interface View extends GridView<DbProjectEditor, ProjectDTO> {
@@ -58,6 +59,7 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
         this.view = view;
     }
     
+    @Override
     public void go(UserDatabaseDTO db) {
         this.db = db;
 
@@ -123,7 +125,7 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> {
 
 	@Override
 	public PageId getPageId() {
-		return DatabaseProjects;
+		return PAGE_ID;
 	}
 
 	@Override

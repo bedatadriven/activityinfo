@@ -48,7 +48,7 @@ public class LockedPeriodsPresenter
 			UserDatabaseDTO,  
 			LockedPeriodListEditor>
 	implements 
-		Page {
+		DbPage {
 	
 	@ImplementedBy(LockedPeriodGrid.class)
 	public interface LockedPeriodListEditor
@@ -220,7 +220,7 @@ public class LockedPeriodsPresenter
 
 			@Override
 			public void onSuccess(SchemaDTO result) {
-				initialize(result.getDatabaseById(parentModel.getId()));
+				go(result.getDatabaseById(parentModel.getId()));
 			}
 		});
 	}
@@ -230,7 +230,8 @@ public class LockedPeriodsPresenter
 		view.askConfirmDelete(view.getValue());
 	}
 
-	public void initialize(UserDatabaseDTO db) {
+	@Override
+	public void go(UserDatabaseDTO db) {
 		parentModel = db;
 		
 		ArrayList<LockedPeriodDTO> items = new ArrayList<LockedPeriodDTO>(db.getLockedPeriods());
@@ -279,4 +280,5 @@ public class LockedPeriodsPresenter
 	public boolean navigate(PageState place) {
 		return false;
 	}
+
 }

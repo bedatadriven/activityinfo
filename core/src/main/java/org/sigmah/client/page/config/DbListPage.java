@@ -106,7 +106,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
 
     @Override
     public PageId getPageId() {
-        return DbListPresenter.DatabaseList;
+        return DbListPresenter.PAGE_ID;
     }
 
     @Override

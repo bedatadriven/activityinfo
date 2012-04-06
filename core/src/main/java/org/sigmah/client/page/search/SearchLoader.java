@@ -12,13 +12,17 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class SearchLoader implements PageLoader {
-    private AppInjector injector;
+	private Provider<SearchPresenter> searchPageProvider;
     
 	@Inject
-    public SearchLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
-        this.injector = injector;
+    public SearchLoader(
+    		Provider<SearchPresenter> searchPage, 
+    		NavigationHandler pageManager, 
+    		PageStateSerializer placeSerializer) {
+        this.searchPageProvider = searchPage;
 
         pageManager.registerPageLoader(SearchPresenter.SEARCH_PAGE_ID, this);
         placeSerializer.registerParser(SearchPresenter.SEARCH_PAGE_ID, new SearchPageState.Parser());
@@ -33,7 +37,7 @@ public class SearchLoader implements PageLoader {
 			public void onSuccess() {
 				if (pageState instanceof SearchPageState && SearchPresenter.SEARCH_PAGE_ID.equals(pageId)) {
 					SearchPageState searchPageState = (SearchPageState)pageState;
-					SearchPresenter searchPage =  injector.getSearchPage();
+					SearchPresenter searchPage =  searchPageProvider.get();
 					searchPage.setQuery(searchPageState.getSearchQuery());
                     callback.onSuccess(searchPage);
                 }

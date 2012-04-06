@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class DbListPresenter implements ActionListener {
-    public static final PageId DatabaseList = new PageId("dblist");
+    public static final PageId PAGE_ID = new PageId("dblist");
 
 
     public interface View  {
@@ -180,7 +180,7 @@ public class DbListPresenter implements ActionListener {
 
     private void requestNavigationToDatabaseEditPage() {
         eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
-                new DbPageState(DbConfigPresenter.DatabaseConfig, selection.getId())));
+                new DbPageState(DbConfigPresenter.PAGE_ID, selection.getId())));
     }
 
     protected class Proxy implements DataProxy {

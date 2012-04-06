@@ -19,6 +19,7 @@ import org.sigmah.client.page.common.dialog.FormDialogTether;
 import org.sigmah.client.page.common.grid.AbstractEditorGridPresenter;
 import org.sigmah.client.page.common.grid.TreeGridView;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.client.page.config.DbPage;
 import org.sigmah.client.page.config.DbPageState;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.BatchCommand;
@@ -51,7 +52,7 @@ import com.google.inject.Inject;
  *
  * @author Alex Bertram
  */
-public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> implements Page {
+public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> implements DbPage {
     public static final PageId PAGE_ID = new PageId("design");
 
     @ImplementedBy(DesignView.class)
@@ -80,6 +81,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         this.messages = messages;
     }
 
+    @Override
     public void go(UserDatabaseDTO db) {
 
         this.db = db;
@@ -138,7 +140,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     public boolean navigate(PageState place) {
-        return place instanceof DbPageState &&
+    	return place instanceof DbPageState &&
                 place.getPageId().equals(PAGE_ID) &&
                 ((DbPageState) place).getDatabaseId() == db.getId();
     }

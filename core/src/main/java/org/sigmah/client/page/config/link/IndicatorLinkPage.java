@@ -3,31 +3,37 @@ package org.sigmah.client.page.config.link;
 import java.util.Set;
 
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.i18n.I18N;
+import org.sigmah.client.icon.IconImageBundle;
 import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
-import org.sigmah.client.page.common.nav.Link;
-import org.sigmah.client.page.config.DbPageState;
 import org.sigmah.client.util.state.StateProvider;
 import org.sigmah.shared.command.GetIndicatorLinks;
 import org.sigmah.shared.command.LinkIndicators;
 import org.sigmah.shared.command.result.IndicatorLinkResult;
 import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.SchemaDTO;
 import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.util.Size;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.layout.BoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
@@ -39,7 +45,7 @@ import com.google.inject.Inject;
 
 public class IndicatorLinkPage extends ContentPanel implements Page {
 
-	public static final PageId PAGE_ID = new PageId("LinkIndicator");
+	public static final PageId PAGE_ID = new PageId("links");
 
 	private final Dispatcher dispatcher;
 	private LinkGraph linkGraph;
@@ -50,9 +56,7 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 	private IndicatorGridPanel sourceIndicatorGrid;
 	private IndicatorGridPanel destIndicatorGrid;
 
-	private LinkTip linkTip;
-	
-	
+	private ToggleButton linkButton;
 	
 	@Inject
 	public IndicatorLinkPage(Dispatcher dispatcher,
@@ -62,21 +66,14 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 		
 		HBoxLayout layout = new HBoxLayout();
 		layout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
+		layout.setPadding(new Padding(10, 5, 5, 5));
 		setLayout(layout);
+		setHeading(I18N.CONSTANTS.linkIndicators());
 
 		addSourceContainer();
+		addGalley();
 		addDestinationContainer();
-		
-		linkTip = new LinkTip();
-		linkTip.addSelectListener(new SelectionListener<ComponentEvent>() {
 			
-			@Override
-			public void componentSelected(ComponentEvent ce) {
-				onToggleLink();
-			}
-		});
-	
-	
 		sourceDatabaseGrid.addMouseOverListener(new Listener<GridEvent<UserDatabaseDTO>>() {
 
 			@Override
@@ -163,12 +160,49 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 	private void addSourceContainer() {
 		LayoutContainer container = createContainer();	
 		
+		Html html = new Html("");
+		
 		sourceDatabaseGrid = new DatabaseGridPanel(dispatcher);
 		sourceDatabaseGrid.setHeading("Source Database");
 		container.add(sourceDatabaseGrid, vflex(3));
 		
 		sourceIndicatorGrid = new IndicatorGridPanel();
 		container.add(sourceIndicatorGrid, vflex(7));
+	}
+	
+	private void addGalley() {
+	
+		
+		linkButton = new ToggleButton("", IconImageBundle.ICONS.link());
+		linkButton.disable();
+		linkButton.setWidth(28);
+		linkButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				onToggleLink();
+			}
+		});
+		
+		LayoutContainer container = new LayoutContainer();
+		container.setWidth(35);
+		container.add(linkButton);
+		container.setLayout(new BoxLayout() {
+
+			@Override
+			protected void onLayout(Container<?> container, El target) {
+			    super.onLayout(container, target);
+
+				Size size = target.getStyleSize();
+				innerCt.setSize(size.width, size.height, true);
+		    	Component c = container.getItem(0);
+		    	int ch = c.getOffsetHeight();
+		    	setPosition(c, 5, ((int)(size.height * 0.65)) - (ch / 2));
+			}
+			
+		});
+		
+		add(container);	
 	}
 	
 
@@ -205,24 +239,6 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 		return data;
 	}
 
-	
-	public void go(SchemaDTO schema, DbPageState place) {
-		dispatcher.execute(new GetIndicatorLinks(), null, new AsyncCallback<IndicatorLinkResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSuccess(IndicatorLinkResult result) {
-				linkGraph = new LinkGraph(result.getLinks());
-				onDatabaseGraphChanged();
-			}
-		});
-	}
-
 
 	private void onDatabaseGraphChanged() {
 		sourceDatabaseGrid.setLinked(linkGraph.sourceDatabases());
@@ -244,17 +260,16 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 		IndicatorDTO dest = destIndicatorGrid.getSelectedItem();
 		
 		if(source == null || dest == null) {
-			if(linkTip != null) {
-				linkTip.hide();
-			}
+			linkButton.disable();
 		} else {
 			double y1 = sourceIndicatorGrid.getRowY(source);
 			double y2 = destIndicatorGrid.getRowY(dest);
 			int y = (int)((y1+y2)/2.0);
 			int x = sourceIndicatorGrid.el().getRight(false);
 			
-			linkTip.setLinked(linkGraph.linked(source, dest));			
-			linkTip.showAt(x - LinkTip.WIDTH/2, y - LinkTip.HEIGHT/2);
+			linkButton.toggle(linkGraph.linked(source, dest));
+			linkButton.enable();
+//			linkButton.showAt(x - LinkTip.WIDTH/2, y - LinkTip.HEIGHT/2);
 
 		}
 	}
@@ -265,7 +280,7 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 		IndicatorDTO dest = destIndicatorGrid.getSelectedItem();	
 		
 		final boolean link = !linkGraph.linked(source, dest);
-		linkTip.setLinked(link);
+		linkButton.toggle(link);
 		
 		LinkIndicators update = new LinkIndicators();
 		update.setLink(link);
@@ -292,7 +307,7 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 
 			@Override
 			public void onSuccess(VoidResult result) {
-				Info.display("Saved", link ? "Link created" : "Link removed");
+				Info.display(I18N.CONSTANTS.saved(), link ? "Link created" : "Link removed");
 			}
 		});
 		
@@ -311,6 +326,20 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 
 	@Override
 	public boolean navigate(PageState place) {
+		dispatcher.execute(new GetIndicatorLinks(), null, new AsyncCallback<IndicatorLinkResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(IndicatorLinkResult result) {
+				linkGraph = new LinkGraph(result.getLinks());
+				onDatabaseGraphChanged();
+			}
+		});
 		return true;
 	}
 

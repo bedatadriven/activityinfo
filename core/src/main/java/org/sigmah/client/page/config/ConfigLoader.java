@@ -5,65 +5,87 @@
 
 package org.sigmah.client.page.config;
 
+import java.util.Map;
+
 import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.callback.Got;
-import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.page.Frames;
 import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageLoader;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.PageStateSerializer;
-import org.sigmah.client.page.common.nav.NavigationPanel;
 import org.sigmah.client.page.config.design.DesignPresenter;
 import org.sigmah.client.page.config.link.IndicatorLinkPage;
-import org.sigmah.client.widget.VSplitFrameSet;
+import org.sigmah.client.page.config.link.IndicatorLinkPlace;
 import org.sigmah.shared.command.GetSchema;
 import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class ConfigLoader implements PageLoader {
 
-    private final AppInjector injector;
-    private final Dispatcher service;
+    private final Dispatcher dispatch;
+    private Map<PageId, Provider<? extends Page>> pageProviders = Maps.newHashMap();
+	private NavigationHandler navigationHandler;
 
     @Inject
-    public ConfigLoader(AppInjector injector, NavigationHandler pageManager, PageStateSerializer placeSerializer) {
-        this.injector = injector;
-        this.service = injector.getService();
+    public ConfigLoader(
+    		Dispatcher dispatcher,
+    		Provider<ConfigFrameSet> frameSet,
+    		Provider<DbConfigPresenter> databaseConfigPage,
+    		Provider<DbListPage> databaseListPage,
+    		Provider<DbUserEditor> userPage,
+    		Provider<DbPartnerEditor> partnerPage,
+    		Provider<DbProjectEditor> projectPage,
+    		Provider<LockedPeriodsPresenter> lockPage,
+    		Provider<DesignPresenter> designPage,
+    		Provider<DbTargetEditor> targetPage,
+    		Provider<IndicatorLinkPage> linkPage,
+    		NavigationHandler navigationHandler, 
+    		PageStateSerializer placeSerializer) {
+        
+    	this.dispatch = dispatcher;
+    	this.navigationHandler = navigationHandler;
+    	
 
-        pageManager.registerPageLoader(Frames.CONFIG_FRAME_SET, this);
-        pageManager.registerPageLoader(AccountEditor.Account, this);
-        pageManager.registerPageLoader(DbConfigPresenter.DatabaseConfig, this);
-        pageManager.registerPageLoader(DbListPresenter.DatabaseList, this);
-        pageManager.registerPageLoader(DbUserEditor.DatabaseUsers, this);
-        pageManager.registerPageLoader(DbPartnerEditor.DatabasePartners, this);
-        pageManager.registerPageLoader(DbProjectEditor.DatabaseProjects, this);
-        pageManager.registerPageLoader(LockedPeriodsPresenter.PAGE_ID, this);
-        pageManager.registerPageLoader(DesignPresenter.PAGE_ID, this);
-        pageManager.registerPageLoader(DbTargetEditor.DatabaseTargets, this);
-        pageManager.registerPageLoader(IndicatorLinkPage.PAGE_ID, this);
+    	register(ConfigFrameSet.PAGE_ID, frameSet);
+        register(DbConfigPresenter.PAGE_ID, databaseConfigPage);
+        register(DbListPresenter.PAGE_ID, databaseListPage);
+        register(DbUserEditor.PAGE_ID, userPage);
+        register(DbPartnerEditor.PAGE_ID, partnerPage);
+        register(DbProjectEditor.PAGE_ID, projectPage);
+        register(LockedPeriodsPresenter.PAGE_ID, lockPage);
+        register(DesignPresenter.PAGE_ID, designPage);
+        register(DbTargetEditor.PAGE_ID, targetPage);
+        register(IndicatorLinkPage.PAGE_ID, linkPage);
 
-        placeSerializer.registerStatelessPlace(AccountEditor.Account, new AccountPageState());
-        placeSerializer.registerStatelessPlace(DbListPresenter.DatabaseList, new DbListPageState());
-        placeSerializer.registerParser(DbConfigPresenter.DatabaseConfig, new DbPageState.Parser(DbConfigPresenter.DatabaseConfig));
-        placeSerializer.registerParser(DbUserEditor.DatabaseUsers, new DbPageState.Parser(DbUserEditor.DatabaseUsers));
-        placeSerializer.registerParser(DbPartnerEditor.DatabasePartners, new DbPageState.Parser(DbPartnerEditor.DatabasePartners));
-        placeSerializer.registerParser(DbProjectEditor.DatabaseProjects, new DbPageState.Parser(DbProjectEditor.DatabaseProjects));
+        placeSerializer.registerStatelessPlace(DbListPresenter.PAGE_ID, new DbListPageState());
+        placeSerializer.registerParser(DbConfigPresenter.PAGE_ID, new DbPageState.Parser(DbConfigPresenter.PAGE_ID));
+        placeSerializer.registerParser(DbUserEditor.PAGE_ID, new DbPageState.Parser(DbUserEditor.PAGE_ID));
+        placeSerializer.registerParser(DbPartnerEditor.PAGE_ID, new DbPageState.Parser(DbPartnerEditor.PAGE_ID));
+        placeSerializer.registerParser(DbProjectEditor.PAGE_ID, new DbPageState.Parser(DbProjectEditor.PAGE_ID));
         placeSerializer.registerParser(LockedPeriodsPresenter.PAGE_ID, new DbPageState.Parser(LockedPeriodsPresenter.PAGE_ID));
         placeSerializer.registerParser(DesignPresenter.PAGE_ID, new DbPageState.Parser(DesignPresenter.PAGE_ID));
-        placeSerializer.registerParser(DbTargetEditor.DatabaseTargets, new DbPageState.Parser(DbTargetEditor.DatabaseTargets));
-        placeSerializer.registerParser(IndicatorLinkPage.PAGE_ID, new DbPageState.Parser(IndicatorLinkPage.PAGE_ID));
+        placeSerializer.registerParser(DbTargetEditor.PAGE_ID, new DbPageState.Parser(DbTargetEditor.PAGE_ID));
+        placeSerializer.registerStatelessPlace(IndicatorLinkPage.PAGE_ID, new IndicatorLinkPlace());
     }
 
-    @Override
-    public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
+
+	private void register(PageId pageId,
+			Provider<? extends Page> provider) {
+
+		navigationHandler.registerPageLoader(pageId, this);
+		pageProviders.put(pageId, provider);
+	}
+
+
+	@Override
+    public void load(final PageId pageId, final PageState place, final AsyncCallback<Page> callback) {
         GWT.runAsync(new RunAsyncCallback() {
             @Override
             public void onFailure(Throwable caught) {
@@ -71,74 +93,31 @@ public class ConfigLoader implements PageLoader {
             }
             @Override
             public void onSuccess() {
-                if (Frames.CONFIG_FRAME_SET.equals(pageId)) {
-                    NavigationPanel navPanel = new NavigationPanel(injector.getEventBus(),
-                            injector.getConfigNavigator());
-                    VSplitFrameSet frameSet = new VSplitFrameSet(pageId, navPanel);
-                    callback.onSuccess(frameSet);
+            	
+            	final Page page = pageProviders.get(pageId).get();
+            	
+            	if(page == null) {
+                    callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + place.toString()));
+            	} else if(page instanceof DbPage) {
+            		dispatch.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 
-                } else if (AccountEditor.Account.equals(pageId)) {
-                    callback.onSuccess(injector.getAccountEditor());
+						@Override
+						public void onFailure(Throwable caught) {
+							callback.onFailure(caught);
+						}
 
-                } else if (DbListPresenter.DatabaseList.equals(pageId)) {
-                    callback.onSuccess(injector.getDbListPage());
-                    
-                } else if (pageState instanceof DbPageState) {
-                    final DbPageState dPlace = (DbPageState) pageState;
-
-                    /// the schema needs to be loaded before we can continue
-                    service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
-
-                        @Override
-                        public void got(SchemaDTO schema) {
-
-                            UserDatabaseDTO db = schema.getDatabaseById(dPlace.getDatabaseId());
-
-                            if (DbConfigPresenter.DatabaseConfig.equals(pageId)) {
-                                DbConfigPresenter presenter = injector.getDbConfigPresenter();
-                                presenter.go(db);
-                                callback.onSuccess(presenter);
-
-                            } else if (DesignPresenter.PAGE_ID.equals(pageId)) {
-                                DesignPresenter presenter = injector.getDesigner();
-                                presenter.go(db);
-                                callback.onSuccess(presenter);
-
-                            } else if (DbUserEditor.DatabaseUsers.equals(pageId)) {
-                                DbUserEditor editor = injector.getDbUserEditor();
-                                editor.go(db, dPlace);
-                                callback.onSuccess(editor);
-
-                            } else if (DbPartnerEditor.DatabasePartners.equals(pageId)) {
-                                DbPartnerEditor presenter = injector.getDbPartnerEditor();
-                                presenter.go(db);
-                                callback.onSuccess(presenter);
-
-                            } else if (LockedPeriodsPresenter.PAGE_ID.equals(pageId)) {
-                            	LockedPeriodsPresenter presenter = injector.getLockedPeriodsEditor();
-                                presenter.initialize(db);
-                                callback.onSuccess(presenter);
-                                
-                            } else if (DbProjectEditor.DatabaseProjects.equals(pageId)) {
-                                DbProjectEditor presenter = injector.getDbProjectEditor();
-                                presenter.go(db);
-                                callback.onSuccess(presenter);
-                            }else if (DbTargetEditor.DatabaseTargets.equals(pageId)) {
-                                DbTargetEditor presenter = injector.getDbTargetEditor();
-                                presenter.go(db);
-                                callback.onSuccess(presenter);
-                            } else if (IndicatorLinkPage.PAGE_ID.equals(pageId)) {
-                            	IndicatorLinkPage presenter = injector.getLinkIndicatorPresenter();
-                                presenter.go(schema, dPlace);
-                                callback.onSuccess(presenter);
-                            } else {
-                                callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + pageState.toString()));
-                            }
-                        }
-                    });
-                } else {
-                    callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + pageState.toString()));
-                }
+						@Override
+						public void onSuccess(SchemaDTO result) {
+		            		DbPageState dbPlace = (DbPageState)place;
+		            		((DbPage)page).go(result.getDatabaseById(dbPlace.getDatabaseId()));
+		            		callback.onSuccess(page);
+						}
+            			
+            		});
+            	} else {
+            		page.navigate(place);
+            		callback.onSuccess(page);
+            	}
             }
         });
 

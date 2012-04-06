@@ -38,12 +38,12 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-/*
+/**
  * Displays a grid where users can add, remove and change Targets
  */
-public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
+public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> implements DbPage {
 
-	public static final PageId DatabaseTargets = new PageId("targets");
+	public static final PageId PAGE_ID = new PageId("targets");
 
 	@ImplementedBy(DbTargetGrid.class)
 	public interface View extends GridView<DbTargetEditor, TargetDTO> {
@@ -56,58 +56,58 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	private final Dispatcher service;
 	private final EventBus eventBus;
 	private final View view;
-	private final StateProvider stateMgr;
 	
 	private UserDatabaseDTO db;
 	private ListStore<TargetDTO> store;
 	private TargetIndicatorPresenter targetIndicatorPresenter ;
 	
 	@Inject
-	public DbTargetEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view, Provider<TargetIndicatorPresenter> targetIndicatorPresenterProvider) {
+	public DbTargetEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view, 
+			Provider<TargetIndicatorPresenter> targetIndicatorPresenterProvider) {
 
 		super(eventBus, stateMgr, view);
 		this.service = service;
 		this.eventBus = eventBus;
 		this.view = view;
-		this.stateMgr =stateMgr;
 		targetIndicatorPresenter = targetIndicatorPresenterProvider.get();
 	}
 
-	 public void go(UserDatabaseDTO db) {
-	        this.db = db;
+	@Override
+	public void go(UserDatabaseDTO db) {
+		this.db = db;
 
-	        store = new ListStore<TargetDTO>();
-	        store.setSortField("name");
-	        store.setSortDir(Style.SortDir.ASC);
-	        
-	        fillStore();
+		store = new ListStore<TargetDTO>();
+		store.setSortField("name");
+		store.setSortDir(Style.SortDir.ASC);
 
-	        view.init(this, db, store);
-	        view.setActionEnabled(UIActions.DELETE, false);
-	        view.setActionEnabled(UIActions.EDIT, false);
-	        
-	        view.createTargetValueContainer((Widget)targetIndicatorPresenter.getWidget());
-	        targetIndicatorPresenter.go(db);
-	    }
-	 
-	 
-	 private void fillStore(){
-	
-		 service.execute(new GetTargets(db.getId()), view.getLoadingMonitor(), new AsyncCallback<TargetResult>() {
+		fillStore();
+
+		view.init(this, db, store);
+		view.setActionEnabled(UIActions.DELETE, false);
+		view.setActionEnabled(UIActions.EDIT, false);
+
+		view.createTargetValueContainer((Widget)targetIndicatorPresenter.getWidget());
+		targetIndicatorPresenter.go(db);	
+	}
+
+
+	private void fillStore(){
+
+		service.execute(new GetTargets(db.getId()), view.getLoadingMonitor(), new AsyncCallback<TargetResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-								
+
 			}
 
 			@Override
 			public void onSuccess(TargetResult result) {
 				store.add(result.getData());
 			}
-			 
-		 });
-	 }
-	 
+
+		});
+	}
+
 	 
 	 @Override
 		protected void onDeleteConfirmed(final TargetDTO model) {
@@ -193,7 +193,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> {
 	
 	@Override
 	public PageId getPageId() {
-		return DatabaseTargets;
+		return PAGE_ID;
 	}
 
 	@Override
