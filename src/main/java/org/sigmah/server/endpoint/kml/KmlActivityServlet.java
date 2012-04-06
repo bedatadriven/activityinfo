@@ -67,7 +67,7 @@ public class KmlActivityServlet extends HttpServlet {
 		}
 
 		String baseURL = "http://" + req.getServerName() + ":" + req.getServerPort()
-				+ "/kml/sites?activityId=";
+				+ "/earth/sites?activityId=";
 		SchemaDTO schemaDTO = loadSchema(user);
 		
 		Map<String, Object> map = new HashMap<String, Object>();

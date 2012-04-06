@@ -14,9 +14,9 @@ public class KmlModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        serve("/kml").with(KmlLinkServlet.class);
-        serve("/kml/activities").with(KmlActivityServlet.class);
-        serve("/kml/sites").with(KmlDataServlet.class);
+        serve("/earth").with(KmlLinkServlet.class);
+        serve("/earth/activities").with(KmlActivityServlet.class);
+        serve("/earth/sites").with(KmlDataServlet.class);
     }
 
 
