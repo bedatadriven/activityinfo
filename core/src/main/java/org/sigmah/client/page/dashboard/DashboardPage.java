@@ -11,6 +11,7 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.dashboard.portlets.GoogleEarthPortlet;
 import org.sigmah.client.page.dashboard.portlets.NewsPortlet;
 import org.sigmah.client.page.dashboard.portlets.ReportPortlet;
 import org.sigmah.shared.command.GetReports;
@@ -40,7 +41,7 @@ public class DashboardPage extends Portal implements Page {
         setColumnWidth(1, .33);  
       
         add(new NewsPortlet(), 1);
-        
+        add(new GoogleEarthPortlet(), 1);
         loadReports();
         
     }
