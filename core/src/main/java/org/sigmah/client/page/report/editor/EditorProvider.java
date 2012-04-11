@@ -17,11 +17,11 @@ public class EditorProvider {
 	private final Provider<ChartEditor> chartEditor;
 	private final Provider<MapEditor> mapEditor;
 	private final Provider<PivotTableEditor> pivotEditor;
-	private final Provider<CompositeEditor> compositeEditor;
+	private final Provider<CompositeEditor2> compositeEditor;
 
 	@Inject
 	public EditorProvider(Provider<ChartEditor> chartEditor, Provider<MapEditor> mapEditor, 
-			Provider<PivotTableEditor> pivotEditor, Provider<CompositeEditor> compositeEditor) {
+			Provider<PivotTableEditor> pivotEditor, Provider<CompositeEditor2> compositeEditor) {
 		this.chartEditor = chartEditor;
 		this.mapEditor = mapEditor;
 		this.pivotEditor = pivotEditor;

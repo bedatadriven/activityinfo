@@ -69,4 +69,11 @@ public class PivotTrayPanel extends ContentPanel implements HasReportElement<Piv
 		return model;
 	}
 
+	@Override
+	public void disconnect() {
+		tree.disconnect();
+		rowList.disconnect();
+		colList.disconnect();
+	}
+
 }

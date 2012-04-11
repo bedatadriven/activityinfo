@@ -254,4 +254,9 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 	public Component asComponent() {
 		return treePanel;
 	}
+
+	@Override
+	public void disconnect() {
+		events.disconnect();
+	}
 }

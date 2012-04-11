@@ -158,4 +158,9 @@ public class ChartPivotBar extends ToolBar implements HasReportElement<PivotChar
 		}
 	}
 
+	@Override
+	public void disconnect() {
+		events.disconnect();
+	}
+
 }

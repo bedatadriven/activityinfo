@@ -10,10 +10,9 @@ import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
-import org.sigmah.client.page.report.editor.CompositeEditor;
+import org.sigmah.client.page.report.editor.CompositeEditor2;
 import org.sigmah.client.page.report.editor.EditorProvider;
 import org.sigmah.client.page.report.editor.ReportElementEditor;
-import org.sigmah.client.page.report.json.ReportSerializer;
 import org.sigmah.client.page.report.resources.ReportResources;
 import org.sigmah.shared.command.BatchCommand;
 import org.sigmah.shared.command.GetReportModel;
@@ -151,6 +150,14 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 				pinToDashboard(reportBar.getDashboardButton().isPressed());
 			}
 		});
+		
+		reportBar.getSwitchViewButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				switchView();
+			}
+		});
 	}
 
 
@@ -204,13 +211,25 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 			ReportElementEditor editor = editorProvider.create(currentModel.getElement(0));
 			editor.bind(currentModel.getElement(0));
 			installEditor( editor );
+			reportBar.getSwitchViewButton().setVisible(true);
 		} else {
-			CompositeEditor editor = (CompositeEditor)editorProvider.create(currentModel);
-			editor.bind(currentModel);
-			installEditor( editor );
-		}
-		
+			installCompositeEditor();
+		}		
 	}
+
+	private void installCompositeEditor() {
+		CompositeEditor2 editor = (CompositeEditor2)editorProvider.create(currentModel);
+		editor.bind(currentModel);
+		installEditor( editor );
+		
+		reportBar.getSwitchViewButton().setVisible(false);
+	}
+	
+
+	protected void switchView() {
+		installCompositeEditor();
+	}
+
 
 	private void installEditor(ReportElementEditor editor) {
 		if(currentEditor != null) {

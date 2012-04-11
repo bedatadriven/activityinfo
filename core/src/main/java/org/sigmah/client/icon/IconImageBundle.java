@@ -245,4 +245,6 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype star();
     AbstractImagePrototype starWhite();
     AbstractImagePrototype link();
+    
+    AbstractImagePrototype page();
 }

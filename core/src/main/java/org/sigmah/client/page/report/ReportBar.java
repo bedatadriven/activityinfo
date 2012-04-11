@@ -22,6 +22,7 @@ public class ReportBar extends LayoutContainer {
 	private ToggleButton dashboardButton; 
 	private ExportMenuButton exportButton;
 	private Button shareButton;
+	private Button switchViewButton;
 	
 	public ReportBar() {
 		setStyleName(ReportResources.INSTANCE.style().bar());
@@ -34,6 +35,9 @@ public class ReportBar extends LayoutContainer {
 		setMonitorWindowResize(true);
 		
 		addTitle();
+		
+		switchViewButton = new Button("Switch to page view", IconImageBundle.ICONS.page());
+		add(switchViewButton);
 		
 		dashboardButton = new ToggleButton("Pin to dashboard", IconImageBundle.ICONS.star());
 		add(dashboardButton);
@@ -81,5 +85,9 @@ public class ReportBar extends LayoutContainer {
 
 	public Button getShareButton() {
 		return shareButton;
+	}
+	
+	public Button getSwitchViewButton() {
+		return switchViewButton;
 	}
 }

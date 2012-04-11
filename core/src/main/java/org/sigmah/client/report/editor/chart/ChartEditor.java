@@ -128,6 +128,15 @@ public class ChartEditor extends LayoutContainer implements ReportElementEditor<
 	}
 	
 	@Override
+	public void disconnect() {
+		typeGroup.disconnect();
+		pivotBar.disconnect();
+		filterPane.disconnect();
+		preview.disconnect();
+	}
+
+
+	@Override
 	public PivotChartReportElement getModel() {
 		return model;
 	}

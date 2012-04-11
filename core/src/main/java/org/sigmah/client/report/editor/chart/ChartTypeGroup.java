@@ -99,4 +99,9 @@ public class ChartTypeGroup extends BaseObservable implements HasReportElement<P
 		return model;
 	}
 
+	@Override
+	public void disconnect() {
+		events.disconnect();
+	}
+
 }

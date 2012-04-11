@@ -154,6 +154,13 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 		filterPane.bind(model);
 		viewBinder.bind(model);
 	}
+	
+	@Override
+	public void disconnect() {
+		pivotPanel.disconnect();
+		filterPane.disconnect();
+		viewBinder.disconnect();
+	}
 
 	@Override
 	public Component getWidget() {
@@ -164,6 +171,8 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 	public List<Format> getExportFormats() {
 		return Arrays.asList(Format.Excel, Format.Word, Format.PDF);
 	}
+
+	
 	
 	
 }

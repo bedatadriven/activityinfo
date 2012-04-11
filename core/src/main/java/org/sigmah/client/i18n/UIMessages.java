@@ -310,4 +310,8 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	
 	@DefaultMessage("Unlink \"{0}\" to \"{1}\"")
 	String unlink(String source, String dest);
+
+	@DefaultMessage("Are you sure you want to delete the report \"{0}\"")
+	String confirmDeleteReport(String reportTitle);
 }
+

@@ -69,7 +69,7 @@ public class PivotFilterPanel extends ContentPanel implements HasReportElement<P
 	@Override
 	public void bind(PivotReportElement model) {
 		this.model = model;
-		panelSet.setValue(model.getFilter());
+		panelSet.setValue(model.getFilter(), false);
 	}
 
 	@Override
@@ -80,6 +80,12 @@ public class PivotFilterPanel extends ContentPanel implements HasReportElement<P
 
 	public void applyBaseFilter(Filter filter) {
 		panelSet.applyBaseFilter(filter);
+	}
+
+
+	@Override
+	public void disconnect() {
+		events.disconnect();
 	}
 
 }

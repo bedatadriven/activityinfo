@@ -95,4 +95,10 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>> imp
 			});
 		}
 	}
+
+
+	@Override
+	public void disconnect() {
+		events.disconnect();
+	}
 }

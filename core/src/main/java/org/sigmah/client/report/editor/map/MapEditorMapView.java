@@ -139,7 +139,6 @@ public class MapEditorMapView extends GoogleMapsPanel implements HasReportElemen
     	this.overlays = new GoogleMapsReportOverlays(getMapWidget());
     	
         loadContent();
-        
 	}
     
     public void setZoomControlOffsetX(int offset) {
@@ -160,6 +159,13 @@ public class MapEditorMapView extends GoogleMapsPanel implements HasReportElemen
 		loadContent();
 	}
 	
+	
+	
+	@Override
+	public void disconnect() {
+		events.disconnect();
+	}
+
 	@Override
 	public MapReportElement getModel() {
 		return model;

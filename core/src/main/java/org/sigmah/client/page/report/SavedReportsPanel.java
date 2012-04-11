@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.sigmah.client.EventBus;
 import org.sigmah.client.dispatch.Dispatcher;
+import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.sigmah.client.event.NavigationEvent;
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
@@ -11,6 +12,7 @@ import org.sigmah.client.page.NavigationHandler;
 import org.sigmah.client.page.common.toolbar.ActionListener;
 import org.sigmah.client.page.common.toolbar.ActionToolBar;
 import org.sigmah.client.page.common.toolbar.UIActions;
+import org.sigmah.shared.command.DeleteReport;
 import org.sigmah.shared.command.GetReports;
 import org.sigmah.shared.command.UpdateReportSubscription;
 import org.sigmah.shared.command.result.ReportsResult;
@@ -23,11 +25,14 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -96,11 +101,18 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		setLayout(new FitLayout());
 		add(grid);
 		
+		updateToolbarState(null);
+		
 		loader.load();
 	}
 
 
 	private void onSelectionChanged(ReportMetadataDTO selectedItem) {
+		updateToolbarState(selectedItem);
+	}
+
+
+	private void updateToolbarState(ReportMetadataDTO selectedItem) {
 		toolBar.setActionEnabled(UIActions.DELETE, selectedItem != null &&
 				selectedItem.getAmOwner());
 		toolBar.setActionEnabled(UIActions.PRINT, selectedItem != null);
@@ -232,9 +244,10 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		} else if("share".equals(actionId)) {
 			ShareReportDialog dialog = new ShareReportDialog(dispatcher);
 			dialog.show(grid.getSelectionModel().getSelectedItem());
+		} else if(UIActions.DELETE.equals(actionId)) {
+			delete();
 		}
 	}
-
 
 	private void showEmailDialog() {
 		EmailDialog dialog = new EmailDialog(dispatcher);
@@ -252,5 +265,31 @@ public class SavedReportsPanel extends ContentPanel implements ActionListener {
 		eventBus.fireEvent(new NavigationEvent(
 				NavigationHandler.NavigationRequested,
 				new ReportDesignPageState(model.getId())));
+	}
+
+	private void delete() {
+		final ReportMetadataDTO report = grid.getSelectionModel().getSelectedItem();
+		MessageBox.confirm(I18N.CONSTANTS.delete(), I18N.MESSAGES.confirmDeleteReport(report.getTitle()), new Listener<MessageBoxEvent>() {
+			
+			@Override
+			public void handleEvent(MessageBoxEvent be) {
+				if(be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+					dispatcher.execute(new DeleteReport(report.getId()), 
+							new MaskingAsyncMonitor(SavedReportsPanel.this, I18N.CONSTANTS.delete()), new AsyncCallback<VoidResult>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// handled by monitor
+						}
+
+						@Override
+						public void onSuccess(VoidResult result) {
+							grid.getStore().remove(report);
+						}
+					});
+				}
+			}
+		});
+			
 	}
 }

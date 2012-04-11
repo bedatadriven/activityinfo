@@ -157,6 +157,15 @@ public class MapEditor extends ContentPanel implements ReportElementEditor<MapRe
 		mapPanel.bind(model);
 	}
 	
+	
+	
+	@Override
+	public void disconnect() {
+		events.disconnect();
+		layersWidget.disconnect();
+		mapPanel.disconnect();
+	}
+
 	@Override
 	public MapReportElement getModel() {
 		return mapReportElement;

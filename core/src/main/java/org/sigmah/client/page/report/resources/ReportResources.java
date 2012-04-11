@@ -10,8 +10,10 @@ public interface ReportResources extends ClientBundle {
 	
 	interface Style extends CssResource {
 		String bar();
+		String page();
 	}
 	
 	@Source("Report.css")
 	Style style();
+
 }

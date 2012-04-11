@@ -380,5 +380,10 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
     	}
 	}
 
+	@Override
+	public void disconnect() {
+		events.disconnect();
+	}
+
 
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	<ui:style type="org.sigmah.client.page.report.editor.ElementWidget.MyStyle">
+		.container {
+			width: 650px;
+		}
+		.title {
+			float:left;
+		}
+		.topRow {
+			
+		}
+		.block {
+			margin-top: 5px;
+			margin-bottom: 25px;
+			width: 650px;
+			height: 200px;
+			background-color: rgb(200,200,200);
+			border: 1px solid rgb(50,50,50); 
+			clear: both;
+		}
+		.buttons {
+			visibility: hidden;
+			font-size: 12px;
+			text-align: right;
+			float: right;
+		}
+		
+		.linkButton {
+			text-decoration: underline;
+			cursor: pointer;
+		}
+		
+		.editButton {
+		}
+		
+		.removeButton {
+		}
+		
+	</ui:style>
+	<ui:with field="i18n" type="org.sigmah.client.i18n.UIConstants"/>
+	
+	<div style="{style.container}">
+	
+		<div class="{style.topRow}">
+		
+			<div ui:field="titleElement" class="{style.title}">Title Here</div> 
+			<div ui:field="buttonElement" class="{style.buttons}">
+				[ <span class="{style.linkButton} {style.editButton}">edit</span> ] 
+				[ <span class="{style.linkButton} {style.removeButton}">remove</span> ]		
+			</div>
+		</div>	
+		<div class="{style.block}">&nbsp;</div>
+	</div>
+</ui:UiBinder>

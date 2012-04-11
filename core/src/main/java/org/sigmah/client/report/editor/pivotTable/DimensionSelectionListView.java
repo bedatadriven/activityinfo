@@ -103,6 +103,11 @@ public class DimensionSelectionListView implements HasReportElement<PivotTableRe
 		onModelChanged();
 	}
 
+	@Override
+	public void disconnect() {
+		events.disconnect();
+	}
+	
 	private void onModelChanged() {
 		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
 

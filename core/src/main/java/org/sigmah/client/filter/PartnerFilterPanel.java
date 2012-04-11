@@ -191,7 +191,9 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 		this.value = new Filter();
 		this.value.addRestriction(DimensionType.Partner, value.getRestrictions(DimensionType.Partner));
 		applyInternalValue();
-		ValueChangeEvent.fire(this, value);
+		if(fireEvents) {
+			ValueChangeEvent.fire(this, value);
+		}
 	}
 
 	private void applyInternalValue() {
