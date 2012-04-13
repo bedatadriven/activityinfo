@@ -2,7 +2,6 @@ package org.sigmah.client.page.report.editor;
 
 import org.sigmah.client.i18n.I18N;
 import org.sigmah.client.icon.IconImageBundle;
-import org.sigmah.client.page.report.editor.AddElementPanel.AddCallback;
 import org.sigmah.client.page.report.editor.ElementDialog.Callback;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
@@ -20,19 +19,23 @@ import com.extjs.gxt.ui.client.widget.layout.BoxLayout.BoxLayoutPack;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class AddElementPanel extends LayoutContainer {
 
 	private EditorProvider editorProvider;
 	private AddCallback addCallback;
+	private Provider<ElementDialog> dialogProvider;
 	
 	public interface AddCallback {
 		void onAdd(ReportElement element);
 	}
 
-	public AddElementPanel(EditorProvider editorProvider, AddCallback addCallback) {
+	@Inject
+	public AddElementPanel(EditorProvider editorProvider, Provider<ElementDialog> dialogProvider) {
 		this.editorProvider = editorProvider;
-		this.addCallback = addCallback;
+		this.dialogProvider = dialogProvider;
 		
 		HBoxLayout layout = new HBoxLayout();
 		layout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCHMAX);
@@ -63,13 +66,17 @@ public class AddElementPanel extends LayoutContainer {
 		}));
 		
 	}
+	
+	public void setCallback(AddCallback callback) {
+		this.addCallback = callback;
+	}
 
 	protected void addElement(final ReportElement element) {
-		ElementDialog dialog = new ElementDialog(editorProvider, Dialog.OKCANCEL);
+		ElementDialog dialog = dialogProvider.get();
 		dialog.show(element, new Callback() {
 			
 			@Override
-			public void onOK() {
+			public void onOK(boolean dirty) {
 				addCallback.onAdd(element);
 			}
 		});

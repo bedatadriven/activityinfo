@@ -65,6 +65,7 @@ public class FilterPanelSet implements FilterPanel {
 	@Override
 	public void setValue(Filter value) {
 		for(FilterPanel panel : panels) {
+			panel.applyBaseFilter(value);
 			panel.setValue(value);
 		}
 	}
@@ -72,6 +73,7 @@ public class FilterPanelSet implements FilterPanel {
 	@Override
 	public void setValue(Filter value, boolean fireEvents) {
 		for(FilterPanel panel : panels) {
+			panel.applyBaseFilter(value);
 			panel.setValue(value, fireEvents);
 		}
 	}

@@ -184,9 +184,9 @@ public class MapEditorMapView extends GoogleMapsPanel implements HasReportElemen
     	if(!isMapLoaded()) {
     		return;
     	}
-    	
-		getMapWidget().clearOverlays();
-        overlays.clear();
+    	     
+    	overlays.clear();
+    	      
     	
     	// Don't update when no layers are present
     	if (model.getLayers().isEmpty()) {

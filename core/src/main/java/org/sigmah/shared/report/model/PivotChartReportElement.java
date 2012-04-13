@@ -22,14 +22,15 @@ import com.google.common.collect.Lists;
 public class PivotChartReportElement extends PivotReportElement<PivotChartContent> {
 
     public enum Type {
+    	@Deprecated
 		Bar,
-		StackedBar,
+    	StackedBar,
         Line,
 		ClusteredBar,
         Pie
 	}
 
-	private Type type = Type.Bar;
+	private Type type = Type.ClusteredBar;
 	private List<Dimension> categoryDimensions = new ArrayList<Dimension>();
 	private List<Dimension> seriesDimension = new ArrayList<Dimension>();
 	private String categoryAxisTitle;
@@ -128,20 +129,6 @@ public class PivotChartReportElement extends PivotReportElement<PivotChartConten
 	public void setValueAxisTitle(String valueAxisTitle) {
 		this.valueAxisTitle = valueAxisTitle;
 	}
-	
-	public void validateModel() {
-        if (getIndicators().isEmpty()) {
-            throw new ReportModelException("No indicators specified for chart", this);
-        } else if (getIndicators().size() > 1 &&
-                !allDimensionTypes().contains(DimensionType.Indicator)) {
-            throw new ReportModelException("If multiple indicators are provided, either the category or legend dimension must be indicator.", this);
-        }
 
-        if (getSeriesDimension().size() > 0 &&
-                getType() == PivotChartReportElement.Type.Bar) {
-
-            throw new ReportModelException("Bar charts that are not stacked/clustered cannot have legend dimensions.", this);
-        }
-	}
 
 }

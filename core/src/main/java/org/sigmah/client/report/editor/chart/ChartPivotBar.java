@@ -122,7 +122,7 @@ public class ChartPivotBar extends ToolBar implements HasReportElement<PivotChar
 	
 	protected void updateLabels() {
 		Type type = model.getType();
-		if (type == Type.ClusteredBar) {
+		if (type == Type.ClusteredBar || type == Type.Bar) {
 			updateCategoryComboLabel(I18N.CONSTANTS.horizontalAxis());
 			updateLegendComboLabel(I18N.CONSTANTS.bars());
 		} else if (type == Type.Line) {

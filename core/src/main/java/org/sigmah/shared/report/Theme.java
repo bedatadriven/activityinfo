@@ -9,6 +9,14 @@ package org.sigmah.shared.report;
  * @author Alex Bertram
  */
 public final class Theme {
+
+	public static String[] ACCENTS = new String[] {
+    	"#4F81BD", // 79, 129, 189
+    	"#C0504D", // 192, 80, 77
+    	"#98BB59", // 155, 187, 89
+    	"#8064A2", // 128, 100, 162
+    	"#4BACC6", // 75, 172, 198
+    	"#F79646"}; // 247, 150, 70
 	
 	private Theme() {}
 
@@ -20,15 +28,13 @@ public final class Theme {
     }
 
     public static String[] getAccents() {
-        return new String[] {
-        	"#4F81BD", // 79, 129, 189
-        	"#C0504D", // 192, 80, 77
-        	"#98BB59", // 155, 187, 89
-        	"#8064A2", // 128, 100, 162
-        	"#4BACC6", // 75, 172, 198
-        	"#F79646"}; // 247, 150, 70
+        return ACCENTS;
     }
 
+    public static String getAccent(int index) {
+    	return ACCENTS[index % ACCENTS.length];
+    }
+    
     public static String getColor(int index) {
         return getColors()[index];
     }

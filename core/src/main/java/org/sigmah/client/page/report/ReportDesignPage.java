@@ -1,6 +1,7 @@
 package org.sigmah.client.page.report;
 
 import org.sigmah.client.EventBus;
+import org.sigmah.client.dispatch.AsyncMonitor;
 import org.sigmah.client.dispatch.Dispatcher;
 import org.sigmah.client.dispatch.callback.DownloadCallback;
 import org.sigmah.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -9,6 +10,8 @@ import org.sigmah.client.page.NavigationCallback;
 import org.sigmah.client.page.Page;
 import org.sigmah.client.page.PageId;
 import org.sigmah.client.page.PageState;
+import org.sigmah.client.page.common.dialog.SaveChangesCallback;
+import org.sigmah.client.page.common.dialog.SavePromptMessageBox;
 import org.sigmah.client.page.common.toolbar.ExportCallback;
 import org.sigmah.client.page.report.editor.CompositeEditor2;
 import org.sigmah.client.page.report.editor.EditorProvider;
@@ -27,6 +30,7 @@ import org.sigmah.shared.command.result.VoidResult;
 import org.sigmah.shared.dto.ReportMetadataDTO;
 import org.sigmah.shared.report.model.Report;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.EditorEvent;
@@ -71,6 +75,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	private boolean reportEdited;
 	private ReportBar reportBar;
 	
+	private boolean dirty = false;
 	
 	/**
 	 * The model being edited on this page
@@ -99,6 +104,18 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		setHeaderVisible(false);
 
 		createToolbar();
+		
+		eventBus.addListener(ReportChangeEvent.TYPE, new Listener<ReportChangeEvent>() {
+
+			@Override
+			public void handleEvent(ReportChangeEvent event) {
+				if(event.getModel() == currentModel || 
+						currentModel.getElements().contains(event.getModel())) {
+					Log.debug("marking report as dirty");
+					dirty = true;
+				}
+			}
+		});
 	}
 
 	public void createToolbar() {
@@ -126,11 +143,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				if(untitled()) {
-					promptForTitle(new SaveCallback());
-				} else {
-					save(new SaveCallback());
-				}
+				ensureTitledThenSave(null, new SaveCallback());
 			}
 		});
 		
@@ -171,6 +184,14 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	}
 
 
+	private void ensureTitledThenSave(AsyncMonitor monitor, SaveCallback callback) {
+		if(untitled()) {
+			promptForTitle(callback);
+		} else {
+			save(monitor, callback);
+		}
+	}
+	
 	public void go(int reportId) {
 		loadReport(reportId);
 	}
@@ -243,11 +264,15 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		layout();
 	}
 
-	public void save(final AsyncCallback<VoidResult> callback) {
+	public void save(AsyncCallback<VoidResult> callback) {
+		save(null, callback);
+	}
+	
+	public void save(AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
 		UpdateReportModel updateReport = new UpdateReportModel();
 		updateReport.setModel(currentModel);
 		
-		dispatcher.execute(updateReport, null, new AsyncCallback<VoidResult>() {
+		dispatcher.execute(updateReport, monitor, new AsyncCallback<VoidResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
@@ -255,6 +280,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 			@Override
 			public void onSuccess(VoidResult result) {
+				dirty = false;
 				callback.onSuccess(result);
 			}
 		});
@@ -328,8 +354,36 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	@Override
 	public void requestToNavigateAway(PageState place,
-			NavigationCallback callback) {
-		callback.onDecided(true);
+			final NavigationCallback callback) {
+		if(!dirty) {
+			callback.onDecided(true);
+		} else {
+			SavePromptMessageBox box = new SavePromptMessageBox();
+			box.show(new SaveChangesCallback() {
+				
+				@Override
+				public void save(AsyncMonitor monitor) {
+					ensureTitledThenSave(monitor, new SaveCallback() {
+
+						@Override
+						public void onSaved() {
+							callback.onDecided(true);
+						}
+					});
+				}
+				
+				@Override
+				public void discard() {
+					callback.onDecided(true);
+				}
+				
+				@Override
+				public void cancel() {
+					callback.onDecided(false);
+				}
+			});
+			
+		}
 	}
 
 	@Override
@@ -354,7 +408,6 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 				final ShareReportDialog dialog = new ShareReportDialog(dispatcher);
 				//form.updateForm(currentReportId);
 				dialog.show(currentModel);
-				
 			}
 		});
 	}

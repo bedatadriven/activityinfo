@@ -48,20 +48,23 @@ public class ReportGenerator extends BaseGenerator<Report> {
                                    DateRange dateRange) {
         if (element instanceof PivotChartReportElement) {
             pivotChartGenerator.generate(user, (PivotChartReportElement) element, inheritedFilter, dateRange);
-            return ((PivotChartReportElement) element).getContent();
+            return element.getContent();
 
         } else if (element instanceof PivotTableReportElement) {
             pivotTableGenerator.generate(user, (PivotTableReportElement) element, inheritedFilter, dateRange);
-            return ((PivotTableReportElement) element).getContent();
+            return element.getContent();
 
         } else if (element instanceof MapReportElement) {
             mapGenerator.generate(user, (MapReportElement) element, inheritedFilter, dateRange);
-            return ((MapReportElement) element).getContent();
+            return element.getContent();
 
         } else if (element instanceof TableElement) {
             tableGenerator.generate(user, ((TableElement) element), inheritedFilter, dateRange);
-            return ((TableElement) element).getContent();
-
+            return element.getContent();
+           
+        } else if(element instanceof Report) {
+        	generateReport(user, (Report) element, inheritedFilter, dateRange);
+        	return element.getContent();
         } else {
             throw new RuntimeException("Unknown element type " + element.getClass().getName());
         }
@@ -69,14 +72,16 @@ public class ReportGenerator extends BaseGenerator<Report> {
 
     @Override
     public void generate(User user, Report report, Filter inheritedFilter, DateRange dateRange) {
+        generateReport(user, report, inheritedFilter, dateRange);
+    }
 
-        Filter filter = GeneratorUtils.resolveElementFilter(report, dateRange);
+	private void generateReport(User user, Report report,
+			Filter inheritedFilter, DateRange dateRange) {
+		Filter filter = GeneratorUtils.resolveElementFilter(report, dateRange);
         Filter effectiveFilter = GeneratorUtils.resolveEffectiveFilter(report, inheritedFilter, dateRange);
 
         for (ReportElement element : report.getElements()) {
-
             generateElement(user, element, effectiveFilter, dateRange);
-
         }
 
         ReportContent content = new ReportContent();
@@ -85,8 +90,7 @@ public class ReportGenerator extends BaseGenerator<Report> {
                 Collections.<DimensionType>emptySet(), user));
 
         report.setContent(content);
-
-    }
+	}
 
     public String generateFileName(Report report, DateRange dateRange, User user) {
 

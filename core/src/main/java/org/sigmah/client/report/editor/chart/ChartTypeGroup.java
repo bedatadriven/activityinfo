@@ -68,12 +68,12 @@ public class ChartTypeGroup extends BaseObservable implements HasReportElement<P
 				return button.getData(TYPE_DATA);
 			}
 		}
-		return PivotChartReportElement.Type.Bar;
+		return PivotChartReportElement.Type.ClusteredBar;
 	}
 	
 	public void setSelection(PivotChartReportElement.Type type) {
 		if(type == null) {
-			type = PivotChartReportElement.Type.Bar;
+			type = PivotChartReportElement.Type.ClusteredBar;
 		}
 		
 		for(ToggleButton button : buttons) {

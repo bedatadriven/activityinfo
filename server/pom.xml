@@ -264,7 +264,12 @@
 			<artifactId>freemarker</artifactId>
 			<version>2.3.16</version>
 		</dependency>
-
+		
+		<dependency>
+            <groupId>log4jwebtracker</groupId>
+            <artifactId>log4jwebtracker</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
 		<!-- Random library for BASE64 decoding (KmlDataServlet) -->
 		<dependency>

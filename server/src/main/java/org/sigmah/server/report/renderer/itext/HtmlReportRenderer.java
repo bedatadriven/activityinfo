@@ -64,7 +64,7 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 	}
 
 	public void render(ReportElement element, final Writer writer) throws IOException {
-		// The HtmlWriter encodes everythings as ISO-8859-1
+		// The HtmlWriter encodes everything as ISO-8859-1
 		// so we can be safely naive here about encoding
 		final Charset charset = Charset.forName("ISO-8859-1");
 		render(element, new OutputStream() {

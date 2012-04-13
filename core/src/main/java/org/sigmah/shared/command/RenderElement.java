@@ -26,7 +26,8 @@ public class RenderElement implements Command<RenderResult> {
         Excel_Data,
         PowerPoint,
         PDF,
-        Word
+        Word,
+        HTML
     }
 
     private Format format;

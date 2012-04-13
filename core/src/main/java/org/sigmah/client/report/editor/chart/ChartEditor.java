@@ -108,6 +108,7 @@ public class ChartEditor extends LayoutContainer implements ReportElementEditor<
 
 		gridPanel = new PivotGridPanel();
 		gridPanel.setHeading("Table");
+		chartView.bindTable(gridPanel);
 
 		center.add(gridPanel, south);
 	}

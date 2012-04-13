@@ -7,34 +7,30 @@ package org.sigmah.shared.command;
 
 import org.sigmah.shared.command.result.HtmlResult;
 import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.ReportElement;
 
 public class RenderReportHtml implements Command<HtmlResult> {
 
-    private int templateId;
-    private DateRange dateRange;
+    private ReportElement model;
 
 
     public RenderReportHtml() {
     }
 
-    public RenderReportHtml(int templateId, DateRange dateRange) {
-        this.templateId = templateId;
-        this.dateRange = dateRange;
-    }
 
-    public int getTemplateId() {
-        return templateId;
-    }
+	public RenderReportHtml(ReportElement model) {
+		super();
+		this.model = model;
+	}
 
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
-    }
+	public ReportElement getModel() {
+		return model;
+	}
 
-    public DateRange getDateRange() {
-        return dateRange;
-    }
 
-    public void setDateRange(DateRange dateRange) {
-        this.dateRange = dateRange;
-    }
+	public void setModel(ReportElement model) {
+		this.model = model;
+	}
+
+
 }

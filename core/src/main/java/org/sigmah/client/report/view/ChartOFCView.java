@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.sigmah.client.i18n.I18N;
+import org.sigmah.shared.report.Theme;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.PivotChartReportElement;
@@ -18,10 +19,14 @@ import com.extjs.gxt.charts.client.Chart;
 import com.extjs.gxt.charts.client.model.ChartModel;
 import com.extjs.gxt.charts.client.model.axis.XAxis;
 import com.extjs.gxt.charts.client.model.axis.YAxis;
+import com.extjs.gxt.charts.client.model.charts.BarChart.Bar;
 import com.extjs.gxt.charts.client.model.charts.FilledBarChart;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
 import com.extjs.gxt.charts.client.model.charts.PieChart;
 import com.extjs.gxt.charts.client.model.charts.PieChart.Slice;
+import com.extjs.gxt.charts.client.model.charts.dots.BaseDot;
+import com.extjs.gxt.charts.client.model.charts.dots.Dot;
+import com.extjs.gxt.charts.client.model.charts.dots.SolidDot;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -44,6 +49,9 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 
 	private Chart chart;
 	private ChartModel chartModel;
+
+	private PivotGridPanel gridPanel;
+	
 
 	public ChartOFCView() {
 		setHeaderVisible(false);
@@ -102,6 +110,8 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 		PivotChartContent content = element.getContent();
 		PivotTableData table = element.getContent().getData();
 
+		gridPanel.show(element);
+		
 		List<PivotTableData.Axis> categories = table.getRootRow().getLeaves();
 		List<PivotTableData.Axis> series = table.getRootColumn().getLeaves();
 
@@ -114,6 +124,7 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 
 		switch(element.getType()) {
 		case Bar:
+		case StackedBar:
 		case ClusteredBar:
 			addBarSeries(cm, categories, series);
 			break;
@@ -157,14 +168,25 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 			List<PivotTableData.Axis> categories, 
 			List<PivotTableData.Axis> series) {
 
+		int index = 0;
 		for(PivotTableData.Axis s : series) { 
 
-			FilledBarChart bchart = new FilledBarChart("6666ff", "000066");
+			String color = Theme.getAccent(index++);
+			
+			FilledBarChart bchart = new FilledBarChart(color, color);
 			bchart.setTooltip("#x_label#<br>#val#");
+						
 			for (PivotTableData.Axis category : categories) {
 
 				PivotTableData.Cell cell = category.getCell(s);
-				bchart.addValues(cell == null ? 0 : cell.getValue());
+				double value = cell == null ? 0 : cell.getValue();
+				
+				Bar bar = new Bar(value);
+				bar.setValue(value);
+				bar.setTooltip(formatTooltip(s, category, value));
+				bar.setValue(value);
+				
+				bchart.addBars(bar);
 			}
 			cm.addChartConfig(bchart);
 		}
@@ -173,17 +195,43 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 	private void addLineSeries(ChartModel cm,
 			List<PivotTableData.Axis> categories,
 			List<PivotTableData.Axis> series) {
+		
+		int index = 0;
 
 		for(PivotTableData.Axis s : series) {
+
+			String color = Theme.getAccent(index++);
+
 			LineChart lineChart = new LineChart();
 			lineChart.setTooltip("#x_label#<br>#val#");
-
+			lineChart.setColour(color);
+			lineChart.setDotStyle(new SolidDot());
 			for (PivotTableData.Axis category : categories) {
 				PivotTableData.Cell cell = category.getCell(s);
-				lineChart.addValues(cell == null ? 0 : cell.getValue());
+				double value = cell == null ? 0 : cell.getValue();
+				
+				BaseDot d = new Dot(5);
+				d.setSize(5);
+				d.setColour(color);
+				d.setTooltip(formatTooltip(s, category, value));
+				d.setValue(value);
+				
+				lineChart.addDots(d);
 			}
 			cm.addChartConfig(lineChart);
 		}
+	}
+
+
+	private String formatTooltip(PivotTableData.Axis s,
+			PivotTableData.Axis category, double value) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(s.flattenLabel());
+		sb.append("<br>");
+		sb.append(category.flattenLabel());
+		sb.append(": ");
+		sb.append(value);
+		return sb.toString();
 	}
 
 	private void addPieChart(ChartModel cm,
@@ -218,6 +266,11 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 	@Override
 	public Component asComponent() {
 		return this;
+	}
+
+
+	public void bindTable(PivotGridPanel gridPanel) {
+		this.gridPanel = gridPanel;
 	}
 	
 	

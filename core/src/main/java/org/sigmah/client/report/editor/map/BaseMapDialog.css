@@ -9,15 +9,15 @@
     padding: 3px;
 }
 .basemap-dlg .thumb img{
-    height: 95px;
-    width: 175px;
+    height: 200px;
+    width: 300px;
 }
 .basemap-dlg .thumb-wrap{
     float: left;
     margin: 4px;
     margin-right: 0;
     padding: 5px;
-    width: 180px;
+    width: 305px;
     border: 1px solid #FFF;
 }
 .basemap-dlg .thumb-wrap span{
