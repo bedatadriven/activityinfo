@@ -53,7 +53,8 @@ public class GetBaseMapsHandler implements CommandHandlerAsync<GetBaseMaps, Base
 						map.setMaxZoom(row.getInt("maxZoom"));
 						map.setMinZoom(row.getInt("minZoom"));
 						map.setName(row.getString("name"));
-						map.setThumbnailUrl(row.getString("tileUrlPattern"));
+						map.setTileUrlPattern(row.getString("tileUrlPattern"));
+						map.setThumbnailUrl(row.getString("thumbnailUrl"));
 						maps.add(map);
 					}
 					callback.onSuccess(new BaseMapResult(maps));

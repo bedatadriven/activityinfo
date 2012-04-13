@@ -13,14 +13,18 @@ import javax.servlet.ServletContext;
 
 import org.sigmah.server.authentication.SecureTokenGenerator;
 import org.sigmah.server.database.hibernate.entity.User;
+import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.GenerateElement;
 import org.sigmah.shared.command.RenderElement;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.RenderResult;
 import org.sigmah.shared.exception.CommandException;
 import org.sigmah.shared.exception.UnexpectedCommandException;
+import org.sigmah.shared.report.model.DateRange;
+import org.sigmah.shared.report.model.Report;
 
 import com.google.inject.Inject;
 
@@ -31,12 +35,12 @@ import com.google.inject.Inject;
 public class RenderElementHandler implements CommandHandler<RenderElement> {
 
     private final RendererFactory rendererFactory;
-    private final GenerateElementHandler generator;
     private final String tempPath;
+    private final ReportGenerator generator;
 
 
     @Inject
-    public RenderElementHandler(RendererFactory rendererFactory, ServletContext context, GenerateElementHandler generator) {
+    public RenderElementHandler(RendererFactory rendererFactory, ServletContext context, ReportGenerator generator) {
 
         this.rendererFactory = rendererFactory;
         this.tempPath = context.getRealPath("/temp");
@@ -54,14 +58,9 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
 
     public CommandResult execute(RenderElement cmd, User user) throws CommandException {
 
-        // generate the content
+		Renderer renderer = rendererFactory.get(cmd.getFormat());
 
-        generator.execute(new GenerateElement(cmd.getElement()), user);
-
-        // create the renderer
-        Renderer renderer = rendererFactory.get(cmd.getFormat());
-
-        // compose temporary file name
+            // compose temporary file name
         String filename = SecureTokenGenerator.generate() + renderer.getFileSuffix();
         String path = tempPath + "/" + filename;
 
@@ -69,7 +68,9 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
         try {
             FileOutputStream os = new FileOutputStream(path);
 
-            renderer.render(cmd.getElement(), os);
+            generator.generateElement(user, cmd.getElement(), new Filter(), new DateRange());
+    		renderer.render(cmd.getElement(), os);      
+            
             os.close();
 
         } catch (IOException e) {
@@ -79,4 +80,9 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
 
         return new RenderResult(filename);
     }
+
+	private void renderIndividualElement(RenderElement cmd, User user,
+			FileOutputStream os) throws IOException {
+
+	}
 }

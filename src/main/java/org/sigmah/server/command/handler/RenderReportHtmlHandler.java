@@ -17,11 +17,14 @@ import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.util.logging.LogException;
+import org.sigmah.shared.command.Filter;
 import org.sigmah.shared.command.RenderReportHtml;
 import org.sigmah.shared.command.result.CommandResult;
 import org.sigmah.shared.command.result.HtmlResult;
 import org.sigmah.shared.exception.CommandException;
+import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Report;
+import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
 
@@ -32,38 +35,33 @@ import com.google.inject.Inject;
 public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml> {
 
     private final ReportGenerator generator;
-    private final ReportDefinitionDAO reportDAO;
     private final HtmlReportRenderer renderer;
-    private final ServletContext servletContext;
+   
 
     @Inject
-    public RenderReportHtmlHandler(ReportGenerator generator, ReportDefinitionDAO reportDAO, HtmlReportRenderer renderer, ServletContext servletContext) {
+    public RenderReportHtmlHandler(ReportGenerator generator,  HtmlReportRenderer renderer) {
         this.generator = generator;
-        this.reportDAO = reportDAO;
         this.renderer = renderer;
-        this.servletContext = servletContext;
     }
 
     @Override
 	@LogException
     public CommandResult execute(RenderReportHtml cmd, User user) throws CommandException {
 
-        String xml = reportDAO.findById(cmd.getTemplateId()).getXml();
-
+    	ReportElement model = cmd.getModel();
+    	
+    	//  don't show the title: it will be rendered by the container
+    	model.setTitle(null);
+    	
+		generator.generateElement(user, model, new Filter(), new DateRange());
+        StringWriter writer = new StringWriter();
         try {
-            Report report = ReportParserJaxb.parseXml(xml);
-
-            generator.generate(user, report, null, cmd.getDateRange());
-
-            StringWriter writer = new StringWriter();
-            renderer.render(report, writer);
-
-            return new HtmlResult(writer.toString());
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+			renderer.render(model, writer);
+		} catch (IOException e) {
+			throw new CommandException(e);
+		}
+        return new HtmlResult(writer.toString());
+        
     }
 
 }

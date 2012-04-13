@@ -8,6 +8,7 @@ package org.sigmah.server.report.renderer;
 import org.sigmah.server.report.renderer.excel.ExcelMapDataExporter;
 import org.sigmah.server.report.renderer.excel.ExcelReportRenderer;
 import org.sigmah.server.report.renderer.image.ImageReportRenderer;
+import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.report.renderer.itext.PdfReportRenderer;
 import org.sigmah.server.report.renderer.itext.RtfReportRenderer;
 import org.sigmah.server.report.renderer.ppt.PPTRenderer;
@@ -43,6 +44,8 @@ public class RendererFactory {
                 return injector.getInstance(ImageReportRenderer.class);
             case Excel_Data:
                 return injector.getInstance(ExcelMapDataExporter.class);
+            case HTML:
+            	return injector.getInstance(HtmlReportRenderer.class);
         }
 
         throw new IllegalArgumentException();

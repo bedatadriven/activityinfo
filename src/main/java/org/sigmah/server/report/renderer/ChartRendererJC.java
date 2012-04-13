@@ -52,6 +52,7 @@ import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
 import org.sigmah.shared.report.model.PivotChartReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 
 
 /**
@@ -150,7 +151,7 @@ public class ChartRendererJC  {
                 computePaints(categories),
                 pieProps);
 
-        LegendProperties legendProps = computeLegendProperties(dpi, categories);
+        LegendProperties legendProps = computeLegendProperties(element, dpi, categories);
         ChartProperties chartProps = computeChartProperties(dpi);
 
         return new PieChart2D(dataSet, legendProps, chartProps, width, height );
@@ -201,19 +202,19 @@ public class ChartRendererJC  {
                 dataSeries,
                 computeChartProperties(dpi),
                 computeAxisProperties(dpi, element.getContent()),
-                computeLegendProperties(dpi, series), width, height);
+                computeLegendProperties(element, dpi, series), width, height);
     }
 
     private ChartType computeChartType(PivotChartReportElement element) {
         switch (element.getType()) {
-            case ClusteredBar:
-                return ChartType.BAR_CLUSTERED;
-            case Line:
-                return ChartType.LINE;
-            case StackedBar:
-                return ChartType.BAR_STACKED;
-            default:
-                return ChartType.BAR;
+        case Line:
+            return ChartType.LINE;
+        case StackedBar:
+            return ChartType.BAR_STACKED;
+        case Bar:
+        case ClusteredBar:
+        default:	
+             return ChartType.BAR_CLUSTERED;
         }
     }
 
@@ -318,7 +319,7 @@ public class ChartRendererJC  {
         return p;
     }
 
-    protected LegendProperties computeLegendProperties(int dpi, List<PivotTableData.Axis> series) {
+    protected LegendProperties computeLegendProperties(PivotChartReportElement element, int dpi, List<PivotTableData.Axis> series) {
 
         // if there is only series, there is no need for a legend
         if(series.size() <= 1) {
@@ -331,10 +332,24 @@ public class ChartRendererJC  {
         p.setChartFont( font );
         p.setBorderStroke( null ) ;
         p.setIconBorderPaint( null );
-        p.setPlacement(LegendProperties.RIGHT);
+        if(element.getType() == Type.Pie) {
+        	p.setPlacement(LegendProperties.RIGHT);
+        } else {
+	        p.setPlacement( maxLegendTextLength(series) > 30 ? 
+	        			LegendProperties.BOTTOM :
+	        			LegendProperties.RIGHT);
+        }
         p.setNumColumns(1);
 
         return p;
+    }
+    
+    private int maxLegendTextLength(List<PivotTableData.Axis> series) {
+    	int max = 0;
+    	for(PivotTableData.Axis axis : series) {
+    		max = Math.max(max, axis.flattenLabel().length());
+    	}
+    	return max;
     }
 
     protected AxisChartTypeProperties computeAxisChartProperties(int dpi, PivotChartReportElement element) {
@@ -343,12 +358,10 @@ public class ChartRendererJC  {
         } else {
             BarChartProperties p;
             switch (element.getType()) {
-                case Bar:
-                    p = new BarChartProperties();
-                    break;
                 case StackedBar:
                     p = new StackedBarChartProperties();
                     break;
+                case Bar:
                 case ClusteredBar:
                     p = new ClusteredBarChartProperties();
                     break;
