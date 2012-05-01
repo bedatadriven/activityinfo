@@ -10,6 +10,8 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
+
 /**
  *
  * Defines a time period as a range of dates.
@@ -27,7 +29,8 @@ import javax.xml.bind.annotation.XmlAttribute;
  * <tr>
  *      <td><strong><code>minDate</code></strong></td>
  *      <td><strong><code>maxDate</code></strong></td>
- *      <td><strong>Meaning</strong></td></tr>
+ *      <td><strong>Meaning</strong></td>
+ * </tr>
  * </thead>
  * <tbody>
  * <tr>
@@ -52,9 +55,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 public final class DateRange implements Serializable {
 
 
-    private Date minDate;
+    private LocalDate minDate;
 
-    private Date maxDate;
+    private LocalDate maxDate;
 
     /**
      * Constructs a <code>DateRange</code> bounded by <code>minDate</code> and <code>maxDate</code>
@@ -86,7 +89,7 @@ public final class DateRange implements Serializable {
      */
     @XmlAttribute(name="min")
     public Date getMinDate() {
-        return minDate;
+        return minDate == null ? null : minDate.atMidnightInMyTimezone();
     }
 
     /**
@@ -96,7 +99,7 @@ public final class DateRange implements Serializable {
      * now upper bound.
      */
     public void setMinDate(Date minDate) {
-        this.minDate = minDate;
+        this.minDate = minDate == null ? null : new LocalDate(minDate);
     }
 
     /**
@@ -106,7 +109,7 @@ public final class DateRange implements Serializable {
      */
     @XmlAttribute(name="max")
     public Date getMaxDate() {
-        return maxDate;
+        return maxDate == null ? null : maxDate.atMidnightInMyTimezone();
     }
 
     /**
@@ -115,7 +118,7 @@ public final class DateRange implements Serializable {
      * @param maxDate The maximum date in this range (inclusive) or <code>null</code> if the range has no upper bound.
      */
     public void setMaxDate(Date maxDate) {
-        this.maxDate = maxDate;
+        this.maxDate = maxDate == null ? null : new LocalDate(maxDate);
     }
 
     public static DateRange intersection(DateRange a, DateRange b) {

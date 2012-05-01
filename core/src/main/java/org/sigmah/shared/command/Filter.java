@@ -38,7 +38,6 @@ public class Filter implements Serializable {
 	private Map<DimensionType, Set<Integer>> restrictions = new HashMap<DimensionType, Set<Integer>>();
 
  	private DateRange dateRange = new DateRange();
- 	private boolean isOr=false;
 
     /**
      * Constructs a <code>Filter</code> with no restrictions. All data visible to the user
@@ -59,7 +58,6 @@ public class Filter implements Serializable {
             this.restrictions.put(entry.getKey(), new HashSet<Integer>(entry.getValue()));
         }
         this.dateRange = filter.dateRange;
-        this.isOr=filter.isOr();
     }
 
 
@@ -188,14 +186,6 @@ public class Filter implements Serializable {
     public void setDateRange(DateRange range) {
         this.dateRange = range;
     }
-
-    public boolean isOr() {
-		return isOr;
-	}
-
-	public void setOr(boolean isOr) {
-		this.isOr = isOr;
-	}
 
 	public boolean isDimensionRestrictedToSingleCategory(DimensionType type) {
 		return getRestrictions(type).size() == 1;

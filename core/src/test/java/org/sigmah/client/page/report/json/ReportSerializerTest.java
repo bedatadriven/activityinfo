@@ -121,7 +121,6 @@ public class ReportSerializerTest {
 		Filter filter = new Filter();
 		filter.setMaxDate(maxDate);
 		filter.setMinDate(minDate);
-		filter.setOr(true);
 
 		filter.addRestriction(DimensionType.Activity, 0);
 		report.setFilter(filter);

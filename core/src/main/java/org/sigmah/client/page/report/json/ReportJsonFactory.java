@@ -255,7 +255,6 @@ public class ReportJsonFactory implements ReportSerializer {
 		if (filter.getMaxDate() != null) {
 			jsonFilter.addProperty("maxDate", filter.getMaxDate().getTime());
 		}
-		jsonFilter.addProperty("isOr", (Boolean) filter.isOr());
 		jsonFilter.add("restrictions",
 				encodeRestrictions(filter.getRestrictions()));
 
@@ -607,7 +606,6 @@ public class ReportJsonFactory implements ReportSerializer {
 		}
 
 		elementFilter.setDateRange(dateRange);
-		elementFilter.setOr(filter.get("isOr").getAsBoolean());
 		
 		JsonArray restrictions = (JsonArray) filter.get(
 				"restrictions");
