@@ -47,6 +47,8 @@ public class PPTRenderer implements Renderer {
 
         } else if(element instanceof MapReportElement) {
             mapRenderer.render((MapReportElement) element, os);
+        } else if(element instanceof PivotChartReportElement) {
+        	chartRenderer.render((PivotChartReportElement)element, os);
         }
     }
 
