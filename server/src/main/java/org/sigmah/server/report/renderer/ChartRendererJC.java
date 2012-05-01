@@ -12,11 +12,15 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.color.ColorSpace;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.krysalis.jcharts.Chart;
 import org.krysalis.jcharts.axisChart.AxisChart;
@@ -51,6 +55,7 @@ import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotTableData;
 import org.sigmah.shared.report.model.CategoryProperties;
 import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 
@@ -76,6 +81,11 @@ public class ChartRendererJC  {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public void render(PivotChartReportElement element, OutputStream os) throws IOException {
+        BufferedImage image = renderImage(element, true, 640, 480, 96);
+	    ImageIO.write(image,"PNG", os);
     }
 
     public BufferedImage renderImage(PivotChartReportElement element, boolean includeTitle, int width, int height, int dpi) {

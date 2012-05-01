@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.poi.hslf.model.PPGraphics2D;
 import org.apache.poi.hslf.model.ShapeGroup;
@@ -24,6 +25,18 @@ import org.sigmah.shared.report.model.PivotChartReportElement;
 public class PPTChartRenderer {
 
 
+    public void render(PivotChartReportElement element, OutputStream stream) throws IOException {
+        //create a new empty slide show
+        SlideShow ppt = new SlideShow();
+        Dimension pageSize  = new Dimension(720, 540); // Onscreen Show (4:5)
+        ppt.setPageSize(pageSize);
+
+        render(element, ppt);
+
+        // write to stream
+        ppt.write(stream);
+
+    }
     public void render(PivotChartReportElement element, SlideShow ppt) throws IOException {
 
         //add first slide

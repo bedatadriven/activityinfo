@@ -8,8 +8,10 @@ package org.sigmah.server.report.renderer.image;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.sigmah.server.report.renderer.ChartRendererJC;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.shared.report.model.MapReportElement;
+import org.sigmah.shared.report.model.PivotChartReportElement;
 import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
@@ -20,18 +22,22 @@ import com.google.inject.Inject;
 public class ImageReportRenderer implements Renderer {
 
 
-    private final ImageMapRenderer renderer;
+    private final ImageMapRenderer mapRenderer;
+    private final ChartRendererJC chartRenderer;
 
     @Inject
-    public ImageReportRenderer(ImageMapRenderer renderer) {
-        this.renderer = renderer;
+    public ImageReportRenderer(ImageMapRenderer renderer, ChartRendererJC chartRendererJC) {
+        this.mapRenderer = renderer;
+        this.chartRenderer = chartRendererJC;
     }
 
     public void render(ReportElement element, OutputStream os) throws IOException {
         // TODO: support for other types?
 
         if(element instanceof MapReportElement) {
-            renderer.render((MapReportElement) element, os);
+            mapRenderer.render((MapReportElement) element, os);
+        } else if(element instanceof PivotChartReportElement) {
+        	chartRenderer.render((PivotChartReportElement)element, os);
         }
 
     }
