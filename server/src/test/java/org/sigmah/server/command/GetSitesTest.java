@@ -304,4 +304,20 @@ public class GetSitesTest extends CommandTestCase2{
 		assertThat(site2.getActivityId(), equalTo(1));
 		assertThat(site2.getIndicatorValue(1), equalTo(400d));
 	}
+	
+	@Test
+	@OnDataSet("/dbunit/sites-linked.db.xml")
+	public void duplicated() {
+		
+		// A given site can be appear multiple times in the list if it is the source
+		// of one or more indicators
+		
+		setUser(1);
+		
+		GetSites cmd = new GetSites();
+		
+		SiteResult result = execute(cmd);
+		assertThat(result.getData().size(), equalTo(3));
+	
+	}
 }

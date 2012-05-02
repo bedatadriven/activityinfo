@@ -15,6 +15,7 @@ import org.sigmah.shared.dto.ProjectDTO;
 import org.sigmah.shared.dto.SiteDTO;
 import org.sigmah.shared.report.model.DimensionType;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -23,6 +24,8 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -83,7 +86,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		applyFilter(query, command.getFilter());
 		applyPaging(query, command);
 
-		final Map<Integer, SiteDTO> siteMap = new HashMap<Integer, SiteDTO>();
+		final Multimap<Integer, SiteDTO> siteMap = HashMultimap.create();
 		final List<SiteDTO> sites = new ArrayList<SiteDTO>();
 		
 		final SiteResult result = new SiteResult(sites);
@@ -119,7 +122,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				"(SELECT s.SiteId, 0 as Linked, s.Date1, s.Date2, s.DateEdited, s.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
 					"FROM Site s WHERE s.dateDeleted IS NULL) " +
 					"UNION ALL" +
-				"(SELECT s.SiteId, 1 as Linked, s.Date1, s.Date2, s.DateEdited, di.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
+				"(SELECT DISTINCT s.SiteId, 1 as Linked, s.Date1, s.Date2, s.DateEdited, di.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
 				    "FROM Site s " +
 				    "INNER JOIN indicator si ON (si.activityid=s.activityid) " +
 				    "INNER JOIN indicatorlink link ON (si.indicatorid=link.sourceindicatorid) " +
@@ -259,7 +262,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	 * @param tx
 	 * @param siteMap
 	 */
-	private void queryEntities(SqlTransaction tx, final Map<Integer, SiteDTO> siteMap) {
+	private void queryEntities(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
 
 		// first retrieve all the admin DTOs that we'll need for this result set
 		
@@ -290,7 +293,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 
 	private void joinEntities(SqlTransaction tx,
-			final Map<Integer, SiteDTO> siteMap, 
+			final Multimap<Integer, SiteDTO> siteMap, 
 			final Map<Integer, AdminEntityDTO> entities) {
 		
 	    SqlQuery.select(
@@ -305,19 +308,19 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 					for(SqlResultSetRow row : results.getRows()) {
-						SiteDTO site = siteMap.get(row.getInt("SiteId"));
-						AdminEntityDTO entity = entities.get(row.getInt("AdminEntityId"));
-						
-						site.setAdminEntity(entity.getLevelId(), entity);
+						for(SiteDTO site : siteMap.get(row.getInt("SiteId"))) {
+							AdminEntityDTO entity = entities.get(row.getInt("AdminEntityId"));
+							site.setAdminEntity(entity.getLevelId(), entity);
+						}
 						
 					}					
 				}
 			});
 	}	
 	
-	private void joinIndicatorValues(SqlTransaction tx, final Map<Integer, SiteDTO> siteMap) {
+	private void joinIndicatorValues(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
 
-    	SqlQuery.select()
+    	SqlQuery query = SqlQuery.select()
     		.appendColumn("P.SiteId", "SiteId")
     		.appendColumn("V.IndicatorId", "SourceIndicatorId")
     		.appendColumn("I.ActivityId", "SourceActivityId")
@@ -330,25 +333,28 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             	.leftJoin("IndicatorLink", "L").on("L.SourceIndicatorId=I.IndicatorId")
             	.leftJoin("Indicator", "D").on("L.DestinationIndicatorId=D.IndicatorId")
             .where("P.SiteId").in(siteMap.keySet())
-            .and("I.dateDeleted IS NULL")
-            .execute(tx, new SqlResultCallback() {
+            .and("I.dateDeleted IS NULL");
+    	
+    	Log.info(query.toString());
+    	
+        query.execute(tx, new SqlResultCallback() {
 				
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 					for(SqlResultSetRow row : results.getRows()) {
-						SiteDTO site = siteMap.get( row.getInt("SiteId") );
-						
 						double indicatorValue = row.getDouble("Value");
-
 						int sourceActivityid = row.getInt("SourceActivityId");
-						if(sourceActivityid == site.getActivityId()) {
-							int indicatorId = row.getInt("SourceIndicatorId");
-							site.setIndicatorValue(indicatorId, indicatorValue);
-						} else if(!row.isNull("DestActivityId")) {
-							int destActivityId = row.getInt("DestActivityId");
-							if(site.getActivityId() == destActivityId) {
-								int indicatorId = row.getInt("DestIndicatorId");
+
+						for(SiteDTO site : siteMap.get( row.getInt("SiteId") )) {
+							if(sourceActivityid == site.getActivityId()) {
+								int indicatorId = row.getInt("SourceIndicatorId");
 								site.setIndicatorValue(indicatorId, indicatorValue);
+							} else if(!row.isNull("DestActivityId")) {
+								int destActivityId = row.getInt("DestActivityId");
+								if(site.getActivityId() == destActivityId) {
+									int indicatorId = row.getInt("DestIndicatorId");
+									site.setIndicatorValue(indicatorId, indicatorValue);
+								}
 							}
 						}
 					}		
@@ -356,7 +362,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			});
 	}
 	
-	private void joinAttributeValues(SqlTransaction tx, final Map<Integer, SiteDTO> siteMap) {
+	private void joinAttributeValues(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
 
     	SqlQuery.select()
     		.appendColumn("AttributeId", "attributeId")
@@ -369,11 +375,12 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 					for(SqlResultSetRow row : results.getRows()) {
-						SiteDTO site = siteMap.get( row.getInt("siteId") );
 						int attributeId = row.getInt("attributeId");
 			            boolean value = row.getBoolean("value");
 
-						site.setAttributeValue(attributeId, value);
+			            for(SiteDTO site : siteMap.get( row.getInt("siteId") )) {
+							site.setAttributeValue(attributeId, value);
+						}
 					}		
 				}
 			});

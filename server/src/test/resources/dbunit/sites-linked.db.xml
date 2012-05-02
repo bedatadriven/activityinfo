@@ -145,6 +145,10 @@
 		SourceIndicatorId="3"
 		DestinationIndicatorId="1"/>
 		
+	<indicatorlink 
+		SourceIndicatorId="3"
+		DestinationIndicatorId="2"/>
+		
 	
 	<!-- Site in SOURCE -->
 
