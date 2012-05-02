@@ -121,53 +121,6 @@ public class Report extends ReportElement<ReportContent> implements Serializable
 		this.fileName = fileName;
 	}
 
-    /**
-     * Gets the frequency of this report
-     *
-     * @return the frequency of this report
-     */
-    @XmlAttribute(name="frequency")
-    public EmailDelivery getFrequency() {
-        return frequency;
-    }
-
-    /**
-     * Sets the frequency of this report
-     *
-     * @param frequency The frequency of this report
-     */
-    public void setFrequency(EmailDelivery frequency) {
-        this.frequency = frequency;
-    }
-
-
-    /**
-     * Gets the day on which the report is to be mailed.
-     *
-     * If the subscription frequency is
-     * <code>WEEKLY</code>, then this value refers to the
-     * day of the week (0=Sunday, 6=Saturday). If the frequency is <code>MONTHLY</code> this refers to the
-     * day of the month (1..28). A value of {@link Report#LAST_DAY_OF_MONTH} (28)
-     * indicats that the report will be mailed on the last day of the month, whether this the 28th, the 30th, or the 31st.
-     *
-     * @return the day on which the report is to be mailed.
-     *
-     */
-    @XmlAttribute
-    public Integer getDay() {
-        return day;
-    }
-
-    /**
-     * Sets the day on which the report should be mailed.
-     *
-     * @param day For <code>WEEKLY</code> subscriptions, 0=Sunday, 6=Saturday. For <code>MONTHLY</code>,
-     * subscriptions, 1=first day of month,2,3,4...28=<code>LAST_DAY_OF_MONTH</code>
-     */
-    public void setDay(Integer day) {
-        this.day = day;
-    }
-
 	@Override
 	@XmlTransient
 	public Set<Integer> getIndicators() {

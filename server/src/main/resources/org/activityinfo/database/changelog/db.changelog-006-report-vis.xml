@@ -19,4 +19,9 @@
 		</addColumn>
 	</changeSet>
 
+	<changeSet author="alex" id="006-03">
+		<dropColumn tableName="reporttemplate" columnName="frequency"/>
+		<dropColumn tableName="reporttemplate" columnName="day"/>
+	</changeSet>
+
 </databaseChangeLog>

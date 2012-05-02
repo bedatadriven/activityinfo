@@ -68,13 +68,7 @@ public class ReportJsonFactory implements ReportSerializer {
 		if (report.getFileName() != null) {
 			jsonReport.addProperty("fileName", report.getFileName());
 		}
-		if (report.getFrequency() != null) {
-			jsonReport.addProperty("frequency", report.getFrequency()
-					.toString());
-		}
-		if (report.getDay() != null) {
-			jsonReport.addProperty("day", (Integer) report.getDay());
-		}
+	
 		jsonReport.add("filter", encodeFilter(report.getFilter()));
 		if (report.getElements() != null) {
 
@@ -129,14 +123,6 @@ public class ReportJsonFactory implements ReportSerializer {
 		JsonElement fileName = jsonObject.get("fileName");
 		if (fileName != null) {
 			report.setFileName(fileName.getAsString());
-		}
-		JsonElement frequency = jsonObject.get("frequency");
-		if (frequency != null) {
-			report.setFrequency(EmailDelivery.valueOf(frequency.getAsString()));
-		}
-		JsonElement day = jsonObject.get("day");
-		if (day != null) {
-			report.setDay(day.getAsInt());
 		}
 		JsonObject filter = jsonObject.get("filter").getAsJsonObject();
 		if(filter != null){

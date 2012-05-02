@@ -53,5 +53,4 @@ public class ReportMailerServlet extends HttpServlet {
 			throws ServletException {
 		doGet(request, response);
 	}
-
 }

@@ -12,9 +12,13 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.sigmah.shared.report.model.EmailDelivery;
 
 
 /**
@@ -30,6 +34,8 @@ public class ReportSubscription implements Serializable {
     private User user;
     private boolean subscribed;
     private User invitingUser;
+    private EmailDelivery emailDelivery;
+    private Integer emailDay;
 
     public ReportSubscription() {
     }
@@ -132,6 +138,26 @@ public class ReportSubscription implements Serializable {
      */
     public void setSubscribed(boolean subscribed) {
         this.subscribed = subscribed;
+    }
+
+
+    @Enumerated(EnumType.STRING)
+    public EmailDelivery getEmailDelivery() {
+        return emailDelivery;
+    }
+
+    public void setEmailDelivery(EmailDelivery frequency) {
+        this.emailDelivery = frequency;
+    }
+
+
+    @Column(nullable = true)
+    public Integer getEmailDay() {
+        return emailDay;
+    }
+
+    public void setEmailDay(Integer day) {
+        this.emailDay = day;
     }
 
 }

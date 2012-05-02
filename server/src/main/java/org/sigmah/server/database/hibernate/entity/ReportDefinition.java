@@ -117,25 +117,6 @@ public class ReportDefinition implements Serializable {
         this.description = description;
     }
 
-    @Enumerated(EnumType.STRING)
-    public EmailDelivery getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(EmailDelivery frequency) {
-        this.frequency = frequency;
-    }
-
-
-    @Column(nullable = true)
-    public Integer getDay() {
-        return day;
-    }
-
-    public void setDay(Integer day) {
-        this.day = day;
-    }
-
     @Column
 	public int getVisibility() {
 		return visibility;
