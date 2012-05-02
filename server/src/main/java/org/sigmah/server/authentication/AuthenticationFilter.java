@@ -85,7 +85,11 @@ public class AuthenticationFilter implements Filter {
 			} catch (EntityNotFoundException e) {
 				return null;
 			}
-			AuthenticatedUser authenticatedUser = new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
+			if(entity == null) {
+				return null;
+			}
+			AuthenticatedUser authenticatedUser = 
+				new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
 			authTokenCache.put(authToken, authenticatedUser);
 			return authenticatedUser;
 		}
