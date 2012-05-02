@@ -138,7 +138,7 @@ public class BaseMapDialog extends Dialog {
 		BaseModelData thumb = new BaseModelData();
 		thumb.set("id", baseMap.getId());
 		thumb.set("name", ((TileBaseMap)baseMap).getName());
-		
+		thumb.set("path", ((TileBaseMap)baseMap).getThumbnailUrl());
 		return thumb;
 	}
 
