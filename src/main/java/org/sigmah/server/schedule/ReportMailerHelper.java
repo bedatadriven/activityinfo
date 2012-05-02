@@ -35,42 +35,23 @@ public class ReportMailerHelper {
      * @param report The report for which to check
      * @return True if the report should be mailed.
      */
-    public static boolean mailToday(Date dateToday, Report report) {
+    public static boolean mailToday(Date dateToday, ReportSubscription report) {
 
         Calendar today = Calendar.getInstance();
         today.setTime(dateToday);
 
-        if(report.getFrequency() == EmailDelivery.WEEKLY) {
-            return today.get(Calendar.DAY_OF_WEEK) == report.getDay()+1;
+        if(report.getEmailDelivery() == EmailDelivery.WEEKLY) {
+            return today.get(Calendar.DAY_OF_WEEK) == report.getEmailDay()+1;
 
-        } else if(report.getFrequency() == EmailDelivery.MONTHLY) {
-            if(report.getDay() == Report.LAST_DAY_OF_MONTH) {
+        } else if(report.getEmailDelivery() == EmailDelivery.MONTHLY) {
+            if(report.getEmailDay() == Report.LAST_DAY_OF_MONTH) {
                 return today.get(Calendar.DATE) == today.getActualMaximum(Calendar.DATE);
             } else {
-                return today.get(Calendar.DATE) == report.getDay();
+                return today.get(Calendar.DATE) == report.getEmailDay();
             }
         }
         return false;
     }
-
-    public static DateRange computeDateRange(Report report, Date today) {
-
-        if(report.getFrequency() == EmailDelivery.MONTHLY) {
-            return DATE_UTIL.lastCompleteMonthRange(today);
-
-        } else if(report.getFrequency() == EmailDelivery.WEEKLY) {
-            DateRange lastWeek = new DateRange();
-            lastWeek.setMaxDate(today);
-            lastWeek.setMinDate(DATE_UTIL.add(today, DateUnit.WEEK, -1));
-
-            return lastWeek;
-
-        } else {
-            return new DateRange();
-        }
-    }
-
-
 
     public static String frequencyString(ResourceBundle messages, EmailDelivery frequency) {
         if(frequency == EmailDelivery.WEEKLY) {
@@ -99,11 +80,11 @@ public class ReportMailerHelper {
                     sub.getInvitingUser().getName(),
                     sub.getInvitingUser().getEmail(),
                     report.getTitle(),
-                    frequencyString(mailMessages, report.getFrequency()));
+                    frequencyString(mailMessages, sub.getEmailDelivery()));
         } else {
             intro = MessageFormat.format(mailMessages.getString("reportIntro"),
                     report.getTitle(),
-                    frequencyString(mailMessages, report.getFrequency()));
+                    frequencyString(mailMessages, sub.getEmailDelivery()));
 
         }
         sb.append(intro).append("\n\n");
@@ -131,11 +112,11 @@ public class ReportMailerHelper {
                     sub.getInvitingUser().getName(),
                     sub.getInvitingUser().getEmail(),
                     report.getTitle(),
-                    frequencyString(mailMessages, report.getFrequency()));
+                    frequencyString(mailMessages, sub.getEmailDelivery()));
         } else {
             intro = MessageFormat.format(mailMessages.getString("reportIntro"),
                     report.getTitle(),
-                    frequencyString(mailMessages, report.getFrequency()));
+                    frequencyString(mailMessages, sub.getEmailDelivery()));
 
         }
         htmlWriter.paragraph(intro);

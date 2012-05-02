@@ -50,7 +50,6 @@ public class JaxbParseTest {
     public void testReport() throws JAXBException {
         Report report = parseXml("report.xml");
         Assert.assertEquals("My Title", report.getTitle());
-        Assert.assertEquals(EmailDelivery.MONTHLY, report.getFrequency());
     }                        
 
     @Test
