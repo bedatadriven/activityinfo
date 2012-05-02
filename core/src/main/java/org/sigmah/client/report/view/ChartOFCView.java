@@ -110,7 +110,9 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 		PivotChartContent content = element.getContent();
 		PivotTableData table = element.getContent().getData();
 
-		gridPanel.show(element);
+		if(gridPanel != null) {
+			gridPanel.show(element);
+		}
 		
 		List<PivotTableData.Axis> categories = table.getRootRow().getLeaves();
 		List<PivotTableData.Axis> series = table.getRootColumn().getLeaves();
