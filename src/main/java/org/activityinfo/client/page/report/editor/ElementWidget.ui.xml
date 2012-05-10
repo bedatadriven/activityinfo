@@ -1,0 +1,98 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	<ui:style type="org.activityinfo.client.page.report.editor.ElementWidget.MyStyle">
+		.container {
+			width: 650px;
+		}
+		.title {
+			float:left;
+		}
+		
+		.titleText {
+			/* See ThemeHelper for primary definition */ 
+			font-size: 12pt;
+			font-family: "Times Roman", serif;
+			color: rgb(79, 129, 189);			
+		}
+		
+		.titleChange {
+			font-size: 10px;	
+			visibility: hidden;
+		}
+		
+		.topRow {
+			margin-bottom: 10px;
+		}
+		
+		.block {
+			margin-top: 10px;
+			margin-bottom: 25px;
+			width: 650px;
+			overflow: hidden;
+			clear: both;
+			border: 1px solid transparent;
+			cursor: pointer;
+		}
+		
+		.blockHover {
+			border: 1px solid gray;
+		}
+		
+		.buttons {
+			visibility: hidden;
+			font-size: 12px;
+			text-align: right;
+			float: right;
+		}
+		
+		.linkButton {
+			text-decoration: underline;
+			cursor: pointer;
+		}
+		
+		.editButton {
+		}
+		
+		.removeButton {
+		}
+		
+		.loading {
+			font-style: italic;
+			color: gray;
+			font-size: 12px;
+		}
+		
+		.content {
+			overflow: hidden;	
+		}
+		
+	</ui:style>
+	<ui:with field="i18n" type="org.activityinfo.client.i18n.UIConstants"/>
+	
+	<div class="{style.container}">
+	
+		<div class="{style.topRow}">
+		
+			<div class="{style.title}">
+				<span ui:field="titleElement" class="{style.titleText}">Title Here</span>
+				<span ui:field="titleChangeElement" class="{style.titleChange}"> [ <span class="{style.linkButton}"><ui:text from='{i18n.changeTitle}'/></span> ]</span>
+			</div> 
+			<div ui:field="buttonElement" class="{style.buttons}">
+				[ <span class="{style.linkButton} {style.editButton}">
+					<ui:text from='{i18n.edit}'/>
+				  </span> ] 
+				[ <span class="{style.linkButton} {style.removeButton}">
+					<ui:text from='{i18n.remove}'/>
+				  </span> ]		
+			</div>
+		</div>	
+		<div class="{style.block}" ui:field="contentContainerElement">
+			<div ui:field="loadingElement" class="{style.loading}">
+				<ui:text from='{i18n.loading}'/>
+			</div>
+			<div ui:field="contentElement" class="{style.content}">
+			</div>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+</ui:UiBinder>

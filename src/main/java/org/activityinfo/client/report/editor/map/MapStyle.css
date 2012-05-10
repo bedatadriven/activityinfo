@@ -1,0 +1,51 @@
+
+@sprite .grabSprite {
+	gwt-image: "grabSprite";
+	float: left;
+	cursor: move;
+	right: 0px;
+	position: absolute;
+	width: 16px;
+}	
+
+@sprite .removeLayer {
+	gwt-image: "removeLayer";
+	float: right;
+	margin: 0.25em;
+}
+
+@sprite .iconBubble {
+	gwt-image: "bubble";
+	position: absolute;
+}
+
+@sprite .iconPiechart {
+	gwt-image: "piechart";
+	position: absolute;
+}
+
+@sprite .iconIcon {
+	gwt-image: "icon";
+	position: absolute;
+}
+
+.layerName {
+	position: absolute;
+	left: 25px;
+	right: 60px;
+}
+
+.checkbox {
+	top: 3px;
+	right: 30px;
+	position: absolute;
+}
+
+.layerItem {
+	overflow: hidden;
+	height: 3.5em;
+	position: relative;
+	width: 99%;
+}
+
+  

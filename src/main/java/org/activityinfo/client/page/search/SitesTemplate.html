@@ -1,0 +1,13 @@
+<div class=sites>
+	<tpl for=".">
+		<div class=site>
+			<div class=activity>
+				<div class=iconActivity></div><a href='{activityLink}'>{activityName}</a> <i>au</i> {locationName}
+			</div>
+			<div class=date><div class=iconDate></div>{date1:date("d MMM yyyy")} - {date2:date("d MMM yyyy")}</div>
+			<tpl if="hasComment==true">
+				<div class=comment>{comments}</div>
+			</tpl>
+		</div>
+	</tpl>
+</div>

@@ -1,0 +1,154 @@
+@external .searchSmall .entityIcon .searchSmallSelect .entities, .entity,  .search, .hit, .hits, .additions, .addition, .searchBox .site, .sites, .date, .comment, .iconLocation, .location, .filterView, .searchResults, .filterSummary, .iconDate, .iconActivity, .activity, .iconDatabase, .iconAddEdited, .dateEdited, .panelEntityResults, .searchField;
+
+@sprite .iconLocation {
+	gwt-image: "location";
+	float: left;
+	position: relative;
+	margin-right: 4px;
+	margin-left: 4px;
+}
+
+@sprite .iconDate {
+	gwt-image: "date";
+	float: left;
+	position: relative;
+	margin-right: 4px;
+}
+
+@sprite .iconActivity {
+	gwt-image: "activity";
+	margin-right: 4px;
+	float: left;
+}
+
+@sprite .iconAddEdited {
+	gwt-image: "addEdited";
+	margin-left: 4px;
+	float: right;
+}
+
+@sprite .iconDatabase {
+	gwt-image: "database";
+	float: left;
+	position: relative;
+	margin-right: 4px;
+}
+
+@sprite .searchField {
+	gwt-image: "search" !important;
+}
+
+@Sprite .searchSmall {
+	gwt-image: "searchSmall";
+	display: inline;
+	margin-rigth: 4px;
+}
+
+.searchSmallSelect {
+	background: lightgrey;
+}
+
+.sites {
+	font-size: 12px;
+	margin: 0.25em;
+	vertical-align: middle;
+	width: 90%;
+	padding: 4px;
+}
+
+.dateEdited {
+	font-size: 10px;
+	color: #585858;
+	float: right;
+}
+
+a {
+	font-size: 12px;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+.site {
+	font-size: 12px;
+	width: 100%;
+	text-align: left;
+	float: left;
+	padding: 4px;
+	margin-bottom: 4px;
+	margin-top: 4px;
+	line-height: 150%;
+}
+
+.location {
+	height: 16px;
+}
+
+.activity {
+	
+}
+
+.filterView {
+	background-color: #99bbe8;
+	padding: 0.5em;
+	margin: 0.5em;
+}
+
+.filterSummary {
+	font-weight: bold;
+	margin: 4px;
+}
+
+.date {
+	font-size: 12px;
+}
+
+.entities  {
+	width: 100%;
+}
+
+.entity {
+	font-size:12px;
+	margin: 2px 2px 4px 18px;
+	height: 20px;
+}
+
+.entityIcon {
+	margin-right: 4px;
+}
+
+.entity:hover {
+	background-color:red;
+}
+
+.searchResults {
+	padding: 1em;
+	font-size: 12;	
+	line-height: 1em;
+}
+
+@sprite .searchBox {
+	font-size: 1em;
+	gwt-image: "search";
+	background-repeat: no-repeat;
+	background-color: #F2F2F2;
+	background-position: 4px;
+	padding-left: 2.5em;
+}
+
+.link {
+	font-size: 12px;
+}
+
+.panelEntityResults {
+	border-left-width: 2em;
+}
+
+.comment {
+	background-color: #F3F781;
+	margin: 4px;
+	padding: 4px;
+	border-style: dotted;
+	border-width: 1px;
+	border-color: #DBA901;
+	font-size: 12px;
+}

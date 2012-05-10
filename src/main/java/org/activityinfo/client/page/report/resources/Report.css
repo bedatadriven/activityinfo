@@ -1,0 +1,16 @@
+
+.bar {
+	background-color: #FFFAE5;
+}
+
+.page {
+	background-color: white;
+	border: 1px solid black;
+	width: 650px;
+	padding-left: 25px;
+	padding-right: 25px;
+	padding-top: 50px;
+	margin-top: 20px;
+	min-height: 500px;
+} 
+

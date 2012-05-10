@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{$activityName}</title>
+<style>
+
+body {
+	font-size:14px;
+	margin:0px;
+	padding:0px;
+	font-family: sans-serif;
+}
+#main {
+	width:900px;
+	margin:0px auto;
+	font-family: sans-serif;
+}
+#site-detail {
+	width:900px;
+}
+#location-detail {
+	width:900px;
+}
+table.form-detail {
+	width:100%;
+	height:0px;
+	min-height:150px;
+}
+table.form-detail td {
+	height:30px;
+}
+table.form-detail #field-set {
+	width:150px;
+}
+.form-title {
+	font-size:18px;
+	font-weight:bold;
+	padding-left: 5px;
+}
+#attribute-detail {
+	width:50%;
+}
+#indicator-detail {
+	width:50%;
+}
+#comment {
+	width:100%;
+}
+.underline {
+	width:100%;	
+	border-bottom:2px #000 solid;
+	margin:0px;
+	height:18px;
+}
+.underline1 {
+	width:875px;
+	height:5px;
+	border-bottom:2px #000 solid;
+	margin:0px;
+}
+.underline2 {
+	width:250px;
+	height:5px;
+	border-bottom:2px #000 solid;
+	margin:0px;
+}
+
+.indicatorGroup{
+	margin-top:10px;
+}
+</style>
+</head>
+<body>
+	<div id="main">
+    	<div id="site-detail" >
+            <h1 align="center"> Data Collection Form</h1>
+          <form>
+              <fieldset  style="border:none">
+              <legend class="form-title">{$activityName}</legend>
+       			 <table border="0" align="left" cellpadding="0" cellspacing="0" class="form-detail">
+                  <tr>
+                    <td id="field-set">Database :</td>
+                    <td> <p class="underline">{$databaseName}</p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Activity :</td>
+                    <td><p class="underline">{$activityName}</p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Partner :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Project :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Start Date :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">End Date :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  {$attributes}
+           </table>
+                 </fieldset>
+                          </form>
+                          </div>
+       <div id="site-detail" >
+          <form>
+              <fieldset  style="border:none">
+              <legend class="form-title">Location</legend>
+       			<table border="0" align="left" cellpadding="0" cellspacing="0" class="form-detail">
+                	<tr>
+                    <td id="field-set"> Province :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">District: :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Territoire :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Secteur:</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Groupement:</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Zone de Sante:</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Aire de Sante:</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  <tr>
+                    <td id="field-set">Localite :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+                  
+                  <tr>
+                    <td id="field-set">Axe :</td>
+                    <td><p class="underline"></p></td>
+                  </tr>
+           </table>
+                 </fieldset>
+                          </form>
+                          </div>
+                          	<div id="site-detail" >
+          <form>
+            <fieldset  style="border:none">
+              <legend class="form-title"><h2>Indicators</h2></legend>
+              {$indicators}
+            </fieldset>
+          </form>
+        </div>
+      </div>
+</body>
+</html>
