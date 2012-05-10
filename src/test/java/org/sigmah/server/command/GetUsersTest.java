@@ -5,13 +5,13 @@
 
 package org.sigmah.server.command;
 
+import org.activityinfo.shared.command.GetUsers;
+import org.activityinfo.shared.command.result.UserResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.GetUsers;
-import org.sigmah.shared.command.result.UserResult;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

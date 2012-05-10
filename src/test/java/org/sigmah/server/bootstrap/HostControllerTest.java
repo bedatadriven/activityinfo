@@ -12,11 +12,11 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.bootstrap.model.HostPageModel;
 import org.sigmah.server.endpoint.content.ContentServlet;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 public class HostControllerTest extends ControllerTestCase {
 

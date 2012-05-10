@@ -5,13 +5,13 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.model.clustering.NoClustering;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.junit.Test;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.clustering.NoClustering;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 public class PiechartMapLayerGeneratorTest {
 

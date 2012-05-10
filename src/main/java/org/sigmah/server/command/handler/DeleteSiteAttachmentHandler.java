@@ -1,9 +1,9 @@
 package org.sigmah.server.command.handler;
 
-import org.sigmah.shared.command.DeleteSiteAttachment;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.result.VoidResult;
+import org.activityinfo.shared.command.DeleteSiteAttachment;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.result.VoidResult;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;

@@ -20,6 +20,10 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.activityinfo.shared.report.content.BubbleMapMarker;
+import org.activityinfo.shared.report.content.IconMapMarker;
+import org.activityinfo.shared.report.content.MapMarker;
+import org.activityinfo.shared.report.model.MapReportElement;
 import org.apache.poi.ddf.EscherProperties;
 import org.apache.poi.hslf.model.AutoShape;
 import org.apache.poi.hslf.model.Picture;
@@ -30,10 +34,6 @@ import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.IconRectCalculator;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
 import org.sigmah.server.util.ColorUtil;
-import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.IconMapMarker;
-import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.model.MapReportElement;
 
 import com.google.inject.Inject;
 

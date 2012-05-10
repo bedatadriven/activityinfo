@@ -12,11 +12,11 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.AssertUtils;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;

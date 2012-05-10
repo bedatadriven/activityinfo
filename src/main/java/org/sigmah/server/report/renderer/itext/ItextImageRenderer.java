@@ -3,8 +3,8 @@ package org.sigmah.server.report.renderer.itext;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.activityinfo.shared.report.model.ImageReportElement;
 import org.apache.log4j.Logger;
-import org.sigmah.shared.report.model.ImageReportElement;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;

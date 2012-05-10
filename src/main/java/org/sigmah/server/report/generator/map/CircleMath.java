@@ -5,7 +5,7 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.shared.report.content.Point;
+import org.activityinfo.shared.report.content.Point;
 
 public final class CircleMath {
 

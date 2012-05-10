@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.client.page.entry.SiteGridPanel;
-import org.sigmah.client.page.entry.grouping.NullGroupingModel;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.report.model.DimensionType;
+
+import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.page.entry.SiteGridPanel;
+import org.activityinfo.client.page.entry.grouping.NullGroupingModel;
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.report.model.DimensionType;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;

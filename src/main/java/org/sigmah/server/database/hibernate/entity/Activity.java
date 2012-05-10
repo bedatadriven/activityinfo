@@ -27,15 +27,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.sigmah.shared.dto.Published;
+import org.activityinfo.shared.dto.Published;
 
 /**
- * After the {@link org.sigmah.server.database.hibernate.entity.UserDatabase},
+ * After the {@link org.activityinfo.server.database.hibernate.entity.UserDatabase},
  * the activity is the second level of organization in ActivityInfo. Each
  * activity has its set of indicators and attributes.
  * 
  * Realized activities takes place at
- * {@link org.sigmah.server.database.hibernate.entity.Site} sites.
+ * {@link org.activityinfo.server.database.hibernate.entity.Site} sites.
  * 
  * @author Alex Bertram
  */

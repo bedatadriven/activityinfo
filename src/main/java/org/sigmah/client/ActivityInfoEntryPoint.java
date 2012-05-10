@@ -7,9 +7,9 @@ package org.sigmah.client;
 
 
 
-import org.sigmah.client.AppEvents;
-import org.sigmah.client.inject.AppInjector;
-import org.sigmah.client.util.state.SafeStateProvider;
+import org.activityinfo.client.AppEvents;
+import org.activityinfo.client.inject.AppInjector;
+import org.activityinfo.client.util.state.SafeStateProvider;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;

@@ -11,8 +11,8 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.report.content.MapMarker;
 import org.junit.Test;
-import org.sigmah.shared.report.content.MapMarker;
 
 /**
  * @author Alex Bertram

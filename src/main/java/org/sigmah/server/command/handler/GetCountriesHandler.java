@@ -10,17 +10,17 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.command.GetCountries;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.CountryResult;
+import org.activityinfo.shared.dto.CountryDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
 import org.sigmah.server.database.hibernate.dao.CountryDAO;
 import org.sigmah.server.database.hibernate.entity.Country;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.GetCountries;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.CountryResult;
-import org.sigmah.shared.dto.CountryDTO;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 

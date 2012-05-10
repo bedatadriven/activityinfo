@@ -4,11 +4,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.activityinfo.shared.command.GetLocation;
+import org.activityinfo.shared.dto.LocationDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.GetLocation;
-import org.sigmah.shared.dto.LocationDTO;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

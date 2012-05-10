@@ -7,13 +7,13 @@ package org.sigmah.server.util.beanMapping;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.dozer.Mapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.AdminLevel;
 import org.sigmah.server.database.hibernate.entity.Bounds;
-import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 

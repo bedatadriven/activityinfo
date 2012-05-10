@@ -6,9 +6,9 @@ import static org.junit.Assert.assertThat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DateUnit;
 import org.junit.Test;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DateUnit;
 
 public class DateUtilCalendarImplTest {
 

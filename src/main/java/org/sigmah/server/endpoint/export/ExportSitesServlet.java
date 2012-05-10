@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

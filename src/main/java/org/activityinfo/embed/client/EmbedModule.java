@@ -1,15 +1,15 @@
 package org.activityinfo.embed.client;
 
-import org.sigmah.client.EventBus;
-import org.sigmah.client.LoggingEventBus;
-import org.sigmah.client.dispatch.DispatchEventSource;
-import org.sigmah.client.dispatch.Dispatcher;
-import org.sigmah.client.dispatch.RemoteServiceProvider;
-import org.sigmah.client.dispatch.remote.RemoteDispatcher;
-import org.sigmah.client.util.state.GxtStateProvider;
-import org.sigmah.client.util.state.StateProvider;
-import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.command.RemoteCommandServiceAsync;
+import org.activityinfo.client.EventBus;
+import org.activityinfo.client.LoggingEventBus;
+import org.activityinfo.client.dispatch.DispatchEventSource;
+import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.RemoteServiceProvider;
+import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
+import org.activityinfo.client.util.state.GxtStateProvider;
+import org.activityinfo.client.util.state.StateProvider;
+import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.inject.client.AbstractGinModule;

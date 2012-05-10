@@ -12,15 +12,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.Month;
+import org.activityinfo.shared.command.handler.AuthorizationHandler;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.dozer.Mapper;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.gwtrpc.ServerExecutionContext;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.Month;
-import org.sigmah.shared.command.handler.AuthorizationHandler;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Injector;
 
@@ -33,7 +33,7 @@ public final class HandlerUtil {
 
     /**
      * Returns the <code>CommandHandler</code> that corresponds to the given <code>Command</code>.
-     * <strong>Only</strong> the package org.sigmah.server.command.handler
+     * <strong>Only</strong> the package org.activityinfo.server.command.handler
      * is searched, so the handler must be there.
      *
      * @param cmd The <code>Command</code> for which a <code>CommandHandler</code> is to be returned
@@ -46,7 +46,7 @@ public final class HandlerUtil {
                 cmd.getClass().getPackage().getName().length() + 1);
     	String handlerName = null;
     				   
-    	handlerName = "org.sigmah.server.command.handler." +
+    	handlerName = "org.activityinfo.server.command.handler." +
     		commandName + "Handler";
 
         try {
@@ -56,7 +56,7 @@ public final class HandlerUtil {
         	
         	// try looking for the handler in the shared package
         				   
-        	handlerName = "org.sigmah.shared.command.handler." +
+        	handlerName = "org.activityinfo.shared.command.handler." +
         			commandName + "Handler";
         	
         	try {
@@ -72,7 +72,7 @@ public final class HandlerUtil {
 
     /**
      * Returns the <code>CommandHandler</code> that corresponds to the given <code>Command</code>.
-     * <strong>Only</strong> the package org.sigmah.server.command.handler
+     * <strong>Only</strong> the package org.activityinfo.server.command.handler
      * is searched, so the handler must be there.
      *
      * @param cmd The <code>Command</code> for which a <code>CommandHandler</code> is to be returned
@@ -86,14 +86,14 @@ public final class HandlerUtil {
                 cmd.getClass().getPackage().getName().length() + 1);
     	String sharedHandlerName = null;
     	
-    	sharedHandlerName = "org.sigmah.shared.command.handler." +
+    	sharedHandlerName = "org.activityinfo.shared.command.handler." +
     		commandName + "Handler";
 
         try {
             return (Class<CommandHandlerAsync<C,R>>) CommandHandler.class.getClassLoader().loadClass(sharedHandlerName);
 
         } catch (ClassNotFoundException e) {
-        	String serverHandlerName = "org.sigmah.server.command.handler." +
+        	String serverHandlerName = "org.activityinfo.server.command.handler." +
     			commandName + "Handler";
         	try {
         		return (Class<CommandHandlerAsync<C,R>>) CommandHandler.class.getClassLoader().loadClass(serverHandlerName);
@@ -110,7 +110,7 @@ public final class HandlerUtil {
                 cmd.getClass().getPackage().getName().length() + 1);
     	String handlerName = null;
     	
-    	handlerName = "org.sigmah.server.command.authorization." +
+    	handlerName = "org.activityinfo.server.command.authorization." +
     		commandName + "AuthorizationHandler";
 
         try {

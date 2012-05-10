@@ -14,17 +14,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.dto.AttributeDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.AdminLevelDTO;
-import org.sigmah.shared.dto.AttributeDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;

@@ -1,8 +1,8 @@
 package org.sigmah.server.authentication;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
-import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.exception.InvalidAuthTokenException;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

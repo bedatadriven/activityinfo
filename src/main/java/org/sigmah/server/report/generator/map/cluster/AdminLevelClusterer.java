@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.Point;
+import org.activityinfo.shared.report.model.PointValue;
+import org.activityinfo.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.TiledMap;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
 
 import com.google.common.collect.Lists;
 

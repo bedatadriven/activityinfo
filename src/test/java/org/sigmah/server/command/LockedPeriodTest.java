@@ -2,15 +2,15 @@ package org.sigmah.server.command;
 
 import java.util.Map;
 
+import org.activityinfo.shared.command.LockEntity;
+import org.activityinfo.shared.command.UpdateEntity;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.dto.LockedPeriodDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.entity.LockedPeriod;
-import org.sigmah.shared.command.LockEntity;
-import org.sigmah.shared.command.UpdateEntity;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.LockedPeriodDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;

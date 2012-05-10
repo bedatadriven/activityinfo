@@ -5,6 +5,7 @@
 
 package org.sigmah.server.report.renderer;
 
+import org.activityinfo.shared.command.RenderElement;
 import org.sigmah.server.report.renderer.excel.ExcelMapDataExporter;
 import org.sigmah.server.report.renderer.excel.ExcelReportRenderer;
 import org.sigmah.server.report.renderer.image.ImageReportRenderer;
@@ -12,7 +13,6 @@ import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.report.renderer.itext.PdfReportRenderer;
 import org.sigmah.server.report.renderer.itext.RtfReportRenderer;
 import org.sigmah.server.report.renderer.ppt.PPTRenderer;
-import org.sigmah.shared.command.RenderElement;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

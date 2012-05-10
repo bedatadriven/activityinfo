@@ -5,16 +5,16 @@
 
 package org.sigmah.server.command;
 
+import org.activityinfo.shared.command.AddPartner;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.exception.DuplicatePartnerException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.AddPartner;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.exception.DuplicatePartnerException;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

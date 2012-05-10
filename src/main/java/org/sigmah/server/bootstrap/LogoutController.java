@@ -11,7 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sigmah.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

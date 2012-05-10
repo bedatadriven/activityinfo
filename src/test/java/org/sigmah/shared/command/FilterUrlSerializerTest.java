@@ -3,8 +3,10 @@ package org.sigmah.shared.command;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.FilterUrlSerializer;
+import org.activityinfo.shared.report.model.DimensionType;
 import org.junit.Test;
-import org.sigmah.shared.report.model.DimensionType;
 
 public class FilterUrlSerializerTest {
 

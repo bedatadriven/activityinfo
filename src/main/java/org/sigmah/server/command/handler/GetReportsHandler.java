@@ -9,12 +9,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.sigmah.shared.command.GetReports;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.result.ReportsResult;
-import org.sigmah.shared.dto.ReportMetadataDTO;
-import org.sigmah.shared.report.model.EmailDelivery;
+import org.activityinfo.shared.command.GetReports;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.result.ReportsResult;
+import org.activityinfo.shared.dto.ReportMetadataDTO;
+import org.activityinfo.shared.report.model.EmailDelivery;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.GetReports
+ * @see org.activityinfo.shared.command.GetReports
  */
 public class GetReportsHandler implements CommandHandlerAsync<GetReports, ReportsResult> {
 

@@ -5,16 +5,19 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import org.activityinfo.shared.command.GetReportVisibility;
+import org.activityinfo.shared.command.GetReports;
+import org.activityinfo.shared.command.UpdateReportVisibility;
+import org.activityinfo.shared.command.result.ReportVisibilityResult;
+import org.activityinfo.shared.command.result.ReportsResult;
+import org.activityinfo.shared.dto.ReportMetadataDTO;
+import org.activityinfo.shared.dto.ReportVisibilityDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.server.report.ReportModule;
-import org.sigmah.shared.command.result.ReportVisibilityResult;
-import org.sigmah.shared.command.result.ReportsResult;
-import org.sigmah.shared.dto.ReportMetadataDTO;
-import org.sigmah.shared.dto.ReportVisibilityDTO;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 

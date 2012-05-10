@@ -22,6 +22,15 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.activityinfo.shared.exception.ReportModelException;
+import org.activityinfo.shared.report.Theme;
+import org.activityinfo.shared.report.content.PivotChartContent;
+import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.CategoryProperties;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.PivotChartReportElement;
+import org.activityinfo.shared.report.model.PivotChartReportElement.Type;
 import org.krysalis.jcharts.Chart;
 import org.krysalis.jcharts.axisChart.AxisChart;
 import org.krysalis.jcharts.chartData.AxisChartDataSet;
@@ -49,15 +58,6 @@ import org.krysalis.jcharts.types.ChartType;
 import org.krysalis.jcharts.types.PieLabelType;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
-import org.sigmah.shared.exception.ReportModelException;
-import org.sigmah.shared.report.Theme;
-import org.sigmah.shared.report.content.PivotChartContent;
-import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.CategoryProperties;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.PivotChartReportElement;
-import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 
 
 /**

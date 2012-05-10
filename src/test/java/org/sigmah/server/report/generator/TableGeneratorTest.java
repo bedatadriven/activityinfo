@@ -18,25 +18,25 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.command.GetBaseMaps;
+import org.activityinfo.shared.command.GetSites;
+import org.activityinfo.shared.command.result.BaseMapResult;
+import org.activityinfo.shared.command.result.SiteResult;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.map.TileBaseMap;
+import org.activityinfo.shared.report.content.BubbleMapMarker;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.TableData;
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.TableColumn;
+import org.activityinfo.shared.report.model.TableElement;
+import org.activityinfo.shared.report.model.labeling.ArabicNumberSequence;
+import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
+import org.activityinfo.shared.report.model.layers.CircledMapLayer;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.GetBaseMaps;
-import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.result.BaseMapResult;
-import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.map.TileBaseMap;
-import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.TableColumn;
-import org.sigmah.shared.report.model.TableElement;
-import org.sigmah.shared.report.model.labeling.ArabicNumberSequence;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-import org.sigmah.shared.report.model.layers.CircledMapLayer;
 
 /**
  * @author Alex Bertram

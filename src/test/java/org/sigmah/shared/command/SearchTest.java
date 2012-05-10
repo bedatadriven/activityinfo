@@ -6,18 +6,18 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
+import org.activityinfo.shared.command.Search;
+import org.activityinfo.shared.command.handler.search.AllSearcher;
+import org.activityinfo.shared.command.handler.search.AttributeGroupSearcher;
+import org.activityinfo.shared.command.handler.search.Searcher;
+import org.activityinfo.shared.command.result.SearchResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.DimensionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.i18n.LocaleModule;
-import org.sigmah.shared.command.Search;
-import org.sigmah.shared.command.handler.search.AllSearcher;
-import org.sigmah.shared.command.handler.search.AttributeGroupSearcher;
-import org.sigmah.shared.command.handler.search.Searcher;
-import org.sigmah.shared.command.result.SearchResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 

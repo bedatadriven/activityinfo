@@ -8,11 +8,11 @@ package org.sigmah.server.report.renderer.image;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.PivotChartReportElement;
+import org.activityinfo.shared.report.model.ReportElement;
 import org.sigmah.server.report.renderer.ChartRendererJC;
 import org.sigmah.server.report.renderer.Renderer;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.PivotChartReportElement;
-import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
 

@@ -9,20 +9,20 @@ import static org.easymock.EasyMock.replay;
 import java.util.Collections;
 import java.util.Set;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetDimensionLabels;
+import org.activityinfo.shared.command.PivotSites;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.PivotChartReportElement;
+import org.activityinfo.shared.report.model.PivotChartReportElement.Type;
 import org.junit.Test;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.PivotChartGenerator;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.command.GetDimensionLabels;
-import org.sigmah.shared.command.PivotSites;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotChartReportElement;
-import org.sigmah.shared.report.model.PivotChartReportElement.Type;
 
 public class EmptyChartsTest {
 

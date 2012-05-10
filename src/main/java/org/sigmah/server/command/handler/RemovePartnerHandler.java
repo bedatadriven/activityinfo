@@ -9,22 +9,22 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.command.RemovePartner;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
+import org.activityinfo.shared.exception.PartnerHasSitesException;
 import org.sigmah.server.database.hibernate.entity.Partner;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
-import org.sigmah.shared.command.RemovePartner;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.IllegalAccessCommandException;
-import org.sigmah.shared.exception.PartnerHasSitesException;
 
 import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.RemovePartner
+ * @see org.activityinfo.shared.command.RemovePartner
  */
 public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
 

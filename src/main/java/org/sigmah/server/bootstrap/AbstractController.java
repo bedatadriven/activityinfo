@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.exception.InvalidLoginException;
 import org.sigmah.server.authentication.AuthCookieUtil;
 import org.sigmah.server.bootstrap.exception.IncompleteFormException;
 import org.sigmah.server.bootstrap.exception.InvalidKeyException;
@@ -23,7 +24,6 @@ import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.exception.InvalidLoginException;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;

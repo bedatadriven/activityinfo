@@ -15,7 +15,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamResult;
 
-import org.sigmah.shared.report.model.Report;
+import org.activityinfo.shared.report.model.Report;
 
 /**
  * @author Alex Bertram

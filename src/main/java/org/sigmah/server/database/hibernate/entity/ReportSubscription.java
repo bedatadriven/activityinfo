@@ -18,7 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.sigmah.shared.report.model.EmailDelivery;
+import org.activityinfo.shared.report.model.EmailDelivery;
 
 
 /**

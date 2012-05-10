@@ -14,6 +14,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Report;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
@@ -29,9 +32,6 @@ import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.RtfReportRenderer;
-import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Report;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;

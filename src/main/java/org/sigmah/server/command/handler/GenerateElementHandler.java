@@ -5,12 +5,12 @@
 
 package org.sigmah.server.command.handler;
 
+import org.activityinfo.shared.command.GenerateElement;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.DateRange;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.ReportGenerator;
-import org.sigmah.shared.command.GenerateElement;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.DateRange;
 
 import com.google.inject.Inject;
 

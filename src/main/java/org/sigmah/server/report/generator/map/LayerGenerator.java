@@ -5,8 +5,8 @@
 
 package org.sigmah.server.report.generator.map;
 
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.util.mapping.Extents;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.util.mapping.Extents;
 
 public interface LayerGenerator {
 

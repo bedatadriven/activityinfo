@@ -1,6 +1,6 @@
 package org.sigmah.server.report.renderer.itext;
 
-import org.sigmah.shared.report.model.TextReportElement;
+import org.activityinfo.shared.report.model.TextReportElement;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;

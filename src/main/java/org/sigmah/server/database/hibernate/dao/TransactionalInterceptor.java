@@ -18,7 +18,7 @@ import com.google.inject.Injector;
 
 /**
  * MethodInterceptor that implements declarative transaction management.
- * See {@link org.sigmah.server.database.hibernate.dao.Transactional}
+ * See {@link org.activityinfo.server.database.hibernate.dao.Transactional}
  *
  * @author Alex Bertram
  */

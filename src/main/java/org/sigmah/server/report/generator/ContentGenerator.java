@@ -5,15 +5,15 @@
 
 package org.sigmah.server.report.generator;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.ReportElement;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.ReportElement;
 
 /**
  * Generates the <code>Content</code> for a given <code>ReportElement</code>.
  *
- * @see org.sigmah.shared.report.model.ReportElement
+ * @see org.activityinfo.shared.report.model.ReportElement
  *
  * @param <T> The type of <code>ReportElement</code> accepted by the ContentGenerator implementor.
  */

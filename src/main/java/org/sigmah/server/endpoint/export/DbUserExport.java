@@ -2,13 +2,13 @@ package org.sigmah.server.endpoint.export;
 
 import java.util.List;
 
+import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.sigmah.client.i18n.I18N;
-import org.sigmah.shared.dto.UserPermissionDTO;
 
 public class DbUserExport extends Exporter {
 

@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.sigmah.server.mail.Invitation" -->
+<#-- @ftlvariable name="" type="org.activityinfo.server.mail.Invitation" -->
 Hi ${user.name},
 
 For security reasons, your ActivityInfo password has expired. Please follow the link

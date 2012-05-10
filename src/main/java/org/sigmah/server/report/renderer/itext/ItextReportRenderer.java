@@ -10,17 +10,17 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activityinfo.shared.report.model.ImageReportElement;
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.PivotChartReportElement;
+import org.activityinfo.shared.report.model.PivotTableReportElement;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.ReportElement;
+import org.activityinfo.shared.report.model.TableElement;
+import org.activityinfo.shared.report.model.TextReportElement;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.image.ImageCreator;
-import org.sigmah.shared.report.model.ImageReportElement;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.PivotChartReportElement;
-import org.sigmah.shared.report.model.PivotTableReportElement;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.TableElement;
-import org.sigmah.shared.report.model.TextReportElement;
 
 import com.google.inject.Inject;
 import com.lowagie.text.DocWriter;
@@ -29,9 +29,9 @@ import com.lowagie.text.DocumentException;
 
 
 /**
- * Base class for iText-based {@link org.sigmah.shared.report.model.Report} renderers.
- * Subclasses ({@link org.sigmah.server.report.renderer.itext.PdfReportRenderer PdfReportRenderer},
- * {@link org.sigmah.server.report.renderer.itext.RtfReportRenderer RtfReportRenderer} target
+ * Base class for iText-based {@link org.activityinfo.shared.report.model.Report} renderers.
+ * Subclasses ({@link org.activityinfo.server.report.renderer.itext.PdfReportRenderer PdfReportRenderer},
+ * {@link org.activityinfo.server.report.renderer.itext.RtfReportRenderer RtfReportRenderer} target
  * specific output formats.
  *
  * @author Alex Bertram

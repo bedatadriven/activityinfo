@@ -10,15 +10,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DateUnit;
+import org.activityinfo.shared.report.model.EmailDelivery;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.util.date.DateUtil;
 import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.date.DateUtilCalendarImpl;
 import org.sigmah.server.util.html.HtmlWriter;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DateUnit;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.EmailDelivery;
-import org.sigmah.shared.util.date.DateUtil;
 
 /*
  * @author Alex Bertram
@@ -67,7 +67,7 @@ public class ReportMailerHelper {
 
         // load our resource bundle with localized messages
         ResourceBundle mailMessages =
-              ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages",  LocaleHelper.getLocaleObject(sub.getUser()));
+              ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages",  LocaleHelper.getLocaleObject(sub.getUser()));
 
         StringBuilder sb = new StringBuilder();
 
@@ -97,7 +97,7 @@ public class ReportMailerHelper {
 
         // load our resource bundle with localized messages
         ResourceBundle mailMessages =
-              ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages", LocaleHelper.getLocaleObject(sub.getUser()));
+              ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages", LocaleHelper.getLocaleObject(sub.getUser()));
 
         HtmlWriter htmlWriter = new HtmlWriter();
 

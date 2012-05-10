@@ -7,23 +7,23 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.command.AddTarget;
+import org.activityinfo.shared.command.BatchCommand;
+import org.activityinfo.shared.command.Delete;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.GetTargets;
+import org.activityinfo.shared.command.UpdateEntity;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.dto.EntityDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.TargetDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.AddTarget;
-import org.sigmah.shared.command.BatchCommand;
-import org.sigmah.shared.command.Delete;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.GetTargets;
-import org.sigmah.shared.command.UpdateEntity;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.dto.EntityDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.TargetDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

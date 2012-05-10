@@ -26,25 +26,25 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.activityinfo.shared.map.BaseMap;
+import org.activityinfo.shared.map.GoogleBaseMap;
+import org.activityinfo.shared.map.TileBaseMap;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.BubbleLayerLegend;
+import org.activityinfo.shared.report.content.BubbleMapMarker;
+import org.activityinfo.shared.report.content.IconLayerLegend;
+import org.activityinfo.shared.report.content.IconMapMarker;
+import org.activityinfo.shared.report.content.MapLayerLegend;
+import org.activityinfo.shared.report.content.MapMarker;
+import org.activityinfo.shared.report.content.PieChartLegend;
+import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.model.MapReportElement;
 import org.apache.log4j.Logger;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.generator.map.TileProvider;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.server.util.ColorUtil;
 import org.sigmah.server.util.mapping.GoogleStaticMapsApi;
-import org.sigmah.shared.map.BaseMap;
-import org.sigmah.shared.map.GoogleBaseMap;
-import org.sigmah.shared.map.TileBaseMap;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.BubbleLayerLegend;
-import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.IconLayerLegend;
-import org.sigmah.shared.report.content.IconMapMarker;
-import org.sigmah.shared.report.content.MapLayerLegend;
-import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.content.PieChartLegend;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.MapReportElement;
 
 import com.google.inject.Inject;
 

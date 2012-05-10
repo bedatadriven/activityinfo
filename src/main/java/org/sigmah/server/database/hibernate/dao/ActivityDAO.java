@@ -10,7 +10,7 @@ import java.util.Set;
 import org.sigmah.server.database.hibernate.entity.Activity;
 
 /**
- * DAO for the {@link org.sigmah.server.database.hibernate.entity.Activity} domain object. Implemented automatically by proxy,
+ * DAO for the {@link org.activityinfo.server.database.hibernate.entity.Activity} domain object. Implemented automatically by proxy,
  * see the Activity class for query definitions.
  *
  * @author Alex Bertram

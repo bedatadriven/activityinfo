@@ -11,26 +11,26 @@ import java.io.StringWriter;
 import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.RenderReportHtml;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.HtmlResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.ReportElement;
 import org.sigmah.server.database.hibernate.dao.ReportDefinitionDAO;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.command.RenderReportHtml;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.HtmlResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.RenderReportHtml
+ * @see org.activityinfo.shared.command.RenderReportHtml
  */
 public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml> {
 

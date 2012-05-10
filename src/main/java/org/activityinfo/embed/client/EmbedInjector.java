@@ -1,7 +1,7 @@
 package org.activityinfo.embed.client;
 
 
-import org.sigmah.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.Dispatcher;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;

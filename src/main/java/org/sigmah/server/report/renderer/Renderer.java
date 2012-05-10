@@ -8,11 +8,11 @@ package org.sigmah.server.report.renderer;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.sigmah.shared.report.model.ReportElement;
+import org.activityinfo.shared.report.model.ReportElement;
 
 /**           
  *
- * @see org.sigmah.shared.report.model.ReportElement
+ * @see org.activityinfo.shared.report.model.ReportElement
  *
  * @author Alex Bertram
  */

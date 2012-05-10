@@ -5,8 +5,8 @@
 
 package org.sigmah.server.report.generator;
 
+import org.activityinfo.shared.report.model.ReportElement;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
 

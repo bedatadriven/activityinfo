@@ -3,10 +3,10 @@ package org.sigmah.server.report.generator.map.cluster;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.model.PointValue;
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.TiledMap;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.model.PointValue;
 
 /**
  * Does not cluster at all, rather maps points 1:1 to clusters
@@ -20,7 +20,7 @@ public class NullClusterer implements Clusterer {
 	
 	/**
 	 * Maps each Point to a cluster, not performing an actual clued.report.model.clustering.Clusteristering algorithm whatsoever
-	 * @see org.sigmah.sharng#cluster(java.util.List, org.sigmah.server.report.generator.map.RadiiCalculator)
+	 * @see org.activityinfo.sharng#cluster(java.util.List, org.activityinfo.server.report.generator.map.RadiiCalculator)
 	 */
 	@Override
 	public List<Cluster> cluster(TiledMap map, List<PointValue> points) {

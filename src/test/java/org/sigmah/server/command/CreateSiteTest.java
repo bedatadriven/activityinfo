@@ -11,23 +11,23 @@ import static org.junit.Assert.assertThat;
 
 import java.util.GregorianCalendar;
 
+import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.shared.command.CreateLocation;
+import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.GetSites;
+import org.activityinfo.shared.command.exception.NotAuthorizedException;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.LocationDTO;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.ProjectDTO;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sigmah.client.offline.command.handler.KeyGenerator;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.CreateLocation;
-import org.sigmah.shared.command.CreateSite;
-import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.exception.NotAuthorizedException;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.AdminEntityDTO;
-import org.sigmah.shared.dto.LocationDTO;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;

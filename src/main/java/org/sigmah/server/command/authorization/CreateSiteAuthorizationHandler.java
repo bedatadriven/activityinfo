@@ -1,9 +1,9 @@
 package org.sigmah.server.command.authorization;
 
-import org.sigmah.shared.command.CreateSite;
-import org.sigmah.shared.command.exception.NotAuthorizedException;
-import org.sigmah.shared.command.handler.AuthorizationHandler;
-import org.sigmah.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.exception.NotAuthorizedException;
+import org.activityinfo.shared.command.handler.AuthorizationHandler;
+import org.activityinfo.shared.command.handler.ExecutionContext;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;

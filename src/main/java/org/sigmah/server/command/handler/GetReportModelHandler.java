@@ -3,16 +3,16 @@ package org.sigmah.server.command.handler;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 
-import org.sigmah.client.page.report.json.ReportJsonFactory;
-import org.sigmah.client.page.report.json.ReportSerializer;
+import org.activityinfo.client.page.report.json.ReportJsonFactory;
+import org.activityinfo.client.page.report.json.ReportSerializer;
+import org.activityinfo.shared.command.GetReportModel;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.UnexpectedCommandException;
+import org.activityinfo.shared.report.model.Report;
 import org.sigmah.server.database.hibernate.entity.ReportDefinition;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.ReportParserJaxb;
-import org.sigmah.shared.command.GetReportModel;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.UnexpectedCommandException;
-import org.sigmah.shared.report.model.Report;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;

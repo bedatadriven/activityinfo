@@ -26,12 +26,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.sigmah.shared.report.model.EmailDelivery;
+import org.activityinfo.shared.report.model.EmailDelivery;
 
 /**
  * Defines a Report and its subscriptions.
  *
- * @see org.sigmah.shared.report.model.Report
+ * @see org.activityinfo.shared.report.model.Report
  *
  */
 @Entity

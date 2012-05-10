@@ -2,9 +2,9 @@ package org.sigmah.server.report.generator.map.cluster;
 
 import java.util.List;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.model.PointValue;
 import org.sigmah.server.report.generator.map.TiledMap;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.model.PointValue;
 
 
 public interface Clusterer {

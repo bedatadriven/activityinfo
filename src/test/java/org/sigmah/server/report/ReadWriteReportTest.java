@@ -5,12 +5,12 @@ import java.io.FileOutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
 import org.junit.Test;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
 public class ReadWriteReportTest {
 	

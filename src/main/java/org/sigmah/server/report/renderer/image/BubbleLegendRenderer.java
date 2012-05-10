@@ -7,9 +7,9 @@ import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 
+import org.activityinfo.shared.report.content.BubbleLayerLegend;
+import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.sigmah.server.util.ColorUtil;
-import org.sigmah.shared.report.content.BubbleLayerLegend;
-import org.sigmah.shared.report.model.layers.BubbleMapLayer;
 
 
 public class BubbleLegendRenderer {

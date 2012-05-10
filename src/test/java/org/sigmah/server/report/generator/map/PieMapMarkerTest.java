@@ -10,15 +10,15 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.junit.Test;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
 
 public class PieMapMarkerTest {
 

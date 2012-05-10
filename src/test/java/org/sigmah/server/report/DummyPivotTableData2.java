@@ -8,14 +8,14 @@ package org.sigmah.server.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.content.FilterDescription;
-import org.sigmah.shared.report.content.PivotContent;
-import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.AdminDimension;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.activityinfo.shared.report.content.EntityCategory;
+import org.activityinfo.shared.report.content.FilterDescription;
+import org.activityinfo.shared.report.content.PivotContent;
+import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.AdminDimension;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.PivotTableReportElement;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

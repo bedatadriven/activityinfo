@@ -8,7 +8,7 @@ package org.sigmah.server.database.hibernate.dao;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 
 /**
- * Data Access Objects for the {@link org.sigmah.server.database.hibernate.entity.Authentication} domain object.
+ * Data Access Objects for the {@link org.activityinfo.server.database.hibernate.entity.Authentication} domain object.
  *
  * @author Alex Bertram
  */

@@ -3,6 +3,9 @@ package org.sigmah.server.command;
 import java.util.Collections;
 import java.util.List;
 
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.authentication.AuthenticationModuleStub;
 import org.sigmah.server.database.TestDatabaseModule;
 import org.sigmah.server.database.dao.UserDAO;
@@ -11,9 +14,6 @@ import org.sigmah.server.endpoint.gwtrpc.CommandServlet2;
 import org.sigmah.server.endpoint.gwtrpc.GwtRpcModule;
 import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.TemplateModule;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.Modules;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;

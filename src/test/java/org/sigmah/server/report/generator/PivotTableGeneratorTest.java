@@ -13,19 +13,19 @@ import static org.easymock.EasyMock.replay;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.command.PivotSites;
+import org.activityinfo.shared.command.result.Bucket;
+import org.activityinfo.shared.report.content.DimensionCategory;
+import org.activityinfo.shared.report.content.EntityCategory;
+import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.AdminDimension;
+import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.PivotTableReportElement;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.PivotSites;
-import org.sigmah.shared.command.result.Bucket;
-import org.sigmah.shared.report.content.DimensionCategory;
-import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.AdminDimension;
-import org.sigmah.shared.report.model.Dimension;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.PivotTableReportElement;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

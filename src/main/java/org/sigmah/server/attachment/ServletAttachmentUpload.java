@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import liquibase.util.file.FilenameUtils;
 
+import org.activityinfo.shared.command.CreateSiteAttachment;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.shared.command.CreateSiteAttachment;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;

@@ -8,9 +8,9 @@ package org.sigmah.server.report.generator.map;
 import java.awt.Rectangle;
 import java.util.List;
 
+import org.activityinfo.shared.report.content.Point;
+import org.activityinfo.shared.report.model.MapIcon;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.MapIcon;
 
 /**
  * @author Alex Bertram

@@ -15,14 +15,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.sigmah.server.endpoint.gwtrpc.CommandServlet;
 import org.sigmah.server.endpoint.jsonrpc.serde.SyncRegionUpdateSerializer;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.InvalidAuthTokenException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -59,7 +59,7 @@ public class JsonCommandServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
 
-            String commandName = "org.sigmah.shared.command.Get" + parseCommandName(req);
+            String commandName = "org.activityinfo.shared.command.Get" + parseCommandName(req);
             Command command = unmarshalCommandFromParameters(commandName, req);
 
             CommandResult result = commandServlet.execute(getAuthToken(req), command);

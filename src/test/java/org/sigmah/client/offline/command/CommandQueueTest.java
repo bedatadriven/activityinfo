@@ -10,12 +10,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activityinfo.client.offline.command.CommandQueue;
+import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.UpdateSite;
+import org.activityinfo.shared.util.Collector;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.database.ClientDatabaseStubs;
-import org.sigmah.shared.command.CreateSite;
-import org.sigmah.shared.command.UpdateSite;
-import org.sigmah.shared.util.Collector;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;

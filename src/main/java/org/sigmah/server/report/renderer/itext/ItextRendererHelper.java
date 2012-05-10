@@ -7,9 +7,9 @@ package org.sigmah.server.report.renderer.itext;
 
 import java.util.List;
 
+import org.activityinfo.shared.report.content.FilterDescription;
+import org.activityinfo.shared.report.model.DateRange;
 import org.sigmah.server.util.date.DateRangeFormat;
-import org.sigmah.shared.report.content.FilterDescription;
-import org.sigmah.shared.report.model.DateRange;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;

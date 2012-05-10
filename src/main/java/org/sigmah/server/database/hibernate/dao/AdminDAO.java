@@ -12,7 +12,7 @@ import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.AdminLevel;
 
 /**
- * Data Access Object for {@link org.sigmah.server.database.hibernate.entity.AdminEntity} classes.
+ * Data Access Object for {@link org.activityinfo.server.database.hibernate.entity.AdminEntity} classes.
  *
  * @author Alex Bertram
  */

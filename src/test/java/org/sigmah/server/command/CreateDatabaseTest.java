@@ -10,15 +10,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
+import org.activityinfo.shared.command.CreateEntity;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

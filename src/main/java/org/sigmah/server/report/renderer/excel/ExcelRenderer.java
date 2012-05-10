@@ -6,8 +6,8 @@
 package org.sigmah.server.report.renderer.excel;
 
 
+import org.activityinfo.shared.report.model.ReportElement;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.sigmah.shared.report.model.ReportElement;
 
 
 public interface ExcelRenderer<T extends ReportElement> {

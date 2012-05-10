@@ -2,14 +2,14 @@ package org.sigmah.server.command.handler;
 
 import java.util.List;
 
-import org.sigmah.shared.command.GetLockedPeriods;
-import org.sigmah.shared.command.GetLockedPeriods.LockedPeriodsResult;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.LockedPeriodDTO;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.command.GetLockedPeriods;
+import org.activityinfo.shared.command.GetLockedPeriods.LockedPeriodsResult;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.LockedPeriodDTO;
+import org.activityinfo.shared.dto.ProjectDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;

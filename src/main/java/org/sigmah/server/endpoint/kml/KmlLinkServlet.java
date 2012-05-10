@@ -22,7 +22,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * Serves a simple KML file containing a network link to {@link org.sigmah.server.endpoint.kml.KmlDataServlet}.
+ * Serves a simple KML file containing a network link to {@link org.activityinfo.server.endpoint.kml.KmlDataServlet}.
  *
  * This file will be downloaded to the users computer and can be saved locally, but will asssure
  * that all actual data comes live from the server.

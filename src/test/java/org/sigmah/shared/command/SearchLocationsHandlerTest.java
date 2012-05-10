@@ -4,12 +4,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.activityinfo.shared.command.SearchLocations;
+import org.activityinfo.shared.command.result.LocationResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.result.LocationResult;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

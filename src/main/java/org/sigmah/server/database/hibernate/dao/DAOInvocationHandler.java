@@ -13,11 +13,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 /**
- * Invocation Handler for {@link org.sigmah.server.database.hibernate.dao.DAO} interfaces.
+ * Invocation Handler for {@link org.activityinfo.server.database.hibernate.dao.DAO} interfaces.
  * 
  * This InvocationHandler provides implementations for
- * {@link org.sigmah.server.database.hibernate.dao.DAO#findById(Object) findById} and
- * {@link org.sigmah.server.database.hibernate.dao.DAO#persist(Object) persist}. Any other methods defined in the interface
+ * {@link org.activityinfo.server.database.hibernate.dao.DAO#findById(Object) findById} and
+ * {@link org.activityinfo.server.database.hibernate.dao.DAO#persist(Object) persist}. Any other methods defined in the interface
  * are matched to named JPA queries, and their parameters as provided to the query as <em>positional</em>
  * parameters.
  *

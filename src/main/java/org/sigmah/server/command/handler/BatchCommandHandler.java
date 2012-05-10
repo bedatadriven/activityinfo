@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.activityinfo.shared.command.BatchCommand;
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.result.BatchResult;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.BatchCommand;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.result.BatchResult;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.common.primitives.Primitives;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,7 +25,7 @@ import com.google.inject.Injector;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.BatchCommand
+ * @see org.activityinfo.shared.command.BatchCommand
  */
 public class BatchCommandHandler implements CommandHandlerAsync<BatchCommand, BatchResult> {
 

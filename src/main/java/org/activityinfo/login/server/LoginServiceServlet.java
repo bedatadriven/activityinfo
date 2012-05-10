@@ -8,6 +8,8 @@ import org.activityinfo.login.client.AuthenticationException;
 import org.activityinfo.login.client.PasswordExpiredException;
 import org.activityinfo.login.shared.LoginException;
 import org.activityinfo.login.shared.LoginService;
+import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.exception.InvalidLoginException;
 import org.sigmah.server.authentication.AuthCookieUtil;
 import org.sigmah.server.authentication.Authenticator;
 import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
@@ -15,8 +17,6 @@ import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.exception.InvalidLoginException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;

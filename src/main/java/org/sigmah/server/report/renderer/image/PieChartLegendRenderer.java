@@ -6,9 +6,9 @@ import java.awt.Image;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 
-import org.sigmah.shared.report.content.PieChartLegend;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.content.PieChartLegend;
+import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 
 public class PieChartLegendRenderer {
 

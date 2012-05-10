@@ -8,8 +8,8 @@ package org.sigmah.server.report.renderer.itext;
 import java.text.NumberFormat;
 import java.util.List;
 
-import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.PivotTableReportElement;
+import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.PivotTableReportElement;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
@@ -20,7 +20,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Table;
 
 /**
- * Renders a {@link org.sigmah.shared.report.model.PivotTableReportElement} to an iText
+ * Renders a {@link org.activityinfo.shared.report.model.PivotTableReportElement} to an iText
  * document (either PDF or RTF)
  *
  */

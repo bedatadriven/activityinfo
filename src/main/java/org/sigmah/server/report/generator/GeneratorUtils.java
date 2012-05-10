@@ -1,8 +1,8 @@
 package org.sigmah.server.report.generator;
 
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.ReportElement;
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.ReportElement;
 
 public class GeneratorUtils {
 
@@ -12,7 +12,7 @@ public class GeneratorUtils {
 	 * report.
 	 * <p/>
 	 * Interaction between the report's date range <code>DateRange</code> and the
-	 * element's filter is specified in {@link org.sigmah.shared.report.model.ReportElement#getFilter()}
+	 * element's filter is specified in {@link org.activityinfo.shared.report.model.ReportElement#getFilter()}
 	 *
 	 * @param element         The report element for which to resolve the filter
 	 * @param inheritedFilter The <code>Filter</code> that is inherited from the enclosing <code>Report</code> or other container

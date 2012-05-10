@@ -5,7 +5,7 @@
 
 <module rename-to="ActivityInfo">
 
-	<inherits name='org.sigmah.ActivityInfoCore'/>
+	<inherits name='org.activityinfo.ActivityInfoCore'/>
 	
 	<inherits name="com.bedatadriven.rebar.appcache.AppCacheLinker"/>
 	

@@ -7,11 +7,11 @@ package org.sigmah.server.command.handler;
 
 import java.util.List;
 
-import org.sigmah.shared.command.GetBaseMaps;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.result.BaseMapResult;
-import org.sigmah.shared.map.TileBaseMap;
+import org.activityinfo.shared.command.GetBaseMaps;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.result.BaseMapResult;
+import org.activityinfo.shared.map.TileBaseMap;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -23,7 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.GetBaseMaps
+ * @see org.activityinfo.shared.command.GetBaseMaps
  */
 public class GetBaseMapsHandler implements CommandHandlerAsync<GetBaseMaps, BaseMapResult> {
 

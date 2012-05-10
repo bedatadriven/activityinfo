@@ -10,16 +10,16 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.command.GetMonthlyReports;
+import org.activityinfo.shared.command.Month;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.MonthlyReportResult;
+import org.activityinfo.shared.dto.IndicatorRowDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.database.hibernate.entity.Indicator;
 import org.sigmah.server.database.hibernate.entity.IndicatorValue;
 import org.sigmah.server.database.hibernate.entity.ReportingPeriod;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.GetMonthlyReports;
-import org.sigmah.shared.command.Month;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.MonthlyReportResult;
-import org.sigmah.shared.dto.IndicatorRowDTO;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 

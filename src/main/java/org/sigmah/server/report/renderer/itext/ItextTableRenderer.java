@@ -10,10 +10,10 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.TableColumn;
-import org.sigmah.shared.report.model.TableElement;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.TableData;
+import org.activityinfo.shared.report.model.TableColumn;
+import org.activityinfo.shared.report.model.TableElement;
 
 import com.google.inject.Inject;
 import com.lowagie.text.Cell;
@@ -24,7 +24,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Table;
 
 /**
- * Renders a {@link org.sigmah.shared.report.model.TableElement} to an iText Document.
+ * Renders a {@link org.activityinfo.shared.report.model.TableElement} to an iText Document.
  *
  */
 public class ItextTableRenderer implements ItextRenderer<TableElement> {

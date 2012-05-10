@@ -5,8 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.sigmah.shared.map.GoogleBaseMap;
-import org.sigmah.shared.report.content.AiLatLng;
+import org.activityinfo.shared.map.GoogleBaseMap;
+import org.activityinfo.shared.report.content.AiLatLng;
 
 /**
  * 

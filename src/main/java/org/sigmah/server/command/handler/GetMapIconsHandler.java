@@ -9,19 +9,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.command.GetMapIcons;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.MapIconResult;
+import org.activityinfo.shared.dto.MapIconDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.MapIconPath;
-import org.sigmah.shared.command.GetMapIcons;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.MapIconResult;
-import org.sigmah.shared.dto.MapIconDTO;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.GetMapIcons
+ * @see org.activityinfo.shared.command.GetMapIcons
  */
 public class GetMapIconsHandler implements CommandHandler<GetMapIcons> {
 

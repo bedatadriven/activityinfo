@@ -7,26 +7,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.BubbleMapMarker;
+import org.activityinfo.shared.report.content.DimensionCategory;
+import org.activityinfo.shared.report.content.EntityCategory;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.MapMarker;
+import org.activityinfo.shared.report.content.PieChartLegend;
+import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.content.Point;
+import org.activityinfo.shared.report.model.MapSymbol;
+import org.activityinfo.shared.report.model.PointValue;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.ScalingType;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
+import org.activityinfo.shared.util.mapping.Extents;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.BubbleMapMarker;
-import org.sigmah.shared.report.content.DimensionCategory;
-import org.sigmah.shared.report.content.EntityCategory;
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.content.MapMarker;
-import org.sigmah.shared.report.content.PieChartLegend;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.MapSymbol;
-import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
-import org.sigmah.shared.report.model.layers.ScalingType;
-import org.sigmah.shared.util.mapping.Extents;
 
 public class PiechartLayerGenerator extends AbstractLayerGenerator {
 

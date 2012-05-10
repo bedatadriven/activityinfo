@@ -2,6 +2,8 @@ package org.sigmah.server.report.generator.map.cluster;
 
 import java.util.List;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.model.PointValue;
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.TiledMap;
 import org.sigmah.server.report.generator.map.cluster.genetic.BubbleFitnessFunctor;
@@ -9,8 +11,6 @@ import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.model.PointValue;
 
 /**
  * Clusters PointValues together in an optimal way using
@@ -30,7 +30,7 @@ public class GeneticClusterer implements Clusterer {
 	/*
 	 * Clusters points using a genetic algorithm to determine what nearby points are
 	 * logical candidates to cluster
-	 * @see org.sigmah.shared.report.model.clustering.Clustering#cluster(java.util.List, org.sigmah.server.report.generator.map.RadiiCalculator)
+	 * @see org.activityinfo.shared.report.model.clustering.Clustering#cluster(java.util.List, org.activityinfo.server.report.generator.map.RadiiCalculator)
 	 */
 	@Override
 	public List<Cluster> cluster(TiledMap map, List<PointValue> points) {

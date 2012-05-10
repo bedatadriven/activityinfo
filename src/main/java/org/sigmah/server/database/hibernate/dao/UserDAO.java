@@ -9,7 +9,7 @@ import org.sigmah.server.database.hibernate.entity.User;
 
 
 /**
- * Data Access Object for the {@link org.sigmah.server.database.hibernate.entity.User} domain class.
+ * Data Access Object for the {@link org.activityinfo.server.database.hibernate.entity.User} domain class.
  *
  * @author Alex Bertram
  */
