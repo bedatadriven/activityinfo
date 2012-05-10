@@ -13,7 +13,7 @@ import javax.persistence.Persistence;
 
 import org.sigmah.server.database.TestConnectionProvider;
 import org.sigmah.server.database.TestDatabaseModule;
-import org.sigmah.server.database.hibernate.dao.HibernateModule;
+import org.sigmah.server.database.hibernate.HibernateModule;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

@@ -22,8 +22,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.sigmah.server.authentication.ServerSideAuthProvider;
+import org.sigmah.server.database.hibernate.HibernateSessionScope;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
-import org.sigmah.server.database.hibernate.entity.ReportDefinition;
 import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.report.ReportParserJaxb;
@@ -32,10 +32,10 @@ import org.sigmah.server.report.renderer.itext.RtfReportRenderer;
 import org.sigmah.shared.auth.AuthenticatedUser;
 import org.sigmah.shared.report.model.DateRange;
 import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.EmailDelivery;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 
 /**
@@ -45,7 +45,7 @@ import com.google.inject.Inject;
  */
 public class ReportMailerJob implements Job {
 
-    private final EntityManager em;
+    private final Provider<EntityManager> em;
     private final ReportGenerator reportGenerator;
     private final RtfReportRenderer rtfReportRenderer;
     private final MailSender mailer;
@@ -53,13 +53,18 @@ public class ReportMailerJob implements Job {
     private final ServerSideAuthProvider authProvider;
 
     private DateFormat reportDateFormat;
+	private HibernateSessionScope hibernateScope;
     
     private static final Logger LOGGER = Logger.getLogger(ReportMailerJob.class);
 
     @Inject
-    public ReportMailerJob(EntityManager em, ReportGenerator reportGenerator,
-                           RtfReportRenderer rtfReportRenderer, MailSender mailer, ServerSideAuthProvider authProvider) {
+    public ReportMailerJob(HibernateSessionScope hibernateScope, 
+    					Provider<EntityManager> em, ReportGenerator reportGenerator,
+                           RtfReportRenderer rtfReportRenderer, 
+                           MailSender mailer, 
+                           ServerSideAuthProvider authProvider) {
         this.em = em;
+        this.hibernateScope = hibernateScope;
         this.reportGenerator = reportGenerator;
         this.rtfReportRenderer = rtfReportRenderer;
         this.mailer = mailer;
@@ -71,7 +76,13 @@ public class ReportMailerJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		execute(new Date());
+		
+		hibernateScope.enter();
+		try {
+			execute(new Date());
+		} finally {
+			hibernateScope.exit();
+		}
 	}
 
 
@@ -79,7 +90,7 @@ public class ReportMailerJob implements Job {
     	
     	LOGGER.info("Starting nightly mailing job for " + today);
 
-        List<ReportSubscription> subscriptions = em.createQuery("select t from ReportSubscription t")
+        List<ReportSubscription> subscriptions = em.get().createQuery("select t from ReportSubscription t")
                 .getResultList();
 
         for (ReportSubscription subscription : subscriptions) {
@@ -99,7 +110,7 @@ public class ReportMailerJob implements Job {
     	// set up authentication for the subscriber of this report
     	
     	authProvider.set(new AuthenticatedUser("", sub.getUser().getId(), sub.getUser().getEmail()));
-        DomainFilters.applyUserFilter(sub.getUser(), em);
+        DomainFilters.applyUserFilter(sub.getUser(), em.get());
 
         // render the report to a temp file
         // generate the report

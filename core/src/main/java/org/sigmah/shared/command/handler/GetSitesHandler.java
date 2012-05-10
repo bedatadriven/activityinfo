@@ -119,15 +119,15 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	private void applyJoins(final SqlQuery query) {
 		query.from("( " +
 			
-				"(SELECT s.SiteId, 0 as Linked, s.Date1, s.Date2, s.DateEdited, s.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
-					"FROM Site s WHERE s.dateDeleted IS NULL) " +
-					"UNION ALL" +
-				"(SELECT DISTINCT s.SiteId, 1 as Linked, s.Date1, s.Date2, s.DateEdited, di.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
+				"SELECT s.SiteId, 0 as Linked, s.Date1, s.Date2, s.DateEdited, s.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
+					"FROM Site s WHERE s.dateDeleted IS NULL " +
+					"UNION ALL " +
+				"SELECT DISTINCT s.SiteId, 1 as Linked, s.Date1, s.Date2, s.DateEdited, di.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
 				    "FROM Site s " +
 				    "INNER JOIN indicator si ON (si.activityid=s.activityid) " +
 				    "INNER JOIN indicatorlink link ON (si.indicatorid=link.sourceindicatorid) " +
 				    "INNER JOIN indicator di on (link.destinationindicatorid=di.indicatorid)  " +
-				    "WHERE s.dateDeleted IS NULL)" +
+				    "WHERE s.dateDeleted IS NULL" +
 			   ") Site ")
 			.leftJoin("Activity").on("Site.ActivityId = Activity.ActivityId")
 			.leftJoin("UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId")

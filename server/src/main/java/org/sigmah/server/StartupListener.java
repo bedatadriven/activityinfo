@@ -20,7 +20,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.sigmah.server.authentication.AuthenticationModule;
 import org.sigmah.server.bootstrap.BootstrapModule;
 import org.sigmah.server.database.ServerDatabaseModule;
-import org.sigmah.server.database.hibernate.dao.HibernateModule;
+import org.sigmah.server.database.hibernate.HibernateModule;
 import org.sigmah.server.endpoint.content.ContentModule;
 import org.sigmah.server.endpoint.crx.CrxModule;
 import org.sigmah.server.endpoint.export.ExportModule;
