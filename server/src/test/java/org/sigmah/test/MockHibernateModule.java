@@ -13,22 +13,32 @@ import javax.persistence.Persistence;
 
 import org.sigmah.server.database.TestConnectionProvider;
 import org.sigmah.server.database.TestDatabaseModule;
-import org.sigmah.server.database.hibernate.HibernateModule;
+import org.sigmah.server.database.hibernate.EntityManagerProvider;
+import org.sigmah.server.database.hibernate.dao.HibernateDAOModule;
+import org.sigmah.server.database.hibernate.dao.TransactionModule;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-public class MockHibernateModule extends HibernateModule {
+public class MockHibernateModule extends AbstractModule {
     private static EntityManagerFactory emf = null;
 
-    @Override
-	protected void configure() {
-		super.configure();
-		
-		install(new TestDatabaseModule());
-	}
 
 	@Override
+	protected void configure() {
+		
+		configureEmf();
+		
+		 bind(EntityManager.class).toProvider(EntityManagerProvider.class)
+         .in(TestScoped.class);
+		
+		install(new TestDatabaseModule());
+        install(new HibernateDAOModule());
+        install(new TransactionModule());
+	}
+
+
     protected void configureEmf() {
         bind(EntityManagerFactory.class).toProvider(new Provider<EntityManagerFactory>() {
             @Override
@@ -53,10 +63,5 @@ public class MockHibernateModule extends HibernateModule {
         }).in(Singleton.class);
     }
 
-    @Override
-    protected void configureEm() {
-        bind(EntityManager.class).toProvider(EntityManagerProvider.class)
-                .in(TestScoped.class);
-    }
     
 }

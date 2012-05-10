@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -16,6 +17,7 @@ public final class HibernateSessionFilter implements Filter {
 
 	private HibernateSessionScope sessionScope;
 
+	@Inject
 	public HibernateSessionFilter(HibernateSessionScope sessionScope) {
 		this.sessionScope = sessionScope;
 	}
