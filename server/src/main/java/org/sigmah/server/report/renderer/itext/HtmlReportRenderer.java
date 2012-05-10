@@ -92,7 +92,6 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 	}
 
 	private class HtmlImageCreator implements ImageCreator<HtmlImage> {
-
 		@Override
 		public HtmlImage create(int width, int height) {
 			BufferedImage image = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
@@ -133,8 +132,7 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		@Override
 		public float getScaledHeight() {
 			return height;
-		}
-		
+		}		
 	}
 
 	private static class HtmlImage implements ItextImageResult {
@@ -154,7 +152,6 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			return g2d;
 		}
 		
-
 		@Override
 		public Image toItextImage() throws BadElementException {
 			try {
@@ -166,6 +163,4 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			}
 		}	
 	}
-
-
 }

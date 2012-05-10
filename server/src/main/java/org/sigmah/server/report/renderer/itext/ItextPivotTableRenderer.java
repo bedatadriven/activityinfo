@@ -15,6 +15,7 @@ import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Table;
 
@@ -22,66 +23,59 @@ import com.lowagie.text.Table;
  * Renders a {@link org.sigmah.shared.report.model.PivotTableReportElement} to an iText
  * document (either PDF or RTF)
  *
- * @author Alex Bertram
  */
 public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportElement> {	
 	
 	@Override
-	public void render(DocWriter writer, Document document, PivotTableReportElement element) {
-        try {
+	public void render(DocWriter writer, Document document, PivotTableReportElement element) throws DocumentException {
 
-            document.add(ThemeHelper.elementTitle(element.getTitle()));
-            ItextRendererHelper.addFilterDescription(document, element.getContent().getFilterDescriptions());
-            ItextRendererHelper.addDateFilterDescription(document, element.getFilter().getDateRange());
-            PivotTableData data = element.getContent().getData();
+        document.add(ThemeHelper.elementTitle(element.getTitle()));
+        ItextRendererHelper.addFilterDescription(document, element.getContent().getFilterDescriptions());
+        ItextRendererHelper.addDateFilterDescription(document, element.getFilter().getDateRange());
+        PivotTableData data = element.getContent().getData();
 
-            if(data.isEmpty()) {
-                document.add(new Paragraph("Aucune Données"));  // TODO: i18n
+        if(data.isEmpty()) {
+            document.add(new Paragraph("Aucune Données"));  // TODO: i18n
 
-            } else {
+        } else {
+            int colDepth = data.getRootColumn().getDepth();
+            List<PivotTableData.Axis> colLeaves = data.getRootColumn().getLeaves();
+            int colBreadth = colLeaves.size();
 
-                int colDepth = data.getRootColumn().getDepth();
-                List<PivotTableData.Axis> colLeaves = data.getRootColumn().getLeaves();
-                int colBreadth = colLeaves.size();
+            Table table = new Table(colBreadth+1, 1);
+            table.setUseVariableBorders(true);
+            table.setWidth(100.0f);
+            table.setWidths(calcColumnWidths(document, data, colLeaves));
+            table.setBorderWidth(0);
 
-                Table table = new Table(colBreadth+1, 1);
-                table.setUseVariableBorders(true);
-                table.setWidth(100.0f);
-                table.setWidths(calcColumnWidths(document, data, colLeaves));
-                table.setBorderWidth(0);
+            // first write the column headers
 
-                // first write the column headers
+            for(int depth = 1; depth<=colDepth; ++depth) {
 
-                for(int depth = 1; depth<=colDepth; ++depth) {
-
-                    if(depth == 1) {
-                        Cell cell = ThemeHelper.cornerCell();
-                        cell.setRowspan(colDepth);
-                        table.addCell(cell);
-                    }
-
-                    List<PivotTableData.Axis> columns = data.getRootColumn().getDescendantsAtDepth(depth);
-                    for(PivotTableData.Axis column : columns) {
-                        Cell cell = ThemeHelper.columnHeaderCell(column.getLabel(), column.isLeaf());
-                        cell.setColspan(Math.max(1, column.getLeaves().size()));
-                        table.addCell(cell);
-                    }
-
-                }
-                table.endHeaders();
-
-                for(PivotTableData.Axis row : data.getRootRow().getChildren()) {
-                    writeRow(table, row, colLeaves, 0);
+                if(depth == 1) {
+                    Cell cell = ThemeHelper.cornerCell();
+                    cell.setRowspan(colDepth);
+                    table.addCell(cell);
                 }
 
-                document.add(table);
+                List<PivotTableData.Axis> columns = data.getRootColumn().getDescendantsAtDepth(depth);
+                for(PivotTableData.Axis column : columns) {
+                    Cell cell = ThemeHelper.columnHeaderCell(column.getLabel(), column.isLeaf());
+                    cell.setColspan(Math.max(1, column.getLeaves().size()));
+                    table.addCell(cell);
+                }
+
             }
-        } catch(Exception e) {
-            e.printStackTrace();
+            table.endHeaders();
+
+            for(PivotTableData.Axis row : data.getRootRow().getChildren()) {
+                writeRow(table, row, colLeaves, 0);
+            }
+            document.add(table);
         }
     }
 
-    protected float[] calcColumnWidths(Document doc, PivotTableData data, List<PivotTableData.Axis> leafColumns) {
+    private float[] calcColumnWidths(Document doc, PivotTableData data, List<PivotTableData.Axis> leafColumns) {
         // assume fixed column size
         float[] widths = new float[leafColumns.size()+1];
         widths[0] = doc.getPageSize().getWidth() - doc.leftMargin() - doc.rightMargin() -
@@ -92,7 +86,7 @@ public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportEl
         return widths;
     }
 
-    protected void writeRow(Table table, PivotTableData.Axis row, List<PivotTableData.Axis> leafColumns, int depth) throws BadElementException {
+    private void writeRow(Table table, PivotTableData.Axis row, List<PivotTableData.Axis> leafColumns, int depth) throws BadElementException {
 
         table.addCell(ThemeHelper.bodyCell(row.getLabel(), true, depth, row.isLeaf()));
 

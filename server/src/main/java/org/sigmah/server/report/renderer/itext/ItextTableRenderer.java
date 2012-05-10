@@ -26,7 +26,6 @@ import com.lowagie.text.Table;
 /**
  * Renders a {@link org.sigmah.shared.report.model.TableElement} to an iText Document.
  *
- * @author Alex Bertram
  */
 public class ItextTableRenderer implements ItextRenderer<TableElement> {
 

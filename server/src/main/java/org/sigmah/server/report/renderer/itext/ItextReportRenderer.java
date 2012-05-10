@@ -54,7 +54,6 @@ public abstract class ItextReportRenderer implements Renderer {
 
 	@Override
 	public void render(ReportElement element, OutputStream os) throws IOException {
-
         try {
             Document document = new Document();
             DocWriter writer = createWriter(document, os);

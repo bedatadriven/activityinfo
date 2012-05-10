@@ -26,28 +26,22 @@ public class ItextChartRenderer implements ItextRenderer<PivotChartReportElement
 	}
 
 	@Override
-	public void render(DocWriter writer, Document doc, PivotChartReportElement element) {
+	public void render(DocWriter writer, Document doc, PivotChartReportElement element) throws DocumentException {
 
+		doc.add(ThemeHelper.elementTitle(element.getTitle()));
+		ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
+		ItextRendererHelper.addDateFilterDescription(doc, element.getFilter().getDateRange());
+		
+		if(element.getContent().getData().isEmpty()) {
+			Paragraph para = new Paragraph("Aucune Données");
+			para.setFont(new Font(Font.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 0)));
+			doc.add(para);
 
-		try {
-			doc.add(ThemeHelper.elementTitle(element.getTitle()));
-			ItextRendererHelper.addFilterDescription(doc, element.getContent().getFilterDescriptions());
-			ItextRendererHelper.addDateFilterDescription(doc, element.getFilter().getDateRange());
-			
-			if(element.getContent().getData().isEmpty()) {
-				Paragraph para = new Paragraph("Aucune Données");
-				para.setFont(new Font(Font.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 0)));
-				doc.add(para);
+		} else {
+			float width = doc.getPageSize().getWidth() - doc.rightMargin() - doc.leftMargin();
+			float height = (doc.getPageSize().getHeight() - doc.topMargin() - doc.bottomMargin()) / 3f;
 
-			} else {
-				float width = doc.getPageSize().getWidth() - doc.rightMargin() - doc.leftMargin();
-				float height = (doc.getPageSize().getHeight() - doc.topMargin() - doc.bottomMargin()) / 3f;
-
-				renderImage(doc, element, width, height);
-			
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
+			renderImage(doc, element, width, height);
 		}
 	}
 	
