@@ -35,7 +35,6 @@ public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportEl
             ItextRendererHelper.addDateFilterDescription(document, element.getFilter().getDateRange());
             PivotTableData data = element.getContent().getData();
 
-
             if(data.isEmpty()) {
                 document.add(new Paragraph("Aucune Données"));  // TODO: i18n
 
@@ -64,7 +63,7 @@ public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportEl
                     List<PivotTableData.Axis> columns = data.getRootColumn().getDescendantsAtDepth(depth);
                     for(PivotTableData.Axis column : columns) {
                         Cell cell = ThemeHelper.columnHeaderCell(column.getLabel(), column.isLeaf());
-                        cell.setColspan(Math.max(1, column.getChildCount()));
+                        cell.setColspan(Math.max(1, column.getLeaves().size()));
                         table.addCell(cell);
                     }
 
