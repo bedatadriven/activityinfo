@@ -38,7 +38,6 @@ public class ChromeAppEntryPoint implements EntryPoint {
 		});		
 	}
 	
-	
 	private void saveCredentials(AuthenticatedUser result) {
 		Storage storage = Storage.getLocalStorageIfSupported();
 		storage.setItem(AuthenticatedUser.AUTH_TOKEN_COOKIE, result.getAuthToken());
@@ -49,5 +48,4 @@ public class ChromeAppEntryPoint implements EntryPoint {
 	private void startApp() {
 		
 	}
-
 }

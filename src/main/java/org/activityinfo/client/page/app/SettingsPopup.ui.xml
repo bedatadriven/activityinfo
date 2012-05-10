@@ -48,13 +48,10 @@
 			</div>
 		</div>
 	
-<!--		<div class="{style.group}">	-->
-<!--			<div class="{style.menuRow}">Offline not installed</div>-->
-<!--			<div class="{style.menuRow}"><g:Label text="Install" styleName="{style.action}"/></div>-->
-<!--			<div class="{style.menuRow}">Having problems with offline mode? Click to -->
-<!--					<g:Label text="Reinstall offline mode" styleName="{style.action}"/>.</div>-->
-<!--		</div>-->
-<!--		-->
+		<div class="{style.group}">	
+			<div class="{style.menuRow}"><g:Label ui:field="offlineLabel" styleName="{style.action}"/></div>
+		</div>
+		
 		<div class="{style.group}">
 			<div class="{style.menuRow}">Logged in as <span class="{style.email}" ui:field="emailLabel"/></div>
 			<div class="{style.menuRow}"><g:Label text="{constants.logout}" styleName="{style.action}" ui:field="logoutLink"/></div>

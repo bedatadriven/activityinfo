@@ -128,6 +128,11 @@ public class ReportPortlet extends Portlet {
 	}
 
 	private void onModelLoad(Report result) {
+		if(result.getElements().isEmpty()) {
+			removeAll();
+			add(new Label("The report is empty"));
+			return;
+		}
 		final ReportElement element = result.getElement(0);
 		final ReportView view = createView(element);
 		
