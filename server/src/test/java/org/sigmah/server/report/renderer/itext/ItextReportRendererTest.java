@@ -7,12 +7,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.sigmah.server.report.DummyPivotTableData;
+import org.sigmah.server.report.renderer.Renderer;
+import org.sigmah.server.report.renderer.excel.ExcelReportRenderer;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
 import org.sigmah.server.report.renderer.ppt.PPTMapRenderer;
@@ -22,6 +24,8 @@ import org.sigmah.shared.map.GoogleBaseMap;
 import org.sigmah.shared.map.TileBaseMap;
 import org.sigmah.shared.report.content.BubbleLayerLegend;
 import org.sigmah.shared.report.content.BubbleMapMarker;
+import org.sigmah.shared.report.content.EntityCategory;
+import org.sigmah.shared.report.content.FilterDescription;
 import org.sigmah.shared.report.content.IconLayerLegend;
 import org.sigmah.shared.report.content.MapContent;
 import org.sigmah.shared.report.content.MapMarker;
@@ -29,7 +33,15 @@ import org.sigmah.shared.report.content.NullContent;
 import org.sigmah.shared.report.content.PieChartLegend;
 import org.sigmah.shared.report.content.PivotChartContent;
 import org.sigmah.shared.report.content.PivotContent;
+import org.sigmah.shared.report.content.PivotTableData;
+import org.sigmah.shared.report.content.PivotTableData.Axis;
 import org.sigmah.shared.report.content.ReportContent;
+import org.sigmah.shared.report.content.SimpleCategory;
+import org.sigmah.shared.report.model.AdminDimension;
+import org.sigmah.shared.report.model.DateDimension;
+import org.sigmah.shared.report.model.DateUnit;
+import org.sigmah.shared.report.model.Dimension;
+import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.shared.report.model.MapIcon;
 import org.sigmah.shared.report.model.MapReportElement;
 import org.sigmah.shared.report.model.PivotChartReportElement;
@@ -44,7 +56,6 @@ import org.sigmah.shared.util.mapping.Extents;
 
 import com.google.common.collect.Lists;
 
-@Ignore("too long")
 public class ItextReportRendererTest {
 	
 	@Before
@@ -301,12 +312,66 @@ public class ItextReportRendererTest {
 	}
 
 
+	@Test
+	public void nestedColumns() throws IOException {
+
+		Comparator<PivotTableData.Axis> comparator = new Comparator<PivotTableData.Axis>() {
+			
+			@Override
+			public int compare(Axis arg0, Axis arg1) {
+				return arg0.getLabel().compareTo(arg1.getLabel());
+			}
+		};
+		Dimension province = new AdminDimension(1);
+		Dimension partner = new Dimension(DimensionType.Partner);
+		Dimension year = new DateDimension(DateUnit.YEAR);
+		Dimension month = new DateDimension(DateUnit.MONTH);
+		
+		EntityCategory avsi = new EntityCategory(100, "AVSI RRMP");
+		
+		PivotTableData data = new PivotTableData();
+		
+		Axis sudKivu = data.getRootColumn().addChild(province, new EntityCategory(1, "Sud Kivu"),
+				"Sud Kivu", comparator);
+		Axis y2010 = sudKivu.addChild(year, new SimpleCategory("2010"), "2010", comparator);
+		Axis y2011 = sudKivu.addChild(year, new SimpleCategory("2010"), "2010", comparator);		
+		Axis jan2010 = y2010.addChild(month, new SimpleCategory("Jan"), "Jan", comparator);
+		Axis feb2010 = y2010.addChild(month, new SimpleCategory("Feb"), "Feb", comparator);
+		Axis jan2011 = y2011.addChild(month, new SimpleCategory("Jan"), "Jan", comparator);
+		Axis feb2011 = y2011.addChild(month, new SimpleCategory("Feb"), "Feb", comparator);
+
+		Axis avsiRow = data.getRootRow().addChild(partner, avsi, avsi.getLabel(), comparator);
+		avsiRow.setValue(jan2010, 1d);
+		avsiRow.setValue(feb2010, 2d);
+		avsiRow.setValue(jan2011, 3d);
+		avsiRow.setValue(feb2011, 4d);
+		
+		PivotContent tableContent = new PivotContent(data, Lists.<FilterDescription>newArrayList());
+		
+		PivotTableReportElement table = new PivotTableReportElement();
+		table.addRowDimension(partner);
+		table.addColDimension(province);
+		table.addColDimension(year);
+		table.addColDimension(month);
+		table.setContent(tableContent);
+		
+		ReportContent content = new ReportContent();
+		content.setFilterDescriptions(Collections.EMPTY_LIST);
+		
+		Report report = new Report();
+		report.setContent(content);
+		report.addElement(table);
+
+		renderToPdf(report, "nestedColumns.pdf");
+		renderToRtf(report, "nestedColumns.rtf");		
+		renderToXls(report, "nestedColumns.xls");
+	}
 
 	private String mapIconPath() {
 		return "war/mapicons";
 	}
 
-	private void renderTo(Report report, ItextReportRenderer reportRenderer, String name)
+	private void renderTo(Report report, Renderer reportRenderer, String name)
 			throws FileNotFoundException, IOException {
 		FileOutputStream fos = new FileOutputStream("target/report-tests/" + name);
 		reportRenderer.render(report, fos);		
@@ -315,6 +380,12 @@ public class ItextReportRendererTest {
 	
 	private void renderToPdf(Report report, String name) throws IOException {
 		PdfReportRenderer reportRenderer = new PdfReportRenderer(mapIconPath());
+		renderTo(report, reportRenderer, name);
+	}
+	
+
+	private void renderToXls(Report report, String name) throws IOException {
+		ExcelReportRenderer reportRenderer = new ExcelReportRenderer();
 		renderTo(report, reportRenderer, name);
 	}
 	
