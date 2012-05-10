@@ -254,18 +254,7 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 
 				<executions>
-					<execution>
-						<id>i18n</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>i18n</goal>
-						</goals>
-						<configuration>
-							<logLevel>ALL</logLevel>
-							<i18nConstantsBundle>org.activityinfo.client.i18n.UIConstants</i18nConstantsBundle>
-						</configuration>
-					</execution>
-				</executions>
+				
 			</plugin>
 		
 

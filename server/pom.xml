@@ -31,14 +31,6 @@
 
 	<dependencies>
 	
-		<!-- ActivityInfo components -->
-		
-		<dependency>
-			<groupId>org.activityinfo</groupId>
-			<artifactId>activityinfo-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
 
 		<!-- GWT deps (from central repo) -->
 
@@ -66,14 +58,6 @@
 			<artifactId>gwt-log</artifactId>
 			<version>3.1.3</version>
 		</dependency>
-
-		<!-- Other clientside APIs -->
-		<dependency>
-			<groupId>com.extjs</groupId>
-			<artifactId>gxt</artifactId>
-			<version>2.2.4</version>
-			<classifier>gwt22</classifier>
-		</dependency>
 		<dependency>
 			<groupId>com.ebessette.maps</groupId>
 			<artifactId>overlaymanager</artifactId>
@@ -87,28 +71,6 @@
 			<version>0.7-bedatadriven2</version>
 		</dependency>
 
-		<!-- Rebar- client persistence -->
-
-		<dependency>
-			<groupId>com.bedatadriven.rebar</groupId>
-			<artifactId>rebar-appcache</artifactId>
-			<version>${rebarVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.bedatadriven.rebar</groupId>
-			<artifactId>rebar-time</artifactId>
-			<version>${rebarVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.bedatadriven.rebar</groupId>
-			<artifactId>rebar-sql</artifactId>
-			<version>${rebarVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.bedatadriven.rebar</groupId>
-			<artifactId>rebar-sync</artifactId>
-			<version>${rebarVersion}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
@@ -254,15 +216,105 @@
 		</dependency>
 
 		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.4.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.16</version>
+		</dependency>
+
+		<!-- Other clientside APIs -->
+		<dependency>
+			<groupId>com.extjs</groupId>
+			<artifactId>gxt</artifactId>
+			<version>2.2.4</version>
+			<classifier>gwt22</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt.google-apis</groupId>
+			<artifactId>gwt-maps</artifactId>
+			<version>1.1.0</version>
+			<classifier>gwt23</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.ebessette.maps</groupId>
+			<artifactId>overlaymanager</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt.google-apis</groupId>
+			<artifactId>gwt-gears</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r09</version>
+			<classifier>gwt</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r09</version>
+		</dependency>
+		<dependency>
+			<groupId>com.teklabs.gwt-i18n-server</groupId>
+			<artifactId>gwt-i18n-server</artifactId>
+			<version>0.7-bedatadriven2</version>
+		</dependency>
+
+		<!-- Rebar- client persistence -->
+
+		<dependency>
+			<groupId>com.bedatadriven.rebar</groupId>
+			<artifactId>rebar-appcache</artifactId>
+			<version>${rebarVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bedatadriven.rebar</groupId>
+			<artifactId>rebar-time</artifactId>
+			<version>${rebarVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bedatadriven.rebar</groupId>
+			<artifactId>rebar-sql</artifactId>
+			<version>${rebarVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bedatadriven.rebar</groupId>
+			<artifactId>rebar-sync</artifactId>
+			<version>${rebarVersion}</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<!-- Dependency Injection Framework -->
+
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-servlet</artifactId>
+			<version>3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>1.6</version>
 		</dependency>
 		
 		<dependency>
@@ -296,13 +348,6 @@
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
 			<version>2.4.8</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.xerial.thirdparty</groupId>
-			<artifactId>sqlitejdbc-nested</artifactId>
-			<version>3.6.2</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Apache Commons File Upload -->
@@ -472,8 +517,20 @@
 					<extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
 					<hostedWebapp>war</hostedWebapp>
 				</configuration>
-
+				
 				<executions>
+					<execution>
+						<id>i18n</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>i18n</goal>
+						</goals>
+						<configuration>
+							<logLevel>ALL</logLevel>
+							<i18nConstantsBundle>org.activityinfo.client.i18n.UIConstants</i18nConstantsBundle>
+						</configuration>
+					</execution>
+				
 					<execution>
 						<id>activityinfo-compile</id>
 						<phase>prepare-package</phase>
@@ -493,6 +550,7 @@
 							</modules>
 						</configuration>
 					</execution>
+					
 					<execution>
 						<id>gwt-clean</id>
 						<phase>clean</phase>
