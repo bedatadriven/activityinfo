@@ -18,6 +18,7 @@ import org.sigmah.server.database.hibernate.dao.AdminHibernateDAO;
 import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.dao.CountryDAO;
 import org.sigmah.server.database.hibernate.dao.DAO;
+import org.sigmah.server.database.hibernate.dao.HibernateDAOModule;
 import org.sigmah.server.database.hibernate.dao.HibernateDAOProvider;
 import org.sigmah.server.database.hibernate.dao.IndicatorDAO;
 import org.sigmah.server.database.hibernate.dao.PartnerDAO;
@@ -34,55 +35,41 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.servlet.ServletModule;
 
 /**
  * Guice module that provides Hibernate-based implementations for the DAO-layer interfaces.
  *
  * @author Alex Bertram
  */
-public class HibernateModule extends AbstractModule {
+public class HibernateModule extends ServletModule {
+
 
     @Override
-    protected void configure() {
-    	
+	protected void configureServlets() {
+
     	HibernateSessionScope sessionScope = new HibernateSessionScope();
     	bindScope(HibernateSessionScoped.class, sessionScope);
     	
     	bind(HibernateSessionScope.class).toInstance(sessionScope);
     	
+    	filter("/*").through(HibernateSessionFilter.class);
+
+    	
         configureEmf();
         configureEm();
-        configureDAOs();
+        install(new HibernateDAOModule());
         install(new TransactionModule());
-    }
+	}
 
-    protected void configureEmf() {
+	protected void configureEmf() {
         bind(EntityManagerFactory.class).toProvider(EntityManagerFactoryProvider.class).in(Singleton.class);
     }
 
     protected void configureEm() {
         bind(EntityManager.class).toProvider(EntityManagerProvider.class).in(HibernateSessionScoped.class);
     }
-    protected void configureDAOs() {
-    	bind(AdminDAO.class).to(AdminHibernateDAO.class);
-        bindDAOProxy(ActivityDAO.class);
-        bindDAOProxy(AuthenticationDAO.class);
-        bindDAOProxy(CountryDAO.class);
-        bindDAOProxy(IndicatorDAO.class);
-        bindDAOProxy(ReportDefinitionDAO.class);
-        bindDAOProxy(PartnerDAO.class);
-        bindDAOProxy(UserDatabaseDAO.class);
-        bindDAOProxy(UserPermissionDAO.class);
-        bind(UserDAO.class).to(UserDAOImpl.class);
-    }
-
-    private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {
-        HibernateDAOProvider<T> provider = new HibernateDAOProvider<T>(daoClass);
-        requestInjection(provider);
-
-        bind(daoClass).toProvider(provider);
-    }
-
+   
 
     protected static class EntityManagerFactoryProvider implements Provider<EntityManagerFactory> {
         private org.sigmah.server.util.config.DeploymentConfiguration configProperties;
@@ -99,20 +86,6 @@ public class HibernateModule extends AbstractModule {
         	config.setProperty("hibernate.hbm2ddl.auto", "");
         	
             return Persistence.createEntityManagerFactory("activityInfo", config);
-        }
-    }
-
-    protected static class EntityManagerProvider implements Provider<EntityManager> {
-        private EntityManagerFactory emf;
-
-        @Inject
-        public EntityManagerProvider(EntityManagerFactory emf) {
-            this.emf = emf;
-        }
-
-        @Override
-        public EntityManager get() {
-            return emf.createEntityManager();
         }
     }
 
