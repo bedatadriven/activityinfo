@@ -15,6 +15,9 @@ import org.activityinfo.client.offline.OfflineController.PromptConnectCallback;
 import org.activityinfo.client.offline.capability.OfflineCapabilityProfile;
 import org.activityinfo.client.util.state.CrossSessionStateProvider;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.BaseObservable;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.Observable;
@@ -26,6 +29,7 @@ import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -33,17 +37,19 @@ import com.google.inject.Singleton;
  * @author Alex Bertram
  */
 @Singleton                                               
-public class OfflineView extends Button implements OfflineController.View {
+public class OfflineView implements OfflineController.View {
 
 	private CrossSessionStateProvider stateProvider;
     private ProgressDialog progressDialog;
     private ConnectionDialog connectionDialog;
 
+    private BaseObservable button = new BaseObservable();
     private Menu menu;
     private MenuItem syncNowButton;
     private MenuItem toggleModeButton;
     private MenuItem reinstallOffline;
     
+    private Label label;
 
     @Inject
     public OfflineView(CrossSessionStateProvider stateProvider, OfflineCapabilityProfile profile) {
@@ -51,7 +57,8 @@ public class OfflineView extends Button implements OfflineController.View {
         syncNowButton = new MenuItem(I18N.CONSTANTS.syncNow(), IconImageBundle.ICONS.sync());
         toggleModeButton = new MenuItem(I18N.CONSTANTS.switchToOnline());
         reinstallOffline = new MenuItem(I18N.CONSTANTS.reinstallOfflineMode());
-
+        label = new Label();
+        
         menu = new Menu();
         menu.add(syncNowButton);
         menu.add(toggleModeButton);
@@ -61,7 +68,11 @@ public class OfflineView extends Button implements OfflineController.View {
 
     @Override
     public Observable getButton() {
-        return this;
+        return button;
+    }
+    
+    public Label getLabel() {
+    	return label;
     }
 
     @Override
@@ -92,14 +103,23 @@ public class OfflineView extends Button implements OfflineController.View {
         this.setText(I18N.CONSTANTS.installingOffline());
     }
 
-    @Override
+    private void setIcon(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
     public void setButtonTextToLastSync(Date lastSyncTime) {
         this.setIcon(IconImageBundle.ICONS.offline());
         this.setText(I18N.MESSAGES.lastSynced(DateTimeFormat.getShortDateTimeFormat().format(lastSyncTime)));
         toggleModeButton.setText(I18N.CONSTANTS.switchToOnline());
     }
 
-    @Override
+    private void setText(String value) {
+    	this.label.setText(value);
+	}
+
+	@Override
     public void setButtonTextToSyncing() {
         this.setIcon(IconImageBundle.ICONS.syncing());
         this.setText(I18N.CONSTANTS.synchronizing());
@@ -138,8 +158,6 @@ public class OfflineView extends Button implements OfflineController.View {
         progressDialog.getProgressBar().updateProgress(percentComplete / 100, taskDescription);
     }
     
-    
-
     @Override
 	public void showConnectionProblem(int attempt, int retryDelay) {
     	assert progressDialog != null;
@@ -148,12 +166,12 @@ public class OfflineView extends Button implements OfflineController.View {
 
 	@Override
 	public void enableMenu() {
-        setMenu(menu);
+       // setMenu(menu);
     }
 
     @Override
 	public void disableMenu() {
-        setMenu(null);
+       // setMenu(null);
     }
 
 	@Override
@@ -248,5 +266,9 @@ public class OfflineView extends Button implements OfflineController.View {
 	@Override
 	public void showSynchronizerConnectionProblem() {
 		MessageBox.alert(I18N.CONSTANTS.syncFailed(), I18N.CONSTANTS.synchronizerConnectionProblem(), null);
+	}
+
+	public void clickButton() {
+		button.fireEvent(Events.Select, new BaseEvent(Events.Select));
 	}
 }

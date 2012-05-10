@@ -2,6 +2,7 @@
 	<inherits name='com.google.gwt.user.User' />	
 	<inherits name="org.activityinfo.ActivityInfoCore"/>
 	<inherits name="org.activityinfo.login.LoginApi"/>
+	
     <entry-point class="org.activityinfo.chrome.client.ChromeAppEntryPoint"/>
 
 	<source path='client' />

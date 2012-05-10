@@ -4,10 +4,10 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activityinfo.login.client.AuthenticationException;
-import org.activityinfo.login.client.PasswordExpiredException;
+import org.activityinfo.login.shared.AuthenticationException;
 import org.activityinfo.login.shared.LoginException;
 import org.activityinfo.login.shared.LoginService;
+import org.activityinfo.login.shared.PasswordExpiredException;
 import org.activityinfo.server.authentication.AuthCookieUtil;
 import org.activityinfo.server.authentication.Authenticator;
 import org.activityinfo.server.database.hibernate.dao.AuthenticationDAO;

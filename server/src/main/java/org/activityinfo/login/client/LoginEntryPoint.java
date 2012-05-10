@@ -1,7 +1,9 @@
 package org.activityinfo.login.client;
 
+import org.activityinfo.login.shared.AuthenticationException;
 import org.activityinfo.login.shared.LoginService;
 import org.activityinfo.login.shared.LoginServiceAsync;
+import org.activityinfo.login.shared.PasswordExpiredException;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.gwt.core.client.EntryPoint;

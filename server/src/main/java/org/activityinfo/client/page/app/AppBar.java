@@ -2,6 +2,7 @@ package org.activityinfo.client.page.app;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.NavigationEvent;
+import org.activityinfo.client.offline.ui.OfflineView;
 import org.activityinfo.client.page.NavigationHandler;
 import org.activityinfo.client.page.search.SearchPageState;
 
@@ -32,6 +33,7 @@ public class AppBar extends Composite  {
 	@UiField
 	Label searchButton;
 
+	OfflineView offlineView;
 	
 	private SettingsPopup settingsPopup;
 
@@ -43,16 +45,11 @@ public class AppBar extends Composite  {
 	}
 	
 	@Inject
-	public AppBar(EventBus eventBus) {
+	public AppBar(EventBus eventBus, OfflineView offlineView) {
 		this.eventBus = eventBus;
+		this.offlineView = offlineView;
 		initWidget(uiBinder.createAndBindUi(this));
 	}
-
-
-	public AppBar(String firstName) {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-
 
 	public SectionTabStrip getSectionTabStrip() {
 		return sectionTabStrip;
@@ -66,7 +63,7 @@ public class AppBar extends Composite  {
 	@UiHandler("settingsButton")
 	void handleSettingsClick(ClickEvent e) {
 		if(settingsPopup == null) {
-			settingsPopup = new SettingsPopup();
+			settingsPopup = new SettingsPopup(offlineView);
 		}
 		settingsPopup.setPopupPosition(Window.getClientWidth() - SettingsPopup.WIDTH, HEIGHT-3);
 		settingsPopup.show();

@@ -3,6 +3,7 @@ package org.activityinfo.client.page.app;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.offline.ui.OfflineView;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.appcache.client.AppCache;
@@ -23,7 +24,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 
 public class SettingsPopup extends PopupPanel {
 
@@ -57,10 +57,17 @@ public class SettingsPopup extends PopupPanel {
 	@UiField
 	Label logoutLink;
 	
+	@UiField(provided = true)
+	Label offlineLabel;
+	
 	Timer appCacheTimer;
 
+	private OfflineView offlineView;
+
 	
-	public SettingsPopup() {
+	public SettingsPopup(OfflineView offlineView) {
+		this.offlineView = offlineView;
+		this.offlineLabel = this.offlineView.getLabel();
 		
 		setWidget(uiBinder.createAndBindUi(this));
 		setAutoHideEnabled(true);
@@ -182,6 +189,11 @@ public class SettingsPopup extends PopupPanel {
 	@UiHandler("logoutLink")
 	public void onLogoutClicked(ClickEvent e) {
 		SessionUtil.logout();
+	}
+	
+	@UiHandler("offlineLabel") 
+	public void onOfflineClicked(ClickEvent e) {
+		offlineView.clickButton();
 	}
 
 }
