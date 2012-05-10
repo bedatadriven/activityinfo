@@ -78,21 +78,6 @@
 			<scope>test</scope>
 		</dependency>
 
-
-		<!-- Dependency Injection Framework -->
-
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>3.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-servlet</artifactId>
-			<version>3.0</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.google.gwt.inject</groupId>
 			<artifactId>gin</artifactId>
@@ -235,11 +220,6 @@
 			<classifier>gwt23</classifier>
 		</dependency>
 		<dependency>
-			<groupId>com.ebessette.maps</groupId>
-			<artifactId>overlaymanager</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.gwt.google-apis</groupId>
 			<artifactId>gwt-gears</artifactId>
 			<version>1.2.1</version>
@@ -256,12 +236,7 @@
 			<artifactId>guava</artifactId>
 			<version>r09</version>
 		</dependency>
-		<dependency>
-			<groupId>com.teklabs.gwt-i18n-server</groupId>
-			<artifactId>gwt-i18n-server</artifactId>
-			<version>0.7-bedatadriven2</version>
-		</dependency>
-
+		
 		<!-- Rebar- client persistence -->
 
 		<dependency>
@@ -285,11 +260,6 @@
 			<version>${rebarVersion}</version>
 		</dependency>
 	
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
-		</dependency>
 		
 		<!-- Dependency Injection Framework -->
 
@@ -305,11 +275,6 @@
 			<version>3.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.gwt.inject</groupId>
-			<artifactId>gin</artifactId>
-			<version>1.5.0</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -329,11 +294,7 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.3</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>1.6</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>gson-gwt</groupId>
 			<artifactId>gson-gwt</artifactId>
