@@ -1,11 +1,11 @@
 package org.sigmah.server.report.generator.map.cluster;
 
+import org.activityinfo.shared.report.model.clustering.AdministrativeLevelClustering;
+import org.activityinfo.shared.report.model.clustering.AutomaticClustering;
+import org.activityinfo.shared.report.model.clustering.Clustering;
+import org.activityinfo.shared.report.model.clustering.NoClustering;
 import org.sigmah.server.report.generator.map.RadiiCalculator;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
-import org.sigmah.shared.report.model.clustering.AdministrativeLevelClustering;
-import org.sigmah.shared.report.model.clustering.AutomaticClustering;
-import org.sigmah.shared.report.model.clustering.Clustering;
-import org.sigmah.shared.report.model.clustering.NoClustering;
 
 public final class ClustererFactory {
 	

@@ -11,7 +11,7 @@ import org.sigmah.server.database.hibernate.entity.UserDatabase;
 
 /**
  * Data Access Object for {@link UserDatabase} domain classes. Implemented automatically
- * by {@link org.sigmah.server.database.hibernate.dao.DAOInvocationHandler proxy}.
+ * by {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler proxy}.
  */
 public interface UserDatabaseDAO extends DAO<UserDatabase, Integer> {
 

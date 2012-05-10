@@ -8,10 +8,10 @@ package org.sigmah.server.report.generator.map;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.util.mapping.Tile;
-import org.sigmah.shared.util.mapping.TileMath;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.Point;
+import org.activityinfo.shared.util.mapping.Tile;
+import org.activityinfo.shared.util.mapping.TileMath;
 
 public class TiledMap {
 

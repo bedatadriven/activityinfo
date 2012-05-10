@@ -7,6 +7,11 @@ package org.sigmah.server.command.handler;
 
 import java.util.Date;
 
+import org.activityinfo.shared.command.UpdateUserPermissions;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.dto.UserPermissionDTO;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.apache.log4j.Logger;
 import org.sigmah.server.database.hibernate.dao.PartnerDAO;
 import org.sigmah.server.database.hibernate.dao.UserDAO;
@@ -18,17 +23,12 @@ import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
 import org.sigmah.server.mail.InvitationMessage;
 import org.sigmah.server.mail.MailSender;
-import org.sigmah.shared.command.UpdateUserPermissions;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dto.UserPermissionDTO;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.IllegalAccessCommandException;
 
 import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.UpdateUserPermissions
+ * @see org.activityinfo.shared.command.UpdateUserPermissions
  */
 public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPermissions> {
 

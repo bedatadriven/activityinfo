@@ -5,9 +5,9 @@
 
 package org.sigmah.server.report.generator.map;
 
+import org.activityinfo.shared.report.content.Point;
 import org.junit.Assert;
 import org.junit.Test;
-import org.sigmah.shared.report.content.Point;
 
 public class CircleMathTest {
     private static final double DELTA = 0.001;

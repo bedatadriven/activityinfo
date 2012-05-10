@@ -2,11 +2,11 @@ package org.sigmah.server.command;
 
 import java.util.GregorianCalendar;
 
+import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.ProjectDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 import org.junit.Assert;
-import org.sigmah.client.offline.command.handler.KeyGenerator;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.ProjectDTO;
-import org.sigmah.shared.dto.SiteDTO;
 
 public class SiteDTOs {
 

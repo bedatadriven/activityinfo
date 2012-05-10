@@ -4,7 +4,7 @@
   -->
 
 <module rename-to="ActivityInfo">
-    <inherits name="org.sigmah.ActivityInfo"/>
+    <inherits name="org.activityinfo.ActivityInfo"/>
 	
 	<!-- work-around to eliminate "default locale" permutations -->
 	<!-- http://www.google.com/url?sa=D&q=http://code.google.com/p/google-web-toolkit/issues/detail%3Fid%3D5769%23c1 -->
@@ -18,7 +18,7 @@
     <extend-property name="log_level" values="ERROR" />
     <set-property name="log_level" value="ERROR"/>
     
-    <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
+    <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
 
 <!-- 
      <extend-property name="log_level" values="TRACE" /> 

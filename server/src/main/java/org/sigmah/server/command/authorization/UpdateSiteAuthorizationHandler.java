@@ -1,8 +1,8 @@
 package org.sigmah.server.command.authorization;
 
-import org.sigmah.shared.command.UpdateSite;
-import org.sigmah.shared.command.handler.AuthorizationHandler;
-import org.sigmah.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.UpdateSite;
+import org.activityinfo.shared.command.handler.AuthorizationHandler;
+import org.activityinfo.shared.command.handler.ExecutionContext;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

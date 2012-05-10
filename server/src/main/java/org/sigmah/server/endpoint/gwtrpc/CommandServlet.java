@@ -10,19 +10,19 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.RemoteCommandService;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.dto.AnonymousUser;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.apache.log4j.Logger;
 import org.sigmah.server.authentication.ServerSideAuthProvider;
 import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.RemoteCommandService;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.dto.AnonymousUser;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.UnexpectedCommandException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -34,12 +34,12 @@ import com.google.inject.Singleton;
  * Process command objects from the client and returns CommandResults.
  * <p/>
  * This servlet is at the heart of the command execution pipeline, but delegates all
- * logic processing to the {@link org.sigmah.server.command.handler.CommandHandler} corresponding
- * to the given {@link org.sigmah.shared.command.Command}s.
+ * logic processing to the {@link org.activityinfo.server.command.handler.CommandHandler} corresponding
+ * to the given {@link org.activityinfo.shared.command.Command}s.
  * <p/>
- * CommandHandlers are loaded based on name from the org.sigmah.server.command.handler package.
+ * CommandHandlers are loaded based on name from the org.activityinfo.server.command.handler package.
  * <p/>
- * E.g. UpdateEntity => org.sigmah.server.command.handler.UpdateEntityHandler
+ * E.g. UpdateEntity => org.activityinfo.server.command.handler.UpdateEntityHandler
  */
 @Singleton
 public class CommandServlet extends RemoteServiceServlet implements RemoteCommandService {

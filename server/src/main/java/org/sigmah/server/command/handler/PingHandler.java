@@ -1,10 +1,10 @@
 package org.sigmah.server.command.handler;
 
+import org.activityinfo.shared.command.Ping;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.Ping;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.exception.CommandException;
 
 public class PingHandler implements CommandHandler<Ping> {
 

@@ -15,26 +15,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
+
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.GetSites;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.DimensionType;
 import org.sigmah.server.authentication.BasicAuthentication;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.html.HtmlWriter;
 import org.sigmah.server.util.xml.XmlBuilder;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.DimensionType;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import org.sigmah.shared.command.Filter;
 
 /**
  * Serves a KML (Google Earth) file containing the locations of all activities

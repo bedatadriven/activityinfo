@@ -4,16 +4,16 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.command.RemoveProject;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
+import org.activityinfo.shared.exception.ProjectHasSitesException;
 import org.sigmah.server.database.hibernate.entity.Project;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
-import org.sigmah.shared.command.RemoveProject;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.IllegalAccessCommandException;
-import org.sigmah.shared.exception.ProjectHasSitesException;
 
 import com.google.inject.Inject;
 

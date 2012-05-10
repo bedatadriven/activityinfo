@@ -12,12 +12,12 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.apache.poi.hslf.model.PPGraphics2D;
 import org.apache.poi.hslf.model.ShapeGroup;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.sigmah.server.report.renderer.ChartRendererJC;
-import org.sigmah.shared.report.model.PivotChartReportElement;
 
 /**
  * @author Alex Bertram

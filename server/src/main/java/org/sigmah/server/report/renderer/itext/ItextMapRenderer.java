@@ -9,16 +9,16 @@ package org.sigmah.server.report.renderer.itext;
 import java.awt.Color;
 import java.io.IOException;
 
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.report.content.MapLayerLegend;
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.layers.MapLayer;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.image.ImageCreator;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
 import org.sigmah.server.util.ColorUtil;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.report.content.MapLayerLegend;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.layers.MapLayer;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer;
-import org.sigmah.shared.report.model.layers.PiechartMapLayer.Slice;
 
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
@@ -36,7 +36,7 @@ import com.lowagie.text.Table;
 
 
 /**
- * Renders a {@link org.sigmah.shared.report.model.MapReportElement MapElement} into an iText
+ * Renders a {@link org.activityinfo.shared.report.model.MapReportElement MapElement} into an iText
  * document
  *
  */

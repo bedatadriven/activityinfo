@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.dto.LocationTypeDTO;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.sigmah.server.database.hibernate.entity.Activity;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.Attribute;
@@ -22,8 +24,6 @@ import org.sigmah.server.database.hibernate.entity.Project;
 import org.sigmah.server.database.hibernate.entity.Target;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
-import org.sigmah.shared.dto.LocationTypeDTO;
-import org.sigmah.shared.exception.IllegalAccessCommandException;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 

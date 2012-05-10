@@ -1,8 +1,8 @@
 package org.sigmah.server.database.dao;
 
+import org.activityinfo.shared.util.Collector;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.util.Collector;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;

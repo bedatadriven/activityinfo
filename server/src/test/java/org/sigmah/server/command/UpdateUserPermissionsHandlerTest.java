@@ -10,6 +10,13 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import org.activityinfo.shared.command.GetUsers;
+import org.activityinfo.shared.command.UpdateUserPermissions;
+import org.activityinfo.shared.command.result.UserResult;
+import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.UserPermissionDTO;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,13 +35,6 @@ import org.sigmah.server.database.hibernate.entity.UserPermission;
 import org.sigmah.server.mail.InvitationMessage;
 import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.mail.MailSenderStubModule;
-import org.sigmah.shared.command.GetUsers;
-import org.sigmah.shared.command.UpdateUserPermissions;
-import org.sigmah.shared.command.result.UserResult;
-import org.sigmah.shared.dto.PartnerDTO;
-import org.sigmah.shared.dto.UserPermissionDTO;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.IllegalAccessCommandException;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 

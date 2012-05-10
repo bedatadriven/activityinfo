@@ -1,11 +1,11 @@
 package org.sigmah.server.command;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

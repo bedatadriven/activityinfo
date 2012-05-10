@@ -10,6 +10,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.Point;
+import org.activityinfo.shared.report.model.MapSymbol;
+import org.activityinfo.shared.report.model.PointValue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
@@ -17,11 +22,6 @@ import org.sigmah.server.report.generator.map.cluster.genetic.BubbleFitnessFunct
 import org.sigmah.server.report.generator.map.cluster.genetic.GeneticSolver;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
 import org.sigmah.server.report.generator.map.cluster.genetic.UpperBoundsCalculator;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.MapSymbol;
-import org.sigmah.shared.report.model.PointValue;
 
 /*
 * Real example that didn't work.

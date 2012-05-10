@@ -13,6 +13,8 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.activityinfo.shared.command.GetSyncRegionUpdates;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.json.JSONException;
 import org.sigmah.server.database.hibernate.dao.HibernateDAOProvider;
 import org.sigmah.server.database.hibernate.dao.UserDatabaseDAO;
@@ -30,8 +32,6 @@ import org.sigmah.server.database.hibernate.entity.Project;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
-import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;

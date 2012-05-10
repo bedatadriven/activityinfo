@@ -10,8 +10,8 @@ import java.io.File;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.sigmah.client.page.report.json.ReportJsonFactory;
-import org.sigmah.client.page.report.json.ReportSerializer;
+import org.activityinfo.client.page.report.json.ReportJsonFactory;
+import org.activityinfo.client.page.report.json.ReportSerializer;
 import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.mail.MailSenderImpl;
 import org.sigmah.server.report.generator.MapIconPath;

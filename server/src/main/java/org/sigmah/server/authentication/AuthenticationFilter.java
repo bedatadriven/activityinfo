@@ -14,9 +14,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.i18n.LocaleHelper;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;

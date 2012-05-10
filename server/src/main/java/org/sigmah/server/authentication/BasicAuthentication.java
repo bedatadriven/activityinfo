@@ -3,10 +3,11 @@ package org.sigmah.server.authentication;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.persistence.NoResultException;
+
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.apache.commons.codec.binary.Base64;
 import org.sigmah.server.database.hibernate.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.auth.AuthenticatedUser;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 

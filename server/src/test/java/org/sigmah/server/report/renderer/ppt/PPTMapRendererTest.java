@@ -5,13 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.activityinfo.shared.map.GoogleBaseMap;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.model.MapReportElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
-import org.sigmah.shared.map.GoogleBaseMap;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.model.MapReportElement;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

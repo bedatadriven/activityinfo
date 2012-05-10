@@ -5,10 +5,10 @@
 
 package org.sigmah.server.command.handler;
 
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
 
 /**
  * Command executors are the server half of {@link Command}s defined in the
@@ -32,7 +32,7 @@ public interface CommandHandler<CommandT extends Command> {
      * @param <T> Result type
      * @param cmd Command received from the server
      * @return The result of command if successful. If the command is not successful, an exception should be thrown.
-     * @throws org.sigmah.shared.exception.CommandException
+     * @throws org.activityinfo.shared.exception.CommandException
      *
      */
     public CommandResult execute(CommandT cmd, User user) throws CommandException;

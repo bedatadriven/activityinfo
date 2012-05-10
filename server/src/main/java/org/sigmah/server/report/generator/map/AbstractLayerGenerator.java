@@ -2,7 +2,7 @@ package org.sigmah.server.report.generator.map;
 
 import java.util.List;
 
-import org.sigmah.shared.dto.SiteDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 public abstract class AbstractLayerGenerator implements LayerGenerator {
 

@@ -4,17 +4,17 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.command.AddTarget;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.dto.TargetDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.Partner;
 import org.sigmah.server.database.hibernate.entity.Project;
 import org.sigmah.server.database.hibernate.entity.Target;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
-import org.sigmah.shared.command.AddTarget;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.TargetDTO;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 

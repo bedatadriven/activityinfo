@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.activityinfo.shared.report.content.Point;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
-import org.sigmah.shared.report.content.Point;
 
 
 /**

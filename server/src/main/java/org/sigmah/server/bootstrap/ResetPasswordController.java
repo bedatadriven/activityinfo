@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.exception.InvalidLoginException;
 import org.sigmah.server.authentication.SecureTokenGenerator;
 import org.sigmah.server.bootstrap.model.ResetPasswordPageModel;
 import org.sigmah.server.database.hibernate.dao.Transactional;
@@ -19,7 +20,6 @@ import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.mail.MailSender;
 import org.sigmah.server.mail.ResetPasswordMessage;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.exception.InvalidLoginException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

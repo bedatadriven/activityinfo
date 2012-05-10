@@ -9,16 +9,16 @@ import java.util.Collection;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.command.Delete;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.GetSites;
+import org.activityinfo.shared.command.result.PagingResult;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.Delete;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.result.PagingResult;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 import com.extjs.gxt.ui.client.data.ModelData;

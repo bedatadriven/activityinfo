@@ -72,7 +72,7 @@ public class MailSenderImpl implements MailSender {
     }
     
     private ResourceBundle getResourceBundle(MailMessage message) {
-        return ResourceBundle.getBundle("org.sigmah.server.mail.MailMessages", 
+        return ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages", 
         		LocaleHelper.getLocaleObject(message.getRecipient()));
     }
 

@@ -13,18 +13,18 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.activityinfo.shared.report.model.AdminDimension;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.EmailDelivery;
+import org.activityinfo.shared.report.model.ImageReportElement;
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.PivotChartReportElement;
+import org.activityinfo.shared.report.model.PivotTableReportElement;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.TableElement;
+import org.activityinfo.shared.report.model.TextReportElement;
 import org.junit.Assert;
 import org.junit.Test;
-import org.sigmah.shared.report.model.AdminDimension;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.ImageReportElement;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.PivotChartReportElement;
-import org.sigmah.shared.report.model.PivotTableReportElement;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.EmailDelivery;
-import org.sigmah.shared.report.model.TableElement;
-import org.sigmah.shared.report.model.TextReportElement;
 
 /**
  * @author Alex Bertram

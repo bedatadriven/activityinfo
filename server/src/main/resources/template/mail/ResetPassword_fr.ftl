@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.sigmah.server.mail.Invitation" -->
+<#-- @ftlvariable name="" type="org.activityinfo.server.mail.Invitation" -->
 Bonjour ${user.name},
 
 Quelqu'un (probablement vous) a demandé pour réinitialiser votre mot de passe ActivityInfo.

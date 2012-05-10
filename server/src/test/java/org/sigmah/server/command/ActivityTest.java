@@ -10,21 +10,21 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.activityinfo.shared.command.BatchCommand;
+import org.activityinfo.shared.command.CreateEntity;
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.UpdateEntity;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.LocationTypeDTO;
+import org.activityinfo.shared.dto.Published;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.exception.CommandException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.BatchCommand;
-import org.sigmah.shared.command.CreateEntity;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.command.UpdateEntity;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.LocationTypeDTO;
-import org.sigmah.shared.dto.Published;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
-import org.sigmah.shared.exception.CommandException;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

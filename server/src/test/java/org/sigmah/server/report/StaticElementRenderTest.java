@@ -11,14 +11,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.activityinfo.shared.report.content.FilterDescription;
+import org.activityinfo.shared.report.content.ReportContent;
+import org.activityinfo.shared.report.model.Report;
 import org.junit.Before;
 import org.junit.Test;
 import org.sigmah.server.report.renderer.itext.HtmlReportRenderer;
 import org.sigmah.server.report.renderer.itext.PdfReportRenderer;
 import org.sigmah.server.report.renderer.itext.RtfReportRenderer;
-import org.sigmah.shared.report.content.FilterDescription;
-import org.sigmah.shared.report.content.ReportContent;
-import org.sigmah.shared.report.model.Report;
 
 
 public class StaticElementRenderTest{

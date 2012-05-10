@@ -8,21 +8,21 @@ package org.sigmah.server.report.generator.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.IconLayerLegend;
+import org.activityinfo.shared.report.content.IconMapMarker;
+import org.activityinfo.shared.report.content.MapContent;
+import org.activityinfo.shared.report.content.Point;
+import org.activityinfo.shared.report.model.MapIcon;
+import org.activityinfo.shared.report.model.PointValue;
+import org.activityinfo.shared.report.model.layers.IconMapLayer;
+import org.activityinfo.shared.util.mapping.Extents;
 import org.sigmah.server.report.generator.map.cluster.Cluster;
 import org.sigmah.server.report.generator.map.cluster.Clusterer;
 import org.sigmah.server.report.generator.map.cluster.ClustererFactory;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.IntersectionCalculator;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph.Node;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.IconLayerLegend;
-import org.sigmah.shared.report.content.IconMapMarker;
-import org.sigmah.shared.report.content.MapContent;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.MapIcon;
-import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.report.model.layers.IconMapLayer;
-import org.sigmah.shared.util.mapping.Extents;
 
 
 public class IconLayerGenerator 

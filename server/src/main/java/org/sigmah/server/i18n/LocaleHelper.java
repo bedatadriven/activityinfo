@@ -2,8 +2,8 @@ package org.sigmah.server.i18n;
 
 import java.util.Locale;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 /**
  * Static Locale helper methods.

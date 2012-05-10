@@ -8,18 +8,18 @@ package org.sigmah.server.report.generator;
 import java.util.Collections;
 import java.util.Map;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetSites;
+import org.activityinfo.shared.command.result.SiteResult;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.TableContent;
+import org.activityinfo.shared.report.content.TableData;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.TableColumn;
+import org.activityinfo.shared.report.model.TableElement;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.TableContent;
-import org.sigmah.shared.report.content.TableData;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.TableColumn;
-import org.sigmah.shared.report.model.TableElement;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;

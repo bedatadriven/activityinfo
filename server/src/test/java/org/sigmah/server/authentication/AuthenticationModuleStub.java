@@ -1,6 +1,6 @@
 package org.sigmah.server.authentication;
 
-import org.sigmah.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.inject.AbstractModule;
 

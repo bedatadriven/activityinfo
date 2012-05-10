@@ -7,19 +7,19 @@ package org.sigmah.server.report.generator;
 
 import java.util.Collections;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.report.content.Content;
+import org.activityinfo.shared.report.content.ReportContent;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.PivotChartReportElement;
+import org.activityinfo.shared.report.model.PivotTableReportElement;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.ReportElement;
+import org.activityinfo.shared.report.model.TableElement;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.report.content.Content;
-import org.sigmah.shared.report.content.ReportContent;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.MapReportElement;
-import org.sigmah.shared.report.model.PivotChartReportElement;
-import org.sigmah.shared.report.model.PivotTableReportElement;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.ReportElement;
-import org.sigmah.shared.report.model.TableElement;
 
 import com.google.inject.Inject;
 

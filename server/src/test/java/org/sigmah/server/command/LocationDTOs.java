@@ -1,7 +1,7 @@
 package org.sigmah.server.command;
 
-import org.sigmah.client.offline.command.handler.KeyGenerator;
-import org.sigmah.shared.dto.LocationDTO;
+import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.shared.dto.LocationDTO;
 
 public class LocationDTOs {
 	public static LocationDTO newLocation() {

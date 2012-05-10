@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.Set;
 
 
+import org.activityinfo.shared.command.GetSyncRegions;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.SyncRegion;
+import org.activityinfo.shared.command.result.SyncRegions;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.database.hibernate.dao.UserDatabaseDAO;
 import org.sigmah.server.database.hibernate.entity.AdminLevel;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
-import org.sigmah.shared.command.GetSyncRegions;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.SyncRegion;
-import org.sigmah.shared.command.result.SyncRegions;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 

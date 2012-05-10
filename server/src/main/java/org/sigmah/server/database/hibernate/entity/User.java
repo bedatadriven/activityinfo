@@ -16,8 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.mindrot.bcrypt.BCrypt;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 
 /**

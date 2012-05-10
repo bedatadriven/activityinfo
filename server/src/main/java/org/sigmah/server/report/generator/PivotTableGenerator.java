@@ -6,14 +6,14 @@
 package org.sigmah.server.report.generator;
 
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.report.content.PivotContent;
+import org.activityinfo.shared.report.content.PivotTableData;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.PivotTableReportElement;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.i18n.LocaleHelper;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.report.content.PivotContent;
-import org.sigmah.shared.report.content.PivotTableData;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.PivotTableReportElement;
 
 import com.google.inject.Inject;
 

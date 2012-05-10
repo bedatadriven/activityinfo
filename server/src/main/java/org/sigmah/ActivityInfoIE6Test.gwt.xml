@@ -5,7 +5,7 @@
 
 <module rename-to="ActivityInfo">
 
-    <inherits name="org.sigmah.ActivityInfo"/>
+    <inherits name="org.activityinfo.ActivityInfo"/>
 
 
     <!-- ie6, gecko, gecko1_8, safari or opera -->
@@ -16,7 +16,7 @@
     <set-property name="log_level" value="TRACE"/>
     <set-property name="log_DivLogger" value="ENABLED" />
 
-    <entry-point class="org.sigmah.client.ActivityInfoEntryPoint"/>
+    <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
 
 </module>
 

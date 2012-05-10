@@ -7,15 +7,15 @@ package org.sigmah.server.command;
 
 import java.util.ArrayList;
 
+import org.activityinfo.shared.command.GetMonthlyReports;
+import org.activityinfo.shared.command.Month;
+import org.activityinfo.shared.command.UpdateMonthlyReports;
+import org.activityinfo.shared.command.result.MonthlyReportResult;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.GetMonthlyReports;
-import org.sigmah.shared.command.Month;
-import org.sigmah.shared.command.UpdateMonthlyReports;
-import org.sigmah.shared.command.result.MonthlyReportResult;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

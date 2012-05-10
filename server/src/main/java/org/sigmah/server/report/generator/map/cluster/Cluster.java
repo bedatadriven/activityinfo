@@ -4,10 +4,10 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.content.Point;
+import org.activityinfo.shared.report.model.PointValue;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.content.Point;
-import org.sigmah.shared.report.model.PointValue;
 
 /**
  * Represents a collection of nodes that

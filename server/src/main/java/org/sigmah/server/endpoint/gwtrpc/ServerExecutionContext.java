@@ -1,18 +1,18 @@
 package org.sigmah.server.endpoint.gwtrpc;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.MutatingCommand;
+import org.activityinfo.shared.command.handler.AuthorizationHandler;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.UnexpectedCommandException;
+import org.activityinfo.shared.util.Collector;
 import org.sigmah.server.command.handler.CommandHandler;
 import org.sigmah.server.command.handler.HandlerUtil;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.auth.AuthenticatedUser;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.MutatingCommand;
-import org.sigmah.shared.command.handler.AuthorizationHandler;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.UnexpectedCommandException;
-import org.sigmah.shared.util.Collector;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;

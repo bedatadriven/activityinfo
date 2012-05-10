@@ -22,10 +22,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.sigmah.server.database.hibernate.entity.Authentication;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.google.inject.Provider;
 

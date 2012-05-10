@@ -11,26 +11,26 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GenerateElement;
+import org.activityinfo.shared.command.RenderElement;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.RenderResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.UnexpectedCommandException;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Report;
 import org.sigmah.server.authentication.SecureTokenGenerator;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.command.GenerateElement;
-import org.sigmah.shared.command.RenderElement;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.RenderResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.UnexpectedCommandException;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Report;
 
 import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.RenderElement
+ * @see org.activityinfo.shared.command.RenderElement
  */
 public class RenderElementHandler implements CommandHandler<RenderElement> {
 

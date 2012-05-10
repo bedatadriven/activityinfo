@@ -8,6 +8,11 @@ package org.sigmah.server.servlet;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.DTOs;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
@@ -15,11 +20,6 @@ import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.endpoint.export.DbUserExport;
 import org.sigmah.server.endpoint.export.SiteExporter;
-import org.sigmah.shared.command.GetSchema;
-import org.sigmah.shared.dto.ActivityDTO;
-import org.sigmah.shared.dto.DTOs;
-import org.sigmah.shared.dto.SchemaDTO;
-import org.sigmah.shared.dto.UserDatabaseDTO;
 import org.sigmah.test.InjectionSupport;
 
 

@@ -3,9 +3,9 @@ package org.sigmah.server.report.renderer.itext;
 
 import java.awt.Color;
 
+import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.sigmah.server.report.renderer.ChartRendererJC;
 import org.sigmah.server.report.renderer.image.ImageCreator;
-import org.sigmah.shared.report.model.PivotChartReportElement;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;

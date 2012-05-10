@@ -3,17 +3,17 @@ package org.sigmah.server.endpoint.gwtrpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.RemoteCommandService;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.InvalidAuthTokenException;
+import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.apache.log4j.Logger;
 import org.sigmah.server.database.dao.UserDAO;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.command.Command;
-import org.sigmah.shared.command.RemoteCommandService;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.InvalidAuthTokenException;
-import org.sigmah.shared.exception.UnexpectedCommandException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;

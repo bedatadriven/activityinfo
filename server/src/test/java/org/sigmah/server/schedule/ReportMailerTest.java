@@ -8,14 +8,14 @@ package org.sigmah.server.schedule;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.EmailDelivery;
+import org.activityinfo.shared.report.model.Report;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.database.hibernate.entity.ReportDefinition;
 import org.sigmah.server.database.hibernate.entity.ReportSubscription;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.report.model.EmailDelivery;
 
 /**
  * @author Alex Bertram

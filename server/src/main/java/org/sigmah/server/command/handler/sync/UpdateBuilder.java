@@ -5,10 +5,10 @@
 
 package org.sigmah.server.command.handler.sync;
 
+import org.activityinfo.shared.command.GetSyncRegionUpdates;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.json.JSONException;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
 
 public interface UpdateBuilder {
 

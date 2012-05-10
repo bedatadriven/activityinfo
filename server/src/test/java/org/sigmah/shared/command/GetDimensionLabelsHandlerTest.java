@@ -5,14 +5,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetDimensionLabels;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.DimensionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.command.CommandTestCase2;
 import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.TestDatabaseModule;
-import org.sigmah.shared.command.GetDimensionLabels;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.Modules;
 

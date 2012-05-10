@@ -8,13 +8,13 @@ package org.sigmah.server.report.generator;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
 
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.util.date.DateUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.date.DateUtilCalendarImpl;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Report;
-import org.sigmah.shared.util.date.DateUtil;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

@@ -11,13 +11,13 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetAdminEntities;
+import org.activityinfo.shared.command.result.AdminEntityResult;
+import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.command.GetAdminEntities;
-import org.sigmah.shared.command.result.AdminEntityResult;
-import org.sigmah.shared.dto.AdminEntityDTO;
 import org.sigmah.test.InjectionSupport;
 
 @RunWith(InjectionSupport.class)

@@ -7,7 +7,7 @@ package org.sigmah.server.endpoint.jsonrpc.serde;
 
 import java.lang.reflect.Type;
 
-import org.sigmah.shared.command.result.SyncRegionUpdate;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

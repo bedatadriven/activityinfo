@@ -2,6 +2,11 @@ package org.sigmah.server.command.handler;
 
 import java.util.Map;
 import javax.persistence.EntityManager;
+
+import org.activityinfo.shared.command.UpdateTargetValue;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sigmah.server.command.handler.crud.PropertyMap;
@@ -10,10 +15,6 @@ import org.sigmah.server.database.hibernate.entity.Target;
 import org.sigmah.server.database.hibernate.entity.TargetValue;
 import org.sigmah.server.database.hibernate.entity.TargetValueId;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.UpdateTargetValue;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.VoidResult;
-import org.sigmah.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

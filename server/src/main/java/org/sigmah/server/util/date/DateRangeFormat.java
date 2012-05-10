@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.sigmah.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DateRange;
 
 public final class DateRangeFormat {
 	private DateFormat medium;

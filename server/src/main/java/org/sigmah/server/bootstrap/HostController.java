@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.sigmah.server.authentication.AuthCookieUtil;
 import org.sigmah.server.bootstrap.exception.NoValidAuthentication;
 import org.sigmah.server.bootstrap.model.HostPageModel;
@@ -18,7 +19,6 @@ import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.dao.Transactional;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.util.logging.LogException;
-import org.sigmah.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;

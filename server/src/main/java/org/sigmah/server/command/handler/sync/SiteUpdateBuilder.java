@@ -11,6 +11,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.activityinfo.shared.command.GetSyncRegionUpdates;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.json.JSONException;
 import org.sigmah.server.database.hibernate.entity.AttributeValue;
 import org.sigmah.server.database.hibernate.entity.IndicatorValue;
@@ -18,8 +20,6 @@ import org.sigmah.server.database.hibernate.entity.ReportingPeriod;
 import org.sigmah.server.database.hibernate.entity.Site;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
-import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;

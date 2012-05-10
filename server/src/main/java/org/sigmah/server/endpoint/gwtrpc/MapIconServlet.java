@@ -16,10 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.content.PieMapMarker.SliceValue;
 import org.sigmah.server.report.renderer.image.ImageMapRenderer;
 import org.sigmah.server.util.ColorUtil;
-import org.sigmah.shared.report.content.PieMapMarker;
-import org.sigmah.shared.report.content.PieMapMarker.SliceValue;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

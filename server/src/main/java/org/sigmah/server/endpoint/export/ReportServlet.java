@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.command.RenderElement;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.Report;
 import org.sigmah.server.database.hibernate.dao.AuthenticationDAO;
 import org.sigmah.server.database.hibernate.entity.Authentication;
 import org.sigmah.server.database.hibernate.entity.DomainFilters;
@@ -22,9 +25,6 @@ import org.sigmah.server.report.ReportParserJaxb;
 import org.sigmah.server.report.generator.ReportGenerator;
 import org.sigmah.server.report.renderer.Renderer;
 import org.sigmah.server.report.renderer.RendererFactory;
-import org.sigmah.shared.command.RenderElement;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.Report;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

@@ -17,11 +17,11 @@ import java.nio.charset.Charset;
 
 import javax.imageio.ImageIO;
 
+import org.activityinfo.shared.report.model.ReportElement;
 import org.sigmah.server.report.generator.MapIconPath;
 import org.sigmah.server.report.renderer.html.ImageStorage;
 import org.sigmah.server.report.renderer.html.ImageStorageProvider;
 import org.sigmah.server.report.renderer.image.ImageCreator;
-import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;

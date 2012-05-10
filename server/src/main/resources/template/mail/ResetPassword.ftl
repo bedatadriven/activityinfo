@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="org.sigmah.server.mail.Invitation" -->
+<#-- @ftlvariable name="" type="org.activityinfo.server.mail.Invitation" -->
 Hi ${user.name},
 
 Someone (probably you) asked to reset your password for ActivityInfo. To complete changing your password,

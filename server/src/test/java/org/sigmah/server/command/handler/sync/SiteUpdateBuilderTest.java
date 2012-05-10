@@ -16,6 +16,8 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.activityinfo.shared.command.GetSyncRegionUpdates;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +26,6 @@ import org.sigmah.server.database.OnDataSet;
 import org.sigmah.server.database.hibernate.entity.Site;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.util.logging.LoggingModule;
-import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
 import org.sigmah.test.InjectionSupport;
 import org.sigmah.test.MockHibernateModule;
 import org.sigmah.test.Modules;

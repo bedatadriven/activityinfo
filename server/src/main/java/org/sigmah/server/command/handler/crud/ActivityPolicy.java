@@ -9,13 +9,13 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.dto.LocationTypeDTO;
 import org.sigmah.server.database.hibernate.dao.ActivityDAO;
 import org.sigmah.server.database.hibernate.dao.UserDatabaseDAO;
 import org.sigmah.server.database.hibernate.entity.Activity;
 import org.sigmah.server.database.hibernate.entity.LocationType;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
-import org.sigmah.shared.dto.LocationTypeDTO;
 
 import com.google.inject.Inject;
 

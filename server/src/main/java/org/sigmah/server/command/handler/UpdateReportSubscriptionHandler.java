@@ -1,9 +1,9 @@
 package org.sigmah.server.command.handler;
 
-import org.sigmah.shared.command.UpdateReportSubscription;
-import org.sigmah.shared.command.handler.CommandHandlerAsync;
-import org.sigmah.shared.command.handler.ExecutionContext;
-import org.sigmah.shared.command.result.VoidResult;
+import org.activityinfo.shared.command.UpdateReportSubscription;
+import org.activityinfo.shared.command.handler.CommandHandlerAsync;
+import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.command.result.VoidResult;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;

@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetDimensionLabels;
+import org.activityinfo.shared.command.GetDimensionLabels.DimensionLabels;
+import org.activityinfo.shared.report.content.FilterDescription;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.report.model.ReportElement;
 import org.sigmah.server.command.DispatcherSync;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.i18n.LocaleHelper;
 import org.sigmah.server.util.date.DateRangeFormat;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.command.GetDimensionLabels;
-import org.sigmah.shared.command.GetDimensionLabels.DimensionLabels;
-import org.sigmah.shared.report.content.FilterDescription;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DimensionType;
-import org.sigmah.shared.report.model.ReportElement;
 
 import com.google.inject.Inject;
 
@@ -60,7 +60,7 @@ public abstract class BaseGenerator<T extends ReportElement> implements ContentG
      * @param range    The date range of the report
      * @param user     The user for whom the report will be generated (required for the locale)
      * @return The resolved file name
-     * @see org.sigmah.shared.report.model.Report#getFileName()
+     * @see org.activityinfo.shared.report.model.Report#getFileName()
      */
     protected String resolveTemplate(String template, DateRange range, User user) {
         if (template.indexOf("${DATE_RANGE}") != -1) {

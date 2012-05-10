@@ -8,10 +8,10 @@ package org.sigmah.server.util.date;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.sigmah.shared.command.Month;
-import org.sigmah.shared.report.model.DateRange;
-import org.sigmah.shared.report.model.DateUnit;
-import org.sigmah.shared.util.date.DateUtil;
+import org.activityinfo.shared.command.Month;
+import org.activityinfo.shared.report.model.DateRange;
+import org.activityinfo.shared.report.model.DateUnit;
+import org.activityinfo.shared.util.date.DateUtil;
 
 public class DateUtilCalendarImpl extends DateUtil {
 

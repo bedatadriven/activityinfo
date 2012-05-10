@@ -2,8 +2,8 @@ package org.sigmah.server.i18n;
 
 import java.util.Locale;
 
+import org.activityinfo.client.i18n.UIMessages;
 import org.sigmah.client.i18n.UIConstants;
-import org.sigmah.client.i18n.UIMessages;
 
 import com.google.inject.AbstractModule;
 import com.teklabs.gwt.i18n.server.LocaleProxy;

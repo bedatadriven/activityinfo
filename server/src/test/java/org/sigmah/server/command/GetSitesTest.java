@@ -9,17 +9,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import junit.framework.Assert;
 
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetSites;
+import org.activityinfo.shared.command.result.SiteResult;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.report.model.DimensionType;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sigmah.server.database.OnDataSet;
-import org.sigmah.shared.command.Filter;
-import org.sigmah.shared.command.GetSites;
-import org.sigmah.shared.command.result.SiteResult;
-import org.sigmah.shared.dto.IndicatorDTO;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.report.model.DimensionType;
 import org.sigmah.test.InjectionSupport;
 
 import com.extjs.gxt.ui.client.Style.SortDir;

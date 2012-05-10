@@ -7,12 +7,12 @@ package org.sigmah.server.command.handler.sync;
 
 import java.util.List;
 
+import org.activityinfo.shared.command.GetSyncRegionUpdates;
+import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.json.JSONException;
 import org.sigmah.server.database.hibernate.dao.AdminDAO;
 import org.sigmah.server.database.hibernate.entity.AdminEntity;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.GetSyncRegionUpdates;
-import org.sigmah.shared.command.result.SyncRegionUpdate;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;

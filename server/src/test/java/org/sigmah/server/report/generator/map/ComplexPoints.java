@@ -13,12 +13,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.report.model.PointValue;
+import org.activityinfo.shared.util.mapping.Extents;
+import org.activityinfo.shared.util.mapping.TileMath;
 import org.sigmah.server.report.generator.map.cluster.genetic.MarkerGraph;
-import org.sigmah.shared.dto.SiteDTO;
-import org.sigmah.shared.report.content.AiLatLng;
-import org.sigmah.shared.report.model.PointValue;
-import org.sigmah.shared.util.mapping.Extents;
-import org.sigmah.shared.util.mapping.TileMath;
 
 
 /**

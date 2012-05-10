@@ -2,12 +2,12 @@ package org.sigmah.server.command;
 
 import java.net.URL;
 
+import org.activityinfo.shared.command.GetDownloadUrl;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.S3UrlResult;
+import org.activityinfo.shared.exception.CommandException;
 import org.sigmah.server.command.handler.CommandHandler;
 import org.sigmah.server.database.hibernate.entity.User;
-import org.sigmah.shared.command.GetDownloadUrl;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.S3UrlResult;
-import org.sigmah.shared.exception.CommandException;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSCredentials;

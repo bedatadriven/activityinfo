@@ -262,7 +262,7 @@
 						</goals>
 						<configuration>
 							<logLevel>ALL</logLevel>
-							<i18nConstantsBundle>org.sigmah.client.i18n.UIConstants</i18nConstantsBundle>
+							<i18nConstantsBundle>org.activityinfo.client.i18n.UIConstants</i18nConstantsBundle>
 						</configuration>
 					</execution>
 				</executions>

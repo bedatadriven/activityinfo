@@ -11,22 +11,22 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.shared.command.AddPartner;
+import org.activityinfo.shared.command.result.CommandResult;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.DuplicatePartnerException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.sigmah.server.database.hibernate.entity.Partner;
 import org.sigmah.server.database.hibernate.entity.User;
 import org.sigmah.server.database.hibernate.entity.UserDatabase;
 import org.sigmah.server.database.hibernate.entity.UserPermission;
-import org.sigmah.shared.command.AddPartner;
-import org.sigmah.shared.command.result.CommandResult;
-import org.sigmah.shared.command.result.CreateResult;
-import org.sigmah.shared.exception.CommandException;
-import org.sigmah.shared.exception.DuplicatePartnerException;
-import org.sigmah.shared.exception.IllegalAccessCommandException;
 
 import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
- * @see org.sigmah.shared.command.AddPartner
+ * @see org.activityinfo.shared.command.AddPartner
  */
 public class AddPartnerHandler implements CommandHandler<AddPartner> {
 

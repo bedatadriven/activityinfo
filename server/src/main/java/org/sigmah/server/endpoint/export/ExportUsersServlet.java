@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.shared.command.GetUsers;
+import org.activityinfo.shared.command.result.UserResult;
 import org.sigmah.server.command.DispatcherSync;
-import org.sigmah.shared.command.GetUsers;
-import org.sigmah.shared.command.result.UserResult;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
