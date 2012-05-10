@@ -102,8 +102,6 @@
 
 
 	<modules>
-		<module>core</module>
-		<module>chrome-app</module>
 		<module>server</module>
 	</modules>
 
