@@ -39,7 +39,6 @@ import com.lowagie.text.Table;
  * Renders a {@link org.sigmah.shared.report.model.MapReportElement MapElement} into an iText
  * document
  *
- * @author Alex Bertram
  */
 public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<MapReportElement> {
 
@@ -167,6 +166,5 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 		}
 		
 		descriptionCell.add(list);
-	}
-	
+	}	
 }

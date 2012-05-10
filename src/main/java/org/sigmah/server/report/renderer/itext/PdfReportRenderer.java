@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.io.OutputStream;
 
 import org.sigmah.server.report.generator.MapIconPath;
-import org.sigmah.server.report.renderer.ChartRendererJC;
 import org.sigmah.server.report.renderer.image.ImageCreator;
 
 import com.google.inject.Inject;
@@ -27,7 +26,6 @@ import com.lowagie.text.pdf.PdfWriter;
 /**
  * iText ReportRenderer targeting PDF output
  *
- * @author Alex Bertram
  */
 public class PdfReportRenderer extends ItextReportRenderer {
 
@@ -65,18 +63,15 @@ public class PdfReportRenderer extends ItextReportRenderer {
 	@Override
 	protected ImageCreator<? extends ItextImageResult> getImageCreator() {
 		return new PdfVectorImageCreator();
-
 	}
 
 	private class PdfVectorImageCreator implements ImageCreator<PdfVectorImage> {
-
 		@Override
 		public PdfVectorImage create(int width, int height) {
 			PdfTemplate template = PdfTemplate.createTemplate(writer, width, height);
 			return new PdfVectorImage(template, template.createGraphics(width, height));
 		}
 	}
-
 
 	private static class PdfVectorImage implements ItextImageResult {
 		private PdfTemplate template;
@@ -102,5 +97,4 @@ public class PdfReportRenderer extends ItextReportRenderer {
 			return image;
 		}
 	}
-
 }

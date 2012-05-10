@@ -28,8 +28,6 @@ import com.lowagie.text.rtf.RtfWriter2;
 
 /**
  * iText ReportRenderer targeting Rich Text Format (RTF) output
- *
- * @author Alex Bertram
  */
 public class RtfReportRenderer extends ItextReportRenderer {
 
@@ -75,7 +73,6 @@ public class RtfReportRenderer extends ItextReportRenderer {
 			
 			return new RtfImage(image, g2d);
 		}
-
 	}
 	
 	private static class RtfImage implements ItextImageResult {
@@ -105,7 +102,5 @@ public class RtfReportRenderer extends ItextReportRenderer {
 				throw new RuntimeException(e);
 			}
 		}
-
 	}
-
 }
