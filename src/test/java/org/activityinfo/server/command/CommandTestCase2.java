@@ -56,8 +56,10 @@ public class CommandTestCase2 {
    
     	User user = null;
     	if(AuthenticationModuleStub.getCurrentUser().getUserId()== 0){
-    		user = new User(AuthenticationModuleStub.getCurrentUser());
-    	}else{
+    		user = new User();
+    		user.setName("Anonymous");
+    		user.setEmail("Anonymous@anonymous");
+    	} else {
     		user = users.findById(AuthenticationModuleStub.getCurrentUser().getUserId());
             
     	}

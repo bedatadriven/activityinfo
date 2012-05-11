@@ -64,7 +64,7 @@ public class ReportSerializerTest {
 	@Test
 	public void reportChartElementTest() {
 
-		String chartJson = "{\"elementType\":\"pivotChart\",\"title\":\"Chart Element\",\"type\":\"Bar\",\"filter\":{\"isOr\":false,\"restrictions\":[]},\"categoryDimensions\":[{\"type\":\"AdminLevel\",\"caption\":\"admin level\",\"level\":0}],\"seriesDimensions\":[]}";
+		String chartJson = "{\"elementType\":\"pivotChart\",\"title\":\"Chart Element\",\"type\":\"ClusteredBar\",\"filter\":{\"restrictions\":[]},\"categoryDimensions\":[{\"type\":\"AdminLevel\",\"caption\":\"admin level\",\"level\":0}],\"seriesDimensions\":[]}";
 
 		PivotChartReportElement chartElement = report.getElement(0);
 		JsonElement resultJsonElement = factory
@@ -89,7 +89,7 @@ public class ReportSerializerTest {
 	@Test
 	public void filtersTest() {
 
-		String filterJson = "{\"minDate\":1331712050839,\"maxDate\":1331712050839,\"isOr\":true,\"restrictions\":[{\"type\":\"Activity\",\"set\":[0]}]}";
+		String filterJson = "{\"minDate\":1331679600000,\"maxDate\":1331679600000,\"restrictions\":[{\"type\":\"Activity\",\"set\":[0]}]}";
 
 		JsonElement filterElement = factory.encodeFilter(report.getFilter());
 		String resultFiltorJson = filterElement.toString();

@@ -2,7 +2,6 @@ package org.activityinfo.server.command.handler;
 
 import java.util.List;
 
-import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.GetSites;
@@ -22,7 +21,6 @@ import org.activityinfo.shared.report.model.PivotTableReportElement;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
 /**
  * Handles a search locally or remotely. Searchers being used utilize SQL LIKE queries, beware
@@ -48,12 +46,6 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		}
 	}
 
-	private GenerateElementHandler genElHandler;
-
-	@Inject 
-    public SearchHandler(GenerateElementHandler genElHandler) {
-		this.genElHandler = genElHandler;
-    }
 
 	@Override
 	public void execute(final Search command, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
@@ -125,24 +117,30 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		if (resultFilter.getRestrictedDimensions().size() > 0) {
 			pivotTable.setFilter(resultFilter);
 			GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
-			PivotContent content = null;
-			try {
-				content = (PivotContent) genElHandler.execute(zmd, new User(context.getUser()));
-			} catch (CommandException e) {
-				callback.onFailure(e);
-			}
-			content.setEffectiveFilter(resultFilter);
-			searchResult.setPivotTabelData(content);
-			GetSites getSites = createGetSitesCommand(resultFilter);
-			context.execute(getSites, new AsyncCallback<SiteResult>() {
+			context.execute(zmd, new AsyncCallback<PivotContent>() {
+
 				@Override
 				public void onFailure(Throwable caught) {
 					callback.onFailure(caught);
 				}
+
 				@Override
-				public void onSuccess(SiteResult resultSites) {
-					searchResult.setRecentAdditions(resultSites.getData());
-					callback.onSuccess(searchResult);
+				public void onSuccess(PivotContent content) {
+					content.setEffectiveFilter(resultFilter);
+					searchResult.setPivotTabelData(content);
+					GetSites getSites = createGetSitesCommand(resultFilter);
+					context.execute(getSites, new AsyncCallback<SiteResult>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							callback.onFailure(caught);
+						}
+						@Override
+						public void onSuccess(SiteResult resultSites) {
+							searchResult.setRecentAdditions(resultSites.getData());
+							callback.onSuccess(searchResult);
+						}
+					});
+
 				}
 			});
 		} else {
