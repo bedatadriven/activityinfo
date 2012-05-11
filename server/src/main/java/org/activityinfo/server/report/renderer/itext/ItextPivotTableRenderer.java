@@ -76,12 +76,16 @@ public class ItextPivotTableRenderer implements ItextRenderer<PivotTableReportEl
     }
 
     private float[] calcColumnWidths(Document doc, PivotTableData data, List<PivotTableData.Axis> leafColumns) {
-        // assume fixed column size
         float[] widths = new float[leafColumns.size()+1];
-        widths[0] = doc.getPageSize().getWidth() - doc.leftMargin() - doc.rightMargin() -
-                 (leafColumns.size() * 47f);
-        for(int i = 1; i!=widths.length; ++i) {
-            widths[i] = 47f;
+        float tableWidth = doc.getPageSize().getWidth() - doc.leftMargin() - doc.rightMargin();
+        float valueColumnWidth = 47f;
+        
+		widths[0] = tableWidth - (leafColumns.size() * valueColumnWidth);
+		if(widths[0] < valueColumnWidth) {
+			widths[0] = valueColumnWidth;
+		}
+		for(int i = 1; i!=widths.length; ++i) {
+            widths[i] = valueColumnWidth;
         }
         return widths;
     }
