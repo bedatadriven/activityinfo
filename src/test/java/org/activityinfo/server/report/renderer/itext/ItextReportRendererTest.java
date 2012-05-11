@@ -61,6 +61,14 @@ import com.google.common.collect.Lists;
 
 public class ItextReportRendererTest {
 	
+	private Comparator<PivotTableData.Axis> comparator = new Comparator<PivotTableData.Axis>() {
+		
+		@Override
+		public int compare(Axis arg0, Axis arg1) {
+			return arg0.getLabel().compareTo(arg1.getLabel());
+		}
+	};
+
 	@Before
 	public void setUpDirs() {
 		new File("target/report-tests").mkdirs();
@@ -318,13 +326,6 @@ public class ItextReportRendererTest {
 	@Test
 	public void nestedColumns() throws IOException {
 
-		Comparator<PivotTableData.Axis> comparator = new Comparator<PivotTableData.Axis>() {
-			
-			@Override
-			public int compare(Axis arg0, Axis arg1) {
-				return arg0.getLabel().compareTo(arg1.getLabel());
-			}
-		};
 		Dimension province = new AdminDimension(1);
 		Dimension partner = new Dimension(DimensionType.Partner);
 		Dimension year = new DateDimension(DateUnit.YEAR);
@@ -370,6 +371,43 @@ public class ItextReportRendererTest {
 		renderToXls(report, "nestedColumns.xls");
 	}
 
+
+	@Test
+	public void manyColumns() throws IOException {
+
+		
+		PivotTableData data = new PivotTableData();
+
+		Dimension partner = new Dimension(DimensionType.Partner);
+		Dimension year = new DateDimension(DateUnit.YEAR);
+		
+		EntityCategory avsi = new EntityCategory(100, "AVSI RRMP");
+		Axis avsiRow = data.getRootRow().addChild(partner, avsi, avsi.getLabel(), comparator);
+		
+		for(int y=2011;y<2030;++y) {
+			Axis col = data.getRootColumn().addChild(year, new SimpleCategory("" + y), "" + y, comparator);
+			avsiRow.setValue(col, (double)y);
+		}
+		
+		PivotContent tableContent = new PivotContent(data, Lists.<FilterDescription>newArrayList());
+		
+		PivotTableReportElement table = new PivotTableReportElement();
+		table.addRowDimension(partner);
+		table.addColDimension(year);
+		table.setContent(tableContent);
+		
+		ReportContent content = new ReportContent();
+		content.setFilterDescriptions(Collections.EMPTY_LIST);
+		
+		Report report = new Report();
+		report.setContent(content);
+		report.addElement(table);
+
+		renderToPdf(report, "narrowColumns.pdf");
+		renderToRtf(report, "narrowColumns.rtf");		
+	}
+
+	
 	private String mapIconPath() {
 		return "war/mapicons";
 	}
