@@ -59,7 +59,7 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
 
         SchemaDTO schema = executeLocally(new GetSchema());
 
-        assertThat(schema.getDatabases().size(), equalTo(1));
+        assertThat(schema.getDatabases().size(), equalTo(2));
 
         UserDatabaseDTO pearDb = schema.getDatabaseById(1);
         assertThat(pearDb.getAmOwner(), equalTo(false));
