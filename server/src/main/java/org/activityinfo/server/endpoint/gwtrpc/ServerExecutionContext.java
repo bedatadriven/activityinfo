@@ -1,5 +1,7 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
+import javax.persistence.EntityManager;
+
 import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -83,12 +85,16 @@ public class ServerExecutionContext implements ExecutionContext {
 			((CommandHandlerAsync<C,R>)handler).execute(command, this, callback);
 		} else if(handler instanceof CommandHandler) {
 			try {
-				callback.onSuccess((R) ((CommandHandler)handler).execute(command, new User(user)));
+				callback.onSuccess((R) ((CommandHandler)handler).execute(command, retrieveUserEntity()));
 				
 			} catch(Exception e) {
 				callback.onFailure(e);
 			}
 		}
+	}
+
+	private User retrieveUserEntity() {
+		return this.injector.getInstance(EntityManager.class).find(User.class, user.getId());
 	}
 	
 	
@@ -103,8 +109,8 @@ public class ServerExecutionContext implements ExecutionContext {
 		final AuthenticatedUser user = injector.getInstance(AuthenticatedUser.class);
 		
 		if(handler instanceof CommandHandler) {
-			
-			return ((CommandHandler) handler).execute(command, new User(user));
+			User userEntity = injector.getInstance(EntityManager.class).find(User.class, user.getId());
+			return ((CommandHandler) handler).execute(command, userEntity);
 		}
 		
 		// TODO: log here, if there is something in the queue there is a problem somewhere.

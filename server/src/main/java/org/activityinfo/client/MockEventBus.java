@@ -72,7 +72,7 @@ public class MockEventBus extends BaseObservable implements EventBus {
     }
 
     public void assertNotFired(EventType eventType) {
-    	if(getEventCount(eventType)==0) {
+    	if(getEventCount(eventType)!=0) {
     		throw new AssertionError("eventType" + eventType.toString() + " has not been fired");
     	}
     }

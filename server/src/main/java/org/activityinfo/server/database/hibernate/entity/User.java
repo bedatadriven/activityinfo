@@ -48,13 +48,7 @@ public class User implements java.io.Serializable {
     private String hashedPassword;
 
     public User() {
-    }
-
-    public User(AuthenticatedUser user) {
-		this.id = user.getId();
-		this.email = user.getEmail();
-		this.locale = user.getUserLocale();
-    }
+    }	
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
