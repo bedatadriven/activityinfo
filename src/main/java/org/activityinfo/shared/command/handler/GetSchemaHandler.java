@@ -31,7 +31,6 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sql.client.util.RowHandler;
-import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -174,32 +173,33 @@ public class GetSchemaHandler implements
 						db.setOwnerName(row.getString("OwnerName"));
 						db.setOwnerEmail(row.getString("OwnerEmail"));
 
-						if(context.getUser().getId() == AnonymousUser.USER_ID){
-							db.setViewAllAllowed(true); // since the anonymous user doesn't have a partner, this 
-														// must be true
+						if(db.getAmOwner()) {
+							db.setViewAllAllowed(true);
+							db.setEditAllowed(true);
+							db.setEditAllAllowed(true);
+							db.setManageUsersAllowed(true);
+							db.setManageAllUsersAllowed(true);
+							db.setDesignAllowed(true);
+							
+						} else if(row.isNull("allowViewAll")) {
+						
+							// when other users see public databases
+							// they will not have a UserPermission record
+							db.setViewAllAllowed(true); 
 							db.setEditAllowed(false);
 							db.setEditAllAllowed(false);
 							db.setManageUsersAllowed(false);
 							db.setManageAllUsersAllowed(false);
 							db.setDesignAllowed(false);
+							
 						} else {
-							
-							db.setViewAllAllowed(db.getAmOwner()
-									|| row.getBoolean("allowViewAll"));
-							db.setEditAllowed(db.getAmOwner()
-									|| row.getBoolean("allowEdit"));
-							db.setEditAllAllowed(db.getAmOwner()
-									|| row.getBoolean("allowEditAll"));
-							db.setManageUsersAllowed(db.getAmOwner()
-									|| row.getBoolean("allowManageUsers"));
-							db.setManageAllUsersAllowed(db.getAmOwner()
-									|| row.getBoolean("allowManageAllUsers"));
-							db.setDesignAllowed(db.getAmOwner()
-									|| row.getBoolean("allowDesign"));
-							
-							if(!db.getAmOwner()) {
-								db.setMyPartnerId(row.getInt("partnerId"));
-							}
+							db.setViewAllAllowed(row.getBoolean("allowViewAll"));
+							db.setEditAllowed(row.getBoolean("allowEdit"));
+							db.setEditAllAllowed(row.getBoolean("allowEditAll"));
+							db.setManageUsersAllowed(row.getBoolean("allowManageUsers"));
+							db.setManageAllUsersAllowed(row.getBoolean("allowManageAllUsers"));
+							db.setDesignAllowed(row.getBoolean("allowDesign"));
+							db.setMyPartnerId(row.getInt("partnerId"));
 						}
 						databaseMap.put(db.getId(), db);
 						databaseList.add(db);
