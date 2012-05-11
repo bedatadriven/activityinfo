@@ -13,6 +13,7 @@ import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.activityinfo.shared.report.model.Report;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -23,6 +24,7 @@ import com.google.gson.JsonParser;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
+@Ignore("not yet being used")
 public class ReportSerializerTest {
 
 	private ReportSerializer reportSerializer;
