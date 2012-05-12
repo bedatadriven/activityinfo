@@ -14,6 +14,7 @@ import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
+import org.apache.log4j.Logger;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -34,6 +35,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
 	private final SqlDatabase database;
 	
+	private static final Logger LOGGER = Logger.getLogger(GetSitesHandler.class);
+	
 	@Inject
 	public GetSitesHandler(SqlDatabase database) {
 		super();
@@ -44,6 +47,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	public void execute(final GetSites command, final ExecutionContext context,
 			final AsyncCallback<SiteResult> callback) {
 
+		LOGGER.trace("Entering execute()");
 		doQuery(command, context, callback);
 	}
 
@@ -91,15 +95,23 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		
 		final SiteResult result = new SiteResult(sites);
 		result.setOffset(command.getOffset());
+		
+		LOGGER.trace("About to execute primary query");
 
 		query.execute(context.getTransaction(), new SqlResultCallback() {
 			@Override
 			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+
+				LOGGER.trace("Primary query returned, starting to add to map");
+
 				for(SqlResultSetRow row : results.getRows()) {
 					SiteDTO site = toSite(row);
 					sites.add(site);
 					siteMap.put(site.getId(), site);
 				}
+
+				LOGGER.trace("Finished adding to map");
+
 				if(!sites.isEmpty()) {
 					queryEntities(tx, siteMap);
 					joinIndicatorValues(tx, siteMap);
@@ -266,6 +278,9 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
 		// first retrieve all the admin DTOs that we'll need for this result set
 		
+
+		LOGGER.trace("Starting queryEntities()");
+		
 		SqlQuery.select("adminEntityId",
 				"name",
 				"adminLevelId",
@@ -279,11 +294,15 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					LOGGER.trace("Received results for queryEntities()");
+					
+					
 					Map<Integer, AdminEntityDTO> entities = new HashMap<Integer, AdminEntityDTO>();
 					for(SqlResultSetRow row : results.getRows()) {
 						AdminEntityDTO entity = GetAdminEntitiesHandler.toEntity(row);
 						entities.put(entity.getId(), entity);
 					}
+					LOGGER.trace("Finished indexing admin entities");
 					
 					// now join them to the SiteDTO rows
 					joinEntities(tx, siteMap, entities);
@@ -296,6 +315,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			final Multimap<Integer, SiteDTO> siteMap, 
 			final Map<Integer, AdminEntityDTO> entities) {
 		
+		LOGGER.trace("Starting joinEntities()");
+		
 	    SqlQuery.select(
 	    		"Site.SiteId", 
 	    		"Link.AdminEntityId")
@@ -307,19 +328,25 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+
+					LOGGER.trace("Received results for joinEntities()");
+
 					for(SqlResultSetRow row : results.getRows()) {
 						for(SiteDTO site : siteMap.get(row.getInt("SiteId"))) {
 							AdminEntityDTO entity = entities.get(row.getInt("AdminEntityId"));
 							site.setAdminEntity(entity.getLevelId(), entity);
 						}
-						
-					}					
+					}	
+					
+					LOGGER.trace("Done populating results for joinEntities");
 				}
 			});
 	}	
 	
 	private void joinIndicatorValues(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
 
+		LOGGER.trace("Starting joinIndicatorValues()");
+		
     	SqlQuery query = SqlQuery.select()
     		.appendColumn("P.SiteId", "SiteId")
     		.appendColumn("V.IndicatorId", "SourceIndicatorId")
@@ -341,6 +368,9 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					LOGGER.trace("Received results for join indicators");
+
+					
 					for(SqlResultSetRow row : results.getRows()) {
 						double indicatorValue = row.getDouble("Value");
 						int sourceActivityid = row.getInt("SourceActivityId");
@@ -357,12 +387,16 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 								}
 							}
 						}
-					}		
+					}	
+					LOGGER.trace("Done populating dtos for join indicators");
+
 				}
 			});
 	}
 	
 	private void joinAttributeValues(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
+
+		LOGGER.trace("Starting joinAttributeValues() ");
 
     	SqlQuery.select()
     		.appendColumn("AttributeId", "attributeId")
@@ -374,6 +408,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				
 				@Override
 				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					LOGGER.trace("Received results for joinAttributeValues() ");
+					
 					for(SqlResultSetRow row : results.getRows()) {
 						int attributeId = row.getInt("attributeId");
 			            boolean value = row.getBoolean("value");
@@ -382,7 +418,11 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 							site.setAttributeValue(attributeId, value);
 						}
 					}		
+
+					LOGGER.trace("Done populating results for joinAttributeValues()");
 				}
+				
+
 			});
 	}
 
