@@ -26,6 +26,7 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -111,7 +112,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				Log.trace("Finished adding to map");
 
 				if(!sites.isEmpty()) {
-					queryEntities(tx, siteMap);
+					joinEntities(tx, siteMap);
 					joinIndicatorValues(tx, siteMap);
 					joinAttributeValues(tx, siteMap);
 					
@@ -266,61 +267,22 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		});
 	}
 	
-	/**
-	 * Retrieve a distinct list of all AdminEntities that are related to the selected Sites.
-	 * 
-	 * @param tx
-	 * @param siteMap
-	 */
-	private void queryEntities(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
-
-		// first retrieve all the admin DTOs that we'll need for this result set
-		
-
-		Log.trace("Starting queryEntities()");
-		
-		SqlQuery.select("adminEntityId",
-				"name",
-				"adminLevelId",
-				"adminEntityParentId",
-				"x1","y1","x2","y2")
-			.from("AdminEntity", "e")
-			.where("e.AdminEntityId").in(
-				SqlQuery.select("AdminEntityId").from("LocationAdminLink").where("LocationId").in(
-						SqlQuery.select("LocationId").from("Site").where("SiteId").in(siteMap.keySet())))
-			.execute(tx, new SqlResultCallback() {
-				
-				@Override
-				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-					Log.trace("Received results for queryEntities()");
-					
-					
-					Map<Integer, AdminEntityDTO> entities = new HashMap<Integer, AdminEntityDTO>();
-					for(SqlResultSetRow row : results.getRows()) {
-						AdminEntityDTO entity = GetAdminEntitiesHandler.toEntity(row);
-						entities.put(entity.getId(), entity);
-					}
-					Log.trace("Finished indexing admin entities");
-					
-					// now join them to the SiteDTO rows
-					joinEntities(tx, siteMap, entities);
-					joinIndicatorValues(tx, siteMap);
-				}
-			});
-	}
-
 	private void joinEntities(SqlTransaction tx,
-			final Multimap<Integer, SiteDTO> siteMap, 
-			final Map<Integer, AdminEntityDTO> entities) {
+			final Multimap<Integer, SiteDTO> siteMap) {
 		
 		Log.trace("Starting joinEntities()");
 		
 	    SqlQuery.select(
 	    		"Site.SiteId", 
-	    		"Link.AdminEntityId")
+	    		"Link.adminEntityId",
+	    		"e.name",
+	    		"e.adminLevelId",
+				"e.adminEntityParentId",
+				"x1","y1","x2","y2")
 	        .from("Site")
 	        .innerJoin("Location").on("Location.LocationId = Site.LocationId")
 	        .innerJoin("LocationAdminLink Link").on("Link.LocationId = Location.LocationId")
+	        .innerJoin("AdminEntity e").on("Link.AdminEntityId = e.AdminEntityId")
 	        .where("Site.SiteId").in(siteMap.keySet())
 	        .execute(tx, new SqlResultCallback() {
 				
@@ -329,9 +291,18 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
 					Log.trace("Received results for joinEntities()");
 
+					Map<Integer, AdminEntityDTO> entities = Maps.newHashMap();
+					
 					for(SqlResultSetRow row : results.getRows()) {
+						
+						int adminEntityId = row.getInt("adminEntityId");
+						AdminEntityDTO entity = entities.get(adminEntityId);
+						if(entity == null) {
+							entity = GetAdminEntitiesHandler.toEntity(row);
+							entities.put(adminEntityId, entity);
+						}
+						
 						for(SiteDTO site : siteMap.get(row.getInt("SiteId"))) {
-							AdminEntityDTO entity = entities.get(row.getInt("AdminEntityId"));
 							site.setAdminEntity(entity.getLevelId(), entity);
 						}
 					}	
