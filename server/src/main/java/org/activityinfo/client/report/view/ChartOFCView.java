@@ -242,13 +242,17 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 
 		PieChart pieChart = new PieChart();
 		List<PieChart.Slice> slices = Lists.newArrayList();
-
+		List<String> colors = Lists.newArrayList();
+		int colorIndex = 0;
 		for (PivotTableData.Axis category : categories) {
 			PivotTableData.Cell cell = category.getCell(series.get(0));
 			if(cell != null) {
-				slices.add(new PieChart.Slice(cell.getValue(), category.flattenLabel()));
+				PieChart.Slice slice = new PieChart.Slice(cell.getValue(), category.flattenLabel());
+				slices.add(slice);
+				colors.add(Theme.getAccent(colorIndex++));
 			}
 		}
+		
 		Collections.sort(slices, new Comparator<PieChart.Slice>() {
 
 			@Override
@@ -260,7 +264,7 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 			}
 		});
 		pieChart.addSlices(slices);
-
+		pieChart.setColours(colors);
 		cm.addChartConfig(pieChart);
 	}
 
