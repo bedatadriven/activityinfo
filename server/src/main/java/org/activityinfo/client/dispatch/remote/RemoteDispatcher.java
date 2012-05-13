@@ -6,6 +6,7 @@
 package org.activityinfo.client.dispatch.remote;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.activityinfo.client.EventBus;
@@ -26,6 +27,7 @@ import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -195,28 +197,33 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         pendingCommands.clear();
 
         if(!sent.isEmpty()) {
-            try {
-                service.execute(authentication.getAuthToken(), commandListFromRequestList(sent), new AsyncCallback<List<CommandResult>>() {
-                    @Override
-					public void onSuccess(List<CommandResult> results) {
-                        executingCommands.removeAll(sent);
-                        onRemoteCallSuccess(results, sent);
-                    }
+        	for(final CommandRequest request : sent) {
+        		try {
+        			service.execute(authentication.getAuthToken(), Lists.newArrayList(request.getCommand()),
+        					new AsyncCallback<List<CommandResult>>() {
+        				
+        				@Override
+        				public void onSuccess(List<CommandResult> results) {
+        					executingCommands.remove(request);
+        					onRemoteCallSuccess(results.get(0), request);
+        				}
 
-                    @Override
-					public void onFailure(Throwable caught) {
-                        executingCommands.removeAll(sent);
-                        onRemoteServiceFailure(sent, caught);
-                    }
-                });
-            } catch (Exception caught) {
-                executingCommands.removeAll(sent);
-                onClientSideSerializationError(caught);
-            }
+        				@Override
+        				public void onFailure(Throwable caught) {
+        					executingCommands.remove(request);
+        					onRemoteServiceFailure(Arrays.asList(request), caught);
+        				}
+        			});
+        		} catch (Exception caught) {
+        			executingCommands.removeAll(sent);
+        			onClientSideSerializationError(caught);
+        		}
+
+        	}
         }
     }
 
-    private void onRemoteCallSuccess(List<CommandResult> results, List<CommandRequest> executingCommands) {
+    private void onRemoteCallSuccess(CommandResult result, CommandRequest cmd) {
         Log.debug("RemoteDispatcher: remote call succeed");
 
         if (!connected) {
@@ -227,20 +234,14 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         * Post process results
         */
 
-        for (int i = 0; i != executingCommands.size(); ++i) {
+        if (result instanceof CommandException) {
+            Log.debug("Remote command failed. Command = " + cmd.getCommand().toString());
+            cmd.fireOnFailure((CommandException) result,
+                    result instanceof UnexpectedCommandException);
 
-            CommandRequest cmd = executingCommands.get(i);
-            CommandResult result = results.get(i);
-
-            if (result instanceof CommandException) {
-                Log.debug("Remote command failed. Command = " + cmd.getCommand().toString());
-                cmd.fireOnFailure((CommandException) result,
-                        result instanceof UnexpectedCommandException);
-
-            } else {
-                cmd.fireOnSuccess(result);
-                proxyManager.notifyListenersOfSuccess(cmd.getCommand(), result);
-            }
+        } else {
+            cmd.fireOnSuccess(result);
+            proxyManager.notifyListenersOfSuccess(cmd.getCommand(), result);
         }
     }
 
