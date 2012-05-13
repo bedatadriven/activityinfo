@@ -11,6 +11,7 @@ import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
+import org.activityinfo.client.page.dashboard.portlets.ChooseReportsPortlet;
 import org.activityinfo.client.page.dashboard.portlets.GoogleEarthPortlet;
 import org.activityinfo.client.page.dashboard.portlets.NewsPortlet;
 import org.activityinfo.client.page.dashboard.portlets.ReportPortlet;
@@ -56,10 +57,15 @@ public class DashboardPage extends Portal implements Page {
 
 			@Override
 			public void onSuccess(ReportsResult result) {
+				boolean haveReports = false;
 				for(ReportMetadataDTO report : result.getData()) {
 					if(report.isDashboard()) {
 						add(new ReportPortlet(dispatcher, eventBus, report), 0);
+						haveReports = true;
 					}
+				}
+				if(!haveReports) {
+					add(new ChooseReportsPortlet(), 0);
 				}
 				layout();
 			}
