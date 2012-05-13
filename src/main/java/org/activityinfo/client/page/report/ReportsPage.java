@@ -42,7 +42,7 @@ public class ReportsPage extends LayoutContainer implements Page {
     	newLayout.setCollapsible(true);
     	add(new NewReportPanel(eventBus, dispatcher, reportSerializer), newLayout);
     
-    	add(new SavedReportsPanel(eventBus, dispatcher), new BorderLayoutData(LayoutRegion.CENTER));
+    	add(new ReportGridPanel(eventBus, dispatcher), new BorderLayoutData(LayoutRegion.CENTER));
     	
     		
     }

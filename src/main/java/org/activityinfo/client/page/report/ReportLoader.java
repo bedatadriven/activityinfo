@@ -39,7 +39,7 @@ public class ReportLoader implements PageLoader {
         this.reportDesignPage = reportDesignPage;
 
         pageManager.registerPageLoader(ReportsPage.PAGE_ID, this);
-        placeSerializer.registerStatelessPlace(ReportsPage.PAGE_ID, new ReportListPageState());
+        placeSerializer.registerStatelessPlace(ReportsPage.PAGE_ID, new ReportsPlace());
         
         pageManager.registerPageLoader(ReportDesignPage.PAGE_ID, this);
         placeSerializer.registerParser(ReportDesignPage.PAGE_ID, new ReportDesignPageState.Parser());
