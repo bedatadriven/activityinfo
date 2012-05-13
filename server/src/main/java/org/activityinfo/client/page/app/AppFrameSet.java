@@ -19,7 +19,7 @@ import org.activityinfo.client.page.common.SearchField;
 import org.activityinfo.client.page.config.DbListPageState;
 import org.activityinfo.client.page.dashboard.DashboardPlace;
 import org.activityinfo.client.page.entry.place.DataEntryPlace;
-import org.activityinfo.client.page.report.ReportListPageState;
+import org.activityinfo.client.page.report.ReportsPlace;
 import org.activityinfo.client.page.search.SearchPageState;
 import org.activityinfo.client.widget.LoadingPlaceHolder;
 import org.activityinfo.shared.auth.AuthenticatedUser;
@@ -112,7 +112,7 @@ public class AppFrameSet implements Frame {
 			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DataEntryPlace()));
 			break;
 		case ANALYSIS:
-			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ReportListPageState()));
+			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ReportsPlace()));
 			break;
 		case DESIGN:
 			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DbListPageState()));
