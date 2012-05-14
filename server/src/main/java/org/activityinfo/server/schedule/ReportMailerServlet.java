@@ -15,10 +15,10 @@ import com.google.inject.Singleton;
 @Singleton
 public class ReportMailerServlet extends HttpServlet {
 
-	private Provider<ReportMailerJob> mailerJob;
+	private Provider<ReportMailer> mailerJob;
 
 	@Inject
-	public ReportMailerServlet(Provider<ReportMailerJob> mailerJob) {
+	public ReportMailerServlet(Provider<ReportMailer> mailerJob) {
 		super();
 		this.mailerJob = mailerJob;
 	}
