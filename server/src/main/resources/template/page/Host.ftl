@@ -60,7 +60,7 @@
     </style>
     <script type="text/javascript">
 		if(document.cookie.indexOf('authToken=') == -1) {
-			window.location = "/login";
+			window.location = "/content/";
 		}
 		
         var GoogleMapsAPI = {
