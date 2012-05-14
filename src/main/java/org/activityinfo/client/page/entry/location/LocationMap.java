@@ -10,6 +10,7 @@ import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -153,7 +154,11 @@ public class LocationMap extends GoogleMapsPanel {
 		}
 		
 		if(searchMarkers.isEmpty()) {
-			zoomToBounds(newLatLngBounds(searchPresenter.getBounds()));
+			if(searchPresenter.getBounds() == null) {
+				Log.debug("searchPresenter.getBounds() is null");
+			} else {
+				zoomToBounds(newLatLngBounds(searchPresenter.getBounds()));
+			}
 		} else {
 			zoomToBounds(newLatLngBounds(bounds));
 		}

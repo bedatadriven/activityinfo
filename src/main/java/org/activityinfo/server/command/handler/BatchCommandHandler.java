@@ -17,7 +17,9 @@ import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.apache.log4j.Logger;
 
+import com.google.common.collect.Lists;
 import com.google.common.primitives.Primitives;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -29,43 +31,44 @@ import com.google.inject.Injector;
  */
 public class BatchCommandHandler implements CommandHandlerAsync<BatchCommand, BatchResult> {
 
-    private final Injector injector;
-
-    @Inject
-    public BatchCommandHandler(Injector injector) {
-        this.injector = injector;
-    }
+    private static final Logger LOGGER = Logger.getLogger(BatchCommandHandler.class);
+    
 
     @Override
 	public void execute(BatchCommand batch, ExecutionContext context,
 			final AsyncCallback<BatchResult> callback) {
     	
-    	final ArrayList<CommandResult> results = new ArrayList<CommandResult>();
-    	for(Command command : batch.getCommands()) {
-    		results.add(null);
-    	}
-    	final boolean finished[] = new boolean[batch.getCommands().size()];
-    	
-    	for(int i=0; i!=batch.getCommands().size();++i) {
-    		final int commandIndex = i;
-    		context.execute(batch.getCommands().get(i), new AsyncCallback<CommandResult>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
-
-				@Override
-				public void onSuccess(CommandResult result) {
-					results.set(commandIndex, result);
-					finished[commandIndex] = true;
-					if(all(finished)) {
-						callback.onSuccess(new BatchResult(results));
+    	if(batch.getCommands().isEmpty()) {
+    		LOGGER.warn("Received empty batch command");
+    		callback.onSuccess(new BatchResult(Lists.<CommandResult>newArrayList()));
+    	} else {
+	    	final ArrayList<CommandResult> results = new ArrayList<CommandResult>();
+	    	for(Command command : batch.getCommands()) {
+	    		results.add(null);
+	    	}
+	    	final boolean finished[] = new boolean[batch.getCommands().size()];
+	    	
+	    	for(int i=0; i!=batch.getCommands().size();++i) {
+	    		final int commandIndex = i;
+	    		context.execute(batch.getCommands().get(i), new AsyncCallback<CommandResult>() {
+	
+					@Override
+					public void onFailure(Throwable caught) {
+						callback.onFailure(caught);
 					}
-				}
-    			
-    		});
-    		
+	
+					@Override
+					public void onSuccess(CommandResult result) {
+						results.set(commandIndex, result);
+						finished[commandIndex] = true;
+						if(all(finished)) {
+							callback.onSuccess(new BatchResult(results));
+						}
+					}
+	    			
+	    		});
+	    		
+	    	}
     	}
 	}
 

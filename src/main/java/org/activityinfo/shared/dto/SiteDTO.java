@@ -350,8 +350,8 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
      * @param attributeId
      * @return the value of the given attribute for this Site
      */
-	public Boolean getAttributeValue(int attributeId) {
-		return get(AttributeDTO.getPropertyName(attributeId));
+	public boolean getAttributeValue(int attributeId) {
+		return (Boolean)get(AttributeDTO.getPropertyName(attributeId), false);
 	}
 
 

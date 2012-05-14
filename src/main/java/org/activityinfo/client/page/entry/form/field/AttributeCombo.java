@@ -12,6 +12,10 @@ public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeF
 
 	public AttributeCombo(AttributeGroupDTO attributeGroup) {
 		super();
+		this.setFieldLabel(attributeGroup.getName());
+		this.setDisplayField("name");
+		this.setTriggerAction(TriggerAction.ALL);
+		this.setEditable(false);
 		
 		ListStore<AttributeDTO> store = new ListStore<AttributeDTO>();
 		store.add(attributeGroup.getAttributes());
