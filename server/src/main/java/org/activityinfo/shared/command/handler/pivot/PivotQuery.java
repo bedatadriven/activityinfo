@@ -51,6 +51,7 @@ public class PivotQuery {
 	private AsyncCallback<PivotSites.PivotResult> callback = null;
 
 	
+	
 	private int nextColumnIndex = 1;
 	
     public PivotQuery(SqlTransaction tx, SqlDialect dialect, PivotSites command, int userId) {
@@ -92,22 +93,12 @@ public class PivotQuery {
         */
     	query.from(" IndicatorValue V " +
                 "LEFT JOIN ReportingPeriod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
-                "LEFT JOIN (" +
-                	"SELECT IndicatorId SourceId, IndicatorId, Name, SortOrder, Aggregation, ActivityId " + 					
-						"FROM Indicator " +
-						"WHERE DateDeleted IS NULL and IndicatorId " + inIndicatorIds() + 
-                 	"UNION ALL " +
-                	"SELECT L.SourceIndicatorId SourceId, D.IndicatorId, D.Name, D.SortOrder, D.Aggregation, D.ActivityId FROM Indicator D " +
-                							"INNER JOIN IndicatorLink L ON (D.IndicatorId=L.DestinationIndicatorId) " +
-                							"INNER JOIN Indicator S ON (S.IndicatorId=L.SourceIndicatorId) " + 
-                							"WHERE D.dateDeleted IS NULL AND S.dateDeleted IS NULL AND D.IndicatorId " + inIndicatorIds() + ") " +
-                			"AS Indicator " +
-                	"ON (Indicator.SourceId = V.IndicatorId) " +
+                "LEFT JOIN Indicator ON (Indicator.IndicatorId = V.IndicatorId) " +
                 "LEFT JOIN Site ON (Period.SiteId = Site.SiteId) " +
                 "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId)" +
                 "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
                 "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
-                "LEFT JOIN Activity ON (Activity.ActivityId = Indicator.ActivityId) " +
+                "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
                 "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
         /*
          * First add the indicator to the query: we can't aggregate values from different
@@ -117,7 +108,7 @@ public class PivotQuery {
     	String sumAlias = appendColumn("SUM(V.Value)");
     	String avgAlias = appendColumn("AVG(V.Value)");
     	
-    	query.groupBy("Indicator.IndicatorId");
+    	query.groupBy("V.IndicatorId");
     	query.groupBy("Indicator.Aggregation");
     	query.whereTrue(" ((V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
         
@@ -125,7 +116,6 @@ public class PivotQuery {
        
     	buildAndExecuteRestOfQuery();
     }
-    
 
     public void queryForSiteCountIndicators() {
 
@@ -150,8 +140,7 @@ public class PivotQuery {
         String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
         query.groupBy("Indicator.IndicatorId");
         query.whereTrue("Indicator.Aggregation=2 ");
-		query.whereTrue("Indicator.DateDeleted is NULL");
-		query.whereTrue("Indicator.IndicatorId " + inIndicatorIds());
+
         bundlers.add(new SiteCountBundler(count));
 
         buildAndExecuteRestOfQuery();
@@ -280,6 +269,10 @@ public class PivotQuery {
         query.where("Site.dateDeleted").isNull();
         query.where("Activity.dateDeleted").isNull();
         query.where("UserDatabase.dateDeleted").isNull();
+        if(command.getValueType() == ValueType.INDICATOR) {
+        	query.where("Indicator.dateDeleted").isNull();
+        }
+        
         // and only allow results that are visible to this user.
         if(!GWT.isClient()) {
         	appendVisibilityFilter();
@@ -348,7 +341,7 @@ public class PivotQuery {
     private void appendDimensionRestrictions() {
         for (DimensionType type : filter.getRestrictedDimensions()) {
             if (type == DimensionType.Indicator) {
-				// handled in from clause
+            	query.where("Indicator.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator));
             } else if (type == DimensionType.Activity) {
             	query.where("Site.ActivityId").in(filter.getRestrictions(DimensionType.Activity));
             } else if (type == DimensionType.Database) {
@@ -366,23 +359,4 @@ public class PivotQuery {
             }
         }
     }
-	
-	private String inIndicatorIds() {
-		if(filter.getRestrictions(DimensionType.Indicator).isEmpty()) {
-			return " is not null ";
-		} else {
-			StringBuilder sb = new StringBuilder();
-			sb.append(" in (");
-			boolean needsComma = false;
-			for(Integer id : filter.getRestrictions(DimensionType.Indicator)) {
-				if(needsComma) {
-					sb.append(",");
-				}
-				sb.append(id);
-				needsComma = true;
-			}
-			sb.append(") ");
-			return sb.toString();
-		}
-	}
 }
