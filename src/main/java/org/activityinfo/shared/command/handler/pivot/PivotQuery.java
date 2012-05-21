@@ -93,12 +93,14 @@ public class PivotQuery {
     	query.from(" IndicatorValue V " +
                 "LEFT JOIN ReportingPeriod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
                 "LEFT JOIN (" +
-                	"SELECT IndicatorId SourceId, IndicatorId, Name, SortOrder, Aggregation, ActivityId, dateDeleted FROM Indicator " +
-                	"UNION ALL " +
-                	"SELECT L.SourceIndicatorId SourceId, D.IndicatorId, D.Name, D.SortOrder, D.Aggregation, D.ActivityId, NULL as dateDeleted FROM Indicator D " +
+                	"SELECT IndicatorId SourceId, IndicatorId, Name, SortOrder, Aggregation, ActivityId " + 					
+						"FROM Indicator " +
+						"WHERE DateDeleted IS NULL and IndicatorId " + inIndicatorIds() + 
+                 	"UNION ALL " +
+                	"SELECT L.SourceIndicatorId SourceId, D.IndicatorId, D.Name, D.SortOrder, D.Aggregation, D.ActivityId FROM Indicator D " +
                 							"INNER JOIN IndicatorLink L ON (D.IndicatorId=L.DestinationIndicatorId) " +
                 							"INNER JOIN Indicator S ON (S.IndicatorId=L.SourceIndicatorId) " + 
-                							"WHERE D.dateDeleted IS NULL AND S.dateDeleted IS NULL) " +
+                							"WHERE D.dateDeleted IS NULL AND S.dateDeleted IS NULL AND D.IndicatorId " + inIndicatorIds() + ") " +
                 			"AS Indicator " +
                 	"ON (Indicator.SourceId = V.IndicatorId) " +
                 "LEFT JOIN Site ON (Period.SiteId = Site.SiteId) " +
@@ -148,7 +150,8 @@ public class PivotQuery {
         String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
         query.groupBy("Indicator.IndicatorId");
         query.whereTrue("Indicator.Aggregation=2 ");
-
+		query.whereTrue("Indicator.DateDeleted is NULL");
+		query.whereTrue("Indicator.IndicatorId " + inIndicatorIds());
         bundlers.add(new SiteCountBundler(count));
 
         buildAndExecuteRestOfQuery();
@@ -277,10 +280,6 @@ public class PivotQuery {
         query.where("Site.dateDeleted").isNull();
         query.where("Activity.dateDeleted").isNull();
         query.where("UserDatabase.dateDeleted").isNull();
-        if(command.getValueType() == ValueType.INDICATOR) {
-        	query.where("Indicator.dateDeleted").isNull();
-        }
-        
         // and only allow results that are visible to this user.
         if(!GWT.isClient()) {
         	appendVisibilityFilter();
@@ -349,7 +348,7 @@ public class PivotQuery {
     private void appendDimensionRestrictions() {
         for (DimensionType type : filter.getRestrictedDimensions()) {
             if (type == DimensionType.Indicator) {
-            	query.where("Indicator.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator));
+				// handled in from clause
             } else if (type == DimensionType.Activity) {
             	query.where("Site.ActivityId").in(filter.getRestrictions(DimensionType.Activity));
             } else if (type == DimensionType.Database) {
@@ -367,4 +366,23 @@ public class PivotQuery {
             }
         }
     }
+	
+	private String inIndicatorIds() {
+		if(filter.getRestrictions(DimensionType.Indicator).isEmpty()) {
+			return " is not null ";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(" in (");
+			boolean needsComma = false;
+			for(Integer id : filter.getRestrictions(DimensionType.Indicator)) {
+				if(needsComma) {
+					sb.append(",");
+				}
+				sb.append(id);
+				needsComma = true;
+			}
+			sb.append(") ");
+			return sb.toString();
+		}
+	}
 }
