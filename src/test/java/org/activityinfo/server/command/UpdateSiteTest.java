@@ -11,6 +11,8 @@ import static org.junit.Assert.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hamcrest.CoreMatchers.*;
+
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
 import org.activityinfo.server.database.hibernate.entity.Site;
@@ -68,9 +70,8 @@ public class UpdateSiteTest extends CommandTestCase {
                 secondRead.getIndicatorValue(2).intValue());
 
         Assert.assertEquals("site.attribute[1]", true, modified.getAttributeValue(1));
-        Assert.assertNull("site.attribute[2]", modified.getAttributeValue(2));
-        Assert.assertEquals("site.attribute[3]", true, modified.getAttributeValue(1));
-        Assert.assertEquals("site.attribute[4]", true, modified.getAttributeValue(1));
+        Assert.assertEquals("site.attribute[3]", true, modified.getAttributeValue(3));
+        Assert.assertEquals("site.attribute[4]", false, modified.getAttributeValue(4));
     }
 
     @Test

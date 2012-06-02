@@ -19,8 +19,7 @@ public enum DimensionType {
 	AttributeGroup(SortType.NATURAL_VALUE),
     Site(SortType.NATURAL_LABEL), 
     Project(SortType.NATURAL_LABEL), 
-    Location(SortType.NATURAL_LABEL),
-	Target(SortType.DEFINED);
+    Location(SortType.NATURAL_LABEL);
 
 	private SortType sortOrder;
 
