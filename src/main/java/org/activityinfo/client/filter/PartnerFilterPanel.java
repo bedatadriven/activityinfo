@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.filter.FilterPanel;
-import org.activityinfo.client.filter.FilterToolBar;
 import org.activityinfo.client.filter.FilterToolBar.ApplyFilterEvent;
 import org.activityinfo.client.filter.FilterToolBar.ApplyFilterHandler;
 import org.activityinfo.client.filter.FilterToolBar.RemoveFilterEvent;
@@ -20,20 +18,14 @@ import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetPartnersWithSites;
 import org.activityinfo.shared.command.result.PartnerResult;
-import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -114,7 +106,13 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 	}
 	
 	@Override
-	public void applyBaseFilter(Filter filter) {
+	public void applyBaseFilter(Filter rawFilter) {
+		
+		// we need to remove any partner filter from this base filter
+		// so the user has the full selection
+		Filter filter = new Filter(rawFilter);
+		filter.clearRestrictions(DimensionType.Partner);
+		
 		if(baseFilter == null || !baseFilter.equals(filter)) {
 			service.execute(new GetPartnersWithSites(filter), null, new AsyncCallback<PartnerResult>() {
 	
