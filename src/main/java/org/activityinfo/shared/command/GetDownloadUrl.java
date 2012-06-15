@@ -31,5 +31,4 @@ public class GetDownloadUrl implements Command<S3UrlResult> {
 	public void setBlobId(String blobId) {
 		this.blobId = blobId;
 	}
-	
 }

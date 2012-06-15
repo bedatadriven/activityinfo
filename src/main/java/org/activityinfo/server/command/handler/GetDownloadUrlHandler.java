@@ -1,8 +1,7 @@
-package org.activityinfo.server.command;
+package org.activityinfo.server.command.handler;
 
 import java.net.URL;
 
-import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.command.GetDownloadUrl;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -51,5 +50,4 @@ public class GetDownloadUrlHandler implements CommandHandler<GetDownloadUrl> {
 
 		return downloadFileUrl;
 	}
-
 }
