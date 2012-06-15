@@ -44,6 +44,7 @@ public class UserForm extends FormPanel {
 		TextField<String> emailField = new TextField<String>();
 		emailField.setFieldLabel(constants.email());
 		emailField.setAllowBlank(false);
+		emailField.setRegex("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}");
         binding.addFieldBinding(new FieldBinding(emailField, "email"));
 		this.add(emailField);
 
