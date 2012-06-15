@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 /**
@@ -110,6 +111,7 @@ public class DbUserGrid extends AbstractEditorGridView<UserPermissionDTO, DbUser
         final ListStore<UserPermissionDTO> listStore = (ListStore) store;
         grid = new EditorGrid<UserPermissionDTO>(listStore, new ColumnModel(columns));
         grid.setLoadMask(true);
+        grid.setSelectionModel(new GridSelectionModel<UserPermissionDTO>());
         if (allowDesign != null) {
             grid.addPlugin(allowDesign);
         }
