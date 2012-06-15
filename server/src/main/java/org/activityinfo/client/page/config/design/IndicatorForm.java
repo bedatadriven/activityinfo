@@ -74,6 +74,7 @@ class IndicatorForm extends AbstractDesignForm {
 
         TextField<String> listHeaderField = new TextField<String>();
         listHeaderField.setFieldLabel(constants.listHeader());
+        listHeaderField.setMaxLength(29);
         binding.addFieldBinding(new FieldBinding(listHeaderField,"listHeader"));
         this.add(listHeaderField);
 
