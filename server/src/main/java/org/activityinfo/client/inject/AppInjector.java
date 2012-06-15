@@ -15,7 +15,7 @@ import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.client.offline.OfflineController;
 import org.activityinfo.client.offline.OfflineModule;
-import org.activityinfo.client.page.DownloadManager;
+import org.activityinfo.client.page.Downloader;
 import org.activityinfo.client.page.config.ConfigLoader;
 import org.activityinfo.client.page.config.ConfigModule;
 import org.activityinfo.client.page.dashboard.DashboardLoader;
@@ -52,7 +52,7 @@ public interface AppInjector extends Ginjector {
     ReportLoader createReportLoader();
     ConfigLoader createConfigLoader();
     OfflineController createOfflineController();
-    DownloadManager getDownloadManager();
+    Downloader getDownloadManager();
     UsageTracker getUsageTracker();
 	SearchLoader createSearchLoader();
 	DashboardLoader createDashboardLoader();

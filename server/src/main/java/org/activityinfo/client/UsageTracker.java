@@ -7,9 +7,7 @@ package org.activityinfo.client;
 
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.remote.cache.DefaultDispatchListener;
-import org.activityinfo.client.event.DownloadRequestEvent;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.page.DownloadManager;
 import org.activityinfo.client.page.NavigationHandler;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.Delete;
@@ -47,12 +45,6 @@ public class UsageTracker {
                 trackPageView(event.getPlace().getPageId().toString());
             }
         });
-        // Track downloads
-        eventBus.addListener(DownloadManager.DownloadRequested, new Listener<DownloadRequestEvent>() {
-            public void handleEvent(DownloadRequestEvent event) {
-                trackDownload(event);
-            }
-        });
 
         // Track successful creates by user
         commandEventSource.registerListener(CreateEntity.class, new DefaultDispatchListener<CreateEntity>() {
@@ -81,12 +73,6 @@ public class UsageTracker {
         return Factory.getInstance() != null;
     }
 
-    private void trackDownload(DownloadRequestEvent event) {
-        StringBuilder pageName = new StringBuilder("download/")
-                .append(event.getName() == null ? "unnamed" : event.getName());
-        setCustomVar(1, "filetype", event.getUrlExtension(), PAGE_SCOPE);
-        trackPageView(pageName.toString());
-    }
 
     private void trackPageView(String pageName) {
         Log.trace("Pageview tracked: " + pageName);

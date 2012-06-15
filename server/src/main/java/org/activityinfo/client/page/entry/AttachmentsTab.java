@@ -2,8 +2,8 @@ package org.activityinfo.client.page.entry;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.event.DownloadRequestEvent;
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.page.Downloader;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.shared.command.GetDownloadUrl;
@@ -93,7 +93,7 @@ public class AttachmentsTab extends TabItem implements
 
 									@Override
 									public void onSuccess(S3UrlResult result) {
-										eventBus.fireEvent(new DownloadRequestEvent("attachment", result.getUrl()));
+										Downloader.initiateDownload(result.getUrl());
 									}
 								});
 					}
