@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.activityinfo.server.database.BoneCpConnectionProvider;
 import org.activityinfo.server.database.hibernate.dao.ActivityDAO;
 import org.activityinfo.server.database.hibernate.dao.AdminDAO;
 import org.activityinfo.server.database.hibernate.dao.AdminHibernateDAO;
@@ -28,6 +29,7 @@ import org.activityinfo.server.database.hibernate.dao.UserDAOImpl;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.dao.UserPermissionDAO;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.hibernate.cfg.Environment;
 import org.hibernate.ejb.HibernateEntityManager;
 
 import com.google.inject.AbstractModule;
@@ -75,16 +77,21 @@ public class HibernateModule extends ServletModule {
         private org.activityinfo.server.util.config.DeploymentConfiguration configProperties;
 
         @Inject
-        public EntityManagerFactoryProvider(DeploymentConfiguration configProperties) {
+        public EntityManagerFactoryProvider(DeploymentConfiguration configProperties, 
+        		BoneCpConnectionProvider connectionProvider) {
             this.configProperties = configProperties;
+            
+            // can't figure out how to provide an instance of the ConnectionProvider
+            // directly to hibernate so we have to do it this way.
+            HibernateConnectionProvider.DELEGATE = connectionProvider;
         }
 
         @Override
         public EntityManagerFactory get() {
-        	// ensure that hibernate does do schema updating--liquibase is in charge
+        	// ensure that hibernate does NOT do schema updating--liquibase is in charge
         	Properties config = configProperties.asProperties();
-        	config.setProperty("hibernate.hbm2ddl.auto", "");
-        	
+        	config.setProperty(Environment.HBM2DDL_AUTO, "");
+        	config.setProperty(Environment.CONNECTION_PROVIDER, HibernateConnectionProvider.class.getName());
             return Persistence.createEntityManagerFactory("activityInfo", config);
         }
     }

@@ -13,6 +13,15 @@ import com.google.inject.Scope;
 import static com.google.common.base.Preconditions.checkState;
 
 
+/**
+ * Custom scope for the Hibernate session.
+ * 
+ * <p>This scope is used to ensure that each request gets its own
+ * EntityManager (see {@link HibernateSessionFilter}. 
+ * However, it is provided separately from @RequestScope
+ * because EntityManger's are also needed during batch processing.
+ *
+ */
 public class HibernateSessionScope implements Scope {
 
 	private final ThreadLocal<Map<Key<?>, Object>> values

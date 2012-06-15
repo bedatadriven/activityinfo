@@ -2,6 +2,7 @@ package org.activityinfo.server.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
@@ -29,12 +30,15 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 
 	@Inject
 	public BoneCpConnectionProvider(DeploymentConfiguration configProperties) {
+
 		try {
+
 			Class.forName(configProperties.getProperty("hibernate.connection.driver_class"));
 		 	BoneCPConfig poolConfig = new BoneCPConfig();	
 		 	poolConfig.setJdbcUrl(configProperties.getProperty("hibernate.connection.url"));
 			poolConfig.setUsername(configProperties.getProperty("hibernate.connection.username"));
 			poolConfig.setPassword(configProperties.getProperty("hibernate.connection.password"));
+			poolConfig.setMaxConnectionAge(4, TimeUnit.HOURS);
 			
 			LOGGER.info("Configuring connection pool to " + poolConfig.getJdbcUrl());
 			
