@@ -32,7 +32,6 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 		Activity activity = null;
 		UserDatabase database = null;
 		Project project = null;
-		int databaseId = 0;
 		
 		LockedPeriod  lockedPeriod = new LockedPeriod();
 		LockedPeriodDTO lockedPeriodDTO = cmd.getLockedPeriod();
@@ -41,20 +40,21 @@ public class LockEntityHandler implements CommandHandler<LockEntity> {
 		lockedPeriod.setName(lockedPeriodDTO.getName());
 		lockedPeriod.setEnabled(lockedPeriodDTO.isEnabled());
 
+		int databaseId;
 		if (cmd.getUserDatabseId() != 0) {
 	        database = em.find(UserDatabase.class, cmd.getUserDatabseId());
 	        lockedPeriod.setUserDatabase(database);
 	        databaseId = database.getId();
-		}
-		if (cmd.getProjectId() != 0) {
+		} else if (cmd.getProjectId() != 0) {
 			project = em.find(Project.class, cmd.getProjectId());
 			lockedPeriod.setProject(project);
 			databaseId = project.getUserDatabase().getId();
-		}
-		if (cmd.getActivityId() != 0) {
+		} else if (cmd.getActivityId() != 0) {
 			activity = em.find(Activity.class, cmd.getActivityId());
 			lockedPeriod.setActivity(activity);
 			databaseId = activity.getDatabase().getId();
+		} else {
+			throw new CommandException("One of the following must be provdied: userDatabaseId, projectId, activityId");
 		}
 		
         UserDatabase db = em.find(UserDatabase.class, databaseId);
