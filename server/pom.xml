@@ -814,18 +814,15 @@
 								<id>activityinfo-compile</id>
 								<configuration>
 									<draftCompile>true</draftCompile>
-									<module>org.activityinfo.ActivityInfoFFTest</module>
+									<modules>
+										<module>org.activityinfo.ActivityInfoFFTest</module>
+										<module>org.activityinfo.login.Login</module>
+									</modules>
 									<style>pretty</style>
 								</configuration>
 								<goals>
 									<goal>compile</goal>
 								</goals>
-							</execution>
-							<execution>
-								<id>login-compile</id>
-								<configuration>
-									<skip>true</skip>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>
