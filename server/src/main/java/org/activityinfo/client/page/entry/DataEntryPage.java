@@ -25,6 +25,7 @@ import org.activityinfo.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.client.widget.CollapsibleTabPanel;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.FilterUrlSerializer;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.ActivityDTO;
@@ -341,8 +342,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 			});
 			
 		} else if(UIActions.EXPORT.equals(actionId)) {
-			Window.Location.assign(GWT.getModuleBaseURL() + "export?a=" +
-					currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity));
+			Window.Location.assign(GWT.getModuleBaseURL() + "export?filter=" +
+					FilterUrlSerializer.toUrlFragment(currentPlace.getFilter()));
 		
 		}
 	}

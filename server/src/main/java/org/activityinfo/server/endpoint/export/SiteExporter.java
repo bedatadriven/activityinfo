@@ -143,14 +143,14 @@ public class SiteExporter {
 
     }
 
-    public void export(ActivityDTO activity) {
+    public void export(ActivityDTO activity, Filter filter) {
 
         HSSFSheet sheet = book.createSheet(composeUniqueSheetName(activity));
         sheet.createFreezePane(4, 2);
 
         // initConditionalFormatting(sheet);
         createHeaders(activity, sheet);
-        createDataRows(activity, sheet);
+        createDataRows(activity, filter, sheet);
 
     }
 //
@@ -255,26 +255,26 @@ public class SiteExporter {
 
     }
 
-    private List<SiteDTO> querySites(ActivityDTO activity) {
+    private List<SiteDTO> querySites(ActivityDTO activity, Filter filter) {
 
-        Filter filter = new Filter();
-        filter.addRestriction(DimensionType.Activity, activity.getId());
+        Filter effectiveFilter = new Filter(filter);
+        effectiveFilter.addRestriction(DimensionType.Activity, activity.getId());
 
         GetSites query = new GetSites();
-        query.setFilter(filter);
+        query.setFilter(effectiveFilter);
         query.setSortInfo(new SortInfo("date2", SortDir.DESC));
         
         return dispatcher.execute(query).getData();
     }
 
-    private void createDataRows(ActivityDTO activity, Sheet sheet) {
+    private void createDataRows(ActivityDTO activity, Filter filter, Sheet sheet) {
 
         // Create the drawing patriarch. This is the top level container for all shapes including
         // cell comments.
         HSSFPatriarch patr = ((HSSFSheet) sheet).createDrawingPatriarch();
 
         int rowIndex = 2;
-        for (SiteDTO site : querySites(activity)) {
+        for (SiteDTO site : querySites(activity, filter)) {
 
             Row row = sheet.createRow(rowIndex++);
             int column = 0;
