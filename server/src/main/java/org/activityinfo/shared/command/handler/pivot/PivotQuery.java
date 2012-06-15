@@ -24,8 +24,8 @@ import org.activityinfo.shared.report.model.DateDimension;
 import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.apache.log4j.Logger;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -50,9 +50,6 @@ public class PivotQuery {
 	private final List<Bundler> bundlers = new ArrayList<Bundler>();
 	
 	private AsyncCallback<PivotSites.PivotResult> callback = null;
-
-	private static Logger LOGGER = Logger.getLogger(PivotQuery.class);
-	
 	
 	private int nextColumnIndex = 1;
 	
@@ -173,7 +170,7 @@ public class PivotQuery {
         for (Dimension dimension : dimensions) {
 
         	if (dimension == null) {
-        		LOGGER.error("NULL dimension provided to pivot query: dimensions = " + dimensions);
+        		Log.error("NULL dimension provided to pivot query: dimensions = " + dimensions);
         		
         	} else if (dimension.getType() == DimensionType.Activity) {
             	addOrderedEntityDimension(dimension, "Site.ActivityId", "Activity.Name", "Activity.SortOrder");
