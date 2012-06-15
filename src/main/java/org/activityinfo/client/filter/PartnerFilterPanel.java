@@ -110,7 +110,7 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 		
 		// we need to remove any partner filter from this base filter
 		// so the user has the full selection
-		Filter filter = new Filter(rawFilter);
+		final Filter filter = new Filter(rawFilter);
 		filter.clearRestrictions(DimensionType.Partner);
 		
 		if(baseFilter == null || !baseFilter.equals(filter)) {
@@ -133,6 +133,8 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 							listView.setChecked(partner, true);
 						}
 					}
+					
+					baseFilter = filter;
 				}
 			});
 		}

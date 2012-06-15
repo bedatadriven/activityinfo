@@ -243,7 +243,10 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 	}
 
 	@Override
-	public void applyBaseFilter(final Filter filter) {
+	public void applyBaseFilter(final Filter providedFilter) {
+		Filter filter = new Filter(providedFilter);
+		filter.clearRestrictions(DimensionType.AdminLevel);
+		
 		if(baseFilter == null || !baseFilter.equals(filter)) {
 			baseFilter = filter;
 			loader.setFilter(baseFilter);

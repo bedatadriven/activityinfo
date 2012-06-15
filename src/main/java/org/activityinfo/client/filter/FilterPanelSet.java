@@ -101,5 +101,4 @@ public class FilterPanelSet implements FilterPanel {
 			manager.fireEvent(event);
 		}
 	}
-
 }
