@@ -31,7 +31,7 @@ public class RemoveProjectHandler implements CommandHandler<RemoveProject> {
 			throws CommandException {
         // verify the current user has access to this site
         UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
-        if (db.getOwner().getId() != user.getId()) {
+        if (db.isAllowedDesign(user)) {
             UserPermission perm = db.getPermissionByUser(user);
             if (perm == null || perm.isAllowDesign()) {
                 throw new IllegalAccessCommandException();
