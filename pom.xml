@@ -886,7 +886,7 @@
 								<goals>
 									<goal>upload-source-bundle</goal>
 									<goal>create-application-version</goal>
-									<goal>update-environment-configuration-settings</goal>
+									<goal>update-environment</goal>
 								</goals>
 							</execution>
 						</executions>
