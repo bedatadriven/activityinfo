@@ -76,8 +76,8 @@ public final class DateRange implements Serializable {
      * Constructs a fully open date range (all dates are included).
      */
     public DateRange() {
-        setMinDate(null);
-        setMaxDate(null);
+        setMinDate((LocalDate)null);
+        setMaxDate((LocalDate)null);
     }
 
 
@@ -92,6 +92,10 @@ public final class DateRange implements Serializable {
         return minDate == null ? null : minDate.atMidnightInMyTimezone();
     }
 
+    public LocalDate getMinLocalDate() {
+    	return minDate;
+    }
+    
     /**
      * Sets the minimum date in this range (inclusive).
      *
@@ -100,6 +104,10 @@ public final class DateRange implements Serializable {
      */
     public void setMinDate(Date minDate) {
         this.minDate = minDate == null ? null : new LocalDate(minDate);
+    }
+    
+    public void setMinDate(LocalDate minDate) {
+    	this.minDate = minDate;
     }
 
     /**
@@ -111,6 +119,10 @@ public final class DateRange implements Serializable {
     public Date getMaxDate() {
         return maxDate == null ? null : maxDate.atMidnightInMyTimezone();
     }
+    
+    public LocalDate getMaxLocalDate() {
+    	return maxDate;
+    }
 
     /**
      * Sets the maximum date in this range (inclusive).
@@ -120,6 +132,12 @@ public final class DateRange implements Serializable {
     public void setMaxDate(Date maxDate) {
         this.maxDate = maxDate == null ? null : new LocalDate(maxDate);
     }
+  
+
+	public void setMaxDate(LocalDate maxDate) {
+		this.maxDate = maxDate;
+	}
+    
 
     public static DateRange intersection(DateRange a, DateRange b) {
     	return new DateRange(
@@ -188,5 +206,5 @@ public final class DateRange implements Serializable {
 		}
 		return true;
 	}
-    
+
 }

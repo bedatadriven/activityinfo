@@ -17,10 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.FilterUrlSerializer;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.report.model.DimensionType;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -49,13 +52,16 @@ public class ExportSitesServlet extends HttpServlet {
 	        }
         }
 
+        Filter filter = FilterUrlSerializer.fromQueryParameter(req.getParameter("filter"));
+
         SchemaDTO schema = dispatcher.execute(new GetSchema());
 
         SiteExporter export = new SiteExporter(dispatcher);
         for (UserDatabaseDTO db : schema.getDatabases()) {
             for (ActivityDTO activity : db.getActivities()) {
-                if (activities.size() == 0 || activities.contains(activity.getId())) {
-                    export.export(activity);
+                if (!filter.isRestricted(DimensionType.Activity) ||
+                		filter.getRestrictions(DimensionType.Activity).contains(activity.getId())) {
+					export.export(activity, filter);
                 }
             }
         }

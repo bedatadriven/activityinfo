@@ -13,6 +13,7 @@ import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.export.DbUserExport;
 import org.activityinfo.server.endpoint.export.SiteExporter;
+import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.DTOs;
@@ -40,7 +41,7 @@ public class ExportIntegrationTest extends CommandTestCase2 {
         SiteExporter export = new SiteExporter(getDispatcherSync());
         for (UserDatabaseDTO db : schema.getDatabases()) {
             for (ActivityDTO activity : db.getActivities()) {
-                export.export(activity);
+                export.export(activity, new Filter());
             }
         }
 
