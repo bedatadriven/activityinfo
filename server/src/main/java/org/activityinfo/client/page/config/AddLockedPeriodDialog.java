@@ -9,6 +9,7 @@ import org.activityinfo.shared.dto.LockedPeriodDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
+import com.extjs.gxt.ui.client.data.DataField;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -131,12 +132,6 @@ public class AddLockedPeriodDialog extends FormPanel implements
 		
 		radioActivity = new Radio();
 		radioActivity.setFieldLabel(I18N.CONSTANTS.activity());
-		radioActivity.addListener(Events.Change, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				comboboxactivities.setEnabled(radioActivity.getValue());
-			}
-		});
 		
 		labelActivity = new LabelField(I18N.CONSTANTS.activity());
 		labelActivity.setWidth(100);
@@ -171,38 +166,33 @@ public class AddLockedPeriodDialog extends FormPanel implements
 		
 		textfieldName = new TextField<String>();
 		textfieldName.setFieldLabel(I18N.CONSTANTS.name());
+		textfieldName.setAllowBlank(false);
 		add(textfieldName);
 
 		checkboxEnabled = new CheckBox();
-		checkboxEnabled.setFieldLabel("Enabled");
+		checkboxEnabled.setFieldLabel(I18N.CONSTANTS.enabledColumn());
 		add(checkboxEnabled);
 
 		datefieldFromDate = new DateField();
 		datefieldFromDate.setFieldLabel(I18N.CONSTANTS.fromDate());
+		datefieldFromDate.setAllowBlank(false);
 		add(datefieldFromDate);
 
 		datefieldToDate = new DateField();
 		datefieldToDate.setFieldLabel(I18N.CONSTANTS.toDate());
+		datefieldFromDate.setAllowBlank(false);
 		add(datefieldToDate);
 		
-//		buttonSave=new Button(I18N.CONSTANTS.save());
-//		buttonSave.addListener(Events.Select, new Listener<BaseEvent>() {
-//			@Override
-//			public void handleEvent(BaseEvent be) {
-//				eventBus.fireEvent(new CreateEvent());
-//			}
-//		});
-//		formPanel.addButton(buttonSave);
-//		
-//		buttonCancel = new Button(I18N.CONSTANTS.cancel());
-//		buttonCancel.addListener(Events.Select, new Listener<BaseEvent>() {
-//			@Override
-//			public void handleEvent(BaseEvent be) {
-//				eventBus.fireEvent(new CancelCreateEvent());
-//			}
-//		});
-//		formPanel.addButton(buttonCancel);
+		radiogroupParentType.addListener(Events.Change, new Listener<FieldEvent>() {
 
+			@Override
+			public void handleEvent(FieldEvent be) {
+				comboboxactivities.setAllowBlank( !radioActivity.getValue() );
+				comboboxProjects.setAllowBlank( !radioProject.getValue() );
+				comboboxactivities.clearInvalid();
+				comboboxProjects.clearInvalid();
+			}
+		});
 	}
 
 	@Override
