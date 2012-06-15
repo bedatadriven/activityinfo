@@ -40,7 +40,7 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
 public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO> implements
-		GridPresenter<UserPermissionDTO>, DbPage {
+GridPresenter<UserPermissionDTO>, DbPage {
 	public static final PageId PAGE_ID = new PageId("dbusers");
 
 	@ImplementedBy(DbUserGrid.class)
@@ -74,7 +74,7 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 		loader = new PagingCmdLoader<UserResult>(service);
 		loader.setCommand(new GetUsers(db.getId()));
-//		initLoaderDefaults(loader, new, new SortInfo("name", Style.SortDir.ASC));
+		//		initLoaderDefaults(loader, new, new SortInfo("name", Style.SortDir.ASC));
 
 		store = new ListStore<UserPermissionDTO>(loader);
 		store.setKeyProvider(new ModelKeyProvider<UserPermissionDTO>() {
@@ -125,15 +125,15 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 
 		service.execute(new UpdateUserPermissions(db.getId(), model), view.getDeletingMonitor(),
 				new AsyncCallback<VoidResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-					}
+			@Override
+			public void onFailure(Throwable caught) {
+			}
 
-					@Override
-					public void onSuccess(VoidResult result) {
-						store.remove(model);
-					}
-				});
+			@Override
+			public void onSuccess(VoidResult result) {
+				store.remove(model);
+			}
+		});
 	}
 
 	public boolean validateChange(UserPermissionDTO user, String property, boolean value) {
@@ -265,21 +265,21 @@ public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO>
 	protected void onMailingList() {
 		createMailingListPopup();
 	}
-	
+
 	private void createMailingListPopup() {
 		new MailingListDialog(eventBus, service, db.getId());
 	}
 
 	@Override
 	public void onSelectionChanged(ModelData selectedItem) {
-		if (selectedItem instanceof PartnerDTO) {
-			PartnerDTO selectedPartner = (PartnerDTO) selectedItem;
-			if (selectedItem != null) {
-				view.setActionEnabled(UIActions.DELETE, db.isManageAllUsersAllowed()
-						|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedPartner.getId()));
-			}
-			view.setActionEnabled(UIActions.DELETE, selectedItem != null);
-		}
-	}
 
+		if (selectedItem != null) {
+			UserPermissionDTO user = (UserPermissionDTO) selectedItem;
+			PartnerDTO selectedPartner = user.getPartner();
+			
+			view.setActionEnabled(UIActions.DELETE, db.isManageAllUsersAllowed()
+					|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedPartner.getId()));
+		}
+		view.setActionEnabled(UIActions.DELETE, selectedItem != null);
+	}
 }
