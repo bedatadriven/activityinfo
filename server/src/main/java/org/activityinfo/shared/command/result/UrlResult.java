@@ -7,18 +7,16 @@ package org.activityinfo.shared.command.result;
 
 /**
  *
- * The result of a {@link org.activityinfo.shared.command.RenderElement} command.
- *
- * @author Alex Bertram
+ * The result containing a URL to be subsequently downloaded
  */
-public class RenderResult implements CommandResult {
+public class UrlResult implements CommandResult {
 
     private String url;
 
-    public RenderResult() {
+    public UrlResult() {
     }
 
-    public RenderResult(String url) {
+    public UrlResult(String url) {
         this.url = url;
     }
 

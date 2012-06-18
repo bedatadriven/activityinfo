@@ -2,13 +2,12 @@ package org.activityinfo.client.page.entry;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.DownloadCallback;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.page.Downloader;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.shared.command.GetDownloadUrl;
+import org.activityinfo.shared.command.DownloadAttachment;
 import org.activityinfo.shared.command.GetSiteAttachments;
-import org.activityinfo.shared.command.result.S3UrlResult;
 import org.activityinfo.shared.command.result.SiteAttachmentResult;
 import org.activityinfo.shared.dto.SiteAttachmentDTO;
 import org.activityinfo.shared.dto.SiteDTO;
@@ -84,18 +83,7 @@ public class AttachmentsTab extends TabItem implements
 					public void handleEvent(
 							ListViewEvent<SiteAttachmentDTO> event) {
 						currentAttachment = event.getModel().getBlobId();
-						dispatcher.execute(new GetDownloadUrl(currentAttachment),
-								null, new AsyncCallback<S3UrlResult>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										// callback.onFailure(caught);
-									}
-
-									@Override
-									public void onSuccess(S3UrlResult result) {
-										Downloader.initiateDownload(result.getUrl());
-									}
-								});
+						dispatcher.execute(new DownloadAttachment(currentAttachment), null, new DownloadCallback());
 					}
 				});
 		panel.add(attachmentList);

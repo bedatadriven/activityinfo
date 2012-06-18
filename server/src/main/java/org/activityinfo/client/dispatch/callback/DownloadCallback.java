@@ -5,32 +5,28 @@
 
 package org.activityinfo.client.dispatch.callback;
 
-import org.activityinfo.client.EventBus;
-import org.activityinfo.client.page.Downloader;
-import org.activityinfo.shared.command.result.RenderResult;
+import org.activityinfo.client.util.Downloader;
+import org.activityinfo.shared.command.result.UrlResult;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Handles <code>RenderResult</code> command calls.
+ * Handles <code>UrlResult</code> command calls.
  * <p/>
  * Upon success, fires a DownloadRequestedEvent for the
  * resulting URL
  *
  * @author Alex Bertram
  */
-public class DownloadCallback implements AsyncCallback<RenderResult> {
+public class DownloadCallback implements AsyncCallback<UrlResult> {
 
-    private final EventBus eventBus;
     private String downloadName;
 
-    public DownloadCallback(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public DownloadCallback() {
     }
 
-    public DownloadCallback(EventBus eventBus, String downloadName) {
-        this.eventBus = eventBus;
+    public DownloadCallback(String downloadName) {
         this.downloadName = downloadName;
     }
 
@@ -38,7 +34,8 @@ public class DownloadCallback implements AsyncCallback<RenderResult> {
 
     }
 
-    public void onSuccess(RenderResult result) {
-        Downloader.initiateDownload(GWT.getModuleBaseURL() + "download?" + result.getUrl());
+    public void onSuccess(UrlResult result) {
+    	Downloader downloader = GWT.create(Downloader.class);
+        downloader.initiateDownload(GWT.getModuleBaseURL() + "download?" + result.getUrl());
     }
 }

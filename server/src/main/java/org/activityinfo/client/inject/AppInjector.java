@@ -15,7 +15,6 @@ import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.client.offline.OfflineController;
 import org.activityinfo.client.offline.OfflineModule;
-import org.activityinfo.client.page.Downloader;
 import org.activityinfo.client.page.config.ConfigLoader;
 import org.activityinfo.client.page.config.ConfigModule;
 import org.activityinfo.client.page.dashboard.DashboardLoader;
@@ -26,6 +25,7 @@ import org.activityinfo.client.page.report.ReportModule;
 import org.activityinfo.client.page.search.SearchLoader;
 import org.activityinfo.client.page.search.SearchModule;
 import org.activityinfo.client.report.editor.map.MapModule;
+import org.activityinfo.client.util.Downloader;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;

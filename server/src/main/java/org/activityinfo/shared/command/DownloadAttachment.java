@@ -1,18 +1,18 @@
 package org.activityinfo.shared.command;
 
 
-import org.activityinfo.shared.command.result.S3UrlResult;
+import org.activityinfo.shared.command.result.UrlResult;
 
-public class GetDownloadUrl implements Command<S3UrlResult> {
+public class DownloadAttachment implements Command<UrlResult> {
 
 	private String url;
 	private String blobId;
 
-	public GetDownloadUrl() {
+	public DownloadAttachment() {
 
 	}
 
-	public GetDownloadUrl(String blobId){
+	public DownloadAttachment(String blobId){
 		this.blobId = blobId;
 	}
 	
