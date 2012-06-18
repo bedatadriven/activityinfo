@@ -5,7 +5,7 @@
 	<groupId>org.activityinfo</groupId>
 	<artifactId>activityinfo-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>2.6.9-SNAPSHOT</version>
+	<version>2.6.10-SNAPSHOT</version>
 	<name>ActivityInfo Parent POM</name>
 	<licenses>
 		<license>
