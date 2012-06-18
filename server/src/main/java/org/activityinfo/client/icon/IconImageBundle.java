@@ -247,4 +247,8 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype link();
     
     AbstractImagePrototype page();
+    
+    @Resource(value="html_add.png")
+    AbstractImagePrototype embed();
+
 }

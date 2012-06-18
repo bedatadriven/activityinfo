@@ -19,90 +19,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("{0} - {1}")
 	String activityTitle(String arg0, String arg1);
 
-	/**
-	 * Translated "added {0}".
-	 * 
-	 * @return translated "added {0}"
-	 */
-	@DefaultMessage("added {0}")
-	String added(String arg0);
 
-	/**
-	 * Translated "Location [{0}] added".
-	 * 
-	 * @return translated "Location [{0}] added"
-	 */
-	@DefaultMessage("Location [{0}] added")
-	String addedLocation(String arg0);
-
-	/**
-	 * Translated "Unable to create user ''{0}'' !".
-	 * 
-	 * @return translated "Unable to create user ''{0}'' !"
-	 */
-	@DefaultMessage("Unable to create user ''{0}'' !")
-	String adminUserCreationFailure(String arg0);
-
-	/**
-	 * Translated "A problem has occurred while creating user ''{0}'' !".
-	 * 
-	 * @return translated "A problem has occurred while creating user ''{0}'' !"
-	 */
-	@DefaultMessage("A problem has occurred while creating user ''{0}'' !")
-	String adminUserCreationNull(String arg0);
-
-	/**
-	 * Translated "New user has been successfully created under id ''{0}'' !".
-	 * 
-	 * @return translated
-	 *         "New user has been successfully created under id ''{0}'' !"
-	 */
-	@DefaultMessage("New user has been successfully created under id ''{0}'' !")
-	String adminUserCreationSuccess(String arg0);
-
-	/**
-	 * Translated "clustered {0} sites using {1} clustering method.".
-	 * 
-	 * @return translated "clustered {0} sites using {1} clustering method."
-	 */
-	@DefaultMessage("clustered {0} sites using {1} clustering method.")
-	String amountSitesClusteredByClusteringMethod(String arg0, String arg1);
-
-	/**
-	 * Translated "You can include multiple indicators on this type of layer".
-	 * 
-	 * @return translated
-	 *         "You can include multiple indicators on this type of layer"
-	 */
-	@DefaultMessage("You can include multiple indicators on this type of layer")
-	String canIncludeMultipleIndicators();
-
-	/**
-	 * Translated "One indicator can be selected for this type of layer".
-	 * 
-	 * @return translated "One indicator can be selected for this type of layer"
-	 */
-	@DefaultMessage("One indicator can be selected for this type of layer")
-	String canIncludeSingleIndicator();
-
-	/**
-	 * Translated "[show all {0} sites in {1}]".
-	 * 
-	 * @return translated "[show all {0} sites in {1}]"
-	 */
-	@DefaultMessage("[show all {0} sites in {1}]")
-	String clickToShowAllSitesOfAdminEntity(String arg0, String arg1);
-
-	/**
-	 * Translated
-	 * "Have you checked if a location already exists? \r\n\r\n Identical locations lead to bad quality reports. \r\n\r\n Please ensure there is not already a location in the area you specified."
-	 * .
-	 * 
-	 * @return translated
-	 *         "Have you checked if a location already exists? \r\n\r\n Identical locations lead to bad quality reports. \r\n\r\n Please ensure there is not already a location in the area you specified."
-	 */
-	@DefaultMessage("Have you checked if a location already exists? \r\n\r\n Identical locations lead to bad quality reports. \r\n\r\n Please ensure there is not already a location in the area you specified.")
-	String confirmAddLocation();
 
 	/**
 	 * Translated "Are you sure you want to delete the database <b>{0}</b>? <br>
@@ -126,14 +43,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	String coordOutsideBounds(String arg0);
 
 	/**
-	 * Translated "edited {0}".
-	 * 
-	 * @return translated "edited {0}"
-	 */
-	@DefaultMessage("edited {0}")
-	String edited(String arg0);
-
-	/**
 	 * Translated "Last Sync''d: {0}".
 	 * 
 	 * @return translated "Last Sync''d: {0}"
@@ -141,13 +50,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("Last Sync''d: {0}")
 	String lastSynced(String arg0);
 
-	/**
-	 * Translated "{0} locations without GPS".
-	 * 
-	 * @return translated "{0} locations without GPS"
-	 */
-	@DefaultMessage("{0} locations without GPS")
-	String locationsWithoutGps(String arg0);
 
 	/**
 	 * Translated
@@ -258,16 +160,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	String showLockedPeriodsTitle(String arg0, String arg1, String arg2);
 
 
-	/**
-	 * Translated
-	 * "Too many ({0}) locations found. Please refine criteria to see possible locations.  "
-	 * .
-	 * 
-	 * @return translated
-	 *         "Too many ({0}) locations found. Please refine criteria to see possible locations.  "
-	 */
-	@DefaultMessage("Too many ({0}) sites found. Please refine criteria to see possible sites.  ")
-	String tooManyLocationsFound(String arg0);
 
 	/**
 	 * Translated "ActivityInfo r{0}".
@@ -304,14 +196,15 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("The report ''{0}'' has been saved.")
 	String reportSaved(String name);
 	
-	@DefaultMessage("Link \"{0}\" to \"{1}\"")
-	String link(String source, String dest);
-	
-	
-	@DefaultMessage("Unlink \"{0}\" to \"{1}\"")
-	String unlink(String source, String dest);
 
 	@DefaultMessage("Are you sure you want to delete the report \"{0}\"")
 	String confirmDeleteReport(String reportTitle);
+
+	@DefaultMessage("The activity \"{0}\" has not been marked as public by the database owner and so cannot be embedded in a public web page. Please contact the database owner and request that the activity be published.")
+	String activityNotPublic(String name);
+	
+	@DefaultMessage("In order to embed this sheet in a public web page, the activity \"{0}\" must be made public. Do you want to make this activity public now?")
+	String promptPublishActivity(String name);
+	
 }
 

@@ -176,7 +176,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 
         toolBar.addExcelExportButton();
         toolBar.addPrintButton();
-                
+        toolBar.addButton("EMBED", I18N.CONSTANTS.embed(), IconImageBundle.ICONS.embed());
+        
         return toolBar;
 	}
 	
@@ -296,6 +297,9 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		Set<Integer> activities = currentPlace.getFilter().getRestrictions(DimensionType.Activity);			
 		toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
 		toolBar.setActionEnabled(UIActions.EXPORT, activities.size() == 1);
+		
+		// also embedding is only implemented for one activity
+		toolBar.setActionEnabled("EMBED", activities.size() == 1);
 	}
 
 	@Override
@@ -345,9 +349,12 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 			Window.Location.assign(GWT.getModuleBaseURL() + "export?filter=" +
 					FilterUrlSerializer.toUrlFragment(currentPlace.getFilter()));
 		
+		} else if("EMBED".equals(actionId)) {
+			EmbedDialog dialog = new EmbedDialog(dispatcher);
+			dialog.show(currentPlace);
 		}
 	}
-	
+
 	private void delete() {
 		dispatcher.execute(new Delete(gridPanel.getSelection()), new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
 				new AsyncCallback<VoidResult>() {
