@@ -152,10 +152,20 @@ public class GetSchemaHandler implements
 										.equalTo(context.getUser().getId()), "p")
 						.on("p.DatabaseId = d.DatabaseId")
 					.leftJoin("UserLogin o")
-						.on("d.OwnerUserId = o.UserId").where("d.DateDeleted")
-					.isNull().whereTrue("(o.userId = ? or p.AllowView = 1 or (d.DatabaseId in (select pa.DatabaseId from activity pa where pa.published>0)))")
-					.appendParameter(context.getUser().getId())
+						.on("d.OwnerUserId = o.UserId")
+					.where("d.DateDeleted").isNull()
 					.orderBy("d.Name");
+			
+			// this is quite hackesh. we ultimately need to split up GetSchema() into
+			// GetDatabases() and GetDatabaseSchema() so that the client has more fine-grained
+			// control over which databases are visible, which will be important as the number
+			// of public databases grow
+			if(context.getUser().isAnonymous()) {
+				query.whereTrue("(d.DatabaseId in (select pa.DatabaseId from activity pa where pa.published>0))");
+			} else {
+				query.whereTrue("(o.userId = ? or p.AllowView = 1)")
+					.appendParameter(context.getUser().getId());
+			}
 
 			query.execute(tx, new SqlResultCallback() {
 

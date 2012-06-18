@@ -82,4 +82,8 @@ public class AuthenticatedUser implements IsSerializable {
 	public static AuthenticatedUser getAnonymous(LocaleInfo currentLocale) {
 		return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0, AnonymousUser.USER_EMAIL, currentLocale.getLocaleName());
 	}
+	
+	public boolean isAnonymous() {
+		return AnonymousUser.AUTHTOKEN.equals(authToken);
+	}
 }
