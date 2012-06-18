@@ -414,7 +414,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	@Override
 	public void export(Format format) {
-		dispatcher.execute(new RenderElement(currentEditor.getModel(), format), null, new DownloadCallback(eventBus));
+		dispatcher.execute(new RenderElement(currentEditor.getModel(), format), null, new DownloadCallback());
 	}
 
 	private boolean untitled() {

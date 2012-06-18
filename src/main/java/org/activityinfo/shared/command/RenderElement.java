@@ -5,7 +5,7 @@
 
 package org.activityinfo.shared.command;
 
-import org.activityinfo.shared.command.result.RenderResult;
+import org.activityinfo.shared.command.result.UrlResult;
 import org.activityinfo.shared.report.model.ReportElement;
 
 /**
@@ -18,7 +18,7 @@ import org.activityinfo.shared.report.model.ReportElement;
  *
  * @author Alex Bertram
  */
-public class RenderElement implements Command<RenderResult> {
+public class RenderElement implements Command<UrlResult> {
 
     public enum Format {
         PNG,

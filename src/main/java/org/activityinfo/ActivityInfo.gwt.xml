@@ -8,5 +8,20 @@
 	<inherits name='org.activityinfo.ActivityInfoCore'/>
 	
 	<inherits name="com.bedatadriven.rebar.appcache.AppCacheLinker"/>
+
+
+	<!-- AJAX-initiated downloads are tricky. By default we use a conservative approach
+		with a popup dialog presenting the link -->
+	<replace-with class="org.activityinfo.client.util.Downloader">
+    	<when-type-is class="org.activityinfo.client.util.Downloader"/>
+  	</replace-with>
 	
+	<!--  Firefox and chrome are more gracious about allowing this type of download initiating -->
+	<replace-with class="org.activityinfo.client.util.IFrameDownloader">
+    <when-type-is class="org.activityinfo.client.util.Downloader" />
+    <any>
+      <when-property-is name="user.agent" value="gecko1_8" />
+      <when-property-is name="user.agent" value="safari" />
+    </any>
+  </replace-with>
 </module>

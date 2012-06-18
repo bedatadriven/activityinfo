@@ -20,7 +20,7 @@ import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.RenderElement;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.command.result.RenderResult;
+import org.activityinfo.shared.command.result.UrlResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.activityinfo.shared.report.model.DateRange;
@@ -78,7 +78,7 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
             throw new UnexpectedCommandException();
         }
 
-        return new RenderResult(filename);
+        return new UrlResult(filename);
     }
 
 	private void renderIndividualElement(RenderElement cmd, User user,
