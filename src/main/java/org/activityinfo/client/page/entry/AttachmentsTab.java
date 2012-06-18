@@ -2,11 +2,9 @@ package org.activityinfo.client.page.entry;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.callback.DownloadCallback;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.shared.command.DownloadAttachment;
 import org.activityinfo.shared.command.GetSiteAttachments;
 import org.activityinfo.shared.command.result.SiteAttachmentResult;
 import org.activityinfo.shared.dto.SiteAttachmentDTO;
@@ -23,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AttachmentsTab extends TabItem implements
@@ -37,7 +36,6 @@ public class AttachmentsTab extends TabItem implements
 	private final EventBus eventBus;
 
 	private ListView<SiteAttachmentDTO> attachmentList;
-	private String currentAttachment;
 
 	public AttachmentsTab(Dispatcher service, final EventBus eventBus) {
 		this.dispatcher = service;
@@ -71,7 +69,6 @@ public class AttachmentsTab extends TabItem implements
 					@Override
 					public void handleEvent(
 							ListViewEvent<SiteAttachmentDTO> event) {
-						currentAttachment = event.getModel().getBlobId();
 						toolBar.setActionEnabled(UIActions.DELETE, true);
 					}
 				});
@@ -82,8 +79,9 @@ public class AttachmentsTab extends TabItem implements
 					@Override
 					public void handleEvent(
 							ListViewEvent<SiteAttachmentDTO> event) {
-						currentAttachment = event.getModel().getBlobId();
-						dispatcher.execute(new DownloadAttachment(currentAttachment), null, new DownloadCallback());
+						String currentAttachment = event.getModel().getBlobId();
+						Window.Location.assign(GWT.getModuleBaseURL() + "attachment?blobId=" + 
+								event.getModel().getBlobId());						
 					}
 				});
 		panel.add(attachmentList);
@@ -146,7 +144,7 @@ public class AttachmentsTab extends TabItem implements
 
 	@Override
 	public String getSelectedItem() {
-		return currentAttachment;
+		return attachmentList.getSelectionModel().getSelectedItem().getBlobId();
 	}
 
 	@Override
