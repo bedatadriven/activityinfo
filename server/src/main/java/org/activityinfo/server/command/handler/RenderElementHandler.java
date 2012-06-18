@@ -63,7 +63,7 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
             // compose temporary file name
         String filename = SecureTokenGenerator.generate() + renderer.getFileSuffix();
         String path = tempPath + "/" + filename;
-
+        
         // render to a temporary file
         try {
             FileOutputStream os = new FileOutputStream(path);
