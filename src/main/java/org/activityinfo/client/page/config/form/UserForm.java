@@ -7,6 +7,7 @@ package org.activityinfo.client.page.config.form;
 
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.dto.UserPermissionDTO;
 import org.activityinfo.client.i18n.UIConstants;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -23,36 +24,37 @@ import com.google.gwt.core.client.GWT;
 
 public class UserForm extends FormPanel {
 
-    private FormBinding binding;
+    
+	private UserDatabaseDTO database;
+	private TextField<String> nameField;
+	private TextField<String> emailField;
+	private ComboBox<PartnerDTO> partnerCombo;
 
 	public UserForm(UserDatabaseDTO database) {
+		this.database = database;
 		
 		UIConstants constants = GWT.create(UIConstants.class);
-
-        binding = new FormBinding(this);
 
 		FormLayout layout = new FormLayout();
 		layout.setLabelWidth(90);
 		this.setLayout(layout);
 		
-		TextField<String> nameField = new TextField<String>();
+		nameField = new TextField<String>();
 		nameField.setFieldLabel(constants.name());
 		nameField.setAllowBlank(false);
-        binding.addFieldBinding(new FieldBinding(nameField, "name"));
 		this.add(nameField);
 		
-		TextField<String> emailField = new TextField<String>();
+		emailField = new TextField<String>();
 		emailField.setFieldLabel(constants.email());
 		emailField.setAllowBlank(false);
-		emailField.setRegex("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}");
-        binding.addFieldBinding(new FieldBinding(emailField, "email"));
+		emailField.setRegex("\\S+@\\S+\\.\\S+");
 		this.add(emailField);
 
         ListStore<PartnerDTO> partnerStore = new ListStore<PartnerDTO>();
 		partnerStore.add(database.getPartners());
 		partnerStore.sort("name", SortDir.ASC);
 		
-		ComboBox<PartnerDTO> partnerCombo = new ComboBox<PartnerDTO>();
+		partnerCombo = new ComboBox<PartnerDTO>();
 		partnerCombo.setName("partner");
 		partnerCombo.setFieldLabel(constants.partner());
 		partnerCombo.setDisplayField("name");
@@ -60,9 +62,7 @@ public class UserForm extends FormPanel {
 		partnerCombo.setForceSelection(true);
 		partnerCombo.setTriggerAction(TriggerAction.QUERY);
 		partnerCombo.setAllowBlank(false);
-        binding.addFieldBinding(new FieldBinding(partnerCombo, "partner"));
-		this.add(partnerCombo);
-	
+		this.add(partnerCombo);	
 	}
 	
 	protected CheckBox createCheckBox(String property, String label) {
@@ -72,7 +72,12 @@ public class UserForm extends FormPanel {
 		return box;
 	}
 
-    public FormBinding getBinding() {
-        return binding;
-    }
+
+	public UserPermissionDTO getUser() {
+		UserPermissionDTO user = new UserPermissionDTO();
+		user.setEmail(emailField.getValue());
+		user.setName(nameField.getValue());
+		user.setPartner(partnerCombo.getValue());
+		return user;
+	}
 }

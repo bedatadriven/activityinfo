@@ -5,76 +5,120 @@
 
 package org.activityinfo.client.page.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.loader.PagingCmdLoader;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
+import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.icon.IconImageBundle;
+import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
-import org.activityinfo.client.page.common.dialog.FormDialogTether;
-import org.activityinfo.client.page.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.client.page.common.grid.GridPresenter;
-import org.activityinfo.client.page.common.grid.GridView;
+import org.activityinfo.client.page.common.dialog.FormDialogImpl;
+import org.activityinfo.client.page.common.toolbar.ActionListener;
+import org.activityinfo.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.client.page.common.toolbar.UIActions;
+import org.activityinfo.client.page.config.form.UserForm;
 import org.activityinfo.client.util.state.StateProvider;
 import org.activityinfo.shared.command.BatchCommand;
-import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetUsers;
 import org.activityinfo.shared.command.UpdateUserPermissions;
+import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.dto.UserPermissionDTO;
 
-import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
-public class DbUserEditor extends AbstractEditorGridPresenter<UserPermissionDTO> implements
-GridPresenter<UserPermissionDTO>, DbPage {
+public class DbUserEditor extends ContentPanel implements DbPage, ActionListener {
 	public static final PageId PAGE_ID = new PageId("dbusers");
 
-	@ImplementedBy(DbUserGrid.class)
-	public interface View extends GridView<DbUserEditor, UserPermissionDTO> {
-
-		public void init(DbUserEditor presenter, UserDatabaseDTO db, ListStore<UserPermissionDTO> store);
-
-		public FormDialogTether showNewForm(UserPermissionDTO user, FormDialogCallback callback);
-	}
-
 	private final EventBus eventBus;
-	private final Dispatcher service;
-	private final View view;
+	private final Dispatcher dispatcher;
+
+	private PagingLoader<UserResult>  loader;
+	private ListStore<UserPermissionDTO> store;
+	private Grid<UserPermissionDTO> grid;
 
 	private UserDatabaseDTO db;
 
-	private ListStore<UserPermissionDTO> store;
-	private PagingCmdLoader<UserResult> loader;
+	private ActionToolBar toolBar;
 
 	@Inject
-	public DbUserEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
-		super(eventBus, service, stateMgr, view);
+	public DbUserEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr) {
 		this.eventBus = eventBus;
-		this.service = service;
-		this.view = view;
+		this.dispatcher = service;
+
+		setHeading(I18N.CONSTANTS.users());
+		setLayout(new FitLayout());
+
+		createToolBar();
+		createGrid();
+		createPagingToolBar();
 	}
 
 	@Override
 	public void go(UserDatabaseDTO db) {
-		this.db = db;
+		this.db = db;		
+		store.removeAll();
 
-		loader = new PagingCmdLoader<UserResult>(service);
-		loader.setCommand(new GetUsers(db.getId()));
-		//		initLoaderDefaults(loader, new, new SortInfo("name", Style.SortDir.ASC));
+		toolBar.setActionEnabled(UIActions.SAVE, false);
+		toolBar.setActionEnabled(UIActions.ADD, db.isManageUsersAllowed());
+		toolBar.setActionEnabled(UIActions.DELETE, false);
+
+		grid.getColumnModel().getColumnById("allowViewAll").setHidden(!db.isManageUsersAllowed());
+		grid.getColumnModel().getColumnById("allowEditAll").setHidden(!db.isManageUsersAllowed());
+		grid.getColumnModel().getColumnById("allowManageUsers").setHidden(!db.isManageAllUsersAllowed());
+		grid.getColumnModel().getColumnById("allowManageAllUsers").setHidden(!db.isManageAllUsersAllowed());
+		grid.getColumnModel().getColumnById("allowDesign").setHidden(!db.isDesignAllowed());
+
+		loader.load();
+	}
+
+	private void createToolBar() {
+		toolBar = new ActionToolBar(this);
+		toolBar.addSaveSplitButton();
+		toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.addUser(), IconImageBundle.ICONS.addUser());
+		toolBar.addButton(UIActions.DELETE, I18N.CONSTANTS.delete(), IconImageBundle.ICONS.deleteUser());
+		toolBar.addButton(UIActions.EXPORT, I18N.CONSTANTS.export(), IconImageBundle.ICONS.excel());
+		toolBar.addButton(UIActions.MAILING_LIST, I18N.CONSTANTS.CopyAddressToClipBoard() , IconImageBundle.ICONS.dataEntry());
+		setTopComponent(toolBar);
+	}
+
+	private void createGrid() {
+
+		loader = new BasePagingLoader<UserResult>(new UserProxy());
 
 		store = new ListStore<UserPermissionDTO>(loader);
 		store.setKeyProvider(new ModelKeyProvider<UserPermissionDTO>() {
@@ -83,15 +127,73 @@ GridPresenter<UserPermissionDTO>, DbPage {
 				return model.getEmail();
 			}
 		});
+		store.addListener(Store.Update, new Listener<StoreEvent<UserPermissionDTO>>() {
 
-		initListeners(store, loader);
+			@Override
+			public void handleEvent(StoreEvent<UserPermissionDTO> event) {
+				toolBar.setDirty(!store.getModifiedRecords().isEmpty());
+			}
+		});
 
-		view.init(this, db, store);
-		view.setActionEnabled(UIActions.SAVE, false);
-		view.setActionEnabled(UIActions.ADD, db.isManageUsersAllowed());
-		view.setActionEnabled(UIActions.DELETE, false);
+		final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-		loader.load();
+		columns.add(new ColumnConfig("name", I18N.CONSTANTS.name(), 100));
+		columns.add(new ColumnConfig("email", I18N.CONSTANTS.email(), 150));
+		columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 150));
+
+		PermissionCheckConfig allowView = new PermissionCheckConfig("allowViewSimple", I18N.CONSTANTS.allowView(), 75);
+		allowView.setDataIndex("allowView");
+		allowView.setToolTip(I18N.CONSTANTS.allowViewLong());
+		columns.add(allowView);
+
+		PermissionCheckConfig allowEdit = new PermissionCheckConfig("allowEditSimple", I18N.CONSTANTS.allowEdit(), 75);
+		allowEdit.setDataIndex("allowEdit");
+		allowEdit.setToolTip(I18N.CONSTANTS.allowEditLong());
+		columns.add(allowEdit);
+
+		PermissionCheckConfig allowViewAll = new PermissionCheckConfig("allowViewAll", I18N.CONSTANTS.allowViewAll(), 75);
+		allowViewAll.setToolTip(I18N.CONSTANTS.allowViewAllLong());
+		columns.add(allowViewAll);
+
+		PermissionCheckConfig allowEditAll = new PermissionCheckConfig("allowEditAll", I18N.CONSTANTS.allowEditAll(), 75);
+		allowEditAll.setToolTip(I18N.CONSTANTS.allowEditAllLong());
+		columns.add(allowEditAll);
+
+		PermissionCheckConfig allowManageUsers = null;
+		allowManageUsers = new PermissionCheckConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150);
+		columns.add(allowManageUsers);
+
+		PermissionCheckConfig allowManageAllUsers = new PermissionCheckConfig("allowManageAllUsers", I18N.CONSTANTS.manageAllUsers(), 150);
+		columns.add(allowManageAllUsers);
+
+		// only users with the right to design them selves can change the design attribute
+		PermissionCheckConfig allowDesign = new PermissionCheckConfig("allowDesign", I18N.CONSTANTS.allowDesign(), 75);
+		allowDesign.setToolTip(I18N.CONSTANTS.allowDesignLong());
+		columns.add(allowDesign);
+
+		grid = new Grid<UserPermissionDTO>(store, new ColumnModel(columns));
+		grid.setLoadMask(true);
+		grid.setSelectionModel(new GridSelectionModel<UserPermissionDTO>());
+		grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<UserPermissionDTO>() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent<UserPermissionDTO> se) {
+				onSelectionChanged(se.getSelectedItem());
+			}
+		});
+		grid.addPlugin(allowEdit);
+		grid.addPlugin(allowViewAll);
+		grid.addPlugin(allowEditAll);
+		grid.addPlugin(allowManageUsers);
+		grid.addPlugin(allowManageAllUsers);
+		grid.addPlugin(allowDesign);
+		add(grid);
+	}
+
+	private void createPagingToolBar() {
+		PagingToolBar pagingToolBar = new PagingToolBar(100);
+		pagingToolBar.bind(loader);
+		setBottomComponent(pagingToolBar);
 	}
 
 	@Override
@@ -99,44 +201,11 @@ GridPresenter<UserPermissionDTO>, DbPage {
 	}
 
 	@Override
-	public ListStore<UserPermissionDTO> getStore() {
-		return store;
-	}
-
-	@Override
-	public int getPageSize() {
-		return 100;
-	}
-
-	@Override
 	public boolean navigate(PageState place) {
 		return false;
 	}
 
-	@Override
-	public void onDeleteConfirmed(final UserPermissionDTO model) {
-		model.setAllowView(false);
-		model.setAllowViewAll(false);
-		model.setAllowEdit(false);
-		model.setAllowEditAll(false);
-		model.setAllowDesign(false);
-		model.setAllowManageAllUsers(false);
-		model.setAllowManageUsers(false);
-
-		service.execute(new UpdateUserPermissions(db.getId(), model), view.getDeletingMonitor(),
-				new AsyncCallback<VoidResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-
-			@Override
-			public void onSuccess(VoidResult result) {
-				store.remove(model);
-			}
-		});
-	}
-
-	public boolean validateChange(UserPermissionDTO user, String property, boolean value) {
+	private boolean validateChange(UserPermissionDTO user, String property) {
 
 		// If the user doesn't have the manageUser permission, then it's
 		// definitely
@@ -175,26 +244,108 @@ GridPresenter<UserPermissionDTO>, DbPage {
 	}
 
 	@Override
-	protected Command createSaveCommand() {
+	public PageId getPageId() {
+		return PAGE_ID;
+	}
 
+	@Override
+	public Object getWidget() {
+		return this;
+	}
+
+	@Override
+	public String beforeWindowCloses() {
+		return null;
+	}
+
+	private void onRowEdit(String property, boolean value, Record record) {
+		record.beginEdit();
+		if (!value) {
+			// Cascade remove permissions
+			if ("allowViewAll".equals(property)) {
+				record.set("allowEditAll", false);
+			} 
+		} else {
+			// cascade add permissions
+			if ("allowEditAll".equals(property)) {
+				record.set("allowEdit", true);
+				record.set("allowViewAll", true);
+			} else if("allowManageAllUsers".equals(property)) {
+				record.set("allowManageUsers", true);
+			} 
+		} 
+
+		record.endEdit();
+		toolBar.setDirty(store.getModifiedRecords().size() != 0);
+	}
+
+	private void onSelectionChanged(UserPermissionDTO selectedItem) {
+
+		if (selectedItem != null) {
+			PartnerDTO selectedPartner = selectedItem.getPartner();
+
+			toolBar.setActionEnabled(UIActions.DELETE, db.isManageAllUsersAllowed()
+					|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedPartner.getId()));
+		}
+		toolBar.setActionEnabled(UIActions.DELETE, selectedItem != null);
+	}
+
+
+	@Override
+	public void onUIAction(String actionId) {
+		if (actionId.equals(UIActions.SAVE)) {
+			save();
+		} else if(actionId.equals(UIActions.ADD)) {
+			add();
+		} else if(actionId.equals(UIActions.DELETE)) {
+			delete();
+		}  else if (actionId.equals(UIActions.EXPORT)) {
+			export();
+		} else if (UIActions.MAILING_LIST.equals(actionId)) {
+			createMailingListPopup();
+		}
+	}
+
+	private void save() {
 		BatchCommand batch = new BatchCommand();
 
 		for (Record record : store.getModifiedRecords()) {
 			batch.add(new UpdateUserPermissions(db.getId(), (UserPermissionDTO) record.getModel()));
 		}
-		return batch;
+
+		dispatcher.execute(batch, new MaskingAsyncMonitor(this, I18N.CONSTANTS.saving()), new AsyncCallback<BatchResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// handled by monitor
+			}
+
+			@Override
+			public void onSuccess(BatchResult result) {
+				store.commitChanges();
+			}
+		});
 	}
 
-	@Override
-	protected void onAdd() {
 
-		final UserPermissionDTO newUser = new UserPermissionDTO();
-		newUser.setAllowView(true);
+	private void createMailingListPopup() {
+		new MailingListDialog(eventBus, dispatcher, db.getId());
+	}
 
-		view.showNewForm(newUser, new FormDialogCallback() {
+	private void add() {
+		final UserForm form = new UserForm(db);
+
+		final FormDialogImpl dlg = new FormDialogImpl(form);
+		dlg.setHeading(I18N.CONSTANTS.newUser());
+		dlg.setWidth(400);
+		dlg.setHeight(300);
+
+		dlg.show(new FormDialogCallback() {
+
 			@Override
-			public void onValidated(final FormDialogTether dlg) {
-				service.execute(new UpdateUserPermissions(db, newUser), dlg, new AsyncCallback<VoidResult>() {
+			public void onValidated() {
+				dispatcher.execute(new UpdateUserPermissions(db, form.getUser()), dlg, 
+						new AsyncCallback<VoidResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -205,81 +356,81 @@ GridPresenter<UserPermissionDTO>, DbPage {
 						loader.load();
 						dlg.hide();
 					}
-				});
+				});		
 			}
 		});
-
 	}
 
-	@Override
-	protected String getStateId() {
-		return "User" + db.getId();
-	}
+	private void delete() {
+		final UserPermissionDTO model = grid.getSelectionModel().getSelectedItem();
+		model.setAllowView(false);
+		model.setAllowViewAll(false);
+		model.setAllowEdit(false);
+		model.setAllowEditAll(false);
+		model.setAllowDesign(false);
+		model.setAllowManageAllUsers(false);
+		model.setAllowManageUsers(false);
 
-	@Override
-	public PageId getPageId() {
-		return PAGE_ID;
-	}
-
-	@Override
-	public Object getWidget() {
-		return view;
-	}
-
-	@Override
-	public String beforeWindowCloses() {
-		return null;
-	}
-
-	public void onRowEdit(String property, boolean value, Record record) {
-		record.beginEdit();
-		if (!value) {
-			// Cascade remove permissions
-			if ("allowViewAll".equals(property)) {
-				record.set("allowEditAll", false);
-			} else if ("allowEditAll".equals(property)) {
-				record.set("allowEdit", false);
+		dispatcher.execute(new UpdateUserPermissions(db.getId(), model), 
+				new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
+				new AsyncCallback<VoidResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
 			}
-		} else {
-			// cascade add permissions
-			if ("allowEditAll".equals(property)) {
-				record.set("allowEdit", true);
+
+			@Override
+			public void onSuccess(VoidResult result) {
+				store.remove(model);
+			}
+		});
+	}
+
+	private void export() {
+		Window.open(GWT.getModuleBaseURL() + "export/users?dbUsers=" + db.getId(), "_blank", null);
+	}
+
+	@Override
+	public void requestToNavigateAway(PageState place,
+			NavigationCallback callback) {
+		callback.onDecided(true);
+	}
+
+	private class PermissionCheckConfig extends CheckColumnConfig {
+
+		public PermissionCheckConfig(String id, String name, int width) {
+			super(id, name, width);
+		}
+
+		@Override
+		protected void onMouseDown(GridEvent<ModelData> ge) {
+			El el = ge.getTargetEl();
+			if (el != null && el.hasStyleName("x-grid3-cc-" + getId()) && !el.hasStyleName("x-grid3-check-col-disabled")) {
+				ge.stopEvent();
+				UserPermissionDTO m = (UserPermissionDTO) ge.getModel();
+				String property = grid.getColumnModel().getColumnId(ge.getColIndex());
+				Record r = store.getRecord(m);
+				Boolean b = (Boolean) m.get(getDataIndex());
+				if(validateChange(m, property)) {
+					boolean newValue = b == null ? true : !b;
+					r.set(getDataIndex(), newValue);
+					onRowEdit(property, newValue, r);
+				}
 			}
 		}
-
-		record.endEdit();
-		onDirtyFlagChanged(store.getModifiedRecords().size() != 0);
 	}
 
-	@Override
-	public void onUIAction(String actionId) {
-		super.onUIAction(actionId);
-		if (actionId.equals(UIActions.EXPORT)) {
-			Window.open(GWT.getModuleBaseURL() + "export/users?dbUsers=" + db.getId(), "_blank", null);
-		} else if (UIActions.MAILING_LIST.equals(actionId)) {
+	private class UserProxy extends RpcProxy<UserResult> {
 
-			onMailingList();
+		@Override
+		protected void load(Object loadConfig,
+				final AsyncCallback<UserResult> callback) {
+
+			PagingLoadConfig config = (PagingLoadConfig)loadConfig;
+			GetUsers command = new GetUsers(db.getId());
+			command.setOffset(config.getOffset());
+			command.setLimit(config.getLimit());
+			command.setSortInfo(config.getSortInfo());
+			dispatcher.execute(command, null, callback);
 		}
-	}
-
-	protected void onMailingList() {
-		createMailingListPopup();
-	}
-
-	private void createMailingListPopup() {
-		new MailingListDialog(eventBus, service, db.getId());
-	}
-
-	@Override
-	public void onSelectionChanged(ModelData selectedItem) {
-
-		if (selectedItem != null) {
-			UserPermissionDTO user = (UserPermissionDTO) selectedItem;
-			PartnerDTO selectedPartner = user.getPartner();
-			
-			view.setActionEnabled(UIActions.DELETE, db.isManageAllUsersAllowed()
-					|| (db.isManageUsersAllowed() && db.getMyPartnerId() == selectedPartner.getId()));
-		}
-		view.setActionEnabled(UIActions.DELETE, selectedItem != null);
 	}
 }
