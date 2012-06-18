@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
@@ -48,7 +49,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertThat("database count", schema.getDatabases().size(), equalTo(4));
+        assertThat("database count", schema.getDatabases().size(), equalTo(3));
         assertThat("database list is sorted", schema.getDatabases().get(0).getName(), equalTo("Alpha"));
         
         assertTrue("ALEX(owner) in PEAR", schema.getDatabaseById(1) != null);     // PEAR
@@ -86,7 +87,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertThat(schema.getDatabases().size(), equalTo(2));
+        assertThat(schema.getDatabases().size(), equalTo(1));
         assertThat("BAVON in PEAR", schema.getDatabaseById(1), is(not(nullValue())));
         assertThat(schema.getDatabaseById(1).getMyPartnerId(), equalTo(1));
         assertThat(schema.getDatabaseById(1).isEditAllowed(), equalTo(true));
