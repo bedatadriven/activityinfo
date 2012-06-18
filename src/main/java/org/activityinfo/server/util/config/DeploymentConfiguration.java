@@ -20,8 +20,13 @@ public class DeploymentConfiguration {
 		super();
 		this.properties = properties;
 	}
+	
 	public String getProperty(String key) {
 		return properties.getProperty(key);
+	}
+	
+	public String getProperty(String key, String defaultValue) {
+		return properties.getProperty(key, defaultValue);
 	}
 	
 	/**

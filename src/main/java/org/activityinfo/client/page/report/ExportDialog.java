@@ -109,12 +109,11 @@ public class ExportDialog extends Dialog {
 			@Override
 			public void onSuccess(UrlResult result) {
 				if(!canceled) {
-					String downloadUrl = GWT.getModuleBaseURL() + "download?" + result.getUrl();
 					bar.reset();
 					bar.updateProgress(1.0, I18N.CONSTANTS.downloadReady());
 					button.setText(I18N.CONSTANTS.close());
-					tryStartDownloadWithIframe(downloadUrl);
-					downloadLink.getElement().setAttribute("href", downloadUrl);
+					tryStartDownloadWithIframe(result.getUrl());
+					downloadLink.getElement().setAttribute("href", result.getUrl());
 					downloadLink.setVisible(true);
 					layout(true);
 				}
