@@ -25,7 +25,6 @@ import org.activityinfo.client.page.report.ReportModule;
 import org.activityinfo.client.page.search.SearchLoader;
 import org.activityinfo.client.page.search.SearchModule;
 import org.activityinfo.client.report.editor.map.MapModule;
-import org.activityinfo.client.util.Downloader;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -52,7 +51,6 @@ public interface AppInjector extends Ginjector {
     ReportLoader createReportLoader();
     ConfigLoader createConfigLoader();
     OfflineController createOfflineController();
-    Downloader getDownloadManager();
     UsageTracker getUsageTracker();
 	SearchLoader createSearchLoader();
 	DashboardLoader createDashboardLoader();
