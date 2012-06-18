@@ -282,10 +282,10 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	
 	private void setCanMultipleSelect() {
 		if (multiSelect) {
-			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeMultipleIndicators());
+			labelCanSelectMultiple.setText(I18N.CONSTANTS.canIncludeMultipleIndicators());
 			imageCanSelectMultiple.setResource(MapResources.INSTANCE.multiSelect());
 		} else {
-			labelCanSelectMultiple.setText(I18N.MESSAGES.canIncludeSingleIndicator());
+			labelCanSelectMultiple.setText(I18N.CONSTANTS.canIncludeSingleIndicator());
 			imageCanSelectMultiple.setResource(MapResources.INSTANCE.singleSelect());
 			clearSelectionIfMoreThenOneItem();
 		}
