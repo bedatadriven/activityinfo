@@ -26,7 +26,7 @@ public class SiteDialogLauncher {
 
 	public void addSite(final Filter filter, final SiteDialogCallback callback) {
 		if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
-			dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 				@Override
 				public void onFailure(Throwable arg0) {
@@ -51,7 +51,7 @@ public class SiteDialogLauncher {
 	}
 	
 	public void editSite(final SiteDTO site, final SiteDialogCallback callback) {
-		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) { }

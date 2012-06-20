@@ -209,11 +209,11 @@ public class DbListPresenterTest {
 
     private <T extends CommandResult> void expectDispatch(Command<T> command, final T result) {
         this.dispatcher.execute(eq(command),
-                optionalMonitor(), isA(AsyncCallback.class));
+                isA(AsyncCallback.class));
         expectLastCall().andAnswer(new IAnswer<Void>() {
             @Override
             public Void answer() throws Throwable {
-                ((AsyncCallback) getCurrentArguments()[DESIGNABLE_DB_ID]).onSuccess(schema);
+                ((AsyncCallback) getCurrentArguments()[1]).onSuccess(schema);
                 return null;
             }
         });

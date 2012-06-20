@@ -86,7 +86,7 @@ public class ExportDialog extends Dialog {
 		show();
 		bar.updateText(I18N.CONSTANTS.exportProgress());
 		bar.auto();
-		dispatcher.execute(new RenderElement(model, format), null, new AsyncCallback<UrlResult>() {
+		dispatcher.execute(new RenderElement(model, format), new AsyncCallback<UrlResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

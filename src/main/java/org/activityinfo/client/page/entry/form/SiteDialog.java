@@ -225,7 +225,7 @@ public class SiteDialog extends Window {
 		
 		updateModel(newSite);
 		
-		dispatcher.execute(new CreateSite(newSite), null, new AsyncCallback<CreateResult>() {
+		dispatcher.execute(new CreateSite(newSite), new AsyncCallback<CreateResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -246,7 +246,7 @@ public class SiteDialog extends Window {
 		final SiteDTO updated = new SiteDTO(site);
 		updateModel(updated);
 		
-		dispatcher.execute(new UpdateSite(site, updated), null, new AsyncCallback<VoidResult>() {
+		dispatcher.execute(new UpdateSite(site, updated), new AsyncCallback<VoidResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

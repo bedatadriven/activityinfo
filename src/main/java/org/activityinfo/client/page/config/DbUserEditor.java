@@ -430,7 +430,7 @@ public class DbUserEditor extends ContentPanel implements DbPage, ActionListener
 			command.setOffset(config.getOffset());
 			command.setLimit(config.getLimit());
 			command.setSortInfo(config.getSortInfo());
-			dispatcher.execute(command, null, callback);
+			dispatcher.execute(command, callback);
 		}
 	}
 }

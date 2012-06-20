@@ -17,11 +17,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.activityinfo.client.MockEventBus;
+import org.activityinfo.client.client.offline.OfflineModuleStub;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.i18n.UIMessages;
-import org.activityinfo.client.offline.OfflineModuleStub;
 import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.client.offline.command.LocalDispatcher;
 import org.activityinfo.client.offline.sync.DownSynchronizer;
@@ -142,13 +142,13 @@ public abstract class LocalHandlerTestCase {
     
     protected <C extends Command<R>, R extends CommandResult> R executeLocally(C command) {
     	Collector<R> collector = Collector.newCollector();
-    	localDispatcher.execute(command, null, collector);
+    	localDispatcher.execute(command, collector);
     	return collector.getResult();
     }
     
     protected <C extends Command<R>, R extends CommandResult> R executeRemotely(C command) {
     	Collector<R> collector = Collector.newCollector();
-    	remoteDispatcher.execute(command, null, collector);
+    	remoteDispatcher.execute(command, collector);
     	return collector.getResult();
     }
     
@@ -164,21 +164,28 @@ public abstract class LocalHandlerTestCase {
     }
 
     private class RemoteDispatcherStub implements Dispatcher {
-        @Override
-        public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
-            List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
-            CommandResult result = results.get(0);
+    	@Override
+    	public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
+    		execute(command, callback);
+    	}
 
-            if(result instanceof SyncRegionUpdate) {
-                System.out.println(((SyncRegionUpdate) result).getSql());
-            }
+    	@Override
+    	public <T extends CommandResult> void execute(Command<T> command,
+    			AsyncCallback<T> callback) {
+    		List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
+    		CommandResult result = results.get(0);
 
-            if(result instanceof Exception) {
-                throw new Error((Throwable) result);
-            } else {
-                callback.onSuccess((T) result);
-            }
-        }
+    		if(result instanceof SyncRegionUpdate) {
+    			System.out.println(((SyncRegionUpdate) result).getSql());
+    		}
+
+    		if(result instanceof Exception) {
+    			throw new Error((Throwable) result);
+    		} else {
+    			callback.onSuccess((T) result);
+    		}
+    	}
+
     }
 
 }

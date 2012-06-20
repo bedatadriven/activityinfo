@@ -106,7 +106,7 @@ public class DownSynchronizer {
 
     
 	private void retrieveSyncRegions() {
-		dispatch.execute(new GetSyncRegions(), null, new AsyncCallback<SyncRegions>() {
+		dispatch.execute(new GetSyncRegions(), new AsyncCallback<SyncRegions>() {
             @Override
             public void onFailure(Throwable throwable) {
                 handleException("Error getting sync regions", throwable);
@@ -164,7 +164,7 @@ public class DownSynchronizer {
         Log.info("Synchronizer: Region " + region.getId() + ": localVersion=" + localVersion);
 
     	stats.onRemoteCallStarted();
-        dispatch.execute(new GetSyncRegionUpdates(region.getId(), localVersion), null, new AsyncCallback<SyncRegionUpdate>() {
+        dispatch.execute(new GetSyncRegionUpdates(region.getId(), localVersion), new AsyncCallback<SyncRegionUpdate>() {
             @Override
             public void onFailure(Throwable throwable) {
                 handleException("GetSyncRegionUpdates for region id " + region.getId() + " failed.", throwable);

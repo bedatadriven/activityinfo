@@ -69,7 +69,7 @@ public class RemoteDispatcherTest {
         replay(service);
 
         // trigger a call
-        dispatcher.execute(new GetSchema(), null, makeNullCallback());
+        dispatcher.execute(new GetSchema(), makeNullCallback());
         dispatcher.processPendingCommands();
 
         // verify that the command was dispatched to the server
@@ -84,8 +84,8 @@ public class RemoteDispatcherTest {
 
         // simulate successive dispatches of the same command from different
         // components of the application
-        dispatcher.execute(new GetSchema(), null, makeNullCallback());
-        dispatcher.execute(new GetSchema(), null, makeNullCallback());
+        dispatcher.execute(new GetSchema(), makeNullCallback());
+        dispatcher.execute(new GetSchema(), makeNullCallback());
         dispatcher.processPendingCommands();
 
         // verify that only one command was sent
@@ -100,9 +100,9 @@ public class RemoteDispatcherTest {
 
         // simulate successive dispatches of the same command from different
         // components of the application
-        dispatcher.execute(new GetSchema(), null, makeNullCallback());
+        dispatcher.execute(new GetSchema(), makeNullCallback());
         dispatcher.processPendingCommands();
-        dispatcher.execute(new GetSchema(), null, makeNullCallback());
+        dispatcher.execute(new GetSchema(), makeNullCallback());
 
         // verify that only one command was sent
         verify(service);
@@ -120,8 +120,8 @@ public class RemoteDispatcherTest {
 
         // simulate successive dispatches of the same command from different
         // components of the application
-        dispatcher.execute(new GetSchema(), null, callback1);
-        dispatcher.execute(new GetSchema(), null, callback2);
+        dispatcher.execute(new GetSchema(), callback1);
+        dispatcher.execute(new GetSchema(), callback2);
         dispatcher.processPendingCommands();
 
         // verify that only one command was sent
@@ -143,7 +143,7 @@ public class RemoteDispatcherTest {
         final AsyncCallback callback2 = makeCallbackThatExpectsNonNullSuccess();
 
         dispatcher.registerProxy(GetSchema.class, proxy);
-        dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable arg0) {
@@ -152,7 +152,7 @@ public class RemoteDispatcherTest {
 
 			@Override
 			public void onSuccess(SchemaDTO arg0) {
-		        dispatcher.execute(new GetSchema(), null, callback2);				
+		        dispatcher.execute(new GetSchema(), callback2);				
 			}
         	
         });
@@ -176,7 +176,7 @@ public class RemoteDispatcherTest {
         AsyncCallback callback = makeCallbackThatExpectsNonNullSuccess();
 
         dispatcher.registerProxy(GetSchema.class, proxy);
-        dispatcher.execute(new GetSchema(), null, callback);
+        dispatcher.execute(new GetSchema(), callback);
         dispatcher.processPendingCommands();
 
         verify(proxy, service, callback);
@@ -198,7 +198,7 @@ public class RemoteDispatcherTest {
         AsyncCallback callback = makeCallbackThatExpectsNonNullSuccess();
 
         dispatcher.registerProxy(GetSchema.class, proxy);
-        dispatcher.execute(new GetSchema(), null, callback);
+        dispatcher.execute(new GetSchema(), callback);
         dispatcher.processPendingCommands();
 
         verify(proxy, service, callback);
@@ -213,7 +213,7 @@ public class RemoteDispatcherTest {
 
         AsyncCallback callback = makeCallbackThatExpectsFailure();
 
-        dispatcher.execute(new GetSchema(), null, callback);
+        dispatcher.execute(new GetSchema(), callback);
         dispatcher.processPendingCommands();
 
         verify(service, callback);

@@ -48,7 +48,7 @@ public class DashboardPage extends Portal implements Page {
     }
     
     private void loadReports() {
-    	dispatcher.execute(new GetReports(), null, new AsyncCallback<ReportsResult>() {
+    	dispatcher.execute(new GetReports(), new AsyncCallback<ReportsResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

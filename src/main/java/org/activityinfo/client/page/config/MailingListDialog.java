@@ -75,7 +75,7 @@ public class MailingListDialog extends Window {
 	}
 
 	private void loadUsers() {
-		service.execute(new GetUsers(dbId), null, new AsyncCallback<UserResult>() {
+		service.execute(new GetUsers(dbId), new AsyncCallback<UserResult>() {
 
 			public void onFailure(Throwable caught) {
 			}

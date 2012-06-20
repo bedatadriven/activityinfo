@@ -76,7 +76,7 @@ public class ClusteringOptionsWidget extends LayoutContainer implements HasValue
 		//mask();
 		destroyForm();
 		
-		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

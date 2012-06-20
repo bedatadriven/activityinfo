@@ -186,7 +186,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		if(se.getSelection().isEmpty()) {
 			onNoSelection();
 		} else {
-			dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 	
 				@Override
 				public void onFailure(Throwable caught) {
@@ -270,7 +270,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	}
 
 	private void redirectToFirstActivity() {
-		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -329,7 +329,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 			delete();
 		
 		} else if(UIActions.PRINT.equals(actionId)) {
-			dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

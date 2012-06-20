@@ -234,7 +234,7 @@ public class SiteMap extends ContentPanel implements Shutdownable {
     }
 
     private void loadSites() {
-        service.execute(new GetSitePoints(activity.getId()), null, new AsyncCallback<SitePointList>() {
+        service.execute(new GetSitePoints(activity.getId()), new AsyncCallback<SitePointList>() {
             @Override
             public void onFailure(Throwable throwable) {
 

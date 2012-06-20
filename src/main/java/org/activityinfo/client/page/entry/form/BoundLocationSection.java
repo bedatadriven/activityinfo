@@ -56,7 +56,7 @@ public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO> imp
 	public void save(final AsyncCallback<Void> callback) {
 		if(isDirty()) {
 			newLocation();
-			dispatcher.execute(new CreateLocation(location), null, new AsyncCallback<VoidResult>() {
+			dispatcher.execute(new CreateLocation(location), new AsyncCallback<VoidResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

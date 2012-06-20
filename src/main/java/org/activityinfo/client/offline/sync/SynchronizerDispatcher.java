@@ -38,6 +38,12 @@ public class SynchronizerDispatcher implements Dispatcher {
 		
 	}
 	
+	@Override
+	public <T extends CommandResult> void execute(Command<T> command,
+			AsyncCallback<T> callback) {
+		execute(command, callback);
+	}
+
 	private final <T extends CommandResult> void tryExecute(final Command<T> command, final AsyncCallback<T> callback, final int attempt) {
 		remoteDispatcher.execute(command, null, new AsyncCallback<T>() {
 
@@ -55,7 +61,6 @@ public class SynchronizerDispatcher implements Dispatcher {
 				callback.onSuccess(result);
 			}
 		});
-		
 	}
 	
 	private final <T extends CommandResult> void handleConnectionFailure(final Command<T> command, Throwable caught, final AsyncCallback<T> callback, final int attempt) {

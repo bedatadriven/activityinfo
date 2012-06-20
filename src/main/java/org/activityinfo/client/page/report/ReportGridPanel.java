@@ -194,7 +194,7 @@ public class ReportGridPanel extends ContentPanel implements ActionListener {
 		protected void load(Object loadConfig,
 				final AsyncCallback<ReportsResult> callback) {
 			
-			dispatcher.execute(new GetReports(), null, new AsyncCallback<ReportsResult>() {
+			dispatcher.execute(new GetReports(), new AsyncCallback<ReportsResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -217,7 +217,7 @@ public class ReportGridPanel extends ContentPanel implements ActionListener {
 		update.setReportId(model.getId());
 		update.setPinnedToDashboard(model.isDashboard());
 		
-		dispatcher.execute(update, null, new AsyncCallback<VoidResult>() {
+		dispatcher.execute(update, new AsyncCallback<VoidResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

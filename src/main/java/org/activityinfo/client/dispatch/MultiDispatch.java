@@ -31,7 +31,7 @@ public class MultiDispatch {
 		results.add(null);
 		finished.add(null);
 		final int commandIndex = results.size();
-		dispatcher.execute(command, null, new AsyncCallback<R>() {
+		dispatcher.execute(command, new AsyncCallback<R>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

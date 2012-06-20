@@ -38,7 +38,7 @@ public abstract class ReportTemplate extends BaseModelData {
 	protected final void save(Report report, final AsyncCallback<Integer> callback) {	
 		
 
-		dispatcher.execute(new CreateReport(report), null, new AsyncCallback<CreateResult>() {
+		dispatcher.execute(new CreateReport(report), new AsyncCallback<CreateResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

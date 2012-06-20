@@ -36,5 +36,19 @@ public interface Dispatcher {
     <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor,
                                            AsyncCallback<T> callback);
 
+    
+    /**
+     * Attempts to execute a command. The command may not neccessarily be executed
+     * immediately, and there are no gaurantees that commands will complete in the order
+     * they were submitted.
+     *
+     * @param command  The command to execute
+     * @param monitor  The monitor which handles status reports to the user
+     * @param callback The callback which implements application logic
+     * @param <T>      The Command subclass
+     */
+    <T extends CommandResult> void execute(Command<T> command,
+                                           AsyncCallback<T> callback);
 
+    
 }

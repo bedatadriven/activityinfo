@@ -67,7 +67,7 @@ public class PartnerFilterDialog extends Dialog {
 	public void show(Filter baseFilter, final Filter currentFilter, SelectionCallback<Set<Integer>> callback) {
 		show();
 		this.callback = callback;
-		service.execute(new GetPartnersWithSites(baseFilter), null, new AsyncCallback<PartnerResult>() {
+		service.execute(new GetPartnersWithSites(baseFilter), new AsyncCallback<PartnerResult>() {
 	
 			@Override
 			public void onFailure(Throwable caught) {

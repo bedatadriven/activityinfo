@@ -107,7 +107,7 @@ public class AttachmentsPresenter implements ActionListener {
 		DeleteSiteAttachment attachment = new DeleteSiteAttachment();
 		attachment.setBlobId(view.getSelectedItem());
 
-		dispatcher.execute(attachment, null, new AsyncCallback<VoidResult>() {
+		dispatcher.execute(attachment, new AsyncCallback<VoidResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// callback.onFailure(caught);

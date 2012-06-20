@@ -78,7 +78,7 @@ public final class SiteGridPanel extends ContentPanel  {
 	private void updateHeading(final Filter filter) {
 		setHeading(I18N.CONSTANTS.sitesHeader());
 
-		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

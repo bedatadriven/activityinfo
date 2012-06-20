@@ -99,7 +99,7 @@ public class SiteTimeTreeLoader extends BaseTreeLoader<ModelData> implements Sit
 			pivot.setFilter(filter);
 			pivot.setValueType(ValueType.TOTAL_SITES);
 
-			dispatcher.execute(pivot, null, new AsyncCallback<PivotResult>() {
+			dispatcher.execute(pivot, new AsyncCallback<PivotResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -124,7 +124,7 @@ public class SiteTimeTreeLoader extends BaseTreeLoader<ModelData> implements Sit
 			pivot.setFilter( narrowFilter( parentNode.getDateRange() ) );
 			pivot.setValueType(ValueType.TOTAL_SITES);
 
-			dispatcher.execute(pivot, null, new AsyncCallback<PivotResult>() {
+			dispatcher.execute(pivot, new AsyncCallback<PivotResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -150,7 +150,7 @@ public class SiteTimeTreeLoader extends BaseTreeLoader<ModelData> implements Sit
 			siteQuery.setFilter(narrowFilter( parentEntity.getDateRange() ));
 			siteQuery.setSortInfo(new SortInfo("date2", SortDir.ASC));
 			
-			dispatcher.execute(siteQuery, null, new AsyncCallback<SiteResult>() {
+			dispatcher.execute(siteQuery, new AsyncCallback<SiteResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

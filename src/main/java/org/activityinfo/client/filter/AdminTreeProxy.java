@@ -54,7 +54,7 @@ class AdminTreeProxy implements DataProxy {
             request.setParentId(parentEntity.getId());
         }
 
-        service.execute(request, null, new AsyncCallback<AdminEntityResult>() {
+        service.execute(request, new AsyncCallback<AdminEntityResult>() {
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }

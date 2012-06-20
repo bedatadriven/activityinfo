@@ -108,7 +108,7 @@ public class LocationSearchPresenter extends BaseObservable {
 	
 	public void accept() {
 		// retrieve the full version of this location
-		dispatcher.execute(new GetLocation(selection.getId()), null, new AsyncCallback<LocationDTO>() {
+		dispatcher.execute(new GetLocation(selection.getId()), new AsyncCallback<LocationDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -136,7 +136,7 @@ public class LocationSearchPresenter extends BaseObservable {
 			
 			final SearchLocations thisSearch = currentSearch;
 			
-			dispatcher.execute(thisSearch, null, new AsyncCallback<LocationResult>() {
+			dispatcher.execute(thisSearch, new AsyncCallback<LocationResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					callback.onFailure(caught);
