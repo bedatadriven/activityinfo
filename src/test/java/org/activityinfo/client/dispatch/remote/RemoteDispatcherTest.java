@@ -46,6 +46,10 @@ public class RemoteDispatcherTest {
 
     private Capture<AsyncCallback> remoteCallback = new Capture<AsyncCallback>();
 
+    private IncompatibleRemoteHandler dummyIncompatibleRemoteHandler = new IncompatibleRemoteHandler() {
+		@Override
+		public void handle() { }
+	};
 
     @Before
     public void setUp() {
@@ -53,7 +57,8 @@ public class RemoteDispatcherTest {
         proxy = createMock("proxy", CommandProxy.class);
 
         dispatcher = new RemoteDispatcher(service, new MockEventBus(),
-                new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com"));
+                new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com"), 
+                dummyIncompatibleRemoteHandler);
     }
 
     @Test

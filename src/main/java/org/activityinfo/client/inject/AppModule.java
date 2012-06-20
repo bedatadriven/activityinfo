@@ -13,6 +13,8 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.RemoteServiceProvider;
 import org.activityinfo.client.dispatch.remote.Direct;
 import org.activityinfo.client.dispatch.remote.DirectDispatcher;
+import org.activityinfo.client.dispatch.remote.IncompatibleRemoteDialog;
+import org.activityinfo.client.dispatch.remote.IncompatibleRemoteHandler;
 import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.offline.OfflineController;
@@ -35,6 +37,7 @@ public class AppModule extends AbstractGinModule {
     protected void configure() {
         bind(AuthenticatedUser.class).toProvider(ClientSideAuthProvider.class);
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
+        bind(IncompatibleRemoteHandler.class).to(IncompatibleRemoteDialog.class);
         bind(Dispatcher.class).to(OfflineController.class).in(Singleton.class);
         bind(Dispatcher.class).annotatedWith(Direct.class).to(DirectDispatcher.class).in(Singleton.class);
         bind(Dispatcher.class).annotatedWith(Remote.class).to(RemoteDispatcher.class).in(Singleton.class);

@@ -33,7 +33,7 @@ UPLD=200mbit
 PING=1970ms
 
 # Test server port 
-PORT=9090
+PORT=8888
 
 # IP address of the machine we are controlling
 IP=127.0.0.1     # Host IP
@@ -54,13 +54,13 @@ start() {
 # download rate
     $TC class add dev $IF parent 1: classid 1:1 htb rate $UPLD ceil $UPLD
    #$U32 match ip dst $IP/32 flowid 1:1
-    $U32 match ip dst $IP/32 match ip dport 9090 0xffff flowid 1:1
+    $U32 match ip dst $IP/32 match ip dport $PORT 0xffff flowid 1:1
     $TC qdisc add dev lo parent 1:1 netem delay $PING
 
 # DOWNLOADS FROM TEST SERVER
     $TC class add dev $IF parent 1: classid 1:2 htb rate $DNLD ceil $UPLD
    #$U32 match ip src $IP/32 flowid 1:1
-    $U32 match ip src $IP/32 match ip sport 9090 0xffff flowid 1:2
+    $U32 match ip src $IP/32 match ip sport $PORT 0xffff flowid 1:2
     $TC qdisc add dev lo parent 1:2 netem delay $PING
 
 # ALL OTHER TRAFFIC (i.e. between test server and database)
