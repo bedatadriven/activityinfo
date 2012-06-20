@@ -38,7 +38,7 @@
 
 		<!-- convenience to define GWT version in one place -->
 		<gwtVersion>2.3.0</gwtVersion>
-		<rebarVersion>2.2.4</rebarVersion>
+		<rebarVersion>2.2.5</rebarVersion>
 
 		<!-- tell the compiler we can use 1.6 -->
 		<maven.compiler.source>1.6</maven.compiler.source>

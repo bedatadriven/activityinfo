@@ -47,6 +47,8 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
     private final RemoteCommandServiceAsync service;
     private final AuthenticatedUser authentication;
+	private final IncompatibleRemoteHandler incompatibleRemoteHandler;
+
 
     private boolean connected = false;
     private ProxyManager proxyManager = new ProxyManager();
@@ -66,9 +68,11 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
     @Inject
     public RemoteDispatcher(RemoteCommandServiceAsync service,
-                            EventBus eventBus, AuthenticatedUser authentication) {
+                            EventBus eventBus, AuthenticatedUser authentication,
+                            IncompatibleRemoteHandler incompatibleRemoteHandler) {
         this.service = service;
         this.authentication = authentication;
+        this.incompatibleRemoteHandler = incompatibleRemoteHandler;
 
         Log.debug("RemoteDispatcher created: " + this.toString());
 
@@ -265,7 +269,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
             onAuthenticationExpired();
 
         } else if (caught instanceof IncompatibleRemoteServiceException) {
-            onVersionMismatch();
+            incompatibleRemoteHandler.handle();
 
         } else if (caught instanceof StatusCodeException) {
             onHttpError(sentCommands, caught);
@@ -301,14 +305,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
             cmd.fireOnConnectionProblem();
             pendingCommands.add(cmd);
         }
-    }
-
-    private void onVersionMismatch() {
-        // The correct response to receiving an instance of this exception in the
-        // AsyncCallback.onFailure(Throwable) method is to get the application into
-        //  a state where a browser refresh can be done.
-        // TODO: this needs to be handled by the user interface somewhere
-        Window.alert(I18N.CONSTANTS.newVersionPrompt());
     }
 
     private void onAuthenticationExpired() {

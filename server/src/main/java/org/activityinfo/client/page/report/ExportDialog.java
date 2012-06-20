@@ -55,14 +55,7 @@ public class ExportDialog extends Dialog {
 		
 		bar = new ProgressBar();
 		bar.setWidth(300);
-		
-		VBoxLayoutData barLayout = new VBoxLayoutData();
-		barLayout.setMargins(new Margins(20, 15, 25, 15));
-		
-		add(bar, barLayout);
-				
-		add(bar);
-		
+		add(bar, new VBoxLayoutData(new Margins(20, 15, 25, 15)));
 		
 		downloadLink = new Text(I18N.CONSTANTS.clickToDownload());
 		downloadLink.setTagName("a");

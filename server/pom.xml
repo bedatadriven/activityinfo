@@ -950,16 +950,16 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
-						<configuration>
-							<module>org.activityinfo.ActivityInfoSafariTest</module>
-						</configuration>
 
 						<executions>
 							<execution>
 								<id>activityinfo-compile</id>
 								<configuration>
 									<draftCompile>true</draftCompile>
-									<module>org.activityinfo.ActivityInfoSafariTest</module>
+									<modules>
+										<module>org.activityinfo.ActivityInfoSafariTest</module>
+										<module>org.activityinfo.login.Login</module>
+									</modules>
 								</configuration>
 								<goals>
 									<goal>compile</goal>
