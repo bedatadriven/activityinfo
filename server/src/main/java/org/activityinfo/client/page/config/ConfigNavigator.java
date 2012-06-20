@@ -84,7 +84,7 @@ public class ConfigNavigator implements Navigator {
     }
 
     public void loadDbListAsync(final AsyncCallback<List<Link>> callback) {
-        service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
+        service.execute(new GetSchema(), new Got<SchemaDTO>() {
             @Override
             public void got(SchemaDTO result) {
                 loadDbList(callback, result);

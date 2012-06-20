@@ -118,7 +118,7 @@ public class AttachmentsTab extends TabItem implements
 		GetSiteAttachments getAttachments = new GetSiteAttachments();
 		getAttachments.setSiteId(siteId);
 
-		dispatcher.execute(getAttachments, null,
+		dispatcher.execute(getAttachments, 
 				new AsyncCallback<SiteAttachmentResult>() {
 					@Override
 					public void onFailure(Throwable caught) {

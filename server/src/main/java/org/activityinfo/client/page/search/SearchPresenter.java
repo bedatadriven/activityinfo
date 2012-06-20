@@ -54,7 +54,7 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 		
 		view.addSearchHandler(this);
 		
-        service.execute(new GetSchema(), null, new Got<SchemaDTO>() {
+        service.execute(new GetSchema(), new Got<SchemaDTO>() {
 			@Override
 			public void got(SchemaDTO result) {
 				SearchPresenter.this.schema=result;

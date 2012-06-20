@@ -127,7 +127,7 @@ public class BaseMapPanel extends ContentPanel implements HasValue<String> {
 	private void loadTileMapLabel() {
 
 		label.setText(I18N.CONSTANTS.loading());
-		dispatcher.execute(new GetBaseMaps(), null, new AsyncCallback<BaseMapResult>() {
+		dispatcher.execute(new GetBaseMaps(), new AsyncCallback<BaseMapResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

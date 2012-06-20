@@ -29,7 +29,7 @@ public class DetailTab extends TabItem {
 	
 	public void setSite(final SiteDTO site) {
 		content.setHtml(I18N.CONSTANTS.loading());
-		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

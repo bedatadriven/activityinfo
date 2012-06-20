@@ -73,7 +73,7 @@ public class ProjectFilterPanel extends ContentPanel  implements FilterPanel {
         public void load(DataReader<List<ModelData>> listDataReader, Object o, final AsyncCallback<List<ModelData>> callback) {
            
             if (allPartners == null) {
-                service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+                service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
                     public void onFailure(Throwable caught) {
                         callback.onFailure(caught);
                     }

@@ -68,7 +68,7 @@ public class EmbedDialog extends Dialog {
 	public void show(final DataEntryPlace place) {
 		final String url = "http://www.activityinfo.org/embed.html?sites=" + FilterUrlSerializer.toUrlFragment(place.getFilter());
 		
-		dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -116,7 +116,7 @@ public class EmbedDialog extends Dialog {
 		changes.put("published", Published.ALL_ARE_PUBLISHED.getIndex());
 		
 		UpdateEntity update = new UpdateEntity(activity, changes);
-		dispatcher.execute(update, null, new AsyncCallback<VoidResult>() {
+		dispatcher.execute(update, new AsyncCallback<VoidResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

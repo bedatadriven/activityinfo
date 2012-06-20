@@ -297,7 +297,7 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 		sourceDatabaseGrid.setLinked( linkGraph.sourceDatabases() );
 		onDatabaseLinksChanged();
 		
-		dispatcher.execute(update, null, new AsyncCallback<VoidResult>() {
+		dispatcher.execute(update, new AsyncCallback<VoidResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -326,7 +326,7 @@ public class IndicatorLinkPage extends ContentPanel implements Page {
 
 	@Override
 	public boolean navigate(PageState place) {
-		dispatcher.execute(new GetIndicatorLinks(), null, new AsyncCallback<IndicatorLinkResult>() {
+		dispatcher.execute(new GetIndicatorLinks(), new AsyncCallback<IndicatorLinkResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

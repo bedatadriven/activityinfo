@@ -189,7 +189,7 @@ public class MonthlyReportsPanel extends ContentPanel implements ActionListener 
 		protected void load(Object loadConfig,
 				AsyncCallback<MonthlyReportResult> callback) {
 		
-			service.execute(new GetMonthlyReports(siteId, startMonth, 7), null, callback);
+			service.execute(new GetMonthlyReports(siteId, startMonth, 7), callback);
 		}
     }
 }

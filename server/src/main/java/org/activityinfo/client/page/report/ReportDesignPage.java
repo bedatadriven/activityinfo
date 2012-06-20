@@ -292,7 +292,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 				update.setReportId(currentModel.getId());
 				update.setPinnedToDashboard(pressed);
 				
-				dispatcher.execute(update, null, new SaveCallback() {
+				dispatcher.execute(update, new SaveCallback() {
 
 					@Override
 					public void onSuccess(VoidResult result) {

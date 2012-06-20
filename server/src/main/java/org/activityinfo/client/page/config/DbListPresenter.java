@@ -185,7 +185,7 @@ public class DbListPresenter implements ActionListener {
 
     protected class Proxy implements DataProxy {
         public void load(DataReader dataReader, Object loadConfig, final AsyncCallback callback) {
-            dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
                 }

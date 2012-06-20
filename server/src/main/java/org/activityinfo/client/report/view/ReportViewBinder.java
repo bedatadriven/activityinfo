@@ -78,7 +78,7 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>> imp
 		if(!elementModel.getFilter().getRestrictions(DimensionType.Indicator).isEmpty()) {
 			GenerateElement<C> request = new GenerateElement<C>(elementModel);
 			
-			dispatcher.execute(request, null,
+			dispatcher.execute(request, 
 					new AsyncCallback<C>() {
 	
 				@Override

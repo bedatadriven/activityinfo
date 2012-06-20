@@ -101,7 +101,7 @@ public class ActivityFilterPanel extends ContentPanel implements FilterPanel {
 		public void load(DataReader<List<Link>> reader, Object parent,
 				final AsyncCallback<List<Link>> callback) {
 			if (parent == null) {
-				dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+				dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						callback.onFailure(caught);

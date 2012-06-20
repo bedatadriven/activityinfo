@@ -31,7 +31,7 @@ public class AdminEntityProxy extends RpcProxy<ListResult<AdminEntityDTO>> {
 		GetAdminEntities query = new GetAdminEntities(levelId);
 		query.setParentId(parentId);
 		
-		dispatcher.execute(query, null, new AsyncCallback<AdminEntityResult>() {
+		dispatcher.execute(query, new AsyncCallback<AdminEntityResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

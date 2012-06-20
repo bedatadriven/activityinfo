@@ -91,7 +91,7 @@ public class LockedPeriodsPresenter
 			lockUserDatabase.setUserDatabaseId(lockedPeriod.getParent().getId());		
 		}
 		
-		service.execute(lockUserDatabase, null, new AsyncCallback<CreateResult>() {
+		service.execute(lockUserDatabase, new AsyncCallback<CreateResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				view.getCreatingMonitor().onServerError();
@@ -118,7 +118,7 @@ public class LockedPeriodsPresenter
 			// Tell the user we're about to persist his changes
 			view.getUpdatingMonitor().beforeRequest();
 			
-			service.execute(createBatchCommand(), null, new AsyncCallback<BatchResult>() {
+			service.execute(createBatchCommand(), new AsyncCallback<BatchResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					// Tell the user an error occurred
@@ -190,7 +190,7 @@ public class LockedPeriodsPresenter
 	@Override
 	public void onConfirmDelete(ConfirmDeleteEvent deleteEvent) {
 		final LockedPeriodDTO lockedPeriod = view.getValue();
-		service.execute(new Delete(lockedPeriod), null, new AsyncCallback<VoidResult>() {
+		service.execute(new Delete(lockedPeriod), new AsyncCallback<VoidResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -212,7 +212,7 @@ public class LockedPeriodsPresenter
 
 	@Override
 	public void onRefresh(RefreshEvent refreshEvent) {
-		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO: handle failure

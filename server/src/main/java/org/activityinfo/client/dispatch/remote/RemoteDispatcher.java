@@ -106,9 +106,14 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     public final <T extends Command> void registerProxy(Class<T> commandClass, CommandProxy<T> proxy) {
         proxyManager.registerProxy(commandClass, proxy);
     }
+    
+    @Override
+	public <T extends CommandResult> void execute(Command<T> command,
+			AsyncCallback<T> callback) {
+    	execute(command, null, callback);
+	}
 
-
-    /**
+	/**
      * Schedules a command for asynchronous execution
      * <p/>
      * N.B. commands are NOT guaranteed to be executed in the order

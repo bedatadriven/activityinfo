@@ -33,8 +33,12 @@ public class DispatcherStub implements Dispatcher {
 
     @Override
     public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
+        execute(command, callback);
+    }
 
-        if (command instanceof BatchCommand) {
+    @Override
+	public <T extends CommandResult> void execute(Command<T> command, AsyncCallback<T> callback) {
+		if (command instanceof BatchCommand) {
             BatchCommand batch = (BatchCommand) command;
             List<CommandResult> results = new ArrayList<CommandResult>();
             for (Command batchCmd : batch.getCommands()) {
@@ -44,7 +48,7 @@ public class DispatcherStub implements Dispatcher {
         } else {
             callback.onSuccess((T) findResult(command));
         }
-    }
+	}
 
     private CommandResult findResult(Command command) {
         CommandResult result = results.get(command);

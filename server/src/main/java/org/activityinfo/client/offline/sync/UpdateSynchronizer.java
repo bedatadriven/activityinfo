@@ -56,7 +56,7 @@ public class UpdateSynchronizer {
 
 
 	private void sendToServer() {
-		dispatcher.execute(currentEntry.getCommand(), null, new AsyncCallback() {
+		dispatcher.execute(currentEntry.getCommand(), new AsyncCallback() {
 
 			@Override
 			public void onFailure(Throwable caught) {

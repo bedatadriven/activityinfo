@@ -35,6 +35,11 @@ public class DirectDispatcher implements Dispatcher {
 
     @Override
     public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, final AsyncCallback<T> callback) {
+        execute(command, callback);
+    }
+
+    @Override
+    public <T extends CommandResult> void execute(Command<T> command, final AsyncCallback<T> callback) {
         service.execute(auth.getAuthToken(), singletonArrayList(command), new AsyncCallback<List<CommandResult>>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -51,9 +56,9 @@ public class DirectDispatcher implements Dispatcher {
                 }
             }
         });
-
     }
 
+    
     private List<Command> singletonArrayList(Command command) {
         ArrayList<Command> list = new ArrayList<Command>();
         list.add(command);

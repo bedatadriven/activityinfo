@@ -273,7 +273,12 @@ public class OfflineController implements Dispatcher {
 			AsyncMonitor monitor, AsyncCallback<T> callback) {
 
 		activeStrategy.dispatch(command, monitor, callback);
-
+	}
+	
+	@Override
+	public <T extends CommandResult> void execute(Command<T> command,
+			AsyncCallback<T> callback) {
+		execute(command, null, callback);
 	}
 
 	private void activateStrategy(Strategy strategy) {

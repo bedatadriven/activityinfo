@@ -1,5 +1,6 @@
-package org.activityinfo.client.offline;
+package org.activityinfo.client.client.offline;
 
+import org.activityinfo.client.offline.HandlerRegistryProvider;
 import org.activityinfo.client.offline.command.HandlerRegistry;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 

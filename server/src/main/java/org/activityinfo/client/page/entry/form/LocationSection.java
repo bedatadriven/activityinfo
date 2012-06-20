@@ -105,7 +105,7 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
 		if(!isNew) {
 			callback.onSuccess(null);
 		} else {
-			dispatcher.execute(new CreateLocation(location), null, new AsyncCallback<VoidResult>() {
+			dispatcher.execute(new CreateLocation(location), new AsyncCallback<VoidResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

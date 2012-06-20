@@ -112,7 +112,7 @@ public class ReportPortlet extends Portlet {
 
 
 	private void loadModel() {
-		dispatcher.execute(new GetReportModel(metadata.getId()), null, new AsyncCallback<Report>() {
+		dispatcher.execute(new GetReportModel(metadata.getId()), new AsyncCallback<Report>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -143,7 +143,7 @@ public class ReportPortlet extends Portlet {
 			return;
 		} 
 		
-		dispatcher.execute(new GenerateElement<Content>(element), null, new AsyncCallback<Content>() {
+		dispatcher.execute(new GenerateElement<Content>(element), new AsyncCallback<Content>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -193,7 +193,7 @@ public class ReportPortlet extends Portlet {
 					update.setReportId(metadata.getId());
 					update.setPinnedToDashboard(false);
 					
-					dispatcher.execute(update, null, new AsyncCallback<VoidResult>() {
+					dispatcher.execute(update, new AsyncCallback<VoidResult>() {
 
 						@Override
 						public void onFailure(Throwable caught) {

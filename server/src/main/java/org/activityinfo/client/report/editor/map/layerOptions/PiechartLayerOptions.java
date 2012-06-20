@@ -158,7 +158,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
 	}
 
 	private void loadData() {
-		service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+		service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub

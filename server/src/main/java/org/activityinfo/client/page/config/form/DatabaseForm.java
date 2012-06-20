@@ -63,7 +63,7 @@ public class DatabaseForm extends FormPanel {
         return new ListStore<CountryDTO>(new BaseListLoader<CountryResult>(new DataProxy<CountryResult>(){
             @Override
             public void load(DataReader<CountryResult> countryResultDataReader, Object loadConfig, final AsyncCallback<CountryResult> callback) {
-                dispatcher.execute(new GetCountries(), null, callback);
+                dispatcher.execute(new GetCountries(), callback);
             }
         }));
     }

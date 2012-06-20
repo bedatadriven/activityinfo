@@ -47,7 +47,7 @@ public class DimensionStoreFactory {
                 list.add(createDimension(DateUnit.QUARTER, I18N.CONSTANTS.quarter()));
                 list.add(createDimension(DateUnit.MONTH, I18N.CONSTANTS.month()));
 
-                service.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+                service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
                     public void onFailure(Throwable caught) {
 
                     }

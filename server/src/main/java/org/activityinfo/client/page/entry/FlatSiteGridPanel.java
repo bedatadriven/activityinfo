@@ -132,7 +132,7 @@ final class FlatSiteGridPanel extends ContentPanel implements SiteGridPanelView 
 			command.setLimit(config.getLimit());
 			command.setFilter(currentFilter);
 			command.setSortInfo(config.getSortInfo());
-			dispatcher.execute(command, null, new AsyncCallback<SiteResult>() {
+			dispatcher.execute(command, new AsyncCallback<SiteResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

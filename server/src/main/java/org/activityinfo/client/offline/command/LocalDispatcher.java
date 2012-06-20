@@ -38,7 +38,6 @@ public class LocalDispatcher implements Dispatcher {
         this.commandQueue = new CommandQueue(database);
     }
 
-
     @Override
     public <R extends CommandResult> void execute(Command<R> command, final AsyncMonitor monitor, final AsyncCallback<R> callback) {
        	    	
@@ -82,7 +81,33 @@ public class LocalDispatcher implements Dispatcher {
         }
     }
     
-    /**
+    @Override
+	public <R extends CommandResult> void execute(Command<R> command,
+			final AsyncCallback<R> callback) {
+     	
+        try {
+            doExecute(command, new AsyncCallback<R>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Log.debug("Offline command execution failed", caught);
+		            callback.onFailure(caught);
+				}
+
+				@Override
+				public void onSuccess(R result) {
+		            Log.debug("Command success");
+					callback.onSuccess(result);					
+				}
+			});
+
+        } catch (Exception e) {
+            Log.debug("Command failure: ", e);
+            callback.onFailure(e);
+        }		
+	}
+
+	/**
      * Begins a new transaction, initializes a new ExecutionContext, and executes the root command.
      * @param command
      * @param callback

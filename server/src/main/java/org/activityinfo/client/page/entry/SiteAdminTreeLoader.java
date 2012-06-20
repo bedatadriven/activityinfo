@@ -99,7 +99,7 @@ class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> implements SiteTreeL
 		private void loadAdminLevels(final Object parentNode,
 				final AsyncCallback<List<ModelData>> callback) {
 
-			dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -158,7 +158,7 @@ class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> implements SiteTreeL
 		}
 		
 		private void loadAdminEntities(GetAdminEntities query, final AsyncCallback<List<ModelData>> callback) {
-			dispatcher.execute(query, null, new AsyncCallback<AdminEntityResult>() {
+			dispatcher.execute(query, new AsyncCallback<AdminEntityResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -182,7 +182,7 @@ class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> implements SiteTreeL
 			siteQuery.setFilter(childFilter);
 			siteQuery.setSortInfo(new SortInfo("locationName", SortDir.ASC));
 			
-			dispatcher.execute(siteQuery, null, new AsyncCallback<SiteResult>() {
+			dispatcher.execute(siteQuery, new AsyncCallback<SiteResult>() {
 
 				@Override
 				public void onFailure(Throwable caught) {

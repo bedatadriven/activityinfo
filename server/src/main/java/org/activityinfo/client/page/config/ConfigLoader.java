@@ -99,7 +99,7 @@ public class ConfigLoader implements PageLoader {
             	if(page == null) {
                     callback.onFailure(new Exception("ConfigLoader didn't know how to handle " + place.toString()));
             	} else if(page instanceof DbPage) {
-            		dispatch.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
+            		dispatch.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 						@Override
 						public void onFailure(Throwable caught) {

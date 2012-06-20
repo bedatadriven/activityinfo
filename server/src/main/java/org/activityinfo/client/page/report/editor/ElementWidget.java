@@ -94,7 +94,7 @@ public class ElementWidget extends Widget {
 		
 		contentElement.setInnerHTML("");
 		loadingElement.getStyle().setDisplay(Display.BLOCK);
-		dispatcher.execute(new RenderReportHtml(model), null, new AsyncCallback<HtmlResult>() {
+		dispatcher.execute(new RenderReportHtml(model), new AsyncCallback<HtmlResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
