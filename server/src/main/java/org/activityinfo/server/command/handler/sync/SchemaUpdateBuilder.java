@@ -152,29 +152,53 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.executeStatement("delete from PartnerInDatabase");
 
-        builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
-        for(UserDatabase db : databases) {
-            for(Partner partner : db.getPartners()) {
-                builder.addExecution(db.getId(), partner.getId());
-            }
+        if(anyPartners()) {
+	        builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
+	        for(UserDatabase db : databases) {
+	            for(Partner partner : db.getPartners()) {
+	                builder.addExecution(db.getId(), partner.getId());
+	            }
+	        }
+	        builder.finishPreparedStatement();
         }
-        builder.finishPreparedStatement();
 
         builder.executeStatement("create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
-        builder.beginPreparedStatement("insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
-        for(UserDatabase db : databases) {
-            for(Activity activity : db.getActivities()) {
-                for(AttributeGroup group : activity.getAttributeGroups()) {
-                    builder.addExecution(activity.getId(), group.getId());
-                }
-            }
+        if(anyAttributes()) {
+	        builder.beginPreparedStatement("insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
+	        for(UserDatabase db : databases) {
+	            for(Activity activity : db.getActivities()) {
+	                for(AttributeGroup group : activity.getAttributeGroups()) {
+	                    builder.addExecution(activity.getId(), group.getId());
+	                }
+	            }
+	        }
         }
         builder.finishPreparedStatement();
 
         return builder.asJson();
     }
 
-    private void makeEntityLists() {
+    private boolean anyPartners() {
+    	for(UserDatabase db : databases) {
+    		if(!db.getPartners().isEmpty()) {
+    			return true;
+    		}
+    	}		
+    	return false;
+	}
+
+	private boolean anyAttributes() {
+    	for(UserDatabase db : databases) {
+    		for(Activity activity : db.getActivities()) {
+    			if(!activity.getAttributeGroups().isEmpty()) {
+    				return true;
+    			}
+    		}
+    	}		
+    	return false;
+    }
+
+	private void makeEntityLists() {
         for(UserDatabase database : databases) {
         	if(!userIds.contains(database.getOwner().getId())) {
         		User u = database.getOwner();
