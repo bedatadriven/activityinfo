@@ -207,7 +207,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	private void updateSelection(ActivityDTO activity, SiteDTO site) {
 		
 		boolean permissionToEdit = activity.getDatabase().isAllowedToEdit(site);
-		toolBar.setActionEnabled(UIActions.ADD, permissionToEdit && !site.isLinked());
 		toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit && !site.isLinked());
 		toolBar.setActionEnabled(UIActions.DELETE, permissionToEdit && !site.isLinked());
 		
@@ -301,6 +300,30 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		
 		// also embedding is only implemented for one activity
 		toolBar.setActionEnabled("EMBED", activities.size() == 1);
+	
+		// adding is also only enabled for one activity, but we have to
+		// lookup to see whether it possible for this activity
+		toolBar.setActionEnabled(UIActions.ADD, false);
+		if(activities.size() == 1) {
+			checkWhetherEditingIsAllowed(activities.iterator().next());
+		}
+		
+	}
+
+	private void checkWhetherEditingIsAllowed(final int activityId) {
+		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+			
+			}
+
+			@Override
+			public void onSuccess(SchemaDTO result) {
+				toolBar.setActionEnabled(UIActions.ADD, 
+						result.getActivityById(activityId).getDatabase().isEditAllowed());
+			}
+		});
 	}
 
 	@Override
