@@ -172,8 +172,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 	                }
 	            }
 	        }
+	        builder.finishPreparedStatement();
         }
-        builder.finishPreparedStatement();
 
         return builder.asJson();
     }
