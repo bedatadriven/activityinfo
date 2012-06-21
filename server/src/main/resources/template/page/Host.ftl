@@ -59,7 +59,9 @@
         <#include "Application.css">
     </style>
     <script type="text/javascript">
-		if(document.cookie.indexOf('authToken=') == -1) {
+		if(document.cookie.indexOf('authToken=') == -1 || 
+		   document.cookie.indexOf('userId') == -1 ||
+		   document.cookie.indexOf('email') == -1) {
 			window.location = "/content/";
 		}
 		

@@ -8,6 +8,7 @@ package org.activityinfo.client;
 
 
 import org.activityinfo.client.AppEvents;
+import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.util.state.SafeStateProvider;
 
@@ -17,6 +18,7 @@ import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
 
 /**
@@ -33,6 +35,13 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         Log.info("Application: onModuleLoad starting");
         Log.info("Application Permutation: " + GWT.getPermutationStrongName());
 
+        try {
+        	new ClientSideAuthProvider().get();
+        } catch(Exception e) {
+        	Log.error("Exception getting client side authentication", e);
+        	SessionUtil.forceLogin();
+        }
+        
         if(!GWT.isScript()) {
             Log.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
         }
