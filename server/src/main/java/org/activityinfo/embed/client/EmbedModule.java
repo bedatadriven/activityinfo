@@ -5,6 +5,7 @@ import org.activityinfo.client.LoggingEventBus;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.RemoteServiceProvider;
+import org.activityinfo.client.dispatch.remote.IncompatibleRemoteHandler;
 import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.util.state.GxtStateProvider;
 import org.activityinfo.client.util.state.StateProvider;
@@ -25,6 +26,7 @@ public class EmbedModule extends AbstractGinModule {
 		bind(DispatchEventSource.class).to(RemoteDispatcher.class);
 		bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 		bind(StateProvider.class).to(GxtStateProvider.class);
+		bind(IncompatibleRemoteHandler.class).to(SimpleIncompatibleRemoteHandler.class);
 	}
 	
 	@Provides
