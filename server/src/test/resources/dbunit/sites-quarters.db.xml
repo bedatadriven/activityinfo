@@ -50,7 +50,7 @@
 
 	<!-- id=1  NFI Distribution at Penekusu, Sud Kivu  2009 Q1-->
 
-	<location locationId="1" name="Penekusu" locationTypeId="1" X="1.532" Y="27.323" />
+	<location locationId="1" name="Penekusu" locationTypeId="1" X="1.532" Y="27.323" timeEdited="2"/>
 	<site siteId="1" activityId="1" locationId="1" partnerId="1"  
 		Date1="2009-01-01"
        	Date2="2009-01-02" 
@@ -63,7 +63,7 @@
 	
 	<!-- id=2 NFI Distribution at Ngwshe, Sud Kivu 2009 Q2 -->
 	
-	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" />
+	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323" Y="28.232" timeEdited="1" />
 
 	<site siteId="2" activityId="1" locationId="2" partnerId="1"  Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
@@ -73,7 +73,7 @@
 
 	<!-- id=3 NFI Distribution at Boga, Ituri 2008 Q4 -->
 	
-	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" />
+	<location locationId="3" name="Boga" locationTypeId="1" X="3.323" Y="27.232" timeEdited="3"/>
 	<site siteId="3" activityId="1" locationId="3" partnerId="1" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
 	<reportingPeriod reportingPeriodId="3" siteId="3" date1="2008-10-05" date2="2008-10-06" DateCreated="2009-02-01" DateEdited="2009-02-01" />
