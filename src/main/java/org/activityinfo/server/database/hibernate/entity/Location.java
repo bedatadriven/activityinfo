@@ -21,8 +21,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * 
@@ -41,8 +39,6 @@ public class Location implements java.io.Serializable {
 	private String axe;
 	private Set<Site> sites = new HashSet<Site>(0);
 	private Set<AdminEntity> adminEntities = new HashSet<AdminEntity>(0);
-    private Date dateCreated;
-    private Date dateEdited;
     private long timeEdited;
 
 	public Location() {
@@ -156,25 +152,6 @@ public class Location implements java.io.Serializable {
 			getAdminEntities().add(newEntity);
 		}
 	}
-
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getDateEdited() {
-        return dateEdited;
-    }
-
-    public void setDateEdited(Date dateEdited) {
-        this.dateEdited = dateEdited;
-        this.timeEdited = dateEdited.getTime();
-    }
     
     public long getTimeEdited() {
 		return timeEdited;
@@ -184,18 +161,19 @@ public class Location implements java.io.Serializable {
 		this.timeEdited = timeEdited;
 	}
 
+	public void setTimeEdited(Date date) {
+		this.timeEdited = date.getTime();
+	}
+
 	@PrePersist
     public void onCreate() {
         Date now = new Date();
-        setDateCreated(now);
-        setDateEdited(now);
         setTimeEdited(now.getTime());
     }
 
     @PreUpdate
     public void onUpdate() {
         Date now = new Date();
-		setDateEdited(now);
         setTimeEdited(now.getTime());
     }
 }

@@ -258,7 +258,7 @@
 	<!-- id=1 NFI Distribution at Penekusu, Sud Kivu 2 jan 2009 -->
 
 	<location locationId="1" name="Penekusu Kivu" locationTypeId="1"
-		X="1.532" Y="27.323" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		X="1.532" Y="27.323" timeEdited="1" />
 	<locationAdminLink locationId="1" adminEntityId="2" />
 	<locationAdminLink locationId="1" adminEntityId="12" />
 
@@ -280,7 +280,7 @@
 	<!-- id=2 NFI Distribution at Ngwshe, Sud Kivu 16 jan 2009 -->
 
 	<location locationId="2" name="Ngshwe" locationTypeId="1" X="1.323"
-		Y="28.232" DateCreated="2009-02-01" DateEdited="2009-02-01" />
+		Y="28.232" timeEdited="7" />
 	<locationAdminLink locationId="2" adminEntityId="2" />
 	<locationAdminLink locationId="2" adminEntityId="11" />
 
@@ -300,9 +300,8 @@
 
 	<!-- id=3 NFI Distribution at Boga, Ituri 2008 -->
 
-	<location locationId="3" name="Boga" locationTypeId="1"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
-	<locationAdminLink locationId="3" adminEntityId="4" />
+	<location locationId="3" name="Boga" locationTypeId="1" timeEdited="3"/>
+	<locationAdminLink locationId="3" adminEntityId="4" /> 
 	<locationAdminLink locationId="3" adminEntityId="21" />
 
 	<site siteId="3" activityId="1" locationId="3" partnerId="2"
@@ -323,7 +322,7 @@
 	<!-- PEAR Plus Health Center Support in Ngweshe -->
 
 	<location locationId="9" name="CS Ngweshe" locationTypeId="2"
-		X="3.23" Y="27.232" DateCreated="2009-01-01" DateEdited="2009-01-01" />
+		X="3.23" Y="27.232" timeEdited="500" />
 	<locationAdminLink locationId="9" adminEntityId="2" />
 	<locationAdminLink locationId="9" adminEntityId="11" />
 
@@ -353,7 +352,7 @@
 
 	<!-- Kit scolaires in Bukavu -->
 	<location locationId="4" name="Boga" locationTypeId="1" X="3.323"
-		Y="27.232" DateCreated="2009-10-05" DateEdited="2009-10-05" />
+		Y="27.232" timeEdited="4" />
 	<locationAdminLink locationId="4" adminEntityId="2" />
 	<locationAdminLink locationId="4" adminEntityId="10" />
 
@@ -372,8 +371,7 @@
 
 	<!-- PEAR Plus child reunification in Walungu -->
 
-	<location locationId="6" name="Walungu" locationTypeId="3"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<location locationId="6" name="Walungu" locationTypeId="3" timeEdited="5"/>
 	<locationAdminLink locationId="6" adminEntityId="3" />
 	<locationAdminLink locationId="6" adminEntityId="11" />
 
@@ -396,8 +394,7 @@
 
 	<!-- PEAR Plus child reunification in Shabunda -->
 
-	<location locationId="7" name="Shabunda" locationTypeId="3"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" />
+	<location locationId="7" name="Shabunda" locationTypeId="3" timeEdited="6" />
 	<locationAdminLink locationId="7" adminEntityId="3" />
 	<locationAdminLink locationId="7" adminEntityId="12" />
 

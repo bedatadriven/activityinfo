@@ -26,8 +26,6 @@ public class CreateLocationHandler implements CommandHandlerAsync<CreateLocation
 			.value("Axe", properties.get("axe"))
 		    .value("X", properties.get("longitude"))
 		    .value("Y", properties.get("latitude"))
-		    .value("dateCreated", timestamp)
-			.value("dateEdited", timestamp)
 			.value("timeEdited", timestamp.getTime())
 		    .execute(context.getTransaction());
 		
