@@ -26,7 +26,6 @@ public class OfflineModule extends AbstractGinModule {
     @Override
     protected void configure() {
 
-        bind(OfflineController.View.class).to(OfflineView.class);
         bind(Synchronizer.class).to(SynchronizerImpl.class);
         bind(HandlerRegistry.class).toProvider(HandlerRegistryProvider.class);
         bind(SqlDialect.class).to(SqliteDialect.class);

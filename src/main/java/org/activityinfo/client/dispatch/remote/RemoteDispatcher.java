@@ -9,14 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.activityinfo.client.EventBus;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.dispatch.AsyncMonitor;
-import org.activityinfo.client.dispatch.CommandProxy;
-import org.activityinfo.client.dispatch.DispatchEventSource;
-import org.activityinfo.client.dispatch.DispatchListener;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
@@ -28,8 +23,8 @@ import org.activityinfo.shared.exception.UnexpectedCommandException;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -43,7 +38,7 @@ import com.google.inject.Singleton;
  * provides for batching of commands at 200 ms, plugable caches, and retrying.
  */
 @Singleton
-public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
+public class RemoteDispatcher implements Dispatcher {
 
     private final RemoteCommandServiceAsync service;
     private final AuthenticatedUser authentication;
@@ -51,7 +46,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
 
     private boolean connected = false;
-    private ProxyManager proxyManager = new ProxyManager();
 
     /**
      * Pending commands have been requested but not yet sent to the server
@@ -63,12 +57,12 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
      * not yet received a response.
      */
     private List<CommandRequest> executingCommands = new ArrayList<CommandRequest>();
-
-
+	
 
     @Inject
     public RemoteDispatcher(RemoteCommandServiceAsync service,
-                            EventBus eventBus, AuthenticatedUser authentication,
+    						Scheduler scheduler,
+                            AuthenticatedUser authentication,
                             IncompatibleRemoteHandler incompatibleRemoteHandler) {
         this.service = service;
         this.authentication = authentication;
@@ -76,35 +70,16 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
         Log.debug("RemoteDispatcher created: " + this.toString());
 
-        // to facilitate unit testing, we only start the timer
-        // if we're running on the client: either as byte-code in development mode
-        // or javascript in production mode.
-        //
-        // unit tests running in a plain-old JVM will need to call proccessPendingCommands() themselves
-        if (GWT.isClient()) {
-            startTimer();
-        }
-    }
-
-    private void startTimer() {
-        new Timer() {
-            @Override
-            public void run() {
-                if (!pendingCommands.isEmpty()) {
-                    processPendingCommands();
+        scheduler.scheduleFinally(new RepeatingCommand() {
+			
+			@Override
+			public boolean execute() {
+				if (!pendingCommands.isEmpty()) {
+                    sendPendingToServer();
                 }
-            }
-        }.scheduleRepeating(200);
-    }
-
-    @Override
-    public final <T extends Command> void registerListener(Class<T> commandClass, DispatchListener<T> listener) {
-        proxyManager.registerListener(commandClass, listener);
-    }
-
-    @Override
-    public final <T extends Command> void registerProxy(Class<T> commandClass, CommandProxy<T> proxy) {
-        proxyManager.registerProxy(commandClass, proxy);
+				return true;
+			}
+		});
     }
     
     @Override
@@ -124,8 +99,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     public final <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor,
                                                         AsyncCallback<T> callback) {
 
-        CommandRequest request = new CommandRequest(command, monitor, callback);
-        request.fireBeforeRequest();
+        CommandRequest request = new CommandRequest(command, callback);
 
         if (request.isMutating()) {
         	// mutating requests get queued immediately, don't try to merge them
@@ -147,57 +121,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
     private void queue(CommandRequest request) {
         pendingCommands.add(request);
     }
-
-    /**
-     * Executes a collection of pending commands
-     */
-    public void processPendingCommands() {
-        preprocessQueue();
-        sendPendingToServer();
-    }
-
-    private void preprocessQueue() {
-        Log.debug("RemoteDispatcher: " + pendingCommands.size() + " are pending.");
-
-        int i = 0;
-        while (i < pendingCommands.size()) {
-            CommandRequest cmd = pendingCommands.get(i);
-            ProxyResult proxyResult = proxyManager.execute(cmd.getCommand());
-            if (proxyResult.isCouldExecute()) {
-            	pendingCommands.remove(i);
-            	cmd.fireOnSuccess(proxyResult.getResult());
-            
-            } else if (retriesMaxedOut(cmd)) {
-                pendingCommands.remove(i);
-                onRetriesMaxedOut(cmd);
-
-            } else {
-                proxyManager.notifyListenersBefore(cmd.getCommand());
-                i++;
-            }
-        }
-    }
-
-    private boolean retriesMaxedOut(CommandRequest cmd) {
-        return cmd.getRetries() > 0 && !cmd.fireRetrying();
-    }
-
-    private void onRetriesMaxedOut(CommandRequest cmd) {
-        Log.debug("RemoteDispatcher: The monitor " +
-                " has denied a retry attempt after " + cmd.getRetries() +
-                " retries, the command is removed from the queue.");
-        cmd.fireRetriesMaxedOut();
-    }
-
-
-    private List<Command> commandListFromRequestList(List<CommandRequest> pending) {
-        List<Command> commands = new ArrayList<Command>(pending.size());
-        for (CommandRequest request : pending) {
-            commands.add(request.getCommand());
-        }
-        return commands;
-    }
-
+    
     private void sendPendingToServer() {
         Log.debug("RemoteDispatcher: sending " + pendingCommands.size() + " to server.");
 
@@ -227,7 +151,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         			executingCommands.removeAll(sent);
         			onClientSideSerializationError(caught);
         		}
-
         	}
         }
     }
@@ -245,12 +168,10 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
         if (result instanceof CommandException) {
             Log.debug("Remote command failed. Command = " + cmd.getCommand().toString());
-            cmd.fireOnFailure((CommandException) result,
-                    result instanceof UnexpectedCommandException);
+            cmd.fireOnFailure((CommandException) result);
 
         } else {
             cmd.fireOnSuccess(result);
-            proxyManager.notifyListenersOfSuccess(cmd.getCommand(), result);
         }
     }
 
@@ -284,7 +205,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
         } else {
             for (CommandRequest cmd : sentCommands) {
-                cmd.fireOnFailure(caught, true);
+                cmd.fireOnFailure(caught);
             }
         }
     }
@@ -307,7 +228,6 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
         }
 
         for (CommandRequest cmd : executingCommands) {
-            cmd.fireOnConnectionProblem();
             pendingCommands.add(cmd);
         }
     }
@@ -333,7 +253,7 @@ public class RemoteDispatcher implements Dispatcher, DispatchEventSource {
 
     private void onServerError(List<CommandRequest> executingCommands, Throwable caught) {
         for (CommandRequest cmd : executingCommands) {
-            cmd.fireOnFailure(caught, true);
+            cmd.fireOnFailure(caught);
         }
     }
 }

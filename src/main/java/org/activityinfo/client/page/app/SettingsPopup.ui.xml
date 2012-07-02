@@ -49,7 +49,15 @@
 		</div>
 	
 		<div class="{style.group}">	
-			<div class="{style.menuRow}"><g:Label ui:field="offlineLabel" styleName="{style.action}"/></div>
+			<div ui:field="syncRow" class="{style.menuRow}">
+				<g:InlineLabel ui:field="lastSyncedLabel"/> 
+				<g:InlineLabel ui:field="syncNowLabel" styleName="{style.action}">
+					<ui:text from="{constants.syncNow}"/> 
+				</g:InlineLabel>
+			</div>
+			<div class="{style.menuRow}"><g:Label ui:field="offlineStatusLabel"/></div>
+			
+			<div class="{style.menuRow}"><g:Label ui:field="offlineInstallLabel" styleName="{style.action}"/></div>
 		</div>
 		
 		<div class="{style.group}">

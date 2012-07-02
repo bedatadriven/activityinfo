@@ -108,7 +108,6 @@ public class SynchronizerImpl implements Synchronizer {
 		});
     }
 
-    @Override
     public void synchronize(final AsyncCallback<Void> callback) {
     	appCacheSynchronizer.ensureUpToDate(new AsyncCallback<Void>() {
 			
@@ -139,7 +138,6 @@ public class SynchronizerImpl implements Synchronizer {
     	
     }
 
-    @Override
     public void goOnline(final AsyncCallback<Void> callback) {
     
     	updateSynchronizer.sync(new AsyncCallback<Void>() {

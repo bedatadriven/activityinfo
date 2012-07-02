@@ -1,7 +1,7 @@
 package org.activityinfo.client.offline.ui;
 
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.offline.OfflineController.EnableCallback;
+import org.activityinfo.client.offline.OfflineController;
 import org.activityinfo.client.offline.capability.ProfileResources;
 import org.activityinfo.client.util.state.CrossSessionStateProvider;
 
@@ -22,14 +22,15 @@ public class PromptOfflineDialog extends BasePromptDialog {
 	private static final String DONT_ASK_STATE_KEY = "offlineSilent";
 
 	private final CrossSessionStateProvider stateProvider;
-	private final EnableCallback callback;
+	private final OfflineController offlineController;
 	
 	@Inject
-	public PromptOfflineDialog(CrossSessionStateProvider stateProvider, EnableCallback callback) {
+	public PromptOfflineDialog(CrossSessionStateProvider stateProvider,
+			OfflineController controller) {
 		super(capabilityProfile.getInstallInstructions());
 		
 		this.stateProvider = stateProvider;
-		this.callback = callback;
+		this.offlineController = controller;
 		
 		setWidth(500);
 		setHeight(350);
@@ -48,7 +49,7 @@ public class PromptOfflineDialog extends BasePromptDialog {
 				
 				@Override
 				public void componentSelected(ButtonEvent ce) { 
-					enableOffline();
+					offlineController.install();
 				}
 			}));
 		}
@@ -76,10 +77,6 @@ public class PromptOfflineDialog extends BasePromptDialog {
 		hide();
 	}
 
-	private void enableOffline() {
-		hide();
-		callback.enableOffline();
-	}
 	
 	public static boolean shouldAskAgain(CrossSessionStateProvider stateProvider ) {
 		return !Boolean.TRUE.toString().equals(stateProvider.getString(DONT_ASK_STATE_KEY));
