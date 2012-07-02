@@ -32,7 +32,5 @@ public class EmbedModule extends AbstractGinModule {
 	@Provides
 	public AuthenticatedUser provideAuth() {
         return AuthenticatedUser.getAnonymous(LocaleInfo.getCurrentLocale());
-
 	}
-	
 }

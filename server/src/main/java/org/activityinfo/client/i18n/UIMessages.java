@@ -205,6 +205,15 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	
 	@DefaultMessage("In order to embed this sheet in a public web page, the activity \"{0}\" must be made public. Do you want to make this activity public now?")
 	String promptPublishActivity(String name);
+
+	@DefaultMessage("{0} minutes ago")
+	String minutesAgo(int minutes);
+	
+	@DefaultMessage("{0} hours ago")
+	String hoursAgo(int hours);
+	
+	@DefaultMessage("{0} days ago")
+	String daysAgo(int hours);
 	
 }
 

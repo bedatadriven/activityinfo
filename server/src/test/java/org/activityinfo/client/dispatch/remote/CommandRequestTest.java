@@ -27,11 +27,11 @@ public class CommandRequestTest {
 
         assumeThat(new GetSchema(), is(equalTo(new GetSchema())));
 
-        CommandRequest firstCommand = new CommandRequest(new GetSchema(), null,
+        CommandRequest firstCommand = new CommandRequest(new GetSchema(),
                 new NullAsyncCallback());
         List<CommandRequest> pending = Collections.singletonList(firstCommand);
 
-        CommandRequest secondRequest = new CommandRequest(new GetSchema(), null, new NullAsyncCallback());
+        CommandRequest secondRequest = new CommandRequest(new GetSchema(), new NullAsyncCallback());
 
         boolean merged = secondRequest.mergeSuccessfulInto(pending);
 

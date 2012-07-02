@@ -120,7 +120,6 @@ public class ProxyManager implements DispatchEventSource {
                 }
             }
         }
-
         return ProxyResult.couldNotExecute();
     }
 }

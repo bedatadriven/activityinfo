@@ -34,6 +34,8 @@ import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.testing.StubScheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RemoteDispatcherTest {
@@ -50,13 +52,16 @@ public class RemoteDispatcherTest {
 		@Override
 		public void handle() { }
 	};
-
+	
+	private Scheduler scheduler = new StubScheduler();
+	
     @Before
     public void setUp() {
         service = createMock("remoteService", RemoteCommandServiceAsync.class);
         proxy = createMock("proxy", CommandProxy.class);
 
-        dispatcher = new RemoteDispatcher(service, new MockEventBus(),
+        dispatcher = new RemoteDispatcher(
+        		service, 
                 new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com"), 
                 dummyIncompatibleRemoteHandler);
     }

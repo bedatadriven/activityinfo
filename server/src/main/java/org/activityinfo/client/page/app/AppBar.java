@@ -2,8 +2,10 @@ package org.activityinfo.client.page.app;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.NavigationEvent;
+import org.activityinfo.client.offline.OfflineController;
 import org.activityinfo.client.offline.ui.OfflineView;
 import org.activityinfo.client.page.NavigationHandler;
+import org.activityinfo.client.page.app.resources.AppFrameResources;
 import org.activityinfo.client.page.search.SearchPageState;
 
 import com.google.gwt.core.client.GWT;
@@ -32,12 +34,12 @@ public class AppBar extends Composite  {
 	
 	@UiField
 	Label searchButton;
-
-	OfflineView offlineView;
 	
 	private SettingsPopup settingsPopup;
 
 	private EventBus eventBus;
+
+	private OfflineController offlineController;
 	
 	public static int HEIGHT = 50;
 
@@ -45,9 +47,10 @@ public class AppBar extends Composite  {
 	}
 	
 	@Inject
-	public AppBar(EventBus eventBus, OfflineView offlineView) {
+	public AppBar(EventBus eventBus, OfflineController offlineController) {
 		this.eventBus = eventBus;
-		this.offlineView = offlineView;
+		this.offlineController = offlineController;
+		
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -63,7 +66,7 @@ public class AppBar extends Composite  {
 	@UiHandler("settingsButton")
 	void handleSettingsClick(ClickEvent e) {
 		if(settingsPopup == null) {
-			settingsPopup = new SettingsPopup(offlineView);
+			settingsPopup = new SettingsPopup(eventBus, offlineController);
 		}
 		settingsPopup.setPopupPosition(Window.getClientWidth() - SettingsPopup.WIDTH, HEIGHT-3);
 		settingsPopup.show();

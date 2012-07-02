@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 
 class ProgressDialog extends Dialog {
+	
     private ProgressBar progressBar;
 
     public ProgressDialog() {

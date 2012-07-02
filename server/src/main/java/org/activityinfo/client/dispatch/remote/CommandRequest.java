@@ -29,20 +29,13 @@ class CommandRequest {
      * The pending command
      */
     private final Command command;
-
-    private final List<AsyncMonitor> monitors = new ArrayList<AsyncMonitor>();
     private final List<AsyncCallback> callbacks = new ArrayList<AsyncCallback>();
 
-    private int retries = 0;
 
-    public CommandRequest(Command command, AsyncMonitor monitor, AsyncCallback callback) {
+    public CommandRequest(Command command, AsyncCallback callback) {
         this.command = command;
-        if (monitor != null) {
-            this.monitors.add(monitor);
-        }
         this.callbacks.add(callback);
     }
-
 
     public Command getCommand() {
         return command;
@@ -52,31 +45,13 @@ class CommandRequest {
         return Collections.unmodifiableCollection(this.callbacks);
     }
 
-    public Collection<AsyncMonitor> getMonitors() {
-        return Collections.unmodifiableCollection(this.monitors);
-    }
-
-    private void fireCompleted() {
-        for (AsyncMonitor m : monitors) {
-            m.onCompleted();
-        }
-    }
-
-    public void fireOnFailure(Throwable caught, boolean unexpected) {
-        if (unexpected) {
-            for (AsyncMonitor m : monitors) {
-                m.onServerError();
-            }
-        } else {
-            fireCompleted();
-        }
+    public void fireOnFailure(Throwable caught) {
         for (AsyncCallback c : callbacks) {
             c.onFailure(caught);
         }
     }
 
     public void fireOnSuccess(CommandResult result) {
-        fireCompleted();
         List<AsyncCallback> toCallback = new ArrayList<AsyncCallback>(callbacks);
         for (AsyncCallback c : toCallback) {
             try {
@@ -86,35 +61,7 @@ class CommandRequest {
             }
         }
     }
-
-    public void fireOnConnectionProblem() {
-        for (AsyncMonitor m : monitors) {
-            m.onConnectionProblem();
-        }
-    }
-
-    public boolean fireRetrying() {
-        boolean retry = false;
-        for (AsyncMonitor m : monitors) {
-            if (m.onRetrying()) {
-                retry = true;
-            }
-        }
-        return retry;
-    }
-
-    public void fireRetriesMaxedOut() {
-        for (AsyncMonitor m : monitors) {
-
-        }
-    }
-
-    public void fireBeforeRequest() {
-        for (AsyncMonitor m : monitors) {
-            m.beforeRequest();
-        }
-    }
-
+    
     public boolean mergeSuccessfulInto(List<CommandRequest> list) {
         for (CommandRequest request : list) {
             if (command.equals(request.getCommand())) {
@@ -129,11 +76,7 @@ class CommandRequest {
         Log.debug("Dispatcher: merging " + request.getCommand().toString() + " with pending/executing command " +
                 getCommand().toString());
 
-        monitors.addAll(request.monitors);
         callbacks.addAll(request.callbacks);
-
-        // reset the retry count
-        retries = 0;
     }
 
     /**
@@ -143,14 +86,4 @@ class CommandRequest {
     public boolean isMutating() {
         return command instanceof MutatingCommand;
     }
-
-
-	public void setRetries(int retries) {
-		this.retries = retries;
-	}
-
-
-	public int getRetries() {
-		return retries;
-	}
 }
