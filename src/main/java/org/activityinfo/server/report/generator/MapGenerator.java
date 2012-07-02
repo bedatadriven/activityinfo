@@ -77,7 +77,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         	if (layer.isVisible()) {
         		// Add indicator
         		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
-        		filter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
+        		layerFilter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
                 List<SiteDTO> sites = getDispatcher().execute(new GetSites(layerFilter)).getData();
                 
 	            if (layer instanceof BubbleMapLayer) {
