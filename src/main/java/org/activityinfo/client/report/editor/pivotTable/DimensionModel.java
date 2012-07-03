@@ -47,6 +47,9 @@ public class DimensionModel extends BaseModelData {
 		case MONTH:
 			setName(I18N.CONSTANTS.month());
 			break;
+		case WEEK_MON:
+			setName(I18N.CONSTANTS.weekMon());
+			break;
 		default:
 			throw new IllegalArgumentException(unit.name());
 		}
@@ -61,7 +64,6 @@ public class DimensionModel extends BaseModelData {
 		this.dimension  = new AttributeGroupDimension(attributeGroup.getId());
 		setName(attributeGroup.getName());
 	}
-
 
 	public String getCaption() {
 		return get("name");

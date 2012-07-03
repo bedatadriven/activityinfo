@@ -118,6 +118,8 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 		store.add(folder, new DimensionModel(DateUnit.YEAR), false);
 		store.add(folder, new DimensionModel(DateUnit.QUARTER), false);
 		store.add(folder, new DimensionModel(DateUnit.MONTH), false);
+		store.add(folder, new DimensionModel(DateUnit.WEEK_MON), false);
+
 	}
 	
 	@Override
