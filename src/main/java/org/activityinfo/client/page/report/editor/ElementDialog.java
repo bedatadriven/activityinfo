@@ -23,6 +23,7 @@ public class ElementDialog extends Dialog implements HasReportElement<ReportElem
 	
 	public interface Callback {
 		void onOK(boolean dirty);
+		void onClose(boolean dirty);
 	}
 
 	@Inject
@@ -93,6 +94,12 @@ public class ElementDialog extends Dialog implements HasReportElement<ReportElem
 	@Override
 	public void bind(ReportElement model) {
 		this.model = model;
+	}
+
+	@Override
+	protected void onHide() {
+		super.onHide();
+		callback.onClose(dirty);
 	}
 
 	@Override
