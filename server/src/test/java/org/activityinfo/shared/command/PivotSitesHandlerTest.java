@@ -25,6 +25,7 @@ import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.QuarterCategory;
+import org.activityinfo.shared.report.content.WeekCategory;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateDimension;
@@ -291,6 +292,22 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         assertEquals(0, (int) buckets.get(0).doubleValue());
         assertEquals(5, ((EntityCategory) buckets.get(0).getCategory(this.indicatorDim)).getId());
     }
+    
+    @Test
+    @OnDataSet("/dbunit/sites-weeks.db.xml")
+    public void testWeeks() {
+
+        final Dimension weekDim = new DateDimension(DateUnit.WEEK_MON);
+        dimensions.add(weekDim);
+        
+        execute();
+        
+        assertEquals(3, buckets.size());
+        assertEquals(3600, (int)findBucketByWeek(buckets, 2011, 52).doubleValue());
+        assertEquals(1500, (int)findBucketByWeek(buckets, 2012, 1).doubleValue());
+        assertEquals(4142, (int)findBucketByWeek(buckets, 2012, 13).doubleValue());
+        
+    }
 
 
     @Test
@@ -328,6 +345,16 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             }
         }
         throw new AssertionError("No bucket for " + year + "q" + quarter);
+    }
+    
+    private Bucket findBucketByWeek(List<Bucket> buckets, int year, int week) {
+        for(Bucket bucket : buckets) {
+            WeekCategory category = (WeekCategory) bucket.getCategory(new DateDimension(DateUnit.WEEK_MON));
+            if(category.getYear() == year && category.getWeek() == week) {
+                return bucket;
+            }
+        }
+        throw new AssertionError("No bucket for " + year + " W " + week);
     }
 
 
