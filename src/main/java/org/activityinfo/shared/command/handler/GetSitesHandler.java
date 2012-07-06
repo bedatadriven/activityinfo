@@ -263,6 +263,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
     				.leftJoin("ReportingPeriod", "r").on("v.ReportingPeriodId=r.ReportingPeriodId")
     				.whereTrue("v.IndicatorId=" + indicatorId)
     				.and("r.SiteId=u.SiteId"), ascending);
+            } else {
+            	Log.error("Unimplemented sort on GetSites: '" + field + "");
             }
         }
 	}
