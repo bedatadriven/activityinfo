@@ -39,11 +39,9 @@ public class DimensionModel extends BaseModelData {
 		case YEAR:
 			setName(I18N.CONSTANTS.year());
 			break;
-
 		case QUARTER:
 			setName(I18N.CONSTANTS.quarter());
 			break;
-			
 		case MONTH:
 			setName(I18N.CONSTANTS.month());
 			break;

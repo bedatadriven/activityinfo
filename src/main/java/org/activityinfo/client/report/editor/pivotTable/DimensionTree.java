@@ -16,7 +16,6 @@ import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.CountryDTO;
-import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.AdminDimension;
@@ -33,7 +32,6 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -189,17 +187,8 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 
 	private void addGeography(SchemaDTO schema) {
 		
-			
-		Set<CountryDTO> countries = Sets.newHashSet();
-		
-		for(UserDatabaseDTO db : schema.getDatabases()) {
-			for(ActivityDTO activity : db.getActivities()) {
-				if(included(activity)) {
-					countries.add(db.getCountry());
-				}
-			}
-		}
-		
+		Set<CountryDTO> countries = schema.getCountriesForIndicators(model.getIndicators());
+
 		store.removeAll(geographyRoot);		
 		if(countries.size() == 1) {
 			CountryDTO country = countries.iterator().next();
@@ -220,7 +209,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 		
 		for(UserDatabaseDTO db : schema.getDatabases()) {
 			for(ActivityDTO activity : db.getActivities()) {
-				if(included(activity)) {
+				if(activity.containsAny(model.getIndicators())) {
 					for(AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
 						DimensionModel dimModel = new DimensionModel(attributeGroup);
 						store.add(dimModel, false);
@@ -231,16 +220,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 		}
 	}
 
-	private boolean included(ActivityDTO activity) {
-		Set<Integer> indicators = model.getIndicators();
-		for(IndicatorDTO indicator : activity.getIndicators()) {
-			if(indicators.contains(indicator.getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
+
 	private void updateModelAfterCheckChange(TreePanelEvent<DimensionModel> event) {
 		Dimension dim = event.getItem().getDimension();
 
