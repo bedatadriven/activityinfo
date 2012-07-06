@@ -1,7 +1,7 @@
 package org.activityinfo.client.report.editor.pivotTable;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.activityinfo.client.EventBus;
@@ -35,7 +35,6 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Maintains a list of dimensions applicable for the current element
@@ -53,6 +52,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 	
 	private PivotTableReportElement model;
 	private DimensionModel geographyRoot;
+	private List<DimensionModel> attributeDimensions = Lists.newArrayList();
 
 	
 	public DimensionTree(EventBus eventBus, Dispatcher dispatcher) {
@@ -189,7 +189,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 
 	private void addGeography(SchemaDTO schema) {
 		
-				
+			
 		Set<CountryDTO> countries = Sets.newHashSet();
 		
 		for(UserDatabaseDTO db : schema.getDatabases()) {
@@ -200,22 +200,31 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 			}
 		}
 		
+		store.removeAll(geographyRoot);		
 		if(countries.size() == 1) {
 			CountryDTO country = countries.iterator().next();
 			for(AdminLevelDTO level : country.getAdminLevels()) {
-				store.insert(geographyRoot, new DimensionModel(level), 
-						store.getChildCount(geographyRoot)-1,
+				store.add(geographyRoot, new DimensionModel(level), 
 						false);
 			}
 		}
 	}
 	
 	private void addAttributeGroups(SchemaDTO schema) {
+		
+		// clear existing attributes
+		for(DimensionModel model : attributeDimensions) {
+			store.remove(model);
+		}
+		attributeDimensions.clear();
+		
 		for(UserDatabaseDTO db : schema.getDatabases()) {
 			for(ActivityDTO activity : db.getActivities()) {
 				if(included(activity)) {
 					for(AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
-						store.add(new DimensionModel(attributeGroup), false);
+						DimensionModel dimModel = new DimensionModel(attributeGroup);
+						store.add(dimModel, false);
+						attributeDimensions.add(dimModel);
 					}
 				}
 			}
