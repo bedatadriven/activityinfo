@@ -149,6 +149,19 @@ public final class ActivityDTO
     }
 
     /**
+     * @param indicatorIds the ids of the indicators for which to search
+     * @return true if this activity contains any of the provided indicators
+     */
+    public boolean containsAny(Set<Integer> indicatorIds) {
+		for(IndicatorDTO indicator : getIndicators()) {
+			if(indicatorIds.contains(indicator.getId())) {
+				return true;
+			}
+		}
+		return false;
+    }
+
+    /**
      * Sets this Activity's Indicator
      */
     public void setIndicators(List<IndicatorDTO> indicators) {
