@@ -66,7 +66,7 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         	if(locations.get(MAX_UPDATES - 1).getTimeEdited() == 
         			locations.get(MAX_UPDATES).getTimeEdited()) {
         		
-        		throw new RuntimeException("dateEdited values on Location objects are not unique, cannot " +
+        		throw new RuntimeException("timeEdited values on Location objects are not unique, cannot " +
         				"correctly batch updates");
         		
         	}
