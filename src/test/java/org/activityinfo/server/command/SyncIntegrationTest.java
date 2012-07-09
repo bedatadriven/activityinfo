@@ -58,7 +58,6 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
 	
     private long nowIsh;
-	private long awhileBack;
 
 	@Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
@@ -136,7 +135,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         Location location = (Location) serverEm.createQuery("select l from Location l where l.name = 'Penekusu 26'")
         					.getSingleResult();
         location.setAxe("Motown"); 
-        location.setDateEdited(new Date());
+        location.setTimeEdited(new Date().getTime());
         serverEm.getTransaction().commit();
         
         newRequest();
@@ -154,8 +153,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         Location newLocation = new Location();
         int locationId = keyGenerator.generateInt();
         newLocation.setName("Bukavu");
-        newLocation.setDateCreated(new Date());
-        newLocation.setDateEdited(new Date());
+        newLocation.setTimeEdited(new Date().getTime());
         newLocation.setId(123456789);
         newLocation.setLocationType(serverEm.find(LocationType.class, 1));
         newLocation.setId(locationId);
@@ -176,10 +174,8 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     public void timeStampSurvivesRoundTrip() {
         EntityManager entityManager = serverEntityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Date now = new Date();
         Location loc = new Location();
-        loc.setDateCreated(new Date(nowIsh+=1500));
-        loc.setDateEdited(new Date(nowIsh+=1500));
+        loc.setTimeEdited(nowIsh+=1500);
         loc.setName("Penekusu");
         loc.setLocationType(entityManager.find(LocationType.class, 1));
         entityManager.persist(loc);
@@ -212,19 +208,13 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     private void addLocationsToServerDatabase(int count) {
        
     	nowIsh = new Date().getTime();
-    	awhileBack = nowIsh - 100000;
     	
     	    	EntityManager entityManager = serverEntityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         for(int i=1;i<= count;++i) {
             Location loc = new Location();
             loc.setId(i);
-            if(i%3 == 0) {
-            	loc.setDateCreated(new Date(awhileBack+=15000));
-            } else {
-            	loc.setDateCreated(new Date(nowIsh+=15000));
-            }
-            loc.setDateEdited(new Date(nowIsh+=15000));
+            loc.setTimeEdited(nowIsh+=15000);
             loc.setName("Penekusu " + i);
             loc.getAdminEntities().add(entityManager.getReference(AdminEntity.class, 2));
             loc.getAdminEntities().add(entityManager.getReference(AdminEntity.class, 12));
