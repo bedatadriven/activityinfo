@@ -19,7 +19,6 @@ import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
-import org.activityinfo.shared.exception.UnexpectedCommandException;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Lists;
