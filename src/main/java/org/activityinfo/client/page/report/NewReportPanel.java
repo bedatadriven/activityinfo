@@ -11,6 +11,9 @@ import org.activityinfo.client.page.report.template.CompositeTemplate;
 import org.activityinfo.client.page.report.template.MapTemplate;
 import org.activityinfo.client.page.report.template.PivotTableTemplate;
 import org.activityinfo.client.page.report.template.ReportTemplate;
+import org.activityinfo.shared.command.CreateReport;
+import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.report.model.Report;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -29,11 +32,13 @@ public class NewReportPanel extends ContentPanel {
 	private ListStore<ReportTemplate> store;
 	private EventBus eventBus;
 	private ReportSerializer reportSerializer;
+	private Dispatcher dispatcher;
 
 	public NewReportPanel(EventBus eventBus, Dispatcher dispatcher, ReportSerializer reportSerializer) {
 		this.eventBus = eventBus;
 		this.reportSerializer = reportSerializer;
-
+		this.dispatcher = dispatcher;
+		
 		setHeading(I18N.CONSTANTS.createNewReport());
 		setLayout(new FitLayout());
 		
@@ -64,14 +69,23 @@ public class NewReportPanel extends ContentPanel {
 	}
 	 
 	private void createNew(ReportTemplate model) {
-		this.mask();
-		model.create(new AsyncCallback<Integer>() {
+		model.createReport(new AsyncCallback<Report>() {
 			
 			@Override
-			public void onSuccess(Integer reportId) {
-				eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, 
-						new ReportDesignPageState(reportId)));
-				
+			public void onSuccess(Report report) {
+				dispatcher.execute(new CreateReport(report), new AsyncCallback<CreateResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+
+					@Override
+					public void onSuccess(CreateResult created) {
+						eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, 
+								new ReportDesignPageState(created.getNewId())));
+					}
+				});
 			}
 			
 			@Override
@@ -79,6 +93,7 @@ public class NewReportPanel extends ContentPanel {
 				
 			}
 		});
+		
 	}
 
 	private ModelData createReportModel(String name, String desc, String image) {

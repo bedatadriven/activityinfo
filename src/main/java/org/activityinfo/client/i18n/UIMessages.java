@@ -105,8 +105,11 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	 * 
 	 * @return translated "{0,number,integer}Q{1,number,integer}"
 	 */
-	@DefaultMessage("{0}Q{1}")
+	@DefaultMessage("{0,number,#}Q{1}")
 	String quarter(int year, int quarter);
+	
+	@DefaultMessage("{0,number,#}W{1}")
+	String week(int year, int week);
 
 	@DefaultMessage("{0,date,MMM}")
 	String month(Date month);

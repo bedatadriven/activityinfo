@@ -1,12 +1,6 @@
 package org.activityinfo.shared.report.model;
 
 
-/*
- * All Sigmah code is released under the GNU General Public License v3
- * See COPYRIGHT.txt and LICENSE.txt.
- */
-
-
 public class AttributeGroupDimension extends Dimension {
 	
 	private int attributeGroupId;
@@ -18,13 +12,6 @@ public class AttributeGroupDimension extends Dimension {
     public AttributeGroupDimension(int groupId) {
         super( DimensionType.AttributeGroup );
         this.attributeGroupId = groupId;
-    }
-	
-	public AttributeGroupDimension(String caption, int groupId)  {
-		super( DimensionType.AttributeGroup);
-		this.attributeGroupId = groupId;
-		set("caption", caption);
-		set("id", "attrs_dim" + groupId);
     }
 
     public int getAttributeGroupId() {
@@ -54,6 +41,4 @@ public class AttributeGroupDimension extends Dimension {
 	public int hashCode() {
 		return attributeGroupId;
 	}
-	
-	
 }

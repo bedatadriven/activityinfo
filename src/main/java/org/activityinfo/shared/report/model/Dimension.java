@@ -18,15 +18,12 @@ import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.model.typeadapter.DimensionAdapter;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
 /*
  * Olap dimension, mapping to rows or columns in pivot tables
  */
 @XmlJavaTypeAdapter(DimensionAdapter.class)
-public class Dimension extends BaseModelData implements Serializable {
+public class Dimension implements Serializable {
 
-	public final static String CAPTION_PROPERTY = "caption";
     private DimensionType type;
     private String color;
 
@@ -43,12 +40,6 @@ public class Dimension extends BaseModelData implements Serializable {
 
     public Dimension(DimensionType type) {
         this.type = type;
-    }
-    
-    public Dimension(String caption, DimensionType type) {
-        this.type = type;
-        set("caption", caption);
-        set("id", "dim_" + type);
     }
 
     public DimensionType getType() {

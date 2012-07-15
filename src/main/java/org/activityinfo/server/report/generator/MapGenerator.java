@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.dao.IndicatorDAO;
+import org.activityinfo.server.database.hibernate.entity.Country;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.report.generator.map.BubbleLayerGenerator;
@@ -44,6 +45,8 @@ import org.activityinfo.shared.util.mapping.Extents;
 import org.activityinfo.shared.util.mapping.TileMath;
 import org.apache.log4j.Logger;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
@@ -77,7 +80,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         	if (layer.isVisible()) {
         		// Add indicator
         		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
-        		filter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
+        		layerFilter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
                 List<SiteDTO> sites = getDispatcher().execute(new GetSites(layerFilter)).getData();
                 
 	            if (layer instanceof BubbleMapLayer) {
@@ -115,16 +118,11 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         
         content.setCenter(center);
 
+        List<Indicator> indicators = queryIndicators(element);
+        
+        
         // Retrieve the basemap and clamp zoom level
-        BaseMap baseMap = null;
-        if (element.getBaseMapId() == null) {
-        	// default
-        	baseMap = GoogleBaseMap.ROADMAP;
-        } else if(PredefinedBaseMaps.isPredefinedMap(element.getBaseMapId())) {
-        	baseMap = PredefinedBaseMaps.forId(element.getBaseMapId());
-        } else {
-        	baseMap = getBaseMap(element.getBaseMapId());
-        } 
+        BaseMap baseMap = findBaseMap(element, indicators); 
                 
         if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();
@@ -146,29 +144,73 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             layerGtor.generate(map, content);
         }
         
+
+        
+        
+        content.setIndicators(toDTOs(indicators));
+        element.setContent(content);
+
+    }
+
+	private List<Indicator> queryIndicators(MapReportElement element) {
+		
         // Get relevant indicators for the map markers
         Set<Integer> indicatorIds = new HashSet<Integer>(); 
-        
         for (MapLayer maplayer : element.getLayers()) {
         	indicatorIds.addAll(maplayer.getIndicatorIds());
         }
         
-        Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();
+		List<Indicator> indicators = Lists.newArrayList();
         for (Integer indicatorId : indicatorIds) {
-        	Indicator indicator = indicatorDAO.findById(indicatorId);
-        	if (indicator != null) {
-	        	IndicatorDTO indicatorDTO = new IndicatorDTO();
-	        	indicatorDTO.setId(indicator.getId());
-	        	indicatorDTO.setName(indicator.getName());
-	        	
-	        	indicatorDTOs.add(indicatorDTO);
-        	}
+        	indicators.add(indicatorDAO.findById(indicatorId));
         }
-        
-        content.setIndicators(indicatorDTOs);
-        element.setContent(content);
+		return indicators;
+	}
 
-    }
+	private Set<IndicatorDTO> toDTOs(List<Indicator> indicators) {
+		Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();        
+        for(Indicator indicator : indicators) {
+        	IndicatorDTO indicatorDTO = new IndicatorDTO();
+        	indicatorDTO.setId(indicator.getId());
+        	indicatorDTO.setName(indicator.getName());
+        	
+        	indicatorDTOs.add(indicatorDTO);
+        }
+		return indicatorDTOs;
+	}
+
+	private BaseMap findBaseMap(MapReportElement element, List<Indicator> indicators) {
+		BaseMap baseMap = null;
+        String baseMapId = element.getBaseMapId();
+		if (element.getBaseMapId() == null || element.getBaseMapId().equals(MapReportElement.AUTO_BASEMAP)) {
+        	baseMapId = defaultBaseMap(indicators);
+        }
+        if(PredefinedBaseMaps.isPredefinedMap(baseMapId)) {
+        	baseMap = PredefinedBaseMaps.forId(baseMapId);
+        } else {
+        	baseMap = getBaseMap(baseMapId);
+        }
+		return baseMap;
+	}
+
+	private String defaultBaseMap(List<Indicator> indicators) {
+		Set<Country> countries = queryCountries(indicators);
+		if(countries.size() == 1) {
+			Country country = countries.iterator().next();
+			if(country.getCodeISO().equals("CD")) {
+				return "admin";
+			}
+		}
+		return GoogleBaseMap.ROADMAP.getId();			
+	}
+
+	private Set<Country> queryCountries(List<Indicator> indicators) {
+		Set<Country> country = Sets.newHashSet();
+		for(Indicator indicator : indicators) {
+			country.add(indicator.getActivity().getDatabase().getCountry());
+		}
+		return country;
+	}
 
 	private BaseMap getBaseMap(String baseMapId) {
 		BaseMapResult maps = dispatcher.execute(new GetBaseMaps());

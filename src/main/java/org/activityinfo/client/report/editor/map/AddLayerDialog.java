@@ -43,7 +43,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
     private Dispatcher service;
     private boolean multiSelect = true;
     private MapLayer newLayer = null;
-
+    
     // List of all indicators
 	private IndicatorTreePanel treepanelIndicators;
 	
@@ -51,7 +51,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	private ListStore<IndicatorDTO> indicatorsStore = new ListStore<IndicatorDTO>();
     
     // Indicator options
-	private Button buttonAddLayer = new Button();
+	private Button addButton = new Button();
 	private LabelField labelCanSelectMultiple = new LabelField();
 	private Image imageCanSelectMultiple = new Image();
     
@@ -82,6 +82,10 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		
 		radioProportionalCircle.setValue(true);
 	}
+	
+	public void setAddButtonText(String text) {
+		addButton.setText(text);
+	}
 
 	private void initializeComponent() {
 		VBoxLayout layout = new VBoxLayout();
@@ -91,7 +95,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		setSize((int)Math.min(com.google.gwt.user.client.Window.getClientWidth() * 0.8, 800d),
 			    (int)Math.min(com.google.gwt.user.client.Window.getClientWidth() * 0.8, 600d));
 		setPlain(true);
-		setHeading("Add layer");
+		setHeading(I18N.CONSTANTS.addLayer());
 		setModal(true);
 	}
 	
@@ -182,7 +186,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	private void clearSelection() {
 		indicatorsStore.removeAll();
 		treepanelIndicators.clearSelection();
-		buttonAddLayer.setEnabled(false);
+		addButton.setEnabled(false);
 	}
 	
 	/*
@@ -228,7 +232,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 					} else {
 						removeIndicatorGroupFromStore(indicatorGroup);
 					}
-					buttonAddLayer.setEnabled(hasSelectedItems());
+					addButton.setEnabled(hasSelectedItems());
 				}
 				if (be.getItem() instanceof IndicatorDTO) {
 					IndicatorDTO indicator = (IndicatorDTO)be.getItem();
@@ -237,7 +241,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 					} else {
 						removeIndicatorFromStore(indicator);
 					}
-					buttonAddLayer.setEnabled(hasSelectedItems());
+					addButton.setEnabled(hasSelectedItems());
 				}
 			}
 

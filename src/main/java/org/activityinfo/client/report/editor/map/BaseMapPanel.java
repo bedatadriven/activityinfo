@@ -8,7 +8,9 @@ import org.activityinfo.shared.command.GetBaseMaps;
 import org.activityinfo.shared.command.result.BaseMapResult;
 import org.activityinfo.shared.map.GoogleBaseMap;
 import org.activityinfo.shared.map.TileBaseMap;
+import org.activityinfo.shared.report.model.MapReportElement;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -111,7 +113,9 @@ public class BaseMapPanel extends ContentPanel implements HasValue<String> {
 	@Override
 	public void setValue(String value, boolean fireEvents) {
 		this.value = value;
-		if(GoogleBaseMap.HYBRID.getId().equals(value)) {
+		if(MapReportElement.AUTO_BASEMAP.equals(value) || value == null) {
+			label.setText("Default");
+		} else if(GoogleBaseMap.HYBRID.getId().equals(value)) {
 			label.setText(I18N.CONSTANTS.googleHybrid());
 		} else if(GoogleBaseMap.ROADMAP.getId().equals(value)) {
 			label.setText(I18N.CONSTANTS.googleRoadmap());
