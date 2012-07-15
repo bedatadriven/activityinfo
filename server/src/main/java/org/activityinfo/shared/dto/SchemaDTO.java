@@ -10,8 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activityinfo.client.report.editor.pivotTable.DimensionModel;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Aggregate DTO for all {@link org.activityinfo.server.database.hibernate.entity.UserDatabase}s visible
@@ -56,6 +60,18 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 		return databases;
 	}
 	
+    public Set<CountryDTO> getCountriesForIndicators(Set<Integer> indicatorIds) {
+		Set<CountryDTO> countries = Sets.newHashSet();
+    	for(UserDatabaseDTO db : getDatabases()) {
+			for(ActivityDTO activity : db.getActivities()) {
+				if(activity.containsAny(indicatorIds)) {
+					countries.add(db.getCountry());
+				}
+			}
+		}
+    	return countries;
+    }
+    
 	public void setDatabases(List<UserDatabaseDTO> databases) {
 		this.databases = databases;
 	}

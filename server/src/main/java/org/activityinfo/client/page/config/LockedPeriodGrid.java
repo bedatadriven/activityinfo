@@ -109,7 +109,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 	}
 
 	private void initializeComponent() {
-		setHeading("Manage time locks on databases, projects and activities");
+		setHeading(I18N.CONSTANTS.lockPanelTitle());
 		setLayout(new FitLayout());
 	}
 

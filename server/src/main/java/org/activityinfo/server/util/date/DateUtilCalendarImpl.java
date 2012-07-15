@@ -103,7 +103,7 @@ public class DateUtilCalendarImpl extends DateUtil {
 
             calendar.set( Calendar.DATE, calendar.getActualMinimum( Calendar.DAY_OF_MONTH ) );
 
-        } else if(dateUnit == DateUnit.WEEK ) {
+        } else if(dateUnit == DateUnit.WEEK_MON ) {
 
             // TODO
             throw new Error("not implemented");
@@ -132,7 +132,7 @@ public class DateUtilCalendarImpl extends DateUtil {
             calendar.set( Calendar.DATE,
                     calendar.getActualMaximum( Calendar.DATE ));
 
-        } else if(dateUnit == DateUnit.WEEK ) {
+        } else if(dateUnit == DateUnit.WEEK_MON ) {
 
             // TODO
             throw new Error("not implemented");
@@ -160,7 +160,7 @@ public class DateUtilCalendarImpl extends DateUtil {
 
             calendar.add( Calendar.MONTH, count);
 
-        } else if(dateUnit == DateUnit.WEEK ) {
+        } else if(dateUnit == DateUnit.WEEK_MON ) {
 
             calendar.add( Calendar.DATE, count * 7);
 

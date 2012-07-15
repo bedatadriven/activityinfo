@@ -280,8 +280,6 @@ public class ReportJsonFactory implements ReportSerializer {
 			if (type.equals(DimensionType.Date)) {
 				DateDimension dim = (DateDimension) dims.get(i);
 				jsonDim.addProperty("type", dim.getType().toString());
-				jsonDim.addProperty("caption",
-						dim.get(Dimension.CAPTION_PROPERTY).toString());
 
 				jsonDim.addProperty("dateUnit", dim.getUnit().toString());
 
@@ -295,9 +293,6 @@ public class ReportJsonFactory implements ReportSerializer {
 			} else if (type.equals(DimensionType.AdminLevel)) { 
 				AdminDimension dim = (AdminDimension) dims.get(i);
 				jsonDim.addProperty("type", dim.getType().toString());
-				jsonDim.addProperty("caption",
-						dim.get(Dimension.CAPTION_PROPERTY).toString());
-				
 				jsonDim.addProperty("level", (Integer)dim.getLevelId());
 				
 				if (dim.getColor() != null) {
@@ -311,9 +306,7 @@ public class ReportJsonFactory implements ReportSerializer {
 				Dimension dim = dims.get(i);
 
 				jsonDim.addProperty("type", dim.getType().toString());
-				jsonDim.addProperty("caption",
-						dim.get(Dimension.CAPTION_PROPERTY).toString());
-
+			
 				if (dim.getColor() != null) {
 					jsonDim.addProperty("color", dim.getColor());
 				}
@@ -620,16 +613,10 @@ public class ReportJsonFactory implements ReportSerializer {
 		while (it.hasNext()) {
 			JsonObject dim = it.next().getAsJsonObject();
 			String type = dim.get("type").getAsString();
-			String caption = dim.get("caption").getAsString();
 			
 			if (type.equals(DimensionType.Date.toString())) {
 				String dateUnit = dim.get("dateUnit").getAsString();
 				DateDimension dimension = new DateDimension(DateUnit.valueOf(dateUnit));
-				dimension.set("caption", caption);
-				JsonElement color = dim.get("color");
-				if (color != null) {
-					dimension.setColor(color.getAsString());
-				}
 				JsonElement categories = dim.get("categories");
 				if (categories != null) {
 					dimension.setCategories(decodeCategories(categories));
@@ -639,11 +626,6 @@ public class ReportJsonFactory implements ReportSerializer {
 			} else if(type.equals(DimensionType.AdminLevel.toString())){
 				Integer level = dim.get("level").getAsInt();
 				AdminDimension dimension = new AdminDimension(level);
-				dimension.set("caption", caption);
-				JsonElement color = dim.get("color");
-				if (color != null) {
-					dimension.setColor(color.getAsString());
-				}
 				JsonElement categories = dim.get("categories");
 				if (categories != null) {
 					dimension.setCategories(decodeCategories(categories));
@@ -655,7 +637,6 @@ public class ReportJsonFactory implements ReportSerializer {
 			{
 				Dimension dimension = new Dimension(DimensionType.valueOf(dim
 						.get("type").getAsString()));
-				dimension.set("caption", caption);
 				JsonElement color = dim.get("color");
 				if (color != null) {
 					dimension.setColor(color.getAsString());

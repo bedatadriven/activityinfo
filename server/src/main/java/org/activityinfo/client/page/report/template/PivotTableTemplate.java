@@ -8,10 +8,11 @@ import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.PivotTableReportElement;
 import org.activityinfo.shared.report.model.Report;
+import org.activityinfo.shared.report.model.ReportElement;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class PivotTableTemplate extends ReportTemplate {
+public class PivotTableTemplate extends ReportElementTemplate {
 
 	public PivotTableTemplate(Dispatcher dispatcher) {
 		super(dispatcher);
@@ -22,16 +23,13 @@ public class PivotTableTemplate extends ReportTemplate {
 	}
 
 	@Override
-	public void create(AsyncCallback<Integer> callback) {
+	public void createElement(AsyncCallback<ReportElement> callback) {
 		PivotTableReportElement table = new PivotTableReportElement();
 		table.addColDimension(new DateDimension(DateUnit.YEAR));
 		table.addColDimension(new DateDimension(DateUnit.MONTH));
 		table.addRowDimension(new Dimension(DimensionType.Partner));
 		
-		Report report = new Report();
-		report.addElement(table);
-		
-		save(report, callback);
+		callback.onSuccess(table);
 	}
 	
 	
