@@ -32,7 +32,7 @@ public class ChartPivotBar extends ToolBar implements HasReportElement<PivotChar
 	
 	private final ReportEventHelper events;
 	
-	private PivotChartReportElement model;
+	private PivotChartReportElement model = new PivotChartReportElement();
 	
 	protected ComboBox<Dimension> categoryCombo;
 	protected ComboBox<Dimension> legendCombo;

@@ -18,11 +18,13 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.inject.Singleton;
 
 /**
  * Utility class that maintains a list of {@link DispatchListener}s and
  * {@link org.activityinfo.client.dispatch.CommandProxy}
  */
+@Singleton
 public class ProxyManager implements DispatchEventSource {
 
     private Map<Class<? extends Command>, List<DispatchListener>> listeners =

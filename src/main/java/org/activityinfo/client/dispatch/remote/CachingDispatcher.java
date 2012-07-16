@@ -1,10 +1,6 @@
 package org.activityinfo.client.dispatch.remote;
 
 
-import org.activityinfo.client.dispatch.AsyncMonitor;
-import org.activityinfo.client.dispatch.CommandProxy;
-import org.activityinfo.client.dispatch.DispatchEventSource;
-import org.activityinfo.client.dispatch.DispatchListener;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
 import org.activityinfo.shared.command.Command;
@@ -12,7 +8,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class CachingDispatcher implements Dispatcher, DispatchEventSource {
+public class CachingDispatcher extends AbstractDispatcher {
 
 	private ProxyManager proxyManager = new ProxyManager();
 	private Dispatcher dispatcher;
@@ -21,23 +17,6 @@ public class CachingDispatcher implements Dispatcher, DispatchEventSource {
 		super();
 		this.proxyManager = proxyManager;
 		this.dispatcher = dispatcher;
-	}
-
-	@Override
-	public final <T extends Command> void registerListener(Class<T> commandClass, DispatchListener<T> listener) {
-		proxyManager.registerListener(commandClass, listener);
-	}
-
-	@Override
-	public final <T extends Command> void registerProxy(Class<T> commandClass, CommandProxy<T> proxy) {
-		proxyManager.registerProxy(commandClass, proxy);
-	}
-
-	@Override
-	public <T extends CommandResult> void execute(Command<T> command,
-			AsyncMonitor monitor, AsyncCallback<T> callback) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -60,6 +39,7 @@ public class CachingDispatcher implements Dispatcher, DispatchEventSource {
 				@Override
 				public void onSuccess(T result) {
 		            proxyManager.notifyListenersOfSuccess(command, result);
+		            callback.onSuccess(result);
 				}
 			});
 		}

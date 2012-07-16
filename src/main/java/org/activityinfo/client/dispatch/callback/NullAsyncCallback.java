@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.activityinfo.client.mock;
+package org.activityinfo.client.dispatch.callback;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.activityinfo.client.dispatch.callback.NullAsyncCallback;
 import org.activityinfo.client.dispatch.remote.CommandRequest;
-import org.activityinfo.client.mock.NullAsyncCallback;
 import org.activityinfo.shared.command.GetSchema;
 import org.junit.Test;
 

@@ -4,7 +4,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 
 import org.activityinfo.client.MockEventBus;
-import org.activityinfo.client.dispatch.remote.DirectDispatcher;
+import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.client.offline.command.HandlerRegistry;
 import org.activityinfo.client.offline.command.LocalDispatcher;
@@ -42,12 +42,13 @@ public class SynchronizerImplTest {
 		SqlDatabase database = createMock(SqlDatabase.class);
 		replay(database);
 		
-		LocalDispatcher localDispatcher = new LocalDispatcher(auth, database, registry);
+		LocalDispatcher localDispatcher = new LocalDispatcher(auth, database, registry,
+				new RemoteDispatcher(null, null));
 		
 		SynchronizerDispatcher remoteDispatcher = createMock(SynchronizerDispatcher.class);
 		replay(remoteDispatcher);
 		
-		DirectDispatcher directDispatcher = createMock(DirectDispatcher.class);
+		RemoteDispatcher directDispatcher = createMock(RemoteDispatcher.class);
 		replay(directDispatcher);
 		
 		AppCacheSynchronizer appCache = new AppCacheSynchronizer(eventBus);
@@ -60,10 +61,10 @@ public class SynchronizerImplTest {
 		DownSynchronizer down = new DownSynchronizer(eventBus, remoteDispatcher, database, constants);
 		UpdateSynchronizer up = new UpdateSynchronizer(commandQueue, remoteDispatcher);
 		
-		
-
-		SynchronizerImpl sync = new SynchronizerImpl(localDispatcher, directDispatcher, appCache, down, up, auth, 
-				new SchemaMigration(database));
+//		
+//
+//		SynchronizerImpl sync = new SynchronizerImpl(localDispatcher, directDispatcher, appCache, down, up, auth, 
+//				new SchemaMigration(database));
 	}
 
 		

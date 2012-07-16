@@ -17,7 +17,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.Remote;
+import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
 import org.activityinfo.client.offline.capability.OfflineCapabilityProfile;
@@ -77,7 +77,7 @@ public class OfflineController implements Dispatcher {
 
 	@Inject
 	public OfflineController(EventBus eventBus,
-			@Remote Dispatcher remoteDispatcher,
+			RemoteDispatcher remoteDispatcher,
 			Provider<Synchronizer> gateway,
 			CrossSessionStateProvider stateManager,
 			OfflineCapabilityProfile capabilityProfile, UIConstants uiConstants) {
@@ -112,6 +112,12 @@ public class OfflineController implements Dispatcher {
 	public void install() {
 		if (activeStrategy instanceof NotInstalledStrategy) {
 			((NotInstalledStrategy) activeStrategy).enableOffline();
+		}
+	}
+	
+	public void synchronize() {
+		if(activeStrategy instanceof OfflineStrategy) {
+			((OfflineStrategy)activeStrategy).synchronize();
 		}
 	}
 
@@ -401,6 +407,10 @@ public class OfflineController implements Dispatcher {
 			this.offlineManger = offlineManger;
 		}
 
+		public void synchronize() {
+			offlineManger.synchronize();
+		}
+
 		@Override
 		State getState() {
 			return State.INSTALLED;
@@ -429,12 +439,7 @@ public class OfflineController implements Dispatcher {
 		void dispatch(Command command, AsyncMonitor monitor,
 				AsyncCallback callback) {
 
-			if (offlineManger.canHandle(command)) {
-				offlineManger.execute(command, monitor, callback);
-			} else {
-				Log.debug("Command unsupported offline: " + command);
-
-			}
+			offlineManger.execute(command, monitor, callback);
 		}
 	}
 
