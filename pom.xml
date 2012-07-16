@@ -869,8 +869,6 @@
 
 						<configuration>
 							<applicationName>activityinfo</applicationName>
-							<region>eu-west-1</region>
-							<s3Bucket>activityinfo-wars</s3Bucket>
 							<s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
 							<versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
 							<environmentName>activityinfo-23</environmentName>
