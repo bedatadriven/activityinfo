@@ -607,7 +607,7 @@
 					<applicationName>activityinfo</applicationName>
 					<s3Bucket>activityinfo-builds</s3Bucket>
 					<s3Key>${project.version}-${maven.build.timestamp}</s3Key>
-					<region>eu-west</region>
+					<region>eu-west-1</region>
 
 					<optionSettings>
 
