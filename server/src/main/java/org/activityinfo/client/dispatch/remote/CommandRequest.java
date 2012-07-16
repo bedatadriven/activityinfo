@@ -10,10 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
-import org.activityinfo.shared.command.result.CommandResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -24,7 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *
  * @author Alex Bertram
  */
-class CommandRequest {
+class CommandRequest implements AsyncCallback {
     /**
      * The pending command
      */
@@ -43,23 +41,6 @@ class CommandRequest {
 
     public Collection<AsyncCallback> getCallbacks() {
         return Collections.unmodifiableCollection(this.callbacks);
-    }
-
-    public void fireOnFailure(Throwable caught) {
-        for (AsyncCallback c : callbacks) {
-            c.onFailure(caught);
-        }
-    }
-
-    public void fireOnSuccess(CommandResult result) {
-        List<AsyncCallback> toCallback = new ArrayList<AsyncCallback>(callbacks);
-        for (AsyncCallback c : toCallback) {
-            try {
-                c.onSuccess(result);
-            } catch (Exception e) {
-                Log.error("Exception thrown during callback on AsyncCallback.onSuccess() for " + command.toString(), e);
-            }
-        }
     }
     
     public boolean mergeSuccessfulInto(List<CommandRequest> list) {
@@ -86,4 +67,27 @@ class CommandRequest {
     public boolean isMutating() {
         return command instanceof MutatingCommand;
     }
+
+	@Override
+	public void onFailure(Throwable caught) {
+        for (AsyncCallback c : callbacks) {
+        	try {
+        		c.onFailure(caught);
+        	} catch(Exception e) {
+        		Log.error("Uncaught exception during onFailure()", e);
+        	}
+        }
+	}
+
+	@Override
+	public void onSuccess(Object result) {
+		List<AsyncCallback> toCallback = new ArrayList<AsyncCallback>(callbacks);
+        for (AsyncCallback c : toCallback) {
+            try {
+                c.onSuccess(result);
+            } catch (Exception e) {
+                Log.error("Exception thrown during callback on AsyncCallback.onSuccess() for " + command.toString(), e);
+            }
+        }
+	}
 }

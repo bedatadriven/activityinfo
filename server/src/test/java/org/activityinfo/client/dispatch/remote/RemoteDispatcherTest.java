@@ -18,9 +18,8 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Collections;
 
-import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.CommandProxy;
-import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
@@ -34,7 +33,7 @@ import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.testing.StubScheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -43,9 +42,10 @@ public class RemoteDispatcherTest {
     private static final String AUTH_TOKEN = "XYZ";
 
     private RemoteCommandServiceAsync service;
-    private RemoteDispatcher dispatcher;
+    private Dispatcher dispatcher;
     private CommandProxy proxy;
-
+    private ProxyManager proxyManager = new ProxyManager();
+    
     private Capture<AsyncCallback> remoteCallback = new Capture<AsyncCallback>();
 
     private IncompatibleRemoteHandler dummyIncompatibleRemoteHandler = new IncompatibleRemoteHandler() {
@@ -53,17 +53,18 @@ public class RemoteDispatcherTest {
 		public void handle() { }
 	};
 	
-	private Scheduler scheduler = new StubScheduler();
+	private StubScheduler scheduler = new StubScheduler();
 	
     @Before
     public void setUp() {
         service = createMock("remoteService", RemoteCommandServiceAsync.class);
         proxy = createMock("proxy", CommandProxy.class);
-
-        dispatcher = new RemoteDispatcher(
-        		service, 
-                new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com"), 
-                dummyIncompatibleRemoteHandler);
+        AuthenticatedUser auth = new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com");
+        
+        dispatcher = new CachingDispatcher(proxyManager, 
+        		new MergingDispatcher(
+        		new RemoteDispatcher(auth, service),
+        		scheduler));
     }
 
     @Test
@@ -75,7 +76,7 @@ public class RemoteDispatcherTest {
 
         // trigger a call
         dispatcher.execute(new GetSchema(), makeNullCallback());
-        dispatcher.processPendingCommands();
+        processPendingCommands();
 
         // verify that the command was dispatched to the server
         verify(service);
@@ -91,7 +92,7 @@ public class RemoteDispatcherTest {
         // components of the application
         dispatcher.execute(new GetSchema(), makeNullCallback());
         dispatcher.execute(new GetSchema(), makeNullCallback());
-        dispatcher.processPendingCommands();
+        processPendingCommands();
 
         // verify that only one command was sent
         verify(service);
@@ -106,7 +107,7 @@ public class RemoteDispatcherTest {
         // simulate successive dispatches of the same command from different
         // components of the application
         dispatcher.execute(new GetSchema(), makeNullCallback());
-        dispatcher.processPendingCommands();
+        processPendingCommands();
         dispatcher.execute(new GetSchema(), makeNullCallback());
 
         // verify that only one command was sent
@@ -127,7 +128,7 @@ public class RemoteDispatcherTest {
         // components of the application
         dispatcher.execute(new GetSchema(), callback1);
         dispatcher.execute(new GetSchema(), callback2);
-        dispatcher.processPendingCommands();
+        processPendingCommands();
 
         // verify that only one command was sent
         verify(callback1);
@@ -147,7 +148,7 @@ public class RemoteDispatcherTest {
 
         final AsyncCallback callback2 = makeCallbackThatExpectsNonNullSuccess();
 
-        dispatcher.registerProxy(GetSchema.class, proxy);
+        proxyManager.registerProxy(GetSchema.class, proxy);
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
 			@Override
@@ -161,8 +162,8 @@ public class RemoteDispatcherTest {
 			}
         	
         });
-        dispatcher.processPendingCommands();
-        dispatcher.processPendingCommands();
+        processPendingCommands();
+        processPendingCommands();
 
         verify(proxy, service, callback2);
     	
@@ -180,9 +181,9 @@ public class RemoteDispatcherTest {
 
         AsyncCallback callback = makeCallbackThatExpectsNonNullSuccess();
 
-        dispatcher.registerProxy(GetSchema.class, proxy);
+        proxyManager.registerProxy(GetSchema.class, proxy);
         dispatcher.execute(new GetSchema(), callback);
-        dispatcher.processPendingCommands();
+        processPendingCommands();
 
         verify(proxy, service, callback);
     }
@@ -202,9 +203,9 @@ public class RemoteDispatcherTest {
 
         AsyncCallback callback = makeCallbackThatExpectsNonNullSuccess();
 
-        dispatcher.registerProxy(GetSchema.class, proxy);
+        proxyManager.registerProxy(GetSchema.class, proxy);
         dispatcher.execute(new GetSchema(), callback);
-        dispatcher.processPendingCommands();
+        processPendingCommands();
 
         verify(proxy, service, callback);
     }
@@ -219,7 +220,7 @@ public class RemoteDispatcherTest {
         AsyncCallback callback = makeCallbackThatExpectsFailure();
 
         dispatcher.execute(new GetSchema(), callback);
-        dispatcher.processPendingCommands();
+        processPendingCommands();
 
         verify(service, callback);
     }
@@ -257,13 +258,19 @@ public class RemoteDispatcherTest {
         AsyncCallback secondCallback = makeCallbackThatExpectsNonNullSuccess();
         dispatcher.execute(new GetSchema(), null, secondCallback);
 
-        dispatcher.processPendingCommands();
+        processPendingCommands();
 
         verify(secondCallback);
     }
 
 
-    private AsyncCallback<SchemaDTO> makeNullCallback() {
+    private void processPendingCommands() {
+    	for(RepeatingCommand command : scheduler.getRepeatingCommands()) {
+    		command.execute();
+    	}
+	}
+
+	private AsyncCallback<SchemaDTO> makeNullCallback() {
         return new AsyncCallback<SchemaDTO>() {
             @Override
             public void onFailure(Throwable throwable) {

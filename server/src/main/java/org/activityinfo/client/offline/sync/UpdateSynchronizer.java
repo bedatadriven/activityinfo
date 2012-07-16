@@ -3,6 +3,7 @@ package org.activityinfo.client.offline.sync;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.client.offline.command.CommandQueue.QueueEntry;
+import org.activityinfo.client.offline.sync.pipeline.AsyncCommand;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -13,7 +14,7 @@ import com.google.inject.Singleton;
  * 
  */
 @Singleton
-public class UpdateSynchronizer {
+public class UpdateSynchronizer implements AsyncCommand {
 
 	private CommandQueue commandQueue;
 	private Dispatcher dispatcher;
@@ -29,7 +30,7 @@ public class UpdateSynchronizer {
 	}
 	
 	
-	public void sync(AsyncCallback<Void> callback) {
+	public void execute(AsyncCallback<Void> callback) {
 		this.callback = callback;
 		nextCommand();
 	}

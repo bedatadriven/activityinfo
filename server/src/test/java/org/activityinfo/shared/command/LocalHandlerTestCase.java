@@ -104,18 +104,18 @@ public abstract class LocalHandlerTestCase {
     	newRequest();    	
     	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
                 uiConstants);
-        synchronizer.startFresh(new AsyncCallback<Void>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				throw new AssertionError(caught);
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				
-			}
-		});
+//        synchronizer.startFresh(new AsyncCallback<Void>() {
+//
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				throw new AssertionError(caught);
+//			}
+//
+//			@Override
+//			public void onSuccess(Void result) {
+//				
+//			}
+//		});
         localDatabase.processEventQueue();
         
     }
@@ -124,7 +124,7 @@ public abstract class LocalHandlerTestCase {
     	newRequest();    	
     	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
                 uiConstants);
-        synchronizer.start(new AsyncCallback<Void>() {
+        synchronizer.execute(new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

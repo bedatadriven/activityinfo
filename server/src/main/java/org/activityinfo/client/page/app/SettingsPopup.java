@@ -74,6 +74,11 @@ public class SettingsPopup extends PopupPanel {
 	@UiField
 	DivElement syncRow;
 	
+	@UiField
+	Label syncNowLabel;
+	
+	private boolean syncing = false;
+	
 	private EventBus eventBus;
 	
 	private OfflineStateChangeEvent.State state = State.CHECKING;
@@ -98,13 +103,15 @@ public class SettingsPopup extends PopupPanel {
 
 			@Override
 			public void handleEvent(SyncStatusEvent be) {
-				offlineStatusLabel.setText(be.getTask() + " " + be.getPercentComplete());
+				offlineStatusLabel.setText(be.getTask() + " " + ((int)(be.getPercentComplete())) + "%");
+				syncing = true;
 			}
 		});
 		eventBus.addListener(SyncCompleteEvent.TYPE, new Listener<SyncCompleteEvent>() {
 
 			@Override
 			public void handleEvent(SyncCompleteEvent event) {
+				syncing = false;
 				syncRow.getStyle().setDisplay(Display.BLOCK);
 				lastSyncTime = event.getTime();
 				updateLastSyncLabel();
@@ -125,6 +132,9 @@ public class SettingsPopup extends PopupPanel {
 	public void show() {
 		checkForUpdates();
 		updateLastSyncLabel();
+		if(!syncing) {
+			offlineStatusLabel.setText("");
+		}
 		super.show();
 	}
 	
@@ -183,6 +193,11 @@ public class SettingsPopup extends PopupPanel {
 			offlineController.install();
 		}
 	}
+	
+	@UiHandler("syncNowLabel")
+	public void onSyncNowClicked(ClickEvent e) {
+		offlineController.synchronize();
+	}
 
 	private void onOfflineStatusChange(State state) {
 		this.state = state;
@@ -203,6 +218,7 @@ public class SettingsPopup extends PopupPanel {
 			updateLastSyncLabel();
 		}
 	}
+	
 
 	private void updateLastSyncLabel() {
 		if(lastSyncTime != null) {

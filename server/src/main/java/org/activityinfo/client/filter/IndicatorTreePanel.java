@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.SuccessCallback;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.GetSchema;
@@ -55,13 +55,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class IndicatorTreePanel extends ContentPanel {
 
-	private final Dispatcher service;
+	private final Dispatcher dispatcher;
 
 	private TreeStore<ModelData> store;
 	private TreePanel<ModelData> tree;
 	private ToolBar toolBar;
 	private StoreFilterField filter;
-	private AsyncMonitor monitor;
 	private boolean multipleSelection;
 	
 	/**
@@ -70,17 +69,14 @@ public class IndicatorTreePanel extends ContentPanel {
 	 */
 	private Set<Integer> selection = Sets.newHashSet();
 	
-	private int databaseId ;
-
-	public IndicatorTreePanel(Dispatcher service,
-			final boolean multipleSelection, AsyncMonitor monitor) {
-		this.service = service;
+	public IndicatorTreePanel(Dispatcher dispatcher,
+			final boolean multipleSelection) {
+		this.dispatcher = dispatcher;
 
 		this.setHeading(I18N.CONSTANTS.indicators());
 		this.setIcon(IconImageBundle.ICONS.indicator());
 		this.setLayout(new FitLayout());
 		this.setScrollMode(Style.Scroll.NONE);
-		this.monitor = monitor;
 
 		store = new TreeStore<ModelData>(new Loader());
 		
@@ -148,29 +144,6 @@ public class IndicatorTreePanel extends ContentPanel {
 			}
 		});
 	}
-	
-	public static IndicatorTreePanel forSingleDatabase(Dispatcher service){
-		return new IndicatorTreePanel(service);
-	}
-
-	private IndicatorTreePanel(Dispatcher service) {
-		this.service = service;
-		this.setLayout(new FitLayout());
-		this.setScrollMode(Style.Scroll.NONE);
-
-		this.store = new TreeStore<ModelData>();
-		
-		setStoreKeyProvider();
-		
-		tree = new TreePanel<ModelData>(this.store);
-				
-		setTreeLabelProvider();
-		
-		setTreeConfigurations();
-		
-		add(tree);
-	}
-	
 	
 	private void setTreeConfigurations(){
 		tree.setCheckable(true);
@@ -264,19 +237,14 @@ public class IndicatorTreePanel extends ContentPanel {
 				Object parent, final AsyncCallback<List<ModelData>> callback) {
 
 			if (parent == null) {
-				service.execute(new GetSchema(), monitor,
-						new AsyncCallback<SchemaDTO>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								callback.onFailure(caught);
-							}
-
-							@Override
-							public void onSuccess(SchemaDTO result) {
-								schema = result;
-								callback.onSuccess(new ArrayList<ModelData>(schema.getDatabases()));
-							}
-						});
+				dispatcher.execute(new GetSchema(), new SuccessCallback<SchemaDTO>() {
+				
+					@Override
+					public void onSuccess(SchemaDTO result) {
+						schema = result;
+						callback.onSuccess(new ArrayList<ModelData>(schema.getDatabases()));
+					}
+				});
 			} else if (parent instanceof UserDatabaseDTO) {
 				callback.onSuccess(new ArrayList<ModelData>(
 						((UserDatabaseDTO) parent).getActivities()));
@@ -380,11 +348,6 @@ public class IndicatorTreePanel extends ContentPanel {
 		}
 	}
 
-	public IndicatorTreePanel(Dispatcher service,
-			final boolean multipleSelection) {
-		this(service, multipleSelection, null);
-	}
-
 	private class Loader extends BaseTreeLoader<ModelData> {
 		public Loader() {
 			super(new Proxy());
@@ -446,5 +409,4 @@ public class IndicatorTreePanel extends ContentPanel {
 			}
 		}
 	}
-	
 }

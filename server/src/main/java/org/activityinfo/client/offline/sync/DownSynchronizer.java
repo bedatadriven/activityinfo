@@ -6,17 +6,20 @@
 package org.activityinfo.client.offline.sync;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.Direct;
 import org.activityinfo.client.offline.command.CommandQueue;
+import org.activityinfo.client.offline.sync.pipeline.AsyncCommand;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.GetSyncRegions;
 import org.activityinfo.shared.command.result.SyncRegion;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.activityinfo.shared.command.result.SyncRegions;
+import org.activityinfo.shared.util.Collector;
 import org.activityinfo.client.i18n.UIConstants;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -36,7 +39,7 @@ import com.google.inject.Singleton;
  *
  */
 @Singleton
-public class DownSynchronizer {
+public class DownSynchronizer implements AsyncCommand {
 
     private final Dispatcher dispatch;
     private final EventBus eventBus;
@@ -70,33 +73,8 @@ public class DownSynchronizer {
         this.commandQueueTable = new CommandQueue(conn);
    }
 
-    /**
-     * Drops all tables in the user's database and starts synchronization fresh
-     */
-    public void startFresh(final AsyncCallback<Void> callback) { 	
-    	conn.transaction(new SqlTransactionCallback() {
-			
-			@Override
-			public void begin(SqlTransaction tx) {
-				conn.dropAllTables(tx);
-				localVerisonTable.createTableIfNotExists(tx);
-				historyTable.createTableIfNotExists(tx);
-				commandQueueTable.createTableIfNotExists(tx);
-			}
-
-			@Override
-			public void onError(SqlException e) {
-				callback.onFailure(e);
-			}
-
-			@Override
-			public void onSuccess() {
-				start(callback);
-			}
-		});
-    }
-
-    public void start(AsyncCallback<Void> callback) {
+    @Override
+    public void execute(AsyncCallback<Void> callback) {
     	this.callback = callback;
         fireStatusEvent(uiConstants.requestingSyncRegions(), 0);
         running = true;
@@ -153,6 +131,7 @@ public class DownSynchronizer {
     	stats.onFinished();
         setLastUpdateTime();
         fireStatusEvent(uiConstants.synchronizationComplete(), 100);
+        eventBus.fireEvent(new SyncCompleteEvent(new Date()));
         if(callback != null) {
             callback.onSuccess(null);
         }
@@ -237,10 +216,6 @@ public class DownSynchronizer {
     private void setLastUpdateTime() {
         historyTable.update();
     }
-
-    public void getLastUpdateTime(final AsyncCallback<java.util.Date> callback) {
-        historyTable.get(callback);
-    }
     
     private abstract class DefaultTxCallback extends SqlTransactionCallback {
 		@Override
@@ -288,5 +263,7 @@ public class DownSynchronizer {
         }
     }
 
-
+	public void getLastUpdateTime(AsyncCallback<Date> callback) {
+		historyTable.get(callback);
+	}
 }
