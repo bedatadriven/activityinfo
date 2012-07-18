@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>activityinfo-server</artifactId>
 	<packaging>war</packaging>
@@ -29,7 +30,7 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<!-- GWT deps (from central repo) -->
 
 		<dependency>
@@ -234,7 +235,7 @@
 			<artifactId>guava</artifactId>
 			<version>r09</version>
 		</dependency>
-		
+
 		<!-- Rebar- client persistence -->
 
 		<dependency>
@@ -262,8 +263,8 @@
 			<artifactId>rebar-asyncfun</artifactId>
 			<version>${rebarVersion}</version>
 		</dependency>
-	
-		
+
+
 		<!-- Dependency Injection Framework -->
 
 		<dependency>
@@ -284,12 +285,12 @@
 			<artifactId>gson</artifactId>
 			<version>1.6</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>log4jwebtracker</groupId>
-            <artifactId>log4jwebtracker</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+			<groupId>log4jwebtracker</groupId>
+			<artifactId>log4jwebtracker</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- Random library for BASE64 decoding (KmlDataServlet) -->
 		<dependency>
@@ -297,7 +298,7 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>gson-gwt</groupId>
 			<artifactId>gson-gwt</artifactId>
@@ -433,7 +434,7 @@
 					<useDefaultDelimiters>false</useDefaultDelimiters>
 				</configuration>
 			</plugin>
-			
+
 			<!-- configure the GWT-Maven plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -450,7 +451,7 @@
 					<extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
 					<hostedWebapp>war</hostedWebapp>
 				</configuration>
-				
+
 				<executions>
 					<execution>
 						<id>i18n</id>
@@ -463,7 +464,7 @@
 							<i18nConstantsBundle>org.activityinfo.client.i18n.UIConstants</i18nConstantsBundle>
 						</configuration>
 					</execution>
-				
+
 					<execution>
 						<id>activityinfo-compile</id>
 						<phase>prepare-package</phase>
@@ -483,7 +484,7 @@
 							</modules>
 						</configuration>
 					</execution>
-					
+
 					<execution>
 						<id>gwt-clean</id>
 						<phase>clean</phase>
@@ -546,7 +547,7 @@
 						<resource>
 							<directory>deploy</directory>
 							<filtering>true</filtering>
-						</resource>						
+						</resource>
 					</webResources>
 				</configuration>
 			</plugin>
@@ -736,10 +737,10 @@
 										<groupId>org.liquibase</groupId>
 										<artifactId>
 											liquibase-maven-plugin
-	                            		</artifactId>
+										</artifactId>
 										<versionRange>
 											[2.0.1,)
-	                            		</versionRange>
+										</versionRange>
 										<goals>
 											<goal>update</goal>
 											<goal>dropAll</goal>
@@ -900,47 +901,47 @@
 
 
 		<!-- Automatically engaged during maven release cycle -->
-<profile>
-	<id>release-build</id>
-	<activation>
-		<property>
-			<name>performRelease</name>
-			<value>true</value>
-		</property>
-	</activation>
-	<properties>
-		<display.version>${project.version}</display.version>
-	</properties>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>br.com.ingenieux</groupId>
-				<artifactId>beanstalk-maven-plugin</artifactId>
-				<version>0.2.2-bedatadriven</version>
+		<profile>
+			<id>release-build</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<display.version>${project.version}</display.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>br.com.ingenieux</groupId>
+						<artifactId>beanstalk-maven-plugin</artifactId>
+						<version>0.2.2-bedatadriven</version>
 
-				<configuration>
-					<applicationName>activityinfo</applicationName>
-					<s3Bucket>activityinfo-wars</s3Bucket>
-					<s3Key>${project.version}-RELEASE.war</s3Key>
-					<versionLabel>${project.version}-RELEASE</versionLabel>
-					<environmentName>release-${git.commit.id.abbrev}</environmentName>
-					<cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>upload-source-bundle</goal>
-							<goal>create-application-version</goal>
-							<goal>create-environment</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-</profile>
+						<configuration>
+							<applicationName>activityinfo</applicationName>
+							<s3Bucket>activityinfo-wars</s3Bucket>
+							<s3Key>${project.version}-RELEASE.war</s3Key>
+							<versionLabel>${project.version}-RELEASE</versionLabel>
+							<environmentName>release-${git.commit.id.abbrev}</environmentName>
+							<cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
+						</configuration>
+						<executions>
+							<execution>
+								<id>default</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>upload-source-bundle</goal>
+									<goal>create-application-version</goal>
+									<goal>create-environment</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 
 		<!-- Build the Application Module with only permutations for Safari and 
