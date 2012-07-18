@@ -607,7 +607,6 @@
 			<plugin>
 				<groupId>br.com.ingenieux</groupId>
 				<artifactId>beanstalk-maven-plugin</artifactId>
-				<version>0.2.7-RC4</version>
 
 				<configuration>
 					<applicationName>activityinfo</applicationName>
@@ -871,7 +870,6 @@
 					<plugin>
 						<groupId>br.com.ingenieux</groupId>
 						<artifactId>beanstalk-maven-plugin</artifactId>
-						<version>0.2.7-RC4</version>
 
 						<configuration>
 							<applicationName>activityinfo</applicationName>
@@ -879,8 +877,8 @@
 							<s3Bucket>activityinfo-wars</s3Bucket>
 							<s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
 							<versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
-							<environmentName>activityinfo-23</environmentName>
-							<cnamePrefix>activityinfo-23</cnamePrefix>
+							<environmentName>activityinfo-staging</environmentName>
+							<cnamePrefix>activityinfo-staging</cnamePrefix>
 						</configuration>
 						<executions>
 							<execution>
@@ -889,7 +887,7 @@
 								<goals>
 									<goal>upload-source-bundle</goal>
 									<goal>create-application-version</goal>
-									<goal>update-environment</goal>
+									<goal>create-environment</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -917,7 +915,6 @@
 					<plugin>
 						<groupId>br.com.ingenieux</groupId>
 						<artifactId>beanstalk-maven-plugin</artifactId>
-						<version>0.2.2-bedatadriven</version>
 
 						<configuration>
 							<applicationName>activityinfo</applicationName>
