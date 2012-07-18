@@ -19,15 +19,12 @@ public class DateDimension extends Dimension {
 	private String format;
 	
 	public DateDimension() {
-		
 	}
-	
+
 	public DateDimension(String name, int id, DateUnit unit, String format) {
 		super(DimensionType.Date);
 		this.unit = unit;
 		this.format = format;
-		set("caption", name);
-		set("id", "dim_date_" + id);
 	}
 	
 	public DateDimension(DateUnit unit) {
@@ -35,10 +32,6 @@ public class DateDimension extends Dimension {
 		this.unit = unit;
 	}
 	
-	public String getId() {
-		return get("id");
-	}
-
 	public DateUnit getUnit() {
 		return unit;
 	}

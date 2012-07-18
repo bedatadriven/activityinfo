@@ -162,11 +162,19 @@ public class ElementWidget extends Widget {
 			
 			@Override
 			public void onOK(boolean dirty) {
-				loadHtml();
-				parent.onElementChanged(ElementWidget.this);
+				onElementUpdated();
+			}
+
+			@Override
+			public void onClose(boolean dirty) {
+				onElementUpdated();
 			}
 		});
-		
 	}
 
+
+	private void onElementUpdated() {
+		loadHtml();
+		parent.onElementChanged(ElementWidget.this);
+	}
 }

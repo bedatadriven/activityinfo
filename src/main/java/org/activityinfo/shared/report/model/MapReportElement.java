@@ -29,7 +29,10 @@ import com.google.common.collect.Sets;
  * Models a map element within a report
  */
 public class MapReportElement extends ReportElement<MapContent> {
-    private String baseMapId = BaseMap.getDefaultMapId();
+	
+	public static final String AUTO_BASEMAP = "@AUTO@";
+	
+    private String baseMapId = AUTO_BASEMAP;
     private int width = 640;
     private int height = 480;
     private AiLatLng center = null;

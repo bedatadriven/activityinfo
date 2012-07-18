@@ -20,8 +20,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 public class PivotFilterPanel extends ContentPanel implements HasReportElement<PivotReportElement> {
-	
-	
 	private final FilterPanelSet panelSet;
 	private final ReportEventHelper events;
 	
@@ -65,7 +63,6 @@ public class PivotFilterPanel extends ContentPanel implements HasReportElement<P
 		});
 	}	
 	
-	
 	@Override
 	public void bind(PivotReportElement model) {
 		this.model = model;
@@ -77,15 +74,12 @@ public class PivotFilterPanel extends ContentPanel implements HasReportElement<P
 		return model;
 	}
 
-
 	public void applyBaseFilter(Filter filter) {
 		panelSet.applyBaseFilter(filter);
 	}
-
 
 	@Override
 	public void disconnect() {
 		events.disconnect();
 	}
-
 }
