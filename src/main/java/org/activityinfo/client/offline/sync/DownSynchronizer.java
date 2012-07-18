@@ -11,21 +11,19 @@ import java.util.Iterator;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.Direct;
+import org.activityinfo.client.dispatch.remote.Remote;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.offline.command.CommandQueue;
-import org.activityinfo.client.offline.sync.pipeline.AsyncCommand;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.GetSyncRegions;
 import org.activityinfo.shared.command.result.SyncRegion;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.activityinfo.shared.command.result.SyncRegions;
-import org.activityinfo.shared.util.Collector;
-import org.activityinfo.client.i18n.UIConstants;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.async.AsyncCommand;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
-import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
@@ -60,7 +58,7 @@ public class DownSynchronizer implements AsyncCommand {
 
     @Inject
     public DownSynchronizer(EventBus eventBus,
-                        @Direct Dispatcher dispatch,
+                        @Remote Dispatcher dispatch,
                         SqlDatabase conn,
                         UIConstants uiConstants) {
         this.eventBus = eventBus;
@@ -122,11 +120,10 @@ public class DownSynchronizer implements AsyncCommand {
 			@Override
 			public void onSuccess(String localVersion) {
 				doUpdate(region, localVersion);
-			}
+			}			
 		});
     }
 
-    
     private void onSynchronizationComplete() {
     	stats.onFinished();
         setLastUpdateTime();

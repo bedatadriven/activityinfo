@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
 import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.BatchResult;
@@ -20,7 +21,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class DispatcherStub implements Dispatcher {
+public class DispatcherStub extends AbstractDispatcher {
 
     private Map<Command, CommandResult> results = new HashMap<Command, CommandResult>();
     private Map<Class, CommandResult> resultByClass = new HashMap<Class, CommandResult>();
@@ -29,11 +30,6 @@ public class DispatcherStub implements Dispatcher {
 
     public DispatcherStub() {
 
-    }
-
-    @Override
-    public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
-        execute(command, callback);
     }
 
     @Override

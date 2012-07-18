@@ -3,8 +3,11 @@ package org.activityinfo.client.offline.sync;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.client.offline.command.CommandQueue.QueueEntry;
-import org.activityinfo.client.offline.sync.pipeline.AsyncCommand;
+import org.activityinfo.shared.command.result.CommandResult;
 
+import com.bedatadriven.rebar.async.Async;
+import com.bedatadriven.rebar.async.AsyncCommand;
+import com.bedatadriven.rebar.async.AsyncFunction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,9 +22,6 @@ public class UpdateSynchronizer implements AsyncCommand {
 	private CommandQueue commandQueue;
 	private Dispatcher dispatcher;
 	
-	private AsyncCallback<Void> callback;
-	private QueueEntry currentEntry = null;
-	
 	@Inject
 	public UpdateSynchronizer(CommandQueue commandQueue, SynchronizerDispatcher dispatcher) {
 		super();
@@ -29,61 +29,22 @@ public class UpdateSynchronizer implements AsyncCommand {
 		this.dispatcher = dispatcher;
 	}
 	
+	private AsyncFunction<QueueEntry, CommandResult> dispatch() {
+		return new AsyncFunction<CommandQueue.QueueEntry, CommandResult>() {
+			
+			@Override
+			protected void doApply(QueueEntry argument, AsyncCallback<CommandResult> callback) {
+				dispatcher.execute(argument.getCommand(),  callback);
+			}
+		};
+	}
 	
 	public void execute(AsyncCallback<Void> callback) {
-		this.callback = callback;
-		nextCommand();
+		commandQueue.get().map(
+				Async.sequence(dispatch(), 
+							   commandQueue.remove()))
+			.discardResult()
+			.apply(null, callback);	
 	}
 	
-	private void nextCommand() {
-		commandQueue.peek(new AsyncCallback<CommandQueue.QueueEntry>() {
-			
-			@Override
-			public void onSuccess(QueueEntry entry) {
-				currentEntry = entry;
-				if(currentEntry == null) {
-					callback.onSuccess(null);
-				} else {
-					sendToServer();
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-		});
-	}
-
-
-	private void sendToServer() {
-		dispatcher.execute(currentEntry.getCommand(), new AsyncCallback() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-
-			@Override
-			public void onSuccess(Object result) {
-				removeFromQueue();
-			}
-		});
-		
-	}
-	
-	private void removeFromQueue() {
-		commandQueue.remove(currentEntry.getId(), new AsyncCallback<Boolean>() {
-			
-			@Override
-			public void onSuccess(Boolean removed) {
-				nextCommand();
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-		});
-	}
 }

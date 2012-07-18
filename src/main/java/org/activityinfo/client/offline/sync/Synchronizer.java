@@ -35,6 +35,6 @@ public interface Synchronizer {
     void synchronize();
     
     // TODO: move to separate interface
-    void execute(Command command, AsyncMonitor monitor, AsyncCallback callback);
+    void execute(Command command, AsyncCallback callback);
     
 }

@@ -40,7 +40,7 @@ public class CommandQueueTest {
 			
 			@Override
 			public void begin(SqlTransaction tx) {
-				queue.createTableIfNotExists(tx);
+				CommandQueue.createTableIfNotExists(tx);
 			}
 		});
 	}
@@ -74,11 +74,9 @@ public class CommandQueueTest {
 		assertThat(reread.getResult(), not(nullValue()));
 		assertThat(cmd, equalTo(reread.getResult().getCommand()));
 		
-		Collector<Boolean> deleted = Collector.newCollector();
-		queue.remove(reread.getResult().getId(), deleted);
-		
-		assertThat(deleted.getResult(), equalTo(true));
-		
+		Collector<Void> deleted = Collector.newCollector();
+		queue.remove(reread.getResult(), deleted);
+				
 		Collector<CommandQueue.QueueEntry> entry2 = Collector.newCollector();
 		queue.peek(entry2);
 		

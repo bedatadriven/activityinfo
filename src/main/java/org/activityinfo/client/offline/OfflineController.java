@@ -17,18 +17,17 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
+import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
 import org.activityinfo.client.offline.capability.OfflineCapabilityProfile;
 import org.activityinfo.client.offline.capability.PermissionRefusedException;
 import org.activityinfo.client.offline.sync.AppOutOfDateException;
 import org.activityinfo.client.offline.sync.SyncCompleteEvent;
+import org.activityinfo.client.offline.sync.SyncHistoryTable;
 import org.activityinfo.client.offline.sync.SyncStatusEvent;
 import org.activityinfo.client.offline.sync.Synchronizer;
 import org.activityinfo.client.offline.sync.SynchronizerConnectionException;
-import org.activityinfo.client.util.state.CrossSessionStateProvider;
-import org.activityinfo.client.util.state.StateProvider;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
@@ -47,9 +46,7 @@ import com.google.inject.Singleton;
 /**
  * This class keeps as much of the offline functionality behind a runAsync
  * clause to defer downloading the related JavaScript until the user actually
- * goes into offline mode
- * 
- * @author Alex Bertram
+ * goes into offline mode.
  */
 @Singleton
 public class OfflineController implements Dispatcher {
@@ -60,49 +57,33 @@ public class OfflineController implements Dispatcher {
 		void onTryToConnect();
 	}
 
-	private static final String OFFLINE_INSTALLED_KEY = "INSTALLED";
-	private static final Object OFFLINE_INSTALLED_VALUE = "true";
-
 	private final EventBus eventBus;
-	private final StateProvider stateManager;
 	private final Provider<Synchronizer> synchronizerProvider;
 	private UIConstants uiConstants;
 	private final Dispatcher remoteDispatcher;
 	private final OfflineCapabilityProfile capabilityProfile;
-
-	private boolean installed;
-
+	private final SyncHistoryTable historyTable;
+	
 	private Strategy activeStrategy;
 	private Date lastSynced = null;
 
 	@Inject
 	public OfflineController(EventBus eventBus,
-			RemoteDispatcher remoteDispatcher,
+			@Remote Dispatcher remoteDispatcher,
 			Provider<Synchronizer> gateway,
-			CrossSessionStateProvider stateManager,
-			OfflineCapabilityProfile capabilityProfile, UIConstants uiConstants) {
+			OfflineCapabilityProfile capabilityProfile, 
+			UIConstants uiConstants,
+			SyncHistoryTable historyTable) {
 		this.eventBus = eventBus;
-		this.stateManager = stateManager;
 		this.remoteDispatcher = remoteDispatcher;
 		this.synchronizerProvider = gateway;
 		this.capabilityProfile = capabilityProfile;
 		this.uiConstants = uiConstants;
-
-		loadState();
-		if (installed) {
-			validateStillSupported();
-		}
-
+		this.historyTable = historyTable;
+		
 		Log.trace("OfflineManager: starting");
 
-		if (!installed) {
-			NotInstalledStrategy strategy = new NotInstalledStrategy();
-			activateStrategy(strategy);
-			// TODO : prompt enabled
-
-		} else {
-			activateStrategy(new LoadingOfflineStrategy());
-		}
+		activateStrategy(new LoadingOfflineStrategy());
 	}
 	
 	public Date getLastSyncTime() {
@@ -124,38 +105,12 @@ public class OfflineController implements Dispatcher {
 	public State getState() {
 		return activeStrategy.getState();
 	}
-
-	private void loadState() {
-		String state = stateManager.getString(OFFLINE_INSTALLED_KEY);
-		if (state == null) {
-			installed = false;
-		} else {
-			installed = true;
-		}
-	}
-
-	private void validateStillSupported() {
-		// can happen that the user enables off line mode,
-		// and then in a future session uninstalls the required plugin
-		// or revokes permission.
-
-		// check for that here.
-		if (!capabilityProfile.isOfflineModeSupported()
-				|| !capabilityProfile.hasPermission()) {
-			// TODO: do we display a warning here?
-			installed = false;
-		}
-	}
-
-	private void persistInstalledState() {
-		stateManager.set(OFFLINE_INSTALLED_KEY, OFFLINE_INSTALLED_VALUE);
-	}
-
+	
 	@Override
 	public <T extends CommandResult> void execute(Command<T> command,
 			AsyncMonitor monitor, AsyncCallback<T> callback) {
 
-		activeStrategy.dispatch(command, monitor, callback);
+		activeStrategy.dispatch(command, callback);
 	}
 
 	@Override
@@ -176,6 +131,7 @@ public class OfflineController implements Dispatcher {
 			// but we can't afford to let an uncaught exception go as it could
 			// leave the app
 			// in a state of limbo
+			Log.error("Uncaught exception while activatign strategy, defaulting to Not INstalled");
 			activateStrategy(new NotInstalledStrategy());
 		}
 	}
@@ -229,10 +185,9 @@ public class OfflineController implements Dispatcher {
 			return this;
 		}
 
-		void dispatch(Command command, AsyncMonitor monitor,
-				AsyncCallback callback) {
+		void dispatch(Command command, AsyncCallback callback) {
 			// by default, we send to the server
-			remoteDispatcher.execute(command, monitor, callback);
+			remoteDispatcher.execute(command, callback);
 		}
 
 		abstract State getState();
@@ -290,10 +245,6 @@ public class OfflineController implements Dispatcher {
 		@Override
 		Strategy activate() {
 			eventBus.fireEvent(new SyncStatusEvent(uiConstants.starting(), 0));
-			// view.setButtonTextToInstalling();
-			// view.disableMenu();
-			// view.showProgressDialog();
-			// view.updateProgress(uiConstants.starting(), 0);
 
 			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
 				@Override
@@ -307,14 +258,12 @@ public class OfflineController implements Dispatcher {
 					gateway.install(new AsyncCallback<Void>() {
 						@Override
 						public void onFailure(Throwable caught) {
-							// view.hideProgressDialog();
 							activateStrategy(new NotInstalledStrategy());
 							OfflineController.this.reportFailure(caught);
 						}
 
 						@Override
 						public void onSuccess(Void result) {
-							// view.hideProgressDialog();
 							activateStrategy(new OfflineStrategy(gateway));
 						}
 					});
@@ -326,9 +275,9 @@ public class OfflineController implements Dispatcher {
 
 	/**
 	 * This is a sort of purgatory state that occurs immediately after
-	 * application load when we've determined that we offline mode is installed,
-	 * and that we should go offline but we haven't yet loaded the async
-	 * fragment with the code.
+	 * while we're determining whether offline mode has been enabled
+	 * and then if so, while we'ere loading the offline module 
+	 * async fragment.
 	 */
 	private class LoadingOfflineStrategy extends Strategy {
 
@@ -345,9 +294,26 @@ public class OfflineController implements Dispatcher {
 		@Override
 		Strategy activate() {
 			pending = new ArrayList<CommandRequest>();
+			try {
+				historyTable.get(new AsyncCallback<Date>() {
+					
+					@Override
+					public void onSuccess(Date result) {
+						loadModule();
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						activateStrategy(new NotInstalledStrategy());
+					}
+				});
+			} catch(Exception e) {
+				activateStrategy(new NotInstalledStrategy());
+			}
+			return this;
+		}
 
-			// view.setButtonTextToLoading();
-
+		private void loadModule() {
 			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
 				@Override
 				public void onFailure(Throwable caught) {
@@ -371,13 +337,11 @@ public class OfflineController implements Dispatcher {
 					});
 				}
 			});
-			return this;
 		}
 
 		@Override
-		void dispatch(Command command, AsyncMonitor monitor,
-				AsyncCallback callback) {
-			pending.add(new CommandRequest(command, monitor, callback));
+		void dispatch(Command command, AsyncCallback callback) {
+			pending.add(new CommandRequest(command, callback));
 		}
 
 		void abandonShip(Throwable caught) {
@@ -418,7 +382,6 @@ public class OfflineController implements Dispatcher {
 
 		@Override
 		public OfflineStrategy activate() {
-			persistInstalledState();
 			offlineManger.getLastSyncTime(new AsyncCallback<Date>() {
 
 				@Override
@@ -436,28 +399,24 @@ public class OfflineController implements Dispatcher {
 		}
 
 		@Override
-		void dispatch(Command command, AsyncMonitor monitor,
-				AsyncCallback callback) {
+		void dispatch(Command command, AsyncCallback callback) {
 
-			offlineManger.execute(command, monitor, callback);
+			offlineManger.execute(command, callback);
 		}
 	}
 
 	private static class CommandRequest {
 		private final Command command;
-		private final AsyncMonitor monitor;
 		private final AsyncCallback callback;
 
-		public CommandRequest(Command command, AsyncMonitor monitor,
-				AsyncCallback callback) {
+		public CommandRequest(Command command, AsyncCallback callback) {
 			super();
 			this.command = command;
-			this.monitor = monitor;
 			this.callback = callback;
 		}
 
 		public void dispatch(Strategy strategy) {
-			strategy.dispatch(command, monitor, callback);
+			strategy.dispatch(command, callback);
 		}
 	}
 

@@ -4,6 +4,7 @@ import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.client.offline.sync.SyncHistoryTable;
 import org.activityinfo.client.offline.sync.SyncRegionTable;
 
+import com.bedatadriven.rebar.async.AsyncCommand;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
@@ -30,7 +31,7 @@ public class DropAll implements AsyncCommand {
 				conn.dropAllTables(tx);
 				new SyncRegionTable(conn).createTableIfNotExists(tx);
 				new SyncHistoryTable(conn).createTableIfNotExists(tx);
-				new CommandQueue(conn).createTableIfNotExists(tx);
+				CommandQueue.createTableIfNotExists(tx);
 			}
 
 			@Override
@@ -40,7 +41,7 @@ public class DropAll implements AsyncCommand {
 
 			@Override
 			public void onSuccess() {
-				execute(callback);
+				callback.onSuccess(null);
 			}
 		});
 	}
