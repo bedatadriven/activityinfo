@@ -23,8 +23,6 @@ public class AdminDimension extends Dimension {
     
 	public AdminDimension(String caption, int levelId) {
 		super(DimensionType.AdminLevel);
-		this.set("caption",caption);	
-		this.set("id", "admin_dim_"  + levelId); 
 		this.levelId = levelId;
     }
 

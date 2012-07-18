@@ -1,7 +1,6 @@
 package org.activityinfo.shared.command.handler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.apache.log4j.Logger;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -50,22 +48,135 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		doQuery(command, context, callback);
 	}
 
-	private void calculatePage(GetSites command, ExecutionContext context,
-			AsyncCallback<SiteResult> callback) {
-
-		final SqlQuery query = SqlQuery.select("Site.SiteId");
-		
-		applyJoins(query);
-		applyFilter(query, command.getFilter());
-		applyPermissions(query, context);
-		applySort(query, command.getSortInfo());
-		
-	}
-
 	private void doQuery(final GetSites command, final ExecutionContext context,
 			final AsyncCallback<SiteResult> callback) {
-		final SqlQuery query = SqlQuery.select("site.SiteId")
-			.appendColumn("site.Linked", "Linked")
+		
+		// in order to pull in the linked queries, we want to 
+		// to create two queries that we union together. 
+		
+		// for performance reasons, we want to apply all of the joins
+		// and filters on both parts of the union query
+				
+		SqlQuery unioned = unionedQuery(context, command);
+		unioned.appendAllColumns();
+		applySort(unioned, command.getSortInfo());
+		
+		if(isMySql()) {
+			// with this feature, MySQL will keep track of the total
+			// number of rows regardless of our limit statement.
+			// This way we don't have to execute the query twice to
+			// get the total count
+			// 
+			// unfortunately, this is not available on sqlite
+			unioned.appendKeyword("SQL_CALC_FOUND_ROWS");
+		}
+		
+		applyPaging(unioned, command);
+		applySort(unioned, command.getSortInfo());
+		
+		final Multimap<Integer, SiteDTO> siteMap = HashMultimap.create();
+		final List<SiteDTO> sites = new ArrayList<SiteDTO>();
+		
+		final SiteResult result = new SiteResult(sites);
+		result.setOffset(command.getOffset());
+		
+		Log.trace("About to execute primary query");
+
+		unioned.execute(context.getTransaction(), new SqlResultCallback() {
+			@Override
+			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+
+				if(command.getLimit() <= 0) {
+					result.setTotalLength(results.getRows().size());
+				} else {
+					queryTotalLength(tx, command, context, result);
+				} 
+				
+				Log.trace("Primary query returned, starting to add to map");
+
+				for(SqlResultSetRow row : results.getRows()) {
+					SiteDTO site = toSite(row);
+					sites.add(site);
+					siteMap.put(site.getId(), site);
+				}
+
+				Log.trace("Finished adding to map");
+
+				if(!sites.isEmpty()) {
+					joinEntities(tx, siteMap);
+					joinIndicatorValues(tx, siteMap);
+					joinAttributeValues(tx, siteMap);
+				}
+				callback.onSuccess(result);
+			}
+		});
+	}
+
+	private SqlQuery unionedQuery(ExecutionContext context, GetSites command) {
+		
+		SqlQuery primaryQuery = primaryQuery(context, command);
+		SqlQuery linkedQuery = linkedQuery(context, command);
+		
+		SqlQuery unioned = SqlQuery.select()
+			.from(unionAll(primaryQuery, linkedQuery), "u");
+		for(Object param : primaryQuery.parameters()) {
+			unioned.appendParameter(param);
+		}
+		for(Object param : linkedQuery.parameters()) {
+			unioned.appendParameter(param);
+		}
+		return unioned;
+	}
+
+	private String unionAll(SqlQuery primaryQuery, SqlQuery linkedQuery) {
+		StringBuilder union = new StringBuilder();
+		union.append("(")
+			 .append(primaryQuery.sql())
+			 .append(" UNION ALL ")
+			 .append(linkedQuery.sql())
+			 .append(")");
+		return union.toString();
+	}
+
+	private SqlQuery primaryQuery(ExecutionContext context, GetSites command) {
+		SqlQuery query = SqlQuery.select()
+		.appendColumn("site.SiteId")
+		.appendColumn("(0)", "Linked")
+		.appendColumn("activity.ActivityId")
+		.appendColumn("activity.name", "ActivityName")
+		.appendColumn("UserDatabase.DatabaseId", "DatabaseId")
+		.appendColumn("site.Date1", "Date1")
+		.appendColumn("site.Date2", "Date2")
+		.appendColumn("partner.PartnerId", "PartnerId")
+		.appendColumn("partner.name", "PartnerName")
+		.appendColumn("site.projectId", "ProjectId")
+		.appendColumn("project.name", "ProjectName")
+		.appendColumn("location.locationId", "LocationId")
+		.appendColumn("location.name", "LocationName")
+		.appendColumn("location.axe", "LocationAxe")
+		.appendColumn("locationType.name", "LocationTypeName")
+		.appendColumn("site.comments", "Comments")
+		.appendColumn("location.x", "x")
+		.appendColumn("location.y", "y")
+		.from("Site")
+		.whereTrue("site.dateDeleted is null")
+		.leftJoin("Activity").on("Site.ActivityId = Activity.ActivityId")
+			.leftJoin("UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId")
+			.leftJoin("Location").on("Site.LocationId = Location.LocationId")
+			.leftJoin("LocationType").on("Location.LocationTypeId = LocationType.LocationTypeId")
+			.leftJoin("Partner").on("Site.PartnerId = Partner.PartnerId")
+			.leftJoin("Project").on("Site.ProjectId = Project.ProjectId");
+				
+		applyPermissions(query, context);
+		applyFilter(query, command.getFilter());
+		
+		return query;
+	}
+	
+	private SqlQuery linkedQuery(ExecutionContext context, GetSites command) {
+		SqlQuery query = SqlQuery.select()
+			.appendColumn("DISTINCT Site.SiteId", "SiteId")
+			.appendColumn("1", "Linked")
 			.appendColumn("activity.ActivityId")
 			.appendColumn("activity.name", "ActivityName")
 			.appendColumn("UserDatabase.DatabaseId", "DatabaseId")
@@ -81,73 +192,23 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("locationType.name", "LocationTypeName")
 			.appendColumn("site.comments", "Comments")
 			.appendColumn("location.x", "x")
-			.appendColumn("location.y", "y");
-		
-		applyJoins(query);		
-		applyPermissions(query, context);
-		applySort(query, command.getSortInfo());
-		applyFilter(query, command.getFilter());
-		applyPaging(query, command);
-
-		final Multimap<Integer, SiteDTO> siteMap = HashMultimap.create();
-		final List<SiteDTO> sites = new ArrayList<SiteDTO>();
-		
-		final SiteResult result = new SiteResult(sites);
-		result.setOffset(command.getOffset());
-		
-		Log.trace("About to execute primary query");
-
-		query.execute(context.getTransaction(), new SqlResultCallback() {
-			@Override
-			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-
-				Log.trace("Primary query returned, starting to add to map");
-
-				for(SqlResultSetRow row : results.getRows()) {
-					SiteDTO site = toSite(row);
-					sites.add(site);
-					siteMap.put(site.getId(), site);
-				}
-
-				Log.trace("Finished adding to map");
-
-				if(!sites.isEmpty()) {
-					joinEntities(tx, siteMap);
-					joinIndicatorValues(tx, siteMap);
-					joinAttributeValues(tx, siteMap);
-					
-					if(command.getLimit() <= 0) {
-						result.setTotalLength(sites.size());
-					} else {
-						queryTotalLength(tx, command, context, result);
-					} 
-				}
-				callback.onSuccess(result);
-			}
-		});
-	}
-
-	private void applyJoins(final SqlQuery query) {
-		query.from("( " +
-			
-				"SELECT s.SiteId, 0 as Linked, s.Date1, s.Date2, s.DateEdited, s.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
-					"FROM Site s WHERE s.dateDeleted IS NULL " +
-					"UNION ALL " +
-				"SELECT DISTINCT s.SiteId, 1 as Linked, s.Date1, s.Date2, s.DateEdited, di.ActivityId, s.LocationId, s.PartnerId, s.ProjectId, s.Comments " +
-				    "FROM Site s " +
-				    "INNER JOIN indicator si ON (si.activityid=s.activityid) " +
-				    "INNER JOIN indicatorlink link ON (si.indicatorid=link.sourceindicatorid) " +
-				    "INNER JOIN indicator di on (link.destinationindicatorid=di.indicatorid)  " +
-				    "WHERE s.dateDeleted IS NULL" +
-			   ") Site ")
-			.leftJoin("Activity").on("Site.ActivityId = Activity.ActivityId")
+			.appendColumn("location.y", "y")
+			.from("Site")
+			.innerJoin("indicator", "si").on("si.activityid=site.activityid")
+			.innerJoin("indicatorLink", "link").on("si.indicatorId=link.sourceindicatorid")
+			.innerJoin("indicator", "di").on("link.destinationIndicatorId=di.indicatorid")
+			.leftJoin("Activity").on("di.ActivityId = Activity.ActivityId")
 			.leftJoin("UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId")
 			.leftJoin("Location").on("Site.LocationId = Location.LocationId")
 			.leftJoin("LocationType").on("Location.LocationTypeId = LocationType.LocationTypeId")
 			.leftJoin("Partner").on("Site.PartnerId = Partner.PartnerId")
 			.leftJoin("Project").on("Site.ProjectId = Project.ProjectId")
-		.whereTrue("Activity.dateDeleted IS NULL")
-			.and("UserDatabase.dateDeleted IS NULL");
+			.whereTrue("site.dateDeleted is null");
+				
+		applyPermissions(query, context);
+		applyFilter(query, command.getFilter());
+		
+		return query;
 	}
 
 	private void applyPaging(final SqlQuery query, GetSites command) {
@@ -186,24 +247,24 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             boolean ascending = sortInfo.getSortDir() == SortDir.ASC;
   
             if (field.equals("date1")) {
-            	query.orderBy("Site.Date1", ascending);
+            	query.orderBy("Date1", ascending);
             } else if (field.equals("date2")) {
-            	query.orderBy("Site.Date2", ascending);
-            } else if (field.equals("dateEdited")) {
-            	query.orderBy("Site.DateEdited", ascending);
+            	query.orderBy("Date2", ascending);
             } else if (field.equals("locationName")) {
-            	query.orderBy("Location.name", ascending);
+            	query.orderBy("LocationName", ascending);
             } else if (field.equals("partner")) {
-            	query.orderBy("Partner.Name", ascending);
+            	query.orderBy("PartnerName", ascending);
             } else if (field.equals("locationAxe")) {
-            	query.orderBy("Location.Axe", ascending);
+            	query.orderBy("LocationAxe", ascending);
             } else if (field.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
             	int indicatorId = IndicatorDTO.indicatorIdForPropertyName(field);
             	query.orderBy(SqlQuery.selectSingle("SUM(v.Value)")
     				.from("IndicatorValue", "v")
     				.leftJoin("ReportingPeriod", "r").on("v.ReportingPeriodId=r.ReportingPeriodId")
     				.whereTrue("v.IndicatorId=" + indicatorId)
-    				.and("r.SiteId=Site.SiteId"), ascending);
+    				.and("r.SiteId=u.SiteId"), ascending);
+            } else {
+            	Log.error("Unimplemented sort on GetSites: '" + field + "");
             }
         }
 	}
@@ -223,7 +284,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	            	query.where("SiteId").in(subQuery);
 	            
 	            } else if (type == DimensionType.Activity) {
-	                query.where("Site.ActivityId").in(filter.getRestrictions(type));
+	                query.where("Activity.ActivityId").in(filter.getRestrictions(type));
 	
 	            } else if (type == DimensionType.Database) {
 	                query.where("Activity.DatabaseId").in(filter.getRestrictions(type));
@@ -253,18 +314,32 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 	
 	private void queryTotalLength(SqlTransaction tx, GetSites command, ExecutionContext context, final SiteResult result) {
-		final SqlQuery query = SqlQuery.selectSingle("count(*) AS site_count");
-		applyJoins(query);
-		applyFilter(query, command.getFilter());
-		applyPermissions(query, context);
-	
-		query.execute(tx, new SqlResultCallback() {
-			
-			@Override
-			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-				result.setTotalLength(results.getRow(0).getInt("site_count"));
-			}
-		});
+		
+		if(isMySql()) {
+			tx.executeSql("SELECT FOUND_ROWS() site_count", new SqlResultCallback() {
+
+				@Override
+				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					result.setTotalLength(results.getRow(0).getInt("site_count"));
+				}
+			});
+		} else {
+			// otherwise we have to execute the whole thing again
+			SqlQuery query = countQuery(command, context);
+			query.execute(tx, new SqlResultCallback() {
+				
+				@Override
+				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					result.setTotalLength(results.getRow(0).getInt("site_count"));
+				}
+			});
+		}
+	}
+
+	private SqlQuery countQuery(GetSites command, ExecutionContext context) {
+		SqlQuery unioned = countQuery(command, context);
+		unioned.appendColumn("count(*) AS site_count");
+		return unioned;
 	}
 	
 	private void joinEntities(SqlTransaction tx,
@@ -390,8 +465,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
 					Log.trace("Done populating results for joinAttributeValues()");
 				}
-				
-
 			});
 	}
 
@@ -426,6 +499,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         model.setPartner(partner);
         return model;
 	}
-			
-			
+	
+	private boolean isMySql() {
+		return database.getDialect().isMySql();
+	}
 }

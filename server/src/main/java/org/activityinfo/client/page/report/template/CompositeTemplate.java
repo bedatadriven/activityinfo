@@ -20,11 +20,8 @@ public class CompositeTemplate extends ReportTemplate {
 	}
 
 	@Override
-	public void create(AsyncCallback<Integer> callback) {
-		Report report = new Report();
-		
-		save(report, callback);
-		
+	public void createReport(AsyncCallback<Report> callback) {
+		callback.onSuccess(new Report());
 	}
 
 }

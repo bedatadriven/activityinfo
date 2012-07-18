@@ -11,6 +11,7 @@ import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.handler.pivot.bundler.Bundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.EntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.MonthBundler;
+import org.activityinfo.shared.command.handler.pivot.bundler.MySqlYearWeekBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.OrderedEntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.QuarterBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.SimpleBundler;
@@ -216,6 +217,14 @@ public class PivotQuery {
 
                 	bundlers.add(new QuarterBundler(dimension, yearAlias, quarterAlias));
                     nextColumnIndex += 2;
+                } else if (dateDim.getUnit() == DateUnit.WEEK_MON) {
+                	// Mode = 3 means " Monday	1-53	with more than 3 days this year" 
+                	// see http://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_week
+                	if(dialect.isMySql()) {
+	                	String weekAlias = appendDimColumn("YEARWEEK(Period.Date2, 3)");
+	                	bundlers.add(new MySqlYearWeekBundler(dimension, weekAlias));
+                	}
+                	// TODO: sqlite
                 }
 
             } else if (dimension instanceof AdminDimension) {

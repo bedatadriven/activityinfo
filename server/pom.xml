@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.activityinfo</groupId>
 		<artifactId>activityinfo-parent</artifactId>
-		<version>2.6.14-SNAPSHOT</version>
+		<version>2.6.18-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -208,7 +208,7 @@
 		<dependency>
 			<groupId>com.extjs</groupId>
 			<artifactId>gxt</artifactId>
-			<version>2.2.4</version>
+			<version>2.2.5</version>
 			<classifier>gwt22</classifier>
 		</dependency>
 		<dependency>
@@ -610,16 +610,12 @@
 
 				<configuration>
 					<applicationName>activityinfo</applicationName>
-					<s3Bucket>activityinfo-wars</s3Bucket>
+					<s3Bucket>activityinfo-builds</s3Bucket>
 					<s3Key>${project.version}-${maven.build.timestamp}</s3Key>
+					<region>eu-west-1</region>
 
 					<optionSettings>
 
-						<optionSetting>
-							<namespace>aws:autoscaling:launchconfiguration</namespace>
-							<optionName>ImageId</optionName>
-							<value>ami-8810e8e1</value>
-						</optionSetting>
 						<optionSetting>
 							<namespace>aws:autoscaling:launchconfiguration</namespace>
 							<optionName>EC2KeyName</optionName>
@@ -643,7 +639,7 @@
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
 							<optionName>PARAM2</optionName>
-							<value>activityinfo26.production.properties</value>
+							<value>activityinfo26.eu.properties</value>
 						</optionSetting>
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
@@ -874,10 +870,11 @@
 					<plugin>
 						<groupId>br.com.ingenieux</groupId>
 						<artifactId>beanstalk-maven-plugin</artifactId>
-						<version>0.2.2-bedatadriven</version>
+						<version>0.2.7-RC4</version>
 
 						<configuration>
 							<applicationName>activityinfo</applicationName>
+							<region>eu-west-1</region>
 							<s3Bucket>activityinfo-wars</s3Bucket>
 							<s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
 							<versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
