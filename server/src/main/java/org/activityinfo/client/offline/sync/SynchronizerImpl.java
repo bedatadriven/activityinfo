@@ -77,8 +77,7 @@ public class SynchronizerImpl implements Synchronizer {
     }
 
 	@Override
-	public void execute(Command command, AsyncMonitor monitor,
-			AsyncCallback callback) {
-		localDispatcher.execute(command, monitor, callback);
+	public void execute(Command command, AsyncCallback callback) {
+		localDispatcher.execute(command, callback);
 	}
 }

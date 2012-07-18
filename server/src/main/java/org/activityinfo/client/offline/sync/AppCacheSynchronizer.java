@@ -2,12 +2,12 @@ package org.activityinfo.client.offline.sync;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.offline.sync.pipeline.AsyncCommand;
 
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCache.Status;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.bedatadriven.rebar.appcache.client.events.ProgressEventHandler;
+import com.bedatadriven.rebar.async.AsyncCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;

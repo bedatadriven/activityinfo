@@ -19,4 +19,8 @@ public class OfflineStateChangeEvent extends BaseEvent {
 	public State getState() {
 		return state;
 	}
+	
+	public String toString() {
+		return "OfflineStateChangeEvent: " + state.name();
+	}
 }

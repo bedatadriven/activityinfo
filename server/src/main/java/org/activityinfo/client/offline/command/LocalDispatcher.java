@@ -5,8 +5,9 @@
 
 package org.activityinfo.client.offline.command;
 
+import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
-import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
+import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -28,11 +29,11 @@ public class LocalDispatcher extends AbstractDispatcher {
     private final HandlerRegistry registry;
     private final SqlDatabase database;
     private final CommandQueue commandQueue;
-	private final RemoteDispatcher remoteDispatcher;
+	private final Dispatcher remoteDispatcher;
     
     @Inject
     public LocalDispatcher(AuthenticatedUser auth, SqlDatabase database, HandlerRegistry registry,
-    		RemoteDispatcher remoteDispatcher) {
+    		@Remote Dispatcher remoteDispatcher) {
         Log.trace("LocalDispatcher constructor starting...");
     	this.auth = auth;
         this.registry = registry;
@@ -58,6 +59,7 @@ public class LocalDispatcher extends AbstractDispatcher {
      * @param callback
      */
     private <R extends CommandResult> void executeOffline(final Command<R> command, final AsyncCallback<R> callback) {
+    	Log.debug("Executing command " + command + " OFFLINE.");
     	try {
 	    	final Collector<R> commandResult = Collector.newCollector();
 	    	database.transaction(new SqlTransactionCallback() {
@@ -70,6 +72,7 @@ public class LocalDispatcher extends AbstractDispatcher {
 	
 				@Override
 				public void onError(SqlException e) {
+					Log.error("OFFLINE EXECUTION FAILED: " + command, e);
 					callback.onFailure(e);
 				}
 	
@@ -84,6 +87,7 @@ public class LocalDispatcher extends AbstractDispatcher {
     }
 
     private <R extends CommandResult> void executeRemotely(final Command<R> command, final AsyncCallback<R> callback) {
+    	Log.debug("No handler for " + command + ", executing remotely.");
     	remoteDispatcher.execute(command, callback);
     }
 }

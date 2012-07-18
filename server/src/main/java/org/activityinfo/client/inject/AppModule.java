@@ -12,13 +12,12 @@ import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.RemoteServiceProvider;
 import org.activityinfo.client.dispatch.remote.CachingDispatcher;
-import org.activityinfo.client.dispatch.remote.Direct;
-import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.dispatch.remote.IncompatibleRemoteDialog;
 import org.activityinfo.client.dispatch.remote.IncompatibleRemoteHandler;
+import org.activityinfo.client.dispatch.remote.MergingDispatcher;
 import org.activityinfo.client.dispatch.remote.ProxyManager;
 import org.activityinfo.client.dispatch.remote.Remote;
-import org.activityinfo.client.dispatch.remote.MergingDispatcher;
+import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.offline.OfflineController;
 import org.activityinfo.client.page.Frame;
 import org.activityinfo.client.page.PageStateSerializer;
@@ -42,7 +41,7 @@ public class AppModule extends AbstractGinModule {
         bind(AuthenticatedUser.class).toProvider(ClientSideAuthProvider.class);
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
         bind(IncompatibleRemoteHandler.class).to(IncompatibleRemoteDialog.class);
-        bind(Dispatcher.class).annotatedWith(Direct.class).to(RemoteDispatcher.class).in(Singleton.class);
+        bind(Dispatcher.class).annotatedWith(Remote.class).to(RemoteDispatcher.class).in(Singleton.class);
         bind(DispatchEventSource.class).to(ProxyManager.class);
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
@@ -50,11 +49,6 @@ public class AppModule extends AbstractGinModule {
         bind(StateProvider.class).to(GxtStateProvider.class);
         bind(Frame.class).annotatedWith(Root.class).to(AppFrameSet.class);
         bind(GalleryView.class).to(GalleryPage.class);
-    }
-    
-    @Provides
-    public Scheduler provideScheduler() {
-    	return Scheduler.get();
     }
     
     @Provides

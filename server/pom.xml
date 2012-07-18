@@ -257,6 +257,11 @@
 			<artifactId>rebar-sync</artifactId>
 			<version>${rebarVersion}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.bedatadriven.rebar</groupId>
+			<artifactId>rebar-asyncfun</artifactId>
+			<version>${rebarVersion}</version>
+		</dependency>
 	
 		
 		<!-- Dependency Injection Framework -->

@@ -3,6 +3,7 @@ package org.activityinfo.client.offline.command;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -12,16 +13,16 @@ import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.UpdateSite;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.async.AsyncFunction;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
-import com.bedatadriven.rebar.sql.client.SqlResultCallback;
-import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import com.google.common.base.Function;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -32,8 +33,6 @@ import com.google.inject.Singleton;
 
 /**
  * Manages a persistent queue of commands to be sent to the server.
- * 
- * @author alex
  *
  */
 @Singleton
@@ -63,6 +62,10 @@ public class CommandQueue {
 			this.command = command;
 		}
 	}
+	
+	private SqlQuery queryNext = 
+			SqlQuery.select("id", "command").from("command_queue").orderBy("id");
+
 
 	private SqlDatabase database;
 	
@@ -72,7 +75,7 @@ public class CommandQueue {
 		this.database = database;
 	}
 	
-	public void createTableIfNotExists(SqlTransaction tx) {
+	public static void createTableIfNotExists(SqlTransaction tx) {
 		tx.executeSql("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT)");
 	}
 
@@ -90,8 +93,22 @@ public class CommandQueue {
 			.execute(tx);
 	}
 	
-
-
+	public AsyncFunction<Void, List<QueueEntry>> get() {
+		return database
+				.transaction()
+				.compose(queryNext)
+				.map(
+				   
+			 new Function<SqlResultSetRow, QueueEntry>() {
+				@Override
+				public QueueEntry apply(SqlResultSetRow row) {
+					int id = row.getInt("id");
+					String json = row.getString("command"); 
+					return new QueueEntry(id, deserializeCommand(json));
+				}
+			});
+	}
+	
 	/**
 	 * 
 	 * Peeks at the command next line in for execution, without removing it from the queue.
@@ -99,63 +116,51 @@ public class CommandQueue {
 	 * @return the Command next in line for execution
 	 */
 	public void peek(final AsyncCallback<QueueEntry> callback) {
-		database.transaction(new SqlTransactionCallback() {
-			
+		get().compose(new Function<List<QueueEntry>, QueueEntry>() {
+
 			@Override
-			public void begin(SqlTransaction tx) {
-				SqlQuery.select("id", "command").from("command_queue").orderBy("id")
-				.execute(tx, new SqlResultCallback() {
+			public QueueEntry apply(List<QueueEntry> input) {
+				if(input.isEmpty()) {
+					return null;
+				} else {
+					return input.get(0);
+				}
+			}
+			
+		}).apply(null, callback);
+	}
+
+	
+	public AsyncFunction<QueueEntry, Void> remove() {
+		return new AsyncFunction<CommandQueue.QueueEntry, Void>() {
+
+			@Override
+			protected void doApply(final QueueEntry argument,
+					final AsyncCallback<Void> callback) {
+				database.transaction(new SqlTransactionCallback() {
 					
 					@Override
-					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-						if(results.getRows().size() == 0) {
-							callback.onSuccess(null);
-						} else {
-							
-							SqlResultSetRow row = results.getRow(0);
-							QueueEntry entry;
-							int id = row.getInt("id");
-							String json = row.getString("command"); 
-							try {
-								entry = new QueueEntry(id, deserializeCommand(json));							
-							} catch(Exception e) {
-								Log.debug("Exception deserializing command from queue (JSON=" + json + ")", e);
-								callback.onFailure(e);
-								return;
-							}
-							
-							callback.onSuccess(entry);
-
-						}
+					public void begin(SqlTransaction tx) {
+						tx.executeSql("DELETE FROM command_queue WHERE id = ?", new Object[] {
+								argument.getId() });
 					}
-				});
-			}
 
-			@Override
-			public void onError(SqlException e) {
-				callback.onFailure(e);
+					@Override
+					public void onError(SqlException e) {
+						callback.onFailure(e);
+					}
+
+					@Override
+					public void onSuccess() {
+						callback.onSuccess(null);
+					}
+				});				
 			}
-		});
+		};
 	}
 	
-	public void remove(final int queueId, final AsyncCallback<Boolean> callback) {
-		database.transaction(new SqlTransactionCallback() {
-			
-			@Override
-			public void begin(SqlTransaction tx) {
-				tx.executeSql("DELETE FROM command_queue WHERE id = ?", new Object[] { queueId });
-			}
-
-			@Override
-			public void onError(SqlException e) {
-				callback.onFailure(e);
-			}
-
-			@Override
-			public void onSuccess() {
-				callback.onSuccess(true);
-			}
-		});
+	public void remove(QueueEntry entry, AsyncCallback<Void> callback) {
+		remove().apply(entry, callback);
 	}
 	
 
