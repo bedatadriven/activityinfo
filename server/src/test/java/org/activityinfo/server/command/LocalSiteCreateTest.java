@@ -58,7 +58,6 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
         // try to retrieve what we've created FROM OUR CLIENT SIDE DATABASE
 
         SiteResult loadResult = executeLocally(GetSites.byId(newSite.getId()));        
-        
 
         Assert.assertEquals(1, loadResult.getData().size());
 
@@ -74,9 +73,12 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
         synchronize();
         
 
-        // Verify that 
-        
+        // Confirm that paging works client side
+        GetSites pagingRequest = new GetSites();
+        pagingRequest.setLimit(1);
     	
+        loadResult = executeLocally(pagingRequest);
+        
     }
 	
 }
