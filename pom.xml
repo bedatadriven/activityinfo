@@ -916,7 +916,7 @@
 
 						<configuration>
 							<applicationName>activityinfo</applicationName>
-							<s3Bucket>activityinfo-wars</s3Bucket>
+							<s3Bucket>activityinfo-builds</s3Bucket>
 							<s3Key>${project.version}-RELEASE.war</s3Key>
 							<versionLabel>${project.version}-RELEASE</versionLabel>
 							<environmentName>release-${git.commit.id.abbrev}</environmentName>
