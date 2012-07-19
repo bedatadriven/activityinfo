@@ -110,7 +110,13 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @Transactional
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(Command command) throws CommandException {
-    	return ServerExecutionContext.execute(injector, command);
+    	long timeStart = System.currentTimeMillis();
+    	try {
+    		return ServerExecutionContext.execute(injector, command);
+    	} finally {
+    		long timeElapsed = System.currentTimeMillis() - timeStart;
+    		LOGGER.info("Command " + command.getClass().getSimpleName() + " completed in " + timeElapsed + "ms" );
+    	}
     }
     
     private void checkAuthentication(String authToken) {
