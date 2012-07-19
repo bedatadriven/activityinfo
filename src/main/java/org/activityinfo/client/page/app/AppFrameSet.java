@@ -8,7 +8,6 @@ package org.activityinfo.client.page.app;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.offline.ui.OfflineView;
 import org.activityinfo.client.page.Frame;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.NavigationHandler;
@@ -25,13 +24,11 @@ import org.activityinfo.client.widget.LoadingPlaceHolder;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -52,24 +49,19 @@ public class AppFrameSet implements Frame {
 	private EventBus eventBus;
 	private Viewport viewport;
 
-	private TabPanel tabPanel;
-	private AuthenticatedUser auth;
-	private OfflineView offlineMenu;
-
 	private Widget activeWidget;
 	private Page activePage;
 	private AppBar appBar;
 
 
 	@Inject
-	public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, OfflineView offlineMenu) {
+	public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, AppBar appBar) {
 
 		Log.trace("AppFrameSet constructor starting");
 
 		this.eventBus = eventBus;
-		this.auth = auth;
-		this.offlineMenu = offlineMenu;
-
+		this.appBar = appBar;
+		
 		viewport = new Viewport();
 		viewport.setLayout(new RowLayout());
 
@@ -84,7 +76,6 @@ public class AppFrameSet implements Frame {
 	}
 
 	private void createToolBar() {
-		appBar = new AppBar(eventBus, offlineMenu);
 		appBar.getSectionTabStrip().addSelectionHandler(new SelectionHandler<Section>() {
 
 			@Override

@@ -103,11 +103,10 @@ public class ServerExecutionContext implements ExecutionContext {
 		final ResultCollector<R> result = new ResultCollector<R>();
 		final Collector<Boolean> txResult = Collector.newCollector();
 		
-		final Object handler = injector.getInstance(
-				HandlerUtil.handlerForCommand(command));
-		
+		// Try first to do a simple synchronous execution if the handler is an old
+		// hibernate handler
+		final Object handler = injector.getInstance(HandlerUtil.handlerForCommand(command));
 		final AuthenticatedUser user = injector.getInstance(AuthenticatedUser.class);
-		
 		if(handler instanceof CommandHandler) {
 			User userEntity = injector.getInstance(EntityManager.class).find(User.class, user.getId());
 			return ((CommandHandler) handler).execute(command, userEntity);

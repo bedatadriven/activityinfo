@@ -31,19 +31,10 @@ public interface Synchronizer {
      * @return true if we are ready
      */
     void validateOfflineInstalled(AsyncCallback<Void> callback);
-
-    void goOnline(AsyncCallback<Void> callback);
-    void synchronize(AsyncCallback<Void> callback);
     
-    /**
-     * Checks whether a command can be handled offline
-     * 
-     * @param command the command for which to check
-     * @return true if the command can be handled offline
-     */
-    boolean canHandle(Command command);
+    void synchronize();
     
     // TODO: move to separate interface
-    void execute(Command command, AsyncMonitor monitor, AsyncCallback callback);
+    void execute(Command command, AsyncCallback callback);
     
 }

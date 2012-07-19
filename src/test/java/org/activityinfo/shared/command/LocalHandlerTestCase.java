@@ -16,18 +16,17 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.client.offline.OfflineModuleStub;
-import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.i18n.UIMessages;
 import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.client.offline.command.LocalDispatcher;
-import org.activityinfo.client.offline.sync.DownSynchronizer;
+import org.activityinfo.client.offline.sync.SyncHistoryTable;
+import org.activityinfo.client.offline.sync.SynchronizerImpl;
 import org.activityinfo.server.authentication.AuthenticationModuleStub;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet;
-import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.activityinfo.shared.util.Collector;
@@ -38,6 +37,7 @@ import org.junit.Before;
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -70,17 +70,16 @@ public abstract class LocalHandlerTestCase {
 		
 	
 	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
-	protected DownSynchronizer synchronizer;
 
+	protected SynchronizerImpl synchronizer;
+	protected SyncHistoryTable syncHistoryTable;
+	
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
         
     	localDatabase = new JdbcDatabase(databaseName);
         
         setUser(1); // default is db owner
-
-        remoteDispatcher = new RemoteDispatcherStub();
-
                         
         uiConstants = createNiceMock(UIConstants.class);
         uiMessages = createNiceMock(UIMessages.class);
@@ -93,50 +92,28 @@ public abstract class LocalHandlerTestCase {
 
     protected void setUser(int userId) {
     	AuthenticationModuleStub.setUserId(userId);
-    	
-        Injector clientSideInjector = Guice.createInjector(new OfflineModuleStub(AuthenticationModuleStub.getCurrentUser(), localDatabase));
+        remoteDispatcher = new RemoteDispatcherStub();
+
+        Injector clientSideInjector = Guice.createInjector(
+        		new OfflineModuleStub(AuthenticationModuleStub.getCurrentUser(), 
+        				localDatabase,
+        				remoteDispatcher));
         localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
-        
+        synchronizer = clientSideInjector.getInstance(SynchronizerImpl.class);
+        syncHistoryTable = clientSideInjector.getInstance(SyncHistoryTable.class);
     }
 
     
     protected void synchronizeFirstTime() {
-    	newRequest();    	
-    	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
-                uiConstants);
-        synchronizer.startFresh(new AsyncCallback<Void>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				throw new AssertionError(caught);
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				
-			}
-		});
-        localDatabase.processEventQueue();
-        
+    	newRequest();   
+    	synchronizer.install(this.<Void>throwOnFailure());
+    	localDatabase.processEventQueue();
     }
     
     protected void synchronize() {
     	newRequest();    	
-    	synchronizer = new DownSynchronizer(new MockEventBus(), remoteDispatcher, localDatabase, 
-                uiConstants);
-        synchronizer.start(new AsyncCallback<Void>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				throw new AssertionError(caught);
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				
-			}
-		});
-        localDatabase.processEventQueue();
+    	synchronizer.synchronize();
+    	localDatabase.processEventQueue();
         
     }
     
@@ -163,29 +140,49 @@ public abstract class LocalHandlerTestCase {
     	serverEm.clear();
     }
 
-    private class RemoteDispatcherStub implements Dispatcher {
-    	@Override
-    	public <T extends CommandResult> void execute(Command<T> command, AsyncMonitor monitor, AsyncCallback<T> callback) {
-    		execute(command, callback);
-    	}
+    private class RemoteDispatcherStub extends AbstractDispatcher {
 
     	@Override
-    	public <T extends CommandResult> void execute(Command<T> command,
-    			AsyncCallback<T> callback) {
-    		List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
-    		CommandResult result = results.get(0);
+    	public <T extends CommandResult> void execute(final Command<T> command,
+    			final AsyncCallback<T> callback) {
+    		
+    		JdbcScheduler.get().scheduleDeferred(new ScheduledCommand() {
+				
+				@Override
+				public void execute() {
 
-    		if(result instanceof SyncRegionUpdate) {
-    			System.out.println(((SyncRegionUpdate) result).getSql());
-    		}
+		    		List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
+		    		CommandResult result = results.get(0);
 
-    		if(result instanceof Exception) {
-    			throw new Error((Throwable) result);
-    		} else {
-    			callback.onSuccess((T) result);
-    		}
+		    		if(result instanceof SyncRegionUpdate) {
+		    			System.out.println(((SyncRegionUpdate) result).getSql());
+		    		}
+
+		    		if(result instanceof Exception) {
+		    			throw new Error((Throwable) result);
+		    		} else {
+		    			callback.onSuccess((T) result);
+		    		}
+		
+				}
+			});
+    		JdbcScheduler.get().process();
+    		
+    		
     	}
-
     }
+    
+    private <T> AsyncCallback<T> throwOnFailure() {
+    	return new AsyncCallback<T>() {
 
+			@Override
+			public void onFailure(Throwable caught) {
+				throw new RuntimeException(caught);
+			}
+
+			@Override
+			public void onSuccess(T result) {				
+			}
+		};
+    }
 }

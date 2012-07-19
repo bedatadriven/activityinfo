@@ -16,9 +16,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.activityinfo.client.dispatch.remote.CommandRequest;
-import org.activityinfo.client.mock.NullAsyncCallback;
 import org.activityinfo.shared.command.GetSchema;
 import org.junit.Test;
+
+import com.bedatadriven.rebar.async.NullCallback;
 
 public class CommandRequestTest {
 
@@ -27,11 +28,11 @@ public class CommandRequestTest {
 
         assumeThat(new GetSchema(), is(equalTo(new GetSchema())));
 
-        CommandRequest firstCommand = new CommandRequest(new GetSchema(), null,
-                new NullAsyncCallback());
+        CommandRequest firstCommand = new CommandRequest(new GetSchema(),
+                new NullCallback());
         List<CommandRequest> pending = Collections.singletonList(firstCommand);
 
-        CommandRequest secondRequest = new CommandRequest(new GetSchema(), null, new NullAsyncCallback());
+        CommandRequest secondRequest = new CommandRequest(new GetSchema(), new NullCallback());
 
         boolean merged = secondRequest.mergeSuccessfulInto(pending);
 

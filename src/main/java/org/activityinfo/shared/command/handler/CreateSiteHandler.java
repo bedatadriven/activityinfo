@@ -39,62 +39,6 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		callback.onSuccess(new CreateResult(cmd.getSiteId()));
 	}
 
-//	private void lookupLocationId(final ExecutionContext context,
-//			Integer boundAdminLevelId, final int locationTypeId, final Map<String,Object> properties, final AsyncCallback<Integer> callback) {
-//
-//		final SqlTransaction tx = context.getTransaction();
-//		if(boundAdminLevelId == null) {
-//			callback.onSuccess((Integer) properties.get("locationId"));
-//		} else {
-//			final int entityId = (Integer) properties.get(AdminLevelDTO.getPropertyName(boundAdminLevelId));
-//			SqlQuery.select("locationId")
-//			.from("Location")
-//			.where("LocationTypeId")
-//			.equalTo(locationTypeId)
-//			.where("locationId")
-//			.in(SqlQuery.select("LocationId")
-//					.from("LocationAdminLink")
-//					.where("AdminEntityId")
-//					.equalTo(entityId))
-//			.execute(tx, new SqlResultCallback() {
-//				@Override
-//				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-//					if (results.getRows().isEmpty()) {
-//						SqlQuery.select("Name")
-//								.from("AdminEntity")
-//								.where("AdminEntityId")
-//								.equalTo(entityId)
-//								.execute(tx, new SqlResultCallback() {
-//									@Override
-//									public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-//										String name = results.getRow(0).getString("Name");
-//										int locationId = getOrCreateKey(properties, "locationId");
-//										AddLocation addLocation = new AddLocation().setLocation(new LocationDTO()
-//														.setName(name)
-//														.setId(locationId)
-//														.setLocationTypeId(locationTypeId));
-//										context.execute(addLocation, new AsyncCallback<CreateResult>() {
-//											@Override
-//											public void onFailure(Throwable caught) {
-//												//Handled by tx
-//											}
-//
-//											@Override
-//											public void onSuccess(CreateResult result) {
-//												callback.onSuccess(result.getNewId());
-//											}
-//										});
-//									}
-//								});
-//						
-//					} else {
-//						callback.onSuccess(results.getRow(0).getInt("locationId"));
-//					}
-//				}
-//			});
-//		}
-//	}
-
 	private void insertSite(
 			SqlTransaction tx,
 			CreateSite cmd)  {
@@ -112,6 +56,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			.value("ProjectId", properties.get("projectId"))
 			.value("DateCreated", new Date())
 			.value("DateEdited", new Date())
+			.value("timeEdited", new Date().getTime())
 		.execute(tx);
 
 		insertAttributeValues(tx, cmd);
@@ -166,5 +111,4 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			}
 		}
 	}
-
 }

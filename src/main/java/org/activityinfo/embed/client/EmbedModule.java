@@ -6,6 +6,7 @@ import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.RemoteServiceProvider;
 import org.activityinfo.client.dispatch.remote.IncompatibleRemoteHandler;
+import org.activityinfo.client.dispatch.remote.MergingDispatcher;
 import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.client.util.state.GxtStateProvider;
 import org.activityinfo.client.util.state.StateProvider;
@@ -23,7 +24,6 @@ public class EmbedModule extends AbstractGinModule {
 	protected void configure() {
 		bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
 		bind(Dispatcher.class).to(RemoteDispatcher.class).in(Singleton.class);
-		bind(DispatchEventSource.class).to(RemoteDispatcher.class);
 		bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 		bind(StateProvider.class).to(GxtStateProvider.class);
 		bind(IncompatibleRemoteHandler.class).to(SimpleIncompatibleRemoteHandler.class);
@@ -32,7 +32,5 @@ public class EmbedModule extends AbstractGinModule {
 	@Provides
 	public AuthenticatedUser provideAuth() {
         return AuthenticatedUser.getAnonymous(LocaleInfo.getCurrentLocale());
-
 	}
-	
 }

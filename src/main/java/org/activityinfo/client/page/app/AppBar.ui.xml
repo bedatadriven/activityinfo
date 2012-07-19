@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:b="urn:import:org.activityinfo.client.page.app"
 	xmlns:xb="urn:import:com.extjs.gxt.ui.client.widget.button">
+	<ui:with field="resources" type="org.activityinfo.client.page.app.resources.AppFrameResources" />
 	<ui:data field="backgroundImage" src="resources/background.gif"/>
 	<ui:data field="gearImage" src="resources/gear.png"></ui:data>
 	<ui:data field="helpImage" src="resources/help.png"></ui:data>
@@ -80,6 +81,7 @@
 				<g:Label styleName="{style.icon} {style.settingsIcon}" ui:field="settingsButton"/>
 				<g:Label styleName="{style.icon} {style.helpIcon}" ui:field="helpButton"/>
 				<g:Label styleName="{style.icon} {style.searchIcon}" ui:field="searchButton"/>
+				
 			</g:HTMLPanel>		
 		</g:layer>
 		

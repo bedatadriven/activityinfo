@@ -7,11 +7,12 @@ import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCache.Status;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.bedatadriven.rebar.appcache.client.events.ProgressEventHandler;
+import com.bedatadriven.rebar.async.AsyncCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class AppCacheSynchronizer implements ProgressEventHandler {
+public class AppCacheSynchronizer implements ProgressEventHandler, AsyncCommand {
 
 	private final EventBus eventBus;
 	private final AppCache appCache = AppCacheFactory.get();
@@ -21,7 +22,8 @@ public class AppCacheSynchronizer implements ProgressEventHandler {
 		this.eventBus = eventBus;
 	}
 	
-	public void ensureUpToDate(final AsyncCallback<Void> callback) {
+	@Override
+	public void execute(final AsyncCallback<Void> callback) {
 		
 		final HandlerRegistration progressRegistration = appCache.addProgressHandler(this);
 		appCache.ensureUpToDate(new AsyncCallback<Void>() {
@@ -49,5 +51,4 @@ public class AppCacheSynchronizer implements ProgressEventHandler {
 		eventBus.fireEvent(new SyncStatusEvent(I18N.CONSTANTS.appCacheProgress(),
 				(double)filesComplete / (double)filesTotal * 100d));
 	}
-	
 }
