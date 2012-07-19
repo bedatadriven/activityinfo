@@ -34,6 +34,8 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.http.client.params.ClientPNames;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import com.google.inject.Singleton;
 
 /**
@@ -109,12 +111,21 @@ public class ContentServlet extends HttpServlet {
 	@Override
 	public void doGet (HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
     		throws IOException, ServletException {
+		
 		// Create a GET request
 		GetMethod getMethodProxyRequest = new GetMethod(this.getProxyURL(httpServletRequest));
+		getMethodProxyRequest.getParams().setParameter("http.socket.timeout", new Integer(2000));
+
 		// Forward the request headers
 		setProxyRequestHeaders(httpServletRequest, getMethodProxyRequest);
     	// Execute the proxy request
-		this.executeProxyRequest(getMethodProxyRequest, httpServletRequest, httpServletResponse);
+		try {
+			this.executeProxyRequest(getMethodProxyRequest, httpServletRequest, httpServletResponse);
+		} catch(Exception e) {
+			httpServletResponse.setContentType("text/html");
+			httpServletResponse.setStatus(503);
+			httpServletResponse.getWriter().print(Resources.toString(Resources.getResource("content.backup.html"), Charsets.UTF_8));
+		}
 	}
 	
 	/**
