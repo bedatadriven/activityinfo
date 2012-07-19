@@ -29,7 +29,6 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     private final EntityManager entityManager;
 
     private int databaseId;
-    public static final int MAX_RESULTS = 500;
 
     private List<Site> all = new ArrayList<Site>();
     private List<Site> updated = new ArrayList<Site>();
@@ -78,7 +77,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 	        }
 	
 	        SyncRegionUpdate update = new SyncRegionUpdate();
-	        update.setComplete(all.size() < MAX_RESULTS);
+	        update.setComplete(true);
 	        if(all.isEmpty()) {
 	            update.setVersion(request.getLocalVersion());
 	        } else {
@@ -100,7 +99,6 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                         "WHERE  (s.timeEdited > :localVersion) AND " +
                         "(s.activity.database = :database)" +
                         "ORDER BY s.timeEdited")
-                .setMaxResults(MAX_RESULTS)
                 .setParameter("localVersion", localVersion)
                 .setParameter("database", entityManager.getReference(UserDatabase.class, databaseId))
                 .getResultList();

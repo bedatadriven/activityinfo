@@ -37,5 +37,7 @@
 	<userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1"
                   lastSchemaUpdate="2009-01-01" />
 
+	<activity databaseId="1" activityId="1" locationTypeId="1" name="NFI Distribution" AllowEdit="1"
+	 	ReportingFrequency="1" sortOrder="1"/>
 
 </dataset>
