@@ -37,7 +37,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class SelectionServlet extends DefaultSelectionServlet {
 
-    @Inject
+    public static final String DEFAULT_LOCALE = "en";
+
+	@Inject
     public SelectionServlet(Provider<EntityManager> entityManager) {
         registerProvider("locale", new LocaleProvider(entityManager));
         registerProvider("log_level", new LogLevelProvider());
@@ -55,11 +57,13 @@ public class SelectionServlet extends DefaultSelectionServlet {
         public String get(HttpServletRequest req) {
             Authentication auth = entityManager.get().find(Authentication.class, getAuthToken(req));
             if(auth == null) {
-            	throw new UserNotAuthenticatedException("bad authToken");
+            	// we HAVE to return a valid app here, otherwise we risk getting
+            	// an error state cached in the AppCache and the user will never get
+            	// back to the page long enough for the non-errorfull content
+            	// to be loaded
+            	return DEFAULT_LOCALE;
             }
-            String locale = auth.getUser().getLocale();
-            // todo: update rebar-appcache so we can get a list of possible property values
-            return locale;
+            return auth.getUser().getLocale();
         }
 
         private String getAuthToken(HttpServletRequest req) {
@@ -83,9 +87,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
     @Override
 	protected void handleSelectionException(Path path, Exception e,
 			HttpServletResponse resp) throws IOException {
-		if(e instanceof UserNotAuthenticatedException && path.file.endsWith(".js")) {
-			resp.getWriter().print("window.location = 'login';");
-		} else if(e instanceof UnknownUserAgentException) {
+		if(e instanceof UnknownUserAgentException) {
 			resp.getWriter().print("window.location = 'browser.html'");
 		} else {
 			super.handleSelectionException(path, e, resp);
