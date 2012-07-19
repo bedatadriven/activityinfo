@@ -40,7 +40,7 @@ public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegion
         } else if(cmd.getRegionId().startsWith("admin/")) {
             builder = injector.getInstance(AdminUpdateBuilder.class);
 
-        } else if(cmd.getRegionId().equals("locations")) {
+        } else if(cmd.getRegionId().startsWith("location/")) {
             builder = injector.getInstance(LocationUpdateBuilder.class);
 
         } else if(cmd.getRegionId().startsWith("site/")) {

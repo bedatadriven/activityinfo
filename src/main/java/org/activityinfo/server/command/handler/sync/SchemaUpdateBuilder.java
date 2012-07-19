@@ -22,6 +22,7 @@ import org.activityinfo.server.database.hibernate.entity.AttributeGroup;
 import org.activityinfo.server.database.hibernate.entity.Country;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
+import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
 import org.activityinfo.server.database.hibernate.entity.Partner;
@@ -152,6 +153,11 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.executeStatement("delete from PartnerInDatabase");
 
+        builder.createTableIfNotExists(Location.class);		
+
+        builder.executeStatement("create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
+
+        
         if(anyPartners()) {
 	        builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
 	        for(UserDatabase db : databases) {

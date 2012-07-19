@@ -13,6 +13,7 @@ import java.util.Set;
 
 
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
+import org.activityinfo.server.database.hibernate.entity.Activity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
@@ -41,13 +42,28 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         List<SyncRegion> regions = new ArrayList<SyncRegion>();
         regions.add(new SyncRegion("schema", true));
         regions.addAll(listAdminRegions(databases));
-        regions.add(new SyncRegion("locations"));
+        regions.addAll(listLocations(databases));
         regions.addAll(listSiteRegions(databases));
         return new SyncRegions(regions);
     }
 
 
-    private Collection<? extends SyncRegion> listAdminRegions(List<UserDatabase> databases) {
+    private Collection<? extends SyncRegion> listLocations(List<UserDatabase> databases) {
+    	  List<SyncRegion> locationRegions = new ArrayList<SyncRegion>();
+          Set<Integer> typesAdded = new HashSet<Integer>();
+          for(UserDatabase db : databases) {
+        	  for(Activity activity : db.getActivities()) {
+        		  int typeId = activity.getLocationType().getId();
+				if(!typesAdded.contains(typeId)) {
+        			  locationRegions.add(new SyncRegion("location/" + typeId));
+        			  typesAdded.add(typeId);
+        		  }
+        	  }
+          }
+          return locationRegions;
+	}
+
+	private Collection<? extends SyncRegion> listAdminRegions(List<UserDatabase> databases) {
         List<SyncRegion> adminRegions = new ArrayList<SyncRegion>();
         Set<Integer> countriesAdded = new HashSet<Integer>();
         for(UserDatabase db : databases) {

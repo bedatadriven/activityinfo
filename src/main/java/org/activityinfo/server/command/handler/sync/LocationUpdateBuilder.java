@@ -21,7 +21,9 @@ import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 import com.google.inject.Inject;
 
 public class LocationUpdateBuilder implements UpdateBuilder {
-    public static final int MAX_UPDATES = 500;
+    private static final String REGION_PREFIX = "location/";
+
+	public static final int MAX_UPDATES = 500;
 
     private final EntityManager em;
     private List<Location> locations;
@@ -30,6 +32,8 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 	private LocalState localState;
 
 	private JpaUpdateBuilder builder = new JpaUpdateBuilder();
+
+	private int typeId;
     
     @Inject
     public LocationUpdateBuilder(EntityManager em) {
@@ -39,6 +43,7 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     @Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
 
+    	typeId = parseTypeId(request);
         localState = new LocalState(request.getLocalVersion());
 
         queryChanged();
@@ -53,11 +58,20 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         return update;
     }
 
+	private int parseTypeId(GetSyncRegionUpdates request) {
+		if(!request.getRegionId().startsWith(REGION_PREFIX)) {
+			throw new AssertionError("Expected region prefixed by '" + REGION_PREFIX + 
+					"', got '" + request.getRegionId() + "'");
+		}
+		return Integer.parseInt(request.getRegionId().substring(REGION_PREFIX.length()));
+	}
+
 	private void queryChanged() {
 		locations = em.createQuery("select loc from Location loc where loc.timeEdited > :localDate " +
-                        "order by loc.timeEdited, loc.id")
+                        " and locationType.id = :typeId " +
+                        " order by loc.timeEdited, loc.id")
+                .setParameter("typeId", typeId)
                 .setParameter("localDate", localState.lastDate)
-                .setMaxResults(MAX_UPDATES + 1)
                 .getResultList();
 	}
 
@@ -80,12 +94,10 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 			locationIds.add(location.getId());
 		}
 		
-        builder.createTableIfNotExists(Location.class);		
         builder.insert("or replace", Location.class, locations);
 	}
 	
 	private void linkAdminEntities() throws JSONException { 
-		builder.executeStatement("create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
 
 		if(!locations.isEmpty()) {
 			builder.beginPreparedStatement("delete from LocationAdminLink where LocationId = ?");
