@@ -1,9 +1,10 @@
 package org.activityinfo.client.offline.sync;
 
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.Direct;
+import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
+import org.activityinfo.client.dispatch.remote.Remote;
+import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
@@ -16,7 +17,7 @@ import com.google.inject.Inject;
  * Dispatcher implementation used by the synchronizer classes that 
  * executes commands directly without caching, and retries aggressively.
  */
-public class SynchronizerDispatcher implements Dispatcher {
+public class SynchronizerDispatcher extends AbstractDispatcher {
 	
 	private final EventBus eventBus;
 	private final Dispatcher remoteDispatcher;
@@ -24,7 +25,7 @@ public class SynchronizerDispatcher implements Dispatcher {
 	private static final int MAX_RETRY_COUNT = 16;
 
 	@Inject
-	public SynchronizerDispatcher(EventBus eventBus, @Direct Dispatcher remoteDispatcher) {
+	public SynchronizerDispatcher(EventBus eventBus, @Remote Dispatcher remoteDispatcher) {
 		super();
 		this.eventBus = eventBus;
 		this.remoteDispatcher = remoteDispatcher;
@@ -32,16 +33,10 @@ public class SynchronizerDispatcher implements Dispatcher {
 
 	@Override
 	public <T extends CommandResult> void execute(Command<T> command,
-			AsyncMonitor monitor, AsyncCallback<T> callback) {
+			AsyncCallback<T> callback) {
 
 		tryExecute(command, callback, 0);
 		
-	}
-	
-	@Override
-	public <T extends CommandResult> void execute(Command<T> command,
-			AsyncCallback<T> callback) {
-		execute(command, callback);
 	}
 
 	private final <T extends CommandResult> void tryExecute(final Command<T> command, final AsyncCallback<T> callback, final int attempt) {

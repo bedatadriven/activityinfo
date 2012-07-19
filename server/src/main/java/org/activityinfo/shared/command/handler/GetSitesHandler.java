@@ -337,8 +337,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 
 	private SqlQuery countQuery(GetSites command, ExecutionContext context) {
-		SqlQuery unioned = countQuery(command, context);
-		unioned.appendColumn("count(*) AS site_count");
+		SqlQuery unioned = unionedQuery(context, command);
+		unioned.appendColumn("count(*)", "site_count");
 		return unioned;
 	}
 	

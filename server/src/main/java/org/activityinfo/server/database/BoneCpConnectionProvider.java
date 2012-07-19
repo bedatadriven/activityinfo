@@ -39,6 +39,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 			poolConfig.setUsername(configProperties.getProperty("hibernate.connection.username"));
 			poolConfig.setPassword(configProperties.getProperty("hibernate.connection.password"));
 			poolConfig.setMaxConnectionAge(4, TimeUnit.HOURS);
+			poolConfig.setPartitionCount(3);
 			
 			LOGGER.info("Configuring connection pool to " + poolConfig.getJdbcUrl());
 			

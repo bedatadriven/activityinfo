@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>activityinfo-server</artifactId>
 	<packaging>war</packaging>
@@ -8,7 +9,7 @@
 	<parent>
 		<groupId>org.activityinfo</groupId>
 		<artifactId>activityinfo-parent</artifactId>
-		<version>2.6.17-SNAPSHOT</version>
+		<version>2.6.18-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -29,7 +30,7 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<!-- GWT deps (from central repo) -->
 
 		<dependency>
@@ -234,7 +235,7 @@
 			<artifactId>guava</artifactId>
 			<version>r09</version>
 		</dependency>
-		
+
 		<!-- Rebar- client persistence -->
 
 		<dependency>
@@ -257,8 +258,13 @@
 			<artifactId>rebar-sync</artifactId>
 			<version>${rebarVersion}</version>
 		</dependency>
-	
-		
+		<dependency>
+			<groupId>com.bedatadriven.rebar</groupId>
+			<artifactId>rebar-asyncfun</artifactId>
+			<version>${rebarVersion}</version>
+		</dependency>
+
+
 		<!-- Dependency Injection Framework -->
 
 		<dependency>
@@ -279,12 +285,12 @@
 			<artifactId>gson</artifactId>
 			<version>1.6</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>log4jwebtracker</groupId>
-            <artifactId>log4jwebtracker</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+			<groupId>log4jwebtracker</groupId>
+			<artifactId>log4jwebtracker</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- Random library for BASE64 decoding (KmlDataServlet) -->
 		<dependency>
@@ -292,7 +298,7 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>gson-gwt</groupId>
 			<artifactId>gson-gwt</artifactId>
@@ -428,7 +434,7 @@
 					<useDefaultDelimiters>false</useDefaultDelimiters>
 				</configuration>
 			</plugin>
-			
+
 			<!-- configure the GWT-Maven plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -445,7 +451,7 @@
 					<extraJvmArgs>-Xmx512M -Xss1M</extraJvmArgs>
 					<hostedWebapp>war</hostedWebapp>
 				</configuration>
-				
+
 				<executions>
 					<execution>
 						<id>i18n</id>
@@ -458,7 +464,7 @@
 							<i18nConstantsBundle>org.activityinfo.client.i18n.UIConstants</i18nConstantsBundle>
 						</configuration>
 					</execution>
-				
+
 					<execution>
 						<id>activityinfo-compile</id>
 						<phase>prepare-package</phase>
@@ -478,7 +484,7 @@
 							</modules>
 						</configuration>
 					</execution>
-					
+
 					<execution>
 						<id>gwt-clean</id>
 						<phase>clean</phase>
@@ -541,7 +547,7 @@
 						<resource>
 							<directory>deploy</directory>
 							<filtering>true</filtering>
-						</resource>						
+						</resource>
 					</webResources>
 				</configuration>
 			</plugin>
@@ -601,24 +607,19 @@
 			<plugin>
 				<groupId>br.com.ingenieux</groupId>
 				<artifactId>beanstalk-maven-plugin</artifactId>
-				<version>0.2.7-RC4</version>
 
 				<configuration>
 					<applicationName>activityinfo</applicationName>
-					<s3Bucket>activityinfo-wars</s3Bucket>
+					<s3Bucket>activityinfo-builds</s3Bucket>
 					<s3Key>${project.version}-${maven.build.timestamp}</s3Key>
+					<region>eu-west-1</region>
 
 					<optionSettings>
 
 						<optionSetting>
 							<namespace>aws:autoscaling:launchconfiguration</namespace>
-							<optionName>ImageId</optionName>
-							<value>ami-8810e8e1</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:autoscaling:launchconfiguration</namespace>
 							<optionName>EC2KeyName</optionName>
-							<value>bedatadriven</value>
+							<value>bddeu</value>
 						</optionSetting>
 						<optionSetting>
 							<namespace>aws:elb:policies</namespace>
@@ -638,7 +639,7 @@
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
 							<optionName>PARAM2</optionName>
-							<value>activityinfo26.production.properties</value>
+							<value>activityinfo26.eu.properties</value>
 						</optionSetting>
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
@@ -735,10 +736,10 @@
 										<groupId>org.liquibase</groupId>
 										<artifactId>
 											liquibase-maven-plugin
-	                            		</artifactId>
+										</artifactId>
 										<versionRange>
 											[2.0.1,)
-	                            		</versionRange>
+										</versionRange>
 										<goals>
 											<goal>update</goal>
 											<goal>dropAll</goal>
@@ -869,15 +870,13 @@
 					<plugin>
 						<groupId>br.com.ingenieux</groupId>
 						<artifactId>beanstalk-maven-plugin</artifactId>
-						<version>0.2.7-RC4</version>
 
 						<configuration>
 							<applicationName>activityinfo</applicationName>
-							<s3Bucket>activityinfo-wars</s3Bucket>
 							<s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
 							<versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
-							<environmentName>activityinfo-23</environmentName>
-							<cnamePrefix>activityinfo-23</cnamePrefix>
+							<environmentName>activityinfo-staging</environmentName>
+							<cnamePrefix>activityinfo-staging</cnamePrefix>
 						</configuration>
 						<executions>
 							<execution>
@@ -886,7 +885,7 @@
 								<goals>
 									<goal>upload-source-bundle</goal>
 									<goal>create-application-version</goal>
-									<goal>update-environment</goal>
+									<goal>create-environment</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -898,47 +897,46 @@
 
 
 		<!-- Automatically engaged during maven release cycle -->
-<profile>
-	<id>release-build</id>
-	<activation>
-		<property>
-			<name>performRelease</name>
-			<value>true</value>
-		</property>
-	</activation>
-	<properties>
-		<display.version>${project.version}</display.version>
-	</properties>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>br.com.ingenieux</groupId>
-				<artifactId>beanstalk-maven-plugin</artifactId>
-				<version>0.2.2-bedatadriven</version>
+		<profile>
+			<id>release-build</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<display.version>${project.version}</display.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>br.com.ingenieux</groupId>
+						<artifactId>beanstalk-maven-plugin</artifactId>
 
-				<configuration>
-					<applicationName>activityinfo</applicationName>
-					<s3Bucket>activityinfo-wars</s3Bucket>
-					<s3Key>${project.version}-RELEASE.war</s3Key>
-					<versionLabel>${project.version}-RELEASE</versionLabel>
-					<environmentName>release-${git.commit.id.abbrev}</environmentName>
-					<cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>upload-source-bundle</goal>
-							<goal>create-application-version</goal>
-							<goal>create-environment</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-</profile>
+						<configuration>
+							<applicationName>activityinfo</applicationName>
+							<s3Bucket>activityinfo-wars</s3Bucket>
+							<s3Key>${project.version}-RELEASE.war</s3Key>
+							<versionLabel>${project.version}-RELEASE</versionLabel>
+							<environmentName>release-${git.commit.id.abbrev}</environmentName>
+							<cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
+						</configuration>
+						<executions>
+							<execution>
+								<id>default</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>upload-source-bundle</goal>
+									<goal>create-application-version</goal>
+									<goal>create-environment</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 
 		<!-- Build the Application Module with only permutations for Safari and 

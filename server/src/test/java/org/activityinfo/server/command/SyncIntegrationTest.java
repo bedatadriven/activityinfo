@@ -51,7 +51,7 @@ import com.google.inject.Inject;
         BeanMappingModule.class,
         GwtRpcModule.class,
         LoggingModule.class
-})
+    })
 public class SyncIntegrationTest extends LocalHandlerTestCase {
 	@Inject
 	private KeyGenerator keyGenerator;
@@ -65,7 +65,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         synchronizeFirstTime();
         
         Collector<Date> lastUpdate = Collector.newCollector();
-        synchronizer.getLastUpdateTime(lastUpdate);
+        synchronizer.getLastSyncTime(lastUpdate);
         
         assertThat(lastUpdate.getResult(), is(not(nullValue())));
         

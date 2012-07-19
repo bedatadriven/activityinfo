@@ -20,7 +20,6 @@ import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.CountryDTO;
-import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
@@ -28,10 +27,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.CheckChangedEvent;
 import com.extjs.gxt.ui.client.event.CheckChangedListener;
-import com.extjs.gxt.ui.client.event.EventType;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -51,7 +46,7 @@ import com.google.inject.Inject;
  */
 public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
-    private final Dispatcher service;
+    private final Dispatcher dispatcher;
     private TreeStore<AdminEntityDTO> store;
     private AdminTreeLoader loader;
 
@@ -64,7 +59,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
     @Inject
     public AdminFilterPanel(Dispatcher service) {
-        this.service = service;
+        this.dispatcher = service;
 
         initializeComponent();
 
@@ -77,7 +72,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
     }
 
 	private void loadData() {
-		service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				GWT.log("Failed to load admin entities", caught);
@@ -144,7 +139,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
         this.setHeading(I18N.CONSTANTS.filterByGeography());
         this.setIcon(IconImageBundle.ICONS.filter());
 
-        loader = new AdminTreeLoader(service);
+        loader = new AdminTreeLoader(dispatcher);
         store = new TreeStore<AdminEntityDTO>(loader);
 	}
 
@@ -244,6 +239,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
 	@Override
 	public void applyBaseFilter(final Filter providedFilter) {
+		
 		Filter filter = new Filter(providedFilter);
 		filter.clearRestrictions(DimensionType.AdminLevel);
 		

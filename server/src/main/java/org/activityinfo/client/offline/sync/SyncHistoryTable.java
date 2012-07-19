@@ -4,15 +4,18 @@ import java.util.Date;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
+import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.util.SqlSingleColumnTable;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 
 public class SyncHistoryTable extends SqlSingleColumnTable<Date> {
 
+	@Inject
 	public SyncHistoryTable(SqlDatabase db) {
 		super(db, "sync_history", "lastUpdate");
-	}
+	}	
 
 	public void update() {
 		put(new Date(), new AsyncCallback<Void>() {

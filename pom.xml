@@ -5,7 +5,7 @@
 	<groupId>org.activityinfo</groupId>
 	<artifactId>activityinfo-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>2.6.17-SNAPSHOT</version>
+	<version>2.6.18-SNAPSHOT</version>
 	<name>ActivityInfo Parent POM</name>
 	<licenses>
 		<license>
@@ -38,7 +38,7 @@
 
 		<!-- convenience to define GWT version in one place -->
 		<gwtVersion>2.3.0</gwtVersion>
-		<rebarVersion>2.2.7</rebarVersion>
+		<rebarVersion>2.2.8-SNAPSHOT</rebarVersion>
 
 		<!-- tell the compiler we can use 1.6 -->
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -102,7 +102,7 @@
 
 	<modules>
 		<module>server</module>
-	</modules>
+  	</modules>
 
 	<dependencies>
 
@@ -163,6 +163,11 @@
 						<gwtVersion>${gwtVersion}</gwtVersion>
 					</configuration>
 
+				</plugin>
+				<plugin>
+					<groupId>br.com.ingenieux</groupId>
+					<artifactId>beanstalk-maven-plugin</artifactId>
+					<version>0.2.7-RC4</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

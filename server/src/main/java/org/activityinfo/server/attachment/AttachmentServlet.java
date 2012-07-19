@@ -10,26 +10,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.shared.command.CreateSiteAttachment;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
 import org.apache.log4j.Logger;
 
-import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.common.io.ByteStreams;
-import com.google.gwt.http.client.URL;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -40,12 +36,15 @@ public class AttachmentServlet extends HttpServlet {
 	private DispatcherSync dispatcher;
 	
 	private static final Logger LOGGER = Logger.getLogger(AttachmentServlet.class);
+	private String bucketName;
 	
 	@Inject
 	public AttachmentServlet(AWSCredentials credentials,
+			DeploymentConfiguration config,
 			DispatcherSync dispatcher) {
 		this.credentials = credentials;
 		this.dispatcher = dispatcher;
+		bucketName = config.getProperty("bucket.site.attachments");
 	}
 	
 
@@ -53,7 +52,6 @@ public class AttachmentServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		String bucketName = "site-attachments";
 		String key = req.getParameter("blobId");
 
 		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
