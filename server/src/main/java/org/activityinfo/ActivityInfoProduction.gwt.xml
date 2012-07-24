@@ -15,17 +15,17 @@
 
     <!-- Turn all logging off  -->
     <set-property name="log_DivLogger" value="DISABLED" />
-    <extend-property name="log_level" values="ERROR" />
-    <set-property name="log_level" value="ERROR"/>
+    <extend-property name="log_level" values="TRACE,OFF" />
+<!--     <set-property name="log_level" value="ERROR"/> -->
     
     <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
 
-     <extend-property name="log_level" values="TRACE" /> 
+<!--     <extend-property name="log_level" values="TRACE" /> 
      <set-property name="log_level" value="TRACE"/> 
  	<set-property name="compiler.emulatedStack" value="true" /> 
  	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" 
  		value="true" /> 
  	<set-configuration-property name="compiler.emulatedStack.recordFileNames" 
- 		value="true" /> 
+ 		value="true" />  -->  
 </module>
 
