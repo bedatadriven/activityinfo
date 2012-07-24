@@ -18,6 +18,8 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
+import com.jolbox.bonecp.ConnectionHandle;
+import com.jolbox.bonecp.hooks.AbstractConnectionHook;
 
 @Singleton
 public class BoneCpConnectionProvider implements Provider<Connection> {
@@ -36,10 +38,19 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 			Class.forName(configProperties.getProperty("hibernate.connection.driver_class"));
 		 	BoneCPConfig poolConfig = new BoneCPConfig();	
 		 	poolConfig.setJdbcUrl(configProperties.getProperty("hibernate.connection.url"));
-			poolConfig.setUsername(configProperties.getProperty("hibernate.connection.username"));
-			poolConfig.setPassword(configProperties.getProperty("hibernate.connection.password"));
+		 	poolConfig.setDriverProperties(MySqlConfig.get(
+		 			configProperties.getProperty("hibernate.connection.username"),	
+		 			configProperties.getProperty("hibernate.connection.password")));
 			poolConfig.setMaxConnectionAge(4, TimeUnit.HOURS);
 			poolConfig.setPartitionCount(3);
+			poolConfig.setConnectionHook(new AbstractConnectionHook() {
+
+				@Override
+				public void onAcquire(ConnectionHandle connection) {
+					super.onAcquire(connection);
+					MySqlConfig.initConnection(connection.getInternalConnection());
+				}
+			});
 			
 			LOGGER.info("Configuring connection pool to " + poolConfig.getJdbcUrl());
 			
