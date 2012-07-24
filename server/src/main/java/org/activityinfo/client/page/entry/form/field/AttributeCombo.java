@@ -5,6 +5,7 @@ import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
 public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeField {
@@ -12,7 +13,7 @@ public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeF
 
 	public AttributeCombo(AttributeGroupDTO attributeGroup) {
 		super();
-		this.setFieldLabel(attributeGroup.getName());
+		this.setFieldLabel(Format.htmlEncode(attributeGroup.getName()));
 		this.setDisplayField("name");
 		this.setTriggerAction(TriggerAction.ALL);
 		this.setEditable(false);

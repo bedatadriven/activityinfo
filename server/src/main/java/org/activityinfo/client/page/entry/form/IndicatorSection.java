@@ -14,6 +14,7 @@ import org.activityinfo.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
@@ -65,7 +66,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
 
     private void addIndicator(IndicatorDTO indicator) {
 
-        Text indicatorLabel = new Text(indicator.getName());
+        Text indicatorLabel = new Text(Format.htmlEncode(indicator.getName()));
         indicatorLabel.setStyleAttribute("fontSize", "9pt");
 
         add(indicatorLabel);
