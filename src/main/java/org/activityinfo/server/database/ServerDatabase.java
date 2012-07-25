@@ -75,13 +75,13 @@ public class ServerDatabase extends JdbcDatabase {
 	
 	
 	public static void ensureAllConnectionsClosed() {
-		LOGGER.debug("Cleaning up...");
 		List<Executor> executors = EXECUTORS.get();
 		EXECUTORS.remove();
 		
-		for(Executor executor : executors) {
-			executor.ensureClosed();
+		if(executors != null) {
+			for(Executor executor : executors) {
+				executor.ensureClosed();
+			}
 		}
-		LOGGER.debug("Cleaning up complete");
 	}
 }

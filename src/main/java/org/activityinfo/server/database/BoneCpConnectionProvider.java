@@ -19,6 +19,7 @@ import com.google.inject.Singleton;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.jolbox.bonecp.ConnectionHandle;
+import com.jolbox.bonecp.Statistics;
 import com.jolbox.bonecp.hooks.AbstractConnectionHook;
 
 @Singleton
@@ -95,6 +96,10 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 			Log.info("Schema migration disabled");
 		}
 	}	
+	
+	public Statistics getStatistics() {
+		return connectionPool.getStatistics();
+	}
 	
 	@Override
 	public Connection get() {

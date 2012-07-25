@@ -42,6 +42,10 @@ public class HibernateConnectionProvider implements ConnectionProvider {
 		if(DELEGATE == null) {
 			throw new RuntimeException("Bone connection pool has not yet been initialized!");
 		}
+		
+		LOGGER.info("About to acquiring connection for hibernate, " + DELEGATE.getStatistics().getTotalLeased() +
+				" connection(s) leased. ");
+		
 		Connection connection = DELEGATE.get();
 
 		// set the Transaction Isolation if defined
