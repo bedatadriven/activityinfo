@@ -54,9 +54,7 @@ public class AttachmentServlet extends HttpServlet {
 
 		String key = req.getParameter("blobId");
 
-		AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
-				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
-		
+		AmazonS3Client client = new AmazonS3Client(credentials);
 	
 		ObjectMetadata metadata = client.getObjectMetadata(bucketName, key);
 		resp.setHeader("Content-Disposition", metadata.getContentDisposition());
@@ -86,10 +84,9 @@ public class AttachmentServlet extends HttpServlet {
 			metadata.setContentLength(fileItem.getSize());
 			metadata.setContentDisposition("Content-Disposition: attachment; filename=\"" + fileName + "\"");
 			
-			AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
-					credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
+			AmazonS3Client client = new AmazonS3Client(credentials);
 			client.putObject(new PutObjectRequest(bucketName, key, uploadingStream, metadata));
-	
+			
 			CreateSiteAttachment siteAttachment = new CreateSiteAttachment();
 			siteAttachment.setSiteId(siteId);
 			siteAttachment.setBlobId(key);

@@ -623,12 +623,7 @@
 						<optionSetting>
 							<namespace>aws:elb:policies</namespace>
 							<optionName>Stickiness Policy</optionName>
-							<value>true</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:elb:policies</namespace>
-							<optionName>Stickiness Cookie Expiration</optionName>
-							<value>3600</value>
+							<value>false</value>
 						</optionSetting>
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
