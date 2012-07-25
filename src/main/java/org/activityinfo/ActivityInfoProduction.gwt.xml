@@ -15,8 +15,7 @@
 
     <!-- Turn all logging off  -->
     <set-property name="log_DivLogger" value="DISABLED" />
-    <extend-property name="log_level" values="TRACE,OFF" />
-<!--     <set-property name="log_level" value="ERROR"/> -->
+    <set-property name="log_level" value="ERROR"/> 
     
     <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
 
