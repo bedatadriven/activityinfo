@@ -304,11 +304,11 @@ public class OfflineController implements Dispatcher {
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						activateStrategy(new NotInstalledStrategy());
+						abandonShip();
 					}
 				});
 			} catch(Exception e) {
-				activateStrategy(new NotInstalledStrategy());
+				abandonShip();
 			}
 			return this;
 		}
