@@ -75,6 +75,10 @@ public class DatabaseInitFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain filterChain) throws IOException, ServletException {
-		filterChain.doFilter(req, resp);
+		try {
+			filterChain.doFilter(req, resp);
+		} finally {
+			ServerDatabase.ensureAllConnectionsClosed();
+		}
 	}
 }
