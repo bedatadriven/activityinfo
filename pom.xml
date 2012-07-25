@@ -623,7 +623,7 @@
 						<optionSetting>
 							<namespace>aws:elb:policies</namespace>
 							<optionName>Stickiness Policy</optionName>
-							<value>false</value>
+							<value>true</value>
 						</optionSetting>
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
