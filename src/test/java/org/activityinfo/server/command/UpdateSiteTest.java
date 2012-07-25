@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hamcrest.CoreMatchers.*;
+import javax.validation.constraints.AssertTrue;
 
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
@@ -74,6 +74,42 @@ public class UpdateSiteTest extends CommandTestCase {
         Assert.assertEquals("site.attribute[4]", false, modified.getAttributeValue(4));
     }
 
+    @Test
+    public void charsets() throws CommandException {
+        // retrieve from the server
+        ListResult<SiteDTO> result = execute(GetSites.byId(1));
+
+        SiteDTO original = result.getData().get(0);
+        SiteDTO modified = original.copy();
+        
+        assertThat(modified.getId(), equalTo(original.getId()));
+        
+        // modify and generate command
+        // note that the character sequence below is two characters:
+        // the first a simple unicode character and the second a code point
+        // requiring 4-bytes.
+        // http://www.charbase.com/20731-unicode-cjk-unified-ideograph
+        modified.setComments("≥\ud841\udf31");
+        System.out.println(modified.getComments());
+        
+        assertThat(modified.getComments().codePointCount(0, modified.getComments().length()), equalTo(2));
+
+
+        UpdateSite cmd = new UpdateSite(original, modified);
+        assertThat((String)cmd.getChanges().get("comments"), equalTo(modified.getComments()));
+        
+		execute(cmd);
+
+        // retrieve the old one
+
+        result = execute(GetSites.byId(1));
+        SiteDTO secondRead = result.getData().get(0);
+
+        // confirm that the changes are there
+        assertThat(secondRead.getComments(), equalTo(modified.getComments()));
+    }
+
+    
     @Test
     public void testUpdatePreservesAdminMemberships() throws CommandException {
         

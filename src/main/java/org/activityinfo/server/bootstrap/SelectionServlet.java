@@ -37,8 +37,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class SelectionServlet extends DefaultSelectionServlet {
 
-    public static final String DEFAULT_LOCALE = "en";
-
 	@Inject
     public SelectionServlet(Provider<EntityManager> entityManager) {
         registerProvider("locale", new LocaleProvider(entityManager));
@@ -57,11 +55,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
         public String get(HttpServletRequest req) {
             Authentication auth = entityManager.get().find(Authentication.class, getAuthToken(req));
             if(auth == null) {
-            	// we HAVE to return a valid app here, otherwise we risk getting
-            	// an error state cached in the AppCache and the user will never get
-            	// back to the page long enough for the non-errorfull content
-            	// to be loaded
-            	return DEFAULT_LOCALE;
+            	throw new UserNotAuthenticatedException("expired authtoken");
             }
             return auth.getUser().getLocale();
         }
@@ -83,14 +77,13 @@ public class SelectionServlet extends DefaultSelectionServlet {
 		}
     }
     
-
     @Override
 	protected void handleSelectionException(Path path, Exception e,
 			HttpServletResponse resp) throws IOException {
 		if(e instanceof UnknownUserAgentException) {
 			resp.getWriter().print("window.location = 'browser.html'");
 		} else {
-			super.handleSelectionException(path, e, resp);
+			resp.sendError(CACHE_OBSOLETE, e.getMessage());
 		}
 	}
 
@@ -112,7 +105,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
         public String get(HttpServletRequest request) {
             if(request.getServerName().contains("localhost") ||
                request.getServerName().contains("127.0.0.1") ||
-               request.getServerName().contains("elasticbeanstalk.com")) {
+               request.getServerName().contains("trace.")) {
 
                 return "TRACE";
 
