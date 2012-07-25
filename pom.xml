@@ -626,11 +626,6 @@
 							<value>true</value>
 						</optionSetting>
 						<optionSetting>
-							<namespace>aws:elb:policies</namespace>
-							<optionName>Stickiness Cookie Expiration</optionName>
-							<value>3600</value>
-						</optionSetting>
-						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
 							<optionName>PARAM1</optionName>
 							<value>activityinfo-conf</value>
