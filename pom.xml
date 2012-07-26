@@ -225,14 +225,15 @@
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
-			<artifactId>guava-gwt</artifactId>
-			<version>12.0.1</version>
+			<artifactId>guava</artifactId>
+			<version>r09</version>
+			<classifier>gwt</classifier>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0.1</version>
+			<version>r09</version>
 		</dependency>
 
 		<!-- Rebar- client persistence -->
