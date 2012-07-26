@@ -8,6 +8,8 @@ import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.apache.commons.codec.binary.Base64;
+
+import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -58,7 +60,7 @@ public class BasicAuthentication {
         // Decode it, using any base 64 decoder
 
         byte[] emailpassDecodedBytes = Base64.decodeBase64(emailpassEncoded.getBytes());
-        String emailpassDecoded = new String(emailpassDecodedBytes, Charset.defaultCharset());
+        String emailpassDecoded = new String(emailpassDecodedBytes, Charsets.UTF_8);
         String[] emailPass = emailpassDecoded.split(":");
 
         if (emailPass.length != 2) {

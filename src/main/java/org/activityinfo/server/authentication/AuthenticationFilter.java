@@ -1,7 +1,8 @@
 package org.activityinfo.server.authentication;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -18,7 +19,9 @@ import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
-import com.google.common.collect.Maps;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -37,9 +40,18 @@ public class AuthenticationFilter implements Filter {
 	private final Provider<HttpServletRequest> request;
 	private final Provider<EntityManager> entityManager;
 	private final ServerSideAuthProvider authProvider;
-	
-	private final Map<String, AuthenticatedUser> authTokenCache = Maps.newHashMap();
+	private final LoadingCache<String, AuthenticatedUser> authTokenCache = CacheBuilder.newBuilder()
+			.maximumSize(10000)	
+			.expireAfterAccess(6, TimeUnit.HOURS)
+			.build(new CacheLoader<String, AuthenticatedUser>() {
 
+				@Override
+				public AuthenticatedUser load(String authToken) throws Exception {
+					return queryAuthToken(authToken);
+				}
+			});
+	
+	
 	@Inject
 	public AuthenticationFilter(Provider<HttpServletRequest> request, 
 							    Provider<EntityManager> entityManager,
@@ -57,10 +69,12 @@ public class AuthenticationFilter implements Filter {
 		
 		String authToken = authTokenFromCookie();
 		if(authToken != null) {
-			AuthenticatedUser currentUser = lookupAuthToken(authToken);
-			if(currentUser != null) {
+			try {
+				AuthenticatedUser currentUser = authTokenCache.get(authToken);
 				authProvider.set(currentUser);
 		        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(currentUser));
+			} catch (ExecutionException e) {
+				authProvider.set(null);
 			}
 		}
 		filterChain.doFilter(request, response);
@@ -75,26 +89,19 @@ public class AuthenticationFilter implements Filter {
 	}
 
 
-	private synchronized AuthenticatedUser lookupAuthToken(String authToken) {
-		if(authTokenCache.containsKey(authToken)) {
-			return authTokenCache.get(authToken);
-		} else {
-			Authentication entity;
-			try {
-				entity = entityManager.get().find(Authentication.class, authToken);
-			} catch (EntityNotFoundException e) {
-				return null;
-			}
-			if(entity == null) {
-				return null;
-			}
-			AuthenticatedUser authenticatedUser = 
-				new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
-			authTokenCache.put(authToken, authenticatedUser);
-			return authenticatedUser;
+	private AuthenticatedUser queryAuthToken(String authToken) {
+		Authentication entity;
+		try {
+			entity = entityManager.get().find(Authentication.class, authToken);
+		} catch (EntityNotFoundException e) {
+			return null;
 		}
+		if(entity == null) {
+			return null;
+		}
+		return new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
 	}
-
+	
 
 	private String authTokenFromCookie() {
 		Cookie[] cookies = request.get().getCookies();
