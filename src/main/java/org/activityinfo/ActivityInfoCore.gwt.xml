@@ -73,4 +73,17 @@
     <extend-property name="locale" values="en" />
     <set-property-fallback name="locale" value="en"/>
     <super-source path="emul" />
+    
+    <!-- Blacklist classes that are never serialized but get pulled in by 
+    	 interfaces on RPCable types -->
+	<extend-configuration-property name="rpc.blacklist" value="java.util.LinkedList"/>
+	<extend-configuration-property name="rpc.blacklist" value="java.util.Stack"/>
+	<extend-configuration-property name="rpc.blacklist" value="java.util.TreeMap"/>
+	<extend-configuration-property name="rpc.blacklist" value="java.util.TreeSet"/>
+	<extend-configuration-property name="rpc.blacklist" value="java.util.Vector"/>
+	<extend-configuration-property name="rpc.blacklist" value="com.google.collect.ImmutableMultimap"/>
+	<extend-configuration-property name="rpc.blacklist" value="com.google.collect.ImmutableMultiset"/>
+	<extend-configuration-property name="rpc.blacklist" value="com.google.collect.EmptyImmutableMultiset"/>
+
+
 </module>
