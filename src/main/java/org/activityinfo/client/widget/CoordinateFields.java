@@ -17,7 +17,7 @@ public class CoordinateFields {
 		longitudeField = new CoordinateField(Axis.LONGITUDE);
 		longitudeField.setFieldLabel(I18N.CONSTANTS.longitude());
 		
-		latitudeField = new CoordinateField(Axis.LONGITUDE);
+		latitudeField = new CoordinateField(Axis.LATITUDE);
 		latitudeField.setFieldLabel(I18N.CONSTANTS.latitude());
 	}
 	
