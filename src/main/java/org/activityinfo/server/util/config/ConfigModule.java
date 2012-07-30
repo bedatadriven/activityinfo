@@ -36,8 +36,8 @@ public class ConfigModule extends AbstractModule {
     public DeploymentConfiguration provideDeploymentConfig(ServletContext context) {
         Properties properties = new Properties();
 
-        tryToLoadFrom(properties, legacyWebInfDirectory(context));
         tryToLoadFrom(properties, webInfDirectory(context));
+        tryToLoadFrom(properties, systemSettings());
         tryToLoadFrom(properties, userSettings());
         tryToLoadFromS3(properties);
 
@@ -106,13 +106,13 @@ public class ConfigModule extends AbstractModule {
             logger.error("Exception reading configuration from S3: " + e.getMessage(), e);
         }
     }
-
-    private File legacyWebInfDirectory(ServletContext context) {
-        return new File(context.getRealPath("WEB-INF") + File.separator + "sigmah.properties");
-    }
     
     private File webInfDirectory(ServletContext context) {
         return new File(context.getRealPath("WEB-INF") + File.separator + "activityinfo.properties");
+    }
+    
+    private File systemSettings() {
+        return new File("/etc/activityinfo.properties");
     }
     
     private File userSettings() {
