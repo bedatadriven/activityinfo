@@ -37,7 +37,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 		try {
 
 			Class.forName(configProperties.getProperty("hibernate.connection.driver_class"));
-		 	BoneCPConfig poolConfig = new BoneCPConfig();	
+		 	BoneCPConfig poolConfig = new BoneCPConfig(configProperties.asProperties());	
 		 	poolConfig.setJdbcUrl(configProperties.getProperty("hibernate.connection.url"));
 		 	poolConfig.setDriverProperties(MySqlConfig.get(
 		 			configProperties.getProperty("hibernate.connection.username"),	
@@ -45,7 +45,7 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 			poolConfig.setMaxConnectionAge(4, TimeUnit.HOURS);
 			poolConfig.setPartitionCount(3);
 			poolConfig.setConnectionHook(new AbstractConnectionHook() {
-
+				
 				@Override
 				public void onAcquire(ConnectionHandle connection) {
 					super.onAcquire(connection);
