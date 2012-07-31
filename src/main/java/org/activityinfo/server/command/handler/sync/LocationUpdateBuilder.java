@@ -47,14 +47,13 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         localState = new LocalState(request.getLocalVersion());
 
         queryChanged();
-        assureTimestampsAreUnique();
         createAndUpdateLocations();
         linkAdminEntities();
                 
         SyncRegionUpdate update = new SyncRegionUpdate();
         update.setVersion(locations.isEmpty() ? request.getLocalVersion() : lastVersion());
         update.setSql(builder.asJson());
-        update.setComplete(locations.size() < MAX_UPDATES);
+        update.setComplete(true);
         return update;
     }
 
@@ -68,24 +67,10 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 
 	private void queryChanged() {
 		locations = em.createQuery("select loc from Location loc where loc.timeEdited > :localDate " +
-                        " and locationType.id = :typeId " +
-                        " order by loc.timeEdited, loc.id")
+                        " and locationType.id = :typeId")
                 .setParameter("typeId", typeId)
                 .setParameter("localDate", localState.lastDate)
                 .getResultList();
-	}
-
-	private void assureTimestampsAreUnique() {
-		if(locations.size() == MAX_UPDATES + 1) {
-        	if(locations.get(MAX_UPDATES - 1).getTimeEdited() == 
-        			locations.get(MAX_UPDATES).getTimeEdited()) {
-        		
-        		throw new RuntimeException("timeEdited values on Location objects are not unique, cannot " +
-        				"correctly batch updates");
-        		
-        	}
-        	locations.remove(MAX_UPDATES);
-        }
 	}
 
 	private void createAndUpdateLocations() throws JSONException {
@@ -106,8 +91,12 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 			}
 			builder.finishPreparedStatement();
 
-			List<Object[]> joins = em.createQuery("SELECT loc.id, e.id FROM Location loc JOIN loc.adminEntities e WHERE loc.id IN (:ids)")
-			.setParameter("ids", locationIds)
+			List<Object[]> joins = em.createQuery("SELECT loc.id, e.id FROM Location loc " +
+					"JOIN loc.adminEntities e WHERE loc.id IN " +
+					" (select loc.id from Location loc where loc.timeEdited > :localDate " +
+                        " and locationType.id = :typeId)")
+            .setParameter("typeId", typeId)
+            .setParameter("localDate", localState.lastDate)
 			.getResultList();
 
 			if(!joins.isEmpty()) {
