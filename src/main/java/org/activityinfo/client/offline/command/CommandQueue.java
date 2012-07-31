@@ -19,6 +19,8 @@ import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
+import com.bedatadriven.rebar.sql.client.fn.AsyncSql;
+import com.bedatadriven.rebar.sql.client.fn.TxAsyncFunction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
@@ -75,8 +77,8 @@ public class CommandQueue {
 		this.database = database;
 	}
 	
-	public static void createTableIfNotExists(SqlTransaction tx) {
-		tx.executeSql("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT)");
+	public static TxAsyncFunction<Void, Void> createTableIfNotExists() {
+		return AsyncSql.ddl("CREATE TABLE IF NOT EXISTS command_queue (id INTEGER PRIMARY KEY AUTOINCREMENT, command TEXT)");
 	}
 
 	/**

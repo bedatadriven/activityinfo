@@ -166,7 +166,7 @@ public class DownSynchronizer implements AsyncCommand {
 	        conn.executeUpdates(update.getSql(), new AsyncCallback<Integer>() {
 	            @Override
 	            public void onFailure(Throwable throwable) {
-	                handleException("Synchronizer: Async execution of region updates failed. \nSQL=" + update.getSql() +
+	                handleException("Synchronizer: Async execution of region " + region.getId() + " failed." +
 	                        "\nMessage: " + throwable.getMessage(), throwable);
 	            }
 	

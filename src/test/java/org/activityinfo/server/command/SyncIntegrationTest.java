@@ -65,7 +65,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         synchronizeFirstTime();
         
         Collector<Date> lastUpdate = Collector.newCollector();
-        synchronizer.getLastSyncTime(lastUpdate);
+        syncHistoryTable.get(lastUpdate);
         
         assertThat(lastUpdate.getResult(), is(not(nullValue())));
         

@@ -43,7 +43,7 @@ public class SynchronizerImpl implements Synchronizer {
     @Override
     public void install(final AsyncCallback<Void> callback) {
     	Log.trace("SynchronizerImpl.install() starting...");
-    	installPipeline.start();
+    	installPipeline.start(callback);
     }
 
     @Override

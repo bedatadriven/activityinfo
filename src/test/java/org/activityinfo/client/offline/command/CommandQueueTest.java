@@ -18,6 +18,7 @@ import org.activityinfo.shared.util.Collector;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.bedatadriven.rebar.async.NullCallback;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
@@ -36,13 +37,7 @@ public class CommandQueueTest {
 		db = ClientDatabaseStubs.empty();
 		queue = new CommandQueue(db);
 		
-		db.transaction(new SqlTransactionCallback() {
-			
-			@Override
-			public void begin(SqlTransaction tx) {
-				CommandQueue.createTableIfNotExists(tx);
-			}
-		});
+		db.execute(CommandQueue.createTableIfNotExists(), new NullCallback<Void>());
 	}
 	
 	@Test

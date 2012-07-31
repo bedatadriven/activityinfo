@@ -25,6 +25,8 @@ import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.client.offline.command.LocalDispatcher;
 import org.activityinfo.client.offline.sync.SyncHistoryTable;
 import org.activityinfo.client.offline.sync.SynchronizerImpl;
+import org.activityinfo.client.offline.sync.pipeline.InstallPipeline;
+import org.activityinfo.client.offline.sync.pipeline.SyncPipeline;
 import org.activityinfo.server.authentication.AuthenticationModuleStub;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -35,6 +37,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.async.AsyncPipeline;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -71,7 +74,8 @@ public abstract class LocalHandlerTestCase {
 	
 	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
 
-	protected SynchronizerImpl synchronizer;
+	protected AsyncPipeline installer;
+	protected AsyncPipeline synchronizer;
 	protected SyncHistoryTable syncHistoryTable;
 	
     @Before
@@ -99,20 +103,21 @@ public abstract class LocalHandlerTestCase {
         				localDatabase,
         				remoteDispatcher));
         localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
-        synchronizer = clientSideInjector.getInstance(SynchronizerImpl.class);
+        synchronizer = clientSideInjector.getInstance(SyncPipeline.class);
+        installer = clientSideInjector.getInstance(InstallPipeline.class);
         syncHistoryTable = clientSideInjector.getInstance(SyncHistoryTable.class);
     }
 
     
     protected void synchronizeFirstTime() {
     	newRequest();   
-    	synchronizer.install(this.<Void>throwOnFailure());
+    	installer.start(this.<Void>throwOnFailure());
     	localDatabase.processEventQueue();
     }
     
     protected void synchronize() {
     	newRequest();    	
-    	synchronizer.synchronize();
+    	synchronizer.start();
     	localDatabase.processEventQueue();
         
     }
