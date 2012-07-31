@@ -73,7 +73,7 @@ public class AuthenticationFilter implements Filter {
 				AuthenticatedUser currentUser = authTokenCache.get(authToken);
 				authProvider.set(currentUser);
 		        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(currentUser));
-			} catch (ExecutionException e) {
+			} catch (Exception e) {
 				authProvider.set(null);
 			}
 		}
@@ -90,14 +90,9 @@ public class AuthenticationFilter implements Filter {
 
 
 	private AuthenticatedUser queryAuthToken(String authToken) {
-		Authentication entity;
-		try {
-			entity = entityManager.get().find(Authentication.class, authToken);
-		} catch (EntityNotFoundException e) {
-			return null;
-		}
+		Authentication entity = entityManager.get().find(Authentication.class, authToken);
 		if(entity == null) {
-			return null;
+			throw new IllegalArgumentException();
 		}
 		return new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
 	}
