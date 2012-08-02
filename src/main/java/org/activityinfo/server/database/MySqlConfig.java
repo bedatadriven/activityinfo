@@ -36,7 +36,7 @@ public final class MySqlConfig {
 			stmt.execute("SET NAMES 'utf8mb4'");
 			stmt.close();
 		} catch(SQLException e) {
-			LOGGER.error( "Failed to set MySQL connection to utf8mb4, please upgrade to MySQL5.5 for full unicode support.", e);
+			LOGGER.warn( "Failed to set MySQL connection to utf8mb4, please upgrade to MySQL5.5 for full unicode support.");
 		}
 		return connection;
 	}
