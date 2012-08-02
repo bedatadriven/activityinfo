@@ -863,7 +863,7 @@
 		<profile>
 			<id>continuous-deployment</id>
 			<properties>
-				<display.version>${project.version}-b${BUILD_NUMBER}</display.version>
+				<display.version>2.6-b${BUILD_NUMBER}</display.version>
 			</properties>
 			<build>
 				<plugins>
@@ -875,8 +875,8 @@
 							<applicationName>activityinfo</applicationName>
 							<s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
 							<versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
-							<environmentName>activityinfo-staging</environmentName>
-							<cnamePrefix>activityinfo-staging</cnamePrefix>
+							<environmentName>release-${git.commit.id.abbrev}</environmentName>
+							<cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
 						</configuration>
 						<executions>
 							<execution>
