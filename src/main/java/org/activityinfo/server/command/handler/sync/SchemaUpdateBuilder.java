@@ -32,6 +32,7 @@ import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
@@ -63,6 +64,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private final List<LocationType> locationTypes  = new ArrayList<LocationType>();
     private List<UserPermission> userPermissions;
 
+    private static Logger LOGGER = Logger.getLogger(Logger.class);
+    
     private final Class[] schemaClasses = new Class[] {
             Country.class,
             AdminLevel.class,
@@ -89,7 +92,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         		entityManager);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         
     	try {
@@ -107,13 +111,13 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 	        long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
 	        long serverVersion = getCurrentSchemaVersion(user);
 	
+	        LOGGER.info("Schema versions: local = " + localVersion + ", server = " + serverVersion);
+	        
 	        SyncRegionUpdate update = new SyncRegionUpdate();
 	        update.setVersion(Long.toString(serverVersion));
 	        update.setComplete(true);
 	
-	        if(localVersion == serverVersion) {
-	            update.setComplete(true);
-	        } else {
+	        if(localVersion < serverVersion) {
 	            makeEntityLists();
 	            update.setSql(buildSql());
 	        }
@@ -261,14 +265,14 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     public long getCurrentSchemaVersion(User user) {
         long currentVersion = 1;
         for(UserDatabase db : databases) {
-            if(db.getLastSchemaUpdate().getTime() > currentVersion) {
-                currentVersion = db.getLastSchemaUpdate().getTime();
+            if(db.getVersion() > currentVersion) {
+                currentVersion = db.getVersion();
             }
 
             if(db.getOwner().getId() != user.getId()) {
                 UserPermission permission = db.getPermissionByUser(user);
-                if(permission.getLastSchemaUpdate().getTime() > permission.getId()) {
-                    currentVersion = permission.getLastSchemaUpdate().getTime();
+                if(permission.getVersion() > currentVersion) {
+                    currentVersion = permission.getVersion();
                 }
             }
         }

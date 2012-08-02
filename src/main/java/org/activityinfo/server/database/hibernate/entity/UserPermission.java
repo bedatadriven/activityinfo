@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -61,8 +62,8 @@ public class UserPermission implements Serializable, SchemaElement {
 	private boolean allowDesign;
     private boolean allowManageUsers;
     private boolean allowManageAllUsers;
-    private Date lastSchemaUpdate;
-
+    private long version;
+    
     public UserPermission() {
 	}
 
@@ -278,9 +279,9 @@ public class UserPermission implements Serializable, SchemaElement {
      *
      * @return The date on which the user visible schema was updated.
      */
-    @Temporal(value = TemporalType.TIMESTAMP)
+    @Transient
     public Date getLastSchemaUpdate() {
-        return lastSchemaUpdate;
+        return new Date(version);
     }
 
     /**
@@ -292,7 +293,16 @@ public class UserPermission implements Serializable, SchemaElement {
      *
      * @param lastSchemaUpdate The timestamp on which the change was made
      */
+    @Transient
     public void setLastSchemaUpdate(Date lastSchemaUpdate) {
-        this.lastSchemaUpdate = lastSchemaUpdate;
+        this.version = lastSchemaUpdate.getTime();
     }
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
 }

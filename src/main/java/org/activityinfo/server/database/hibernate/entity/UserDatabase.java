@@ -63,7 +63,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>(0);
     private Set<Target> targets = new HashSet<Target>(0);
     private Date dateDeleted;
-    private Date lastSchemaUpdate;
+    private long version;
 
     public UserDatabase() {
     }
@@ -362,19 +362,27 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * @return The timestamp on which the structure of the database was last
      *         modified.
      */
-    @Column(nullable = false)
+    @Transient
     public Date getLastSchemaUpdate() {
-        return lastSchemaUpdate;
+        return new Date(version);
     }
 
-    /**
+    public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
+
+	/**
      * Sets the timestamp on which the structure of the database (activities,
      * indicateurs, etc was last modified.
      * 
      * @param lastSchemaUpdate
      */
     public void setLastSchemaUpdate(Date lastSchemaUpdate) {
-        this.lastSchemaUpdate = lastSchemaUpdate;
+        this.version = lastSchemaUpdate.getTime();
     }
 
 	public void setProjects(Set<Project> projects) {

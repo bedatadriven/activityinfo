@@ -45,7 +45,7 @@ public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
         if (properties.containsKey("countryId")) {
             countryId = (Integer) properties.get("countryId");
         } else {
-            // this was the defaul
+            // this was the default
             countryId = 1;
         }
         return countryDAO.findById(countryId);
