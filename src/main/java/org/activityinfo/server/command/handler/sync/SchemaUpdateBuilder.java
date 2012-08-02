@@ -129,15 +129,22 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
     private String buildSql() throws JSONException {
         JpaUpdateBuilder builder = new JpaUpdateBuilder();
+        
         for(Class schemaClass : schemaClasses) {
             builder.createTableIfNotExists(schemaClass);
-            builder.deleteAll(schemaClass);
+   
+            // special case: we never delete partners, only add them.
+            // this way we always have a label for Partners
+            // See : LocalSiteCreateTest.siteRemovePartnerConflict
+            if(!schemaClass.equals(Partner.class)) {
+            	builder.deleteAll(schemaClass);
+            }
         }
 
         builder.insert(Country.class, countries);
         builder.insert(AdminLevel.class, adminLevels);
         builder.insert(UserDatabase.class, databases);
-        builder.insert(Partner.class, partners);
+        builder.insert(" or replace ", Partner.class, partners);
         builder.insert(Activity.class, activities);
         builder.insert(Indicator.class, indicators);
         builder.insert(AttributeGroup.class, attributeGroups);
