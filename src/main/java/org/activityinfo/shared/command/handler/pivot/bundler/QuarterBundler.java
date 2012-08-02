@@ -21,9 +21,13 @@ public class QuarterBundler implements Bundler {
 
 	@Override
     public void bundle(SqlResultSetRow rs, Bucket bucket) {
-        int year = rs.getInt(yearAlias);
-        int quarter = rs.getInt(quarterAlias);
-
-        bucket.setCategory(dimension, new QuarterCategory(year, quarter));
+    	// the year can be null in cases where a site does not yet have a reporting period
+    	// and we query for site counts
+		if(!rs.isNull(yearAlias)) {
+	        int year = rs.getInt(yearAlias);
+	        int quarter = rs.getInt(quarterAlias);
+	
+	        bucket.setCategory(dimension, new QuarterCategory(year, quarter));
+		}
     }
 }

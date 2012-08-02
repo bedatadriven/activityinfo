@@ -102,6 +102,17 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
     
     @Test
+    public void testSiteCountOnQuarters () {
+    	forTotalSiteCounts();
+    	dimensions.add(new DateDimension(DateUnit.QUARTER));
+    	
+    	execute();
+    	
+    	assertThat().forQuarter(2008, 4).thereIsOneBucketWithValue(1);
+    	assertThat().forQuarter(2009, 1).thereIsOneBucketWithValue(4);
+    }
+    
+    @Test
     public void testMonths() {
     	forTotalSiteCounts();
     	dimensions.add(new DateDimension(DateUnit.MONTH));
@@ -439,6 +450,14 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         	return this;
 		}
 
+        public AssertionBuilder forQuarter(int year, int quarter) {
+        	criteria.append(" in quarter ").append(year)
+        			.append("Q").append(quarter).append(" ");
+        	filter(new DateDimension(DateUnit.QUARTER), year + "T" + quarter);
+        	return this;
+		}
+
+        
 		public AssertionBuilder forProject(int projectId) {
 			criteria.append(" with project ").append(projectId);
 			filter(projectDim, projectId);
