@@ -639,7 +639,7 @@
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
 							<optionName>PARAM2</optionName>
-							<value>activityinfo26.eu.properties</value>
+							<value>activityinfo26.eub.properties</value>
 						</optionSetting>
 						<optionSetting>
 							<namespace>aws:elasticbeanstalk:application:environment</namespace>
