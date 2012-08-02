@@ -18,6 +18,10 @@ import org.activityinfo.shared.dto.UserDatabaseDTO;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BindingEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 
@@ -57,15 +61,23 @@ class ActivityForm extends AbstractDesignForm {
         add(categoryField);
 
 
-        MappingComboBox<Integer> locationTypeCombo = new MappingComboBox<Integer>();
+        final MappingComboBox<Integer> locationTypeCombo = new MappingComboBox<Integer>();
         for (LocationTypeDTO type : database.getCountry().getLocationTypes()) {
             locationTypeCombo.add(type.getId(), type.getName());
         }
         locationTypeCombo.setAllowBlank(false);
         locationTypeCombo.setFieldLabel(I18N.CONSTANTS.locationType());
-        binding.addFieldBinding(new MappingComboBoxBinding(locationTypeCombo, "locationTypeId"));
         this.add(locationTypeCombo);
+        
+        binding.addFieldBinding(new MappingComboBoxBinding(locationTypeCombo, "locationTypeId"));
+        binding.addListener(Events.Bind, new Listener<BindingEvent>() {
 
+			@Override
+			public void handleEvent(BindingEvent be) {
+				locationTypeCombo.setEnabled( !isSaved(be.getModel()));
+			}	
+		});
+        
         MappingComboBox frequencyCombo = new MappingComboBox();
         frequencyCombo.setAllowBlank(false);
         frequencyCombo.setFieldLabel(I18N.CONSTANTS.reportingFrequency());
@@ -89,4 +101,8 @@ class ActivityForm extends AbstractDesignForm {
         return binding;
     }
 
+
+	private boolean isSaved(ModelData model) {
+		return model.get("id") != null;
+	}
 }
