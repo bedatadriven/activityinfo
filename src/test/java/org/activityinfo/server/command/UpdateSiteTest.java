@@ -89,10 +89,18 @@ public class UpdateSiteTest extends CommandTestCase {
         // the first a simple unicode character and the second a code point
         // requiring 4-bytes.
         // http://www.charbase.com/20731-unicode-cjk-unified-ideograph
-        modified.setComments("≥\ud841\udf31");
+        
+
+        // NOTE: for the moment, i'm rolling back utf8mb4 support becuase it requires
+        // Mysql-5.5 which is **PITA*** to get running on earlier versions of ubuntu. 
+        // To be reapplied when suppport
+        //modified.setComments("≥\ud841\udf31");
+        
+        modified.setComments("≥");
+        
         System.out.println(modified.getComments());
         
-        assertThat(modified.getComments().codePointCount(0, modified.getComments().length()), equalTo(2));
+        assertThat(modified.getComments().codePointCount(0, modified.getComments().length()), equalTo(1));
 
 
         UpdateSite cmd = new UpdateSite(original, modified);
