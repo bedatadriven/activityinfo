@@ -35,6 +35,9 @@ public final class ActivityDTO
     public static final int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
 
+	public static final int NAME_MAX_LENGTH = 45;
+	public static final int CATEGORY_MAX_LENGTH = 255;
+
     private UserDatabaseDTO database;
 
     private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>(0);

@@ -51,15 +51,15 @@ class ActivityForm extends AbstractDesignForm {
         TextField<String> nameField = new TextField<String>();
         nameField.setAllowBlank(false);
         nameField.setFieldLabel(I18N.CONSTANTS.name());
-        nameField.setMaxLength(45);
+        nameField.setMaxLength(ActivityDTO.NAME_MAX_LENGTH);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
 
         TextField<String> categoryField = new TextField<String>();
         categoryField.setFieldLabel(I18N.CONSTANTS.category());
+        categoryField.setMaxLength(ActivityDTO.CATEGORY_MAX_LENGTH);
         binding.addFieldBinding(new FieldBinding(categoryField, "category"));
         add(categoryField);
-
 
         final MappingComboBox<Integer> locationTypeCombo = new MappingComboBox<Integer>();
         for (LocationTypeDTO type : database.getCountry().getLocationTypes()) {
@@ -70,15 +70,8 @@ class ActivityForm extends AbstractDesignForm {
         this.add(locationTypeCombo);
         
         binding.addFieldBinding(new MappingComboBoxBinding(locationTypeCombo, "locationTypeId"));
-        binding.addListener(Events.Bind, new Listener<BindingEvent>() {
-
-			@Override
-			public void handleEvent(BindingEvent be) {
-				locationTypeCombo.setEnabled( !isSaved(be.getModel()));
-			}	
-		});
         
-        MappingComboBox frequencyCombo = new MappingComboBox();
+        final MappingComboBox frequencyCombo = new MappingComboBox();
         frequencyCombo.setAllowBlank(false);
         frequencyCombo.setFieldLabel(I18N.CONSTANTS.reportingFrequency());
         frequencyCombo.add(ActivityDTO.REPORT_ONCE, I18N.CONSTANTS.reportOnce());
@@ -92,6 +85,15 @@ class ActivityForm extends AbstractDesignForm {
         publishedCombo.add(Published.NOT_PUBLISHED.getIndex(), I18N.CONSTANTS.notPublished());
         publishedCombo.add(Published.ALL_ARE_PUBLISHED.getIndex(), I18N.CONSTANTS.allArePublished());
         binding.addFieldBinding(new MappingComboBoxBinding(publishedCombo, "published"));
+
+        binding.addListener(Events.Bind, new Listener<BindingEvent>() {
+
+			@Override
+			public void handleEvent(BindingEvent be) {
+				locationTypeCombo.setEnabled( !isSaved(be.getModel()));
+				frequencyCombo.setEnabled( !isSaved(be.getModel()) );
+			}	
+		});
         
         this.add(publishedCombo);
     }

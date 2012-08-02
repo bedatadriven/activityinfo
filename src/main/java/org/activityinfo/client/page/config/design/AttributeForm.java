@@ -7,6 +7,7 @@ package org.activityinfo.client.page.config.design;
 
 
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.shared.dto.AttributeDTO;
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
@@ -29,6 +30,7 @@ class AttributeForm extends AbstractDesignForm {
 
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(I18N.CONSTANTS.name());
+        nameField.setMaxLength(AttributeDTO.NAME_MAX_LENGTH);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
 
         add(nameField);

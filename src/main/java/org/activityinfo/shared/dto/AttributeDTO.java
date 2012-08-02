@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 public final class AttributeDTO extends BaseModelData implements EntityDTO {
 
     public static final String PROPERTY_PREFIX = "ATTRIB";
+	public static final int NAME_MAX_LENGTH = 50;
 
     public AttributeDTO() {
 		

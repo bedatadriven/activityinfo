@@ -13,10 +13,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 /**
  * One-to-one DTO for the {@link org.activityinfo.server.database.hibernate.entity.AttributeGroup} domain object
  *
- * @author Alex Bertram
  */
 public final class AttributeGroupDTO extends BaseModelData implements EntityDTO {
 
+	public static final int NAME_MAX_LENGTH = 255;
+	
 	private List<AttributeDTO> attributes = new ArrayList<AttributeDTO>(0);
 	
 	public AttributeGroupDTO() {

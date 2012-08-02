@@ -44,14 +44,14 @@ class IndicatorForm extends AbstractDesignForm {
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(constants.name());
         nameField.setAllowBlank(false);
-        nameField.setMaxLength(128);
+        nameField.setMaxLength(IndicatorDTO.NAME_MAX_LENGTH);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
 
         TextField<String> categoryField = new TextField<String>();
         categoryField.setName("category");
         categoryField.setFieldLabel(constants.category());
-        categoryField.setMaxLength(50);
+        categoryField.setMaxLength(IndicatorDTO.NAME_MAX_LENGTH);
         binding.addFieldBinding(new FieldBinding(categoryField, "category"));
         this.add(categoryField);
 
@@ -59,7 +59,7 @@ class IndicatorForm extends AbstractDesignForm {
         unitsField.setName("units");
         unitsField.setFieldLabel(constants.units());
         unitsField.setAllowBlank(false);
-        unitsField.setMaxLength(15);
+        unitsField.setMaxLength(IndicatorDTO.UNITS_MAX_LENGTH);
         binding.addFieldBinding(new FieldBinding(unitsField, "units"));
         this.add(unitsField);
 
@@ -74,7 +74,7 @@ class IndicatorForm extends AbstractDesignForm {
 
         TextField<String> listHeaderField = new TextField<String>();
         listHeaderField.setFieldLabel(constants.listHeader());
-        listHeaderField.setMaxLength(29);
+        listHeaderField.setMaxLength(IndicatorDTO.MAX_LIST_HEADER_LENGTH);
         binding.addFieldBinding(new FieldBinding(listHeaderField,"listHeader"));
         this.add(listHeaderField);
 
