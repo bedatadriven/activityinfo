@@ -22,8 +22,8 @@ public class SchemaMigration {
 		"ALTER TABLE Location ADD COLUMN timeEdited REAL",
 		"CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int)",
 		"CREATE TABLE IF NOT EXISTS  siteattachment (blobid TEXT, siteid INT, filename TEXT, uploadedBy INT, blobSize REAL, contentType TEXT)",
-		"ALTER TABLE UserDatabase ADD COLUMN timeEdited REAL",
-		"ALTER TABLE UserPermission ADD COLUMN timeEdited REAL"
+		"ALTER TABLE UserDatabase ADD COLUMN version REAL",
+		"ALTER TABLE UserPermission ADD COLUMN version REAL"
 	};
 	
 	@Inject
