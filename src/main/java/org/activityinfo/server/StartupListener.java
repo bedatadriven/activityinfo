@@ -13,7 +13,6 @@ import org.activityinfo.server.bootstrap.BootstrapModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.endpoint.content.ContentModule;
-import org.activityinfo.server.endpoint.crx.CrxModule;
 import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.healthcheck.HealthCheckModule;
@@ -57,10 +56,10 @@ public class StartupListener extends GuiceServletContextListener {
         return Guice.createInjector(
                 new ConfigModule(), new LoggingModule(),
                 new TemplateModule(), new BeanMappingModule(), new MailModule(),
+                new ServerDatabaseModule(),
                 new HibernateModule(), 
                 new QuartzModule(),
                 new ContentModule(),
-                new ServerDatabaseModule(),
                 new AuthenticationModule(),
                 new ReportModule(),
                 new BootstrapModule(),
@@ -69,7 +68,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new ExportModule(),
                 new JsonRpcModule(),
                 new KmlModule(),
-                new CrxModule(),
                 new LocaleModule(),
                 new LoginModule());
     }
