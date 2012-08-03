@@ -29,7 +29,7 @@ public class QuartzFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		
+		quartz.start();
 	}
 	
 	@Override
