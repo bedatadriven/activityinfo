@@ -15,8 +15,7 @@ public class GuiceJobFactory implements JobFactory {
     private final Injector guice;
  
     @Inject
-    public GuiceJobFactory(final Injector guice)
-    {
+    public GuiceJobFactory(final Injector guice) {
         this.guice = guice;
     }
  

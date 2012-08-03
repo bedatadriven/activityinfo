@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.activityinfo.server.database.BoneCpConnectionProvider;
+import org.activityinfo.server.database.BoneCpConnectionPool;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Environment;
@@ -18,7 +18,7 @@ import org.hibernate.util.PropertiesHelper;
  */
 public class HibernateConnectionProvider implements ConnectionProvider {
 
-	public static BoneCpConnectionProvider DELEGATE;
+	public static BoneCpConnectionPool DELEGATE;
 
 	private static Logger LOGGER = Logger.getLogger(HibernateConnectionProvider.class);
 

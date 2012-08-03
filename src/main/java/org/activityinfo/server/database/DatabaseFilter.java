@@ -18,23 +18,22 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
-public class DatabaseInitFilter implements Filter {
+public class DatabaseFilter implements Filter {
 
 	public static final String SCHEMA_MIGRATION = "schema.migration";
 	
-	private static final Logger logger = Logger.getLogger(BoneCpConnectionProvider.class);
+	private static final Logger logger = Logger.getLogger(BoneCpConnectionPool.class);
 	
-	private final Provider<Connection> connectionProvider;
+	private final BoneCpConnectionPool connectionPool;
 	private final Properties config;
 	
 	@Inject
-	public DatabaseInitFilter(Provider<Connection> connectionProvider, Properties config) {
+	public DatabaseFilter(BoneCpConnectionPool connectionPool, Properties config) {
 		super();
-		this.connectionProvider = connectionProvider;
+		this.connectionPool = connectionPool;
 		this.config = config;
 	}
 	
@@ -48,7 +47,7 @@ public class DatabaseInitFilter implements Filter {
 	       "update".equals(config.get("hibernate.hbm2ddl.auto"))) {
 			Connection connection=null;
 			try {		
-				connection = connectionProvider.get();
+				connection = connectionPool.get();
 				Liquibase liquibase = new Liquibase("org/activityinfo/database/changelog/db.changelog-master.xml",
 						new ClassLoaderResourceAccessor(), new JdbcConnection(connection));
 				
@@ -69,7 +68,8 @@ public class DatabaseInitFilter implements Filter {
 	
 	@Override
 	public void destroy() {
-		
+		logger.info("Shutting down connection pool...");
+		connectionPool.shutdown();
 	}
 
 	@Override

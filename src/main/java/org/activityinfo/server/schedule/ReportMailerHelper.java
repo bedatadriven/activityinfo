@@ -12,18 +12,12 @@ import java.util.ResourceBundle;
 
 import org.activityinfo.server.database.hibernate.entity.ReportSubscription;
 import org.activityinfo.server.i18n.LocaleHelper;
-import org.activityinfo.server.util.date.DateUtilCalendarImpl;
 import org.activityinfo.server.util.html.HtmlWriter;
 import org.activityinfo.shared.report.model.EmailDelivery;
 import org.activityinfo.shared.report.model.Report;
-import org.activityinfo.shared.util.date.DateUtil;
 
-/*
- * @author Alex Bertram
- */
+
 public class ReportMailerHelper {
-
-    private static final DateUtil DATE_UTIL = new DateUtilCalendarImpl();
 
 
     /**

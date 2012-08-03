@@ -18,8 +18,6 @@ import com.google.inject.Provider;
 
 /**
  * Quartz Job that is run nightly to mail reports to subscribers.
- *
- * @author Alex Bertram
  */
 public class ReportMailerJob implements Job {
 	private HibernateSessionScope hibernateScope;

@@ -23,16 +23,16 @@ import com.jolbox.bonecp.Statistics;
 import com.jolbox.bonecp.hooks.AbstractConnectionHook;
 
 @Singleton
-public class BoneCpConnectionProvider implements Provider<Connection> {
+public class BoneCpConnectionPool implements Provider<Connection> {
 
 	public static final String SCHEMA_MIGRATION = "schema.migration";
 
-	private static final Logger LOGGER = Logger.getLogger(BoneCpConnectionProvider.class);
+	private static final Logger LOGGER = Logger.getLogger(BoneCpConnectionPool.class);
 	
 	private BoneCP connectionPool;
 
 	@Inject
-	public BoneCpConnectionProvider(DeploymentConfiguration configProperties) {
+	public BoneCpConnectionPool(DeploymentConfiguration configProperties) {
 
 		try {
 
@@ -108,5 +108,9 @@ public class BoneCpConnectionProvider implements Provider<Connection> {
 		} catch (SQLException e) {
 			throw new RuntimeException("Exception thrown while obtaining connection", e);
 		}
+	}
+
+	public void shutdown() {
+		connectionPool.shutdown();
 	}
 }

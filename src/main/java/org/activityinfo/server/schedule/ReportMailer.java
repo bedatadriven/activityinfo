@@ -126,6 +126,4 @@ public class ReportMailer {
 
 		mailer.send(email);
 	}
-
-
 }

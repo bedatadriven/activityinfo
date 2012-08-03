@@ -11,9 +11,9 @@ public class ServerDatabaseModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {
-		bind(Connection.class).toProvider(BoneCpConnectionProvider.class);
+		bind(Connection.class).toProvider(BoneCpConnectionPool.class);
 		bind(SqlDatabase.class).to(ServerDatabase.class);
 		bind(SqlDialect.class).to(MySqlDialect.class);
-		filter("/*").through(DatabaseInitFilter.class);
+		filter("/*").through(DatabaseFilter.class);
 	}	
 }

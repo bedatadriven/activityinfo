@@ -5,7 +5,6 @@
 
 package org.activityinfo.server;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.activityinfo.login.server.LoginModule;
@@ -24,19 +23,11 @@ import org.activityinfo.server.i18n.LocaleModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
 import org.activityinfo.server.schedule.QuartzModule;
-import org.activityinfo.server.schedule.ReportMailerJob;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.apache.log4j.Logger;
-import org.quartz.CronExpression;
-import org.quartz.CronTrigger;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -47,32 +38,23 @@ import com.google.inject.servlet.GuiceServletContextListener;
  * A Servlet context listener that initializes the Dependency Injection Framework (Guice)
  * upon startup.
  *
- * @author Alex Bertram
  */
 public class StartupListener extends GuiceServletContextListener {
 
     private static Logger logger = Logger.getLogger(StartupListener.class);
-   
-    private ServletContext context;
-    public static final String INJECTOR_NAME = StartupListener.class.getName();
-
 
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         logger.info("ActivityInfo servlet context is initializing");
-
-        context = servletContextEvent.getServletContext();
         super.contextInitialized(servletContextEvent);
-
     }
 
 
 	@Override
     protected Injector getInjector() {
-        //logger.trace("Injector is being created");
 
-        Injector injector = Guice.createInjector(
+        return Guice.createInjector(
                 new ConfigModule(), new LoggingModule(),
                 new TemplateModule(), new BeanMappingModule(), new MailModule(),
                 new HibernateModule(), 
@@ -90,9 +72,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new CrxModule(),
                 new LocaleModule(),
                 new LoginModule());
-
-        context.setAttribute(INJECTOR_NAME, injector);   
-        return injector;
     }
-	
+
 }

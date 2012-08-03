@@ -21,13 +21,19 @@ public class Quartz {
 	private final Scheduler scheduler;
 	
 	@Inject
-    public Quartz(final SchedulerFactory factory, final GuiceJobFactory jobFactory) throws SchedulerException
-    {
+    public Quartz(final SchedulerFactory factory, final GuiceJobFactory jobFactory) throws SchedulerException {
         scheduler = factory.getScheduler();
         scheduler.setJobFactory(jobFactory);
         scheduleJobs();
-        scheduler.start();
     }
+	
+	public void start() {
+		try {
+			scheduler.start();	
+		} catch(SchedulerException e) {
+			throw new RuntimeException("Exception thrown whilst starting Quartz scheduler", e);
+		}
+	}
 
 	private void scheduleJobs() throws SchedulerException {
         
@@ -42,6 +48,14 @@ public class Quartz {
 			.build();
 		
 		scheduler.scheduleJob(job, trigger);
-        
+	}
+	
+	public void shutdown() {
+		try {
+			LOGGER.info("Shutting down Quartz Scheduler");
+			scheduler.shutdown();
+		} catch (SchedulerException e) {
+			LOGGER.error("Exception thrown while shutting down Quartz scheduler", e);
+		}
 	}
 }

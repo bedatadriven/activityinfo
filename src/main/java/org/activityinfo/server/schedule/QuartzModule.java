@@ -12,7 +12,6 @@ public class QuartzModule extends ServletModule {
 		bind(SchedulerFactory.class).to(StdSchedulerFactory.class);
 		bind(Quartz.class).asEagerSingleton();
         serve("/tasks/mailSubscriptions").with(ReportMailerServlet.class);
-        
+        filter("/*").through(QuartzFilter.class);
 	}
-
 }

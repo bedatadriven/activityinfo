@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.activityinfo.server.database.BoneCpConnectionProvider;
+import org.activityinfo.server.database.BoneCpConnectionPool;
 import org.activityinfo.server.database.hibernate.dao.ActivityDAO;
 import org.activityinfo.server.database.hibernate.dao.AdminDAO;
 import org.activityinfo.server.database.hibernate.dao.AdminHibernateDAO;
@@ -78,7 +78,7 @@ public class HibernateModule extends ServletModule {
 
         @Inject
         public EntityManagerFactoryProvider(DeploymentConfiguration configProperties, 
-        		BoneCpConnectionProvider connectionProvider) {
+        		BoneCpConnectionPool connectionProvider) {
             this.configProperties = configProperties;
             
             // can't figure out how to provide an instance of the ConnectionProvider
