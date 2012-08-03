@@ -15,15 +15,6 @@ public final class AppEvents {
 
     public static final EventType SCHEMA_CHANGED = new EventBus.NamedEventType("SchemaChanged");
 
-
-    public static final EventType SITE_SELECTED = new EventBus.NamedEventType("SiteSelected");
-    public static final EventType SITE_CREATED = new EventBus.NamedEventType("SiteCreated");
-    
-    public static final EventType SITE_CHANGED = new EventBus.NamedEventType("SiteChanged");
-
-
     public static final EventType DRILL_DOWN = new EventBus.NamedEventType("Drilldown");
-    
-    public static final EventType REPORT_CHANGED = new EventBus.NamedEventType("ReportChanged");
-
+        
 }

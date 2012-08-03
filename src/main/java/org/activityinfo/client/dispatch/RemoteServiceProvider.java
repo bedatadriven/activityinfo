@@ -15,8 +15,6 @@ import com.google.inject.Singleton;
 
 /**
  * Configures and provides the RemoteCommandServiceAsync instance
- *
- * @author Alex Bertram
  */
 @Singleton
 public class RemoteServiceProvider implements Provider<RemoteCommandServiceAsync> {

@@ -10,10 +10,6 @@ import org.activityinfo.shared.command.result.PagingResult;
 /**
  * Super class for commands that return paged result sets compatible with
  * GXT's loader framework.
- * <p/>
- * See also: {@link com.extjs.gxt.ui.client.data.PagingLoadConfig},
- * {@link com.extjs.gxt.ui.client.data.PagingLoadResult},
- * {@link org.activityinfo.client.dispatch.loader.PagingCmdLoader}
  *
  * @param <T> The result class of this command.
  */

@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.HasFilter;
 import org.activityinfo.shared.report.content.Content;
 
 /**
@@ -57,7 +56,7 @@ import org.activityinfo.shared.report.content.Content;
  * @see org.activityinfo.shared.report.content.Content
  * @see org.activityinfo.server.report.renderer.Renderer
  */
-public abstract class ReportElement<ContentT extends Content> implements Serializable, HasFilter {
+public abstract class ReportElement<ContentT extends Content> implements Serializable {
 
     private Filter filter = new Filter();
     private String title;

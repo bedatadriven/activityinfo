@@ -3,9 +3,7 @@ package org.activityinfo.client.page.app;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.offline.OfflineController;
-import org.activityinfo.client.offline.ui.OfflineView;
 import org.activityinfo.client.page.NavigationHandler;
-import org.activityinfo.client.page.app.resources.AppFrameResources;
 import org.activityinfo.client.page.search.SearchPageState;
 
 import com.google.gwt.core.client.GWT;

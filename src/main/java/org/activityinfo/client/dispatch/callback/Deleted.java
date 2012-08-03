@@ -10,7 +10,7 @@ import org.activityinfo.shared.command.result.VoidResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Convienence call back for Delete command calls.
+ * Convenience call back for Delete command calls.
  */
 public abstract class Deleted implements AsyncCallback<VoidResult> {
 
