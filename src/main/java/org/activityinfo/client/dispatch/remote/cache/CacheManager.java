@@ -3,17 +3,16 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.activityinfo.client.dispatch.remote;
+package org.activityinfo.client.dispatch.remote.cache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activityinfo.client.dispatch.CommandProxy;
+import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.DispatchListener;
-import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
@@ -22,18 +21,18 @@ import com.google.inject.Singleton;
 
 /**
  * Utility class that maintains a list of {@link DispatchListener}s and
- * {@link org.activityinfo.client.dispatch.CommandProxy}
+ * {@link org.activityinfo.client.dispatch.CommandCache}
  */
 @Singleton
-public class ProxyManager implements DispatchEventSource {
+public class CacheManager implements DispatchEventSource {
 
     private Map<Class<? extends Command>, List<DispatchListener>> listeners =
             new HashMap<Class<? extends Command>, List<DispatchListener>>();
 
-    private Map<Class<? extends Command>, List<CommandProxy>> proxies =
-            new HashMap<Class<? extends Command>, List<CommandProxy>>();
+    private Map<Class<? extends Command>, List<CommandCache>> proxies =
+            new HashMap<Class<? extends Command>, List<CommandCache>>();
 
-    public ProxyManager() {
+    public CacheManager() {
 
     }
 
@@ -48,10 +47,10 @@ public class ProxyManager implements DispatchEventSource {
     }
 
     @Override
-    public <T extends Command> void registerProxy(Class<T> commandClass, CommandProxy<T> proxy) {
-        List<CommandProxy> classProxies = proxies.get(commandClass);
+    public <T extends Command> void registerProxy(Class<T> commandClass, CommandCache<T> proxy) {
+        List<CommandCache> classProxies = proxies.get(commandClass);
         if (classProxies == null) {
-            classProxies = new ArrayList<CommandProxy>();
+            classProxies = new ArrayList<CommandCache>();
             proxies.put(commandClass, classProxies);
         }
         classProxies.add(proxy);
@@ -92,17 +91,17 @@ public class ProxyManager implements DispatchEventSource {
      * @param cmd
      * @return
      */
-    public ProxyResult execute(Command cmd) {
+    public CacheResult execute(Command cmd) {
 
-        List<CommandProxy> classProxies = proxies.get(cmd.getClass());
+        List<CommandCache> classProxies = proxies.get(cmd.getClass());
 
         if (classProxies != null) {
 
-            for (CommandProxy proxy : classProxies) {
+            for (CommandCache proxy : classProxies) {
 
 
                 try {
-                    ProxyResult r = proxy.maybeExecute(cmd);
+                    CacheResult r = proxy.maybeExecute(cmd);
                     if (r.isCouldExecute()) {
 
                         Log.debug("ProxyManager: EXECUTED (!!) " + cmd.toString() + " locally with proxy "
@@ -122,6 +121,6 @@ public class ProxyManager implements DispatchEventSource {
                 }
             }
         }
-        return ProxyResult.couldNotExecute();
+        return CacheResult.couldNotExecute();
     }
 }

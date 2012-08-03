@@ -5,7 +5,7 @@
 
 package org.activityinfo.client.dispatch.remote.cache;
 
-import org.activityinfo.client.dispatch.CommandProxy;
+import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.DispatchListener;
 import org.activityinfo.shared.command.AddPartner;
@@ -27,7 +27,7 @@ import com.google.inject.Inject;
  *
  * @author Alex Bertram
  */
-public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
+public class SchemaCache implements CommandCache<GetSchema>, DispatchListener {
 
     private SchemaDTO schema = null;
 
@@ -43,11 +43,11 @@ public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
     }
 
     @Override
-    public ProxyResult maybeExecute(GetSchema command) {
+    public CacheResult maybeExecute(GetSchema command) {
         if (schema == null) {
-            return ProxyResult.couldNotExecute();
+            return CacheResult.couldNotExecute();
         } else {
-            return new ProxyResult(schema);
+            return new CacheResult(schema);
         }
     }
 
@@ -99,4 +99,9 @@ public class SchemaCache implements CommandProxy<GetSchema>, DispatchListener {
     public void onFailure(Command command, Throwable caught) {
 
     }
+
+	@Override
+	public void clear() {
+		schema = null;
+	}
 }

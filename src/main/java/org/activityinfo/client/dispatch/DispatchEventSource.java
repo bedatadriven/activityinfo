@@ -29,5 +29,5 @@ public interface DispatchEventSource {
      * @param proxy
      * @param <T> A Command class implementing {@link org.activityinfo.shared.command.Command}
      */
-    <T extends Command> void registerProxy(Class<T> commandClass, CommandProxy<T> proxy);
+    <T extends Command> void registerProxy(Class<T> commandClass, CommandCache<T> proxy);
 }

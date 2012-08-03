@@ -11,13 +11,13 @@ import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.RemoteServiceProvider;
-import org.activityinfo.client.dispatch.remote.CachingDispatcher;
 import org.activityinfo.client.dispatch.remote.IncompatibleRemoteDialog;
 import org.activityinfo.client.dispatch.remote.IncompatibleRemoteHandler;
 import org.activityinfo.client.dispatch.remote.MergingDispatcher;
-import org.activityinfo.client.dispatch.remote.ProxyManager;
 import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.dispatch.remote.RemoteDispatcher;
+import org.activityinfo.client.dispatch.remote.cache.CacheManager;
+import org.activityinfo.client.dispatch.remote.cache.CachingDispatcher;
 import org.activityinfo.client.offline.OfflineController;
 import org.activityinfo.client.page.Frame;
 import org.activityinfo.client.page.PageStateSerializer;
@@ -42,7 +42,7 @@ public class AppModule extends AbstractGinModule {
         bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
         bind(IncompatibleRemoteHandler.class).to(IncompatibleRemoteDialog.class);
         bind(Dispatcher.class).annotatedWith(Remote.class).to(RemoteDispatcher.class).in(Singleton.class);
-        bind(DispatchEventSource.class).to(ProxyManager.class);
+        bind(DispatchEventSource.class).to(CacheManager.class);
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
 
@@ -52,7 +52,7 @@ public class AppModule extends AbstractGinModule {
     }
     
     @Provides
-    public Dispatcher provideDispatcher(ProxyManager proxyManager, OfflineController controller) {
+    public Dispatcher provideDispatcher(CacheManager proxyManager, OfflineController controller) {
     	return new CachingDispatcher(proxyManager, 
     			new MergingDispatcher(controller, Scheduler.get()));
     }

@@ -18,9 +18,11 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Collections;
 
-import org.activityinfo.client.dispatch.CommandProxy;
+import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
+import org.activityinfo.client.dispatch.remote.cache.CacheManager;
+import org.activityinfo.client.dispatch.remote.cache.CachingDispatcher;
+import org.activityinfo.client.dispatch.remote.cache.CacheResult;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetSchema;
@@ -43,8 +45,8 @@ public class RemoteDispatcherTest {
 
     private RemoteCommandServiceAsync service;
     private Dispatcher dispatcher;
-    private CommandProxy proxy;
-    private ProxyManager proxyManager = new ProxyManager();
+    private CommandCache proxy;
+    private CacheManager proxyManager = new CacheManager();
     
     private Capture<AsyncCallback> remoteCallback = new Capture<AsyncCallback>();
 
@@ -58,7 +60,7 @@ public class RemoteDispatcherTest {
     @Before
     public void setUp() {
         service = createMock("remoteService", RemoteCommandServiceAsync.class);
-        proxy = createMock("proxy", CommandProxy.class);
+        proxy = createMock("proxy", CommandCache.class);
         AuthenticatedUser auth = new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com");
         
         dispatcher = new CachingDispatcher(proxyManager, 
@@ -141,7 +143,7 @@ public class RemoteDispatcherTest {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.maybeExecute(eq(command))).andReturn(new ProxyResult(new SchemaDTO())).anyTimes();
+        expect(proxy.maybeExecute(eq(command))).andReturn(new CacheResult(new SchemaDTO())).anyTimes();
         replay(proxy);
 
         replay(service);   // no calls should be made to the remote service
@@ -174,7 +176,7 @@ public class RemoteDispatcherTest {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.maybeExecute(eq(command))).andReturn(new ProxyResult(new SchemaDTO()));
+        expect(proxy.maybeExecute(eq(command))).andReturn(new CacheResult(new SchemaDTO()));
         replay(proxy);
 
         replay(service);   // no calls should be made to the remote service
@@ -194,7 +196,7 @@ public class RemoteDispatcherTest {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.maybeExecute(eq(command))).andReturn(ProxyResult.couldNotExecute());
+        expect(proxy.maybeExecute(eq(command))).andReturn(CacheResult.couldNotExecute());
         replay(proxy);
 
         expectRemoteCall(command);

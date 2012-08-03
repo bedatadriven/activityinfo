@@ -131,4 +131,8 @@ public class AbstractCache {
     protected Set<Map.Entry<Command, CacheEntry>> getCacheEntries() {
         return results.entrySet();
     }
+    
+    public void clear() {
+    	cache.clear();
+    }
 }

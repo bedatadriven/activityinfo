@@ -5,7 +5,7 @@
 
 package org.activityinfo.client.dispatch.remote.cache;
 
-import org.activityinfo.client.dispatch.CommandProxy;
+import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.DispatchListener;
 import org.activityinfo.shared.command.GetAdminEntities;
@@ -18,10 +18,9 @@ import com.google.inject.Singleton;
 /**
  * Caches the results of {@link org.activityinfo.shared.command.GetAdminEntities}
  *
- * @author Alex Bertram
  */
 @Singleton
-public class AdminEntityCache extends AbstractCache implements CommandProxy<GetAdminEntities>, DispatchListener<GetAdminEntities> {
+public class AdminEntityCache extends AbstractCache implements CommandCache<GetAdminEntities>, DispatchListener<GetAdminEntities> {
 
     @Inject
     public AdminEntityCache(DispatchEventSource connection) {
@@ -30,17 +29,17 @@ public class AdminEntityCache extends AbstractCache implements CommandProxy<GetA
     }
 
     @Override
-    public ProxyResult<AdminEntityResult> maybeExecute(GetAdminEntities command) {
+    public CacheResult<AdminEntityResult> maybeExecute(GetAdminEntities command) {
 
         if (command.getFilter() != null) {
-            return ProxyResult.couldNotExecute();
+            return CacheResult.couldNotExecute();
         }
 
         AdminEntityResult result = (AdminEntityResult) fetch(command);
         if (result == null) {
-            return ProxyResult.couldNotExecute();
+            return CacheResult.couldNotExecute();
         } else {
-            return new ProxyResult<AdminEntityResult>(new AdminEntityResult(result));
+            return new CacheResult<AdminEntityResult>(new AdminEntityResult(result));
         }
     }
 
@@ -61,4 +60,5 @@ public class AdminEntityCache extends AbstractCache implements CommandProxy<GetA
             cache(command, new AdminEntityResult((AdminEntityResult) result));
         }
     }
+
 }

@@ -5,8 +5,7 @@
 
 package org.activityinfo.client.dispatch.remote.cache;
 
-import org.activityinfo.client.dispatch.remote.ProxyManager;
-import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
+import org.activityinfo.client.dispatch.remote.cache.CacheResult;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.DTOs;
@@ -19,7 +18,7 @@ public class SchemaCacheTest {
     @Test
     public void testSchemaCache() {
 
-        ProxyManager proxyMgr = new ProxyManager();
+        CacheManager proxyMgr = new CacheManager();
 
         SchemaCache cache = new SchemaCache(proxyMgr);
 
@@ -27,7 +26,7 @@ public class SchemaCacheTest {
 
         proxyMgr.notifyListenersOfSuccess(new GetSchema(), schema);
 
-        ProxyResult<SchemaDTO> proxyResult = proxyMgr.execute(new GetSchema());
+        CacheResult<SchemaDTO> proxyResult = proxyMgr.execute(new GetSchema());
 
         Assert.assertTrue("could execute locally", proxyResult.isCouldExecute());
         Assert.assertEquals("PEAR", proxyResult.getResult().getDatabaseById(1).getName());

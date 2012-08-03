@@ -8,11 +8,11 @@ package org.activityinfo.client.dispatch.remote.cache;
 import org.activityinfo.shared.command.result.CommandResult;
 
 /**
- * Encapsulates the return value of call to a {@link org.activityinfo.client.dispatch.CommandProxy}.
+ * Encapsulates the return value of call to a {@link org.activityinfo.client.dispatch.CommandCache}.
  *
  * @author Alex Bertram
  */
-public class ProxyResult<T extends CommandResult> {
+public class CacheResult<T extends CommandResult> {
 
     /**
      * True if the handler was able to execute the command locally
@@ -26,9 +26,9 @@ public class ProxyResult<T extends CommandResult> {
      */
     private final T result;
 
-    private static ProxyResult failed = new ProxyResult();
+    private static CacheResult failed = new CacheResult();
 
-    private ProxyResult() {
+    private CacheResult() {
         couldExecute = false;
         result = null;
     }
@@ -39,7 +39,7 @@ public class ProxyResult<T extends CommandResult> {
      *
      * @param result The result of the local execution (can be null)
      */
-    public ProxyResult(T result) {
+    public CacheResult(T result) {
         this.couldExecute = true;
         this.result = result;
     }
@@ -47,10 +47,10 @@ public class ProxyResult<T extends CommandResult> {
     /**
      * Creates a return value indicating that local execution was not possible.
      *
-     * @return A {@link org.activityinfo.client.dispatch.CommandProxy} return value indicating that
+     * @return A {@link org.activityinfo.client.dispatch.CommandCache} return value indicating that
      *         local execution was not possible.
      */
-    public static ProxyResult couldNotExecute() {
+    public static CacheResult couldNotExecute() {
         return failed;
     }
 

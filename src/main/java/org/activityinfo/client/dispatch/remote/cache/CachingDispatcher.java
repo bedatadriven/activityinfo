@@ -1,8 +1,8 @@
-package org.activityinfo.client.dispatch.remote;
+package org.activityinfo.client.dispatch.remote.cache;
 
 
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
+import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
@@ -10,12 +10,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CachingDispatcher extends AbstractDispatcher {
 
-	private ProxyManager proxyManager = new ProxyManager();
+	private CacheManager cacheManager = new CacheManager();
 	private Dispatcher dispatcher;
 	
-	public CachingDispatcher(ProxyManager proxyManager, Dispatcher dispatcher) {
+	public CachingDispatcher(CacheManager proxyManager, Dispatcher dispatcher) {
 		super();
-		this.proxyManager = proxyManager;
+		this.cacheManager = proxyManager;
 		this.dispatcher = dispatcher;
 	}
 
@@ -23,9 +23,9 @@ public class CachingDispatcher extends AbstractDispatcher {
 	public <T extends CommandResult> void execute(final Command<T> command,
 			final AsyncCallback<T> callback) {
 
-		proxyManager.notifyListenersBefore(command);
+		cacheManager.notifyListenersBefore(command);
 
-		ProxyResult proxyResult = proxyManager.execute(command);
+		CacheResult proxyResult = cacheManager.execute(command);
 		if (proxyResult.isCouldExecute()) {
 			callback.onSuccess((T) proxyResult.getResult());
 		} else {
@@ -38,7 +38,7 @@ public class CachingDispatcher extends AbstractDispatcher {
 
 				@Override
 				public void onSuccess(T result) {
-		            proxyManager.notifyListenersOfSuccess(command, result);
+		            cacheManager.notifyListenersOfSuccess(command, result);
 		            callback.onSuccess(result);
 				}
 			});

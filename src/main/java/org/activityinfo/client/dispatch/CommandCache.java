@@ -5,17 +5,16 @@
 
 package org.activityinfo.client.dispatch;
 
-import org.activityinfo.client.dispatch.remote.cache.ProxyResult;
+import org.activityinfo.client.dispatch.remote.cache.CacheResult;
 import org.activityinfo.shared.command.Command;
 
 /**
  * Interface to a class which is capable of handling {@link org.activityinfo.shared.command.Command}s
- * locally, before they are sent to the server. Implementations include caches and offline implementations
- * relying on a local database.
+ * locally, before they are sent to the server.
  *
  * @param <T>
  */
-public interface CommandProxy<T extends Command> {
+public interface CommandCache<T extends Command> {
 
     /**
      * Tries to the execute the command locally.
@@ -24,6 +23,12 @@ public interface CommandProxy<T extends Command> {
      * @return a ProxyResult instance indicating whether local execution was possible, and the
      * CommandResult if it was.
      */
-    public ProxyResult maybeExecute(T command);
+    CacheResult maybeExecute(T command);
 
+    
+    /**
+     * Clears the cache, discarding any cached data
+     */
+    void clear();
+    
 }
