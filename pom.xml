@@ -527,7 +527,6 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*GwtTest.java</exclude>
-						<exclude>**/report/*.java</exclude>
 					</excludes>
 					<failIfNoTests>false</failIfNoTests>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>

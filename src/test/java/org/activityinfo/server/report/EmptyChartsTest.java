@@ -35,10 +35,10 @@ public class EmptyChartsTest {
 		element.addSeriesDimension(new Dimension(DimensionType.Database));
 	
 		DispatcherSync dispatcher = createMock(DispatcherSync.class);
-		expect(dispatcher.execute(new PivotSites(isA(Set.class), isA(Filter.class))))
+		expect(dispatcher.execute(isA(PivotSites.class)))
 			.andReturn(new PivotSites.PivotResult(Collections.EMPTY_LIST));
 		
-		expect(dispatcher.execute(new GetDimensionLabels(eq(DimensionType.Indicator), isA(Set.class))))
+		expect(dispatcher.execute(isA(GetDimensionLabels.class)))
 			.andReturn(new GetDimensionLabels.DimensionLabels(Collections.EMPTY_MAP));
 		
 		replay(dispatcher);

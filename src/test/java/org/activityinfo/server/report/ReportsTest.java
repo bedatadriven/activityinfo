@@ -16,7 +16,6 @@ import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.RendererFactory;
@@ -34,14 +33,14 @@ import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
 import org.activityinfo.test.ServletStubModule;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.google.inject.Inject;
 
-//@Ignore("Needs to be rewritten -- figure out what to do with dependency on the map icons folder")
 @RunWith(InjectionSupport.class)
-@Modules({ReportStubModule.class, ServletStubModule.class, MockHibernateModule.class}) //, , 
+@Modules({ReportStubModule.class, ServletStubModule.class, MockHibernateModule.class}) 
 public class ReportsTest {
 
     @Inject
@@ -63,6 +62,7 @@ public class ReportsTest {
     }
 
 	@Test
+	@Ignore("need dbunit xml with matching data")
     public void testFullReport() throws Throwable {
         Report report = getReport("full-test.xml");
         
