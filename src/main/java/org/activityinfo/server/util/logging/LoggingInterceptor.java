@@ -46,7 +46,7 @@ public class LoggingInterceptor implements MethodInterceptor {
         }
     }
     
-    @Inject
+    @Inject(optional = true)
     public void setDatadogClient(DatadogClient datadog) {
     	this.datadog = datadog;
     }

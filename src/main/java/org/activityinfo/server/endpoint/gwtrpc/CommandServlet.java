@@ -57,7 +57,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @Inject
     private ServerSideAuthProvider authProvider;
 
-    @Inject
+    @Inject(optional = true)
     private DatadogClient datadog;
        
     @Override
@@ -128,14 +128,16 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     }
     
     private void postSlowEvent(Command command, long timeElapsed) {
-    	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    	
-    	Event event = new Event();
-    	event.setAlertType(Event.WARNING);
-    	event.setTitle("Slow RPC: " + command.getClass().getSimpleName() + " [" + timeElapsed + "ms]");
-    	event.setText(gson.toJson(command));
-    	event.setAggregationKey("Slow" + command.getClass().getSimpleName());
-    	datadog.postEvent(event);
+    	if(datadog != null) {
+	    	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	    	
+	    	Event event = new Event();
+	    	event.setAlertType(Event.WARNING);
+	    	event.setTitle("Slow RPC: " + command.getClass().getSimpleName() + " [" + timeElapsed + "ms]");
+	    	event.setText(gson.toJson(command));
+	    	event.setAggregationKey("Slow" + command.getClass().getSimpleName());
+	    	datadog.postEvent(event);
+    	}
 	}
 
 	private void checkAuthentication(String authToken) {

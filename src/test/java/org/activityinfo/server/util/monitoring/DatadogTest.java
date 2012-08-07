@@ -1,4 +1,4 @@
-package org.activityinfo.server.monitoring;
+package org.activityinfo.server.util.monitoring;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,15 +6,13 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.activityinfo.server.util.config.DeploymentConfiguration;
-import org.activityinfo.server.util.monitoring.ClientMetricsServlet;
-import org.activityinfo.server.util.monitoring.ClientMetricsServletTest;
-import org.activityinfo.server.util.monitoring.DatadogClient;
-import org.activityinfo.server.util.monitoring.SeriesCollection;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DatadogTest {
 
 	@Test
+	@Ignore("learning test")
 	public void test() throws IOException {
 		
 		Properties properties = new Properties();
@@ -28,6 +26,4 @@ public class DatadogTest {
 		DatadogClient datadog = new DatadogClient(null, config);
 		datadog.postSeries(series);
 	}
-	
-	
 }
