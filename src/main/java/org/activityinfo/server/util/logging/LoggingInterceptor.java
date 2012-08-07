@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.server.util.monitoring.DatadogClient;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.mail.EmailException;
@@ -24,7 +25,9 @@ public class LoggingInterceptor implements MethodInterceptor {
 
     private MailSender mailSender;
     private final List<String> alertRecipients = new ArrayList<String>(0);
-
+    
+    private DatadogClient datadog;
+    
     @Inject(optional = true)
     public void setMailSender(MailSender sender) {
         this.mailSender = sender;
@@ -41,6 +44,11 @@ public class LoggingInterceptor implements MethodInterceptor {
                 }
             }
         }
+    }
+    
+    @Inject
+    public void setDatadogClient(DatadogClient datadog) {
+    	this.datadog = datadog;
     }
 
 
@@ -85,6 +93,9 @@ public class LoggingInterceptor implements MethodInterceptor {
             } catch (EmailException e) {
                 logger.warn("Exception thrown while trying to email alert about previous exception", e);
             }
+        }
+        if(datadog != null) {
+        	datadog.errorEvent("AI Server Exception", caught);
         }
     }
 

@@ -15,6 +15,8 @@ import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.server.util.monitoring.DatadogClient;
+import org.activityinfo.server.util.monitoring.Event;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
@@ -24,6 +26,8 @@ import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -53,6 +57,8 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @Inject
     private ServerSideAuthProvider authProvider;
 
+    @Inject
+    private DatadogClient datadog;
        
     @Override
     @LogException
@@ -111,15 +117,28 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(Command command) throws CommandException {
     	long timeStart = System.currentTimeMillis();
-    	try {
-    		return ServerExecutionContext.execute(injector, command);
-    	} finally {
-    		long timeElapsed = System.currentTimeMillis() - timeStart;
-    		LOGGER.info("Command " + command.getClass().getSimpleName() + " completed in " + timeElapsed + "ms" );
-    	}
+		CommandResult result = ServerExecutionContext.execute(injector, command);
+
+		long timeElapsed = System.currentTimeMillis() - timeStart;
+		LOGGER.info("Command " + command.getClass().getSimpleName() + " completed in " + timeElapsed + "ms" );
+		if(timeElapsed > 1000) {
+			postSlowEvent(command, timeElapsed);
+		}
+		return result;
     }
     
-    private void checkAuthentication(String authToken) {
+    private void postSlowEvent(Command command, long timeElapsed) {
+    	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    	
+    	Event event = new Event();
+    	event.setAlertType(Event.WARNING);
+    	event.setTitle("Slow RPC: " + command.getClass().getSimpleName() + " [" + timeElapsed + "ms]");
+    	event.setText(gson.toJson(command));
+    	event.setAggregationKey("Slow" + command.getClass().getSimpleName());
+    	datadog.postEvent(event);
+	}
+
+	private void checkAuthentication(String authToken) {
     	if(authToken.equals(AnonymousUser.AUTHTOKEN)) {
     		authProvider.set(AuthenticatedUser.getAnonymous());
     	} else {

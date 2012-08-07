@@ -7,9 +7,9 @@ package org.activityinfo.client;
 
 
 
-import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.inject.AppInjector;
+import org.activityinfo.client.util.monitoring.MetricsCollector;
 import org.activityinfo.client.util.state.SafeStateProvider;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -18,7 +18,6 @@ import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 
 
 /**
@@ -82,6 +81,8 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.INIT);
+        
+        new MetricsCollector();
 	}
 
 	protected void createCaches(AppInjector injector) {

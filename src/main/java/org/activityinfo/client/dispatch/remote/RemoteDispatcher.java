@@ -34,6 +34,7 @@ public class RemoteDispatcher extends AbstractDispatcher {
     @Override
     public <T extends CommandResult> void execute(Command<T> command, final AsyncCallback<T> callback) {
         try {
+        	final long timeStarted = System.currentTimeMillis();
 	    	service.execute(auth.getAuthToken(), Collections.singletonList((Command)command), new AsyncCallback<List<CommandResult>>() {
 	            @Override
 	            public void onFailure(Throwable throwable) {

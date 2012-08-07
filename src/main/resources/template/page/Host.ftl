@@ -73,7 +73,23 @@
             commitId: '$[git.commit.id]'
         };
     </script>
-
+	
+	<script language='javascript'>
+	    window.__gwtStatsEvent = function(event) {
+	      if(!window.__metricsLast) {
+	      	window.__metricsLast = {};
+	      	window.__metrics = "";
+	      }
+	      if(window.__metricsLast[event.evtGroup]) {
+	      	var began = window.__metricsLast[event.evtGroup];
+	      	window.__metrics = window.__metrics + " " +
+	      		 event.subSystem + "." + event.type + ":" + began + ":" +
+	      			(event.millis - began);
+	      } 
+	      window.__metricsLast[event.evtGroup] = event.millis;
+	      return true;
+	    }
+	</script>
     <script language='javascript' src='ActivityInfo/gxt224/flash/swfobject.js'></script>
     <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
 	<script type="text/javascript">

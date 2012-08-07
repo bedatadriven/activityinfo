@@ -5,6 +5,8 @@
 
 package org.activityinfo.server;
 
+import java.util.Random;
+
 import javax.servlet.ServletContextEvent;
 
 import org.activityinfo.login.server.LoginModule;
@@ -26,6 +28,7 @@ import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.logging.LoggingModule;
+import org.activityinfo.server.util.monitoring.MonitoringModule;
 import org.apache.log4j.Logger;
 
 import com.google.inject.Guice;
@@ -41,6 +44,8 @@ import com.google.inject.servlet.GuiceServletContextListener;
 public class StartupListener extends GuiceServletContextListener {
 
     private static Logger logger = Logger.getLogger(StartupListener.class);
+
+	private Random RNG = new Random();
 
 
     @Override
@@ -66,6 +71,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new GwtRpcModule(),
                 new HealthCheckModule(),
                 new ExportModule(),
+                new MonitoringModule(),
                 new JsonRpcModule(),
                 new KmlModule(),
                 new LocaleModule(),
