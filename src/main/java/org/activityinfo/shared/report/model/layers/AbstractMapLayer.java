@@ -122,7 +122,7 @@ public abstract class AbstractMapLayer implements MapLayer {
 
 	@Override
 	public String toString() {
-		return  getClass().getSimpleName() + "[isVisible=" + isVisible + ", indicatorIds="
+		return  getClass() + "[isVisible=" + isVisible + ", indicatorIds="
 				+ indicatorIds 
 				+ ", clustering=" + clustering 
 				+ filter + "]";
