@@ -29,14 +29,14 @@ public class ReportMailerTest {
 
         ReportSubscription report = new ReportSubscription();
         report.setEmailDelivery(EmailDelivery.WEEKLY);
-        report.setEmailDay(0); // Sunday
+        report.setEmailDay(7); // Saturday
 
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, 2009);
-        cal.set(Calendar.MONTH, 9);
-        cal.set(Calendar.DATE, 4);
+        cal.set(Calendar.YEAR, 2012);
+        cal.set(Calendar.MONTH, Calendar.AUGUST);
+        cal.set(Calendar.DATE, 11);
 
-        Assert.assertTrue("Sunday report goes out on Sunday", ReportMailerHelper.mailToday(cal.getTime(), report));
+        Assert.assertTrue("Saturday report goes out on Saturday", ReportMailerHelper.mailToday(cal.getTime(), report));
 
         cal.set(Calendar.DATE, 5);
 
@@ -56,7 +56,7 @@ public class ReportMailerTest {
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2009);
-        cal.set(Calendar.MONTH, 3);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
         cal.set(Calendar.DATE, 11);
 
         Assert.assertTrue("Monthly report scheduled for each the 11th goes out on the 11th",
@@ -75,13 +75,13 @@ public class ReportMailerTest {
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2009);
-        cal.set(Calendar.MONTH, 3);
+        cal.set(Calendar.MONTH, Calendar.APRIL);
         cal.set(Calendar.DATE, 30);
 
         Assert.assertTrue("Report goes out on 4-April",
                 ReportMailerHelper.mailToday(cal.getTime(), report));
 
-        cal.set(Calendar.MONTH, 0);
+        cal.set(Calendar.MONTH, Calendar.JANUARY);
         cal.set(Calendar.DATE, 31);
 
         Assert.assertTrue("Report goes out on 31-Jan",

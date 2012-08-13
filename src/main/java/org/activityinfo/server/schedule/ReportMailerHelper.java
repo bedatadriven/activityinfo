@@ -33,7 +33,7 @@ public class ReportMailerHelper {
         today.setTime(dateToday);
 
         if(report.getEmailDelivery() == EmailDelivery.WEEKLY) {
-            return today.get(Calendar.DAY_OF_WEEK) == report.getEmailDay()+1;
+            return today.get(Calendar.DAY_OF_WEEK) == report.getEmailDay();
 
         } else if(report.getEmailDelivery() == EmailDelivery.MONTHLY) {
             if(report.getEmailDay() == Report.LAST_DAY_OF_MONTH) {
