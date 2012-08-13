@@ -26,8 +26,6 @@ import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.apache.log4j.Logger;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -122,24 +120,10 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 		long timeElapsed = System.currentTimeMillis() - timeStart;
 		if(timeElapsed > 1000) {
 			LOGGER.info("Command " + command.toString() + " completed in " + timeElapsed + "ms" );
-			postSlowEvent(command, timeElapsed);
 		}
 		return result;
     }
     
-    private void postSlowEvent(Command command, long timeElapsed) {
-    	if(datadog != null) {
-	    	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	    	
-	    	Event event = new Event();
-	    	event.setAlertType(Event.WARNING);
-	    	event.setTitle("Slow RPC: " + command.getClass().getSimpleName() + " [" + timeElapsed + "ms]");
-	    	event.setText(gson.toJson(command));
-	    	event.setAggregationKey("Slow" + command.getClass().getSimpleName());
-	    	datadog.postEvent(event);
-    	}
-	}
-
 	private void checkAuthentication(String authToken) {
     	if(authToken.equals(AnonymousUser.AUTHTOKEN)) {
     		authProvider.set(AuthenticatedUser.getAnonymous());
