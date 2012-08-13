@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.SessionUtil;
+import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.Remote;
@@ -28,6 +29,7 @@ import org.activityinfo.client.offline.sync.SyncHistoryTable;
 import org.activityinfo.client.offline.sync.SyncStatusEvent;
 import org.activityinfo.client.offline.sync.Synchronizer;
 import org.activityinfo.client.offline.sync.SynchronizerConnectionException;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
@@ -37,6 +39,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.inject.Inject;
@@ -382,6 +385,10 @@ public class OfflineController implements Dispatcher {
 
 		@Override
 		public OfflineStrategy activate() {
+			
+			// ensure that's the user's authentication is persisted across sessions!
+			ClientSideAuthProvider.ensurePersisted();
+			
 			offlineManger.getLastSyncTime(new AsyncCallback<Date>() {
 
 				@Override
