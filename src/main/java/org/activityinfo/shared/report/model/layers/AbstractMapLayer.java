@@ -119,6 +119,12 @@ public abstract class AbstractMapLayer implements MapLayer {
 	public void setFilter(Filter filter) {
 		this.filter = filter;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return  getClass().getSimpleName() + "[isVisible=" + isVisible + ", indicatorIds="
+				+ indicatorIds 
+				+ ", clustering=" + clustering 
+				+ filter + "]";
+	}
 }

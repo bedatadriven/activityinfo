@@ -42,4 +42,9 @@ public class AdministrativeLevelClustering implements Clustering {
 		return adminLevels.equals(other.adminLevels);
 	}
 
+	@Override
+	public String toString() {
+		return "AdministrativeLevelClustering [adminLevels=" + adminLevels
+				+ "]";
+	}
 }

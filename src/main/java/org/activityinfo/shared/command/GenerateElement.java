@@ -33,4 +33,9 @@ public class GenerateElement<T extends Content> implements Command<T> {
     public void setElement(ReportElement element) {
         this.element = element;
     }
+
+	@Override
+	public String toString() {
+		return "GenerateElement [element=" + element + "]";
+	}   
 }

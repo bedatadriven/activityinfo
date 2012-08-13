@@ -131,6 +131,10 @@ public class MapReportElement extends ReportElement<MapContent> {
 		}
 		return ids;
 	}
-    
-    
+
+	@Override
+	public String toString() {
+		return "MapReportElement [baseMapId=" + baseMapId + ", layers="
+				+ layers + "]";
+	}
 }
