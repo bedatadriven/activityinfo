@@ -176,14 +176,19 @@ public class ImageMapRenderer {
 
         // measure the bounds of the string so we can center it within
         // the bubble.
-        Rectangle2D rect = font.getStringBounds(marker.getLabel(), g2d.getFontRenderContext());
-        LineMetrics lm = font.getLineMetrics(marker.getLabel(), g2d.getFontRenderContext());
-
-        g2d.setColor(ColorUtil.colorFromString(marker.getLabelColor()));
-        g2d.setFont(font);
-        g2d.drawString(marker.getLabel(),
-                (int)(marker.getX() - (rect.getWidth() / 2)),
-                (int)(marker.getY() + (lm.getAscent() / 2)));
+        
+        // QUICK FIX: labeling set inappropriately as default for new map layers
+        // and no method in UI to turn them off. 
+        
+        
+//        Rectangle2D rect = font.getStringBounds(marker.getLabel(), g2d.getFontRenderContext());
+//        LineMetrics lm = font.getLineMetrics(marker.getLabel(), g2d.getFontRenderContext());
+//
+//        g2d.setColor(ColorUtil.colorFromString(marker.getLabelColor()));
+//        g2d.setFont(font);
+//        g2d.drawString(marker.getLabel(),
+//                (int)(marker.getX() - (rect.getWidth() / 2)),
+//                (int)(marker.getY() + (lm.getAscent() / 2)));
     }
 
     private void drawIcon(Graphics2D g2d, IconMapMarker marker) {

@@ -29,7 +29,7 @@ import org.activityinfo.shared.report.model.labeling.LatinAlphaSequence;
 public abstract class AbstractMapLayer implements MapLayer {
 	private boolean isVisible = true;
 	private List<Integer> indicatorIds = new ArrayList<Integer>();
-	private LabelSequence labelSequence = new LatinAlphaSequence();
+	private LabelSequence labelSequence;
 	private Clustering clustering =  new NoClustering(); 
 	private String name;
 	private Filter filter = new Filter();
