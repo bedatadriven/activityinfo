@@ -9,12 +9,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 
 import org.activityinfo.server.bootstrap.HostController;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
 import org.activityinfo.server.endpoint.content.ContentServlet;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,7 @@ public class HostControllerTest extends ControllerTestCase {
 	
     @Before
     public void setupController() {
-        controller = new HostController(injector, templateCfg);
+        controller = new HostController(injector, templateCfg, new DeploymentConfiguration(new Properties()));
         req.setRequestURL("http://www.activityinfo.org");
     }
 
