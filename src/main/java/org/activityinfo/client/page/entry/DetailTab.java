@@ -19,7 +19,6 @@ public class DetailTab extends TabItem {
 	public DetailTab(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
 		setText(I18N.CONSTANTS.details());
-		//setIcon(IconImageBundle.ICONS.mapped());
 		
 		content = new Html();
         content.setStyleName("details");
@@ -49,5 +48,4 @@ public class DetailTab extends TabItem {
 		SiteRenderer renderer = new SiteRenderer();
 		content.setHtml(renderer.renderSite(site, schema.getActivityById(site.getActivityId()), false, true));		
 	}
-	
 }

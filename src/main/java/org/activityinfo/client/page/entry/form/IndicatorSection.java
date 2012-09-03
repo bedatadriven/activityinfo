@@ -7,6 +7,7 @@ package org.activityinfo.client.page.entry.form;
 
 import java.util.List;
 
+import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.IndicatorGroup;
@@ -70,13 +71,13 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         indicatorLabel.setStyleAttribute("fontSize", "9pt");
 
         add(indicatorLabel);
-
+        
         NumberField indicatorField = new NumberField();
         indicatorField.setName( indicator.getPropertyName() );
         indicatorField.setWidth(50);
-        indicatorField.setFormat(NumberFormat.getFormat("0"));
+        indicatorField.setFormat(IndicatorNumberFormat.INSTANCE);
         indicatorField.setStyleAttribute("textAlign", "right");
-
+        
         if(indicator.getDescription() != null && !indicator.getDescription().isEmpty()) {
             ToolTipConfig tip = new ToolTipConfig();
             tip.setDismissDelay(0);

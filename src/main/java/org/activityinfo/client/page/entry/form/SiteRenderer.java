@@ -1,6 +1,7 @@
 package org.activityinfo.client.page.entry.form;
 
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
@@ -11,7 +12,6 @@ import org.activityinfo.shared.dto.SiteDTO;
 import com.google.gwt.i18n.client.NumberFormat;
 
 public class SiteRenderer {
-	private NumberFormat indicatorFormat = NumberFormat.getFormat("#,###");
 	
 	public String renderSite(SiteDTO site, ActivityDTO activity, boolean showEmptyRows, boolean renderComments) {
         StringBuilder html = new StringBuilder();
@@ -19,8 +19,11 @@ public class SiteRenderer {
         if(renderComments && site.getComments() != null) {
             String commentsHtml = site.getComments();
             commentsHtml = commentsHtml.replace("\n", "<br/>");
-            html.append("<p class='comments'><span class='groupName'>").append(I18N.CONSTANTS.comments()).append(":</span> ")
-                    .append(commentsHtml).append("</p>");
+            html.append("<p class='comments'><span class='groupName'>")
+            	.append(I18N.CONSTANTS.comments())
+            	.append(":</span> ")
+                .append(commentsHtml)
+                .append("</p>");
         }
 
         for(AttributeGroupDTO group : activity.getAttributeGroups()) {
@@ -80,7 +83,7 @@ public class SiteRenderer {
         if(value == null) {
             return "-";
         } else {
-            return indicatorFormat.format(value);
+            return IndicatorNumberFormat.INSTANCE.format(value);
         }
     }
 

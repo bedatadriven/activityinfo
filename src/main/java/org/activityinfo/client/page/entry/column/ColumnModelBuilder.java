@@ -5,6 +5,7 @@ import java.util.List;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.client.page.common.columns.ReadTextColumn;
+import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
@@ -122,14 +123,13 @@ public class ColumnModelBuilder {
 	}
 	
 	public ColumnConfig addIndicatorColumn(IndicatorDTO indicator, String header) {
-        final NumberFormat format = NumberFormat.getFormat("0");
 
         NumberField indicatorField = new NumberField();
-        indicatorField.getPropertyEditor().setFormat(format);
+        indicatorField.getPropertyEditor().setFormat(IndicatorNumberFormat.INSTANCE);
 
         ColumnConfig indicatorColumn = new ColumnConfig(indicator.getPropertyName(), header, 50);
 
-        indicatorColumn.setNumberFormat(format);
+        indicatorColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
         indicatorColumn.setEditor(new CellEditor(indicatorField));
         indicatorColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
 
@@ -141,7 +141,7 @@ public class ColumnModelBuilder {
                 public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                     Double value = model.get(property);
                     if(value != null && value != 0) {
-                        return format.format(value);
+                        return IndicatorNumberFormat.INSTANCE.format(value);
                     } else {
                         return "";
                     }

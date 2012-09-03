@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.dto.IndicatorRowDTO;
 
@@ -69,14 +70,13 @@ class MonthlyGrid extends EditorGrid<IndicatorRowDTO> {
         indicator.setMenuDisabled(true);
         columns.add(indicator);
 
-        NumberFormat indicatorFormat = NumberFormat.getFormat("0");
 
         for(int i = 0; i!=MONTHS_TO_SHOW; ++i) {
             NumberField indicatorField = new NumberField();
-            indicatorField.getPropertyEditor().setFormat(indicatorFormat);
+            indicatorField.getPropertyEditor().setFormat(IndicatorNumberFormat.INSTANCE);
 
             ColumnConfig valueColumn = new ColumnConfig("month" + i, "", MONTH_COLUMN_WIDTH);
-            valueColumn.setNumberFormat(indicatorFormat);
+            valueColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
             valueColumn.setEditor(new CellEditor(indicatorField));
             valueColumn.setSortable(false);
             valueColumn.setMenuDisabled(true);

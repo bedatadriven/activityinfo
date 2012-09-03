@@ -14,6 +14,7 @@ import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.PivotCellEvent;
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.PivotTableData;
 import org.activityinfo.shared.report.model.Dimension;
@@ -162,7 +163,7 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
             }
             ColumnConfig column = new ColumnConfig(id, label, 75);
             
-            column.setNumberFormat(NumberFormat.getFormat("#,##0"));
+            column.setNumberFormat(IndicatorNumberFormat.INSTANCE);
             column.setAlignment(Style.HorizontalAlignment.RIGHT);
             column.setSortable(false);
             column.setMenuDisabled(true);
