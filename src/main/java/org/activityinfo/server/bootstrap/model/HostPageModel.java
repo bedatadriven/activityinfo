@@ -11,6 +11,7 @@ public class HostPageModel extends PageModel {
     private Authentication auth;
     private String appUrl;
     private boolean appCacheEnabled;
+    private String mapsApiKey;
     
     public HostPageModel(Authentication auth, String appUrl) {
         this.auth = auth;
@@ -31,5 +32,13 @@ public class HostPageModel extends PageModel {
 
 	public void setAppCacheEnabled(boolean appCacheEnabled) {
 		this.appCacheEnabled = appCacheEnabled;
+	}
+
+	public String getMapsApiKey() {
+		return mapsApiKey;
+	}
+
+	public void setMapsApiKey(String mapsApiKey) {
+		this.mapsApiKey = mapsApiKey;
 	}
 }

@@ -17,10 +17,12 @@ import org.activityinfo.server.bootstrap.model.HostPageModel;
 import org.activityinfo.server.database.hibernate.dao.AuthenticationDAO;
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -31,9 +33,12 @@ import freemarker.template.Configuration;
 public class HostController extends AbstractController {
     public static final String ENDPOINT = "/";
 
+    private DeploymentConfiguration deployConfig;
+    
     @Inject
-    public HostController(Injector injector, Configuration templateCfg) {
+    public HostController(Injector injector, Configuration templateCfg, DeploymentConfiguration deployConfig) {
         super(injector, templateCfg);
+        this.deployConfig = deployConfig;
     }
 
     @Override
@@ -47,6 +52,7 @@ public class HostController extends AbstractController {
             } else {
                 HostPageModel model = new HostPageModel(auth, computeAppUrl(req));
                 model.setAppCacheEnabled(checkAppCacheEnabled(req));
+                model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
 				writeView(resp, model);
             }
         } catch (NoValidAuthentication noValidAuthentication) {
@@ -54,7 +60,7 @@ public class HostController extends AbstractController {
         }
     }
 
-    private boolean checkAppCacheEnabled(HttpServletRequest req) {
+	private boolean checkAppCacheEnabled(HttpServletRequest req) {
     	// for browsers that only support database synchronisation via gears at this point,
     	// we would rather use gears managed resources stores than HTML5 appcache 
     	// so that we only have to display one permission

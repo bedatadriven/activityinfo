@@ -66,7 +66,7 @@
 		}
 		
         var GoogleMapsAPI = {
-            key: "ABQIAAAAaKyZGjYsJ9quclBfsnGc-xSULc68XBC8rIKw1gDHypRtutTChRRhuj6VmI9buf-pphk2EHnsnmxwRg"
+            key: "${mapsApiKey}"
         };
         var VersionInfo = {
             display: '$[display.version]',
