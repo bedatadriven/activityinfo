@@ -55,7 +55,7 @@ public class TargetForm extends FormPanel {
 		for (ProjectDTO projectDTO : database.getProjects()) {
 			projectCombo.add(projectDTO.getId(), projectDTO.getName());
         }
-        binding.addFieldBinding(new FieldBinding(projectCombo, "projectId"));
+        binding.addFieldBinding(new MappingComboBoxBinding(projectCombo, "projectId"));
         this.add(projectCombo);
         
         
