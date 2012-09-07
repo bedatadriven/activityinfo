@@ -395,13 +395,16 @@ public class OfflineController implements Dispatcher {
 				public void onSuccess(Date result) {
 					lastSynced = result;
 					eventBus.fireEvent(new SyncCompleteEvent(result));
+				
+					// do an initial synchronization attempt
+					offlineManger.synchronize();
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
+					offlineManger.synchronize();
 				}
 			});
-			// view.enableMenu();
 			return this;
 		}
 

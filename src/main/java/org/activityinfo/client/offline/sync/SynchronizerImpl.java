@@ -16,12 +16,16 @@ import org.activityinfo.shared.command.Command;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class SynchronizerImpl implements Synchronizer {
 
-    private final LocalDispatcher localDispatcher;
+    private static final int AUTO_SYNC_INTERVAL_MS = 5 * 60 * 1000;
+    
+	private final LocalDispatcher localDispatcher;
     private final SchemaMigration migrator;
     private final InstallPipeline installPipeline;
     private final SyncPipeline syncPipeline;
@@ -84,8 +88,29 @@ public class SynchronizerImpl implements Synchronizer {
     }
 
     public void synchronize() {
-       	syncPipeline.start();
+       	syncPipeline.start(new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				scheduleNext();	
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				scheduleNext();
+			}
+		});
     }
+
+	private void scheduleNext() {
+		Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+			@Override
+			public boolean execute() {
+				synchronize();
+				return false;
+			}
+		}, AUTO_SYNC_INTERVAL_MS);
+	}
 
 	@Override
 	public void execute(Command command, AsyncCallback callback) {
