@@ -396,7 +396,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
 
 	@Override
 	public AsyncMonitor getCreatingMonitor() {
-		return creatingMonitor;
+		return form;
 	}
 
 	@Override
