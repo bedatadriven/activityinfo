@@ -16,7 +16,7 @@ import org.activityinfo.shared.dto.PartnerDTO;
  *
  * @author Alex Bertram
  */
-public class AddPartner implements Command<CreateResult> {
+public class AddPartner implements MutatingCommand<CreateResult> {
 
     private int databaseId;
     private PartnerDTO partner;

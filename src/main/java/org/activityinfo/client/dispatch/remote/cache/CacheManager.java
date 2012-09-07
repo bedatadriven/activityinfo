@@ -10,13 +10,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.DispatchListener;
+import org.activityinfo.client.offline.sync.SyncCompleteEvent;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -32,11 +37,26 @@ public class CacheManager implements DispatchEventSource {
     private Map<Class<? extends Command>, List<CommandCache>> proxies =
             new HashMap<Class<? extends Command>, List<CommandCache>>();
 
-    public CacheManager() {
+    @Inject
+    public CacheManager(EventBus eventBus) {
+    	eventBus.addListener(SyncCompleteEvent.TYPE, new Listener<SyncCompleteEvent>() {
 
+			@Override
+			public void handleEvent(SyncCompleteEvent be) {
+				clearAllCaches();
+			}
+		});
     }
 
-    @Override
+    private void clearAllCaches() {
+		for(List<CommandCache> list : proxies.values()) {
+			for(CommandCache<?> cache : list) {
+				cache.clear();
+			}
+		}
+	}
+
+	@Override
     public <T extends Command> void registerListener(Class<T> commandClass, DispatchListener<T> listener) {
         List<DispatchListener> classListeners = listeners.get(commandClass);
         if (classListeners == null) {

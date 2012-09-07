@@ -18,6 +18,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Collections;
 
+import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.cache.CacheManager;
@@ -46,7 +47,7 @@ public class RemoteDispatcherTest {
     private RemoteCommandServiceAsync service;
     private Dispatcher dispatcher;
     private CommandCache proxy;
-    private CacheManager proxyManager = new CacheManager();
+    private CacheManager proxyManager = new CacheManager(new MockEventBus());
     
     private Capture<AsyncCallback> remoteCallback = new Capture<AsyncCallback>();
 
@@ -65,7 +66,7 @@ public class RemoteDispatcherTest {
         
         dispatcher = new CachingDispatcher(proxyManager, 
         		new MergingDispatcher(
-        		new RemoteDispatcher(auth, service),
+        		new RemoteDispatcher(new MockEventBus(), auth, service),
         		scheduler));
     }
 

@@ -163,6 +163,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.executeStatement("delete from PartnerInDatabase");
+        builder.executeStatement("delete from AttributeGroupInActivity");
 
         builder.createTableIfNotExists(Location.class);		
 
@@ -265,7 +266,6 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                 	}
                 }
             }
-            
         }
     }
 

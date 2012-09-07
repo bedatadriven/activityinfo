@@ -3,7 +3,7 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.report.model.Report;
 
-public class UpdateReportModel implements Command<VoidResult>{
+public class UpdateReportModel implements MutatingCommand<VoidResult>{
 
 	private Report model;
 	

@@ -8,13 +8,13 @@ package org.activityinfo.client.page.app;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
+import org.activityinfo.client.offline.ui.SyncStatusBar;
 import org.activityinfo.client.page.Frame;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.NavigationHandler;
 import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
-import org.activityinfo.client.page.common.SearchField;
 import org.activityinfo.client.page.config.DbListPageState;
 import org.activityinfo.client.page.dashboard.DashboardPlace;
 import org.activityinfo.client.page.entry.place.DataEntryPlace;
@@ -24,18 +24,13 @@ import org.activityinfo.client.widget.LoadingPlaceHolder;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.event.dom.client.KeyCodes;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -52,20 +47,23 @@ public class AppFrameSet implements Frame {
 	private Widget activeWidget;
 	private Page activePage;
 	private AppBar appBar;
-
+	private SyncStatusBar statusBar;
 
 	@Inject
-	public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, AppBar appBar) {
+	public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, AppBar appBar, 
+			SyncStatusBar statusBar) {
 
 		Log.trace("AppFrameSet constructor starting");
 
 		this.eventBus = eventBus;
 		this.appBar = appBar;
+		this.statusBar = statusBar;
 		
 		viewport = new Viewport();
-		viewport.setLayout(new RowLayout());
+		viewport.setLayout(new BorderLayout());
 
-		createToolBar();
+		setupTabs();
+		setupStatus();
 
 		Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
 
@@ -75,7 +73,7 @@ public class AppFrameSet implements Frame {
 
 	}
 
-	private void createToolBar() {
+	private void setupTabs() {
 		appBar.getSectionTabStrip().addSelectionHandler(new SelectionHandler<Section>() {
 
 			@Override
@@ -91,7 +89,17 @@ public class AppFrameSet implements Frame {
 			}
 			
 		});
-		viewport.add(appBar, new RowData(1.0, AppBar.HEIGHT));
+		BorderLayoutData layout = new BorderLayoutData(LayoutRegion.NORTH);
+		layout.setSize(AppBar.HEIGHT);
+	
+		viewport.add(appBar, layout);
+	}
+	
+	private void setupStatus() {
+		BorderLayoutData layout = new BorderLayoutData(LayoutRegion.SOUTH);
+		layout.setSize(SyncStatusBar.HEIGHT);
+				
+		viewport.add(statusBar, layout);
 	}
 
 	private void onSectionClicked(Section selectedItem) {
@@ -112,43 +120,8 @@ public class AppFrameSet implements Frame {
 
 	}
 
-	private void addSearchBox() {
-		final SearchField searchBox = new SearchField();
-		searchBox.addKeyListener(new KeyListener() {
-			@Override
-			public void componentKeyUp(ComponentEvent event) {
-				super.componentKeyUp(event);
-				if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
-					search(searchBox.getValue());
-				}
-			}
-		});
-		searchBox.addListener(Events.TriggerClick, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				search(searchBox.getValue());
-			}
-		});
-
-		//topBar.add(searchBox);
-	}
-
 	protected void search(String value) {
 		eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SearchPageState(value)));
-	}
-
-	private void addNavLink(String text, AbstractImagePrototype icon, final PageState place) {
-		//		TabItem tab = new TabItem(text);
-		//		tab.setIcon(icon);
-		//		tabPanel.add(tab);
-		//		tab.add
-		//        Button button = new Button(text, icon, new SelectionListener<ButtonEvent>() {
-		//            @Overridelement.
-		//            public void componentSelected(ButtonEvent ce) {
-		//                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, place));
-		//            }
-		//        });
-		//        topBar.add(button);
 	}
 
 	public void setWidget(Widget widget) {
@@ -156,7 +129,7 @@ public class AppFrameSet implements Frame {
 		if (activeWidget != null) {
 			viewport.remove(activeWidget);
 		}
-		viewport.add(widget, new RowData(1.0, 1.0));
+		viewport.add(widget, new BorderLayoutData(LayoutRegion.CENTER));
 		activeWidget = widget;
 		viewport.layout();
 	}

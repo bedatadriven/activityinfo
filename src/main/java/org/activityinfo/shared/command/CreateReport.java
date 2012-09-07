@@ -17,7 +17,7 @@ import org.activityinfo.shared.report.model.Report;
  *
  * @author Alex Bertram
  */
-public class CreateReport implements Command<CreateResult>{
+public class CreateReport implements MutatingCommand<CreateResult>{
 	
 	private Integer databaseId;
 	private Report report;

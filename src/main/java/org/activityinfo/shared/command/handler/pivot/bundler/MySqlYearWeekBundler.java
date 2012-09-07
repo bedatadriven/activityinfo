@@ -18,7 +18,7 @@ public class MySqlYearWeekBundler implements Bundler {
 
 	@Override
 	public void bundle(SqlResultSetRow row, Bucket bucket) {
-		if(row.isNull(weekAlias)) {
+		if(!row.isNull(weekAlias)) {
 			String yearWeek = row.getString(weekAlias);
 			if(yearWeek.length() == 6) {
 				bucket.setCategory(dimension, new WeekCategory(

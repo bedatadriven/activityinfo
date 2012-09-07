@@ -2,7 +2,7 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.VoidResult;
 
-public class CreateSiteAttachment implements Command<VoidResult> {
+public class CreateSiteAttachment implements MutatingCommand<VoidResult> {
 
 
 	private static final long serialVersionUID = 1008206027004197062L;

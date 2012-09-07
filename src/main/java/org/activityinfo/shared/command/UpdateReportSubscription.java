@@ -7,7 +7,7 @@ import org.activityinfo.shared.report.model.EmailDelivery;
  * Updates the relationship between a user and a report
  *
  */
-public class UpdateReportSubscription implements Command<VoidResult>{
+public class UpdateReportSubscription implements MutatingCommand<VoidResult>{
 	private int reportId;
 	private String userEmail;
 	

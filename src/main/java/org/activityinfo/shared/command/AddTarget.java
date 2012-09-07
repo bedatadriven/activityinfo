@@ -7,7 +7,7 @@ import org.activityinfo.shared.dto.TargetDTO;
  * The user wants to add a Target to a UserDatabase
  */
 
-public class AddTarget implements Command<CreateResult> {
+public class AddTarget implements MutatingCommand<CreateResult> {
 	private int databaseId;
 	private TargetDTO targetDTO;
 

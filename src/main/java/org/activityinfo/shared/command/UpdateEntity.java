@@ -25,7 +25,7 @@ import com.extjs.gxt.ui.client.data.RpcMap;
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class UpdateEntity implements Command<VoidResult> {
+public class UpdateEntity implements MutatingCommand<VoidResult> {
 
 	private int id;
 	private String entityName;

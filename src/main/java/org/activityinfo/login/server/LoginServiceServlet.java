@@ -75,12 +75,12 @@ public class LoginServiceServlet extends RemoteServiceServlet implements LoginSe
 
 	}
 
-	private User findUserByEmail(String email) throws InvalidLoginException {
+	private User findUserByEmail(String email) throws LoginException {
 		try {
 			return userDAO.get().findUserByEmail(email);
 
 		} catch (NoResultException e) {
-			throw new InvalidLoginException();
+			throw new LoginException();
 		}
 	}
 

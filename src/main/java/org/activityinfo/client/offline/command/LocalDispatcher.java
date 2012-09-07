@@ -5,15 +5,19 @@
 
 package org.activityinfo.client.offline.command;
 
+import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
 import org.activityinfo.client.dispatch.remote.Remote;
+import org.activityinfo.client.offline.sync.ServerStateChangeEvent;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.util.Collector;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.bedatadriven.rebar.async.ChainedCallback;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
@@ -30,15 +34,17 @@ public class LocalDispatcher extends AbstractDispatcher {
     private final SqlDatabase database;
     private final CommandQueue commandQueue;
 	private final Dispatcher remoteDispatcher;
-    
+	private final EventBus eventBus;
+	
     @Inject
-    public LocalDispatcher(AuthenticatedUser auth, SqlDatabase database, HandlerRegistry registry,
-    		@Remote Dispatcher remoteDispatcher) {
+    public LocalDispatcher(EventBus eventBus, AuthenticatedUser auth, SqlDatabase database,
+    		HandlerRegistry registry, @Remote Dispatcher remoteDispatcher, CommandQueue commandQueue) {
         Log.trace("LocalDispatcher constructor starting...");
+        this.eventBus = eventBus;
     	this.auth = auth;
         this.registry = registry;
         this.database = database;
-        this.commandQueue = new CommandQueue(database);
+        this.commandQueue = commandQueue;
         this.remoteDispatcher = remoteDispatcher;
     }
     
@@ -88,6 +94,24 @@ public class LocalDispatcher extends AbstractDispatcher {
 
     private <R extends CommandResult> void executeRemotely(final Command<R> command, final AsyncCallback<R> callback) {
     	Log.debug("No handler for " + command + ", executing remotely.");
-    	remoteDispatcher.execute(command, callback);
+
+    	remoteDispatcher.execute(command, new ChainedCallback<R>(callback) {
+
+			@Override
+			public void onSuccess(R result) {
+		    	if(command instanceof MutatingCommand) {
+		    		// This will lead to an inconstent state where the user's
+		    		// local copy of the database is out of sync 
+		    		
+		    		// this will disappear as we implement more functionality offline
+		    		// but in the meantime we need to trigger synchronization and 
+		    		// let the user they should expect some screwy stuff.
+                	if(command instanceof MutatingCommand) {
+    		    		eventBus.fireEvent(new ServerStateChangeEvent());
+                	}		    	
+		    	} 
+		    	callback.onSuccess(result);
+			}
+    	});
     }
 }

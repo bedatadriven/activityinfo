@@ -47,6 +47,7 @@ public class BatchCommandHandler implements CommandHandlerAsync<BatchCommand, Ba
 	    		results.add(null);
 	    	}
 	    	final boolean finished[] = new boolean[batch.getCommands().size()];
+	    	final List<Throwable> exceptions = Lists.newArrayList();
 	    	
 	    	for(int i=0; i!=batch.getCommands().size();++i) {
 	    		final int commandIndex = i;
@@ -54,7 +55,10 @@ public class BatchCommandHandler implements CommandHandlerAsync<BatchCommand, Ba
 	
 					@Override
 					public void onFailure(Throwable caught) {
-						callback.onFailure(caught);
+						if(exceptions.isEmpty()) {
+							exceptions.add(caught);
+							callback.onFailure(caught);
+						}
 					}
 	
 					@Override

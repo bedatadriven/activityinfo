@@ -361,9 +361,9 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private Bucket findBucketByWeek(List<Bucket> buckets, int year, int week) {
         for(Bucket bucket : buckets) {
             WeekCategory category = (WeekCategory) bucket.getCategory(new DateDimension(DateUnit.WEEK_MON));
-            if(category.getYear() == year && category.getWeek() == week) {
-                return bucket;
-            }
+	  	    if(category != null && category.getYear() == year && category.getWeek() == week) {
+	            return bucket;
+	        }
         }
         throw new AssertionError("No bucket for " + year + " W " + week);
     }

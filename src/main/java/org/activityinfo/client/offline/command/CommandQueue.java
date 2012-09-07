@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.activityinfo.client.EventBus;
+import org.activityinfo.client.offline.sync.SyncRequestEvent;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
@@ -14,12 +16,17 @@ import org.activityinfo.shared.command.UpdateSite;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.async.AsyncFunction;
+import com.bedatadriven.rebar.async.NullCallback;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
+import com.bedatadriven.rebar.sql.client.SqlResultCallback;
+import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
+import com.bedatadriven.rebar.sql.client.SqlResultSetRowList;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.fn.AsyncSql;
+import com.bedatadriven.rebar.sql.client.fn.QueryFunction;
 import com.bedatadriven.rebar.sql.client.fn.TxAsyncFunction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
@@ -68,13 +75,63 @@ public class CommandQueue {
 	private SqlQuery queryNext = 
 			SqlQuery.select("id", "command").from("command_queue").orderBy("id");
 
+	private SqlQuery queryCount = 
+			SqlQuery.select().appendColumn("count(*)", "count").from("command_queue");
 
-	private SqlDatabase database;
+	private Function<SqlResultSetRowList, Void> fireCount = new Function<SqlResultSetRowList, Void>() {
+
+		@Override
+		public Void apply(SqlResultSetRowList rows) {
+			eventBus.fireEvent(new CommandQueueEvent(rows.get(0).getInt("count")));
+			return null;
+		}
+	}; 
+
+	private Function<Void, Void> fireSyncRequest = new Function<Void, Void>() {
+
+		@Override
+		public Void apply(Void argument) {
+			eventBus.fireEvent(SyncRequestEvent.INSTANCE);
+			return null;
+		}
+	};
 	
+	private Function<SqlResultSetRow, CommandQueue.QueueEntry> createEntry = new Function<SqlResultSetRow, CommandQueue.QueueEntry>() {
+		
+		@Override
+		public QueueEntry apply(SqlResultSetRow row) {
+			int id = row.getInt("id");
+			String json = row.getString("command"); 
+			return new QueueEntry(id, deserializeCommand(json));
+		}
+	};
+	
+	private TxAsyncFunction<CommandQueue.QueueEntry, Void> removeItem = new TxAsyncFunction<CommandQueue.QueueEntry, Void>() {
+		
+		@Override
+		protected void doApply(SqlTransaction tx, QueueEntry argument,
+				final AsyncCallback<Void> callback) {
+			tx.executeSql("DELETE FROM command_queue WHERE id = ?", new Object[] {
+					argument.getId() }, new SqlResultCallback() {
+				
+				@Override
+				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+					callback.onSuccess(null);
+				}
+			});			
+		}
+	};
+	
+	
+	private final EventBus eventBus;
+	private final SqlDatabase database;
+
 	
 	@Inject
-	public CommandQueue(SqlDatabase database) {
+	public CommandQueue(EventBus eventBus, SqlDatabase database) {
+		this.eventBus = eventBus;
 		this.database = database;
+		this.database.execute(queryCount.asFunction().compose(fireCount), NullCallback.forVoid());
 	}
 	
 	public static TxAsyncFunction<Void, Void> createTableIfNotExists() {
@@ -89,26 +146,18 @@ public class CommandQueue {
 	 */
 	public void queue(SqlTransaction tx, Command cmd) {
 		JsonObject root = serialize(cmd);
-		
 		SqlInsert.insertInto("command_queue")
 			.value("command", root.toString())
-			.execute(tx);
+			.compose(queryCount.asFunction())
+			.compose(fireCount)
+			.compose(fireSyncRequest)
+			.apply(tx, null);
 	}
 	
 	public AsyncFunction<Void, List<QueueEntry>> get() {
-		return database
-				.transaction()
-				.compose(queryNext)
-				.map(
-				   
-			 new Function<SqlResultSetRow, QueueEntry>() {
-				@Override
-				public QueueEntry apply(SqlResultSetRow row) {
-					int id = row.getInt("id");
-					String json = row.getString("command"); 
-					return new QueueEntry(id, deserializeCommand(json));
-				}
-			});
+		return database.asFunction(
+			queryNext.asFunction()
+			.mapSequentially(createEntry));
 	}
 	
 	/**
@@ -134,38 +183,15 @@ public class CommandQueue {
 
 	
 	public AsyncFunction<QueueEntry, Void> remove() {
-		return new AsyncFunction<CommandQueue.QueueEntry, Void>() {
-
-			@Override
-			protected void doApply(final QueueEntry argument,
-					final AsyncCallback<Void> callback) {
-				database.transaction(new SqlTransactionCallback() {
-					
-					@Override
-					public void begin(SqlTransaction tx) {
-						tx.executeSql("DELETE FROM command_queue WHERE id = ?", new Object[] {
-								argument.getId() });
-					}
-
-					@Override
-					public void onError(SqlException e) {
-						callback.onFailure(e);
-					}
-
-					@Override
-					public void onSuccess() {
-						callback.onSuccess(null);
-					}
-				});				
-			}
-		};
+		return database.asFunction(
+				removeItem
+				.compose(queryCount.asFunction())
+				.compose(fireCount));
 	}
 	
 	public void remove(QueueEntry entry, AsyncCallback<Void> callback) {
 		remove().apply(entry, callback);
 	}
-	
-
 	
 	private JsonObject serialize(Command cmd) {
 		if(cmd instanceof CreateSite) {

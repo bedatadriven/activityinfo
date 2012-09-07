@@ -7,7 +7,6 @@ package org.activityinfo.client.offline.sync;
 
 import java.util.Date;
 
-import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.shared.command.Command;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;

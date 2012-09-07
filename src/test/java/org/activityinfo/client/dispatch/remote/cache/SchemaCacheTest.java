@@ -5,6 +5,7 @@
 
 package org.activityinfo.client.dispatch.remote.cache;
 
+import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.remote.cache.CacheResult;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.shared.command.GetSchema;
@@ -18,7 +19,7 @@ public class SchemaCacheTest {
     @Test
     public void testSchemaCache() {
 
-        CacheManager proxyMgr = new CacheManager();
+        CacheManager proxyMgr = new CacheManager(new MockEventBus());
 
         SchemaCache cache = new SchemaCache(proxyMgr);
 

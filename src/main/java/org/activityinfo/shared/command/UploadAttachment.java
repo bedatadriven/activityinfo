@@ -4,7 +4,7 @@ import org.activityinfo.shared.command.UploadAttachment.UploadAttachmentResult;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.AttachmentDTO;
 
-public class UploadAttachment implements Command<UploadAttachmentResult> {
+public class UploadAttachment implements MutatingCommand<UploadAttachmentResult> {
 	private AttachmentDTO attachment;
 	
 	public UploadAttachment(AttachmentDTO attachment) {

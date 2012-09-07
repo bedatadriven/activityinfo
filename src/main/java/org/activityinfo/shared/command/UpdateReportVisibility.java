@@ -5,7 +5,7 @@ import java.util.List;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.ReportVisibilityDTO;
 
-public class UpdateReportVisibility implements Command<VoidResult> {
+public class UpdateReportVisibility implements MutatingCommand<VoidResult> {
 	private int reportId;
 	private List<ReportVisibilityDTO> list;
 	

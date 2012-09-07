@@ -1,7 +1,6 @@
 package org.activityinfo.server.schedule;
 
 import org.quartz.Job;
-import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.spi.JobFactory;
@@ -22,8 +21,6 @@ public class GuiceJobFactory implements JobFactory {
 	@Override
 	public Job newJob(TriggerFiredBundle bundle, Scheduler scheduler)
 			throws SchedulerException {
-        JobDetail jobDetail = bundle.getJobDetail();
-        Class jobClass = jobDetail.getJobClass();
-        return (Job) guice.getInstance(jobClass);
+        return guice.getInstance(bundle.getJobDetail().getJobClass());
 	}
 }

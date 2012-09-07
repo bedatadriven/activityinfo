@@ -31,7 +31,7 @@ import com.extjs.gxt.ui.client.data.RpcMap;
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class CreateEntity implements Command<CreateResult> {
+public class CreateEntity implements MutatingCommand<CreateResult> {
     private String entityName;
     private RpcMap properties;
 

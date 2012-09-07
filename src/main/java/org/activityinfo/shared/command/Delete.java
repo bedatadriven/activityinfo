@@ -19,7 +19,7 @@ import org.activityinfo.shared.dto.EntityDTO;
  * @see org.activityinfo.server.database.hibernate.entity.Deleteable
  *
  */
-public class Delete implements Command<VoidResult> {
+public class Delete implements MutatingCommand<VoidResult> {
 	
 
 	private String entityName;

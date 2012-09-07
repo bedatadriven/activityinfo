@@ -19,7 +19,7 @@ import org.activityinfo.shared.dto.UserPermissionDTO;
  * such as an email message, etc.
  *
  */
-public class UpdateUserPermissions implements Command<VoidResult>  {
+public class UpdateUserPermissions implements MutatingCommand<VoidResult>  {
 
 	private int databaseId;
 	private UserPermissionDTO model;

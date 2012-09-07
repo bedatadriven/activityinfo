@@ -15,7 +15,7 @@ import com.extjs.gxt.ui.client.event.Observable;
  */
 public interface EventBus extends Observable {
 
-    static class NamedEventType extends EventType {
+    public static class NamedEventType extends EventType {
         private final String name;
 
         public NamedEventType(String name) {

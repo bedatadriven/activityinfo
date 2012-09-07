@@ -5,6 +5,7 @@
 
 package org.activityinfo.client.dispatch.remote.cache;
 
+import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
 import org.activityinfo.client.dispatch.remote.cache.CacheResult;
 import org.activityinfo.shared.command.GetAdminEntities;
@@ -20,7 +21,7 @@ public class AdminEntityCacheTest {
     @Test
     public void testRootLevelCache() {
 
-        CacheManager proxyMgr = new CacheManager();
+        CacheManager proxyMgr = new CacheManager(new MockEventBus());
 
         new AdminEntityCache(proxyMgr);
 

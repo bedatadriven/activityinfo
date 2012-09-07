@@ -2,7 +2,7 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.VoidResult;
 
-public class DeleteSiteAttachment implements Command<VoidResult> {
+public class DeleteSiteAttachment implements MutatingCommand<VoidResult> {
 
 	
 	private String blobId;

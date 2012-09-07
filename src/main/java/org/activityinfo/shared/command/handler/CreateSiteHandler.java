@@ -10,6 +10,7 @@ import org.activityinfo.shared.dto.IndicatorDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
+import com.bedatadriven.rebar.sql.client.query.SqlUpdate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -44,6 +45,18 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			CreateSite cmd)  {
 
 		RpcMap properties = cmd.getProperties();
+		
+		// deal with the possibility that we've already received this command
+		// but its completion was not acknowledged because of network problems
+		tx.executeSql("delete from IndicatorValue Where ReportingPeriodId in " +
+				"(select reportingperiodid from reportingperiod where siteid=" + cmd.getSiteId() + ")");
+		SqlUpdate.delete("ReportingPeriod")
+				 .where("SiteId", cmd.getSiteId())
+				 .execute(tx);
+		SqlUpdate.delete("Site")
+				 .where("SiteId", cmd.getSiteId())
+				 .execute(tx);
+		
 		
 		SqlInsert.insertInto("Site")
 			.value("SiteId", cmd.getSiteId())

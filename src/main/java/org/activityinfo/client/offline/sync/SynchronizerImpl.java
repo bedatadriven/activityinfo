@@ -7,13 +7,15 @@ package org.activityinfo.client.offline.sync;
 
 import java.util.Date;
 
-import org.activityinfo.client.dispatch.AsyncMonitor;
+import org.activityinfo.client.EventBus;
 import org.activityinfo.client.offline.command.LocalDispatcher;
 import org.activityinfo.client.offline.sync.pipeline.InstallPipeline;
 import org.activityinfo.client.offline.sync.pipeline.SyncPipeline;
 import org.activityinfo.shared.command.Command;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -27,6 +29,7 @@ public class SynchronizerImpl implements Synchronizer {
 
     @Inject
     public SynchronizerImpl(
+    				   EventBus eventBus,
                        LocalDispatcher localDispatcher,
                        InstallPipeline installPipeline,
                        SyncPipeline syncPipeline,
@@ -37,6 +40,14 @@ public class SynchronizerImpl implements Synchronizer {
     	this.installPipeline = installPipeline;
     	this.syncPipeline = syncPipeline;
     	this.historyTable = historyTable;
+    	
+    	eventBus.addListener(SyncRequestEvent.TYPE, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				SynchronizerImpl.this.syncPipeline.start();
+			}
+		});
     	
     }
 

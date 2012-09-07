@@ -15,6 +15,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.activityinfo.shared.util.Collector;
+import org.apache.log4j.Logger;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
@@ -25,6 +26,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 
 public class ServerExecutionContext implements ExecutionContext {
+	
+	private static Logger LOGGER = Logger.getLogger(ServerExecutionContext.class);
 	
 	private AuthenticatedUser user;
 	private Injector injector;
@@ -56,7 +59,8 @@ public class ServerExecutionContext implements ExecutionContext {
 			Class<AuthorizationHandler<C>> authHandlerClass = HandlerUtil.authorizationHandlerForCommand(command);
 			
 			if(authHandlerClass == null) {
-				callback.onFailure(new RuntimeException("Missing authorizatin handler for " + command.getClass()));
+				LOGGER.warn("No authorization handler for " + command.getClass());
+				onAuthorized(command, callback);
 			} else {			
 				AuthorizationHandler<C> authHandler = injector.getInstance(
 						authHandlerClass);

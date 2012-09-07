@@ -10,8 +10,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CachingDispatcher extends AbstractDispatcher {
 
-	private CacheManager cacheManager = new CacheManager();
-	private Dispatcher dispatcher;
+	private final CacheManager cacheManager;
+	private final Dispatcher dispatcher;
 	
 	public CachingDispatcher(CacheManager proxyManager, Dispatcher dispatcher) {
 		super();

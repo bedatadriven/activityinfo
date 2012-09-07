@@ -6,7 +6,7 @@ import org.activityinfo.shared.command.result.VoidResult;
 
 import com.extjs.gxt.ui.client.data.RpcMap;
 
-public class UpdateTargetValue implements Command<VoidResult> {
+public class UpdateTargetValue implements MutatingCommand<VoidResult> {
 
 	private int targetId;
 	private int indicatorId;

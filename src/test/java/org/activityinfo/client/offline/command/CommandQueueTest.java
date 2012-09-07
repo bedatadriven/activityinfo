@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.offline.command.CommandQueue;
 import org.activityinfo.database.ClientDatabaseStubs;
 import org.activityinfo.shared.command.CreateSite;
@@ -35,7 +36,7 @@ public class CommandQueueTest {
 		JdbcScheduler.get().forceCleanup();
 
 		db = ClientDatabaseStubs.empty();
-		queue = new CommandQueue(db);
+		queue = new CommandQueue(new MockEventBus(), db);
 		
 		db.execute(CommandQueue.createTableIfNotExists(), new NullCallback<Void>());
 	}

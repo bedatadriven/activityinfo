@@ -106,7 +106,7 @@ public class SettingsPopup extends PopupPanel {
 				offlineStatusLabel.setText(be.getTask() + " " + ((int)(be.getPercentComplete())) + "%");
 				syncing = true;
 			}
-		});
+		});	
 		eventBus.addListener(SyncCompleteEvent.TYPE, new Listener<SyncCompleteEvent>() {
 
 			@Override

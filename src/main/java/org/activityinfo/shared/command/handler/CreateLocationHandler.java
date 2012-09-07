@@ -7,6 +7,7 @@ import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
+import com.bedatadriven.rebar.sql.client.query.SqlUpdate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -17,8 +18,18 @@ public class CreateLocationHandler implements CommandHandlerAsync<CreateLocation
 			AsyncCallback<VoidResult> callback) {
 
 		Date timestamp = new Date();
-		
+
 		RpcMap properties = command.getProperties();
+		
+		// We need to handle the case in which the command is sent twice to
+		// the server
+		SqlUpdate.delete("Location")
+			.where("LocationId", properties.get("id"))
+			.execute(context.getTransaction());
+		SqlUpdate.delete("LocationAdminLink")
+			.where("LocationId", properties.get("id"))
+			.execute(context.getTransaction());
+	
 		SqlInsert.insertInto("Location")
 			.value("LocationId", properties.get("id"))
 			.value("LocationTypeId", properties.get("locationTypeId"))

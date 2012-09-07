@@ -5,12 +5,14 @@
 
 package org.activityinfo.client.offline.sync;
 
+import org.activityinfo.client.EventBus.NamedEventType;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
 
 public class SyncStatusEvent extends BaseEvent {
 
-    public static final EventType TYPE = new EventType();
+    public static final EventType TYPE = new NamedEventType("SyncStatus");
 
     private String task;
     private double percentComplete;

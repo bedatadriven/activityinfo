@@ -8,8 +8,11 @@ package org.activityinfo.client.dispatch.remote;
 import java.util.Collections;
 import java.util.List;
 
+import org.activityinfo.client.EventBus;
+import org.activityinfo.client.offline.sync.ServerStateChangeEvent;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
@@ -24,15 +27,17 @@ import com.google.inject.Inject;
 public class RemoteDispatcher extends AbstractDispatcher {
     private final AuthenticatedUser auth;
     private final RemoteCommandServiceAsync service;
+	private EventBus eventBus;
 
     @Inject
-    public RemoteDispatcher(AuthenticatedUser auth, RemoteCommandServiceAsync service) {
-        this.auth = auth;
+    public RemoteDispatcher(EventBus eventBus, AuthenticatedUser auth, RemoteCommandServiceAsync service) {
+    	this.eventBus = eventBus;
+    	this.auth = auth;
         this.service = service;
     }
 
     @Override
-    public <T extends CommandResult> void execute(Command<T> command, final AsyncCallback<T> callback) {
+    public <T extends CommandResult> void execute(final Command<T> command, final AsyncCallback<T> callback) {
         try {
         	final long timeStarted = System.currentTimeMillis();
 	    	service.execute(auth.getAuthToken(), Collections.singletonList((Command)command), new AsyncCallback<List<CommandResult>>() {

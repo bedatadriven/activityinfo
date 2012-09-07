@@ -2,7 +2,7 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.VoidResult;
 
-public class DeleteReport implements Command<VoidResult> {
+public class DeleteReport implements MutatingCommand<VoidResult> {
 	private int reportId;
 
 	public DeleteReport() {

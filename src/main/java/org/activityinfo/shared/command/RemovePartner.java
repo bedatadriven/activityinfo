@@ -7,7 +7,7 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.VoidResult;
 
-public class RemovePartner implements Command<VoidResult> {
+public class RemovePartner implements MutatingCommand<VoidResult> {
 
     private int databaseId;
     private int partnerId;
