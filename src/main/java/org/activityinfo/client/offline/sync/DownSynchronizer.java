@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.i18n.UIConstants;
@@ -69,7 +68,7 @@ public class DownSynchronizer implements AsyncCommand {
         
         this.localVerisonTable = new SyncRegionTable(conn);
         this.historyTable = new SyncHistoryTable(conn);
-        this.commandQueueTable = new CommandQueue(new MockEventBus(), conn);
+        this.commandQueueTable = new CommandQueue(eventBus, conn);
    }
 
     @Override

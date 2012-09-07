@@ -21,16 +21,11 @@ import com.extjs.gxt.ui.client.event.EventType;
 public class MockEventBus extends BaseObservable implements EventBus {
 
     public List<BaseEvent> eventLog = new ArrayList<BaseEvent>();
-
-   
     
     @Override
     public boolean fireEvent(EventType eventType, BaseEvent be) {
-        
         eventLog.add(be);
-
         return super.fireEvent(eventType, be);
-
     }
 
 	@Override
