@@ -25,7 +25,7 @@ import org.activityinfo.client.page.config.LockedPeriodsPresenter.LockedPeriodLi
 import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.command.LockEntity;
+import org.activityinfo.shared.command.CreateLockedPeriod;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CreateResult;
@@ -80,7 +80,7 @@ public class LockedPeriodsPresenter
 		view.getCreatingMonitor().beforeRequest();
 		
 		final LockedPeriodDTO lockedPeriod = view.getValue();
-		LockEntity lockUserDatabase = new LockEntity(lockedPeriod);
+		CreateLockedPeriod lockUserDatabase = new CreateLockedPeriod(lockedPeriod);
 		if (lockedPeriod.getParent() instanceof ActivityDTO) {
 			lockUserDatabase.setActivityId(lockedPeriod.getParent().getId());
 		}

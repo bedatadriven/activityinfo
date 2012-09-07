@@ -9,7 +9,7 @@ import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
 import org.activityinfo.server.database.hibernate.entity.Project;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
-import org.activityinfo.shared.command.LockEntity;
+import org.activityinfo.shared.command.CreateLockedPeriod;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.LockedPeriodDTO;
@@ -17,16 +17,16 @@ import org.activityinfo.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
-public class LockEntityHandler implements CommandHandler<LockEntity> {
+public class CreateLockedPeriodHandler implements CommandHandler<CreateLockedPeriod> {
     private EntityManager em;
 
 	@Inject
-	public LockEntityHandler(EntityManager em) {
+	public CreateLockedPeriodHandler(EntityManager em) {
 		this.em = em;
 	}
 	
 	@Override
-	public CommandResult execute(LockEntity cmd, User user)
+	public CommandResult execute(CreateLockedPeriod cmd, User user)
 			throws CommandException {
 		
 		Activity activity = null;

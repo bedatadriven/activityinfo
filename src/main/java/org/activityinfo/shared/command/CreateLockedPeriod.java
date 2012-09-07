@@ -3,16 +3,16 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.LockedPeriodDTO;
 
-public class LockEntity implements Command<CreateResult> {
+public class CreateLockedPeriod implements MutatingCommand<CreateResult> {
 	private int activityId=0;
 	private int userDatabseId=0;
 	private int projectId=0;
 	private LockedPeriodDTO lockedPeriod;
 	
-	public LockEntity() {
+	public CreateLockedPeriod() {
 	}
 
-	public LockEntity(LockedPeriodDTO lockedPeriod) {
+	public CreateLockedPeriod(LockedPeriodDTO lockedPeriod) {
 		this.setLockedPeriod(lockedPeriod);
 	}
 

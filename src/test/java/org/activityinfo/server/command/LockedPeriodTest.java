@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
-import org.activityinfo.shared.command.LockEntity;
+import org.activityinfo.shared.command.CreateLockedPeriod;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.LockedPeriodDTO;
@@ -32,7 +32,7 @@ public class LockedPeriodTest extends CommandTestCase {
 		dto.setToDate(new LocalDate(2011,1,31));
 		dto.setEnabled(true);
 		
-		LockEntity create = new LockEntity(dto);
+		CreateLockedPeriod create = new CreateLockedPeriod(dto);
 		create.setUserDatabaseId(1);
 		
 		CreateResult result = execute(create);
