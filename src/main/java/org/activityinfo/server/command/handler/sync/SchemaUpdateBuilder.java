@@ -163,7 +163,6 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
         builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.executeStatement("delete from PartnerInDatabase");
-        builder.executeStatement("delete from AttributeGroupInActivity");
 
         builder.createTableIfNotExists(Location.class);		
 
@@ -181,6 +180,8 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         }
 
         builder.executeStatement("create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
+        builder.executeStatement("delete from AttributeGroupInActivity");
+        
         if(anyAttributes()) {
 	        builder.beginPreparedStatement("insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
 	        for(UserDatabase db : databases) {
@@ -211,7 +212,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     			if(!activity.getAttributeGroups().isEmpty()) {
     				return true;
     			}
-    		}
+    		}	
     	}		
     	return false;
     }
