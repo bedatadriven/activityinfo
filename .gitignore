@@ -1,2 +1,10 @@
-/target
+target/
 /src/main/java/org/sigmah/client/i18n/UIConstants.java
+/gwt-unitCache
+/ActivityInfo.launch
+/Embed.launch
+/Login.launch
+/org.activityinfo.login.LoginApi.launch
+.*
+.metadata/
+/SomeXmlTest.xml
