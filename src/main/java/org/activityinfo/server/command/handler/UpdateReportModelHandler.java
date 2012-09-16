@@ -11,6 +11,7 @@ import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.shared.command.UpdateReportModel;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 
 import com.google.inject.Inject;
@@ -29,14 +30,17 @@ public class UpdateReportModelHandler implements CommandHandler<UpdateReportMode
 	@Override
 	public CommandResult execute(UpdateReportModel cmd, User user)
 			throws CommandException {
-				
+	
 		Query query = em
 				.createQuery(
 						"select r from ReportDefinition r where r.id in (:id)")
 				.setParameter("id", cmd.getModel().getId());
 
 		ReportDefinition result = (ReportDefinition) query.getSingleResult();
-		
+		if (result.getOwner().getId() != user.getId()) {
+			throw new IllegalAccessCommandException("Current user does not have the right to edit this report");			
+		}
+	
 		result.setTitle(cmd.getModel().getTitle());
 //		result.setJson(cmd.getReportJsonModel());
 		try{
