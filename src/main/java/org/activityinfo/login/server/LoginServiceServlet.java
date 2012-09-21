@@ -4,7 +4,6 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activityinfo.login.shared.AuthenticationException;
 import org.activityinfo.login.shared.LoginException;
 import org.activityinfo.login.shared.LoginService;
 import org.activityinfo.login.shared.PasswordExpiredException;
@@ -16,7 +15,6 @@ import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.auth.AuthenticatedUser;
-import org.activityinfo.shared.exception.InvalidLoginException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
@@ -84,9 +82,9 @@ public class LoginServiceServlet extends RemoteServiceServlet implements LoginSe
 		}
 	}
 
-	private void checkPassword(String password, User user) throws AuthenticationException {
+	private void checkPassword(String password, User user) throws LoginException {
 		if (!authenticator.get().check(user, password)) {
-			throw new AuthenticationException();
+			throw new LoginException();
 		}
 	}
 

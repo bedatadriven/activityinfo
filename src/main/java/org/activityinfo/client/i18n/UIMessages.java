@@ -198,10 +198,12 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 
 	@DefaultMessage("The report ''{0}'' has been saved.")
 	String reportSaved(String name);
-	
 
 	@DefaultMessage("Are you sure you want to delete the report \"{0}\"")
 	String confirmDeleteReport(String reportTitle);
+	
+	@DefaultMessage("You are not the owner of this report.<br/>Do you want to save a new copy?")
+	String confirmSaveCopy(); 
 
 	@DefaultMessage("The activity \"{0}\" has not been marked as public by the database owner and so cannot be embedded in a public web page. Please contact the database owner and request that the activity be published.")
 	String activityNotPublic(String name);
