@@ -17,8 +17,6 @@ import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.util.date.DateUtilCalendarImpl;
-import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.exception.CommandException;
@@ -29,6 +27,7 @@ import org.activityinfo.shared.report.content.WeekCategory;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateDimension;
+import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -36,10 +35,12 @@ import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
@@ -158,10 +159,25 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         execute();
 
         assertThat().thereAre(2).buckets();
-        assertThat().forPartner(OWNER_USER_ID).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
+        assertThat().forPartner(1).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
         assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
     }
 
+    @Ignore("TODO")
+    @Test
+    public void testTargetPivot() {
+
+        withIndicatorAsDimension();
+        dimensions.add(new DateDimension(DateUnit.YEAR));
+        dimensions.add(new Dimension(DimensionType.Target));
+        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.setDateRange(new DateRange(new LocalDate(2008, 1, 1), new LocalDate(2008, 12, 31)));
+        execute();
+
+        assertThat().thereAre(2).buckets();
+    }
+
+    
     @Test
     public void testAttributePivot() {
         withIndicatorAsDimension();

@@ -71,6 +71,12 @@ public final class DateRange implements Serializable {
         this.setMinDate(minDate);
         this.setMaxDate(maxDate);
     }
+    
+    public DateRange(LocalDate minDate, LocalDate maxDate) {
+        this.setMinDate(minDate);
+        this.setMaxDate(maxDate);
+    }
+        
 
     /**
      * Constructs a fully open date range (all dates are included).
