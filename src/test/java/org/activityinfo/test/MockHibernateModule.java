@@ -24,7 +24,6 @@ import com.google.inject.Singleton;
 public class MockHibernateModule extends AbstractModule {
     private static EntityManagerFactory emf = null;
 
-
 	@Override
 	protected void configure() {
 		
@@ -49,9 +48,9 @@ public class MockHibernateModule extends AbstractModule {
                 	Properties properties = new Properties();
                 	properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
                 	properties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-                	properties.setProperty("hibernate.connection.url",  TestConnectionProvider.getUrl());
-                	properties.setProperty("hibernate.connection.username", TestConnectionProvider.getUsername());
-                	properties.setProperty("hibernate.connection.password", TestConnectionProvider.getPassword());
+					properties.setProperty("hibernate.connection.url", TestConnectionProvider.URL);
+					properties.setProperty("hibernate.connection.username", TestConnectionProvider.USERNAME);
+					properties.setProperty("hibernate.connection.password", TestConnectionProvider.PASSWORD);
                 	properties.setProperty("hibernate.hbm2ddl.auto", "none");
                                 	
                 	emf = Persistence.createEntityManagerFactory("activityInfo", properties);
