@@ -32,7 +32,10 @@ public class TestConnectionProvider implements Provider<Connection>{
 	static {
 		try {
 			Properties activityinfoProperties = new Properties();
-			activityinfoProperties.load(new FileInputStream(new File(System.getProperty("user.home"), "activityinfo.properties")));
+			File propertiesFile = new File(System.getProperty("user.home"), "activityinfo.properties");
+			if (propertiesFile.exists()) {
+				activityinfoProperties.load(new FileInputStream(propertiesFile));
+			}
 
 			String urlProperty = activityinfoProperties.getProperty(URL_PROPERTY);
 			URL = urlProperty != null ? urlProperty : System.getProperty(URL_PROPERTY, DEFAULT_URL);
