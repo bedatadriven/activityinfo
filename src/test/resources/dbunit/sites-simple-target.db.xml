@@ -331,6 +331,14 @@
 	<indicatorValue reportingPeriodId="3" indicatorId="2"
 		value="500" />
 		
+	<target targetId="1" Name="2008 Annual targets" 
+		date1="2008-01-01" 
+		date2="2008-12-31"
+		databaseId="1"/>
+		
+	<targetValue targetId="1" IndicatorId="1" value="20000"/>
+
+
 	<!-- PEAR Plus Health Center Support in Ngweshe -->
 
 	<location locationId="9" name="CS Ngweshe" locationTypeId="2"

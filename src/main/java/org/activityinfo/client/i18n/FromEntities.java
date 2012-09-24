@@ -12,6 +12,7 @@ public class FromEntities {
 			case Project: return removeSpaces(I18N.CONSTANTS.projects());
 			case AttributeGroup: return removeSpaces(I18N.CONSTANTS.attributeTypes());
 			case Indicator: return removeSpaces(I18N.CONSTANTS.indicators());
+			case Target: return removeSpaces(I18N.CONSTANTS.targets());
 			case Site: return removeSpaces(I18N.CONSTANTS.sites());
 			case Database: return removeSpaces(I18N.CONSTANTS.databases());
 			case Location: return removeSpaces(I18N.CONSTANTS.locations());
