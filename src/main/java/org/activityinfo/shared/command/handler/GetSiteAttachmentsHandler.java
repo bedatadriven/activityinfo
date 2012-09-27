@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.activityinfo.shared.command.GetSiteAttachments;
 import org.activityinfo.shared.command.result.SiteAttachmentResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.SiteAttachmentDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -24,7 +25,7 @@ public class GetSiteAttachmentsHandler implements CommandHandlerAsync<GetSiteAtt
 		
 		dtos = new  ArrayList<SiteAttachmentDTO>();
 		
-		SqlQuery.selectAll().from("siteattachment", "s")
+		SqlQuery.selectAll().from(Tables.SITE_ATTACHMENT, "s")
 			.where("s.siteid").equalTo(command.getSiteId())
 			.execute(context.getTransaction(), new SqlResultCallback() {
 				@Override

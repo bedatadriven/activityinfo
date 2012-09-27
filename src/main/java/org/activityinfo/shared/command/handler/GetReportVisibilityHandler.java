@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.activityinfo.shared.command.GetReportVisibility;
 import org.activityinfo.shared.command.result.ReportVisibilityResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.ReportVisibilityDTO;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -23,7 +24,7 @@ public class GetReportVisibilityHandler implements CommandHandlerAsync<GetReport
 			.appendColumn("v.databaseId", "databaseId")
 			.appendColumn("d.name", "name")
 			.appendColumn("v.defaultDashboard", "defaultDashboard")
-			.from("reportvisibility", "v")
+			.from(Tables.REPORT_VISIBILITY, "v")
 			.leftJoin("userdatabase", "d").on("v.databaseId=d.databaseId")
 			.where("v.reportId").equalTo(command.getReportId())
 			.execute(context.getTransaction(), new SqlResultCallback() {

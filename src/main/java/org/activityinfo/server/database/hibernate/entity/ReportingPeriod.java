@@ -124,7 +124,7 @@ public class ReportingPeriod implements java.io.Serializable, Deleteable {
 	@OneToMany(mappedBy="reportingPeriod", fetch=FetchType.LAZY)
     @org.hibernate.annotations.Filter(
 			name="hideDeleted",
-			condition="(IndicatorId not in (select i.IndicatorId from Indicator i where i.dateDeleted is not null))")
+			condition="(IndicatorId not in (select i.IndicatorId from indicator i where i.dateDeleted is not null))")
 	public Set<IndicatorValue> getIndicatorValues() {
 		return indicatorValues;
 	}

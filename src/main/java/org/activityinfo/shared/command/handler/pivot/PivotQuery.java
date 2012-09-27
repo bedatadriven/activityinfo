@@ -19,6 +19,7 @@ import org.activityinfo.shared.command.handler.pivot.bundler.SiteCountBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.SumAndAverageBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.YearBundler;
 import org.activityinfo.shared.command.result.Bucket;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateDimension;
@@ -91,15 +92,15 @@ public class PivotQuery {
         * this saves us some work and hopefully the SQL server will optimize out any unused
         * tables
         */
-    	query.from(" IndicatorValue V " +
-                "LEFT JOIN ReportingPeriod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
-                "LEFT JOIN Indicator ON (Indicator.IndicatorId = V.IndicatorId) " +
-                "LEFT JOIN Site ON (Period.SiteId = Site.SiteId) " +
-                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId)" +
-                "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
-                "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
-                "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
+    	query.from(" indicatorvalue V " +
+                "LEFT JOIN reportingperiod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
+                "LEFT JOIN indicator Indicator ON (Indicator.IndicatorId = V.IndicatorId) " +
+                "LEFT JOIN site Site ON (Period.SiteId = Site.SiteId) " +
+                "LEFT JOIN partner Partner ON (Site.PartnerId = Partner.PartnerId)" +
+                "LEFT JOIN project Project ON (Site.ProjectId = Project.ProjectId) " +
+                "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
+                "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
+                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
         /*
          * First add the indicator to the query: we can't aggregate values from different
          * indicators so this is a must
@@ -124,14 +125,14 @@ public class PivotQuery {
         * tables
         */
 
-        query.from(" Site " +
-                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
-                "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
-                "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
-                "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN Indicator ON (Indicator.ActivityId = Activity.ActivityId) " +
-                "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
-                "LEFT JOIN ReportingPeriod Period ON (Period.SiteId = Site.SiteId) ");
+        query.from(" site Site " +
+                "LEFT JOIN partner Partner ON (Site.PartnerId = Partner.PartnerId) " +
+                "LEFT JOIN project Project ON (Site.ProjectId = Project.ProjectId) " +
+                "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
+                "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
+                "LEFT JOIN indicator Indicator ON (Indicator.ActivityId = Activity.ActivityId) " +
+                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
+                "LEFT JOIN reportingperiod Period ON (Period.SiteId = Site.SiteId) ");
 
         /* First add the indicator to the query: we can't aggregate values from different
         * indicators so this is a must
@@ -147,13 +148,13 @@ public class PivotQuery {
     }
     
     public void queryForTotalSiteCounts() {
-        query.from(" Site " +
-                "LEFT JOIN Partner ON (Site.PartnerId = Partner.PartnerId) " +
-                "LEFT JOIN Project ON (Site.ProjectId = Project.ProjectId) " +
-                "LEFT JOIN Location ON (Location.LocationId = Site.LocationId) " +
-                "LEFT JOIN Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
-                "LEFT JOIN ReportingPeriod Period ON (Period.SiteId = Site.SiteId) ");
+        query.from(" site Site " +
+                "LEFT JOIN partner Partner ON (Site.PartnerId = Partner.PartnerId) " +
+                "LEFT JOIN project Project ON (Site.ProjectId = Project.ProjectId) " +
+                "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
+                "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
+                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
+                "LEFT JOIN reportingperiod Period ON (Period.SiteId = Site.SiteId) ");
 
         /* First add the indicator to the query: we can't aggregate values from different
         * indicators so this is a must
@@ -234,8 +235,8 @@ public class PivotQuery {
 
                 query.from(new StringBuilder(" LEFT JOIN " +
                         "(SELECT L.LocationId, E.AdminEntityId, E.Name " +
-                        "FROM LocationAdminLink L " +
-                        "LEFT JOIN AdminEntity E ON (L.AdminEntityId=E.AdminEntityID) " +
+                        "FROM locationadminlink L " +
+                        "LEFT JOIN adminentity E ON (L.AdminEntityId=E.AdminEntityID) " +
                         "WHERE E.AdminLevelId=").append(adminDim.getLevelId())
                         .append(") AS ").append(tableAlias)
                         .append(" ON (Location.LocationId=").append(tableAlias).append(".LocationId)").toString());
@@ -257,8 +258,8 @@ public class PivotQuery {
             	SqlQuery derivedValueQuery = SqlQuery.select()
             		.appendColumn("v.siteId", "siteId")
             		.appendColumn("min(v.attributeId)", "attributeId")
-            		.from("AttributeValue", "v")
-            		.leftJoin("Attribute", "a").on("v.AttributeId = a.AttributeId")
+            		.from("attributevalue", "v")
+            		.leftJoin("attribute", "a").on("v.AttributeId = a.AttributeId")
             		.whereTrue("v.value=1")
             		.whereTrue("a.attributeGroupId=" + attrGroupDim.getAttributeGroupId())
             		.groupBy("v.siteId");
@@ -267,7 +268,7 @@ public class PivotQuery {
             		.on("Site.SiteId=" + valueQueryAlias + ".SiteId");
             	
             	// now we need the names of the attributes we've just selected
-            	query.leftJoin("Attribute", labelQueryAlias)
+            	query.leftJoin("attribute", labelQueryAlias)
             		.on(valueQueryAlias + ".AttributeId=" + labelQueryAlias + ".AttributeId");
 
             	addEntityDimension(attrGroupDim, valueQueryAlias + ".AttributeId", labelQueryAlias + ".Name");
@@ -342,7 +343,7 @@ public class PivotQuery {
 	private void appendVisibilityFilter() {
         StringBuilder securityFilter = new StringBuilder();
         securityFilter.append("(UserDatabase.OwnerUserId = ").append(userId).append(" OR ")
-             .append(userId).append(" in (select p.UserId from UserPermission p " +
+             .append(userId).append(" in (select p.UserId from userpermission p " +
                 "where p.AllowView and " +
                 "p.UserId=").append(userId).append(" AND p.DatabaseId = UserDatabase.DatabaseId))");
         
@@ -365,7 +366,7 @@ public class PivotQuery {
             	query.where("Site.LocationId").in(filter.getRestrictions(DimensionType.Location));
             } else if (type == DimensionType.AdminLevel) {
             	query.where("Site.LocationId").in(
-            			SqlQuery.select("Link.LocationId").from("LocationAdminLink", "Link")
+            			SqlQuery.select("Link.LocationId").from(Tables.LOCATION_ADMIN_LINK, "Link")
             				.where("Link.AdminEntityId").in(filter.getRestrictions(DimensionType.AdminLevel)));
             }
         }

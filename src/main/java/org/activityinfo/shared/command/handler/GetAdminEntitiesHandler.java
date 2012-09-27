@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.AdminEntityResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
@@ -29,7 +30,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 					"AdminEntity.adminLevelId",
 					"AdminEntity.adminEntityParentId",
 					"x1","y1","x2","y2")
-					.from("AdminEntity")
+					.from(Tables.ADMIN_ENTITY, "AdminEntity")
 					.orderBy("AdminEntity.name");
 
 		if(cmd.getCountryId() != null) {
@@ -51,9 +52,9 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 
 		if(cmd.getFilter() != null && cmd.getFilter().isRestricted(DimensionType.Activity)) {
 			SqlQuery subQuery = SqlQuery.select("link.AdminEntityId")
-					.from("LocationAdminLink link ")
-					.leftJoin("Location").on("link.LocationId = Location.LocationId")
-					.leftJoin("Site").on("Location.LocationId = Site.LocationId")
+					.from(Tables.LOCATION_ADMIN_LINK, "link")
+					.leftJoin(Tables.LOCATION, "Location").on("link.LocationId = Location.LocationId")
+					.leftJoin(Tables.SITE, "Site").on("Location.LocationId = Site.LocationId")
 					.where("Site.ActivityId").in(cmd.getFilter().getRestrictions(DimensionType.Activity));
 
 			query.where("AdminEntity.AdminEntityId").in(subQuery);
@@ -63,7 +64,8 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 			if(cmd.getLevelId() == null) {
 				query.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
 			} else {
-				SqlQuery subQuery = SqlQuery.select("adminEntityId").from("AdminEntity")
+				SqlQuery subQuery = SqlQuery.select("adminEntityId")
+					.from(Tables.ADMIN_ENTITY, "AdminEntity")
 					.where("AdminLevelId").equalTo(cmd.getLevelId())
 					.where("AdminEntityId").in(cmd.getFilter().getRestrictions(DimensionType.AdminLevel));
 				query.where("AdminEntity.AdminEntityId").in(subQuery);

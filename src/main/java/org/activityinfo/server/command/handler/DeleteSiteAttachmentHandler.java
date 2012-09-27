@@ -4,6 +4,7 @@ import org.activityinfo.shared.command.DeleteSiteAttachment;
 import org.activityinfo.shared.command.handler.CommandHandlerAsync;
 import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.db.Tables;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -33,7 +34,7 @@ public class DeleteSiteAttachmentHandler implements
 				credentials.getAWSAccessKeyId(), credentials.getAWSSecretKey()));
 		client.deleteObject(bucketName, key);
 
-		SqlUpdate.delete("siteattachment")
+		SqlUpdate.delete(Tables.SITE_ATTACHMENT)
 				.where("blobid", command.getBlobId())
 				.execute(context.getTransaction());
 

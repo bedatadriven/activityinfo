@@ -41,7 +41,7 @@ import org.activityinfo.shared.report.model.EmailDelivery;
 				name="userVisible",
 				condition="(:currentUserId = OwnerUserId or " + 
 						  "(Visibility = 1 and (DatabaseId is null or " +
-						  ":currentUserId in (select p.UserId from UserPermission p " +
+						  ":currentUserId in (select p.UserId from userpermission p " +
 						  						"where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))))"
 		),
 		

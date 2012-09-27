@@ -40,7 +40,7 @@ public class GetBaseMapsHandler implements CommandHandlerAsync<GetBaseMaps, Base
 			.appendColumn("name")
 			.appendColumn("tileUrlPattern")
 			.appendColumn("thumbnailUrl")
-			.from("BaseMap")
+			.from("basemap")
 			.execute(context.getTransaction(), new SqlResultCallback() {
 				
 				@Override

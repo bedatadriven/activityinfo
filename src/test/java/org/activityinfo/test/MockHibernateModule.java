@@ -13,6 +13,7 @@ import javax.persistence.Persistence;
 
 import org.activityinfo.server.database.TestConnectionProvider;
 import org.activityinfo.server.database.TestDatabaseModule;
+import org.activityinfo.server.database.hibernate.AINamingStrategy;
 import org.activityinfo.server.database.hibernate.EntityManagerProvider;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
@@ -53,6 +54,7 @@ public class MockHibernateModule extends AbstractModule {
                 	properties.setProperty("hibernate.connection.username", TestConnectionProvider.getUsername());
                 	properties.setProperty("hibernate.connection.password", TestConnectionProvider.getPassword());
                 	properties.setProperty("hibernate.hbm2ddl.auto", "none");
+                	properties.setProperty("hibernate.ejb.naming_strategy", AINamingStrategy.class.getName());
                                 	
                 	emf = Persistence.createEntityManagerFactory("activityInfo", properties);
                 	

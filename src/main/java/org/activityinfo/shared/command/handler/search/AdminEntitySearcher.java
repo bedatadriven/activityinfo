@@ -17,7 +17,7 @@ public class AdminEntitySearcher implements Searcher {
 	@Override
 	public void search(final List<String> testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		SqlQuery.select("AdminEntityId")
-		.from("AdminEntity")
+		.from("adminentity")
 		.whereLikes("Name")
 		.likeMany(testQuery)
 		

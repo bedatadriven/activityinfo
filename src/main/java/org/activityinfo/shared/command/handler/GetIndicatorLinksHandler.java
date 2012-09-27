@@ -5,6 +5,7 @@ import java.util.List;
 import org.activityinfo.shared.command.GetIndicatorLinks;
 import org.activityinfo.shared.command.result.IndicatorLink;
 import org.activityinfo.shared.command.result.IndicatorLinkResult;
+import org.activityinfo.shared.db.Tables;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -25,13 +26,13 @@ public class GetIndicatorLinksHandler implements CommandHandlerAsync<GetIndicato
 			.appendColumn("SDB.DatabaseId", "SourceDatabaseId")
 			.appendColumn("L.DestinationIndicatorId", "DestinationIndicatorId")
 			.appendColumn("DDB.DatabaseId", "DestinationDatabaseId")
-			.from("IndicatorLink", "L")
-			.innerJoin("Indicator", "SI").on("SI.IndicatorId=L.SourceIndicatorId")
-			.innerJoin("Activity", "SA").on("SA.ActivityId=SI.ActivityId")
-			.innerJoin("UserDatabase", "SDB").on("SDB.DatabaseId=SA.DatabaseId")
-			.innerJoin("Indicator", "DI").on("DI.IndicatorId=L.DestinationIndicatorId")
-			.innerJoin("Activity", "DA").on("DA.ActivityId=DI.ActivityId")
-			.innerJoin("UserDatabase", "DDB").on("DDB.DatabaseId=DA.DatabaseId")
+			.from(Tables.INDICATOR_LINK, "L")
+			.innerJoin(Tables.INDICATOR, "SI").on("SI.IndicatorId=L.SourceIndicatorId")
+			.innerJoin(Tables.ACTIVITY, "SA").on("SA.ActivityId=SI.ActivityId")
+			.innerJoin(Tables.USER_DATABASE, "SDB").on("SDB.DatabaseId=SA.DatabaseId")
+			.innerJoin(Tables.INDICATOR, "DI").on("DI.IndicatorId=L.DestinationIndicatorId")
+			.innerJoin(Tables.ACTIVITY, "DA").on("DA.ActivityId=DI.ActivityId")
+			.innerJoin(Tables.USER_DATABASE, "DDB").on("DDB.DatabaseId=DA.DatabaseId")
 			.execute(context.getTransaction(), new SqlResultCallback() {
 				
 				@Override

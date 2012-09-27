@@ -115,20 +115,20 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     }
 
     private void removeDependentAttributeValuesOfDeletedOrUpdatedSites() throws JSONException {
-        builder.beginPreparedStatement("delete from AttributeValue where SiteId = ?");
+        builder.beginPreparedStatement("delete from attributevalue where SiteId = ?");
         addIdsOfUpdatedOrDeleted(builder);
         builder.finishPreparedStatement();
     }
 
     private void removeDependentReportingPeriodsOfDeletedOrUpdatedSites() throws JSONException {
-        builder.beginPreparedStatement("delete from ReportingPeriod where SiteId = ?");
+        builder.beginPreparedStatement("delete from reportingperiod where SiteId = ?");
         addIdsOfUpdatedOrDeleted(builder);
         builder.finishPreparedStatement();
     }
 
     private void removeDependentIndicatorValuesOfDeletedOrUpdatedSites() throws JSONException {
-        builder.beginPreparedStatement("delete from IndicatorValue where IndicatorValue.ReportingPeriodId in " +
-                "(select ReportingPeriodId from ReportingPeriod where SiteId = ?) ");
+        builder.beginPreparedStatement("delete from indicatorvalue where indicatorvalue.ReportingPeriodId in " +
+                "(select ReportingPeriodId from reportingperiod where SiteId = ?) ");
         addIdsOfUpdatedOrDeleted(builder);
         builder.finishPreparedStatement();
     }

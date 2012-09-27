@@ -2,6 +2,7 @@ package org.activityinfo.server.database.dao;
 
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.util.Collector;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
@@ -61,8 +62,8 @@ public class UserDAO {
 				"u.email",
 				"u.password",
 				"u.locale")
-				.from("authentication", "a")
-				.leftJoin("user", "u").on("a.userId = u.userId")
+				.from(Tables.AUTHENTICATION, "a")
+				.leftJoin(Tables.USER_LOGIN, "u").on("a.userId = u.userId")
 				.where("a.authToken").equalTo(authToken)
 				.delegateErrorsTo(callback)
 				.execute(database, new SingleRowHandler() {

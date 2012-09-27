@@ -410,7 +410,8 @@
 							<goal>dropAll</goal>
 							<goal>update</goal>
 						</goals>
-						<phase>test-compile</phase>
+					
+						<phase>test-compile</phase> 
 						<configuration>
 							<dropFirst>true</dropFirst>
 							<url>${testDatabaseUrl}</url>

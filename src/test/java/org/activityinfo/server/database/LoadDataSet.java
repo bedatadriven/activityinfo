@@ -17,7 +17,9 @@ import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.LowerCaseDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
@@ -67,7 +69,11 @@ public class LoadDataSet extends Statement {
         if (in == null) {
             throw new Error("Could not find resource '" + name + "'");
         }
-        return new FlatXmlDataSet(new InputStreamReader(in), false, true, false);
+        
+        return new LowerCaseDataSet(new FlatXmlDataSetBuilder()
+        	.setDtdMetadata(true)
+        	.setColumnSensing(true)
+        	.build(new InputStreamReader(in)));
     }
 
     private void populate(final IDataSet dataSet) throws DatabaseUnitException, SQLException {

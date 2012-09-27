@@ -129,7 +129,7 @@ public class ServerExecutionContext implements ExecutionContext {
 
 			@Override
 			public void onError(SqlException e) {
-				throw e;
+				txResult.onFailure(e);
 			}
 
 			@Override

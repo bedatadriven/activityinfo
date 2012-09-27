@@ -7,6 +7,7 @@ import java.util.Map;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.PartnerDTO;
@@ -144,7 +145,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		.appendColumn("(0)", "Linked")
 		.appendColumn("activity.ActivityId")
 		.appendColumn("activity.name", "ActivityName")
-		.appendColumn("UserDatabase.DatabaseId", "DatabaseId")
+		.appendColumn("db.DatabaseId", "DatabaseId")
 		.appendColumn("site.Date1", "Date1")
 		.appendColumn("site.Date2", "Date2")
 		.appendColumn("partner.PartnerId", "PartnerId")
@@ -158,14 +159,14 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		.appendColumn("site.comments", "Comments")
 		.appendColumn("location.x", "x")
 		.appendColumn("location.y", "y")
-		.from("Site")
+		.from(Tables.SITE)
 		.whereTrue("site.dateDeleted is null")
-		.leftJoin("Activity").on("Site.ActivityId = Activity.ActivityId")
-			.leftJoin("UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId")
-			.leftJoin("Location").on("Site.LocationId = Location.LocationId")
-			.leftJoin("LocationType").on("Location.LocationTypeId = LocationType.LocationTypeId")
-			.leftJoin("Partner").on("Site.PartnerId = Partner.PartnerId")
-			.leftJoin("Project").on("Site.ProjectId = Project.ProjectId");
+		.leftJoin(Tables.ACTIVITY).on("site.ActivityId = activity.ActivityId")
+			.leftJoin(Tables.USER_DATABASE, "db").on("activity.DatabaseId = db.DatabaseId")
+			.leftJoin(Tables.LOCATION).on("site.LocationId = location.LocationId")
+			.leftJoin(Tables.LOCATION_TYPE, "locationType").on("location.LocationTypeId = locationType.LocationTypeId")
+			.leftJoin(Tables.PARTNER).on("site.PartnerId = partner.PartnerId")
+			.leftJoin(Tables.PROJECT).on("site.ProjectId = project.ProjectId");
 				
 		applyPermissions(query, context);
 		applyFilter(query, command.getFilter());
@@ -175,11 +176,11 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	
 	private SqlQuery linkedQuery(ExecutionContext context, GetSites command) {
 		SqlQuery query = SqlQuery.select()
-			.appendColumn("DISTINCT Site.SiteId", "SiteId")
+			.appendColumn("DISTINCT site.SiteId", "SiteId")
 			.appendColumn("1", "Linked")
 			.appendColumn("activity.ActivityId")
 			.appendColumn("activity.name", "ActivityName")
-			.appendColumn("UserDatabase.DatabaseId", "DatabaseId")
+			.appendColumn("db.DatabaseId", "DatabaseId")
 			.appendColumn("site.Date1", "Date1")
 			.appendColumn("site.Date2", "Date2")
 			.appendColumn("partner.PartnerId", "PartnerId")
@@ -193,16 +194,16 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("site.comments", "Comments")
 			.appendColumn("location.x", "x")
 			.appendColumn("location.y", "y")
-			.from("Site")
-			.innerJoin("indicator", "si").on("si.activityid=site.activityid")
-			.innerJoin("indicatorLink", "link").on("si.indicatorId=link.sourceindicatorid")
-			.innerJoin("indicator", "di").on("link.destinationIndicatorId=di.indicatorid")
-			.leftJoin("Activity").on("di.ActivityId = Activity.ActivityId")
-			.leftJoin("UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId")
-			.leftJoin("Location").on("Site.LocationId = Location.LocationId")
-			.leftJoin("LocationType").on("Location.LocationTypeId = LocationType.LocationTypeId")
-			.leftJoin("Partner").on("Site.PartnerId = Partner.PartnerId")
-			.leftJoin("Project").on("Site.ProjectId = Project.ProjectId")
+			.from(Tables.SITE)
+			.innerJoin(Tables.INDICATOR, "si").on("si.activityid=site.activityid")
+			.innerJoin(Tables.INDICATOR_LINK, "link").on("si.indicatorId=link.sourceindicatorid")
+			.innerJoin(Tables.INDICATOR, "di").on("link.destinationIndicatorId=di.indicatorid")
+			.leftJoin(Tables.ACTIVITY).on("di.ActivityId = activity.ActivityId")
+			.leftJoin(Tables.USER_DATABASE, "db").on("activity.DatabaseId = db.DatabaseId")
+			.leftJoin(Tables.LOCATION).on("site.LocationId = location.LocationId")
+			.leftJoin(Tables.LOCATION_TYPE, "locationType").on("location.LocationTypeId = locationType.LocationTypeId")
+			.leftJoin(Tables.PARTNER).on("site.PartnerId = partner.PartnerId")
+			.leftJoin(Tables.PROJECT).on("site.ProjectId = project.ProjectId")
 			.whereTrue("site.dateDeleted is null");
 				
 		applyPermissions(query, context);
@@ -225,15 +226,15 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		// during synchronization
 
 		if(!GWT.isClient()) {    
-			query.whereTrue("Activity.DateDeleted IS NULL")
-				.and("UserDatabase.DateDeleted IS NULL");
+			query.whereTrue("activity.DateDeleted IS NULL")
+				.and("db.DateDeleted IS NULL");
 			query.whereTrue(
-					"(UserDatabase.OwnerUserId = ? OR " +
-							"UserDatabase.DatabaseId in "  +
-							"(SELECT p.DatabaseId from UserPermission p where p.UserId = ? and p.AllowViewAll) or " +
-							"UserDatabase.DatabaseId in " +
-					"(select p.DatabaseId from UserPermission p where (p.UserId = ?) and p.AllowView and p.PartnerId = Site.PartnerId) " +
-					" OR (select count(*) from activity pa where pa.published>0 and pa.ActivityId = Site.ActivityId) > 0 )");
+					"(db.OwnerUserId = ? OR " +
+							"db.DatabaseId in "  +
+							"(SELECT p.DatabaseId from userpermission p where p.UserId = ? and p.AllowViewAll) or " +
+							"db.DatabaseId in " +
+					"(select p.DatabaseId from userpermission p where (p.UserId = ?) and p.AllowView and p.PartnerId = site.PartnerId) " +
+					" OR (select count(*) from activity pa where pa.published>0 and pa.ActivityId = site.ActivityId) > 0 )");
 			
 			query.appendParameter(context.getUser().getId());
 			query.appendParameter(context.getUser().getId());
@@ -259,8 +260,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             } else if (field.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
             	int indicatorId = IndicatorDTO.indicatorIdForPropertyName(field);
             	query.orderBy(SqlQuery.selectSingle("SUM(v.Value)")
-    				.from("IndicatorValue", "v")
-    				.leftJoin("ReportingPeriod", "r").on("v.ReportingPeriodId=r.ReportingPeriodId")
+    				.from(Tables.INDICATOR_VALUE, "v")
+    				.leftJoin(Tables.REPORTING_PERIOD, "r").on("v.ReportingPeriodId=r.ReportingPeriodId")
     				.whereTrue("v.IndicatorId=" + indicatorId)
     				.and("r.SiteId=u.SiteId"), ascending);
             } else {
@@ -275,40 +276,42 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	            if (type == DimensionType.Indicator) {
 	            	
 	            	SqlQuery subQuery = new SqlQuery()
-	            		.appendColumn("ReportingPeriod.SiteId")
-	            		.from("IndicatorValue")
-	            		.leftJoin("ReportingPeriod").on("IndicatorValue.ReportingPeriodId=ReportingPeriod.ReportingPeriodId")
-	            		.where("IndicatorValue.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator))
-	            		.whereTrue("IndicatorValue.Value IS NOT NULL");
+	            		.appendColumn("period.SiteId")
+	            		.from(Tables.INDICATOR_VALUE, "iv")
+	            		.leftJoin(Tables.REPORTING_PERIOD, "period").on("iv.ReportingPeriodId=period.ReportingPeriodId")
+	            		.where("iv.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator))
+	            		.whereTrue("iv.Value IS NOT NULL");
 	            	
 	            	query.where("SiteId").in(subQuery);
 	            
 	            } else if (type == DimensionType.Activity) {
-	                query.where("Activity.ActivityId").in(filter.getRestrictions(type));
+	                query.where("activity.ActivityId").in(filter.getRestrictions(type));
 	
 	            } else if (type == DimensionType.Database) {
-	                query.where("Activity.DatabaseId").in(filter.getRestrictions(type));
+	                query.where("activity.DatabaseId").in(filter.getRestrictions(type));
 	
 	            } else if (type == DimensionType.Partner) {
-	                query.where("Site.PartnerId").in(filter.getRestrictions(type));
+	                query.where("site.PartnerId").in(filter.getRestrictions(type));
 	                
 	            } else if (type == DimensionType.Project) {
-	            	query.where("Site.ProjectId").in(filter.getRestrictions(type));
+	            	query.where("site.ProjectId").in(filter.getRestrictions(type));
 	
 	            } else if (type == DimensionType.AdminLevel) {
-	                query.where("Site.LocationId").in(
-	                        SqlQuery.select("Link.LocationId").from("LocationAdminLink Link").where("Link.AdminEntityId")
-	                                .in(filter.getRestrictions(type)));
+	                query.where("site.LocationId").in(
+	                        SqlQuery.select("Link.LocationId")
+	                        	.from(Tables.LOCATION_ADMIN_LINK, "Link")
+	                        	.where("Link.AdminEntityId")
+	                            .in(filter.getRestrictions(type)));
 	
 	            } else if(type == DimensionType.Site) {
-	                query.where("Site.SiteId").in(filter.getRestrictions(type));
+	                query.where("site.SiteId").in(filter.getRestrictions(type));
 	            }
 	        }
 	        if (filter.getMinDate() != null) {
-	        	query.where("Site.Date2").greaterThanOrEqualTo(filter.getMinDate());
+	        	query.where("site.Date2").greaterThanOrEqualTo(filter.getMinDate());
 	        }
 	        if (filter.getMaxDate() != null) {
-	        	query.where("Site.Date2").lessThanOrEqualTo(filter.getMaxDate());
+	        	query.where("site.Date2").lessThanOrEqualTo(filter.getMaxDate());
 	        }
 		}
 	}
@@ -348,17 +351,17 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		Log.trace("Starting joinEntities()");
 		
 	    SqlQuery.select(
-	    		"Site.SiteId", 
+	    		"site.SiteId", 
 	    		"Link.adminEntityId",
 	    		"e.name",
 	    		"e.adminLevelId",
 				"e.adminEntityParentId",
 				"x1","y1","x2","y2")
-	        .from("Site")
-	        .innerJoin("Location").on("Location.LocationId = Site.LocationId")
-	        .innerJoin("LocationAdminLink Link").on("Link.LocationId = Location.LocationId")
-	        .innerJoin("AdminEntity e").on("Link.AdminEntityId = e.AdminEntityId")
-	        .where("Site.SiteId").in(siteMap.keySet())
+	        .from(Tables.SITE)
+	        .innerJoin(Tables.LOCATION).on("location.LocationId = site.LocationId")
+	        .innerJoin(Tables.LOCATION_ADMIN_LINK, "Link").on("Link.LocationId = location.LocationId")
+	        .innerJoin(Tables.ADMIN_ENTITY, "e").on("Link.AdminEntityId = e.AdminEntityId")
+	        .where("site.SiteId").in(siteMap.keySet())
 	        .execute(tx, new SqlResultCallback() {
 				
 				@Override
@@ -398,11 +401,11 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
     		.appendColumn("D.IndicatorId", "DestIndicatorId")
     		.appendColumn("D.ActivityId", "DestActivityId")
     		.appendColumn("V.Value")
-            .from("ReportingPeriod", "P")
-            	.innerJoin("IndicatorValue", "V").on("P.ReportingPeriodId = V.ReportingPeriodId")
-            	.innerJoin("Indicator", "I").on("I.IndicatorId = V.IndicatorId")
-            	.leftJoin("IndicatorLink", "L").on("L.SourceIndicatorId=I.IndicatorId")
-            	.leftJoin("Indicator", "D").on("L.DestinationIndicatorId=D.IndicatorId")
+            .from(Tables.REPORTING_PERIOD, "P")
+            	.innerJoin(Tables.INDICATOR_VALUE, "V").on("P.ReportingPeriodId = V.ReportingPeriodId")
+            	.innerJoin(Tables.INDICATOR, "I").on("I.IndicatorId = V.IndicatorId")
+            	.leftJoin(Tables.INDICATOR_LINK, "L").on("L.SourceIndicatorId=I.IndicatorId")
+            	.leftJoin(Tables.INDICATOR, "D").on("L.DestinationIndicatorId=D.IndicatorId")
             .where("P.SiteId").in(siteMap.keySet())
             .and("I.dateDeleted IS NULL");
     	
@@ -446,7 +449,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
     		.appendColumn("AttributeId", "attributeId")
     		.appendColumn("SiteId", "siteId")
     		.appendColumn("Value", "value")
-            .from("AttributeValue")
+            .from(Tables.ATTRIBUTE_VALUE)
             .where("SiteId").in(siteMap.keySet())
             .execute(tx, new SqlResultCallback() {
 				

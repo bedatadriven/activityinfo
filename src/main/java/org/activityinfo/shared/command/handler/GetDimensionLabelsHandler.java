@@ -53,7 +53,7 @@ public class GetDimensionLabelsHandler implements CommandHandlerAsync<GetDimensi
 		return SqlQuery.select()
 				.appendColumn("name")
 				.appendColumn(primaryKey, "id")
-				.from(tableName)
+				.from(tableName.toLowerCase())
 				.where(primaryKey)
 				.in(command.getIds());
 	}

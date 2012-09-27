@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
-import org.activityinfo.shared.dto.AnonymousUser;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.CountryDTO;
@@ -19,8 +19,6 @@ import org.activityinfo.shared.dto.LockedPeriodDTO;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
-import org.activityinfo.shared.dto.TargetDTO;
-import org.activityinfo.shared.dto.TargetValueDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
 
@@ -63,7 +61,7 @@ public class GetSchemaHandler implements
 			SqlQuery.select().appendColumn("CountryId", "id")
 					.appendColumn("Name", "name").appendColumn("X1", "x1")
 					.appendColumn("y1", "y1").appendColumn("x2", "x2")
-					.appendColumn("y2", "y2").from("Country")
+					.appendColumn("y2", "y2").from("country")
 					.execute(tx, new RowHandler() {
 						@Override
 						public void handleRow(SqlResultSetRow rs) {
@@ -85,7 +83,7 @@ public class GetSchemaHandler implements
 
 		public void loadLocationTypes() {
 			SqlQuery.select("locationTypeId", "name", "boundAdminLevelId",
-					"countryId").from("LocationType")
+					"countryId").from("locationtype")
 					.execute(tx, new RowHandler() {
 
 						@Override
@@ -108,7 +106,7 @@ public class GetSchemaHandler implements
 
 		public void loadAdminLevels() {
 			SqlQuery.select("adminLevelId", "name", "parentId", "countryId")
-					.from("AdminLevel").execute(tx, new RowHandler() {
+					.from("adminlevel").execute(tx, new RowHandler() {
 
 						@Override
 						public void handleRow(SqlResultSetRow row) {
@@ -144,14 +142,14 @@ public class GetSchemaHandler implements
 							"allowManageAllUsers")
 					.appendColumn("p.AllowDesign", "allowDesign")
 					.appendColumn("p.PartnerId", "partnerId")
-					.from("UserDatabase d")
+					.from("userdatabase d")
 					.leftJoin(
 							SqlQuery.selectAll()
-									.from("UserPermission")
-									.where("UserPermission.UserId")
+									.from("userpermission")
+									.where("userpermission.UserId")
 										.equalTo(context.getUser().getId()), "p")
 						.on("p.DatabaseId = d.DatabaseId")
-					.leftJoin("UserLogin o")
+					.leftJoin("userlogin o")
 						.on("d.OwnerUserId = o.UserId")
 					.where("d.DateDeleted").isNull()
 					.orderBy("d.Name");
@@ -234,7 +232,7 @@ public class GetSchemaHandler implements
 
 		protected void loadProjects() {
 			SqlQuery.select("name", "projectId", "description", "databaseId")
-					.from("Project")
+					.from("project")
 					.where("databaseId").in(databaseMap.keySet())
 					.execute(tx, new SqlResultCallback() {
 						@Override
@@ -262,7 +260,7 @@ public class GetSchemaHandler implements
 			// TODO(ruud): load only what is visible to user 
 			SqlQuery.select("fromDate", "toDate", "enabled", "name",
 					"lockedPeriodId", "userDatabaseId", "activityId",
-					"projectId").from("LockedPeriod")
+					"projectId").from("lockedperiod")
 
 			.execute(tx, new SqlResultCallback() {
 
@@ -316,9 +314,10 @@ public class GetSchemaHandler implements
 		}
 		
 		protected void loadLinkIndicators(){
-			SqlQuery.select("l.SourceIndicatorId","l.DestinationIndicatorId").appendColumn("i.Name", "name")
-			.from("indicatorlink", "l")
-			.leftJoin("indicator", "i").on("l.DestinationIndicatorId = i.indicatorId")
+			SqlQuery.select("l.SourceIndicatorId","l.DestinationIndicatorId")
+			.appendColumn("i.Name", "name")
+			.from(Tables.INDICATOR_LINK, "l")
+			.leftJoin(Tables.INDICATOR, "i").on("l.DestinationIndicatorId = i.indicatorId")
 			
 			.execute(tx, new SqlResultCallback() {
 				@Override
@@ -353,7 +352,8 @@ public class GetSchemaHandler implements
 		private void joinPartnersToDatabases() {
 			SqlQuery query = SqlQuery
 					.select("d.databaseId", "d.partnerId", "p.name", "p.fullName")
-					.from("PartnerInDatabase", "d").leftJoin("Partner", "p")
+					.from(Tables.PARTNER_IN_DATABASE, "d")
+					.leftJoin(Tables.PARTNER, "p")
 					.on("d.PartnerId = p.PartnerId");
 
 			if (!GWT.isClient()) {
@@ -392,7 +392,7 @@ public class GetSchemaHandler implements
 			SqlQuery query = SqlQuery
 					.select("activityId", "name", "category", "locationTypeId",
 							"reportingFrequency", "databaseId", "published")
-					.from("Activity").orderBy("SortOrder");
+					.from("activity").orderBy("SortOrder");
 
 			if (!GWT.isClient()) {
 				query.where("DateDeleted IS NULL");
@@ -425,12 +425,12 @@ public class GetSchemaHandler implements
 			SqlQuery query = SqlQuery
 					.select("indicatorId", "name", "category", "listHeader",
 							"description", "aggregation", "units", "activityId")
-					.from("Indicator").orderBy("SortOrder");
+					.from("indicator").orderBy("SortOrder");
 
 			if (!GWT.isClient()) {
 				query.where("DateDeleted IS NULL");
-				query.where("ActivityId").in(
-						SqlQuery.select("ActivityId").from("Activity")
+				query.where("activityId").in(
+						SqlQuery.select("ActivityId").from("activity")
 								.where("databaseId").in(databaseMap.keySet()));
 
 			}
@@ -461,17 +461,17 @@ public class GetSchemaHandler implements
 			SqlQuery query = SqlQuery.select()
 					.appendColumn("AttributeGroupId", "id")
 					.appendColumn("Name", "name")
-					.appendColumn("multipleAllowed").from("AttributeGroup")
+					.appendColumn("multipleAllowed").from("attributegroup")
 					.orderBy("SortOrder");
 
 			if (!GWT.isClient()) {
 				query.where("DateDeleted IS NULL");
 				query.where("AttributeGroupId").in(
 						SqlQuery.select("AttributeGroupId")
-								.from("AttributeGroupInActivity")
+								.from("attributegroupinactivity")
 								.where("ActivityId")
 								.in(SqlQuery.select("ActivityId")
-										.from("Activity").where("databaseId")
+										.from("activity").where("databaseId")
 										.in(databaseMap.keySet())));
 
 			}
@@ -494,16 +494,16 @@ public class GetSchemaHandler implements
 		public void loadAttributes() {
 			SqlQuery query = SqlQuery
 					.select("attributeId", "name", "attributeGroupId")
-					.from("Attribute").orderBy("SortOrder");
+					.from("attribute").orderBy("SortOrder");
 
 			if (!GWT.isClient()) {
 				query.where("DateDeleted IS NULL");
 				query.where("AttributeGroupId").in(
 						SqlQuery.select("AttributeGroupId")
-								.from("AttributeGroupInActivity")
+								.from("attributegroupinactivity")
 								.where("ActivityId")
 								.in(SqlQuery.select("ActivityId")
-										.from("Activity").where("databaseId")
+										.from("activity").where("databaseId")
 										.in(databaseMap.keySet())));
 
 			}
@@ -529,14 +529,14 @@ public class GetSchemaHandler implements
 		public void joinAttributesToActivities() {
 			SqlQuery query = SqlQuery
 					.select("J.activityId", "J.attributeGroupId")
-					.from("AttributeGroupInActivity J "
-							+ "INNER JOIN AttributeGroup G ON (J.attributeGroupId = G.attributeGroupId)")
+					.from("attributegroupinactivity J "
+							+ "INNER JOIN attributegroup G ON (J.attributeGroupId = G.attributeGroupId)")
 					.orderBy("G.SortOrder")
 					.where("G.dateDeleted").isNull();
 
 			if (!GWT.isClient()) {
 				query.where("ActivityId").in(
-						SqlQuery.select("ActivityId").from("Activity")
+						SqlQuery.select("ActivityId").from("activity")
 								.where("databaseId").in(databaseMap.keySet()));
 
 			}

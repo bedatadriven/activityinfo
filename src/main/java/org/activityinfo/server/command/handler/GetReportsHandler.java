@@ -13,6 +13,7 @@ import org.activityinfo.shared.command.GetReports;
 import org.activityinfo.shared.command.handler.CommandHandlerAsync;
 import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.command.result.ReportsResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.ReportMetadataDTO;
 import org.activityinfo.shared.report.model.EmailDelivery;
 
@@ -40,16 +41,16 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
     	
 		SqlQuery mySubscriptions = 	
 			SqlQuery.selectAll()
-				.from("reportsubscription")
+				.from(Tables.REPORT_SUBSCRIPTION)
 				.where("userId").equalTo(context.getUser().getUserId());
 		
 		SqlQuery myDatabases = 
 			SqlQuery.selectSingle("d.databaseid")
-			.from("userdatabase", "d")
+			.from(Tables.USER_DATABASE, "d")
 			.leftJoin(
 				SqlQuery.selectAll()
-					.from("UserPermission")
-					.where("UserPermission.UserId")
+					.from(Tables.USER_PERMISSION)
+					.where("userpermission.UserId")
 						.equalTo(context.getUser().getId()), "p")
 				.on("p.DatabaseId = d.DatabaseId")
 				.where("d.ownerUserId").equalTo(context.getUser().getUserId())
@@ -65,18 +66,18 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
     		.appendColumn("s.emailday", "emailday")
     		.appendColumn(
     				SqlQuery.selectSingle("max(defaultDashboard)")
-    					.from("reportvisibility", "v")
+    					.from(Tables.REPORT_VISIBILITY, "v")
     					.where("v.databaseId").in(myDatabases)
     					.whereTrue("v.reportid=r.reportTemplateId"),
     				"defaultDashboard")
-    		.from("reporttemplate", "r")
-    		.leftJoin("userlogin o").on("o.userid=r.ownerUserId")
+    		.from(Tables.REPORT_TEMPLATE, "r")
+    		.leftJoin(Tables.USER_LOGIN, "o").on("o.userid=r.ownerUserId")
     		.leftJoin(mySubscriptions, "s").on("r.reportTemplateId=s.reportId")
     		.whereTrue("r.title is not null")
     		.where("r.ownerUserId").equalTo(context.getUser().getId())
     			.or("r.reportTemplateId").in(
     					SqlQuery.select("reportId") 
-    						.from("reportvisibility", "v")
+    						.from(Tables.REPORT_VISIBILITY, "v")
     						.where("v.databaseid").in( myDatabases ))
     		.execute(context.getTransaction(), new SqlResultCallback() {
 				

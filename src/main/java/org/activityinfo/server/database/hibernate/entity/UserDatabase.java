@@ -42,7 +42,7 @@ import javax.persistence.Transient;
         @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
 @org.hibernate.annotations.Filters({
         @org.hibernate.annotations.Filter(name = "userVisible", condition = "(:currentUserId = OwnerUserId  "
-                + "or :currentUserId in (select p.UserId from UserPermission p " 
+                + "or :currentUserId in (select p.UserId from userpermission p " 
                 + "where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))"),
         @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 @NamedQuery(name = "queryAllUserDatabasesAlphabetically", query = "select db from UserDatabase db order by db.name")

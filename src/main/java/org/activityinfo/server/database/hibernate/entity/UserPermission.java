@@ -38,12 +38,12 @@ import javax.persistence.Transient;
 @org.hibernate.annotations.Filter(
 		name="userVisible",
 		condition="DatabaseId in " +
-				"(select d.DatabaseId from UserDatabase d where " +
+				"(select d.DatabaseId from userdatabase d where " +
 					  "d.OwnerUserId = :currentUserId or " +
 					  "d.DatabaseId in "  +
-					  	"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageAllUsers) or " +
+					  	"(select p.DatabaseId from userpermission p where p.UserId = :currentUserId and p.AllowManageAllUsers) or " +
 					  "d.DatabaseId in " +
-						"(select p.DatabaseId from UserPermission p where p.UserId = :currentUserId and p.AllowManageUsers and p.PartnerId = PartnerId))"),
+						"(select p.DatabaseId from userpermission p where p.UserId = :currentUserId and p.AllowManageUsers and p.PartnerId = PartnerId))"),
 @org.hibernate.annotations.Filter(
         name="hideDeleted",
         condition="AllowView"

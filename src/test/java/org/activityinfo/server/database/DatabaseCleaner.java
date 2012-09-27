@@ -41,7 +41,7 @@ public class DatabaseCleaner {
 			try {
 				while(tables.next()) {
 					String tableName = tables.getString(3);
-					if(!tableName.startsWith(LIQUIBASE_TABLE_PREFIX)) {
+					if(!tableName.toLowerCase().startsWith(LIQUIBASE_TABLE_PREFIX)) {
 						statement.execute("DELETE FROM " + tableName);
 					}
 				}

@@ -4,6 +4,7 @@ import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.shared.command.handler.AuthorizationHandler;
 import org.activityinfo.shared.command.handler.ExecutionContext;
+import org.activityinfo.shared.db.Tables;
 import org.apache.log4j.Logger;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -27,11 +28,12 @@ public class CreateSiteAuthorizationHandler implements AuthorizationHandler<Crea
 				"p.allowEditAll",
 				"p.allowEdit",
 				"p.partnerId")
-			.from("Activity", "a")
-			.leftJoin("UserDatabase", "db").on("a.DatabaseId=db.DatabaseId")
+			.from(Tables.ACTIVITY, "a")
+			.leftJoin(Tables.USER_DATABASE, "db").on("a.DatabaseId=db.DatabaseId")
 			.leftJoin(	
-					SqlQuery.selectAll().from("UserPermission")
-					.where("UserPermission.UserId")
+					SqlQuery.selectAll()
+					.from(Tables.USER_PERMISSION, "perm")
+					.where("perm.UserId")
 					.equalTo(context.getUser().getId()), "p")
 					.on("db.DatabaseId=p.DatabaseId")
 			.where("a.ActivityId").equalTo(command.getActivityId())

@@ -92,7 +92,8 @@ public class HibernateModule extends ServletModule {
         	Properties config = configProperties.asProperties();
         	config.setProperty(Environment.HBM2DDL_AUTO, "");
         	config.setProperty(Environment.CONNECTION_PROVIDER, HibernateConnectionProvider.class.getName());
-            return Persistence.createEntityManagerFactory("activityInfo", config);
+        	config.setProperty("hibernate.ejb.naming_strategy", AINamingStrategy.class.getName());
+        	return Persistence.createEntityManagerFactory("activityInfo", config);
         }
     }
 

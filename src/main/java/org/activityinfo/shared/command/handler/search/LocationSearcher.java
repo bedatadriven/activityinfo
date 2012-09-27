@@ -27,7 +27,7 @@ public class LocationSearcher implements Searcher {
 		
 		SqlQuery
 				.select(primaryKey)
-				.from(tableName)
+				.from(tableName.toLowerCase())
 				.whereLikes("Name")
 				.likeMany(testQuery)
 				

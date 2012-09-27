@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.activityinfo.shared.command.GetTargets;
 import org.activityinfo.shared.command.result.TargetResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.TargetDTO;
@@ -43,7 +44,7 @@ public class GetTargetsHandler implements
 				.appendColumn("a.name", "area")
 				.appendColumn("pr.name", "projectName")
 				.appendColumn("pt.name", "partnerName")
-				.from("Target", "t")
+				.from(Tables.TARGET, "t")
 				.leftJoin("adminentity", "a")
 				.on("t.AdminEntityId = a.AdminEntityId")
 				.leftJoin("project", "pr").on("t.ProjectId = pr.ProjectId")
@@ -91,9 +92,9 @@ public class GetTargetsHandler implements
 	protected void loadTargetValues(ExecutionContext context, int databaseId){
 
 		SqlQuery.select("v.targetId", "v.indicatorId","v.value").appendColumn("t.name").appendColumn("i.name", "iname")
-		.from("targetvalue", "v")
-		.leftJoin("target", "t").on("v.targetId = t.targetId")
-		.leftJoin("indicator", "i").on("v.indicatorId = i.indicatorId")
+		.from(Tables.TARGET_VALUE, "v")
+		.leftJoin(Tables.TARGET, "t").on("v.targetId = t.targetId")
+		.leftJoin(Tables.INDICATOR, "i").on("v.indicatorId = i.indicatorId")
 		.execute(context.getTransaction(), new SqlResultCallback() {
 			@Override
 			public void onSuccess(SqlTransaction tx,

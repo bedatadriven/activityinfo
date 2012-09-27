@@ -2,6 +2,7 @@ package org.activityinfo.shared.command.handler;
 
 import org.activityinfo.shared.command.UpdateReportVisibility;
 import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.ReportVisibilityDTO;
 
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
@@ -14,15 +15,17 @@ public class UpdateReportVisibilityHandler implements CommandHandlerAsync<Update
 	public void execute(UpdateReportVisibility command,
 			ExecutionContext context, AsyncCallback<VoidResult> callback) {
 
-		SqlUpdate.delete("reportvisibility").where("reportid", command.getReportId()).execute(context.getTransaction());
+		SqlUpdate.delete(Tables.REPORT_VISIBILITY)
+			.where("reportid", command.getReportId())
+			.execute(context.getTransaction());
 		for(ReportVisibilityDTO dto : command.getList()) {
-			SqlUpdate.delete("reportvisibility")
+			SqlUpdate.delete(Tables.REPORT_VISIBILITY)
 			.where("reportid", command.getReportId())
 			.where("databaseid", dto.getDatabaseId())
 			.execute(context.getTransaction());
 			
 			if(dto.isVisible()) {
-				SqlInsert.insertInto("reportvisibility")
+				SqlInsert.insertInto(Tables.REPORT_VISIBILITY)
 					.value("reportid", command.getReportId())
 					.value("databaseid", dto.getDatabaseId())
 					.value("defaultDashboard", dto.isDefaultDashboard())

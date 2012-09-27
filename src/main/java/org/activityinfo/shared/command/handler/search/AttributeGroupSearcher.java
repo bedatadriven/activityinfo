@@ -21,7 +21,7 @@ public class AttributeGroupSearcher implements Searcher {
 
 		SqlQuery
 				.select("AttributeGroupId")
-				.from("AttributeGroup")
+				.from("attributegroup")
 				.whereLikes("Name")
 				.likeMany(testQuery)
 				

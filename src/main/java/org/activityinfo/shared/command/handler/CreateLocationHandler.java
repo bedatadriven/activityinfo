@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
@@ -23,14 +24,14 @@ public class CreateLocationHandler implements CommandHandlerAsync<CreateLocation
 		
 		// We need to handle the case in which the command is sent twice to
 		// the server
-		SqlUpdate.delete("Location")
+		SqlUpdate.delete(Tables.LOCATION)
 			.where("LocationId", properties.get("id"))
 			.execute(context.getTransaction());
-		SqlUpdate.delete("LocationAdminLink")
+		SqlUpdate.delete(Tables.LOCATION_ADMIN_LINK)
 			.where("LocationId", properties.get("id"))
 			.execute(context.getTransaction());
 	
-		SqlInsert.insertInto("Location")
+		SqlInsert.insertInto("location")
 			.value("LocationId", properties.get("id"))
 			.value("LocationTypeId", properties.get("locationTypeId"))
 			.value("Name", properties.get("name"))
@@ -42,7 +43,7 @@ public class CreateLocationHandler implements CommandHandlerAsync<CreateLocation
 		
 		for(String property : properties.keySet()) {
 			if(property.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-				SqlInsert.insertInto("LocationAdminLink")
+				SqlInsert.insertInto("locationadminlink")
 				.value("LocationId", properties.get("id"))
 				.value("AdminEntityId", properties.get(property))
 			    .execute(context.getTransaction());

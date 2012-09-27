@@ -61,7 +61,7 @@
 	
 	<changeSet author="abid" id="002-04">
 
-		<createTable tableName="IndicatorLink">
+		<createTable tableName="indicatorlink">
 			<column name="SourceIndicatorId" type="INT">
 				<constraints nullable="false" />
 			</column>

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.activityinfo.shared.command.UpdateSite;
 import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
@@ -36,7 +37,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 	}
 	
 	private void updateSiteProperties(SqlTransaction tx, UpdateSite command, Map<String, Object> changes) {
-		SqlUpdate.update("Site")
+		SqlUpdate.update("site")
 			.where("SiteId", command.getSiteId())
 			.value("date1", changes)
 			.value("date2", changes)
@@ -54,13 +55,13 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 				int attributeId = AttributeDTO.idForPropertyName(change.getKey());
 				Boolean value = (Boolean)change.getValue();
 				
-				SqlUpdate.delete("AttributeValue")
+				SqlUpdate.delete(Tables.ATTRIBUTE_VALUE)
 					.where("attributeId", attributeId)
 					.where("siteId", siteId)
 					.execute(tx);
 				
 				if(value != null) {
-					SqlInsert.insertInto("AttributeValue")
+					SqlInsert.insertInto(Tables.ATTRIBUTE_VALUE)
 						.value("attributeId", attributeId)
 						.value("siteId", siteId)
 						.value("value", value)
@@ -74,7 +75,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 	private void updateReportingPeriod(SqlTransaction tx,
 			final int siteId, final Map<String, Object> changes) {
 		SqlQuery.select("reportingPeriodId")
-			.from("ReportingPeriod")
+			.from(Tables.REPORTING_PERIOD)
 			.where("siteId").equalTo(siteId)
 			.execute(tx, new SqlResultCallback() {
 				
@@ -91,7 +92,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 			int siteId, int reportingPeriodId,
 			Map<String, Object> changes) {
 		
-		SqlUpdate.update("ReportingPeriod")
+		SqlUpdate.update(Tables.REPORTING_PERIOD)
 		.where("reportingPeriodId", reportingPeriodId)
 		.value("date1", changes)
 		.value("date2", changes)
@@ -103,13 +104,13 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
         		int indicatorId = IndicatorDTO.indicatorIdForPropertyName(change.getKey());
         		Double value = (Double)change.getValue();
         		
-        		SqlUpdate.delete("IndicatorValue")
+        		SqlUpdate.delete(Tables.INDICATOR_VALUE)
         		.where("reportingPeriodId", reportingPeriodId)
         		.where("indicatorId", indicatorId)
         		.execute(tx);
         		
         		if(value != null) {
-        			SqlInsert.insertInto("IndicatorValue")
+        			SqlInsert.insertInto(Tables.INDICATOR_VALUE)
         			.value("reportingPeriodId", reportingPeriodId)
         			.value("indicatorId", indicatorId)
         			.value("value", value)
@@ -131,7 +132,7 @@ public class UpdateSiteHandler implements CommandHandlerAsync<UpdateSite, VoidRe
 		
 		if(hasAdminUpdates(properties)) {
 			
-			SqlUpdate.delete("LocationAdminLink")
+			SqlUpdate.delete(Tables.LOCATION_ADMIN_LINK)
 				.where("locationId", locationId)
 				.execute(tx);
 			

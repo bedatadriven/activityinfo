@@ -18,7 +18,7 @@ public class ActivitySearcher implements Searcher {
 	@Override
 	public void search(List<String> searchTerms, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
 		SqlQuery.select("ActivityId")
-				.from("Activity")
+				.from("activity")
 				.whereLikes("Name")
 				.likeMany(searchTerms)
 				.or()

@@ -18,7 +18,7 @@ public class GetAttachmentsHandler implements CommandHandlerAsync<GetAttachments
 	@Override
 	public void execute(final GetAttachments command, ExecutionContext context, final AsyncCallback<GetAttachmentsResult> callback) {
 		SqlQuery.selectAll()
-				.from("Attachment")
+				.from("attachment")
 				.where("SiteId")
 				.equalTo(command.getSiteId())
 				

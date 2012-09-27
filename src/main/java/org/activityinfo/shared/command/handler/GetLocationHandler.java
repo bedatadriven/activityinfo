@@ -1,6 +1,7 @@
 package org.activityinfo.shared.command.handler;
 
 import org.activityinfo.shared.command.GetLocation;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.LocationDTO;
 
@@ -20,7 +21,8 @@ public class GetLocationHandler implements CommandHandlerAsync<GetLocation, Loca
 		final LocationDTO result = new LocationDTO();
 		result.setId(command.getLocationId());
 		
-		SqlQuery.select("name", "axe", "x", "y").from("location")
+		SqlQuery.select("name", "axe", "x", "y")
+			.from(Tables.LOCATION)
 			.where("locationId").equalTo(command.getLocationId())
 			.execute(context.getTransaction(), new SqlResultCallback() {
 				
@@ -44,8 +46,8 @@ public class GetLocationHandler implements CommandHandlerAsync<GetLocation, Loca
 			.appendColumn("AdminEntity.AdminEntityId", "adminEntityId")
 			.appendColumn("AdminEntity.Name", "name")
 			.appendColumn("AdminEntity.AdminLevelId", "levelId")
-			.from("LocationAdminLink")
-			.leftJoin("AdminEntity").on("LocationAdminLink.AdminEntityId=AdminEntity.AdminEntityId")
+			.from(Tables.LOCATION_ADMIN_LINK, "link")
+			.leftJoin(Tables.ADMIN_ENTITY, "AdminEntity").on("link.AdminEntityId=AdminEntity.AdminEntityId")
 			.where("LocationId").equalTo(command.getLocationId())
 			.execute(context.getTransaction(), new SqlResultCallback() {
 				

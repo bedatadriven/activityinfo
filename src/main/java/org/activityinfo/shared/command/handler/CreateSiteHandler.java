@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 
@@ -48,17 +49,17 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 		
 		// deal with the possibility that we've already received this command
 		// but its completion was not acknowledged because of network problems
-		tx.executeSql("delete from IndicatorValue Where ReportingPeriodId in " +
+		tx.executeSql("delete from indicatorvalue Where ReportingPeriodId in " +
 				"(select reportingperiodid from reportingperiod where siteid=" + cmd.getSiteId() + ")");
-		SqlUpdate.delete("ReportingPeriod")
+		SqlUpdate.delete(Tables.REPORTING_PERIOD)
 				 .where("SiteId", cmd.getSiteId())
 				 .execute(tx);
-		SqlUpdate.delete("Site")
+		SqlUpdate.delete(Tables.SITE)
 				 .where("SiteId", cmd.getSiteId())
 				 .execute(tx);
 		
 		
-		SqlInsert.insertInto("Site")
+		SqlInsert.insertInto(Tables.SITE)
 			.value("SiteId", cmd.getSiteId())
 			.value("LocationId", cmd.getLocationId())
 			.value("ActivityId", cmd.getActivityId())
@@ -83,7 +84,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			if(property.getKey().startsWith(AttributeDTO.PROPERTY_PREFIX) &&
 					property.getValue() != null) {
 
-				SqlInsert.insertInto("AttributeValue")
+				SqlInsert.insertInto(Tables.ATTRIBUTE_VALUE)
 				.value("AttributeId", AttributeDTO.idForPropertyName(property.getKey()))
 				.value("SiteId", cmd.getSiteId())
 				.value("Value", property.getValue())
@@ -97,7 +98,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			CreateSite cmd)  {
 		
 		int reportingPeriodId = cmd.getReportingPeriodId();
-		SqlInsert.insertInto("ReportingPeriod")
+		SqlInsert.insertInto(Tables.REPORTING_PERIOD)
 			.value("ReportingPeriodId", reportingPeriodId)
 			.value("SiteId", cmd.getSiteId())
 			.value("Date1", cmd.getProperties().get("date1"))
@@ -116,7 +117,7 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 			if(property.getKey().startsWith(IndicatorDTO.PROPERTY_PREFIX) &&
 					property.getValue() != null) {
 
-				SqlInsert.insertInto("IndicatorValue")
+				SqlInsert.insertInto(Tables.INDICATOR_VALUE)
 				.value("IndicatorId", IndicatorDTO.indicatorIdForPropertyName(property.getKey()))
 				.value("ReportingPeriodId", cmd.getReportingPeriodId())
 				.value("Value", property.getValue())

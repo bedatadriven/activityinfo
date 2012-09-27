@@ -32,7 +32,7 @@ public class GetLockedPeriodsHandler implements CommandHandlerAsync<GetLockedPer
 		final List<LockedPeriodDTO> lockedPeriods = Lists.newArrayList();
 
 		SqlQuery.select("ProjectId")
-				.from("Project")
+				.from("project")
 				.where("DatabaseId")
 				.equalTo(command.getDatabaseId())
 				.execute(context.getTransaction(), new RowHandler() {
@@ -43,7 +43,7 @@ public class GetLockedPeriodsHandler implements CommandHandlerAsync<GetLockedPer
 		});
 		
 		SqlQuery.select("ActivityId")
-				.from("Activity")
+				.from("activity")
 				.where("DatabaseId")
 				.equalTo(command.getDatabaseId())
 				.execute(context.getTransaction(), new RowHandler() {
@@ -58,7 +58,7 @@ public class GetLockedPeriodsHandler implements CommandHandlerAsync<GetLockedPer
 		SqlQuery.select("fromDate", "toDate", "enabled", "name",
 				"lockedPeriodId", "userDatabaseId", "activityId",
 				"projectId")
-				.from("LockedPeriod")
+				.from("lockedperiod")
 					.where("ActivityId")
 					.in(activityIds)
 				.or()

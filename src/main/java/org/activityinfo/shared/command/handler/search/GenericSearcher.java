@@ -28,7 +28,7 @@ public class GenericSearcher implements Searcher {
 		final String primaryKey = tableName + "Id";
 		
 		SqlQuery.select(primaryKey)
-				.from(tableName)
+				.from(tableName.toLowerCase())
 				.whereLikes("Name")
 				.likeMany(testQuery)
 				
