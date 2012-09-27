@@ -15,8 +15,6 @@ import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.logging.LogException;
-import org.activityinfo.server.util.monitoring.DatadogClient;
-import org.activityinfo.server.util.monitoring.Event;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
@@ -55,9 +53,6 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @Inject
     private ServerSideAuthProvider authProvider;
 
-    @Inject(optional = true)
-    private DatadogClient datadog;
-       
     @Override
     @LogException
     public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {

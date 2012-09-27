@@ -1,11 +1,10 @@
 package org.activityinfo.server.report.generator.map.cluster;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.activityinfo.server.report.generator.map.cluster.genetic.MarkerGraph;
-import org.activityinfo.shared.report.content.AiLatLng;
+import org.activityinfo.shared.geom.Rectangle;
 import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.shared.report.model.PointValue;
 

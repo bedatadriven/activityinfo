@@ -26,6 +26,8 @@
 
 		<display.version>${project.version}</display.version>
 
+		<gae.version>1.7.2</gae.version>
+
 	</properties>
 
 	<dependencies>
@@ -36,7 +38,7 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
 			<version>${gwtVersion}</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -44,6 +46,14 @@
 			<version>${gwtVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-1.0-sdk</artifactId>
+			<version>${gae.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.google.code.gaxb</groupId>
 			<artifactId>gaxb</artifactId>
@@ -376,7 +386,19 @@
 					</excludes>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>net.kindleit</groupId>
+				<artifactId>maven-gae-plugin</artifactId>
+				<version>0.9.4</version>
+				<configuration>
+					<port>${gae.port}</port>
+					<unpackVersion>${gae.version}</unpackVersion>
+					<jvmFlags>
+						<jvmFlag>-Xmx256m</jvmFlag>
+					</jvmFlags>
+                  	<serverId>appengine.google.com</serverId>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
@@ -610,51 +632,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>br.com.ingenieux</groupId>
-				<artifactId>beanstalk-maven-plugin</artifactId>
-
-				<configuration>
-					<applicationName>activityinfo</applicationName>
-					<s3Bucket>activityinfo-builds</s3Bucket>
-					<s3Key>${project.version}-${maven.build.timestamp}</s3Key>
-					<region>eu-west-1</region>
-
-					<optionSettings>
-
-						<optionSetting>
-							<namespace>aws:autoscaling:launchconfiguration</namespace>
-							<optionName>EC2KeyName</optionName>
-							<value>bddeu</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:elb:policies</namespace>
-							<optionName>Stickiness Policy</optionName>
-							<value>true</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:elasticbeanstalk:application:environment</namespace>
-							<optionName>PARAM1</optionName>
-							<value>activityinfo-conf</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:elasticbeanstalk:application:environment</namespace>
-							<optionName>PARAM2</optionName>
-							<value>activityinfo26.eub.properties</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:elasticbeanstalk:application:environment</namespace>
-							<optionName>AWS_ACCESS_KEY_ID</optionName>
-							<value>${aws.accessKey}</value>
-						</optionSetting>
-						<optionSetting>
-							<namespace>aws:elasticbeanstalk:application:environment</namespace>
-							<optionName>AWS_SECRET_KEY</optionName>
-							<value>${aws.secretKey}</value>
-						</optionSetting>
-					</optionSettings>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.0-beta-3</version>
@@ -860,42 +837,6 @@
 			</build>
 		</profile>
 
-		<profile>
-			<id>continuous-deployment</id>
-			<properties>
-				<display.version>2.6-b${BUILD_NUMBER}</display.version>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>br.com.ingenieux</groupId>
-						<artifactId>beanstalk-maven-plugin</artifactId>
-
-						<configuration>
-							<applicationName>activityinfo</applicationName>
-							<s3Key>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}.war</s3Key>
-							<versionLabel>${project.version}-b${BUILD_NUMBER}-${git.commit.id.abbrev}</versionLabel>
-							<environmentName>release-${git.commit.id.abbrev}</environmentName>
-							<cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
-						</configuration>
-						<executions>
-							<execution>
-								<id>default</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>upload-source-bundle</goal>
-									<goal>create-application-version</goal>
-									<goal>create-environment</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-
-
 		<!-- Automatically engaged during maven release cycle -->
 		<profile>
 			<id>release-build</id>
@@ -908,34 +849,6 @@
 			<properties>
 				<display.version>${project.version}</display.version>
 			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>br.com.ingenieux</groupId>
-						<artifactId>beanstalk-maven-plugin</artifactId>
-
-						<configuration>
-							<applicationName>activityinfo</applicationName>
-							<s3Bucket>activityinfo-builds</s3Bucket>
-							<s3Key>${project.version}-RELEASE.war</s3Key>
-							<versionLabel>${project.version}-RELEASE</versionLabel>
-							<environmentName>release-${git.commit.id.abbrev}</environmentName>
-							<cnamePrefix>activityinfo-${git.commit.id.abbrev}</cnamePrefix>
-						</configuration>
-						<executions>
-							<execution>
-								<id>default</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>upload-source-bundle</goal>
-									<goal>create-application-version</goal>
-									<goal>create-environment</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 
 

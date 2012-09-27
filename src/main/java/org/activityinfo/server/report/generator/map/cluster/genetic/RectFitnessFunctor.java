@@ -5,15 +5,15 @@
 
 package org.activityinfo.server.report.generator.map.cluster.genetic;
 
-import java.awt.Rectangle;
 import java.util.List;
 
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
+import org.activityinfo.shared.geom.Rectangle;
 
 public class RectFitnessFunctor implements FitnessFunctor {
 
     private int area(Rectangle r) {
-        return r.width * r.height;
+        return r.getWidth() * r.getHeight();
     }
 
 	@Override

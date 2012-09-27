@@ -4,12 +4,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.activityinfo.server.database.BoneCpConnectionPool;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Environment;
 import org.hibernate.connection.ConnectionProvider;
 import org.hibernate.util.PropertiesHelper;
+
+import com.google.inject.Provider;
 
 /**
  * Wrapper class to allow us to use the bone cp provider as the 
@@ -18,7 +19,7 @@ import org.hibernate.util.PropertiesHelper;
  */
 public class HibernateConnectionProvider implements ConnectionProvider {
 
-	public static BoneCpConnectionPool DELEGATE;
+	public static Provider<Connection> DELEGATE;
 
 	private static Logger LOGGER = Logger.getLogger(HibernateConnectionProvider.class);
 

@@ -5,12 +5,12 @@
 
 package org.activityinfo.shared.report.model;
 
-import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activityinfo.shared.dto.SiteDTO;
+import org.activityinfo.shared.geom.Rectangle;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.PieMapMarker;
 import org.activityinfo.shared.report.content.Point;

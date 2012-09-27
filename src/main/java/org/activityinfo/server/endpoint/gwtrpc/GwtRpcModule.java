@@ -23,9 +23,5 @@ public class GwtRpcModule extends ServletModule {
         serve("/Embed/cmd").with(CommandServlet.class);
         serve("/ActivityInfo/download").with(DownloadServlet.class);
         serve("/ActivityInfo/attachment").with(AttachmentServlet.class);
-
-        // this is here for now but should be probably live elsewhere, if
-        // we really need it at all
-        serve("/icon").with(MapIconServlet.class);
     }
 }

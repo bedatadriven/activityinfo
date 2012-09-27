@@ -8,6 +8,7 @@ package org.activityinfo.server.util.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.AccessControlException;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -59,6 +60,8 @@ public class ConfigModule extends AbstractModule {
             }
         } catch (IOException e) {
             return false;
+        } catch (AccessControlException e) {
+        	return false;
         }
         return false;
     }

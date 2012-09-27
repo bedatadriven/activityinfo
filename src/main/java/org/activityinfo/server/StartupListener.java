@@ -63,7 +63,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new TemplateModule(), new BeanMappingModule(), new MailModule(),
                 new ServerDatabaseModule(),
                 new HibernateModule(), 
-                new QuartzModule(),
                 new ContentModule(),
                 new AuthenticationModule(),
                 new ReportModule(),

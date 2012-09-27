@@ -5,10 +5,10 @@
 
 package org.activityinfo.server.report.generator.map;
 
-import java.awt.Rectangle;
 import java.util.List;
 
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
+import org.activityinfo.shared.geom.Rectangle;
 import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.shared.report.model.MapIcon;
 
