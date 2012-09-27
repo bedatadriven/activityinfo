@@ -22,8 +22,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.activityinfo.server.report.renderer.html.ImageStorage;
-import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
+import org.activityinfo.server.report.output.ImageStorage;
+import org.activityinfo.server.report.output.ImageStorageProvider;
 import org.activityinfo.shared.exception.ReportModelException;
 import org.activityinfo.shared.report.Theme;
 import org.activityinfo.shared.report.content.PivotChartContent;

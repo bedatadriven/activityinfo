@@ -11,10 +11,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.activityinfo.server.report.DummyPivotTableData;
+import org.activityinfo.server.report.output.ImageStorage;
+import org.activityinfo.server.report.output.ImageStorageProvider;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.excel.ExcelReportRenderer;
-import org.activityinfo.server.report.renderer.html.ImageStorage;
-import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
 import org.activityinfo.server.report.renderer.itext.HtmlReportRenderer;
 import org.activityinfo.server.report.renderer.itext.PdfReportRenderer;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;

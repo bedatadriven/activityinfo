@@ -18,8 +18,8 @@ import java.nio.charset.Charset;
 import javax.imageio.ImageIO;
 
 import org.activityinfo.server.report.generator.MapIconPath;
-import org.activityinfo.server.report.renderer.html.ImageStorage;
-import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
+import org.activityinfo.server.report.output.ImageStorage;
+import org.activityinfo.server.report.output.ImageStorageProvider;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.shared.report.model.ReportElement;
 

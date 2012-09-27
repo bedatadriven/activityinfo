@@ -8,8 +8,8 @@ package org.activityinfo.server.report;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.activityinfo.server.report.renderer.html.ImageStorage;
-import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
+import org.activityinfo.server.report.output.ImageStorage;
+import org.activityinfo.server.report.output.ImageStorageProvider;
 
 public class NullImageStorageProvider implements ImageStorageProvider {
 

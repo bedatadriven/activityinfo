@@ -3,7 +3,7 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.activityinfo.server.report;
+package org.activityinfo.server.report.output;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,8 +11,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activityinfo.server.authentication.SecureTokenGenerator;
-import org.activityinfo.server.report.renderer.html.ImageStorage;
-import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
 
 import com.google.inject.Provider;
 

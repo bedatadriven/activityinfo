@@ -3,9 +3,10 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.activityinfo.server.report.renderer.html;
+package org.activityinfo.server.report.output;
 
 import java.io.IOException;
+
 
 public interface ImageStorageProvider {
 

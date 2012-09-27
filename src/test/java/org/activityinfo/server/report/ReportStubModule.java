@@ -1,8 +1,8 @@
 package org.activityinfo.server.report;
 
 import org.activityinfo.server.report.generator.MapIconPath;
-import org.activityinfo.server.report.renderer.html.ImageStorageProvider;
-import org.activityinfo.server.report.renderer.html.LocalImageStorageProvider;
+import org.activityinfo.server.report.output.ImageStorageProvider;
+import org.activityinfo.server.report.output.LocalImageStorageProvider;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.inject.AbstractModule;

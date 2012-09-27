@@ -133,9 +133,10 @@ public class PPTMapRenderer extends ImageMapRenderer {
         if(iconIndex != -1) {
             IconRectCalculator rectCtor = new IconRectCalculator(marker.getIcon());
             Picture icon = new Picture(iconIndex);
-            icon.setAnchor(rectCtor.iconRect(
+            org.activityinfo.shared.geom.Rectangle iconRect = rectCtor.iconRect(
                     offsetX + marker.getX(),
-                    offsetY + marker.getY()));
+                    offsetY + marker.getY());
+            icon.setAnchor(new Rectangle(iconRect.getX(), iconRect.getY(), iconRect.getWidth(), iconRect.getHeight()));
             slide.addShape(icon);
         }
     }
