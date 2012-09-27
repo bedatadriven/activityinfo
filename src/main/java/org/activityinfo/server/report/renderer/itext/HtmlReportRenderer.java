@@ -100,7 +100,7 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			g2d.fillRect(0,0,width, height);
 
 			try {
-				return new HtmlImage(image, g2d, imageStorageProvider.getImageUrl(".png"));
+				return new HtmlImage(image, g2d, imageStorageProvider.getImageUrl(null, ".png"));
 			} catch (IOException e) {
 				throw new RuntimeException();
 			}

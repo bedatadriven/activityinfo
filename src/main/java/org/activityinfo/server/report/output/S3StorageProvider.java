@@ -30,7 +30,7 @@ public class S3StorageProvider implements ImageStorageProvider {
 	}
 
 	@Override
-	public ImageStorage getImageUrl(String suffix) throws IOException {
+	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
 		
 		String key = SecureTokenGenerator.generate();
 		

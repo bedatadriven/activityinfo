@@ -27,7 +27,7 @@ public class ServletImageStorageProvider implements ImageStorageProvider {
     }
 
     @Override
-    public ImageStorage getImageUrl(String suffix) throws IOException {
+    public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
         String filename = SecureTokenGenerator.generate() + suffix;
         HttpServletRequest req = provider.get();
         

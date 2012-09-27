@@ -73,7 +73,7 @@ public class ChartRendererJC  {
                               int width, int height, int dpi) throws IOException {
         try {
             Chart chart = createChart(element, includeTitle, width, height, dpi);
-            ImageStorage storage = istorageProvider.getImageUrl(".jpg");
+            ImageStorage storage = istorageProvider.getImageUrl(null, ".jpg");
             JPEGEncoder.encode(chart,  0.75f, storage.getOutputStream());
             return storage.getUrl();
 

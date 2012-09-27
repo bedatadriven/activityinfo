@@ -50,9 +50,13 @@ public class MergingDispatcher extends AbstractDispatcher {
 			
 			@Override
 			public boolean execute() {
-				if (!pendingCommands.isEmpty()) {
-                    dispatchPending();
-                }
+				try {
+					if (!pendingCommands.isEmpty()) {
+	                    dispatchPending();
+	                }
+				} catch(Exception e) {
+					Log.error("Uncaught exception while dispatching in MergingDispatcher", e);
+				}
 				return true;
 			}
 		});

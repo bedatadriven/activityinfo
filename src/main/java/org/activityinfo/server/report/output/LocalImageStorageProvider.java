@@ -20,7 +20,7 @@ public class LocalImageStorageProvider implements ImageStorageProvider {
 	}
 	
 	@Override
-	public ImageStorage getImageUrl(String suffix) throws IOException {
+	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
 		String path = folder + "/img" + Long.toString((new Date()).getTime()) + suffix;
 		OutputStream stream = new FileOutputStream(path);
 		

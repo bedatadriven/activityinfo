@@ -42,7 +42,7 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
     public CommandResult execute(RenderElement cmd, User user) throws CommandException {
 		try {
 			Renderer renderer = rendererFactory.get(cmd.getFormat());
-			ImageStorage storage = storageProvider.getImageUrl(renderer.getFileSuffix());
+			ImageStorage storage = storageProvider.getImageUrl(renderer.getMimeType(), renderer.getFileSuffix());
 			try {
 		        generator.generateElement(user, cmd.getElement(), new Filter(), new DateRange());
 				renderer.render(cmd.getElement(), storage.getOutputStream());      

@@ -14,7 +14,7 @@ import org.activityinfo.server.report.output.ImageStorageProvider;
 public class NullImageStorageProvider implements ImageStorageProvider {
 
 	@Override
-	public ImageStorage getImageUrl(String suffix) throws IOException {
+	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
 		
 		return new ImageStorage("http://", new OutputStream() {
 

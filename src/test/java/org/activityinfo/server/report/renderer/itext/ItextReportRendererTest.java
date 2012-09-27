@@ -455,7 +455,7 @@ public class ItextReportRendererTest {
 		private static int nextId = 1;
 		
 		@Override
-		public ImageStorage getImageUrl(String suffix) throws IOException {			
+		public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {			
 			String fileName = (nextId++) + suffix;
 			File file = new File("target/report-tests/" + fileName);
 			return new ImageStorage(file.toURI().toURL().toString(), new FileOutputStream(file));

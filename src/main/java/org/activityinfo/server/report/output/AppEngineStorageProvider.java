@@ -3,6 +3,7 @@ package org.activityinfo.server.report.output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import com.google.appengine.api.blobstore.BlobKey;
@@ -10,6 +11,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.files.AppEngineFile;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
@@ -18,15 +20,15 @@ import com.google.appengine.api.files.FileWriteChannel;
 public class AppEngineStorageProvider implements ImageStorageProvider {
 
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+	private SecureRandom random = new SecureRandom();
 	@Override
-	public ImageStorage getImageUrl(String suffix) throws IOException {
+	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
 		
-		Key tempFileKey = datastore.allocateIds("TempFile", 1).getStart();
+		Key tempFileKey = KeyFactory.createKey("TempFile", Long.toString(Math.abs(random.nextLong()), 16));
 		
-		String url = "/generated/" + tempFileKey.getId();
+		String url = "/generated/" + tempFileKey.getName();
 		
-		return new ImageStorage(url, new TempOutputStream(tempFileKey));
+		return new ImageStorage(url, new TempOutputStream(mimeType, suffix, tempFileKey));
 	}
 	
 	private class TempOutputStream extends OutputStream {
@@ -36,13 +38,15 @@ public class AppEngineStorageProvider implements ImageStorageProvider {
 		private FileWriteChannel writeChannel;
 		private FileService fileService;
 		private Key tempFileKey;
+		private String mimeType;
 
-		public TempOutputStream(Key tempFileKey) throws IOException {
+		public TempOutputStream(String mimeType, String suffix, Key tempFileKey) throws IOException {
 			this.tempFileKey = tempFileKey;
+			this.mimeType = mimeType;
 			
 			fileService = FileServiceFactory.getFileService();
-		    writableFile = fileService.createNewBlobFile("application/octet");
-		    writeChannel = fileService.openWriteChannel(writableFile, false);
+		    writableFile = fileService.createNewBlobFile(mimeType, "activityinfo" + suffix);
+		    writeChannel = fileService.openWriteChannel(writableFile, true);
 		    out = Channels.newOutputStream(writeChannel);
 		    
 		}
@@ -69,11 +73,11 @@ public class AppEngineStorageProvider implements ImageStorageProvider {
 
 		@Override
 		public void close() throws IOException {
-			out.close();
 			writeChannel.closeFinally();
 			BlobKey blobKey = FileServiceFactory.getFileService().getBlobKey(writableFile);
 			
 			Entity entity = new Entity(tempFileKey);
+			entity.setUnindexedProperty("mimeType", mimeType);
 			entity.setUnindexedProperty("created", new Date());
 			entity.setUnindexedProperty("blobKey", blobKey);
 			datastore.put(entity);

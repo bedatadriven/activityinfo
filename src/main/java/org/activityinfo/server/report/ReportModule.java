@@ -14,6 +14,7 @@ import org.activityinfo.client.page.report.json.ReportJsonFactory;
 import org.activityinfo.client.page.report.json.ReportSerializer;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.output.AppEngineStorageProvider;
+import org.activityinfo.server.report.output.AppEngineStorageServlet;
 import org.activityinfo.server.report.output.ImageStorageProvider;
 import org.activityinfo.server.report.output.ServletImageStorageProvider;
 
@@ -22,15 +23,16 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.servlet.ServletModule;
 
-public class ReportModule extends AbstractModule {
+public class ReportModule extends ServletModule {
 
 	public ReportModule() {
 		super();
 	}
 
 	@Override
-    protected void configure() {
+    protected void configureServlets() {
 		
 		bind(ReportSerializer.class).to(ReportJsonFactory.class);
 		
@@ -38,6 +40,8 @@ public class ReportModule extends AbstractModule {
 	        .annotatedWith(MapIconPath.class)
 	        .toProvider(MapIconPathProvider.class)
 	        .in(Singleton.class);
+		
+		serve("/generated/*").with(AppEngineStorageServlet.class);
     }
     
     @Provides
