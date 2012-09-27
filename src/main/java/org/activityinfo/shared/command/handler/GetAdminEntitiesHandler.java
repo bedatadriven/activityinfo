@@ -34,7 +34,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 					.orderBy("AdminEntity.name");
 
 		if(cmd.getCountryId() != null) {
-			query.leftJoin("AdminLevel").on("AdminLevel.AdminLevelId=AdminEntity.AdminLevelId");
+			query.leftJoin(Tables.ADMIN_LEVEL, "AdminLevel").on("AdminLevel.AdminLevelId=AdminEntity.AdminLevelId");
 			query.where("AdminLevel.CountryId").equalTo(cmd.getCountryId());
 
 			if(cmd.getParentId() == null && cmd.getLevelId() == null) {
