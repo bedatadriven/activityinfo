@@ -770,6 +770,37 @@
 	</reporting>
 
 	<profiles>
+	<profile>
+			<id>ci</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>net.kindleit</groupId>
+						<artifactId>maven-gae-plugin</artifactId>
+						<version>0.9.4</version>
+						<configuration>
+							<serverId>appengine.google.com</serverId>
+						</configuration>
+						<executions>
+							<execution>
+								<id>unpack</id>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<phase>initialize</phase>
+							</execution>
+							<execution>
+								<id>deploy</id>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+								<phase>deploy</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<!-- Build the Application Module with only permutations for FireFox and 
 			logging enabled for testing purposes -->
 		<profile>
