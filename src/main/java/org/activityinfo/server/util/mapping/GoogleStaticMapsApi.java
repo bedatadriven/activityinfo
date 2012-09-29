@@ -58,6 +58,16 @@ public class GoogleStaticMapsApi {
 	}
 
 	public URL url() {
+		String url = urlString();
+		
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public String urlString() {
 		String url = new StringBuilder(END_POINT)
 		.append("center=").append(urlEncode(String.format("%f,%f", center.getLat(), center.getLng())))
 		.append("&zoom=").append(zoom)
@@ -65,12 +75,7 @@ public class GoogleStaticMapsApi {
 		.append("&maptype=").append(baseMap.getFormatId())
 		.append("&sensor=false")
 		.toString();
-		
-		try {
-			return new URL(url);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
+		return url;
 	}
 
 	private String urlEncode(String s) {

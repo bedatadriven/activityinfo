@@ -5,9 +5,7 @@
 
 package org.activityinfo.server.report.generator.map;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-
+import org.activityinfo.server.report.renderer.image.TileHandler;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.shared.util.mapping.Tile;
@@ -69,19 +67,7 @@ public class TiledMap {
 		tileOrigin = TileMath.tileForPoint(origin);
 	}
 	
-	
-	public void drawLayer(final Graphics2D g2d, TileProvider source)  {
-		drawLayer(new TileDrawer() {
-
-			@Override
-			public void drawImage(Image image, int x, int y) {
-				g2d.drawImage(image, x, y, TILE_SIZE, TILE_SIZE, null);
-			}
-			
-		}, source);
-	}
-	
-	public void drawLayer(TileDrawer drawer, TileProvider source)  {
+	public void drawLayer(TileHandler drawer, TileProvider source)  {
 		
 		int x = -(origin.getX() % TILE_SIZE);		
 		int tileX = tileOrigin.getX();
@@ -93,11 +79,8 @@ public class TiledMap {
 			
 			while (y < height) {
 				
-				Image image = source.getImage(zoom, tileX, tileY);
-				
-				if(image != null) {
-					drawer.drawImage(image, x, y);
-				}
+				String url = source.getImageUrl(zoom, tileX, tileY);
+				drawer.addTile(url, x, y, TILE_SIZE, TILE_SIZE);
 				
 				y += TILE_SIZE;
 				tileY ++;

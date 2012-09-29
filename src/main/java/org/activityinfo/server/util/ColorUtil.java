@@ -1,6 +1,6 @@
 package org.activityinfo.server.util;
 
-import java.awt.Color;
+import com.google.code.appengine.awt.Color;
 
 public final class ColorUtil {
 	

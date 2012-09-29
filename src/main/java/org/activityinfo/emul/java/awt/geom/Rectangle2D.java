@@ -23,10 +23,10 @@
  * questions.
  */
 
-package java.awt.geom;
+package com.google.code.appengine.awt.geom;
 
-import java.awt.geom.AffineTransform;
-import java.awt.geom.PathIterator;
+import com.google.code.appengine.awt.geom.AffineTransform;
+import com.google.code.appengine.awt.geom.PathIterator;
 import java.io.Serializable;
 
 /**
@@ -491,9 +491,9 @@ public abstract class Rectangle2D extends RectangularShape {
      * the information necessary to satisfy the various accessor
      * methods below.
      *
-     * @see java.awt.geom.Rectangle2D.Float
-     * @see java.awt.geom.Rectangle2D.Double
-     * @see java.awt.Rectangle
+     * @see com.google.code.appengine.awt.geom.Rectangle2D.Float
+     * @see com.google.code.appengine.awt.geom.Rectangle2D.Double
+     * @see com.google.code.appengine.awt.Rectangle
      * @since 1.2
      */
     protected Rectangle2D() {
@@ -865,25 +865,25 @@ public abstract class Rectangle2D extends RectangularShape {
     }
     
 	@Override
-	public boolean contains(java.awt.geom.Point2D p) {
+	public boolean contains(com.google.code.appengine.awt.geom.Point2D p) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean contains(java.awt.geom.Rectangle2D r) {
+	public boolean contains(com.google.code.appengine.awt.geom.Rectangle2D r) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public java.awt.geom.Rectangle2D getBounds2D() {
+	public com.google.code.appengine.awt.geom.Rectangle2D getBounds2D() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean intersects(java.awt.geom.Rectangle2D r) {
+	public boolean intersects(com.google.code.appengine.awt.geom.Rectangle2D r) {
 		// TODO Auto-generated method stub
 		return false;
 	}

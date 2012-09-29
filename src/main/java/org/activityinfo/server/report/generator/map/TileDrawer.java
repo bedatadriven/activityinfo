@@ -5,7 +5,7 @@
 
 package org.activityinfo.server.report.generator.map;
 
-import java.awt.Image;
+import com.google.code.appengine.awt.Image;
 
 public interface TileDrawer {
 

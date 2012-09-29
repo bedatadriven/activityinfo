@@ -5,14 +5,14 @@
 
 package org.activityinfo.server.report.renderer.itext;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import javax.imageio.ImageIO;
+import com.google.code.appengine.imageio.ImageIO;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.ImageCreator;

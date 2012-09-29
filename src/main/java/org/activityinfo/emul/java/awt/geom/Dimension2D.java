@@ -23,7 +23,7 @@
  * questions.
  */
 
-package java.awt.geom;
+package com.google.code.appengine.awt.geom;
 
 /**
  * The <code>Dimension2D</code> class is to encapsulate a width
@@ -46,7 +46,7 @@ public abstract class Dimension2D {
      * the information necessary to satisfy the various accessor
      * methods below.
      *
-     * @see org.activityinfo.jre.java.awt.Dimension
+     * @see org.activityinfo.jre.com.google.code.appengine.awt.Dimension
      * @since 1.2
      */
     protected Dimension2D() {
@@ -72,8 +72,8 @@ public abstract class Dimension2D {
      * Sets the size of this <code>Dimension</code> object to the
      * specified width and height.
      * This method is included for completeness, to parallel the
-     * {@link java.awt.Component#getSize getSize} method of
-     * {@link java.awt.Component}.
+     * {@link com.google.code.appengine.awt.Component#getSize getSize} method of
+     * {@link com.google.code.appengine.awt.Component}.
      * @param width  the new width for the <code>Dimension</code>
      * object
      * @param height  the new height for the <code>Dimension</code>

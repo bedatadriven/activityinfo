@@ -28,13 +28,5 @@
     	<mime-type>application/x-chrome-extension</mime-type>
     </mime-mapping>
 
-	<servlet>
-		<servlet-name>TrackerServlet</servlet-name>
-		<servlet-class>log4jwebtracker.servlet.TrackerServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>TrackerServlet</servlet-name>
-		<url-pattern>/tracker/*</url-pattern>
-	</servlet-mapping>
 
 </web-app>

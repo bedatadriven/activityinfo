@@ -5,20 +5,12 @@
 
 package org.activityinfo.server.report.renderer.ppt;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.IconRectCalculator;
@@ -35,6 +27,12 @@ import org.apache.poi.hslf.model.ShapeTypes;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 
+import com.google.code.appengine.awt.Dimension;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.Rectangle;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.image.BufferedImage;
+import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
 
 /**
@@ -72,12 +70,9 @@ public class PPTMapRenderer extends ImageMapRenderer {
         int offsetY = ((int)pageSize.getHeight() - element.getHeight())/2;
 
         // add the map background image
-        int basemapPictureIndx = ppt.addPicture(renderBasemap(element), Picture.PNG);
-        Picture basemap = new Picture(basemapPictureIndx);
-        basemap.setAnchor(new Rectangle(offsetX, offsetY, element.getWidth(), element.getHeight()));
-        basemap.setLineColor(Color.BLACK);
-        basemap.setLineWidth(1);
-        slide.addShape(basemap);
+        
+        drawBasemap(element, new PPTTileHandler(ppt, slide));
+        
 
         // keep a list of map icons
         Map<String, Integer> iconPictureIndex = new HashMap<String, Integer>();
@@ -96,7 +91,8 @@ public class PPTMapRenderer extends ImageMapRenderer {
         }
     }
     
-    private boolean inView(MapReportElement element, MapMarker marker) {
+
+	private boolean inView(MapReportElement element, MapMarker marker) {
     	return (marker.getX()+marker.getSize()) > 0 &&
     	       (marker.getY()+marker.getSize()) > 0 &&
     	       (marker.getX()-marker.getSize()) < element.getWidth() &&

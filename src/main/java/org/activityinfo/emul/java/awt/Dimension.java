@@ -25,9 +25,9 @@
 
 package java.awt;
 
-import java.awt.Component;
-import java.awt.LayoutManager;
-import java.awt.geom.Dimension2D;
+import com.google.code.appengine.awt.Component;
+import com.google.code.appengine.awt.LayoutManager;
+import com.google.code.appengine.awt.geom.Dimension2D;
 
 /**
  * The <code>Dimension</code> class encapsulates the width and
@@ -48,8 +48,8 @@ import java.awt.geom.Dimension2D;
  *
  * @author      Sami Shaio
  * @author      Arthur van Hoff
- * @see         java.awt.Component
- * @see         java.awt.LayoutManager
+ * @see         com.google.code.appengine.awt.Component
+ * @see         com.google.code.appengine.awt.LayoutManager
  * @since       1.0
  */
 public class Dimension extends Dimension2D implements java.io.Serializable {
@@ -150,8 +150,8 @@ public class Dimension extends Dimension2D implements java.io.Serializable {
      *
      * @return   the size of this dimension, a new instance of
      *           <code>Dimension</code> with the same width and height
-     * @see      org.activityinfo.jre.java.awt.Dimension#setSize
-     * @see      java.awt.Component#getSize
+     * @see      org.activityinfo.jre.com.google.code.appengine.awt.Dimension#setSize
+     * @see      com.google.code.appengine.awt.Component#getSize
      * @since    1.1
      */
     public Dimension getSize() {
@@ -163,8 +163,8 @@ public class Dimension extends Dimension2D implements java.io.Serializable {
      * This method is included for completeness, to parallel the
      * <code>setSize</code> method defined by <code>Component</code>.
      * @param    d  the new size for this <code>Dimension</code> object
-     * @see      org.activityinfo.jre.java.awt.Dimension#getSize
-     * @see      java.awt.Component#setSize
+     * @see      org.activityinfo.jre.com.google.code.appengine.awt.Dimension#getSize
+     * @see      com.google.code.appengine.awt.Component#setSize
      * @since    1.1
      */
     public void setSize(Dimension d) {
@@ -179,8 +179,8 @@ public class Dimension extends Dimension2D implements java.io.Serializable {
      *
      * @param    width   the new width for this <code>Dimension</code> object
      * @param    height  the new height for this <code>Dimension</code> object
-     * @see      org.activityinfo.jre.java.awt.Dimension#getSize
-     * @see      java.awt.Component#setSize
+     * @see      org.activityinfo.jre.com.google.code.appengine.awt.Dimension#getSize
+     * @see      com.google.code.appengine.awt.Component#setSize
      * @since    1.1
      */
     public void setSize(int width, int height) {

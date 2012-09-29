@@ -155,9 +155,9 @@ public class ItextReportRendererTest {
 		report.addElement(map);
 		
 		renderToPdf(report, "piechart.pdf");
-		renderToHtml(report, "piechart.html");
-		renderToHtmlUsingWriter(report, "piechart2.html");
-		renderToRtf(report, "piechart.rtf");
+		//renderToHtml(report, "piechart.html");
+		//renderToHtmlUsingWriter(report, "piechart2.html");
+		//renderToRtf(report, "piechart.rtf");
 	}
 	
 	@Test
@@ -431,7 +431,7 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToHtml(Report report, String name) throws IOException {
-		renderTo(report, new HtmlReportRenderer(mapIconPath(), new TestImageStorageProvider()), name);
+	//	renderTo(report, new HtmlReportRenderer(mapIconPath(), new TestImageStorageProvider()), name);
 	}
 	
 	private void renderToHtmlUsingWriter(Report report, String name) throws IOException {

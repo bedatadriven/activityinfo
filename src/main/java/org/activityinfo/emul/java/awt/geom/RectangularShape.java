@@ -23,10 +23,10 @@
  * questions.
  */
 
-package java.awt.geom;
+package com.google.code.appengine.awt.geom;
 
-import java.awt.Shape;
-import java.awt.Rectangle;
+import com.google.code.appengine.awt.Shape;
+import com.google.code.appengine.awt.Rectangle;
 
 /**
  * <code>RectangularShape</code> is the base class for a number of

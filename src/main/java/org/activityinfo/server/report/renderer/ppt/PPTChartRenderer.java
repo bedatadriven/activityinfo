@@ -5,10 +5,10 @@
 
 package org.activityinfo.server.report.renderer.ppt;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import com.google.code.appengine.awt.Dimension;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.Point;
+import com.google.code.appengine.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -47,7 +47,7 @@ public class PPTChartRenderer {
         Dimension chartSize = new Dimension(
                 (int)(pageSize.getWidth() - 72),
                 (int)(pageSize.getHeight() - 183));
-        Rectangle bounds = new java.awt.Rectangle(
+        Rectangle bounds = new com.google.code.appengine.awt.Rectangle(
                 new Point(36, 126), chartSize);
 
         ShapeGroup group = new ShapeGroup();

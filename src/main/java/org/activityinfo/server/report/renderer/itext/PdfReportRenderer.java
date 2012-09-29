@@ -5,7 +5,7 @@
 
 package org.activityinfo.server.report.renderer.itext;
 
-import java.awt.Graphics2D;
+import com.google.code.appengine.awt.Graphics2D;
 import java.io.OutputStream;
 
 import org.activityinfo.server.report.generator.MapIconPath;

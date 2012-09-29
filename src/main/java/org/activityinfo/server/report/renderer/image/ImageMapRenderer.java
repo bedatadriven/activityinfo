@@ -5,17 +5,17 @@
 
 package org.activityinfo.server.report.renderer.image;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.color.ColorSpace;
-import java.awt.font.LineMetrics;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import com.google.code.appengine.awt.BasicStroke;
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Font;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.Image;
+import com.google.code.appengine.awt.Rectangle;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.font.LineMetrics;
+import com.google.code.appengine.awt.geom.Ellipse2D;
+import com.google.code.appengine.awt.geom.Rectangle2D;
+import com.google.code.appengine.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
+import com.google.code.appengine.imageio.ImageIO;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
@@ -49,10 +49,7 @@ import org.apache.log4j.Logger;
 import com.google.inject.Inject;
 
 /**
- * Renders a MapElement and its generated MapContent as an image
- * using Java 2D
- *
- * @author Alex Bertram
+ * Renders a MapElement and its generated MapContent
  */
 public class ImageMapRenderer {
 	
@@ -61,8 +58,6 @@ public class ImageMapRenderer {
 
 	/**
 	 * Provides tile images from a URL
-	 * 	
-	 * @author alex
 	 *
 	 */
     private final class RemoteTileProvider implements TileProvider {
@@ -73,12 +68,8 @@ public class ImageMapRenderer {
         }
 
         @Override
-		public Image getImage(int zoom, int tileX, int tileY) {
-            try {
-                return ImageIO.read(new URL(baseMap.getTileUrl(zoom, tileX, tileY)));
-            } catch (IOException e) {
-                return null;
-            }
+		public String getImageUrl(int zoom, int tileX, int tileY) {
+            return baseMap.getTileUrl(zoom, tileX, tileY);
         }
     }
 	
@@ -116,7 +107,11 @@ public class ImageMapRenderer {
 
         // Draw markers
 
-        for(MapMarker marker : element.getContent().getMarkers()) {
+        drawOverlays(element, g2d);
+    }
+
+	protected void drawOverlays(MapReportElement element, Graphics2D g2d) {
+		for(MapMarker marker : element.getContent().getMarkers()) {
             if(marker instanceof IconMapMarker) {
                 drawIcon(g2d, (IconMapMarker) marker);
             } else if( marker instanceof PieMapMarker) {
@@ -125,7 +120,7 @@ public class ImageMapRenderer {
                 drawBubbleMarker(g2d, (BubbleMapMarker) marker);
             }
         }
-    }
+	}
 
     public static void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {
 
@@ -172,7 +167,7 @@ public class ImageMapRenderer {
 
 
     private static void drawLabel(Graphics2D g2d, BubbleMapMarker marker) {
-        Font font = new Font(Font.SANS_SERIF, Font.BOLD, (int) (marker.getRadius() * 2f * 0.8f));
+      //  Font font = new Font(Font.SANS_SERIF, Font.BOLD, (int) (marker.getRadius() * 2f * 0.8f));
 
         // measure the bounds of the string so we can center it within
         // the bubble.
@@ -233,33 +228,45 @@ public class ImageMapRenderer {
 	}
 
     public void drawBasemap(Graphics2D g2d, MapReportElement element) {
-    	AiLatLng center = element.getCenter() != null ? element.getCenter() : element.getContent().getCenter(); 
-        TiledMap map = new TiledMap(element.getWidth(), element.getHeight(),
-        		center,
-                element.getContent().getZoomLevel());
 
         // Draw white backgrond first, in case we run out of tiles
         g2d.setPaint(Color.WHITE);
         g2d.fillRect(0,0,element.getWidth(),element.getHeight());
 
+        G2dTileHandler tileHandler = new G2dTileHandler(g2d);
+
+    	drawBasemap(element, tileHandler);
+    }
+
+	protected void drawBasemap(MapReportElement element,
+			TileHandler tileHandler) {
+		TiledMap map = createTileMap(element);
         BaseMap baseMap = element.getContent().getBaseMap();
         try {
 	        if(baseMap instanceof TileBaseMap) {
-		        drawTiledBaseMap(g2d, map, baseMap);
+		        drawTiledBaseMap(tileHandler, map, baseMap);
 	        } else if(baseMap instanceof GoogleBaseMap) {
-	        	drawGoogleBaseMap(g2d, map, (GoogleBaseMap)baseMap);
+	        	drawGoogleBaseMap(tileHandler, map, (GoogleBaseMap)baseMap);
 	        }
         } catch(Exception e) {
         	LOGGER.debug("Exception drawing basemap", e);
         }
-    }
-
-	private void drawTiledBaseMap(Graphics2D g2d, TiledMap map, BaseMap baseMap) {
-		TileProvider tileProvider = new RemoteTileProvider((TileBaseMap) baseMap);
-		map.drawLayer(g2d, tileProvider);
 	}
 
-	private void drawGoogleBaseMap(Graphics2D g2d, TiledMap map, GoogleBaseMap baseMap) throws IOException {
+	protected TiledMap createTileMap(MapReportElement element) {
+		AiLatLng center = element.getCenter() != null ? element.getCenter() : element.getContent().getCenter(); 
+        TiledMap map = new TiledMap(element.getWidth(), element.getHeight(),
+        		center,
+                element.getContent().getZoomLevel());
+		return map;
+	}
+
+	private void drawTiledBaseMap(TileHandler handler, TiledMap map, BaseMap baseMap) {
+		TileProvider tileProvider = new RemoteTileProvider((TileBaseMap) baseMap);
+		map.drawLayer(handler, tileProvider);
+	}
+
+	private void drawGoogleBaseMap(TileHandler tileHandler, TiledMap map, GoogleBaseMap baseMap) throws IOException {
 		
 		// the google maps static api imposes a limit to the image sizes we can request, 
 		// so we have to acquire the map imagery in batches
@@ -271,18 +278,19 @@ public class ImageMapRenderer {
 				
 				AiLatLng sliceCenter = map.fromPixelToLatLng(x + (sliceWidth/2), y + (sliceHeight/2));
 				
-				BufferedImage image = ImageIO.read(GoogleStaticMapsApi.buildRequest()
+				String tileUrl = GoogleStaticMapsApi.buildRequest()
 						.setBaseMap(baseMap)
 						.setCenter(sliceCenter)
 						.setWidth(sliceWidth)
 						.setHeight(sliceHeight)
 						.setZoom(map.getZoom())
-						.url());
+						.urlString();
 				
-				g2d.drawImage(image, x, y, image.getWidth(), image.getHeight(), null);
+				tileHandler.addTile(tileUrl, x, y, sliceWidth, sliceHeight);
 			}
 		}
 	}
+
 	
 
     public static Color bubbleFillColor(Color colorRgb) {

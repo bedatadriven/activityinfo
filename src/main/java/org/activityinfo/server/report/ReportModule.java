@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.activityinfo.client.page.report.json.ReportJsonFactory;
 import org.activityinfo.client.page.report.json.ReportSerializer;
+import org.activityinfo.server.endpoint.gwtrpc.MapIconServlet;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.output.AppEngineStorageProvider;
 import org.activityinfo.server.report.output.AppEngineStorageServlet;
@@ -41,6 +42,7 @@ public class ReportModule extends ServletModule {
 	        .toProvider(MapIconPathProvider.class)
 	        .in(Singleton.class);
 		
+		serve("/icon").with(MapIconServlet.class);
 		serve("/generated/*").with(AppEngineStorageServlet.class);
     }
     

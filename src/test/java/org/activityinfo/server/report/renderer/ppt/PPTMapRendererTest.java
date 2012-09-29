@@ -6,17 +6,12 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
-import org.activityinfo.server.report.renderer.ppt.PPTMapRenderer;
 import org.activityinfo.shared.map.GoogleBaseMap;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gwt.dom.client.MapElement;
 
 public class PPTMapRendererTest {
 
@@ -47,14 +42,12 @@ public class PPTMapRendererTest {
 		PPTMapRenderer renderer = new PPTMapRenderer("");
 		renderer.render(element, fos);
 		
-		fos.close();
-		
+		fos.close();	
 	}
 	
 	@Test
 	public void renderImage() throws IOException {
 		ImageMapRenderer renderer = new ImageMapRenderer("");
 		renderer.renderToFile(element, new File("target/report-tests/map-custom-extents.png"));
-	}
-	
+	}	
 }

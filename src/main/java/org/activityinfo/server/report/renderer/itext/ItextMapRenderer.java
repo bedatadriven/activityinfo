@@ -6,7 +6,9 @@
 package org.activityinfo.server.report.renderer.itext;
 
 
-import java.awt.Color;
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Graphics2D;
+
 import java.io.IOException;
 
 import org.activityinfo.server.report.generator.MapIconPath;
@@ -28,11 +30,15 @@ import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.ImgTemplate;
 import com.lowagie.text.List;
 import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.PdfWriter;
 
 
 /**
@@ -67,20 +73,37 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
         }
     }
 
-	public void renderMap(DocWriter writer, MapReportElement element, Document doc) {
-        try {
-        	ItextImageResult image = imageCreator.create(element.getWidth(), element.getHeight());
-        	
-            render(element, image.getGraphics());
-            
-            doc.add(image.toItextImage());
-
-        } catch(Exception e) {
-            throw new RuntimeException(e);
-        }
+	public void renderMap(DocWriter writer, MapReportElement element, Document doc) throws BadElementException, DocumentException {
+//        try {
+//        	ItextImageResult image = imageCreator.create(element.getWidth(), element.getHeight());
+//        	
+//            //render(element, image.getGraphics());
+//            
+//            doc.add(image.toItextImage());
+//
+//        } catch(Exception e) {
+//            throw new RuntimeException(e);
+//        }
+		if(writer instanceof PdfWriter) {
+			renderPdfMap((PdfWriter)writer, element, doc);
+		}
     }
  
-    private void renderLegend(MapReportElement element, Document doc) throws DocumentException, IOException {
+    private void renderPdfMap(PdfWriter writer, MapReportElement element,
+			Document doc) throws BadElementException, DocumentException {
+		PdfContentByte cb = writer.getDirectContent();
+		PdfTemplate map = cb.createTemplate(element.getWidth(), element.getHeight());
+		
+		
+		drawBasemap(element, new PdfTileHandler(map, element.getHeight()));
+		Graphics2D graphics2D = map.createGraphics(element.getWidth(), element.getHeight());
+		drawOverlays(element, graphics2D);
+		graphics2D.dispose();  
+		
+		doc.add(new ImgTemplate(map));
+	}
+
+	private void renderLegend(MapReportElement element, Document doc) throws DocumentException, IOException {
 	    	
     	Table table = new Table(2);
     	table.setBorderWidth(1);

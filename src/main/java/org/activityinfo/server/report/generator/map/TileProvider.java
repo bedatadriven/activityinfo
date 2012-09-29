@@ -5,10 +5,10 @@
 
 package org.activityinfo.server.report.generator.map;
 
-import java.awt.Image;
+import java.net.URL;
 
 public interface TileProvider {
 
-	Image getImage(int zoom, int tileX, int tileY);
+	String getImageUrl(int zoom, int tileX, int tileY);
 	
 }

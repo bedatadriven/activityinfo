@@ -32,6 +32,7 @@
 
 	<dependencies>
 
+
 		<!-- GWT deps (from central repo) -->
 
 		<dependency>
@@ -102,41 +103,31 @@
 		<!-- Report creation dependencies -->
 
 		<dependency>
-			<groupId>net.sf.jcharts</groupId>
-			<artifactId>krysalis-jCharts</artifactId>
-			<version>1.0.0-alpha-1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.mindrot.bcrypt</groupId>
 			<artifactId>bcrypt</artifactId>
 			<version>0.3</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>3.5-beta5</version>
-		</dependency>
-
-		<!-- PowerPoint export -->
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-scratchpad</artifactId>
-			<version>3.5-beta5</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext</artifactId>
-			<version>2.1.7</version>
+			<groupId>com.bedatadriven.appengine.export</groupId>
+			<artifactId>appengine-itext</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext-rtf</artifactId>
-			<version>2.1.7</version>
+			<groupId>com.bedatadriven.appengine.export</groupId>
+			<artifactId>appengine-awt</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>	
+		<dependency>
+			<groupId>com.bedatadriven.appengine.export</groupId>
+			<artifactId>appengine-ppt</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.bedatadriven.appengine.export</groupId>
+			<artifactId>appengine-jcharts</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>			
 		<!-- Scheduling Framework -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -182,11 +173,6 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 			<version>2.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp</artifactId>
-			<version>0.7.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>geronimo-spec</groupId>
@@ -301,12 +287,6 @@
 			<version>1.6</version>
 		</dependency>
 
-		<dependency>
-			<groupId>log4jwebtracker</groupId>
-			<artifactId>log4jwebtracker</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-
 		<!-- Random library for BASE64 decoding (KmlDataServlet) -->
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -345,12 +325,6 @@
 			<version>1.3.2</version>
 		</dependency>
 
-		<!-- Reverse Proxy -->
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-		</dependency>
 	</dependencies>
 
 	<build>

@@ -5,7 +5,7 @@
 
 package org.activityinfo.server.report.renderer.itext;
 
-import java.awt.Color;
+import com.google.code.appengine.awt.Color;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;

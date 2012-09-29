@@ -1,10 +1,10 @@
 package org.activityinfo.server.report.renderer.image;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.Image;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.image.BufferedImage;
 
 import org.activityinfo.shared.report.content.PieChartLegend;
 import org.activityinfo.shared.report.content.PieMapMarker;

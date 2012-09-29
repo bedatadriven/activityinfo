@@ -5,22 +5,22 @@
 
 package org.activityinfo.server.report.renderer;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.color.ColorSpace;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import com.google.code.appengine.awt.BasicStroke;
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Font;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.Paint;
+import com.google.code.appengine.awt.Shape;
+import com.google.code.appengine.awt.Stroke;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.geom.Rectangle2D;
+import com.google.code.appengine.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
-import javax.imageio.ImageIO;
+import com.google.code.appengine.imageio.ImageIO;
 
 import org.activityinfo.server.report.output.ImageStorage;
 import org.activityinfo.server.report.output.ImageStorageProvider;
@@ -69,7 +69,9 @@ import org.krysalis.jcharts.types.PieLabelType;
 public class ChartRendererJC  {
 
 
-    public String renderToUrl(PivotChartReportElement element, boolean includeTitle, ImageStorageProvider istorageProvider,
+    private static final String SANS_SERIF = null;
+
+	public String renderToUrl(PivotChartReportElement element, boolean includeTitle, ImageStorageProvider istorageProvider,
                               int width, int height, int dpi) throws IOException {
         try {
             Chart chart = createChart(element, includeTitle, width, height, dpi);
@@ -149,7 +151,7 @@ public class ChartRendererJC  {
 
         PieChart2DProperties pieProps = new PieChart2DProperties();
         pieProps.setValueLabelFont(new ChartFont(
-                new Font( Font.SANS_SERIF, Font.PLAIN, fontSize(10, dpi)), Color.black));
+                new Font( SANS_SERIF, Font.PLAIN, fontSize(10, dpi)), Color.black));
         pieProps.setShowGrouping(true);
         pieProps.setPieLabelType(PieLabelType.VALUE_LABELS);
         pieProps.setBorderChartStroke( ChartStroke.DEFAULT_ZERO_LINE );
@@ -280,7 +282,7 @@ public class ChartRendererJC  {
     protected ChartProperties computeChartProperties(int dpi) {
         ChartProperties p = new ChartProperties();
         ChartFont titleFont = new ChartFont(
-                new Font( Font.SANS_SERIF, Font.PLAIN, fontSize(12, dpi) ), Color.black );
+                new Font( SANS_SERIF, Font.PLAIN, fontSize(12, dpi) ), Color.black );
         p.setTitleFont( titleFont );
         return p;
     }
@@ -310,9 +312,9 @@ public class ChartRendererJC  {
             throws PropertyException {
 
         ChartFont axisScaleFont = new ChartFont(
-                new Font( Font.SANS_SERIF, Font.PLAIN, fontSize(10, dpi) ), Color.black );
+                new Font( SANS_SERIF, Font.PLAIN, fontSize(10, dpi) ), Color.black );
         ChartFont axisTitleFont = new ChartFont(
-                new Font( Font.SANS_SERIF, Font.PLAIN, fontSize(11, dpi) ), Color.black );
+                new Font( SANS_SERIF, Font.PLAIN, fontSize(11, dpi) ), Color.black );
 
         AxisProperties p = new AxisProperties( false );
 
@@ -337,7 +339,7 @@ public class ChartRendererJC  {
         }
 
         ChartFont font = new ChartFont(
-                new Font( Font.SANS_SERIF, Font.PLAIN, fontSize(10, dpi)), Color.BLACK);
+                new Font( SANS_SERIF, Font.PLAIN, fontSize(10, dpi)), Color.BLACK);
         LegendProperties p = new LegendProperties();
         p.setChartFont( font );
         p.setBorderStroke( null ) ;
