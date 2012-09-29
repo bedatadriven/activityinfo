@@ -157,7 +157,7 @@ public class ItextReportRendererTest {
 		renderToPdf(report, "piechart.pdf");
 		//renderToHtml(report, "piechart.html");
 		//renderToHtmlUsingWriter(report, "piechart2.html");
-		//renderToRtf(report, "piechart.rtf");
+		renderToRtf(report, "piechart.rtf");
 	}
 	
 	@Test

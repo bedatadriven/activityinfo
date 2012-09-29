@@ -25,8 +25,8 @@ public class PieChartLegendRenderer {
 		this.width = this.height = PADDING + (layer.getMaxRadius() * 2) + PADDING;
 	}
 	
-	public <T extends ImageResult> T createImage(ImageCreator<T> creator) {
-		T result = creator.create(width, height);
+	public ItextGraphic createImage(ImageCreator creator) {
+		ItextGraphic result = creator.create(width, height);
 		drawSymbol(result.getGraphics());
 		
 		return result;

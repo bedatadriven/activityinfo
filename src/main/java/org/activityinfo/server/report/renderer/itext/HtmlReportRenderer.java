@@ -5,24 +5,24 @@
 
 package org.activityinfo.server.report.renderer.itext;
 
-import com.google.code.appengine.awt.Color;
-import com.google.code.appengine.awt.Graphics2D;
-import com.google.code.appengine.awt.color.ColorSpace;
-import com.google.code.appengine.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import com.google.code.appengine.imageio.ImageIO;
-
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.output.ImageStorage;
 import org.activityinfo.server.report.output.ImageStorageProvider;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
+import org.activityinfo.server.report.renderer.image.ItextGraphic;
 import org.activityinfo.shared.report.model.ReportElement;
 
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.image.BufferedImage;
+import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
@@ -87,11 +87,11 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 	}
 
 	@Override
-	protected ImageCreator<? extends ItextImageResult> getImageCreator() {
+	protected ImageCreator getImageCreator() {
 		return new HtmlImageCreator();
 	}
 
-	private class HtmlImageCreator implements ImageCreator<HtmlImage> {
+	private class HtmlImageCreator implements ImageCreator {
 		@Override
 		public HtmlImage create(int width, int height) {
 			BufferedImage image = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
@@ -135,7 +135,7 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		}		
 	}
 
-	private static class HtmlImage implements ItextImageResult {
+	private static class HtmlImage implements ItextGraphic {
 		private final BufferedImage image;
 		private final Graphics2D g2d;
 		private final ImageStorage storage;
@@ -161,6 +161,13 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+		}
+
+		@Override
+		public void addImage(String imageUrl, int x, int y, int width,
+				int height) {
+			// TODO Auto-generated method stub
+			
 		}	
 	}
 }

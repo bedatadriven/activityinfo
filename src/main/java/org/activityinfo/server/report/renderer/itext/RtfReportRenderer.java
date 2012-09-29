@@ -5,24 +5,28 @@
 
 package org.activityinfo.server.report.renderer.itext;
 
-import com.google.code.appengine.awt.Color;
-import com.google.code.appengine.awt.Graphics2D;
-import com.google.code.appengine.awt.color.ColorSpace;
-import com.google.code.appengine.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-
-import com.google.code.appengine.imageio.ImageIO;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
+import org.activityinfo.server.report.renderer.image.ItextGraphic;
+import org.freehep.graphicsio.emf.EMFGraphics2D;
 
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Dimension;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.image.BufferedImage;
+import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
+import com.lowagie.text.ImgEMF;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.rtf.RtfWriter2;
 
@@ -58,30 +62,31 @@ public class RtfReportRenderer extends ItextReportRenderer {
 	}
 
 	@Override
-	protected ImageCreator<? extends ItextImageResult> getImageCreator() {
+	protected ImageCreator getImageCreator() {
 		return new RtfImageCreator();
 	}
     
-	private static class RtfImageCreator implements ImageCreator<RtfImage>  {
+	private static class RtfImageCreator implements ImageCreator  {
 
 		@Override
 		public RtfImage create(int width, int height) {
-			BufferedImage image = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
-			Graphics2D g2d = image.createGraphics();
-			g2d.setPaint(Color.WHITE);
-			g2d.fillRect(0,0,width, height);
-			
-			return new RtfImage(image, g2d);
+			return new RtfImage(width, height);
 		}
 	}
 	
-	private static class RtfImage implements ItextImageResult {
-		private final BufferedImage image;
-		private final Graphics2D g2d;
+	private static class RtfImage implements ItextGraphic {
+		private int width;
+		private int height;
+		private final EMFGraphics2D g2d;
+		private ByteArrayOutputStream baos;
 		
-		public RtfImage(BufferedImage image, Graphics2D g2d) {
-			this.image = image;
-			this.g2d = g2d;
+		public RtfImage(int width, int height) {
+			this.width = width;
+			this.height = height;
+			
+			baos = new ByteArrayOutputStream();
+			g2d = new EMFGraphics2D(baos, new Dimension(width, height));
+			g2d.startExport();
 		}
 
 		@Override
@@ -91,16 +96,19 @@ public class RtfReportRenderer extends ItextReportRenderer {
 
 		@Override
 		public Image toItextImage() throws BadElementException {
+			g2d.endExport();
 			try {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();            
-				ImageIO.write(image,"JPEG", baos);
-
-				Image imageElement = Image.getInstance(baos.toByteArray());
-				imageElement.scalePercent(72f/92f*100f);
-				return imageElement;
-			} catch (Exception e) {
+				return new ImgEMF(baos.toByteArray(), width, height);
+			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
+		}
+
+		@Override
+		public void addImage(String imageUrl, int x, int y, int width,
+				int height) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 }

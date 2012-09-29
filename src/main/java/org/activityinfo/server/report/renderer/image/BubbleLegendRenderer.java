@@ -1,15 +1,12 @@
 package org.activityinfo.server.report.renderer.image;
 
-import com.google.code.appengine.awt.Color;
-import com.google.code.appengine.awt.Font;
-import com.google.code.appengine.awt.Graphics2D;
-import com.google.code.appengine.awt.font.LineMetrics;
-import com.google.code.appengine.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 
 import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.shared.report.content.BubbleLayerLegend;
 import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
+
+import com.google.code.appengine.awt.Graphics2D;
 
 
 public class BubbleLegendRenderer {
@@ -73,9 +70,9 @@ public class BubbleLegendRenderer {
 		this.bubbleCenterX = PADDING + layer.getMaxRadius();
 	}
 	
-	public <T extends ImageResult> T createImage(ImageCreator<T> creator) {
+	public ItextGraphic createImage(ImageCreator creator) {
 
-		T result = creator.create(width, height);
+		ItextGraphic result = creator.create(width, height);
 		Graphics2D g2d = result.getGraphics();
 		
 		if(renderRange) {

@@ -42,7 +42,7 @@ public class ReportModule extends ServletModule {
 	        .toProvider(MapIconPathProvider.class)
 	        .in(Singleton.class);
 		
-		serve("/icon").with(MapIconServlet.class);
+		serve("/icon*").with(MapIconServlet.class);
 		serve("/generated/*").with(AppEngineStorageServlet.class);
     }
     

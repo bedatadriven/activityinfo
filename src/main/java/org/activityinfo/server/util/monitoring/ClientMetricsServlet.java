@@ -24,10 +24,10 @@ public class ClientMetricsServlet extends HttpServlet {
 
 		String body = new String(ByteStreams.toByteArray(req.getInputStream()));
 
-		LOGGER.info("UA: " + req.getHeader("User-agent") + "\n" +
-					"Country: " + req.getHeader("CF-IPCountry") + "\n" + 
-					body.replace(' ', '\n'));
-		
+//		LOGGER.info("UA: " + req.getHeader("User-agent") + "\n" +
+//					"Country: " + req.getHeader("CF-IPCountry") + "\n" + 
+//					body.replace(' ', '\n'));
+//		
 
 	}
 	

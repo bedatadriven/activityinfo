@@ -128,6 +128,11 @@
 			<artifactId>appengine-jcharts</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>			
+		<dependency>
+			<groupId>com.bedatadriven.appengine.export</groupId>
+			<artifactId>appengine-emf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>		
 		<!-- Scheduling Framework -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>

@@ -5,26 +5,12 @@
 
 package org.activityinfo.server.report.renderer.image;
 
-import com.google.code.appengine.awt.BasicStroke;
-import com.google.code.appengine.awt.Color;
-import com.google.code.appengine.awt.Font;
-import com.google.code.appengine.awt.Graphics2D;
-import com.google.code.appengine.awt.Image;
-import com.google.code.appengine.awt.Rectangle;
-import com.google.code.appengine.awt.color.ColorSpace;
-import com.google.code.appengine.awt.font.LineMetrics;
-import com.google.code.appengine.awt.geom.Ellipse2D;
-import com.google.code.appengine.awt.geom.Rectangle2D;
-import com.google.code.appengine.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.code.appengine.imageio.ImageIO;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
@@ -46,6 +32,14 @@ import org.activityinfo.shared.report.content.PieMapMarker;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.apache.log4j.Logger;
 
+import com.google.code.appengine.awt.BasicStroke;
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.Rectangle;
+import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.geom.Ellipse2D;
+import com.google.code.appengine.awt.image.BufferedImage;
+import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
 
 /**
@@ -199,8 +193,8 @@ public class ImageMapRenderer {
 		return getIconImage(marker.getIcon().getName());
 	}
 	
-	protected <T extends ImageResult> T renderSlice(ImageCreator<T> imageCreator, Color color, int size) {
-		T result = imageCreator.create(size, size);
+	protected ItextGraphic renderSlice(ImageCreator imageCreator, Color color, int size) {
+		ItextGraphic result = imageCreator.create(size, size);
 		Graphics2D g2d = result.getGraphics();
 		g2d.setPaint(color);
 		g2d.fillRect(0,0,size,size);
@@ -308,7 +302,7 @@ public class ImageMapRenderer {
         }
     }
     
-    public <T extends ImageResult> T createLegendSymbol(MapLayerLegend<?> legend, ImageCreator<T> creator) {
+    public ItextGraphic createLegendSymbol(MapLayerLegend<?> legend, ImageCreator creator) {
     	if(legend instanceof BubbleLayerLegend) {
     		return new BubbleLegendRenderer((BubbleLayerLegend) legend).createImage(creator);
     	} else if(legend instanceof IconLayerLegend) {
@@ -320,9 +314,9 @@ public class ImageMapRenderer {
     	}
     }
 
-    private <T extends ImageResult> T createIconImage(ImageCreator<T> creator, IconLayerLegend legend) {
+    private ItextGraphic createIconImage(ImageCreator creator, IconLayerLegend legend) {
     	BufferedImage icon = getIconImage(legend.getDefinition().getIcon());
-    	T result = creator.create(icon.getWidth(), icon.getHeight());
+    	ItextGraphic result = creator.create(icon.getWidth(), icon.getHeight());
     	result.getGraphics().drawImage(icon, 0, 0, null);
     	
     	return result;

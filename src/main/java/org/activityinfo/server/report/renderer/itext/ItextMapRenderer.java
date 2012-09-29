@@ -6,14 +6,12 @@
 package org.activityinfo.server.report.renderer.itext;
 
 
-import com.google.code.appengine.awt.Color;
-import com.google.code.appengine.awt.Graphics2D;
-
 import java.io.IOException;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
+import org.activityinfo.server.report.renderer.image.ItextGraphic;
 import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.report.content.MapLayerLegend;
@@ -22,6 +20,8 @@ import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
 
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Graphics2D;
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
@@ -48,10 +48,10 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<MapReportElement> {
 
-	private ImageCreator<? extends ItextImageResult> imageCreator;
+	private ImageCreator imageCreator;
 	
     @Inject
-    public ItextMapRenderer(@MapIconPath String mapIconPath, ImageCreator<? extends ItextImageResult> imageCreator) {
+    public ItextMapRenderer(@MapIconPath String mapIconPath, ImageCreator imageCreator) {
         super(mapIconPath);
         this.imageCreator = imageCreator;
     }
@@ -74,33 +74,12 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
     }
 
 	public void renderMap(DocWriter writer, MapReportElement element, Document doc) throws BadElementException, DocumentException {
-//        try {
-//        	ItextImageResult image = imageCreator.create(element.getWidth(), element.getHeight());
-//        	
-//            //render(element, image.getGraphics());
-//            
-//            doc.add(image.toItextImage());
-//
-//        } catch(Exception e) {
-//            throw new RuntimeException(e);
-//        }
-		if(writer instanceof PdfWriter) {
-			renderPdfMap((PdfWriter)writer, element, doc);
-		}
-    }
- 
-    private void renderPdfMap(PdfWriter writer, MapReportElement element,
-			Document doc) throws BadElementException, DocumentException {
-		PdfContentByte cb = writer.getDirectContent();
-		PdfTemplate map = cb.createTemplate(element.getWidth(), element.getHeight());
+    	
+		ItextGraphic graphic = imageCreator.create(element.getWidth(), element.getHeight());
+    	drawBasemap(element, new ItextTileHandler(graphic, element.getHeight()));
+		drawOverlays(element, graphic.getGraphics());
 		
-		
-		drawBasemap(element, new PdfTileHandler(map, element.getHeight()));
-		Graphics2D graphics2D = map.createGraphics(element.getWidth(), element.getHeight());
-		drawOverlays(element, graphics2D);
-		graphics2D.dispose();  
-		
-		doc.add(new ImgTemplate(map));
+		doc.add(graphic.toItextImage());
 	}
 
 	private void renderLegend(MapReportElement element, Document doc) throws DocumentException, IOException {
@@ -127,7 +106,7 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
     		symbolCell.setHorizontalAlignment(Element.ALIGN_CENTER);
     		symbolCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
     		
-    		ItextImageResult symbol = createLegendSymbol(legend, imageCreator);
+    		ItextGraphic symbol = createLegendSymbol(legend, imageCreator);
 			symbolCell.addElement(symbol.toItextImage());
 			
     		Cell descriptionCell = new Cell();
@@ -157,7 +136,7 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 		for(Slice slice : layer.getSlices()) {
 			IndicatorDTO indicator = element.getContent().getIndicatorById(slice.getIndicatorId());
 			Color color = ColorUtil.colorFromString(slice.getColor());
-			ItextImageResult sliceImage = renderSlice(imageCreator, color, 10);
+			ItextGraphic sliceImage = renderSlice(imageCreator, color, 10);
 			
 			Chunk box = new Chunk(sliceImage.toItextImage(), 0, 0);
 			Chunk description = new Chunk(indicator.getName());

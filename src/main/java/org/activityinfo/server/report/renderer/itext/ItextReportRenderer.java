@@ -75,7 +75,7 @@ public abstract class ItextReportRenderer implements Renderer {
 
 	protected abstract void renderFooter(Document document);
 
-    protected abstract ImageCreator<? extends ItextImageResult> getImageCreator();
+    protected abstract ImageCreator getImageCreator();
 
     /**
      * Provides a DocWriter for an open document and OutputStream. Subclasses should provide

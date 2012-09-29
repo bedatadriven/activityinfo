@@ -5,12 +5,14 @@
 
 package org.activityinfo.server.report.renderer.itext;
 
-import com.google.code.appengine.awt.Graphics2D;
 import java.io.OutputStream;
+import java.net.URL;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
+import org.activityinfo.server.report.renderer.image.ItextGraphic;
 
+import com.google.code.appengine.awt.Graphics2D;
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
@@ -19,6 +21,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
@@ -61,19 +64,21 @@ public class PdfReportRenderer extends ItextReportRenderer {
 	}
 
 	@Override
-	protected ImageCreator<? extends ItextImageResult> getImageCreator() {
+	protected ImageCreator getImageCreator() {
 		return new PdfVectorImageCreator();
 	}
 
-	private class PdfVectorImageCreator implements ImageCreator<PdfVectorImage> {
+	private class PdfVectorImageCreator implements ImageCreator {
 		@Override
 		public PdfVectorImage create(int width, int height) {
-			PdfTemplate template = PdfTemplate.createTemplate(writer, width, height);
+			PdfContentByte cb = writer.getDirectContent();
+			PdfTemplate template = cb.createTemplate(width, height);
+			
 			return new PdfVectorImage(template, template.createGraphics(width, height));
 		}
 	}
 
-	private static class PdfVectorImage implements ItextImageResult {
+	private static class PdfVectorImage implements ItextGraphic {
 		private PdfTemplate template;
 		private Graphics2D g2d;
 
@@ -95,6 +100,25 @@ public class PdfReportRenderer extends ItextReportRenderer {
 			image.scalePercent(72f/92f*100f);
 
 			return image;
+		}
+
+		@Override
+		public void addImage(String imageUrl, int x, int y, int width,
+				int height) {
+			Image image;
+			try {
+				image = Image.getInstance(new URL(imageUrl));
+			} catch (Exception e) {
+				// ignore missing tiles
+				return;
+			}
+			try {
+				image.setAbsolutePosition(x, y);
+				template.addImage(image, false);
+
+			} catch (DocumentException e) {
+				throw new RuntimeException(e);
+			}			
 		}
 	}
 }

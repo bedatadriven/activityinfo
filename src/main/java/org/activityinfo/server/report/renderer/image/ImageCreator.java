@@ -1,8 +1,8 @@
 package org.activityinfo.server.report.renderer.image;
 
 
-public interface ImageCreator<T extends ImageResult> {
+public interface ImageCreator {
 
-	T create(int width, int height);
+	ItextGraphic create(int width, int height);
 		
 }
