@@ -8,10 +8,15 @@
   </system-properties>
 
   <static-files>
-    <include path="/ActivityInfo/**.html"/>
+  	<include path="/ActivityInfo/**.gif" expiration="365d"/>
+  	<include path="/ActivityInfo/**.png" expiration="365d"/>
+  	<include path="/ActivityInfo/**.png" expiration="365d"/>
+  	<include path="/ActivityInfo/**.css" expiration="365d"/>
+    <include path="/ActivityInfo/**.cache.html" expiration="365d"/>
+    <include path="/ActivityInfo/**.nocache.html" expiration="0s"/>
   </static-files>
   
-  <sessions-enabled>true</sessions-enabled>
+  <sessions-enabled>false</sessions-enabled>
   <precompilation-enabled>false</precompilation-enabled>
-  <threadsafe>false</threadsafe>
+  <threadsafe>true</threadsafe>
 </appengine-web-app>
