@@ -29,7 +29,7 @@ import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.server.util.monitoring.MonitoringModule;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -43,7 +43,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
  */
 public class StartupListener extends GuiceServletContextListener {
 
-    private static Logger logger = Logger.getLogger(StartupListener.class);
+    private static Logger logger = Logger.getLogger(StartupListener.class.getName());
 
 	private Random RNG = new Random();
 

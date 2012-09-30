@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Environment;
 import org.hibernate.connection.ConnectionProvider;
@@ -21,7 +22,7 @@ public class HibernateConnectionProvider implements ConnectionProvider {
 
 	public static Provider<Connection> DELEGATE;
 
-	private static Logger LOGGER = Logger.getLogger(HibernateConnectionProvider.class);
+	private static Logger LOGGER = Logger.getLogger(HibernateConnectionProvider.class.getName());
 
 	private Integer isolation;
 	private boolean autocommit;
@@ -63,7 +64,7 @@ public class HibernateConnectionProvider implements ConnectionProvider {
 			try {
 				connection.close();
 			} catch (Exception e2) {
-				LOGGER.warn("Setting connection properties failed and closing this connection failed again", e);
+				LOGGER.log(Level.WARNING, "Setting connection properties failed and closing this connection failed again", e);
 			}
 
 			throw e;

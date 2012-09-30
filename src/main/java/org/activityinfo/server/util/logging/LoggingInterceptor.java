@@ -16,7 +16,9 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 
@@ -61,7 +63,7 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     private void onException(MethodInvocation invocation, Throwable caught) {
-        Logger logger = Logger.getLogger(getOriginalClass(invocation));
+        Logger logger = Logger.getLogger(getOriginalClass(invocation).getName());
         logException(invocation, caught, logger);
         if(isEmailAlertEnabled(invocation)) {
             mailException(invocation, caught, logger);
@@ -69,22 +71,22 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     private void logException(MethodInvocation invocation, Throwable e, Logger logger) {
-        logger.error("Exception was thrown while executing " + invocation.getMethod().getName(), e);
+        logger.log(Level.SEVERE, "Exception was thrown while executing " + invocation.getMethod().getName(), e);
     }
 
     private void mailException(MethodInvocation invocation, Throwable caught, Logger logger) {
         if(mailSender == null) {
-            logger.warn("emailAlert is enabled for " + invocation.getMethod().getName() + " but no MailSender is conigured");
+            logger.log(Level.WARNING, "emailAlert is enabled for " + invocation.getMethod().getName() + " but no MailSender is conigured");
         }
         if(alertRecipients.isEmpty()) {
-            logger.warn("emailAlert is enabled for " + invocation.getMethod().getName() + " but no alert recipients are specified. " +
+            logger.log(Level.WARNING, "emailAlert is enabled for " + invocation.getMethod().getName() + " but no alert recipients are specified. " +
                     "Please set the 'alert.recipients' property in the activityinfo.config file");
         }
         if(mailSender != null && !alertRecipients.isEmpty()) {
             try {
                 sendMail(caught);
             } catch (EmailException e) {
-                logger.warn("Exception thrown while trying to email alert about previous exception", e);
+                logger.log(Level.WARNING, "Exception thrown while trying to email alert about previous exception", e);
             }
         }
     }
@@ -112,8 +114,8 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     private void trace(MethodInvocation invocation) {
-        Logger logger = Logger.getLogger(invocation.getThis().getClass());
-        logger.trace("Calling " + invocation.getMethod().getName());
+        Logger logger = Logger.getLogger(invocation.getThis().getClass().getName());
+        logger.finer("Calling " + invocation.getMethod().getName());
     }
 
     private boolean isExceptionLoggingEnabled(MethodInvocation invocation) {

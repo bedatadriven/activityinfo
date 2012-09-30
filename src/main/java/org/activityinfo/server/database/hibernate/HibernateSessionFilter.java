@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,7 +18,7 @@ import com.google.inject.Singleton;
 @Singleton
 public final class HibernateSessionFilter implements Filter {
 
-	private static final Logger LOGGER = Logger.getLogger(HibernateSessionFilter.class);
+	private static final Logger LOGGER = Logger.getLogger(HibernateSessionFilter.class.getName());
 	
 	private HibernateSessionScope sessionScope;
 	private EntityManagerFactory entityManagerFactory;

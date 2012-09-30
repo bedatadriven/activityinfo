@@ -22,7 +22,9 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.AnonymousUser;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -44,7 +46,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class CommandServlet extends RemoteServiceServlet implements RemoteCommandService {
 
-    private static final Logger LOGGER = Logger.getLogger(CommandServlet.class);
+    private static final Logger LOGGER = Logger.getLogger(CommandServlet.class.getName());
 
 	
     @Inject
@@ -82,7 +84,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         List<CommandResult> results = new ArrayList<CommandResult>();
         for (Command command : commands) {
         	
-        	LOGGER.debug(authProvider.get().getEmail() + ": " + command.getClass().getSimpleName());
+        	LOGGER.log(Level.INFO, authProvider.get().getEmail() + ": " + command.getClass().getSimpleName());
         	
             try {
                 results.add(handleCommand(command));

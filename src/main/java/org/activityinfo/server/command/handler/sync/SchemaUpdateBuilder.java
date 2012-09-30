@@ -32,7 +32,7 @@ import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.json.JSONException;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
@@ -64,7 +64,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private final List<LocationType> locationTypes  = new ArrayList<LocationType>();
     private List<UserPermission> userPermissions;
 
-    private static Logger LOGGER = Logger.getLogger(Logger.class);
+    private static Logger LOGGER = Logger.getLogger(SchemaUpdateBuilder.class.getName());
     
     private final Class[] schemaClasses = new Class[] {
             Country.class,

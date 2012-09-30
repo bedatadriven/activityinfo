@@ -5,7 +5,9 @@ import org.activityinfo.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.shared.command.handler.AuthorizationHandler;
 import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.db.Tables;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -16,7 +18,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CreateSiteAuthorizationHandler implements AuthorizationHandler<CreateSite> {
 
-	private static final Logger LOGGER = Logger.getLogger(CreateSiteAuthorizationHandler.class);
+	private static final Logger LOGGER = Logger.getLogger(CreateSiteAuthorizationHandler.class.getName());
 	
 	@Override
 	public void authorize(final CreateSite command, 
@@ -53,7 +55,7 @@ public class CreateSiteAuthorizationHandler implements AuthorizationHandler<Crea
 								row.getInt("partnerId") == command.getPartnerId()) {
 							callback.onSuccess(null);
 						} else {
-							LOGGER.error("CreateSite Authorization failed: command = " + command + 
+							LOGGER.log(Level.SEVERE, "CreateSite Authorization failed: command = " + command + 
 									", user = " + context.getUser().getId());
 							callback.onFailure(new NotAuthorizedException());
 						}

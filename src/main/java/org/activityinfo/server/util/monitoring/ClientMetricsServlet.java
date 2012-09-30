@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Singleton;
@@ -15,7 +15,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class ClientMetricsServlet extends HttpServlet {
 
-	private static Logger LOGGER = Logger.getLogger(ClientMetricsServlet.class);
+	private static Logger LOGGER = Logger.getLogger(ClientMetricsServlet.class.getName());
 	
 	
 	@Override

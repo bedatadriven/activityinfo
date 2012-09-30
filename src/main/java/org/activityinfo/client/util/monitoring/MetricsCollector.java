@@ -1,6 +1,6 @@
 package org.activityinfo.client.util.monitoring;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
@@ -19,7 +19,7 @@ import com.google.gwt.http.client.Response;
  */
 public class MetricsCollector {
 
-	private static final int BATCH_INTERVAL_MS = 5000;
+	private static final int BATCH_INTERVAL_MS = 60000;
 	
 	private StringBuilder toSend = new StringBuilder();
 

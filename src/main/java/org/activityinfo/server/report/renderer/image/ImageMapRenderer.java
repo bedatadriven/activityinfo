@@ -30,8 +30,11 @@ import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.content.PieChartLegend;
 import org.activityinfo.shared.report.content.PieMapMarker;
 import org.activityinfo.shared.report.model.MapReportElement;
-import org.apache.log4j.Logger;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.appengine.api.log.LogService.LogLevel;
 import com.google.code.appengine.awt.BasicStroke;
 import com.google.code.appengine.awt.Color;
 import com.google.code.appengine.awt.Graphics2D;
@@ -47,7 +50,7 @@ import com.google.inject.Inject;
  */
 public class ImageMapRenderer {
 	
-	private static final Logger LOGGER = Logger.getLogger(ImageMapRenderer.class);
+	private static final Logger LOGGER = Logger.getLogger(ImageMapRenderer.class.getName());
 
 
 	/**
@@ -215,7 +218,7 @@ public class ImageMapRenderer {
                 image = ImageIO.read(new File(mapIconRoot + "/" + name + ".png"));
                 iconImages.put(name, image);
             } catch (IOException e) {
-            	LOGGER.debug("Exception reading icon '" + name + "'", e);
+            	LOGGER.log(Level.WARNING, "Exception reading icon '" + name + "'", e);
             }
         }
 		return image;
@@ -243,7 +246,7 @@ public class ImageMapRenderer {
 	        	drawGoogleBaseMap(tileHandler, map, (GoogleBaseMap)baseMap);
 	        }
         } catch(Exception e) {
-        	LOGGER.debug("Exception drawing basemap", e);
+        	LOGGER.log(Level.WARNING, "Exception drawing basemap", e);
         }
 	}
 
