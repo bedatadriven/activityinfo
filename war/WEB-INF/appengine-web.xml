@@ -10,7 +10,7 @@
   <static-files>
   	<include path="/ActivityInfo/**.gif" expiration="365d"/>
   	<include path="/ActivityInfo/**.png" expiration="365d"/>
-  	<include path="/ActivityInfo/**.png" expiration="365d"/>
+  	<include path="/ActivityInfo/**.js" expiration="365d"/>
   	<include path="/ActivityInfo/**.css" expiration="365d"/>
     <include path="/ActivityInfo/**.cache.html" expiration="365d"/>
     <include path="/ActivityInfo/**.nocache.html" expiration="0s"/>
