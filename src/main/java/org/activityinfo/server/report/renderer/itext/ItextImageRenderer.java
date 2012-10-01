@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.activityinfo.shared.report.model.ImageReportElement;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
@@ -16,7 +18,7 @@ import com.lowagie.text.Image;
  */
 public class ItextImageRenderer implements ItextRenderer<ImageReportElement>{
 
-	private static final Logger LOGGER = Logger.getLogger(ItextImageRenderer.class);
+	private static final Logger LOGGER = Logger.getLogger(ItextImageRenderer.class.getName());
 	
 	@Override
 	public void render(DocWriter writer, Document doc, ImageReportElement element)
@@ -28,9 +30,9 @@ public class ItextImageRenderer implements ItextRenderer<ImageReportElement>{
 				image = Image.getInstance(element.getUrl());
 				doc.add(image);
 			} catch (MalformedURLException e) {
-				LOGGER.debug("Error rendering image", e);
+				LOGGER.log(Level.WARNING, "Error rendering image", e);
 			} catch (IOException e) {
-				LOGGER.debug("Error rendering image", e);
+				LOGGER.log(Level.WARNING, "Error rendering image", e);
 			}
     	}		
 	}

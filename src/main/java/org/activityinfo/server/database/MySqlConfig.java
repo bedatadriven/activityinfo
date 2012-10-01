@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Provides a property set for the MySQL JDBC driver given a user
@@ -19,7 +19,7 @@ public final class MySqlConfig {
 
 	private MySqlConfig() { }
 
-	private static Logger LOGGER = Logger.getLogger(MySqlConfig.class);
+	private static Logger LOGGER = Logger.getLogger(MySqlConfig.class.getName());
 	
 	public static Properties get(String userName, String password) {
 		Properties properties = new Properties();
@@ -36,7 +36,7 @@ public final class MySqlConfig {
 			stmt.execute("SET NAMES 'utf8mb4'");
 			stmt.close();
 		} catch(SQLException e) {
-			LOGGER.warn( "Failed to set MySQL connection to utf8mb4, please upgrade to MySQL5.5 for full unicode support.");
+			LOGGER.warning( "Failed to set MySQL connection to utf8mb4, please upgrade to MySQL5.5 for full unicode support.");
 		}
 		return connection;
 	}

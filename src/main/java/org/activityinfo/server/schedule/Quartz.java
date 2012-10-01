@@ -4,7 +4,8 @@ import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.TriggerKey.triggerKey;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -55,7 +56,7 @@ public class Quartz {
 			LOGGER.info("Shutting down Quartz Scheduler");
 			scheduler.shutdown();
 		} catch (SchedulerException e) {
-			LOGGER.error("Exception thrown while shutting down Quartz scheduler", e);
+			LOGGER.log(Level.SEVERE, "Exception thrown while shutting down Quartz scheduler", e);
 		}
 	}
 }

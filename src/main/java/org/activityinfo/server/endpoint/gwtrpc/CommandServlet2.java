@@ -13,7 +13,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -35,7 +35,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
     @Inject 
     private UserDAO userDAO;
     
-    private static final Logger LOGGER = Logger.getLogger(CommandServlet2.class);
+    private static final Logger LOGGER = Logger.getLogger(CommandServlet2.class.getName());
     
     @Override
     @LogException

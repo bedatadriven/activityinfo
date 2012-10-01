@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
@@ -22,14 +24,13 @@ import org.activityinfo.shared.report.model.Report;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
-import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 
 public class ReportMailer {
 	
-    private static final Logger LOGGER = Logger.getLogger(ReportMailerJob.class);
+    private static final Logger LOGGER = Logger.getLogger(ReportMailerJob.class.getName());
 
 	private final EntityManager em;
 	private final ReportGenerator reportGenerator;
@@ -68,7 +69,7 @@ public class ReportMailer {
 					execute(today, subscription, report);
 				}
 			} catch (Exception caught) {
-				LOGGER.error("Exception thrown while processing report " + subscription.getId(), caught); 
+				LOGGER.log(Level.SEVERE, "Exception thrown while processing report " + subscription.getId(), caught); 
 			}
 		}
 	}
@@ -95,7 +96,7 @@ public class ReportMailer {
 		try {
 			mailReport(sub, report, today, tempFile);
 		} catch (Exception e) {
-			LOGGER.error("Report mailing of " + sub.getTemplate().getId() + " failed for user "
+			LOGGER.log(Level.SEVERE, "Report mailing of " + sub.getTemplate().getId() + " failed for user "
 					+ sub.getUser().getEmail(), e);
 		}
 	}
@@ -115,7 +116,7 @@ public class ReportMailer {
 
 		// email
 
-		LOGGER.debug("Sending email to " + sub.getUser().getEmail());
+		LOGGER.log(Level.INFO, "Sending email to " + sub.getUser().getEmail());
 
 		MultiPartEmail email = new MultiPartEmail();
 		// email.setHtmlMsg(ReportMailerHelper.composeHtmlEmail(sub, report ));

@@ -43,7 +43,9 @@ import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.activityinfo.shared.util.mapping.Extents;
 import org.activityinfo.shared.util.mapping.TileMath;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -56,7 +58,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 
 	private final IndicatorDAO indicatorDAO;
 
-    private static final Logger logger = Logger.getLogger(MapGenerator.class);
+    private static final Logger logger = Logger.getLogger(MapGenerator.class.getName());
         
     @Inject
     public MapGenerator(DispatcherSync dispatcher, IndicatorDAO indicatorDAO) {
@@ -136,7 +138,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         content.setZoomLevel(zoom);
         if (baseMap == null) {
         	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
-			logger.error("Could not find base map id=" + element.getBaseMapId());
+			logger.log(Level.SEVERE, "Could not find base map id=" + element.getBaseMapId());
         }
 
         // Generate the actual content
@@ -219,7 +221,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 				return map;
 			}
 		}
-		logger.error("Could not find base map id=" +  baseMapId);
+		logger.log(Level.SEVERE, "Could not find base map id=" +  baseMapId);
 		
     	return TileBaseMap.createNullMap(baseMapId);
 	}

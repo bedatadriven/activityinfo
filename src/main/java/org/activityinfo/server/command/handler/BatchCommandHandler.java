@@ -17,7 +17,7 @@ import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Primitives;
@@ -31,7 +31,7 @@ import com.google.inject.Injector;
  */
 public class BatchCommandHandler implements CommandHandlerAsync<BatchCommand, BatchResult> {
 
-    private static final Logger LOGGER = Logger.getLogger(BatchCommandHandler.class);
+    private static final Logger LOGGER = Logger.getLogger(BatchCommandHandler.class.getName());
     
 
     @Override
@@ -39,7 +39,7 @@ public class BatchCommandHandler implements CommandHandlerAsync<BatchCommand, Ba
 			final AsyncCallback<BatchResult> callback) {
     	
     	if(batch.getCommands().isEmpty()) {
-    		LOGGER.warn("Received empty batch command");
+    		LOGGER.warning("Received empty batch command");
     		callback.onSuccess(new BatchResult(Lists.<CommandResult>newArrayList()));
     	} else {
 	    	final ArrayList<CommandResult> results = new ArrayList<CommandResult>();

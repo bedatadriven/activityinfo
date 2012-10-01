@@ -22,7 +22,9 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.UserPermissionDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 
@@ -41,7 +43,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
 
     private final MailSender mailSender;
     
-    private static final Logger logger = Logger.getLogger(UpdateUserPermissionsHandler.class);
+    private static final Logger logger = Logger.getLogger(UpdateUserPermissionsHandler.class.getName());
 
     @Inject
     public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO, PartnerDAO partnerDAO, UserDAO userDAO,
@@ -106,7 +108,7 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         try {
         	mailSender.send(new InvitationMessage(user, executingUser));
         } catch (Exception e) {
-        	logger.error("Could not send invitation mail", e);
+        	logger.log(Level.SEVERE, "Could not send invitation mail", e);
         	throw new CommandException("Failed to send invitation email");
         }
         return user;

@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bedatadriven.rebar.sql.client.query.MySqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
@@ -17,7 +18,7 @@ import com.mysql.jdbc.log.LogUtils;
 
 public class ServerDatabase extends JdbcDatabase {
 
-	private static Logger LOGGER = Logger.getLogger(ServerDatabase.class); 
+	private static Logger LOGGER = Logger.getLogger(ServerDatabase.class.getName()); 
 
 	private final Provider<Connection> connectionProvider;
 	private static ThreadLocal<List<Executor>> EXECUTORS = new ThreadLocal<List<Executor>>();
@@ -59,15 +60,15 @@ public class ServerDatabase extends JdbcDatabase {
 			if(connection != null) {
 				try {
 					if(!connection.isClosed()) {
-						LOGGER.error("Connection was left open after request! Closing now...");
+						LOGGER.log(Level.SEVERE, "Connection was left open after request! Closing now...");
 						try {
 							connection.close();
 						} catch(Exception e) {
-							LOGGER.error("Exception thrown while closing connection", e);
+							LOGGER.log(Level.SEVERE, "Exception thrown while closing connection", e);
 						}
 					}
 				} catch(Exception e) {
-					LOGGER.error("Exception thrown during ensureClosed()");
+					LOGGER.log(Level.SEVERE, "Exception thrown during ensureClosed(), e");
 				}
 			}
 		}

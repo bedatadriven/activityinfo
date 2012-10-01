@@ -13,7 +13,9 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 
 import org.activityinfo.server.util.logging.Trace;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -24,7 +26,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 public class ConfigModule extends AbstractModule {
-    private static Logger logger = Logger.getLogger(ConfigModule.class);
+    private static Logger logger = Logger.getLogger(ConfigModule.class.getName());
 
     @Override
     protected void configure() {
@@ -90,12 +92,12 @@ public class ConfigModule extends AbstractModule {
         String awsSecretAccessKey = BeanstalkEnvironment.getSecretKey();
         String bucket = BeanstalkEnvironment.getConfigurationPropertiesBucket();
         if(Strings.isNullOrEmpty(bucket)) {
-            logger.error("AWS Credentials provided, but PARAM1 does not contain the bucket name in which the configuration file is stored");
+            logger.log(Level.SEVERE, "AWS Credentials provided, but PARAM1 does not contain the bucket name in which the configuration file is stored");
             return;
         }
         String key = BeanstalkEnvironment.getConfigurationPropertiesKey();
         if(Strings.isNullOrEmpty(key)) {
-        	logger.error("AWS Credentials provided, but PARAM2 does not contain the configuration file's key");
+        	logger.log(Level.SEVERE, "AWS Credentials provided, but PARAM2 does not contain the configuration file's key");
         }
         
         AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey));
@@ -103,7 +105,7 @@ public class ConfigModule extends AbstractModule {
             properties.load(client.getObject(bucket, key).getObjectContent());
             logger.info("Loaded configuration from S3 " + bucket + "/" + key);
         } catch (IOException e) {
-            logger.error("Exception reading configuration from S3: " + e.getMessage(), e);
+            logger.log(Level.SEVERE, "Exception reading configuration from S3: " + e.getMessage(), e);
         }
     }
     

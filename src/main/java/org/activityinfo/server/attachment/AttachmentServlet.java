@@ -17,7 +17,9 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -35,7 +37,7 @@ public class AttachmentServlet extends HttpServlet {
 	private AWSCredentials credentials;
 	private DispatcherSync dispatcher;
 	
-	private static final Logger LOGGER = Logger.getLogger(AttachmentServlet.class);
+	private static final Logger LOGGER = Logger.getLogger(AttachmentServlet.class.getName());
 	private String bucketName;
 	
 	@Inject
@@ -96,7 +98,7 @@ public class AttachmentServlet extends HttpServlet {
 	
 			dispatcher.execute(siteAttachment);
 		} catch(Exception e) {
-			LOGGER.error("Error handling upload", e);
+			LOGGER.log(Level.SEVERE, "Error handling upload", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}

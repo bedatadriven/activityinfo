@@ -15,7 +15,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 import org.activityinfo.shared.util.Collector;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
@@ -27,7 +27,7 @@ import com.google.inject.Injector;
 
 public class ServerExecutionContext implements ExecutionContext {
 	
-	private static Logger LOGGER = Logger.getLogger(ServerExecutionContext.class);
+	private static Logger LOGGER = Logger.getLogger(ServerExecutionContext.class.getName());
 	
 	private AuthenticatedUser user;
 	private Injector injector;
@@ -59,7 +59,7 @@ public class ServerExecutionContext implements ExecutionContext {
 			Class<AuthorizationHandler<C>> authHandlerClass = HandlerUtil.authorizationHandlerForCommand(command);
 			
 			if(authHandlerClass == null) {
-				LOGGER.warn("No authorization handler for " + command.getClass());
+				LOGGER.warning("No authorization handler for " + command.getClass());
 				onAuthorized(command, callback);
 			} else {			
 				AuthorizationHandler<C> authHandler = injector.getInstance(
