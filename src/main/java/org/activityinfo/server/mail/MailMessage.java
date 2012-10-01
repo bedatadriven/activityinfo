@@ -1,9 +1,6 @@
 package org.activityinfo.server.mail;
 
-import java.util.ResourceBundle;
-
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.i18n.LocaleHelper;
 
 public abstract class MailMessage {
 	

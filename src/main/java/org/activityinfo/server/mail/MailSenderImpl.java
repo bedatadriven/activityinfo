@@ -48,6 +48,9 @@ public class MailSenderImpl implements MailSender {
 	        mail.setMsg(composeMessage(message));
 	        mail.setCharset("utf-8"); // https://issues.apache.org/jira/browse/EMAIL-79
 	        send(mail);
+	        
+	        
+	        
     	} catch(Exception e) {
     		throw new RuntimeException("Exception while sending message: " + e.getMessage(), e);
     	}
@@ -79,18 +82,22 @@ public class MailSenderImpl implements MailSender {
 	@Override
 	@LogException
     public void send(Email email) throws EmailException {
-        email.setHostName(configuration.getProperty("smtp.host"));
         email.setFrom(configuration.getProperty("smtp.from"), 
         		configuration.getProperty("smtp.from.name"));
-        if(configuration.getProperty("smtp.port") != null ) {
+     
+        if(configuration.hasProperty("smtp.host")) {
+			email.setHostName(configuration.getProperty("smtp.host"));
+		}
+        if(configuration.hasProperty("smtp.port")) {
         	email.setSmtpPort(Integer.parseInt(configuration.getProperty("smtp.port")));
         }
-        if(configuration.getProperty("smtp.username") != null && configuration.getProperty("smtp.password") != null) {
-        	email.setAuthenticator(new DefaultAuthenticator(configuration.getProperty("smtp.username"), 
+        if(configuration.hasProperty("smtp.username") && 
+           configuration.hasProperty("smtp.password")) {
+        	email.setAuthenticator(new DefaultAuthenticator(
+        			configuration.getProperty("smtp.username"), 
         			configuration.getProperty("smtp.password")));
-        	
         }
-        if(configuration.getProperty("smtp.tls")!=null) {
+        if(configuration.hasProperty("smtp.tls")) {
         	email.setTLS(true);
         }
         

@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.google.common.base.Strings;
 
 /**
  * Configuration properties for the 
@@ -64,5 +65,9 @@ public class DeploymentConfiguration {
 	
 	public AWSCredentials getAWSCredentials() {
 		return new BasicAWSCredentials(getAwsAccessKeyId(), getAwsSecretKey());
+	}
+
+	public boolean hasProperty(String key) {
+		return !Strings.isNullOrEmpty(getProperty(key));
 	}
 }
