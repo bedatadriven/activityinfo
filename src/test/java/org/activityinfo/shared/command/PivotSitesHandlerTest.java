@@ -48,9 +48,6 @@ import com.google.inject.Inject;
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class PivotSitesHandlerTest extends CommandTestCase2 {
 
-
-	@Inject
-	private SqlDatabase db;
 	
     private Set<Dimension> dimensions;
     private Dimension indicatorDim;

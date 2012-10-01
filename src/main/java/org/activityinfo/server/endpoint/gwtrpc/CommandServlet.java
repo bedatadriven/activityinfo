@@ -108,11 +108,11 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         DomainFilters.applyUserFilter(user, em);
     }
 
-    @Transactional
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(Command command) throws CommandException {
     	long timeStart = System.currentTimeMillis();
-		CommandResult result = ServerExecutionContext.execute(injector, command);
+    	ServerExecutionContext context = new ServerExecutionContext(injector);
+		CommandResult result = context.startExecute(command);
 
 		long timeElapsed = System.currentTimeMillis() - timeStart;
 		if(timeElapsed > 1000) {

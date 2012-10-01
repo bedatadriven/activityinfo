@@ -122,18 +122,6 @@ public final class HandlerUtil {
     }
 
 
-    public static <T extends CommandResult> T execute(Injector injector, Command<T> cmd, User user) throws CommandException {
-        Class handlerClass = handlerForCommand(cmd);
-        Object  handler = injector.getInstance(handlerClass);
-        if(handler instanceof CommandHandler) {
-        	CommandHandler syncHandler = (CommandHandler)handler;
-        	return (T) syncHandler.execute(cmd, user);	
-        } else {
-        	return (T)ServerExecutionContext.execute(injector, cmd);
-        }
-    }
-
-
     public static <T> List<T> mapList(Mapper mapper, Collection<?> source, Class<T> destinationClass) {
         List<T> list = new ArrayList<T>(source.size());
         for (Object s : source) {

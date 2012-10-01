@@ -17,7 +17,6 @@ import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.ejb.HibernatePersistence;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;

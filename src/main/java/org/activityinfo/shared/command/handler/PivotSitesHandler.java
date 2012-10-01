@@ -23,8 +23,8 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
     private final SqlDialect dialect;
 
     @Inject
-    public PivotSitesHandler(SqlDatabase db) {
-        this.dialect = db.getDialect();
+    public PivotSitesHandler(SqlDialect dialect) {
+        this.dialect = dialect;
     }
 
     public void aggregate(SqlTransaction tx, Set<Dimension> dimensions, Filter filter, int userId, AsyncCallback<List<Bucket>> callback) {

@@ -21,6 +21,7 @@ import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
@@ -33,12 +34,12 @@ import com.google.inject.Inject;
 
 public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult> {
 
-	private final SqlDatabase database;
+	private final SqlDialect dialect;
 		
 	@Inject
-	public GetSitesHandler(SqlDatabase database) {
+	public GetSitesHandler(SqlDialect dialect) {
 		super();
-		this.database = database;
+		this.dialect = dialect;
 	}
 
 	@Override
@@ -214,7 +215,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
 	private void applyPaging(final SqlQuery query, GetSites command) {
 		if(command.getOffset() > 0 || command.getLimit() > 0) {
-		    query.setLimitClause(database.getDialect().limitClause(
+		    query.setLimitClause(dialect.limitClause(
 		    		command.getOffset(),
 		    		command.getLimit()));
 		}
@@ -504,6 +505,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 	
 	private boolean isMySql() {
-		return database.getDialect().isMySql();
+		return dialect.isMySql();
 	}
 }
