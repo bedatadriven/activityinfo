@@ -135,22 +135,6 @@
 			<version>2.1.4</version>
 		</dependency>
 
-		<!-- Emailing -->
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-email</artifactId>
-			<version>1.2</version>
-			<exclusions>
-				<!-- Because the JDK1.6 already include the Java Activation API, otherwise 
-					this could generate ClassLoading en Linkage errors -->
-				<exclusion>
-					<groupId>javax.activation</groupId>
-					<artifactId>activation</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
 		<!-- Database dependencies -->
 
 		<dependency>

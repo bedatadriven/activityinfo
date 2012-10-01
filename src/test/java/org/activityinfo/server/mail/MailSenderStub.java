@@ -7,30 +7,28 @@ package org.activityinfo.server.mail;
 
 import java.util.List;
 
-import org.activityinfo.server.mail.MailMessage;
-import org.activityinfo.server.mail.MailSender;
+import javax.inject.Inject;
+import javax.mail.Message;
+
 import org.activityinfo.test.TestScoped;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
 
 import com.google.common.collect.Lists;
 
-@TestScoped
-public class MailSenderStub implements MailSender {
+import freemarker.template.Configuration;
 
-    public List<MailMessage> sentMail = Lists.newArrayList();
-    public List<Email> sentEmail = Lists.newArrayList();
+@TestScoped
+public class MailSenderStub extends MailSender {
+
+	@Inject
+    public MailSenderStub(Configuration templateCfg) {
+		super(templateCfg);
+	}
+
+	public List<Message> sentMail = Lists.newArrayList();
 
 
     @Override
-    public void send(MailMessage message) {
+    public void send(Message message) {
         sentMail.add(message);
     }
-
-
-	@Override
-	public void send(Email email) throws EmailException {
-		sentEmail.add(email);
-		
-	}
 }

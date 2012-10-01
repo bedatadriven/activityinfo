@@ -1,7 +1,6 @@
 package org.activityinfo.server.schedule;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
@@ -9,11 +8,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.ReportSubscription;
+import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
@@ -21,9 +22,6 @@ import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Report;
-import org.apache.commons.mail.EmailAttachment;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.MultiPartEmail;
 import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
@@ -85,46 +83,36 @@ public class ReportMailer {
 		// generate the report
 		reportGenerator.generate(sub.getUser(), report, null, new DateRange());
 
-
-		File tempFile = File.createTempFile("report", ".rtf");
-		FileOutputStream rtf = new FileOutputStream(tempFile);
+		ByteArrayOutputStream rtf = new ByteArrayOutputStream();
 		rtfReportRenderer.render(report, rtf);
 		rtf.close();
 
 		// loop through report subscriptions that are to be mailed
 		// today
 		try {
-			mailReport(sub, report, today, tempFile);
+			mailReport(sub, report, today, rtf.toByteArray());
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Report mailing of " + sub.getTemplate().getId() + " failed for user "
 					+ sub.getUser().getEmail(), e);
 		}
 	}
 
-	private void mailReport(ReportSubscription sub,  Report report, Date today, File tempFile) throws IOException, SAXException, EmailException {
-
-
-		EmailAttachment attachment = new EmailAttachment();
-		attachment.setName(report.getContent().getFileName() + " " +
-				reportDateFormat.format(today) + ".rtf");
-		attachment.setDescription(report.getTitle());
-		attachment.setPath(tempFile.getAbsolutePath());
-		attachment.setDisposition(EmailAttachment.ATTACHMENT);
-
-		// compose both a full html rendering of this report and a short text
-		// message for email clients that can't read html
-
-		// email
+	private void mailReport(ReportSubscription sub,  Report report, Date today, byte[] content) 
+			throws IOException, SAXException, MessagingException {
 
 		LOGGER.log(Level.INFO, "Sending email to " + sub.getUser().getEmail());
 
-		MultiPartEmail email = new MultiPartEmail();
-		// email.setHtmlMsg(ReportMailerHelper.composeHtmlEmail(sub, report ));
-		email.setMsg(ReportMailerHelper.composeTextEmail(sub, report));
-		email.addTo(sub.getUser().getEmail(), sub.getUser().getName());
-		email.setSubject("ActivityInfo: " + report.getTitle());
-		email.attach(attachment);
-
-		mailer.send(email);
+		MessageBuilder email = new MessageBuilder();
+		email.to(sub.getUser().getEmail(), sub.getUser().getName());
+		email.subject("ActivityInfo: " + report.getTitle());
+		email.addPart()
+			.withText(ReportMailerHelper.composeTextEmail(sub, report));
+		
+		email.addPart()
+			.withContent(content, "text/enriched")
+			.withFileName(report.getContent().getFileName() + " " +
+					reportDateFormat.format(today) + ".rtf");
+		
+		mailer.send(email.build());
 	}
 }

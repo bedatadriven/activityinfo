@@ -9,16 +9,16 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.mail.MessagingException;
+
+import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 
@@ -85,20 +85,20 @@ public class LoggingInterceptor implements MethodInterceptor {
         if(mailSender != null && !alertRecipients.isEmpty()) {
             try {
                 sendMail(caught);
-            } catch (EmailException e) {
+            } catch (MessagingException e) {
                 logger.log(Level.WARNING, "Exception thrown while trying to email alert about previous exception", e);
             }
         }
     }
 
-    private void sendMail(Throwable caught) throws EmailException {
-        SimpleEmail email = new SimpleEmail();
+    private void sendMail(Throwable caught) throws MessagingException {
+    	MessageBuilder email = new MessageBuilder();
         for(String address : alertRecipients) {
-            email.addTo(address);
+            email.to(address);
         }
-        email.setSubject("[ACTIVITYINFO EXCEPTION] " + caught.getMessage());
-        email.setMsg( stackTraceToString(caught));
-        mailSender.send(email);
+        email.subject("[ACTIVITYINFO EXCEPTION] " + caught.getMessage());
+        email.body( stackTraceToString(caught));
+        mailSender.send(email.build());
     }
 
 
