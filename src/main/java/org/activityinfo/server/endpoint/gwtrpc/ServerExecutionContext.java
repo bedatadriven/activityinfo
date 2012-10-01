@@ -1,9 +1,13 @@
 package org.activityinfo.server.endpoint.gwtrpc;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 
 import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
+import org.activityinfo.server.database.hibernate.HibernateExecutor;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
@@ -14,30 +18,41 @@ import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
-import org.activityinfo.shared.util.Collector;
-import java.util.logging.Logger;
+import org.hibernate.ejb.HibernateEntityManager;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
+import com.bedatadriven.rebar.sql.shared.adapter.SyncTransactionAdapter;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 
 public class ServerExecutionContext implements ExecutionContext {
 	
 	private static Logger LOGGER = Logger.getLogger(ServerExecutionContext.class.getName());
+
+	private static ThreadLocal<ServerExecutionContext> CURRENT = new ThreadLocal<ServerExecutionContext>();
 	
 	private AuthenticatedUser user;
 	private Injector injector;
-	private SqlTransaction tx;
+	private SyncTransactionAdapter tx;
+	private HibernateEntityManager entityManager;
+	private JdbcScheduler scheduler;
 
-	public ServerExecutionContext(Injector injector, SqlTransaction tx, AuthenticatedUser user) {
+	public ServerExecutionContext(Injector injector) {
 		super();
+		
+		if(CURRENT.get() != null) {
+			throw new IllegalStateException("Command execution context already in progress");
+		}
+		
 		this.injector = injector;
-		this.tx = tx;
-		this.user = user;
+		this.user = injector.getInstance(AuthenticatedUser.class);
+		this.entityManager = (HibernateEntityManager) injector.getInstance(EntityManager.class);
+		this.scheduler = new JdbcScheduler();
+		
+		CURRENT.set(this);
 	}
 
 	@Override
@@ -49,7 +64,91 @@ public class ServerExecutionContext implements ExecutionContext {
 	public SqlTransaction getTransaction() {
 		return tx;
 	}
+	
+	public static ServerExecutionContext current() {
+		ServerExecutionContext current = CURRENT.get();
+		if(current == null) {
+			throw new IllegalStateException("No current command execution context");
+		}
+		return current;
+	}
+	
+	public static boolean inProgress() {
+		return CURRENT.get() != null;
+	}
 
+	/**
+	 * Executes the top-level command, starting a database transaction
+	 */
+	public <C extends Command<R>, R extends CommandResult> R startExecute(
+			final C command) {
+		
+		/*
+		 * Begin the transaction
+		 */
+		this.entityManager.getTransaction().begin();
+		
+		/*
+		 * Setup an async transaction simply wrapping the
+		 * hibernate transaction 
+		 */
+		this.tx = new SyncTransactionAdapter(new HibernateExecutor(this.entityManager), 
+				scheduler, new TransactionCallback());
+		
+		
+		/*
+		 * Execute the command
+		 */
+		try {
+			R result = execute(command);
+			
+			this.entityManager.getTransaction().commit();
+			
+			return result;
+			
+		} catch(Exception e) {
+			/*
+			 * If the execution fails, rollback 
+			 */
+			try {
+				this.entityManager.getTransaction().rollback();
+			} catch(Exception rollbackException) {
+				LOGGER.log(Level.SEVERE, "Exception rolling back failed transaction", rollbackException);
+			}
+			
+			/*
+			 * Rethrow exception, wrapping if necessary
+			 */
+			throw wrapException(e);
+		} finally {
+			
+			CURRENT.set(null);
+		}
+	}
+	
+	/**
+	 * Executes a (nested) command synchronously.
+	 * This is called from within CommandHandlers to execute 
+	 * nested commands
+	 */
+	public <C extends Command<R>, R extends CommandResult> R execute(
+			final C command) {
+		
+		if(tx == null) {
+			throw new IllegalStateException("Command execution has not started yet");
+		}
+		
+		ResultCollector<R> collector = new ResultCollector<R>();
+		execute(command, collector);
+		return collector.get();
+	}
+	
+
+	/**
+	 * Executes a (nested) command (pseudo) asynchronously. 
+	 * This is called from within CommandHandlers
+	 * to execute nested commands.
+	 */
 	@Override
 	public <C extends Command<R>, R extends CommandResult> void execute(
 			final C command, final AsyncCallback<R> callback) {
@@ -81,13 +180,22 @@ public class ServerExecutionContext implements ExecutionContext {
 		} else {
 			onAuthorized(command, callback);
 		}
+		tx.process();
+		scheduler.process();
 	}
 
 	private <C extends Command<R>, R extends CommandResult> void onAuthorized(C command, final AsyncCallback<R> callback) {
 		Object handler = injector.getInstance(HandlerUtil.asyncHandlerForCommand(command));
+		
 		if(handler instanceof CommandHandlerAsync) {
+			/**
+			 * Execute Asynchronously
+			 */
 			((CommandHandlerAsync<C,R>)handler).execute(command, this, callback);
 		} else if(handler instanceof CommandHandler) {
+			/**
+			 * Executes Synchronously
+			 */
 			try {
 				callback.onSuccess((R) ((CommandHandler)handler).execute(command, retrieveUserEntity()));
 				
@@ -98,63 +206,29 @@ public class ServerExecutionContext implements ExecutionContext {
 	}
 
 	private User retrieveUserEntity() {
-		return this.injector.getInstance(EntityManager.class).find(User.class, user.getId());
+		return entityManager.find(User.class, user.getId());
 	}
 	
+	private static CommandException wrapException(Throwable t) {
+		if(t instanceof CommandException) {
+			return (CommandException) t;
+		} else {
+			LOGGER.log(Level.SEVERE, "Unexpected command exception: " + t.getMessage(), t);
+			return new UnexpectedCommandException();
+		}
+	}
 	
-	public static <C extends Command<R>, R extends CommandResult> CommandResult execute(final Injector injector, 
-			final C command) throws CommandException {
-		final ResultCollector<R> result = new ResultCollector<R>();
-		final Collector<Boolean> txResult = Collector.newCollector();
-		
-		// Try first to do a simple synchronous execution if the handler is an old
-		// hibernate handler
-		final Object handler = injector.getInstance(HandlerUtil.handlerForCommand(command));
-		final AuthenticatedUser user = injector.getInstance(AuthenticatedUser.class);
-		if(handler instanceof CommandHandler) {
-			User userEntity = injector.getInstance(EntityManager.class).find(User.class, user.getId());
-			return ((CommandHandler) handler).execute(command, userEntity);
-		}
-		
-		// TODO: log here, if there is something in the queue there is a problem somewhere.
-		JdbcScheduler.get().forceCleanup();
- 		
-		injector.getInstance(SqlDatabase.class).transaction(new SqlTransactionCallback() {
-			
-			@Override
-			public void begin(SqlTransaction tx) {
-				ServerExecutionContext context = new ServerExecutionContext(injector, tx, user);
-				context.execute(command, result);
-			}
-
-			@Override
-			public void onError(SqlException e) {
-				throw e;
-			}
-
-			@Override
-			public void onSuccess() {
-				txResult.onSuccess(true);
-			}
-		});
-		
-		if(!txResult.getResult()) {
-			throw new AssertionError("tx did not complete. hint: you may be switching between sync and async code nilly-willy");
+	private static class TransactionCallback extends SqlTransactionCallback {
+		@Override
+		public void begin(SqlTransaction tx) {
+			// we actually start the transaction our self, so we know it
+			// is already active.
 		}
 
-		if(result.callbackCount != 1) {
-			throw new UnexpectedCommandException("Callback called " + result.callbackCount + " times");
+		@Override
+		public void onError(SqlException e) {
+			throw e;
 		}
-		
-		if(result.caught != null) {
-			if(result.caught instanceof CommandException) {
-				throw (CommandException)result.caught;
-			} else {
-				throw new UnexpectedCommandException(result.caught);
-			}
-		}
-		
-		return result.result;
 	}
 
 	private static class ResultCollector<R> implements AsyncCallback<R> {
@@ -172,6 +246,15 @@ public class ServerExecutionContext implements ExecutionContext {
 			this.caught = caught;
 		}
 
+		public R get() throws CommandException {
+			if(callbackCount != 1) {
+				throw new IllegalStateException("Callback called " + callbackCount + " times");
+			} else if(caught != null) {
+				throw wrapException(caught);
+			}
+			return result;
+		}
+
 		@Override
 		public void onSuccess(R result) {
 			callbackCount ++;
@@ -180,7 +263,5 @@ public class ServerExecutionContext implements ExecutionContext {
 			}
 			this.result = result;
 		}
-	
 	}
-	
 }

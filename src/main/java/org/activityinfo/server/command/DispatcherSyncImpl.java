@@ -1,7 +1,7 @@
 package org.activityinfo.server.command;
 
-import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.endpoint.gwtrpc.ServerExecutionContext;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
@@ -22,16 +22,17 @@ public class DispatcherSyncImpl implements DispatcherSync {
 		this.userProvider = userProvider;
 	}
 	
-	public <C extends Command<R>, R extends CommandResult> R execute(C command) {
-		try {
+	public <C extends Command<R>, R extends CommandResult> R execute(C command) throws CommandException {
+		if(ServerExecutionContext.inProgress()) {
+			return ServerExecutionContext.current().execute(command);
+		} else {
 			User user = new User();
 			user.setId(userProvider.get().getUserId());
 			user.setEmail(userProvider.get().getEmail());
 			user.setLocale(userProvider.get().getUserLocale());
 			
-			return (R)HandlerUtil.execute(injector, command, user);
-		} catch (CommandException e) {
-			throw new RuntimeException(e);
+			ServerExecutionContext context = new ServerExecutionContext(injector);
+			return context.startExecute(command);
 		}
 	}
 }

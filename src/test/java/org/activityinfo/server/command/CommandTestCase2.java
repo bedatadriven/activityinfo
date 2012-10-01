@@ -1,23 +1,21 @@
 package org.activityinfo.server.command;
 
-import java.util.Collections;
-import java.util.List;
+import javax.persistence.EntityManager;
 
 import org.activityinfo.server.authentication.AuthenticationModuleStub;
-import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.TestDatabaseModule;
-import org.activityinfo.server.database.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet2;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
+import org.activityinfo.server.endpoint.gwtrpc.ServerExecutionContext;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
 
-import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
@@ -31,6 +29,7 @@ import com.teklabs.gwt.i18n.server.LocaleProxy;
  */
 @Modules({
         TestDatabaseModule.class,
+        MockHibernateModule.class,
         TemplateModule.class,
         GwtRpcModule.class,
         AuthenticationModuleStub.class
@@ -44,10 +43,7 @@ public class CommandTestCase2 {
     @Inject
     protected Injector injector;
 
-    @Inject
-    protected UserDAO users;
     
-
     protected void setUser(int userId) {
         AuthenticationModuleStub.setUserId(userId);
     }
@@ -60,17 +56,19 @@ public class CommandTestCase2 {
     		user.setName("Anonymous");
     		user.setEmail("Anonymous@anonymous");
     	} else {
-    		user = users.findById(AuthenticationModuleStub.getCurrentUser().getUserId());
-            
+    		user = new User();
+    		user.setId(AuthenticationModuleStub.getCurrentUser().getUserId());
+    		user.setEmail("foo@foo.com");
+    		user.setName("Foo Name");
+    		user.setLocale("en");
     	}
     	
     	assert user != null;
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
         
-        List<CommandResult> results = servlet.handleCommands(user, Collections.<Command>singletonList(command));
-
-        JdbcScheduler.get().forceCleanup();
+        ServerExecutionContext context = new ServerExecutionContext(injector);
+        T result =  context.startExecute(command);
         
         // normally each request and so each handleCommand() gets its own
         // EntityManager, but here successive requests in the same test
@@ -80,15 +78,8 @@ public class CommandTestCase2 {
         // I think these command tests should ultimately become real end-to-end
         // tests and so would go through the actual servlet process, but for the moment,
         // we'll just add this work aroudn that clears the cache after each command.
-//        em.clear();
-
-
-        CommandResult result = results.get(0);
-        if (result instanceof CommandException) {
-            throw (CommandException) result;
-        }
-
-        return (T) result;
+        injector.getInstance(EntityManager.class).clear();
+        return result;
     }
     
     public DispatcherSync getDispatcherSync() {

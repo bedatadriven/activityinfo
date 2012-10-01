@@ -2,8 +2,9 @@ package org.activityinfo.server.endpoint.gwtrpc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.activityinfo.server.database.dao.UserDAO;
+import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.logging.LogException;
@@ -13,7 +14,6 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
-import java.util.logging.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -32,8 +32,6 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
     @Inject
     private Injector injector;
 
-    @Inject 
-    private UserDAO userDAO;
     
     private static final Logger LOGGER = Logger.getLogger(CommandServlet2.class.getName());
     
@@ -57,11 +55,12 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
 	private Authentication retrieveAuthentication(String authToken)
 			throws InvalidAuthTokenException {
-		Authentication auth = userDAO.findAuthenticationByToken(authToken);        
-		if (auth == null) {
-            throw new InvalidAuthTokenException();
-		}
-		return auth;
+//		Authentication auth = userDAO.findAuthenticationByToken(authToken);        
+//		if (auth == null) {
+//            throw new InvalidAuthTokenException();
+//		}
+//		return auth;
+		throw new UnsupportedOperationException();
 	}
 
     /**
@@ -89,7 +88,8 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
-    	return ServerExecutionContext.execute(injector, command);
+    	ServerExecutionContext context = new ServerExecutionContext(injector);
+    	return context.execute(command);
     }
     
    

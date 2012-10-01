@@ -3,13 +3,9 @@ package org.activityinfo.shared.command;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.activityinfo.server.command.CommandTestCase;
+import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.shared.command.handler.search.AllSearcher;
-import org.activityinfo.shared.command.handler.search.AttributeGroupSearcher;
 import org.activityinfo.shared.command.handler.search.Searcher;
 import org.activityinfo.shared.command.result.SearchResult;
 import org.activityinfo.shared.exception.CommandException;
@@ -19,43 +15,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlException;
-import com.bedatadriven.rebar.sql.client.SqlTransaction;
-import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class SearchTest extends CommandTestCase {
+public class SearchTest extends CommandTestCase2 {
 
-	@Inject private SqlDatabase db;
-	
-	@Test
-	public void testAttributeGroup() {
-		db.transaction(new SqlTransactionCallback() {
-			@Override
-			public void begin(SqlTransaction tx) {
-				new AttributeGroupSearcher().search(Arrays.asList("cause"), tx, new AsyncCallback<List<Integer>>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						assertTrue("Did not expect error when searching attribute groups", false);
-					}
-
-					@Override
-					public void onSuccess(List<Integer> result) {
-						assertTrue("Expected one attribute group with name like 'cause'", result.size()==1);
-					}
-				});
-			}
-
-			@Override
-			public void onError(SqlException e) {
-				assertTrue("Did not expect error when having db transaction", false); 
-			}
-		});
-	}
 	
 	@Test
 	public void testSearchAll() throws CommandException {

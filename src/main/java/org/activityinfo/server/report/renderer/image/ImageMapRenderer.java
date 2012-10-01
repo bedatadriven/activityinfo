@@ -168,11 +168,8 @@ public class ImageMapRenderer {
         if(marker.getLabel() != null) {
             drawLabel(g2d, marker);
         }
-
     }
     
-
-
     private static void drawLabel(Graphics2D g2d, BubbleMapMarker marker) {
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, (int) (marker.getRadius() * 2f * 0.8f));
 
