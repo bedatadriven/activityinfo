@@ -7,8 +7,6 @@ package org.activityinfo.server.command.handler;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.activityinfo.shared.command.GetReports;
 import org.activityinfo.shared.command.handler.CommandHandlerAsync;
 import org.activityinfo.shared.command.handler.ExecutionContext;
@@ -23,7 +21,6 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 
 /**
  * @author Alex Bertram
@@ -33,7 +30,7 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
 
 
 	@Override
-	public void execute(GetReports command, final ExecutionContext context,
+	public void execute(final GetReports command, final ExecutionContext context,
 			final AsyncCallback<ReportsResult> callback) {
     	// note that we are excluding reports with a null title-- these
     	// reports have not yet been explicitly saved by the user
@@ -81,7 +78,7 @@ public class GetReportsHandler implements CommandHandlerAsync<GetReports, Report
     		.execute(context.getTransaction(), new SqlResultCallback() {
 				
 				@Override
-				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+				public void onSuccess(final SqlTransaction tx, final SqlResultSet results) {
 			        List<ReportMetadataDTO> dtos = Lists.newArrayList();
 		
 			        for(SqlResultSetRow row : results.getRows()) {
