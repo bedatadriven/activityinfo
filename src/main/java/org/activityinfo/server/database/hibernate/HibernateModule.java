@@ -62,13 +62,8 @@ public class HibernateModule extends ServletModule {
         private org.activityinfo.server.util.config.DeploymentConfiguration configProperties;
 
         @Inject
-        public EntityManagerFactoryProvider(DeploymentConfiguration configProperties, 
-        		Provider<Connection> connectionProvider) {
+        public EntityManagerFactoryProvider(DeploymentConfiguration configProperties) {
             this.configProperties = configProperties;
-            
-            // can't figure out how to provide an instance of the ConnectionProvider
-            // directly to hibernate so we have to do it this way.
-            HibernateConnectionProvider.DELEGATE = connectionProvider;
         }
 
         @Override
@@ -76,7 +71,6 @@ public class HibernateModule extends ServletModule {
         	// ensure that hibernate does NOT do schema updating--liquibase is in charge
         	Properties config = configProperties.asProperties();
         	config.setProperty(Environment.HBM2DDL_AUTO, "");
-        	config.setProperty(Environment.CONNECTION_PROVIDER, HibernateConnectionProvider.class.getName());
         	config.setProperty("hibernate.ejb.naming_strategy", AINamingStrategy.class.getName());
         	return Persistence.createEntityManagerFactory("activityInfo", config);
         }

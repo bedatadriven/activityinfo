@@ -2,7 +2,6 @@ package org.activityinfo.server.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Properties;
 
 import com.google.inject.Provider;
 
@@ -31,7 +30,7 @@ public class TestConnectionProvider implements Provider<Connection>{
 			System.err.println("Opening test database at " + getUrl());
 			Class.forName("com.mysql.jdbc.Driver");
 
-			return MySqlConfig.initConnection(DriverManager.getConnection(getUrl(), MySqlConfig.get(getUsername(), getPassword())));
+			return DriverManager.getConnection(getUrl(), getUsername(), getPassword());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
