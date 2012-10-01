@@ -17,7 +17,8 @@
     <set-property name="log_DivLogger" value="DISABLED" />
     <extend-property name="log_level" values="ERROR" />
     <set-property name="log_level" value="ERROR"/> 
-    
+    <set-property name="gwt.logging.enabled" value="FALSE"/>
+      
     <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
 
 <!--     <extend-property name="log_level" values="TRACE" /> 
