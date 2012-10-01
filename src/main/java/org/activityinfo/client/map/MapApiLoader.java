@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.activityinfo.client.dispatch.AsyncMonitor;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.google.gwt.ajaxloader.client.AjaxLoader;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;

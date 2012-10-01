@@ -14,7 +14,7 @@ import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.UpdateSite;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.async.AsyncFunction;
 import com.bedatadriven.rebar.async.NullCallback;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;

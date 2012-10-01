@@ -9,7 +9,7 @@ import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.widget.CoordinateField.Axis;
 import org.activityinfo.shared.map.CoordinateFormatException;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.Validator;

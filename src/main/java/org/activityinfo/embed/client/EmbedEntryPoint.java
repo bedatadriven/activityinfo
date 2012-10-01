@@ -5,7 +5,7 @@ import org.activityinfo.client.page.entry.grouping.NullGroupingModel;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.FilterUrlSerializer;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Theme;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -29,9 +29,6 @@ public class EmbedEntryPoint implements EntryPoint {
 		Log.info("Application: onModuleLoad starting");
 		Log.info("Application Permutation: " + GWT.getPermutationStrongName());
 
-		if (!GWT.isScript()) {
-			Log.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
-		}
 		if (Log.isErrorEnabled()) {
 			GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 				@Override

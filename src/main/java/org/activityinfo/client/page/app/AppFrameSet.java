@@ -23,7 +23,7 @@ import org.activityinfo.client.page.search.SearchPageState;
 import org.activityinfo.client.widget.LoadingPlaceHolder;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Viewport;

@@ -1,7 +1,7 @@
 package org.activityinfo.client.offline.capability;
 
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.google.gwt.user.client.Window;
 
 /**

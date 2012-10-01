@@ -13,17 +13,10 @@
     <set-property-fallback name="locale" value="en"/>
     <set-property name="locale" value="en,fr"/>
 
-    <set-property name="log_DivLogger" value="DISABLED" />
-    <set-property name="gwt.logging.popupHandler" value="DISABLED" />
-    
-    
-    <extend-property name="log_level" values="ERROR" />
-    <set-property name="log_level" value="ERROR"/> 
-    
+    <set-property name="gwt.logging.logLevel" value="FINEST"/>    
+   
     <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
 
-    <extend-property name="log_level" values="TRACE" /> 
-    <set-property name="log_level" value="TRACE"/> 
  	<set-property name="compiler.emulatedStack" value="true" /> 
  	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" 
  		value="true" /> 

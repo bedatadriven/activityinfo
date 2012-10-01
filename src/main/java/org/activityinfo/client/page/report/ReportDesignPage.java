@@ -33,7 +33,7 @@ import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.ReportMetadataDTO;
 import org.activityinfo.shared.report.model.Report;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.EditorEvent;

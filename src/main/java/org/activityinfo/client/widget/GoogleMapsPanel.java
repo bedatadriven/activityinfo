@@ -12,7 +12,7 @@ import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
 import org.activityinfo.shared.util.mapping.Extents;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ContainerEvent;

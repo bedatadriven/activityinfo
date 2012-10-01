@@ -19,17 +19,16 @@
     <inherits name="com.google.gwt.inject.Inject"/>
     <inherits name="com.extjs.gxt.charts.Chart"/>
     <inherits name="com.google.code.gaxb.Annotations"/>
-    <inherits name="com.google.common.collect.Collect"/>
-    
-    <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF"/>
-    
+    <inherits name="com.google.common.collect.Collect"/>    
     
     <inherits name="com.bedatadriven.rebar.sql.Sql"/>
    	<inherits name="com.bedatadriven.rebar.appcache.AppCache"/>
     <inherits name="com.bedatadriven.rebar.Time"/>
     
     <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
-    <inherits name="com.allen_sauer.gwt.log.gwt-log-impl"/>
+    
+    <set-property name="gwt.logging.popupHandler" value="DISABLED" />
+    
 
 	<!-- Configure deferred binding for offline module depending on browser capability -->
     

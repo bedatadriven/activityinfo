@@ -1,6 +1,6 @@
 package org.activityinfo.client.data.proxy;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
 import com.google.gwt.user.client.rpc.AsyncCallback;

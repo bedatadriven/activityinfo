@@ -12,7 +12,7 @@ import org.activityinfo.client.inject.AppInjector;
 import org.activityinfo.client.util.monitoring.MetricsCollector;
 import org.activityinfo.client.util.state.SafeStateProvider;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.state.StateManager;
 import com.extjs.gxt.ui.client.util.Theme;
@@ -41,9 +41,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         	SessionUtil.forceLogin();
         }
         
-        if(!GWT.isScript()) {
-            Log.setCurrentLogLevel(Log.LOG_LEVEL_TRACE);
-        }
         if(Log.isErrorEnabled()) {
             GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
                 @Override

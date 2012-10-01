@@ -20,7 +20,7 @@ import org.activityinfo.shared.command.result.SyncRegion;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.activityinfo.shared.command.result.SyncRegions;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.async.AsyncCommand;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;

@@ -52,6 +52,10 @@ public class MapIconServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+    	// Cache forever
+    	resp.setHeader("Cache-Control", "max-age=31556926, public");
+    	
+    	
         if (req.getParameter("t").equals("bubble")) {
 
             int radius = Integer.parseInt(req.getParameter("r"));

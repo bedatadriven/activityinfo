@@ -4,7 +4,7 @@ import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.shared.command.result.LocationResult;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.widget.Html;

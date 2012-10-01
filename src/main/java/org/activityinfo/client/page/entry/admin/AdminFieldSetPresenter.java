@@ -19,7 +19,7 @@ import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.HasAdminEntityValues;
 import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoader;

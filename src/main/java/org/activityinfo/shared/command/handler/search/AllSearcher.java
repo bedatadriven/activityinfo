@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.report.model.DimensionType;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

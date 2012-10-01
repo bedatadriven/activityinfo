@@ -1,6 +1,6 @@
 package org.activityinfo.client.offline.capability;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.Factory;
 import com.google.gwt.user.client.rpc.AsyncCallback;

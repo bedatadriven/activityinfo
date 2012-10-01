@@ -11,7 +11,7 @@ import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SiteDialogLauncher {

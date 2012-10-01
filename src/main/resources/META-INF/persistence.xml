@@ -11,7 +11,6 @@
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
 			<property name="hibernate.connection.url" value="jdbc:h2:~/sigmah;IGNORECASE=TRUE" />
-			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.format_sql" value="true" />	
 		</properties>

@@ -11,7 +11,7 @@ import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.PageStateSerializer;
 import org.activityinfo.client.page.dashboard.DashboardPlace;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.DateWrapper;

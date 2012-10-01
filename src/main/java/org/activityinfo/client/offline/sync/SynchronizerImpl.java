@@ -13,7 +13,7 @@ import org.activityinfo.client.offline.sync.pipeline.InstallPipeline;
 import org.activityinfo.client.offline.sync.pipeline.SyncPipeline;
 import org.activityinfo.shared.command.Command;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.Scheduler;

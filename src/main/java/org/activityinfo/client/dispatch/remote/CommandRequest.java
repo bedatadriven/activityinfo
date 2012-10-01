@@ -13,7 +13,7 @@ import java.util.List;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 

@@ -2,7 +2,7 @@ package org.activityinfo.client.offline.sync;
 
 import java.util.Date;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 
 /**
  * Logging utility to track where time is spent during sychronization.

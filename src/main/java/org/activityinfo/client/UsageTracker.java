@@ -14,7 +14,7 @@ import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.gears.client.Factory;

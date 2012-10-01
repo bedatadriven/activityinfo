@@ -2,7 +2,7 @@ package org.activityinfo.client.dispatch.monitor;
 
 import org.activityinfo.client.dispatch.AsyncMonitor;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
 

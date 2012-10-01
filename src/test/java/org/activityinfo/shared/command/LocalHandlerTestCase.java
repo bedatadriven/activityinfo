@@ -36,7 +36,7 @@ import org.activityinfo.test.Modules;
 import org.junit.After;
 import org.junit.Before;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.async.AsyncPipeline;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcDatabase;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
@@ -89,9 +89,6 @@ public abstract class LocalHandlerTestCase {
         uiMessages = createNiceMock(UIMessages.class);
         replay(uiConstants, uiMessages);
 
-        Log.setCurrentLogLevel(Log.LOG_LEVEL_DEBUG);
-        
-        	
     }
 
     protected void setUser(int userId) {

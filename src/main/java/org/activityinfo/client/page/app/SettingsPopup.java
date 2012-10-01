@@ -12,7 +12,7 @@ import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
 import org.activityinfo.client.offline.sync.SyncCompleteEvent;
 import org.activityinfo.client.offline.sync.SyncStatusEvent;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;

@@ -11,7 +11,7 @@ import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.dto.SiteDTO;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;

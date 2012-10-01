@@ -29,7 +29,7 @@ import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.util.mapping.Extents;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
