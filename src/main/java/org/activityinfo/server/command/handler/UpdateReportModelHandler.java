@@ -22,13 +22,13 @@ public class UpdateReportModelHandler implements CommandHandler<UpdateReportMode
 	private final ReportJsonFactory reportJsonFactory;
 	
 	@Inject
-	public UpdateReportModelHandler(EntityManager em, ReportJsonFactory reportJsonFactory){
+	public UpdateReportModelHandler(final EntityManager em, final ReportJsonFactory reportJsonFactory){
 		this.em = em;
 		this.reportJsonFactory = reportJsonFactory;
 	}
 
 	@Override
-	public CommandResult execute(UpdateReportModel cmd, User user)
+	public CommandResult execute(final UpdateReportModel cmd, final User user)
 			throws CommandException {
 	
 		Query query = em

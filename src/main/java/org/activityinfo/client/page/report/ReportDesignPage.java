@@ -18,18 +18,14 @@ import org.activityinfo.client.page.report.editor.CompositeEditor2;
 import org.activityinfo.client.page.report.editor.EditorProvider;
 import org.activityinfo.client.page.report.editor.ReportElementEditor;
 import org.activityinfo.client.page.report.resources.ReportResources;
-import org.activityinfo.client.page.report.template.ReportTemplate;
-import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.CreateReport;
 import org.activityinfo.shared.command.GetReportModel;
-import org.activityinfo.shared.command.GetReports;
 import org.activityinfo.shared.command.RenderElement.Format;
 import org.activityinfo.shared.command.UpdateReportModel;
 import org.activityinfo.shared.command.UpdateReportSubscription;
-import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.command.result.CreateResult;
-import org.activityinfo.shared.command.result.ReportsResult;
 import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.dto.ReportDTO;
 import org.activityinfo.shared.dto.ReportMetadataDTO;
 import org.activityinfo.shared.report.model.Report;
 
@@ -55,13 +51,13 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	private class SaveCallback implements AsyncCallback<VoidResult> {
 		@Override
-		public void onSuccess(VoidResult result) {
+		public void onSuccess(final VoidResult result) {
 			Info.display(I18N.CONSTANTS.saved(), I18N.MESSAGES.reportSaved(currentModel.getTitle()));
 			onSaved();
 		}
 
 		@Override
-		public final void onFailure(Throwable caught) {
+		public final void onFailure(final Throwable caught) {
 			MessageBox.alert(I18N.CONSTANTS.serverError(), caught.getMessage(), null);
 		}
 		
@@ -96,7 +92,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	
 	@Inject
-	public ReportDesignPage(EventBus eventBus, Dispatcher service, EditorProvider editorProvider) {
+	public ReportDesignPage(final EventBus eventBus, final Dispatcher service, final EditorProvider editorProvider) {
 		this.eventBus = eventBus;
 		this.dispatcher = service;
 		this.editorProvider = editorProvider;
@@ -112,7 +108,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		eventBus.addListener(ReportChangeEvent.TYPE, new Listener<ReportChangeEvent>() {
 
 			@Override
-			public void handleEvent(ReportChangeEvent event) {
+			public void handleEvent(final ReportChangeEvent event) {
 				if(event.getModel() == currentModel || 
 						currentModel.getElements().contains(event.getModel())) {
 					Log.debug("marking report as dirty");
@@ -133,7 +129,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		
 		reportBar.addTitleEditCompleteListener(new Listener<EditorEvent>() {
 			@Override
-			public void handleEvent(EditorEvent be) {
+			public void handleEvent(final EditorEvent be) {
 				String newTitle = (String)be.getValue();
 				if(newTitle != null && !newTitle.equals(currentModel.getTitle())) {
 					currentModel.setTitle(newTitle);
@@ -146,7 +142,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		reportBar.getSaveButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
 
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void componentSelected(final ButtonEvent ce) {
 				ensureTitledThenSave(null, new SaveCallback());
 			}
 		});
@@ -154,7 +150,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		reportBar.getShareButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
 
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void componentSelected(final ButtonEvent ce) {
 				showShareForm();
 			}
 			
@@ -163,7 +159,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		reportBar.getDashboardButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void componentSelected(final ButtonEvent ce) {
 				pinToDashboard(reportBar.getDashboardButton().isPressed());
 			}
 		});
@@ -171,7 +167,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		reportBar.getSwitchViewButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void componentSelected(final ButtonEvent ce) {
 				switchView();
 			}
 		});
@@ -179,7 +175,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 
 	@Override
-	public boolean navigate(PageState place) {
+	public boolean navigate(final PageState place) {
 		if(place instanceof ReportDesignPageState) {
 			go(((ReportDesignPageState) place).getReportId());
 			return true;
@@ -187,43 +183,32 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		return false;
 	}
 
-	public void go(int reportId) {
+	public void go(final int reportId) {
 		loadReport(reportId);
 	}
 
-	private void loadReport(int reportId) {
-
-		BatchCommand batch = new BatchCommand();
-		batch.add(new GetReportModel(reportId));
-		batch.add(new GetReports());
-		
-		dispatcher.execute(batch, new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
-				new AsyncCallback<BatchResult>() {
+	private void loadReport(final int reportId) {
+		dispatcher.execute(new GetReportModel(reportId, true), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
+				new AsyncCallback<ReportDTO>() {
 			@Override
-			public void onFailure(Throwable caught) {
-				// TODO show appropriate message.
+			public void onFailure(final Throwable caught) {
 			}
 
 			@Override
-			public void onSuccess(BatchResult result) {						
-				onModelLoaded((Report) result.getResult(0), (ReportsResult)result.getResult(1));
+			public void onSuccess(final ReportDTO result) {
+					onModelLoaded(result);
 			}
 		});
 	}
 
-	private void onModelLoaded(Report report, ReportsResult reportsResult) {
-		try {
-			this.currentMetadata = reportsResult.forId(report.getId());
-		} catch(IllegalArgumentException e) {
-			this.currentMetadata = new ReportMetadataDTO();
-			this.currentMetadata.setId(report.getId());
-		}
-		this.currentModel = report;
+	private void onModelLoaded(final ReportDTO result) {
+		this.currentModel = result.getReport();
+		this.currentMetadata = result.getReportMetadataDTO();
 		
 		reportBar.setReportTitle(currentModel.getTitle());
 		reportBar.getDashboardButton().toggle(currentMetadata.isDashboard());
 		
-		if(currentModel.getElements().size() == 1) {
+		if (currentModel.getElements().size() == 1) {
 			ReportElementEditor editor = editorProvider.create(currentModel.getElement(0));
 			editor.bind(currentModel.getElement(0));
 			installEditor( editor );
@@ -246,7 +231,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		installCompositeEditor();
 	}
 
-	private void installEditor(ReportElementEditor editor) {
+	private void installEditor(final ReportElementEditor editor) {
 		if(currentEditor != null) {
 			remove(currentEditor.getWidget());
 		}
@@ -268,7 +253,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 				
 				dispatcher.execute(update, new SaveCallback() {
 					@Override
-					public void onSuccess(VoidResult result) {
+					public void onSuccess(final VoidResult result) {
 						if(update.getPinnedToDashboard()) {
 							Info.display(I18N.CONSTANTS.saved(), 
 									I18N.MESSAGES.addedToDashboard(currentModel.getTitle()));
@@ -283,7 +268,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		});
 	}
 
-	private void ensureTitledThenSave(AsyncMonitor monitor, SaveCallback callback) {
+	private void ensureTitledThenSave(final AsyncMonitor monitor, final SaveCallback callback) {
 		if (untitled()) {
 			promptForTitle(callback);
 		} else {
@@ -291,7 +276,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		}
 	}
 
-	private void ensureTitled(SaveCallback callback) {
+	private void ensureTitled(final SaveCallback callback) {
 		if (untitled()) {
 			promptForTitle(callback);
 		} else {
@@ -303,7 +288,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		MessageBox.prompt(I18N.CONSTANTS.save(), I18N.CONSTANTS.chooseReportTitle(), new Listener<MessageBoxEvent>() {
 			
 			@Override
-			public void handleEvent(MessageBoxEvent be) {
+			public void handleEvent(final MessageBoxEvent be) {
 				String newTitle = be.getMessageBox().getTextBox().getValue();
 				if(!Strings.isNullOrEmpty(newTitle)) {
 					currentModel.setTitle(newTitle);
@@ -314,11 +299,11 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		});
 	}
 	
-	private void save(AsyncCallback<VoidResult> callback) {
+	private void save(final AsyncCallback<VoidResult> callback) {
 		save(null, callback);
 	}
 	
-	private void save(AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
+	private void save(final AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
 		if (currentMetadata.isEditAllowed()) {
 			performUpdate(monitor, callback);
 		} else {
@@ -326,17 +311,17 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		}
 	}
 	
-	private void performUpdate(AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
+	private void performUpdate(final AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
 		UpdateReportModel updateReport = new UpdateReportModel();
 		updateReport.setModel(currentModel);
 		
 		dispatcher.execute(updateReport, monitor, new AsyncCallback<VoidResult>() {
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable caught) {
 				callback.onFailure(caught);
 			}
 			@Override
-			public void onSuccess(VoidResult result) {
+			public void onSuccess(final VoidResult result) {
 				dirty = false;
 				callback.onSuccess(result);
 			}
@@ -346,7 +331,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	private void confirmCreate(final AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
 		MessageBox.confirm(I18N.CONSTANTS.save(), I18N.MESSAGES.confirmSaveCopy(), new Listener<MessageBoxEvent>() {
 			@Override
-			public void handleEvent(MessageBoxEvent be) {
+			public void handleEvent(final MessageBoxEvent be) {
 				Button btn = be.getButtonClicked();
 				if (Dialog.YES.equalsIgnoreCase(btn.getItemId())) {
 					performCreate();
@@ -360,18 +345,18 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 		
 		dispatcher.execute(new CreateReport(currentModel), new AsyncCallback<CreateResult>() {
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable caught) {
 			}
 
 			@Override
-			public void onSuccess(CreateResult created) {
+			public void onSuccess(final CreateResult created) {
 				eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, 
 						new ReportDesignPageState(created.getNewId())));
 			}
 		});
 	}
 	
-	public void setReportEdited(boolean edited){
+	public void setReportEdited(final boolean edited){
 		reportEdited = edited;
 	}
 
@@ -396,7 +381,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	}
 
 	@Override
-	public void requestToNavigateAway(PageState place,
+	public void requestToNavigateAway(final PageState place,
 			final NavigationCallback callback) {
 		if(!dirty) {
 			callback.onDecided(true);
@@ -405,7 +390,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 			box.show(new SaveChangesCallback() {
 				
 				@Override
-				public void save(AsyncMonitor monitor) {
+				public void save(final AsyncMonitor monitor) {
 					ensureTitledThenSave(monitor, new SaveCallback() {
 
 						@Override
@@ -448,7 +433,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	}
 
 	@Override
-	public void export(Format format) {
+	public void export(final Format format) {
 		ExportDialog dialog = new ExportDialog(dispatcher);
 		dialog.export(currentEditor.getModel(), format);
 	}

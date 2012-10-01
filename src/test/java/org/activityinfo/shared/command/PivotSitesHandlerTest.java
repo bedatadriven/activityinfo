@@ -38,9 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({TestDatabaseModule.class})
@@ -453,7 +451,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         public AssertionBuilder forQuarter(int year, int quarter) {
         	criteria.append(" in quarter ").append(year)
         			.append("Q").append(quarter).append(" ");
-        	filter(new DateDimension(DateUnit.QUARTER), year + "T" + quarter);
+			filter(new DateDimension(DateUnit.QUARTER), year + "Q" + quarter);
         	return this;
 		}
 

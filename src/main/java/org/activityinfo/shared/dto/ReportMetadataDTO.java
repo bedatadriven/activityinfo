@@ -63,7 +63,7 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
      * @return true if the current user permission to edit this report definition
      */
 	public boolean isEditAllowed() {
-		return (Boolean)get("editAllowed");
+		return (Boolean) get("editAllowed", false);
 	}
 
     /**
@@ -143,7 +143,7 @@ public final class ReportMetadataDTO extends BaseModelData implements DTO {
 	}
 	
 	public boolean isDashboard() {
-		return (Boolean)get("dashboard", false);
+		return get("dashboard", false);
 	}
     
 }
