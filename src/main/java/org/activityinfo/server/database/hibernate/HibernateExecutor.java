@@ -3,9 +3,13 @@ package org.activityinfo.server.database.hibernate;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
+import org.hibernate.jdbc.util.FormatStyle;
+import org.hibernate.jdbc.util.SQLStatementLogger;
 
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcExecutor;
@@ -13,7 +17,10 @@ import com.google.common.collect.Lists;
 
 public class HibernateExecutor extends JdbcExecutor {
 
+	
 	private final HibernateEntityManager entityManager;
+	
+	private final static Logger LOGGER = Logger.getLogger(HibernateExecutor.class.getName());
 	
 	public HibernateExecutor(HibernateEntityManager entityManager) {
 		super();
@@ -29,7 +36,21 @@ public class HibernateExecutor extends JdbcExecutor {
 			@Override
 			public void execute(Connection connection) throws SQLException {
 				try {
+					
+					if(LOGGER.isLoggable(Level.FINEST)) {
+						LOGGER.finest("Starting query: " + format(statement));
+					}
+					
+					long startTime = System.currentTimeMillis();
 					result.add(doExecute(connection, statement, params));
+					long elapsed = System.currentTimeMillis() - startTime;
+					
+					LOGGER.finest("Query complete");
+					
+					if(elapsed > 100) {
+						String formatted = format(statement);
+						LOGGER.warning("Slow query completed in " + elapsed + "ms:\n" + formatted);
+					}
 				} catch (Exception e) {
 					throw new SQLException(e);
 				}
@@ -53,6 +74,10 @@ public class HibernateExecutor extends JdbcExecutor {
 	@Override
 	public void rollback() throws Exception {
 		
+	}
+
+	private String format(final String statement) {
+		return FormatStyle.BASIC.getFormatter().format(statement);
 	}
 
 }

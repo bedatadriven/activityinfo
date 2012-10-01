@@ -13,8 +13,10 @@
     <set-property-fallback name="locale" value="en"/>
     <set-property name="locale" value="en,fr"/>
 
-    <!-- Turn all logging off  -->
     <set-property name="log_DivLogger" value="DISABLED" />
+    <set-property name="gwt.logging.popupHandler" value="DISABLED" />
+    
+    
     <extend-property name="log_level" values="ERROR" />
     <set-property name="log_level" value="ERROR"/> 
     
@@ -26,6 +28,9 @@
  	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" 
  		value="true" /> 
  	<set-configuration-property name="compiler.emulatedStack.recordFileNames" 
- 		value="true" />  -->  
+ 		value="true" />  
+ 
+ 
+ 		
 </module>
 

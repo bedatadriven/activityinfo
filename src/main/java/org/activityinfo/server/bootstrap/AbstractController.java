@@ -183,8 +183,12 @@ public class AbstractController extends HttpServlet {
             }
 
             UserDAO userDAO = getInjector().getInstance(UserDAO.class);
-            return userDAO.findUserByChangePasswordKey(key);
-
+            User user = userDAO.findUserByChangePasswordKey(key);
+            if(user == null) {
+            	throw new InvalidKeyException();
+            }
+            return user;
+            
         } catch (NoResultException e) {
             throw new InvalidKeyException();
         }
