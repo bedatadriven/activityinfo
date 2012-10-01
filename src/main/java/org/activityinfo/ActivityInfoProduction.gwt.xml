@@ -20,8 +20,8 @@
     
     <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
 
-<!--     <extend-property name="log_level" values="TRACE" /> 
-     <set-property name="log_level" value="TRACE"/> 
+    <extend-property name="log_level" values="TRACE" /> 
+    <set-property name="log_level" value="TRACE"/> 
  	<set-property name="compiler.emulatedStack" value="true" /> 
  	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" 
  		value="true" /> 
