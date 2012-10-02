@@ -41,18 +41,11 @@ public class ServerExecutionContext implements ExecutionContext {
 	private JdbcScheduler scheduler;
 
 	public ServerExecutionContext(Injector injector) {
-		super();
-		
-		if(CURRENT.get() != null) {
-			throw new IllegalStateException("Command execution context already in progress");
-		}
-		
+		super();		
 		this.injector = injector;
 		this.user = injector.getInstance(AuthenticatedUser.class);
 		this.entityManager = (HibernateEntityManager) injector.getInstance(EntityManager.class);
 		this.scheduler = new JdbcScheduler();
-		
-		CURRENT.set(this);
 	}
 
 	@Override
@@ -83,46 +76,65 @@ public class ServerExecutionContext implements ExecutionContext {
 	public <C extends Command<R>, R extends CommandResult> R startExecute(
 			final C command) {
 		
-		/*
-		 * Begin the transaction
-		 */
-		this.entityManager.getTransaction().begin();
+		if(CURRENT.get() != null) {
+			throw new IllegalStateException("Command execution context already in progress");
+		}
 		
-		/*
-		 * Setup an async transaction simply wrapping the
-		 * hibernate transaction 
-		 */
-		this.tx = new SyncTransactionAdapter(new HibernateExecutor(this.entityManager), 
-				scheduler, new TransactionCallback());
-		
-		
-		/*
-		 * Execute the command
-		 */
 		try {
-			R result = execute(command);
-			
-			this.entityManager.getTransaction().commit();
-			
-			return result;
-			
-		} catch(Exception e) {
+			CURRENT.set(this);
 			/*
-			 * If the execution fails, rollback 
+			 * Begin the transaction
 			 */
+			this.entityManager.getTransaction().begin();
+			
+			/*
+			 * Setup an async transaction simply wrapping the
+			 * hibernate transaction 
+			 */
+			this.tx = new SyncTransactionAdapter(new HibernateExecutor(this.entityManager), 
+					scheduler, new TransactionCallback());
+			
+			
+			/*
+			 * Execute the command
+			 */
+
+			R result;
+			
 			try {
-				this.entityManager.getTransaction().rollback();
-			} catch(Exception rollbackException) {
-				LOGGER.log(Level.SEVERE, "Exception rolling back failed transaction", rollbackException);
+				result = execute(command);
+								
+			} catch(Exception e) {
+				/*
+				 * If the execution fails, rollback 
+				 */
+				try {
+					this.entityManager.getTransaction().rollback();
+				} catch(Exception rollbackException) {
+					LOGGER.log(Level.SEVERE, "Exception rolling back failed transaction", rollbackException);
+				}
+				
+				/*
+				 * Rethrow exception, wrapping if necessary
+				 */
+				throw wrapException(e);
 			}
 			
 			/*
-			 * Rethrow exception, wrapping if necessary
+			 * Commit the transaction
 			 */
-			throw wrapException(e);
-		} finally {
 			
-			CURRENT.set(null);
+			try {
+				this.entityManager.getTransaction().commit();
+			} catch(Exception e) {
+				LOGGER.log(Level.SEVERE, "Commit failed!", e);
+				throw new RuntimeException("Commit failed", e);
+			}			
+			
+			return result;
+			
+		} finally {
+			CURRENT.remove();
 		}
 	}
 	
