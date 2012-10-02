@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.servlet.ServletContextEvent;
 
 import org.activityinfo.login.server.LoginModule;
+import org.activityinfo.server.attachment.AttachmentModule;
 import org.activityinfo.server.authentication.AuthenticationModule;
 import org.activityinfo.server.bootstrap.BootstrapModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
@@ -65,6 +66,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new HibernateModule(), 
                 new ContentModule(),
                 new AuthenticationModule(),
+                new AttachmentModule(),
                 new ReportModule(),
                 new BootstrapModule(),
                 new GwtRpcModule(),

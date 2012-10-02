@@ -3,50 +3,42 @@ package org.activityinfo.server.attachment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.server.database.hibernate.entity.SiteAttachment;
 import org.activityinfo.shared.command.CreateSiteAttachment;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AttachmentServlet extends HttpServlet {
 
-	private AWSCredentials credentials;
+	private AttachmentService service;
 	private DispatcherSync dispatcher;
+	private Provider<EntityManager> entityManager;
 	
 	private static final Logger LOGGER = Logger.getLogger(AttachmentServlet.class.getName());
-	private String bucketName;
 	
 	@Inject
-	public AttachmentServlet(AWSCredentials credentials,
-			DeploymentConfiguration config,
+	public AttachmentServlet(AttachmentService service, Provider<EntityManager> entityManager,
 			DispatcherSync dispatcher) {
-		this.credentials = credentials;
+		this.service = service;
+		this.entityManager = entityManager;
 		this.dispatcher = dispatcher;
-		bucketName = config.getProperty("bucket.site.attachments");
 	}
 	
 
@@ -55,17 +47,12 @@ public class AttachmentServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String key = req.getParameter("blobId");
-
-		AmazonS3Client client = new AmazonS3Client(credentials);
-	
-		ObjectMetadata metadata = client.getObjectMetadata(bucketName, key);
-		resp.setHeader("Content-Disposition", metadata.getContentDisposition());
-		resp.setHeader("Content-type", metadata.getContentType());
+		SiteAttachment attachment = entityManager.get().find(SiteAttachment.class, key);
 		
-		S3Object object = client.getObject(bucketName, key);
-		InputStream in = object.getObjectContent();
-		ByteStreams.copy(in, resp.getOutputStream());
-		in.close();
+		resp.setHeader("Content-Disposition", "attachment; filename=\"" + attachment.getFileName() + "\"");
+		resp.setContentType(attachment.getContentType());
+		
+		service.serveAttachment(key, resp);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -74,20 +61,13 @@ public class AttachmentServlet extends HttpServlet {
 		try {
 			String key = request.getParameter("blobId");
 			Integer siteId = Integer.valueOf(request.getParameter("siteId"));
-			String bucketName = "site-attachments";
 	
 			FileItem fileItem = getFirstUploadFile(request);
 			
 			String fileName = fileItem.getName();
 			InputStream uploadingStream = fileItem.getInputStream();
 			
-			ObjectMetadata metadata = new ObjectMetadata();
-			metadata.setContentType(fileItem.getContentType());
-			metadata.setContentLength(fileItem.getSize());
-			metadata.setContentDisposition("Content-Disposition: attachment; filename=\"" + fileName + "\"");
-			
-			AmazonS3Client client = new AmazonS3Client(credentials);
-			client.putObject(new PutObjectRequest(bucketName, key, uploadingStream, metadata));
+			service.upload(key, fileItem, uploadingStream);
 			
 			CreateSiteAttachment siteAttachment = new CreateSiteAttachment();
 			siteAttachment.setSiteId(siteId);
@@ -103,11 +83,12 @@ public class AttachmentServlet extends HttpServlet {
 		}
 	}
 
+
 	private FileItem getFirstUploadFile(HttpServletRequest request) throws FileUploadException {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (isMultipart) {
 
-			FileItemFactory factory = new DiskFileItemFactory();
+			FileItemFactory factory = service.createFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			
 			List<FileItem> items = upload.parseRequest(request);
@@ -118,4 +99,6 @@ public class AttachmentServlet extends HttpServlet {
 		}
 		throw new RuntimeException("No upload provided");
 	}
+
+
 }
