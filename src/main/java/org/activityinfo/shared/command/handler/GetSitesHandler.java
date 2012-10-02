@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
@@ -15,8 +16,6 @@ import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
-import org.activityinfo.client.Log;
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -105,9 +104,15 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				Log.trace("Finished adding to map");
 
 				if(!sites.isEmpty()) {
-					joinEntities(tx, siteMap);
-					joinIndicatorValues(tx, siteMap);
-					joinAttributeValues(tx, siteMap);
+					if(command.isFetchAdminEntities()) {
+						joinEntities(tx, siteMap);
+					}
+					if(command.fetchAnyIndicators()) {
+						joinIndicatorValues(tx, siteMap);
+					}
+					if(command.isFetchAttributes()) {
+						joinAttributeValues(tx, siteMap);
+					}
 				}
 				callback.onSuccess(result);
 			}
@@ -172,6 +177,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		applyPermissions(query, context);
 		applyFilter(query, command.getFilter());
 		
+		if(command.getFilter().isRestricted(DimensionType.Indicator)) {
+			applyPrimaryIndicatorFilter(query, command.getFilter());
+		}
+		
 		return query;
 	}
 	
@@ -194,19 +203,37 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("locationType.name", "LocationTypeName")
 			.appendColumn("site.comments", "Comments")
 			.appendColumn("location.x", "x")
-			.appendColumn("location.y", "y")
+			.appendColumn("location.y", "y");
+		
+		if(command.getFilter().isRestricted(DimensionType.Indicator)) {
+			/*
+			 * When filtering by indicators, restructure the query to fetch
+			 * the results more efficiently
+			 */
+			query
+			.from(Tables.INDICATOR_LINK, "link")
+			.innerJoin(Tables.INDICATOR_VALUE, "siv").on("link.SourceIndicatorId = siv.IndicatorId")
+			.innerJoin(Tables.REPORTING_PERIOD, "srp").on("siv.ReportingPeriodId = srp.ReportingPeriodId")
+			.innerJoin(Tables.SITE, "site").on("srp.SiteId=site.SiteId")
+			.innerJoin(Tables.INDICATOR, "di").on("link.DestinationIndicatorId=di.IndicatorId")
+			.innerJoin(Tables.ACTIVITY, "activity").on("di.ActivityId=activity.ActivityId")
+			.where("link.DestinationIndicatorId").in(command.getFilter().getRestrictions(DimensionType.Indicator));
+		} else { 
+			query
 			.from(Tables.SITE)
 			.innerJoin(Tables.INDICATOR, "si").on("si.activityid=site.activityid")
 			.innerJoin(Tables.INDICATOR_LINK, "link").on("si.indicatorId=link.sourceindicatorid")
 			.innerJoin(Tables.INDICATOR, "di").on("link.destinationIndicatorId=di.indicatorid")
-			.leftJoin(Tables.ACTIVITY).on("di.ActivityId = activity.ActivityId")
+			.leftJoin(Tables.ACTIVITY).on("di.ActivityId = activity.ActivityId");
+		}
+		query
 			.leftJoin(Tables.USER_DATABASE, "db").on("activity.DatabaseId = db.DatabaseId")
 			.leftJoin(Tables.LOCATION).on("site.LocationId = location.LocationId")
 			.leftJoin(Tables.LOCATION_TYPE, "locationType").on("location.LocationTypeId = locationType.LocationTypeId")
 			.leftJoin(Tables.PARTNER).on("site.PartnerId = partner.PartnerId")
 			.leftJoin(Tables.PROJECT).on("site.ProjectId = project.ProjectId")
 			.whereTrue("site.dateDeleted is null");
-				
+					
 		applyPermissions(query, context);
 		applyFilter(query, command.getFilter());
 		
@@ -274,18 +301,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	private void applyFilter(SqlQuery query, Filter filter) {
 		if(filter != null) {
 	        for (DimensionType type : filter.getRestrictedDimensions()) {
-	            if (type == DimensionType.Indicator) {
-	            	
-	            	SqlQuery subQuery = new SqlQuery()
-	            		.appendColumn("period.SiteId")
-	            		.from(Tables.INDICATOR_VALUE, "iv")
-	            		.leftJoin(Tables.REPORTING_PERIOD, "period").on("iv.ReportingPeriodId=period.ReportingPeriodId")
-	            		.where("iv.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator))
-	            		.whereTrue("iv.Value IS NOT NULL");
-	            	
-	            	query.where("SiteId").in(subQuery);
-	            
-	            } else if (type == DimensionType.Activity) {
+	            if (type == DimensionType.Activity) {
 	                query.where("activity.ActivityId").in(filter.getRestrictions(type));
 	
 	            } else if (type == DimensionType.Database) {
@@ -315,6 +331,17 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	        	query.where("site.Date2").lessThanOrEqualTo(filter.getMaxDate());
 	        }
 		}
+	}
+
+	private void applyPrimaryIndicatorFilter(SqlQuery query, Filter filter) {
+		SqlQuery subQuery = new SqlQuery()
+			.appendColumn("period.SiteId")
+			.from(Tables.INDICATOR_VALUE, "iv")
+			.leftJoin(Tables.REPORTING_PERIOD, "period").on("iv.ReportingPeriodId=period.ReportingPeriodId")
+			.where("iv.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator))
+			.whereTrue("iv.Value IS NOT NULL");
+		
+		query.where("site.SiteId").in(subQuery);
 	}
 	
 	private void queryTotalLength(SqlTransaction tx, GetSites command, ExecutionContext context, final SiteResult result) {
@@ -507,4 +534,5 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	private boolean isMySql() {
 		return dialect.isMySql();
 	}
+	
 }

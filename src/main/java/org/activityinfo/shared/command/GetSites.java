@@ -5,8 +5,14 @@
 
 package org.activityinfo.shared.command;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.report.model.DimensionType;
+
+import com.google.common.collect.Sets;
+
 
 /**
  * Retrieves a list of sites based on the provided filter and limits.
@@ -20,6 +26,10 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
     private Filter filter = new Filter();
 
     private Integer seekToSiteId;
+    private boolean fetchAttributes = true;
+    private boolean fetchAllIndicators = true;
+    private Set<Integer> fetchIndicators;
+    private boolean fetchAdminEntities = true;
 
     public GetSites() {	
 	}
@@ -123,4 +133,42 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
     public void setSeekToSiteId(Integer seekToSiteId) {
         this.seekToSiteId = seekToSiteId;
     }
+
+	public boolean isFetchAttributes() {
+		return fetchAttributes;
+	}
+
+	public void setFetchAttributes(boolean fetchAttributes) {
+		this.fetchAttributes = fetchAttributes;
+	}
+
+	public boolean isFetchAllIndicators() {
+		return fetchAllIndicators;
+	}
+	
+	public boolean fetchAnyIndicators() {
+		return fetchAllIndicators || (fetchIndicators != null && !fetchIndicators.isEmpty());
+	}
+
+	public void setFetchAllIndicators(boolean fetchAllIndicators) {
+		this.fetchAllIndicators = fetchAllIndicators;
+	}
+
+	public Set<Integer> getFetchIndicators() {
+		return fetchIndicators;
+	}
+
+	public void setFetchIndicators(Collection<Integer> fetchIndicators) {
+		this.fetchIndicators = Sets.newHashSet(fetchIndicators);
+	}
+
+	public boolean isFetchAdminEntities() {
+		return fetchAdminEntities;
+	}
+
+	public void setFetchAdminEntities(boolean fetchAdminEntities) {
+		this.fetchAdminEntities = fetchAdminEntities;
+	}
+    
+    
 }

@@ -1,9 +1,13 @@
 package org.activityinfo.server.command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 
 import org.activityinfo.server.authentication.AuthenticationModuleStub;
 import org.activityinfo.server.database.TestDatabaseModule;
+import org.activityinfo.server.database.hibernate.HibernateExecutor;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet2;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
@@ -15,7 +19,10 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
+import org.hibernate.Hibernate;
+import org.junit.Before;
 
+import com.google.gwt.logging.client.DefaultLevel.All;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
@@ -43,6 +50,10 @@ public class CommandTestCase2 {
     @Inject
     protected Injector injector;
 
+    @Before
+    public final void setUpLogging() {
+    	HibernateExecutor.LOGGER.setLevel(Level.FINEST);
+    }
     
     protected void setUser(int userId) {
         AuthenticationModuleStub.setUserId(userId);

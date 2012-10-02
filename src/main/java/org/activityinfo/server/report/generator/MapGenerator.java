@@ -37,6 +37,7 @@ import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.MapReportElement;
+import org.activityinfo.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
@@ -81,9 +82,8 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         for (MapLayer layer : element.getLayers()) {
         	if (layer.isVisible()) {
         		// Add indicator
-        		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
-        		layerFilter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
-                List<SiteDTO> sites = getDispatcher().execute(new GetSites(layerFilter)).getData();
+        		GetSites query = queryFor(effectiveFilter, layer);
+				List<SiteDTO> sites = getDispatcher().execute(query).getData();
                 
 	            if (layer instanceof BubbleMapLayer) {
 	                layerGenerators.add(new BubbleLayerGenerator((BubbleMapLayer) layer, sites));
@@ -153,6 +153,19 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         element.setContent(content);
 
     }
+
+	private GetSites queryFor(Filter effectiveFilter, MapLayer layer) {
+		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
+		layerFilter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
+		GetSites query = new GetSites();
+		query.setFilter(layerFilter);
+		query.setFetchAttributes(false);
+		query.setFetchAdminEntities(layer.getClustering() instanceof AdministrativeLevelClustering);
+		query.setFetchAllIndicators(false);
+		query.setFetchIndicators(layer.getIndicatorIds());
+		
+		return query;
+	}
 
 	private List<Indicator> queryIndicators(MapReportElement element) {
 		
