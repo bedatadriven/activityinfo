@@ -49,11 +49,6 @@ public class CommandTestCase2 {
  
     @Inject
     protected Injector injector;
-
-    @Before
-    public final void setUpLogging() {
-    	HibernateExecutor.LOGGER.setLevel(Level.FINEST);
-    }
     
     protected void setUser(int userId) {
         AuthenticationModuleStub.setUserId(userId);
