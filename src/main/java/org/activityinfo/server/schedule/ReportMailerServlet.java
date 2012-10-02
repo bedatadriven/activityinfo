@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -33,6 +34,9 @@ public class ReportMailerServlet extends HttpServlet {
 	
 	private Date parseDate(HttpServletRequest req) {
 		try {
+			if(Strings.isNullOrEmpty(req.getParameter("year"))) {
+				return new Date();
+			}
 			int year = Integer.parseInt(req.getParameter("year"));
 			int month = Integer.parseInt(req.getParameter("month"));
 			int day = Integer.parseInt(req.getParameter("day"));
