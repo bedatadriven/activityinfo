@@ -4,6 +4,7 @@ import org.activityinfo.shared.command.UpdateReportSubscription;
 import org.activityinfo.shared.command.handler.CommandHandlerAsync;
 import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.db.Tables;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -18,7 +19,7 @@ public class UpdateReportSubscriptionHandler implements CommandHandlerAsync<Upda
 	public void execute(final UpdateReportSubscription command,
 			final ExecutionContext context, final AsyncCallback<VoidResult> callback) {
 	
-		SqlUpdate update = SqlUpdate.update("ReportSubscription")
+		SqlUpdate update = SqlUpdate.update(Tables.REPORT_SUBSCRIPTION)
 			.valueIfNotNull("dashboard", command.getPinnedToDashboard())
 			.valueIfNotNull("emailday", command.getEmailDay())
 			.where("reportId", command.getReportId())
@@ -41,7 +42,7 @@ public class UpdateReportSubscriptionHandler implements CommandHandlerAsync<Upda
 					} else {
 						// need to insert new record
 						
-						SqlInsert.insertInto("ReportSubscription")
+						SqlInsert.insertInto(Tables.REPORT_SUBSCRIPTION)
 						.value("dashboard", command.getPinnedToDashboard() != null && command.getPinnedToDashboard())
 						.value("subscribed", false)
 						.value("userId", context.getUser().getId())
