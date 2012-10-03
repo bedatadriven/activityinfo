@@ -11,7 +11,9 @@ import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
 
 public class PPTMapRendererTest {
 
@@ -46,6 +48,7 @@ public class PPTMapRendererTest {
 	}
 	
 	@Test
+	@Ignore("not supported by our awt implementation")
 	public void renderImage() throws IOException {
 		ImageMapRenderer renderer = new ImageMapRenderer("");
 		renderer.renderToFile(element, new File("target/report-tests/map-custom-extents.png"));

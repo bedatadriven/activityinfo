@@ -9,19 +9,23 @@ package org.activityinfo.server.report.renderer.itext;
 import java.io.IOException;
 
 import org.activityinfo.server.report.generator.MapIconPath;
+import org.activityinfo.server.report.renderer.image.BubbleLegendRenderer;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 import org.activityinfo.server.report.renderer.image.ItextGraphic;
+import org.activityinfo.server.report.renderer.image.PieChartLegendRenderer;
 import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.report.content.BubbleLayerLegend;
+import org.activityinfo.shared.report.content.IconLayerLegend;
 import org.activityinfo.shared.report.content.MapLayerLegend;
+import org.activityinfo.shared.report.content.PieChartLegend;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
 
 import com.google.code.appengine.awt.Color;
-import com.google.code.appengine.awt.Graphics2D;
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
@@ -30,15 +34,12 @@ import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.ImgTemplate;
+import com.lowagie.text.Image;
 import com.lowagie.text.List;
 import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
 
 
 /**
@@ -106,8 +107,8 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
     		symbolCell.setHorizontalAlignment(Element.ALIGN_CENTER);
     		symbolCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
     		
-    		ItextGraphic symbol = createLegendSymbol(legend, imageCreator);
-			symbolCell.addElement(symbol.toItextImage());
+    		Image symbol = createLegendSymbol(legend, imageCreator);
+			symbolCell.addElement(symbol);
 			
     		Cell descriptionCell = new Cell();
     		addLegendDescription(element, legend.getDefinition(), descriptionCell);
@@ -169,4 +170,24 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 		
 		descriptionCell.add(list);
 	}	
+	
+    public Image createLegendSymbol(MapLayerLegend<?> legend, ImageCreator creator) throws BadElementException {
+    	if(legend instanceof BubbleLayerLegend) {
+    		return new BubbleLegendRenderer((BubbleLayerLegend) legend).createImage(creator).toItextImage();
+    	} else if(legend instanceof IconLayerLegend) {
+    		return createIconImage((IconLayerLegend)legend);
+    	} else if(legend instanceof PieChartLegend) {
+    		return new PieChartLegendRenderer((PieChartLegend) legend).createImage(creator).toItextImage();
+    	} else {
+    		throw new IllegalArgumentException();
+    	}
+    }
+
+    private Image createIconImage(IconLayerLegend legend) {
+    	try {
+			return Image.getInstance(getImageFile(legend.getDefinition().getIcon()).getAbsolutePath());
+		} catch (Exception e) {
+			throw new RuntimeException("Can't create image for " + legend.getDefinition().getIcon());
+		}
+    }
 }

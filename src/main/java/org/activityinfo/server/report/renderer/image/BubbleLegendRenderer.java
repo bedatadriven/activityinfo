@@ -6,7 +6,11 @@ import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.shared.report.content.BubbleLayerLegend;
 import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 
+import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Font;
 import com.google.code.appengine.awt.Graphics2D;
+import com.google.code.appengine.awt.font.LineMetrics;
+import com.google.code.appengine.awt.geom.Rectangle2D;
 
 
 public class BubbleLegendRenderer {
@@ -130,17 +134,17 @@ public class BubbleLegendRenderer {
 	}
 
 	private void drawBubbleLegendLabel(Graphics2D g2d, int x, int y, double value) {
-//    	Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
-//        String label = labelFormat.format(value);
-//        LineMetrics metrics = font.getLineMetrics(label, g2d.getFontRenderContext());
-//        Rectangle2D bounds = font.getStringBounds(label, g2d.getFontRenderContext());
-//        
-//        x -= bounds.getWidth() / 2d;
-//        y += metrics.getAscent();
-//        
-//        g2d.setColor(Color.BLACK);
-//        g2d.setFont(font);
-//        g2d.drawString(label, x, y);
+    	Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+        String label = labelFormat.format(value);
+        LineMetrics metrics = font.getLineMetrics(label, g2d.getFontRenderContext());
+        Rectangle2D bounds = font.getStringBounds(label, g2d.getFontRenderContext());
+        
+        x -= bounds.getWidth() / 2d;
+        y += metrics.getAscent();
+        
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(font);
+        g2d.drawString(label, x, y);
     }
 
 }

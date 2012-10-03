@@ -212,13 +212,17 @@ public class ImageMapRenderer {
 		BufferedImage image = iconImages.get(name);
         if(image == null) {
             try {
-                image = ImageIO.read(new File(mapIconRoot + "/" + name + ".png"));
+                image = ImageIO.read(getImageFile(name));
                 iconImages.put(name, image);
             } catch (IOException e) {
             	LOGGER.log(Level.WARNING, "Exception reading icon '" + name + "'", e);
             }
         }
 		return image;
+	}
+
+	public File getImageFile(String name) {
+		return new File(mapIconRoot + "/" + name + ".png");
 	}
 
     public void drawBasemap(Graphics2D g2d, MapReportElement element) {
@@ -302,25 +306,6 @@ public class ImageMapRenderer {
         }
     }
     
-    public ItextGraphic createLegendSymbol(MapLayerLegend<?> legend, ImageCreator creator) {
-    	if(legend instanceof BubbleLayerLegend) {
-    		return new BubbleLegendRenderer((BubbleLayerLegend) legend).createImage(creator);
-    	} else if(legend instanceof IconLayerLegend) {
-    		return createIconImage(creator, (IconLayerLegend)legend);
-    	} else if(legend instanceof PieChartLegend) {
-    		return new PieChartLegendRenderer((PieChartLegend) legend).createImage(creator);
-    	} else {
-    		throw new IllegalArgumentException();
-    	}
-    }
-
-    private ItextGraphic createIconImage(ImageCreator creator, IconLayerLegend legend) {
-    	BufferedImage icon = getIconImage(legend.getDefinition().getIcon());
-    	ItextGraphic result = creator.create(icon.getWidth(), icon.getHeight());
-    	result.getGraphics().drawImage(icon, 0, 0, null);
-    	
-    	return result;
-    }
     
     public static void drawBubble(Graphics2D g2d, Color colorRgb, int x, int y, int radius) {
         Ellipse2D.Double ellipse = new Ellipse2D.Double(
