@@ -1,5 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+ 			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style type="org.activityinfo.client.page.report.editor.ElementWidget.MyStyle">
 		.container {
 			width: 650px;
@@ -69,7 +70,7 @@
 	</ui:style>
 	<ui:with field="i18n" type="org.activityinfo.client.i18n.UIConstants"/>
 	
-	<div class="{style.container}">
+	<g:HTMLPanel styleName="{style.container}" ui:field="htmlPanel">
 	
 		<div class="{style.topRow}">
 		
@@ -94,5 +95,5 @@
 			</div>
 		</div>
 		<div style="clear: both;"></div>
-	</div>
+	</g:HTMLPanel>
 </ui:UiBinder>

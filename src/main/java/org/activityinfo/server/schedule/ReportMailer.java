@@ -87,8 +87,6 @@ public class ReportMailer {
 		rtfReportRenderer.render(report, rtf);
 		rtf.close();
 
-		// loop through report subscriptions that are to be mailed
-		// today
 		try {
 			mailReport(sub, report, today, rtf.toByteArray());
 		} catch (Exception e) {

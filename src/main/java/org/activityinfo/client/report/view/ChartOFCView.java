@@ -278,7 +278,4 @@ public class ChartOFCView extends ContentPanel implements ChartView {
 	public void bindTable(PivotGridPanel gridPanel) {
 		this.gridPanel = gridPanel;
 	}
-	
-	
-
 }

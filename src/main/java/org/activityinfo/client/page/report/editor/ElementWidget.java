@@ -3,8 +3,10 @@ package org.activityinfo.client.page.report.editor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.editor.ElementDialog.Callback;
+import org.activityinfo.client.report.view.ChartOFCView;
 import org.activityinfo.shared.command.RenderReportHtml;
 import org.activityinfo.shared.command.result.HtmlResult;
+import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.activityinfo.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.event.Listener;
@@ -23,16 +25,18 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class ElementWidget extends Widget {
+public class ElementWidget extends Composite {
 
 	private static ElementWidgetUiBinder uiBinder = GWT
 			.create(ElementWidgetUiBinder.class);
-	
-	interface ElementWidgetUiBinder extends UiBinder<Element, ElementWidget> {
+		
+	interface ElementWidgetUiBinder extends UiBinder<Widget, ElementWidget> {
 	}
 
 	
@@ -48,6 +52,8 @@ public class ElementWidget extends Widget {
 		String removeButton();
 		String blockHover();
 	}
+	@UiField
+	HTMLPanel htmlPanel;
 	
 	@UiField
 	MyStyle style;
@@ -71,7 +77,7 @@ public class ElementWidget extends Widget {
 		this.dispatcher = dispatcher;
 		this.dialogProvider = dialogProvider;
 		
-		setElement(uiBinder.createAndBindUi(this));
+		initWidget(uiBinder.createAndBindUi(this));
 						
 		sinkEvents(Event.MOUSEEVENTS |  Event.ONCLICK);		
 	}
@@ -83,9 +89,26 @@ public class ElementWidget extends Widget {
 	public void bind(ReportElement model) {
 		this.model = model;
 		titleElement.setInnerText(ElementTitles.format(model));
-		loadHtml();
+		// for now, preview html is rendered server side, 
+		// except for charts which we can't due to appthengine
+		// limitations with text rendering. Thats' fine because we
+		// want to do everything client side eventually anyway
+		if(model instanceof PivotChartReportElement) {
+			loadView();
+		} else {
+			loadHtml();
+		}
 	}
 	
+	private void loadView() {
+		ChartOFCView view = new ChartOFCView();
+		view.setHeight(256);
+		view.setBorders(false);
+		view.show((PivotChartReportElement) model);
+		loadingElement.getStyle().setDisplay(Display.NONE);
+		htmlPanel.add(view, contentElement);
+	}
+
 	public ReportElement getModel() {
 		return model;
 	}
