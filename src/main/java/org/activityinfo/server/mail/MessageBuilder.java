@@ -3,6 +3,8 @@ package org.activityinfo.server.mail;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -13,6 +15,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 
 public class MessageBuilder {
@@ -67,6 +70,7 @@ public class MessageBuilder {
 		if(mp != null) {
 			msg.setContent(mp);
 		}
+		msg.saveChanges();
 		return msg;
 	}
 	
@@ -84,7 +88,8 @@ public class MessageBuilder {
 			return this;
 		}
 		public PartBuilder withContent(byte[] content, String mimeType) throws MessagingException {
-			attachment.setContent(content, mimeType);
+			DataSource src = new ByteArrayDataSource(content, mimeType);
+			attachment.setDataHandler(new DataHandler(src));
 			return this;
 		}
 
