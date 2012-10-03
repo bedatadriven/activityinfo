@@ -108,7 +108,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 						joinEntities(tx, siteMap);
 					}
 					if(command.fetchAnyIndicators()) {
-						joinIndicatorValues(tx, siteMap);
+						joinIndicatorValues(command, tx, siteMap);
 					}
 					if(command.isFetchAttributes()) {
 						joinAttributeValues(tx, siteMap);
@@ -418,7 +418,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			});
 	}	
 	
-	private void joinIndicatorValues(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
+	private void joinIndicatorValues(GetSites command, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
 
 		Log.trace("Starting joinIndicatorValues()");
 		
@@ -436,6 +436,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             	.leftJoin(Tables.INDICATOR, "D").on("L.DestinationIndicatorId=D.IndicatorId")
             .where("P.SiteId").in(siteMap.keySet())
             .and("I.dateDeleted IS NULL");
+    	
     	
     	Log.info(query.toString());
     	

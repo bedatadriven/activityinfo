@@ -186,6 +186,7 @@ public class ItextReportRendererTest {
 		report.addElement(chart);
 		
 		renderToPdf(report, "chartTest.pdf");	
+		renderToRtf(report, "chartTest.rtf");
 	}
 	
 	@Test
@@ -459,7 +460,7 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToHtml(Report report, String name) throws IOException {
-	//	renderTo(report, new HtmlReportRenderer(mapIconPath(), new TestImageStorageProvider()), name);
+		renderTo(report, new HtmlReportRenderer(mapIconPath(), new TestImageStorageProvider()), name);
 	}
 	
 	private void renderToHtmlUsingWriter(Report report, String name) throws IOException {

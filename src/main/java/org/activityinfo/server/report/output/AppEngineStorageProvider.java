@@ -6,6 +6,8 @@ import java.nio.channels.Channels;
 import java.security.SecureRandom;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -16,19 +18,34 @@ import com.google.appengine.api.files.AppEngineFile;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
+import com.google.inject.Provider;
 
 public class AppEngineStorageProvider implements ImageStorageProvider {
 
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	private SecureRandom random = new SecureRandom();
+	private Provider<HttpServletRequest> request;
+	
+	public AppEngineStorageProvider(Provider<HttpServletRequest> request) {
+		this.request = request;
+	}
+	
 	@Override
 	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
 		
 		Key tempFileKey = KeyFactory.createKey("TempFile", Long.toString(Math.abs(random.nextLong()), 16));
 		
-		String url = "/generated/" + tempFileKey.getName();
+		StringBuilder url = new StringBuilder();
+		url.append(request.get().isSecure() ? "https" : "http");
+		url.append("://");
+		url.append(request.get().getServerName());
+		url.append(":");
+		url.append(request.get().getServerPort());
+		url.append("/generated/");
+		url.append(tempFileKey.getName());
 		
-		return new ImageStorage(url, new TempOutputStream(mimeType, suffix, tempFileKey));
+		return new ImageStorage(url.toString(), 
+				new TempOutputStream(mimeType, suffix, tempFileKey));
 	}
 	
 	private class TempOutputStream extends OutputStream {

@@ -47,10 +47,11 @@ public class ReportModule extends ServletModule {
     }
     
     @Provides
-    public ImageStorageProvider provideImageStorageProvider(ServletContext context, Provider<HttpServletRequest> requestProvider) {
+    public ImageStorageProvider provideImageStorageProvider(ServletContext context, 
+    		Provider<HttpServletRequest> requestProvider) {
     
     	if(!Strings.isNullOrEmpty(System.getProperty("com.google.appengine.runtime.environment"))) {
-    		return new AppEngineStorageProvider();
+    		return new AppEngineStorageProvider(requestProvider);
     	}
     	
     	File tempPath = new File(context.getRealPath("/temp/"));

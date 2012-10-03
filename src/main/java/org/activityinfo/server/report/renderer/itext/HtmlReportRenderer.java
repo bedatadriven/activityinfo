@@ -8,6 +8,7 @@ package org.activityinfo.server.report.renderer.itext;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -157,7 +158,6 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			try {
 				ImageIO.write(image, "PNG", storage.getOutputStream());
 				return new MyImage(new URL(storage.getUrl()), image.getWidth(), image.getHeight());
-				//return Image.getInstance(new URL(storage.getUrl()));
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -166,8 +166,13 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		@Override
 		public void addImage(String imageUrl, int x, int y, int width,
 				int height) {
-			// TODO Auto-generated method stub
-			
+			BufferedImage img;
+			try {
+				img = ImageIO.read(new URL(imageUrl));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			g2d.drawImage(img, x, image.getHeight() - y - height, null);
 		}	
 	}
 }
