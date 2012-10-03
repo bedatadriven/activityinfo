@@ -155,9 +155,37 @@ public class ItextReportRendererTest {
 		report.addElement(map);
 		
 		renderToPdf(report, "piechart.pdf");
-		//renderToHtml(report, "piechart.html");
+		renderToHtml(report, "piechart.html");
 		//renderToHtmlUsingWriter(report, "piechart2.html");
 		renderToRtf(report, "piechart.rtf");
+	}
+	
+	@Test
+	public void chartTest() throws IOException {
+		
+		DummyPivotTableData data = new DummyPivotTableData();
+				
+		PivotChartContent chartContent = new PivotChartContent();
+		chartContent.setData(data.table);
+		chartContent.setYMin(0);
+		chartContent.setYStep(100);
+		chartContent.setFilterDescriptions(Collections.EMPTY_LIST);
+		
+		PivotChartReportElement chart = new PivotChartReportElement(Type.Bar);
+		chart.setTitle("My Pie Chart");
+		chart.setCategoryDimensions(data.colDims);
+		chart.setSeriesDimension(data.rowDims);
+		chart.setContent(chartContent);
+		
+
+		ReportContent content = new ReportContent();
+		content.setFilterDescriptions(Collections.EMPTY_LIST);
+		
+		Report report = new Report();
+		report.setContent(content);
+		report.addElement(chart);
+		
+		renderToPdf(report, "chartTest.pdf");	
 	}
 	
 	@Test
