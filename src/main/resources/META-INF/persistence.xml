@@ -8,15 +8,12 @@
 			<property name="hibernate.archive.autodetection" value="class" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
 			<property name="hibernate.ejb.naming_strategy" value="org.activityinfo.server.database.hibernate.AINamingStrategy"/>
-			<property name="hibernate.connection.driver_class" value="com.google.appengine.api.rdbms.AppEngineDriver" />
+    		<property name="hibernate.connection.pool_size" value="1"/>
+    		<property name="hibernate.connection.driver_class" value="com.google.appengine.api.rdbms.AppEngineDriver" />
 			<property name="hibernate.connection.url" 
 				value="jdbc:google:rdbms://bedatadriven.com:activityinfo:activityinfo/activityinfo?useUnicode=true&amp;characterEncoding=utf8" />
 			<property name="hibernate.hbm2ddl.auto" value="" />
 			<property name="hibernate.format_sql" value="true" />	
 		</properties>
 	</persistence-unit>
-
-    <!-- testing persistence units moved to hibernate.cfg.xml to improve test runtimes -->
-    <!-- (I couldn't figure out how to disable WEB-INF/classes scanning from the persistence.xml file -AB) -->
-
 </persistence>
