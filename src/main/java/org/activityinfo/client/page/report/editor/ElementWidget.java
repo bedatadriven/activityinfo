@@ -1,11 +1,15 @@
 package org.activityinfo.client.page.report.editor;
 
+import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.editor.ElementDialog.Callback;
 import org.activityinfo.client.report.view.ChartOFCView;
+import org.activityinfo.client.report.view.ReportViewBinder;
+import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.RenderReportHtml;
 import org.activityinfo.shared.command.result.HtmlResult;
+import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.activityinfo.shared.report.model.ReportElement;
 
@@ -101,12 +105,24 @@ public class ElementWidget extends Composite {
 	}
 	
 	private void loadView() {
-		ChartOFCView view = new ChartOFCView();
-		view.setHeight(256);
-		view.setBorders(false);
-		view.show((PivotChartReportElement) model);
-		loadingElement.getStyle().setDisplay(Display.NONE);
-		htmlPanel.add(view, contentElement);
+		dispatcher.execute(new GenerateElement<Content>(model), new AsyncCallback<Content>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO
+			}
+
+			@Override
+			public void onSuccess(Content result) {
+				model.setContent(result);
+				ChartOFCView view = new ChartOFCView();
+				view.setHeight(256);
+				view.setBorders(false);
+				view.show((PivotChartReportElement) model);
+				loadingElement.getStyle().setDisplay(Display.NONE);
+				htmlPanel.add(view, contentElement);
+			}
+		});
 	}
 
 	public ReportElement getModel() {
