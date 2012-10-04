@@ -71,6 +71,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 		addDimension(DimensionType.Target, I18N.CONSTANTS.realizedOrTargeted());
 		addDimension(DimensionType.Partner, I18N.CONSTANTS.partner());
 		addDimension(DimensionType.Project, I18N.CONSTANTS.project());
+		addDimension(DimensionType.Target, I18N.CONSTANTS.targets());
 		addTimeDimensions();		
 		addGeographyRoot();
 	
@@ -104,6 +105,10 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 	private void addGeographyRoot() {
 		geographyRoot = new DimensionModel(I18N.CONSTANTS.geography());
 		store.add(geographyRoot, false);
+		addLocationDimension();
+	}
+
+	private void addLocationDimension() {
 		store.add(geographyRoot, new DimensionModel(DimensionType.Site, I18N.CONSTANTS.location()), false);
 	}
 
@@ -197,6 +202,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 				store.add(geographyRoot, new DimensionModel(level), 
 						false);
 			}
+			addLocationDimension();
 		}
 	}
 	
