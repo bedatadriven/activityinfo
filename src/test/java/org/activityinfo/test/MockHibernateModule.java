@@ -5,18 +5,17 @@
 
 package org.activityinfo.test;
 
-import java.util.Properties;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.activityinfo.server.database.TestConnectionProvider;
 import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.database.hibernate.AINamingStrategy;
 import org.activityinfo.server.database.hibernate.EntityManagerProvider;
+import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
+import org.hibernate.ejb.Ejb3Configuration;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
@@ -47,16 +46,21 @@ public class MockHibernateModule extends AbstractModule {
                 // we are assuming that the tests do not affect the database schema, so there is no
                 // need to restart hibernate for each test class, and we save quite a bit of time
                 if (emf == null) {
-                	Properties properties = new Properties();
-                	properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-                	properties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-                	properties.setProperty("hibernate.connection.url",  TestConnectionProvider.getUrl());
-                	properties.setProperty("hibernate.connection.username", TestConnectionProvider.getUsername());
-                	properties.setProperty("hibernate.connection.password", TestConnectionProvider.getPassword());
-                	properties.setProperty("hibernate.hbm2ddl.auto", "none");
-                	properties.setProperty("hibernate.ejb.naming_strategy", AINamingStrategy.class.getName());
-                                	
-                	emf = Persistence.createEntityManagerFactory("activityInfo", properties);
+                	Ejb3Configuration config = new Ejb3Configuration();
+                	config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+                	config.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+                	config.setProperty("hibernate.connection.url",  TestConnectionProvider.getUrl());
+                	config.setProperty("hibernate.connection.username", TestConnectionProvider.getUsername());
+                	config.setProperty("hibernate.connection.password", TestConnectionProvider.getPassword());
+                	config.setProperty("hibernate.hbm2ddl.auto", "none");
+                	config.setProperty("hibernate.ejb.naming_strategy", AINamingStrategy.class.getName());
+                	config.setNamingStrategy(new AINamingStrategy());
+                	for(Class clazz : HibernateModule.getPersistentClasses()) {
+                		config.addAnnotatedClass(clazz);
+                	}
+                	
+                	emf = config.buildEntityManagerFactory();
+                	
                 	
                     System.err.println("GUICE: EntityManagerFACTORY created");
                 }

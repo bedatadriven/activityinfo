@@ -5,19 +5,21 @@
 
 package org.activityinfo.server.database.hibernate;
 
-import java.sql.Connection;
-import java.util.Properties;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.hibernate.cfg.Environment;
+import org.hibernate.ejb.Ejb3Configuration;
 import org.hibernate.ejb.HibernateEntityManager;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -69,13 +71,31 @@ public class HibernateModule extends ServletModule {
         @Override
         public EntityManagerFactory get() {
         	// ensure that hibernate does NOT do schema updating--liquibase is in charge
-        	Properties config = configProperties.asProperties();
+        	Ejb3Configuration config = new Ejb3Configuration();
+        	config.addProperties(configProperties.asProperties());
+        	for(Class clazz : getPersistentClasses()) {
+        		config.addAnnotatedClass(clazz);
+        	}
         	config.setProperty(Environment.HBM2DDL_AUTO, "");
-        	config.setProperty("hibernate.ejb.naming_strategy", AINamingStrategy.class.getName());
-        	return Persistence.createEntityManagerFactory("activityInfo", config);
+        	config.setNamingStrategy(new AINamingStrategy());
+        	return config.buildEntityManagerFactory();
         }
     }
 
+    public static List<Class> getPersistentClasses() {
+    	try {
+        	List<Class> list = Lists.newArrayList();
+        	List<String> lines = Resources.readLines(
+        			HibernateModule.class.getResource("/persistent.classes"), Charsets.UTF_8);
+        	for(String line : lines) {
+        		list.add(Class.forName(line));
+        	}
+        	return list;
+    	} catch(Exception e) {
+    		throw new RuntimeException("Exception loading list of persistent classes", e);
+    	}
+    }
+    
     @Provides
     protected HibernateEntityManager provideHibernateEntityManager(EntityManager entityManager) {
         return (HibernateEntityManager)entityManager;
