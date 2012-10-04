@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.SessionUtil;
@@ -168,6 +169,8 @@ public class OfflineController implements Dispatcher {
 	}
 
 	private void reportFailure(Throwable throwable) {
+		Log.error("Exception in offline controller", throwable);
+		
 		if (throwable instanceof InvalidAuthTokenException) {
 			SessionUtil.forceLogin();
 
