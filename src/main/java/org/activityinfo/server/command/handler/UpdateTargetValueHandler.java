@@ -1,6 +1,8 @@
 package org.activityinfo.server.command.handler;
 
 import java.util.Map;
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 
 import org.activityinfo.server.command.handler.crud.PropertyMap;
@@ -13,8 +15,6 @@ import org.activityinfo.shared.command.UpdateTargetValue;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -22,7 +22,7 @@ import com.google.inject.Injector;
 public class UpdateTargetValueHandler extends BaseEntityHandler implements
 		CommandHandler<UpdateTargetValue> {
 
-	private final static Log LOG = LogFactory.getLog(UpdateTargetValueHandler.class);
+	private final static Logger LOG = Logger.getLogger(UpdateTargetValueHandler.class.getName());
 
 	private final Injector injector;
 
@@ -36,9 +36,7 @@ public class UpdateTargetValueHandler extends BaseEntityHandler implements
 	public CommandResult execute(UpdateTargetValue cmd, User user)
 			throws CommandException {
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("[execute] Update command for entity: TargetValue");
-		}
+		LOG.fine("[execute] Update command for entity: TargetValue");
 
 		Map<String, Object> changes = cmd.getChanges().getTransientMap();
 		PropertyMap changeMap = new PropertyMap(changes);

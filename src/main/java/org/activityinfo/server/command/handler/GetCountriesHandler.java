@@ -7,6 +7,7 @@ package org.activityinfo.server.command.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
@@ -18,52 +19,27 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.CountryResult;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.exception.CommandException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dozer.Mapper;
 
 import com.google.inject.Inject;
 
 public class GetCountriesHandler implements CommandHandler<GetCountries> {
 
-    private final static Log LOG = LogFactory.getLog(GetCountriesHandler.class);
+    private final static Logger LOG = Logger.getLogger(GetCountriesHandler.class.getName());
 
     private final CountryDAO countryDAO;
     private final Mapper mapper;
 
-    private final EntityManager entityManager;
 
     @Inject
-    public GetCountriesHandler(CountryDAO countryDAO, Mapper mapper, EntityManager entityManager) {
+    public GetCountriesHandler(CountryDAO countryDAO, Mapper mapper) {
         this.countryDAO = countryDAO;
         this.mapper = mapper;
-
-        this.entityManager = entityManager;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public CommandResult execute(GetCountries cmd, User user) throws CommandException {
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("[execute] Gets countries command.");
-        }
-
-        if (cmd.isContainingProjects()) {
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("[execute] Gets countries with projects ? " + cmd.isContainingProjects());
-            }
-
-            return new CountryResult(mapToDtos(entityManager.createQuery(
-                    "SELECT c FROM Country c WHERE c IN (SELECT co.id FROM Project p, IN(p.country) co)")
-                    .getResultList()));
-        }
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("[execute] Gets countries with projects ? " + cmd.isContainingProjects());
-        }
-        
+    public CommandResult execute(GetCountries cmd, User user) throws CommandException {        
         return new CountryResult(mapToDtos(countryDAO.queryAllCountriesAlphabetically()));
     }
 

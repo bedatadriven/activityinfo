@@ -5,13 +5,13 @@
 
 package org.activityinfo.server.database.hibernate.dao;
 
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -27,7 +27,7 @@ public class TransactionalInterceptor implements MethodInterceptor {
     /**
      * Logger.
      */
-    private static final Log log = LogFactory.getLog(TransactionalInterceptor.class);
+    private static final Logger log = Logger.getLogger(TransactionalInterceptor.class.getName());
     
     private Injector injector;
 
@@ -54,7 +54,7 @@ public class TransactionalInterceptor implements MethodInterceptor {
         // with the advised method's throwing semantics)
         tx.commit();
         
-        log.trace("[invoke] Committed the transaction.");
+        log.fine("[invoke] Committed the transaction.");
         return result;
     }
 
