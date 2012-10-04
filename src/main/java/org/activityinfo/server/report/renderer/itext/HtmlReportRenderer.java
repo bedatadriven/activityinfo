@@ -100,11 +100,7 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			g2d.setPaint(Color.WHITE);
 			g2d.fillRect(0,0,width, height);
 
-			try {
-				return new HtmlImage(image, g2d, imageStorageProvider.getImageUrl(null, ".png"));
-			} catch (IOException e) {
-				throw new RuntimeException();
-			}
+			return new HtmlImage(image, g2d);
 		}
 	}
 	
@@ -136,16 +132,14 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		}		
 	}
 
-	private static class HtmlImage implements ItextGraphic {
+	private class HtmlImage implements ItextGraphic {
 		private final BufferedImage image;
 		private final Graphics2D g2d;
-		private final ImageStorage storage;
 
-		public HtmlImage(BufferedImage image, Graphics2D g2d, ImageStorage storage) {
+		public HtmlImage(BufferedImage image, Graphics2D g2d) {
 			super();
 			this.image = image;
 			this.g2d = g2d;
-			this.storage = storage;
 		}
 
 		@Override
@@ -156,7 +150,10 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		@Override
 		public Image toItextImage() throws BadElementException {
 			try {
+				ImageStorage storage = imageStorageProvider.getImageUrl(null, ".png");
 				ImageIO.write(image, "PNG", storage.getOutputStream());
+				storage.getOutputStream().close();
+				
 				return new MyImage(new URL(storage.getUrl()), image.getWidth(), image.getHeight());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
