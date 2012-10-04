@@ -23,7 +23,6 @@ import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.TargetResult;
 import org.activityinfo.shared.command.result.VoidResult;
-import org.activityinfo.shared.dto.EntityDTO;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.TargetDTO;
@@ -61,7 +60,7 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> implements 
 	
 	private UserDatabaseDTO db;
 	private ListStore<TargetDTO> store;
-	private TargetIndicatorPresenter targetIndicatorPresenter ;
+	private final TargetIndicatorPresenter targetIndicatorPresenter ;
 	
 	@Inject
 	public DbTargetEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view, 
@@ -111,48 +110,57 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> implements 
 	}
 
 	 
-	 @Override
-		protected void onDeleteConfirmed(final TargetDTO model) {
+	@Override
+	protected void onDeleteConfirmed(final TargetDTO model) {
+		service.execute(new Delete(model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
 
-		 service.execute(new Delete((EntityDTO) model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-	            public void onFailure(Throwable caught) {
+			}
 
-	            }
+			@Override
+			public void onSuccess(VoidResult result) {
+				store.remove(model);
+				store.commitChanges();
+				eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+			}
+		});
+	}
 
-	            public void onSuccess(VoidResult result) {
-	                store.remove(model);
-	                store.commitChanges();
-	                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-	            }
-	        });
-		}
+	@Override
+	protected void onAdd() {
+		final TargetDTO newTarget = new TargetDTO();
+		this.view.showAddDialog(newTarget, db, new FormDialogCallback() {
 
-		@Override
-		protected void onAdd() {
-	        final TargetDTO newTarget = new TargetDTO();
-	        this.view.showAddDialog(newTarget, db, new FormDialogCallback() {
+			@Override
+			public void onValidated(final FormDialogTether dlg) {
 
-	            @Override
-	            public void onValidated(final FormDialogTether dlg) {
+				service.execute(new AddTarget(db.getId(), newTarget), dlg, new AsyncCallback<CreateResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
+					}
 
-	                service.execute(new AddTarget(db.getId(), newTarget), dlg, new AsyncCallback<CreateResult>() {
-	                    public void onFailure(Throwable caught) {
-	                        MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
-	                    }
+					@Override
+					public void onSuccess(CreateResult result) {
+						newTarget.setId(result.getNewId());
 
-	                    public void onSuccess(CreateResult result) {
-	                    	newTarget.setId(result.getNewId());
-	                        store.add(newTarget);
-	                        store.commitChanges();
+						PartnerDTO partner = db.getPartnerById((Integer) newTarget.get("partnerId"));
+						newTarget.setPartner(partner);
 
-	                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-	                        dlg.hide();
-	                    }
-	                });
-	            }
-	        });
-		}
-	
+						ProjectDTO project = db.getProjectById((Integer) newTarget.get("projectId"));
+						newTarget.setProject(project);
+
+						store.add(newTarget);
+						store.commitChanges();
+
+						eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+						dlg.hide();
+					}
+				});
+			}
+		});
+	}
 
 	@Override
 	protected void onEdit(final TargetDTO dto) {
@@ -163,11 +171,13 @@ public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> implements 
 
 	        	final Record record =store.getRecord(dto);
 	            service.execute(new UpdateEntity(dto, getChangedProperties(record) ), dlg, new AsyncCallback<VoidResult>() {
-	                public void onFailure(Throwable caught) {
+	                @Override
+					public void onFailure(Throwable caught) {
 
 	                }
 	
-	                public void onSuccess(VoidResult result) {
+	                @Override
+					public void onSuccess(VoidResult result) {
 	                	
 	                	PartnerDTO partner =db.getPartnerById((Integer)record.get("partnerId"));
 	                	dto.setPartner(partner);

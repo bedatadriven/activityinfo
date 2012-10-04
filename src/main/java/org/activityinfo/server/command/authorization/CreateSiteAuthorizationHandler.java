@@ -1,13 +1,13 @@
 package org.activityinfo.server.command.authorization;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.shared.command.handler.AuthorizationHandler;
 import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.db.Tables;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;

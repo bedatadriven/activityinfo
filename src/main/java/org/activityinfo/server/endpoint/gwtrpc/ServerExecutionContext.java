@@ -221,12 +221,12 @@ public class ServerExecutionContext implements ExecutionContext {
 		return entityManager.find(User.class, user.getId());
 	}
 	
-	private static CommandException wrapException(Throwable t) {
-		if(t instanceof CommandException) {
-			return (CommandException) t;
+	private static RuntimeException wrapException(Throwable t) {
+		if(t instanceof RuntimeException) {
+			return (RuntimeException) t;
 		} else {
 			LOGGER.log(Level.SEVERE, "Unexpected command exception: " + t.getMessage(), t);
-			return new UnexpectedCommandException();
+			return new RuntimeException(t);
 		}
 	}
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.PivotResult;
@@ -20,6 +21,7 @@ import org.activityinfo.shared.command.handler.pivot.bundler.SumAndAverageBundle
 import org.activityinfo.shared.command.handler.pivot.bundler.YearBundler;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.db.Tables;
+import org.activityinfo.shared.report.content.TargetCategory;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateDimension;
@@ -27,7 +29,6 @@ import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 
-import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
@@ -101,22 +102,58 @@ public class PivotQuery {
                 "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
                 "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
                 "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
-        /*
-         * First add the indicator to the query: we can't aggregate values from different
-         * indicators so this is a must
-         */
-    	String aggregationTypeAlias = appendColumn("Indicator.Aggregation");
-    	String sumAlias = appendColumn("SUM(V.Value)");
-    	String avgAlias = appendColumn("AVG(V.Value)");
-    	
-    	query.groupBy("V.IndicatorId");
-    	query.groupBy("Indicator.Aggregation");
-    	query.whereTrue(" ((V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
-        
-    	bundlers.add( new SumAndAverageBundler(aggregationTypeAlias, sumAlias, avgAlias) );
-       
-    	buildAndExecuteRestOfQuery();
+
+		addSumAndAverageBundler();
+
+		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
     }
+
+	// FIXME mind the Period alias
+	public void queryForTargetValues() {
+		if (suitableDimensionsForTargetValues()) {
+			query.from(" targetvalue V " + "LEFT JOIN target AS Period ON (Period.TargetId = V.TargetId) "
+					+ "LEFT JOIN indicator Indicator ON (Indicator.IndicatorId = V.IndicatorId) "
+					+ "LEFT JOIN partner Partner ON (Period.PartnerId = Partner.PartnerId) "
+					+ "LEFT JOIN project Project ON (Period.ProjectId = Project.ProjectId) "
+					+ "LEFT JOIN activity Activity ON (Activity.ActivityId = Indicator.ActivityId) "
+					+ "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
+
+			addSumAndAverageBundler();
+
+			buildAndExecuteRestOfQuery(TargetCategory.TARGETED);
+		} else {
+			finish();
+		}
+	}
+
+	private boolean suitableDimensionsForTargetValues() {
+		boolean containsTarget = false;
+		for (Dimension dimension : dimensions) {
+			if (dimension instanceof AdminDimension || dimension.getType() == DimensionType.Location) {
+				return false;
+			}
+			if (dimension.equals(Dimension.TARGET)) {
+				containsTarget = true;
+			}
+		}
+		return containsTarget;
+	}
+
+	private void addSumAndAverageBundler() {
+		/*
+		 * Add the indicator to the query: we can't aggregate values from
+		 * different indicators so this is a must
+		 */
+		String aggregationTypeAlias = appendColumn("Indicator.Aggregation");
+		String sumAlias = appendColumn("SUM(V.Value)");
+		String avgAlias = appendColumn("AVG(V.Value)");
+
+		query.groupBy("V.IndicatorId");
+		query.groupBy("Indicator.Aggregation");
+		query.whereTrue(" ((V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
+
+		bundlers.add(new SumAndAverageBundler(aggregationTypeAlias, sumAlias, avgAlias));
+	}
 
     public void queryForSiteCountIndicators() {
 
@@ -144,7 +181,7 @@ public class PivotQuery {
 
         bundlers.add(new SiteCountBundler(count));
 
-        buildAndExecuteRestOfQuery();
+		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
     }
     
     public void queryForTotalSiteCounts() {
@@ -164,10 +201,10 @@ public class PivotQuery {
 
         bundlers.add(new SiteCountBundler(count));
 
-        buildAndExecuteRestOfQuery();
+		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
     }
 
-    protected void buildAndExecuteRestOfQuery() {
+	protected void buildAndExecuteRestOfQuery(final TargetCategory targetCategory) {
         /* Now add any other dimensions  */
         for (Dimension dimension : dimensions) {
 
@@ -184,10 +221,10 @@ public class PivotQuery {
             	addEntityDimension(dimension, "Activity.DatabaseId", "UserDatabase.Name");
 
             } else if (dimension.getType() == DimensionType.Partner) {
-            	addEntityDimension(dimension, "Site.PartnerId", "Partner.Name");
+				addEntityDimension(dimension, "Partner.PartnerId", "Partner.Name");
                 
             } else if (dimension.getType() == DimensionType.Project) {
-            	addEntityDimension(dimension, "Site.ProjectId", "Project.Name");
+				addEntityDimension(dimension, "Project.ProjectId", "Project.Name");
               
             } else if (dimension.getType() == DimensionType.Location) {
             	addEntityDimension(dimension, "Site.LocationId", "Location.Name");
@@ -277,8 +314,10 @@ public class PivotQuery {
 
 
         /* And start on our where clause... */
+		if (TargetCategory.REALIZED == targetCategory) {
+			query.where("Site.dateDeleted").isNull();
+		}
 
-        query.where("Site.dateDeleted").isNull();
         query.where("Activity.dateDeleted").isNull();
         query.where("UserDatabase.dateDeleted").isNull();
         if(command.getValueType() == ValueType.INDICATOR) {
@@ -307,17 +346,22 @@ public class PivotQuery {
 			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 				for(SqlResultSetRow row : results.getRows()) {
 					Bucket bucket = new Bucket();
+					bucket.setCategory(Dimension.TARGET, targetCategory);
                     for (Bundler bundler : bundlers) {
                         bundler.bundle(row, bucket);
                     }
                     buckets.add(bucket);
 				}
-                if(callback != null) {
-                	callback.onSuccess(new PivotResult(buckets));
-                }
+				finish();
 			}
 		});    
     }
+
+	public void finish() {
+		if (callback != null) {
+			callback.onSuccess(new PivotResult(buckets));
+		}
+	}
 
 	private void addEntityDimension(Dimension dimension, String id, String label) {
 		String idAlias = appendDimColumn(id);
@@ -355,13 +399,13 @@ public class PivotQuery {
             if (type == DimensionType.Indicator) {
             	query.where("Indicator.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator));
             } else if (type == DimensionType.Activity) {
-            	query.where("Site.ActivityId").in(filter.getRestrictions(DimensionType.Activity));
+				query.where("Activity.ActivityId").in(filter.getRestrictions(DimensionType.Activity));
             } else if (type == DimensionType.Database) {
             	query.where("Activity.DatabaseId").in(filter.getRestrictions(DimensionType.Database));
             } else if (type == DimensionType.Partner) {
-            	query.where("Site.PartnerId").in(filter.getRestrictions(DimensionType.Partner));
+				query.where("Partner.PartnerId").in(filter.getRestrictions(DimensionType.Partner));
             } else if (type == DimensionType.Project) {
-            	query.where("Site.ProjectId").in(filter.getRestrictions(DimensionType.Project));
+				query.where("Project.ProjectId").in(filter.getRestrictions(DimensionType.Project));
             } else if (type == DimensionType.Location) {
             	query.where("Site.LocationId").in(filter.getRestrictions(DimensionType.Location));
             } else if (type == DimensionType.AdminLevel) {

@@ -35,13 +35,10 @@ import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
 @Modules({TestDatabaseModule.class})
@@ -55,7 +52,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private AdminDimension provinceDim;
     private AdminDimension territoireDim;
     private List<Bucket> buckets;
-    private Dimension projectDim = new Dimension(DimensionType.Project);
+    private final Dimension projectDim = new Dimension(DimensionType.Project);
     private Dimension partnerDim;
     private ValueType valueType = ValueType.INDICATOR;
 
@@ -69,99 +66,97 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
     }
 
+	@Test
+	public void testBasic() {
+		withIndicatorAsDimension();
+
+		execute();
+
+		assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
+	}
+
+	@Test
+	public void testTotalSiteCount() {
+		forTotalSiteCounts();
+
+		execute();
+
+		assertThat().thereIsOneBucketWithValue(8);
+	}
+
+	@Test
+	public void testYears() {
+		forTotalSiteCounts();
+		dimensions.add(new DateDimension(DateUnit.YEAR));
+
+		execute();
+
+		assertThat().forYear(2008).thereIsOneBucketWithValue(1);
+		assertThat().forYear(2009).thereIsOneBucketWithValue(4);
+	}
+
+	@Test
+	public void testSiteCountOnQuarters() {
+		forTotalSiteCounts();
+		dimensions.add(new DateDimension(DateUnit.QUARTER));
+
+		execute();
+
+		assertThat().forQuarter(2008, 4).thereIsOneBucketWithValue(1);
+		assertThat().forQuarter(2009, 1).thereIsOneBucketWithValue(4);
+	}
+
+	@Test
+	public void testMonths() {
+		forTotalSiteCounts();
+		dimensions.add(new DateDimension(DateUnit.MONTH));
+		filter.setDateRange(new DateUtilCalendarImpl().yearRange(2009));
+
+		execute();
+
+		assertThat().thereAre(3).buckets();
+	}
+
+	@Test
+	public void testIndicatorFilter() {
+		withIndicatorAsDimension();
+		filter.addRestriction(DimensionType.Database, 1);
+		filter.addRestriction(DimensionType.Activity, 1);
+		filter.addRestriction(DimensionType.Indicator, 1);
+		filter.addRestriction(DimensionType.Partner, 2);
+
+		execute();
+
+		assertThat().thereIsOneBucketWithValue(10000);
+	}
+
+	@Test
+	public void testAdminFilter() {
+		withIndicatorAsDimension();
+		filter.addRestriction(DimensionType.AdminLevel, 11);
+		filter.addRestriction(DimensionType.Indicator, 1);
+
+		execute();
+
+		assertThat().thereIsOneBucketWithValue(3600);
+	}
+
+	@Test
+	public void testPartnerPivot() {
+
+		withIndicatorAsDimension();
+		withPartnerAsDimension();
+		filter.addRestriction(DimensionType.Indicator, 1);
+
+		execute();
+
+		assertThat().thereAre(2).buckets();
+		assertThat().forPartner(1).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
+		assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
+	}
+
     @Test
-    public void testBasic() {
-        withIndicatorAsDimension();
-
-        execute();
-
-        assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
-    }
-    
-
-    @Test
-    public void testTotalSiteCount() {
-        forTotalSiteCounts();
-
-        execute();
-
-        assertThat().thereIsOneBucketWithValue(8);
-    }
-
-    @Test
-    public void testYears() {
-    	forTotalSiteCounts();
-    	dimensions.add(new DateDimension(DateUnit.YEAR));
-    	
-    	execute();
-    	
-    	assertThat().forYear(2008).thereIsOneBucketWithValue(1);
-    	assertThat().forYear(2009).thereIsOneBucketWithValue(4);
-    }
-    
-    @Test
-    public void testSiteCountOnQuarters () {
-    	forTotalSiteCounts();
-    	dimensions.add(new DateDimension(DateUnit.QUARTER));
-    	
-    	execute();
-    	
-    	assertThat().forQuarter(2008, 4).thereIsOneBucketWithValue(1);
-    	assertThat().forQuarter(2009, 1).thereIsOneBucketWithValue(4);
-    }
-    
-    @Test
-    public void testMonths() {
-    	forTotalSiteCounts();
-    	dimensions.add(new DateDimension(DateUnit.MONTH));
-    	filter.setDateRange( new DateUtilCalendarImpl().yearRange(2009));
-        	
-    	execute();
-    	
-    	assertThat().thereAre(3).buckets();
-    }
-
-
-    @Test
-    public void testIndicatorFilter() {
-        withIndicatorAsDimension();
-        filter.addRestriction(DimensionType.Database, 1);
-        filter.addRestriction(DimensionType.Activity, 1);
-        filter.addRestriction(DimensionType.Indicator, 1);
-        filter.addRestriction(DimensionType.Partner, 2);
-
-        execute();
-
-        assertThat().thereIsOneBucketWithValue(10000);
-    }
-
-    @Test
-    public void testAdminFilter() {
-        withIndicatorAsDimension();
-        filter.addRestriction(DimensionType.AdminLevel, 11);
-        filter.addRestriction(DimensionType.Indicator, 1);
-
-        execute();
-
-        assertThat().thereIsOneBucketWithValue(3600);
-    }
-
-    @Test
-    public void testPartnerPivot() {
-
-        withIndicatorAsDimension();
-        withPartnerAsDimension();
-        filter.addRestriction(DimensionType.Indicator, 1);
-
-        execute();
-
-        assertThat().thereAre(2).buckets();
-        assertThat().forPartner(1).thereIsOneBucketWithValue(5100).andItsPartnerLabelIs("NRC");
-        assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
-    }
-
-    @Ignore("TODO")
-    @Test
+	@OnDataSet("/dbunit/sites-simple-target.db.xml")
     public void testTargetPivot() {
 
         withIndicatorAsDimension();
@@ -175,181 +170,171 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
 
     
-    @Test
-    public void testAttributePivot() {
-        withIndicatorAsDimension();
-        withAttributeGroupDim(1);
+	@Test
+	public void testAttributePivot() {
+		withIndicatorAsDimension();
+		withAttributeGroupDim(1);
 
-        filter.addRestriction(DimensionType.Indicator, 1);
+		filter.addRestriction(DimensionType.Indicator, 1);
 
-        execute();
+		execute();
 
-        assertThat().thereAre(3).buckets();
+		assertThat().thereAre(3).buckets();
 
-        assertThat().forAttributeGroupLabeled(1, "Deplacement")
-                        .thereIsOneBucketWithValue(3600);
+		assertThat().forAttributeGroupLabeled(1, "Deplacement").thereIsOneBucketWithValue(3600);
 
-        assertThat().forAttributeGroupLabeled(1, "Catastrophe Naturelle")
-                        .thereIsOneBucketWithValue(10000);
-    }
+		assertThat().forAttributeGroupLabeled(1, "Catastrophe Naturelle").thereIsOneBucketWithValue(10000);
+	}
 
-    
-    @Test
-    public void testAdminPivot() {
-        withIndicatorAsDimension();
-        withAdminDimension(provinceDim);
-        withAdminDimension(territoireDim);
-        filter.addRestriction(DimensionType.Indicator, 1);
+	@Test
+	public void testAdminPivot() {
+		withIndicatorAsDimension();
+		withAdminDimension(provinceDim);
+		withAdminDimension(territoireDim);
+		filter.addRestriction(DimensionType.Indicator, 1);
 
-        execute();
+		execute();
 
-        assertThat().thereAre(3).buckets();
-        assertThat().forProvince(2).thereAre(2).buckets();
-        assertThat().forProvince(2).forTerritoire(11).thereIsOneBucketWithValue(3600)
-                .with(provinceDim).label("Sud Kivu")
-                .with(territoireDim).label("Walungu");
-        assertThat().forProvince(4).thereIsOneBucketWithValue(10000);
-    }
+		assertThat().thereAre(3).buckets();
+		assertThat().forProvince(2).thereAre(2).buckets();
+		assertThat().forProvince(2).forTerritoire(11).thereIsOneBucketWithValue(3600).with(provinceDim)
+				.label("Sud Kivu").with(territoireDim).label("Walungu");
+		assertThat().forProvince(4).thereIsOneBucketWithValue(10000);
+	}
 
+	@Test
+	public void testSiteCount() {
 
-    @Test
-    public void testSiteCount() {
+		withIndicatorAsDimension();
+		filter.addRestriction(DimensionType.Indicator, 103);
 
-        withIndicatorAsDimension();
-        filter.addRestriction(DimensionType.Indicator, 103);
+		execute();
 
-        execute();
+		int expectedCount = 1;
+		assertBucketCount(expectedCount);
+		assertEquals(3, (int) buckets.get(0).doubleValue());
 
-        int expectedCount = 1;
-        assertBucketCount(expectedCount);
-        assertEquals(3, (int) buckets.get(0).doubleValue());
+	}
 
-    }
-    
-    
-    @Test
-    public void projects() {
-    	
-    	withIndicatorAsDimension();
-    	withProjectAsDimension();
-    	filter.addRestriction(DimensionType.Database, 1);
-    	filter.addRestriction(DimensionType.Indicator, 1);
-    	
-    	execute();
-    	
-    	assertBucketCount(2);
-    	assertThat().forProject(1).thereIsOneBucketWithValue(5100);
-    	assertThat().forProject(2).thereIsOneBucketWithValue(10000);
-  
-    }
-    
-    @Test
-    public void projectFilters() {
-    	
-    	withIndicatorAsDimension();
-    	withProjectAsDimension();
-    	
-    	filter.addRestriction(DimensionType.Database, 1);
-    	filter.addRestriction(DimensionType.Project, 1);
-    	
-    	execute();
-    	
-    	assertBucketCount(4);
-    	
-    	assertThat().forIndicator(1).thereIsOneBucketWithValue(5100);
-    	assertThat().forIndicator(2).thereIsOneBucketWithValue(1700);
-    	assertThat().forIndicator(103).thereIsOneBucketWithValue(2);
-    }
-    
+	@Test
+	public void projects() {
 
-    private void assertBucketCount(int expectedCount) {
-        assertEquals(expectedCount, buckets.size());
-    }
+		withIndicatorAsDimension();
+		withProjectAsDimension();
+		filter.addRestriction(DimensionType.Database, 1);
+		filter.addRestriction(DimensionType.Indicator, 1);
 
-    @Test
-    public void testIndicatorOrder() {
+		execute();
 
-        withIndicatorAsDimension();
+		assertBucketCount(2);
+		assertThat().forProject(1).thereIsOneBucketWithValue(5100);
+		assertThat().forProject(2).thereIsOneBucketWithValue(10000);
 
-        filter.addRestriction(DimensionType.Indicator, 1);
-        filter.addRestriction(DimensionType.Indicator, 2);
+	}
 
-        execute();
-       
+	@Test
+	public void projectFilters() {
 
-        assertEquals(2, buckets.size());
+		withIndicatorAsDimension();
+		withProjectAsDimension();
 
-        Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(1)).get(0);
-        Bucket indicator2 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(2)).get(0);
+		filter.addRestriction(DimensionType.Database, 1);
+		filter.addRestriction(DimensionType.Project, 1);
 
-        EntityCategory cat1 = (EntityCategory) indicator1.getCategory(indicatorDim);
-        EntityCategory cat2 = (EntityCategory) indicator2.getCategory(indicatorDim);
+		execute();
 
-        assertEquals(2, cat1.getSortOrder().intValue());
-        assertEquals(OWNER_USER_ID, cat2.getSortOrder().intValue());
+		assertBucketCount(4);
 
-    }
+		assertThat().forIndicator(1).thereIsOneBucketWithValue(5100);
+		assertThat().forIndicator(2).thereIsOneBucketWithValue(1700);
+		assertThat().forIndicator(103).thereIsOneBucketWithValue(2);
+	}
 
-    @Test
-    @OnDataSet("/dbunit/sites-deleted.db.xml")
-    public void testDeletedNotIncluded() {
+	private void assertBucketCount(int expectedCount) {
+		assertEquals(expectedCount, buckets.size());
+	}
 
-        withIndicatorAsDimension();
+	@Test
+	public void testIndicatorOrder() {
 
-        execute();
-        
-        assertEquals(1, buckets.size());
-        assertEquals(13600, (int) buckets.get(0).doubleValue());
+		withIndicatorAsDimension();
 
-    }
+		filter.addRestriction(DimensionType.Indicator, 1);
+		filter.addRestriction(DimensionType.Indicator, 2);
 
+		execute();
 
-    @Test
-    @OnDataSet("/dbunit/sites-zeros.db.xml")
-    public void testZerosExcluded() {
+		assertEquals(2, buckets.size());
 
-        withIndicatorAsDimension();
+		Bucket indicator1 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(1)).get(0);
+		Bucket indicator2 = findBucketsByCategory(buckets, indicatorDim, new EntityCategory(2)).get(0);
 
-        execute();
-        
-        assertEquals(1, buckets.size());
-        assertEquals(0, (int) buckets.get(0).doubleValue());
-        assertEquals(5, ((EntityCategory) buckets.get(0).getCategory(this.indicatorDim)).getId());
-    }
-    
-    @Test
-    @OnDataSet("/dbunit/sites-weeks.db.xml")
-    public void testWeeks() {
+		EntityCategory cat1 = (EntityCategory) indicator1.getCategory(indicatorDim);
+		EntityCategory cat2 = (EntityCategory) indicator2.getCategory(indicatorDim);
 
-        final Dimension weekDim = new DateDimension(DateUnit.WEEK_MON);
-        dimensions.add(weekDim);
-        
-        execute();
-        
-        assertEquals(3, buckets.size());
-        assertEquals(3600, (int)findBucketByWeek(buckets, 2011, 52).doubleValue());
-        assertEquals(1500, (int)findBucketByWeek(buckets, 2012, 1).doubleValue());
-        assertEquals(4142, (int)findBucketByWeek(buckets, 2012, 13).doubleValue());
-        
-    }
+		assertEquals(2, cat1.getSortOrder().intValue());
+		assertEquals(OWNER_USER_ID, cat2.getSortOrder().intValue());
 
+	}
 
-    @Test
-    @OnDataSet("/dbunit/sites-quarters.db.xml")
-    public void testQuarters() {
+	@Test
+	@OnDataSet("/dbunit/sites-deleted.db.xml")
+	public void testDeletedNotIncluded() {
 
-        final Dimension quarterDim = new DateDimension(DateUnit.QUARTER);
-        dimensions.add(quarterDim);
+		withIndicatorAsDimension();
 
-        Filter filter = new Filter();
+		execute();
 
-        execute();
-        
-        assertEquals(3, buckets.size());
-        assertEquals(1500, (int)findBucketByQuarter(buckets, 2009, 1).doubleValue());
-        assertEquals(3600, (int)findBucketByQuarter(buckets, 2009, 2).doubleValue());
-        assertEquals(10000, (int)findBucketByQuarter(buckets, 2008, 4).doubleValue());
-    }
+		assertEquals(1, buckets.size());
+		assertEquals(13600, (int) buckets.get(0).doubleValue());
+
+	}
+
+	@Test
+	@OnDataSet("/dbunit/sites-zeros.db.xml")
+	public void testZerosExcluded() {
+
+		withIndicatorAsDimension();
+
+		execute();
+
+		assertEquals(1, buckets.size());
+		assertEquals(0, (int) buckets.get(0).doubleValue());
+		assertEquals(5, ((EntityCategory) buckets.get(0).getCategory(this.indicatorDim)).getId());
+	}
+
+	@Test
+	@OnDataSet("/dbunit/sites-weeks.db.xml")
+	public void testWeeks() {
+
+		final Dimension weekDim = new DateDimension(DateUnit.WEEK_MON);
+		dimensions.add(weekDim);
+
+		execute();
+
+		assertEquals(3, buckets.size());
+		assertEquals(3600, (int) findBucketByWeek(buckets, 2011, 52).doubleValue());
+		assertEquals(1500, (int) findBucketByWeek(buckets, 2012, 1).doubleValue());
+		assertEquals(4142, (int) findBucketByWeek(buckets, 2012, 13).doubleValue());
+
+	}
+
+	@Test
+	@OnDataSet("/dbunit/sites-quarters.db.xml")
+	public void testQuarters() {
+
+		final Dimension quarterDim = new DateDimension(DateUnit.QUARTER);
+		dimensions.add(quarterDim);
+
+		Filter filter = new Filter();
+
+		execute();
+
+		assertEquals(3, buckets.size());
+		assertEquals(1500, (int) findBucketByQuarter(buckets, 2009, 1).doubleValue());
+		assertEquals(3600, (int) findBucketByQuarter(buckets, 2009, 2).doubleValue());
+		assertEquals(10000, (int) findBucketByQuarter(buckets, 2008, 4).doubleValue());
+	}
 
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets, Dimension dim, DimensionCategory cat) {
         List<Bucket> matching = new ArrayList<Bucket>();
@@ -466,7 +451,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         public AssertionBuilder forQuarter(int year, int quarter) {
         	criteria.append(" in quarter ").append(year)
         			.append("Q").append(quarter).append(" ");
-        	filter(new DateDimension(DateUnit.QUARTER), year + "T" + quarter);
+			filter(new DateDimension(DateUnit.QUARTER), year + "Q" + quarter);
         	return this;
 		}
 

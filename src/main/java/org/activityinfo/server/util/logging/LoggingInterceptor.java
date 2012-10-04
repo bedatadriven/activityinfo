@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 
-import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.mail.MailSender;
+import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

@@ -6,6 +6,7 @@ import java.util.List;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.common.columns.TimePeriodColumn;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
@@ -16,7 +17,6 @@ import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.form.TargetForm;
 import org.activityinfo.shared.dto.TargetDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.client.i18n.UIConstants;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -40,7 +40,7 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 	private Grid<TargetDTO> grid;
 	private ListStore<TargetDTO> store;
 	private ContentPanel targetValueContainer;
-	private AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this,I18N.CONSTANTS.loading());
+	private final AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this,I18N.CONSTANTS.loading());
 	
 	@Inject
 	public DbTargetGrid(UIConstants messages, IconImageBundle icons) {
@@ -68,7 +68,6 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
 		columns.add(new ColumnConfig("name", messages.name(), 150));
 		columns.add(new ColumnConfig("project", messages.project(), 150));
 		columns.add(new ColumnConfig("partner", messages.partner(), 150));
-		columns.add(new ColumnConfig("area", messages.area(), 150));
 		columns.add(new TimePeriodColumn("timePeriod", messages.timePeriod(), 300));
 		
 		return new ColumnModel(columns);

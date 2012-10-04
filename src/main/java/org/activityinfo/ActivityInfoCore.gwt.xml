@@ -26,7 +26,7 @@
     <inherits name="com.bedatadriven.rebar.Time"/>
     
     <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
-    
+
     <set-property name="gwt.logging.popupHandler" value="DISABLED" />
     
 

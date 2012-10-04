@@ -21,7 +21,7 @@ public class HibernateExecutor extends JdbcExecutor {
 	private final HibernateEntityManager entityManager;
 	
 	private final static Logger LOGGER = Logger.getLogger(HibernateExecutor.class.getName());
-	
+
 	public HibernateExecutor(HibernateEntityManager entityManager) {
 		super();
 		this.entityManager = entityManager;
@@ -36,7 +36,6 @@ public class HibernateExecutor extends JdbcExecutor {
 			@Override
 			public void execute(Connection connection) throws SQLException {
 				try {
-					
 					if(LOGGER.isLoggable(Level.FINEST)) {
 						LOGGER.finest("Starting query: " + format(statement));
 					}
@@ -79,5 +78,4 @@ public class HibernateExecutor extends JdbcExecutor {
 	private String format(final String statement) {
 		return FormatStyle.BASIC.getFormatter().format(statement);
 	}
-
 }

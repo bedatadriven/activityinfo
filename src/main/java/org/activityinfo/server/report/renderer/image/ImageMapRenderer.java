@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
@@ -21,20 +23,12 @@ import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.GoogleBaseMap;
 import org.activityinfo.shared.map.TileBaseMap;
 import org.activityinfo.shared.report.content.AiLatLng;
-import org.activityinfo.shared.report.content.BubbleLayerLegend;
 import org.activityinfo.shared.report.content.BubbleMapMarker;
-import org.activityinfo.shared.report.content.IconLayerLegend;
 import org.activityinfo.shared.report.content.IconMapMarker;
-import org.activityinfo.shared.report.content.MapLayerLegend;
 import org.activityinfo.shared.report.content.MapMarker;
-import org.activityinfo.shared.report.content.PieChartLegend;
 import org.activityinfo.shared.report.content.PieMapMarker;
 import org.activityinfo.shared.report.model.MapReportElement;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.google.appengine.api.log.LogService.LogLevel;
 import com.google.code.appengine.awt.BasicStroke;
 import com.google.code.appengine.awt.Color;
 import com.google.code.appengine.awt.Graphics2D;

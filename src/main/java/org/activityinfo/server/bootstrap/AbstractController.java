@@ -188,7 +188,6 @@ public class AbstractController extends HttpServlet {
             	throw new InvalidKeyException();
             }
             return user;
-            
         } catch (NoResultException e) {
             throw new InvalidKeyException();
         }

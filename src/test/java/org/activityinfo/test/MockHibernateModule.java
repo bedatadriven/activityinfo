@@ -24,7 +24,6 @@ import com.google.inject.Singleton;
 public class MockHibernateModule extends AbstractModule {
     private static EntityManagerFactory emf = null;
 
-
 	@Override
 	protected void configure() {
 		
@@ -49,18 +48,16 @@ public class MockHibernateModule extends AbstractModule {
                 	Ejb3Configuration config = new Ejb3Configuration();
                 	config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
                 	config.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-                	config.setProperty("hibernate.connection.url",  TestConnectionProvider.getUrl());
-                	config.setProperty("hibernate.connection.username", TestConnectionProvider.getUsername());
-                	config.setProperty("hibernate.connection.password", TestConnectionProvider.getPassword());
+                	config.setProperty("hibernate.connection.url",  TestConnectionProvider.URL);
+                	config.setProperty("hibernate.connection.username", TestConnectionProvider.USERNAME);
+                	config.setProperty("hibernate.connection.password", TestConnectionProvider.PASSWORD);
                 	config.setProperty("hibernate.hbm2ddl.auto", "none");
-                	config.setProperty("hibernate.ejb.naming_strategy", AINamingStrategy.class.getName());
                 	config.setNamingStrategy(new AINamingStrategy());
                 	for(Class clazz : HibernateModule.getPersistentClasses()) {
                 		config.addAnnotatedClass(clazz);
                 	}
                 	
                 	emf = config.buildEntityManagerFactory();
-                	
                 	
                     System.err.println("GUICE: EntityManagerFACTORY created");
                 }

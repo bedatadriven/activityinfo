@@ -40,17 +40,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class DimensionTree implements HasReportElement<PivotTableReportElement> {
 
-	private Dispatcher dispatcher;
-	private ReportEventHelper events;
+	private final Dispatcher dispatcher;
+	private final ReportEventHelper events;
 	
-	private TreeStore<DimensionModel> store;
-	private TreePanel<DimensionModel> treePanel;
+	private final TreeStore<DimensionModel> store;
+	private final TreePanel<DimensionModel> treePanel;
 
 	private Set<Integer> previouslyLoaded = Collections.emptySet();
 	
 	private PivotTableReportElement model;
 	private DimensionModel geographyRoot;
-	private List<DimensionModel> attributeDimensions = Lists.newArrayList();
+	private final List<DimensionModel> attributeDimensions = Lists.newArrayList();
 
 	
 	public DimensionTree(EventBus eventBus, Dispatcher dispatcher) {
@@ -68,6 +68,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 		addDimension(DimensionType.Database, I18N.CONSTANTS.database());
 		addDimension(DimensionType.Activity, I18N.CONSTANTS.activity());
 		addDimension(DimensionType.Indicator, I18N.CONSTANTS.indicator());
+		addDimension(DimensionType.Target, I18N.CONSTANTS.realizedOrTargeted());
 		addDimension(DimensionType.Partner, I18N.CONSTANTS.partner());
 		addDimension(DimensionType.Project, I18N.CONSTANTS.project());
 		addTimeDimensions();		

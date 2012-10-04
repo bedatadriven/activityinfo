@@ -32,30 +32,30 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
     }
 
 	@Override
-	public void execute(PivotSites command, ExecutionContext context,
-			AsyncCallback<PivotResult> callback) {
+	public void execute(PivotSites command, ExecutionContext context, AsyncCallback<PivotResult> callback) {
 
         final List<Bucket> buckets = new ArrayList<Bucket>();
         
-        
-        if(command.getValueType() == ValueType.INDICATOR) {
+		if (command.getValueType() == ValueType.INDICATOR) {
+			new PivotQuery(context.getTransaction(), dialect, command, context.getUser().getId())
+					.addTo(buckets)
+					.queryForTargetValues();
 	        
-	        // first step
 	        new PivotQuery(context.getTransaction(), dialect, command, context.getUser().getId())
-	        	.addTo(buckets)
-	        	.queryForSumAndAverages();
+					.addTo(buckets)
+					.queryForSumAndAverages();
 	        
-	        // second step
 	        new PivotQuery(context.getTransaction(), dialect, command, context.getUser().getId())
-	        	.addTo(buckets)
-	        	.callbackTo( callback )
-	        	.queryForSiteCountIndicators();
+					.addTo(buckets)
+					.callbackTo(callback)
+					.queryForSiteCountIndicators();
+
+
         } else {
-        	
 	        new PivotQuery(context.getTransaction(), dialect, command, context.getUser().getId())
-        	.addTo(buckets)
-        	.callbackTo( callback )
-        	.queryForTotalSiteCounts();
+					.addTo(buckets)
+					.callbackTo(callback)
+					.queryForTotalSiteCounts();
         }
 	}
 }

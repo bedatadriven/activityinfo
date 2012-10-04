@@ -24,6 +24,8 @@ import org.activityinfo.shared.report.model.typeadapter.DimensionAdapter;
 @XmlJavaTypeAdapter(DimensionAdapter.class)
 public class Dimension implements Serializable {
 
+	public static final Dimension TARGET = new Dimension(DimensionType.Target);
+
     private DimensionType type;
     private String color;
 

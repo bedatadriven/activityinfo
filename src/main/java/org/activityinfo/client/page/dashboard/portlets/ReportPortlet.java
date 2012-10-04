@@ -15,6 +15,7 @@ import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.GetReportModel;
 import org.activityinfo.shared.command.UpdateReportSubscription;
 import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.dto.ReportDTO;
 import org.activityinfo.shared.dto.ReportMetadataDTO;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.model.MapReportElement;
@@ -36,14 +37,13 @@ import com.extjs.gxt.ui.client.widget.custom.Portlet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.dom.client.MapElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ReportPortlet extends Portlet {
 
 	private final Dispatcher dispatcher;
 	private final ReportMetadataDTO metadata;
-	private EventBus eventBus;
+	private final EventBus eventBus;
 
 	public ReportPortlet(Dispatcher dispatcher, EventBus eventBus, ReportMetadataDTO report) {
 		this.dispatcher = dispatcher;
@@ -112,7 +112,7 @@ public class ReportPortlet extends Portlet {
 
 
 	private void loadModel() {
-		dispatcher.execute(new GetReportModel(metadata.getId()), new AsyncCallback<Report>() {
+		dispatcher.execute(new GetReportModel(metadata.getId()), new AsyncCallback<ReportDTO>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -121,19 +121,20 @@ public class ReportPortlet extends Portlet {
 			}
 
 			@Override
-			public void onSuccess(Report result) {
-				onModelLoad(result);
+			public void onSuccess(ReportDTO dto) {
+				onModelLoad(dto);
 			}
 		});
 	}
 
-	private void onModelLoad(Report result) {
-		if(result.getElements().isEmpty()) {
+	private void onModelLoad(ReportDTO dto) {
+		Report report = dto.getReport();
+		if (report.getElements().isEmpty()) {
 			removeAll();
 			add(new Label("The report is empty"));
 			return;
 		}
-		final ReportElement element = result.getElement(0);
+		final ReportElement element = report.getElement(0);
 		final ReportView view = createView(element);
 		
 		if(view == null) {
