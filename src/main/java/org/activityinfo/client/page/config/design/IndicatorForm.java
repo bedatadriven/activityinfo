@@ -6,16 +6,13 @@
 package org.activityinfo.client.page.config.design;
 
 
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.widget.MappingComboBox;
 import org.activityinfo.client.widget.MappingComboBoxBinding;
 import org.activityinfo.shared.dto.IndicatorDTO;
-import org.activityinfo.client.i18n.UIConstants;
 
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -44,14 +41,13 @@ class IndicatorForm extends AbstractDesignForm {
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(constants.name());
         nameField.setAllowBlank(false);
-        nameField.setMaxLength(IndicatorDTO.NAME_MAX_LENGTH);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
 
         TextField<String> categoryField = new TextField<String>();
         categoryField.setName("category");
         categoryField.setFieldLabel(constants.category());
-        categoryField.setMaxLength(IndicatorDTO.NAME_MAX_LENGTH);
+        categoryField.setMaxLength(IndicatorDTO.MAX_CATEGORY_LENGTH);
         binding.addFieldBinding(new FieldBinding(categoryField, "category"));
         this.add(categoryField);
 

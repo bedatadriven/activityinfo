@@ -5,7 +5,6 @@
 
 package	org.activityinfo.shared.dto;
 
-import java.util.List;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
@@ -21,9 +20,9 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 
     public static final String PROPERTY_PREFIX = "I";
     
-	public static final int NAME_MAX_LENGTH = 128;
 	public static final int UNITS_MAX_LENGTH = 15;
 	public static final int MAX_LIST_HEADER_LENGTH = 29;
+	public static final int MAX_CATEGORY_LENGTH = 50;
     
     private IndicatorLinkDTO indicatorLinks; 
 	
