@@ -8,6 +8,7 @@ package org.activityinfo.server.report.renderer.itext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
@@ -107,8 +108,13 @@ public class RtfReportRenderer extends ItextReportRenderer {
 		@Override
 		public void addImage(String imageUrl, int x, int y, int width,
 				int height) {
-			// TODO Auto-generated method stub
-			
+			BufferedImage img;
+			try {
+				img = ImageIO.read(new URL(imageUrl));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			g2d.drawImage(img, x, y, null);
 		}
 	}
 }
