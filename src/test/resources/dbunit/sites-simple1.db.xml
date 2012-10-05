@@ -276,7 +276,8 @@
 
 	<site siteId="1" activityId="1" locationId="1" partnerId="1"
 		Date1="2009-01-01" Date2="2009-01-02"
-		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3" ProjectId="1" />
+		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3" ProjectId="1"
+		Comments="He said 'booyah'" />
 	<attributeValue siteId="1" attributeId="1" value="0" />
 	<attributeValue siteId="1" attributeId="2" value="0" />
 

@@ -13,9 +13,21 @@ enum ColumnAppender {
 	STRING {
 		@Override
 		void append(StringBuilder sb, ResultSet rs, int column) throws SQLException {
-			sb.append('"')
-				.append(rs.getString(column))
-				.append('"');
+			String value = rs.getString(column);
+			if(value == null) {
+				sb.append("NULL");
+			} else {
+				sb.append('\'');
+				for(int i=0;i!=value.length();++i) {
+					int cp = value.codePointAt(i);
+					if(cp == '\'') {
+						sb.append('\'').append('\'');
+					} else {
+						sb.appendCodePoint(cp);
+					}
+				}
+				sb.append('\'');
+			}
 		}			
 	},
 	INTEGER {

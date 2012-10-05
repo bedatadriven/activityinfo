@@ -5,33 +5,24 @@
 
 package org.activityinfo.server.command.handler.sync;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.EntityManager;
 
 import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
+import org.activityinfo.shared.db.Tables;
 import org.json.JSONException;
 
-import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
+import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.inject.Inject;
 
 public class LocationUpdateBuilder implements UpdateBuilder {
     private static final String REGION_PREFIX = "location/";
 
-	public static final int MAX_UPDATES = 500;
-
     private final EntityManager em;
-    private List<Location> locations;
-    private Set<Integer> locationIds = new HashSet<Integer>();
-
 	private LocalState localState;
-
-	private JpaUpdateBuilder builder = new JpaUpdateBuilder();
+	private SqliteBatchBuilder batch;
 
 	private int typeId;
     
@@ -41,18 +32,21 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     }
 
     @Override
-    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
+    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws Exception {
 
     	typeId = parseTypeId(request);
         localState = new LocalState(request.getLocalVersion());
+        batch = new SqliteBatchBuilder();
 
-        queryChanged();
-        createAndUpdateLocations();
-        linkAdminEntities();
+        long latestVersion = queryLatestVersion();
+        if(latestVersion > localState.lastDate) {
+	        queryChanged();
+	        linkAdminEntities();
+        }
                 
         SyncRegionUpdate update = new SyncRegionUpdate();
-        update.setVersion(locations.isEmpty() ? request.getLocalVersion() : lastVersion());
-        update.setSql(builder.asJson());
+        update.setVersion(Long.toString(latestVersion));
+        update.setSql(batch.build());
         update.setComplete(true);
         return update;
     }
@@ -66,57 +60,50 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 	}
 
 	private void queryChanged() {
-		locations = em.createQuery("select loc from Location loc where loc.timeEdited > :localDate " +
-                        " and locationType.id = :typeId")
-                .setParameter("typeId", typeId)
-                .setParameter("localDate", localState.lastDate)
-                .getResultList();
+		
+		SqlQuery query = SqlQuery.select()
+				.appendColumn("LocationId")
+				.appendColumn("Name")
+				.appendColumn("X")
+				.appendColumn("Y")
+				.appendColumn("LocationTypeId")
+				.from(Tables.LOCATION)
+				.where("locationTypeId").equalTo(typeId)
+				.where("timeEdited").greaterThan(localState.lastDate);
+		
+		batch.insert()
+			.into(Tables.LOCATION)
+			.from(query)
+			.execute(em);
 	}
 
-	private void createAndUpdateLocations() throws JSONException {
-		
-		for(Location location : locations) {
-			locationIds.add(location.getId());
-		}
-		
-        builder.insert("or replace", Location.class, locations);
-	}
 	
 	private void linkAdminEntities() throws JSONException { 
 
-		if(!locations.isEmpty()) {
-			builder.beginPreparedStatement("delete from LocationAdminLink where LocationId = ?");
-			for(Location updateLoc : locations) {
-				builder.addExecution(updateLoc.getId());
-			}
-			builder.finishPreparedStatement();
-
-			List<Object[]> joins = em.createQuery("SELECT loc.id, e.id FROM Location loc " +
-					"JOIN loc.adminEntities e WHERE loc.id IN " +
-					" (select loc.id from Location loc where loc.timeEdited > :localDate " +
-                        " and locationType.id = :typeId)")
-            .setParameter("typeId", typeId)
-            .setParameter("localDate", localState.lastDate)
-			.getResultList();
-
-			if(!joins.isEmpty()) {
-				builder.beginPreparedStatement("insert into LocationAdminLink (LocationId, AdminEntityId) values (?, ?)");
-				for(Object[] join : joins) {
-					builder.addExecution(join[0], join[1]);
-				}
-				builder.finishPreparedStatement();
-			}
-		}
+		SqlQuery query = SqlQuery.select()
+				.appendColumn("K.AdminEntityId")
+				.appendColumn("K.LocationId")
+				.from(Tables.LOCATION, "L")
+				.innerJoin(Tables.LOCATION_ADMIN_LINK, "K").on("L.LocationId=K.LocationId")
+				.where("L.locationTypeId").equalTo(typeId)
+				.where("L.timeEdited").greaterThan(localState.lastDate);
+		
+		batch.insert()
+			.into(Tables.LOCATION_ADMIN_LINK)
+			.from(query)
+			.execute(em);
 	}
 	
-    private String lastVersion() {
-        if(locations.isEmpty()) {
-            return "0";
-        }
 
-        return new LocalState(locations.get(locations.size()-1)).toVersionString();
-    }
-
+	private long queryLatestVersion() throws JSONException { 
+		SqlQuery query = SqlQuery.select()
+				.appendColumn("MAX(timeEdited)", "latest")
+				.from(Tables.LOCATION)
+				.where("locationTypeId").equalTo(typeId)
+				.where("timeEdited").greaterThan(localState.lastDate);
+		
+		return SqlQueryUtil.queryLong(em, query);
+	}
 
     private class LocalState {
         private long lastDate;

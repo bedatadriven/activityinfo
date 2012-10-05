@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import javax.persistence.EntityManager;
 
@@ -15,7 +14,6 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 
 public class SqliteInsertBuilder {
 
-	private HibernateEntityManager entityManager;
 	private StringBuilder sql;
 	private String tableName;
 	private StringBuilder insert;
@@ -60,7 +58,7 @@ public class SqliteInsertBuilder {
 	
 	private void composeInsertStatement() throws SQLException {
 		insert = new StringBuilder();
-		insert.append("INSERT INTO ").append(tableName).append(" (");
+		insert.append("INSERT OR REPLACE INTO ").append(tableName).append(" (");
 		for(int i=0;i!=numColumns;++i) {
 			if(i > 0) {
 				insert.append(",");
