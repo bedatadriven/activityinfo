@@ -13,7 +13,7 @@
   	<include path="/ActivityInfo/**.js" expiration="365d"/>
   	<include path="/ActivityInfo/**.css" expiration="365d"/>
     <include path="/ActivityInfo/**.cache.html" expiration="365d"/>
-    <include path="/ActivityInfo/**.nocache.html" expiration="0s"/>
+    <include path="/**.nocache.html" expiration="0s"/>
   </static-files>
   
   <sessions-enabled>false</sessions-enabled>
