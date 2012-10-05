@@ -5,6 +5,9 @@
 
 package org.activityinfo.server.command.handler;
 
+import java.util.logging.Logger;
+
+import org.activityinfo.client.Log;
 import org.activityinfo.server.command.handler.sync.AdminUpdateBuilder;
 import org.activityinfo.server.command.handler.sync.LocationUpdateBuilder;
 import org.activityinfo.server.command.handler.sync.SchemaUpdateBuilder;
@@ -22,6 +25,8 @@ import com.google.inject.Injector;
 
 public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegionUpdates> {
 
+	private static final Logger LOGGER = Logger.getLogger(GetSyncRegionsHandler.class.getName());
+	
     private final Injector injector;
 
     @Inject
@@ -32,6 +37,8 @@ public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegion
     @Override
     public CommandResult execute(GetSyncRegionUpdates cmd, User user) throws CommandException {
 
+    	Log.info("Fetching updates for " + cmd.getRegionId() + ", localVersion = " + cmd.getLocalVersion());
+    	
         UpdateBuilder builder;
 
         if(cmd.getRegionId().equals("schema")) {
