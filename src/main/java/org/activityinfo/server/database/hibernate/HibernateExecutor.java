@@ -6,14 +6,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 import org.hibernate.jdbc.util.FormatStyle;
-import org.hibernate.jdbc.util.SQLStatementLogger;
 
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcExecutor;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 public class HibernateExecutor extends JdbcExecutor {
 
@@ -22,6 +24,11 @@ public class HibernateExecutor extends JdbcExecutor {
 	
 	private final static Logger LOGGER = Logger.getLogger(HibernateExecutor.class.getName());
 
+	@Inject
+	public HibernateExecutor(EntityManager em) {
+		this.entityManager = (HibernateEntityManager) em;
+	}
+	
 	public HibernateExecutor(HibernateEntityManager entityManager) {
 		super();
 		this.entityManager = entityManager;

@@ -48,7 +48,7 @@ public class SiteUpdateBuilderTest {
 
     @Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
-    public void subsequentCallsAreUpToDate() throws JSONException {
+    public void subsequentCallsAreUpToDate() throws Exception {
 
         User user = new User();
         user.setId(1);

@@ -8,10 +8,9 @@ package org.activityinfo.server.command.handler.sync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
-import org.json.JSONException;
 
 public interface UpdateBuilder {
 
-    SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException;
+    SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws Exception;
 
 }

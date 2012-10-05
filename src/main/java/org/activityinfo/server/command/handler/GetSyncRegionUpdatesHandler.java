@@ -62,7 +62,7 @@ public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegion
 
         try {
             return builder.build(user, cmd);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
