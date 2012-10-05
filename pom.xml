@@ -462,7 +462,6 @@
 
 							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
 							<logLevel>INFO</logLevel>
-							<style>PRETTY</style>
 							<compileReport>true</compileReport>
 							<modules>
 								<module>org.activityinfo.ActivityInfoProduction</module>
@@ -731,6 +730,9 @@
 	<profiles>
 	<profile>
 			<id>ci</id>
+			<properties>
+				<display.version>2.7-b${BUILD_NUMBER}</display.version>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>

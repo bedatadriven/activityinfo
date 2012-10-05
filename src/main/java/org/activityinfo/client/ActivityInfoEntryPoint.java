@@ -78,8 +78,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         Log.info("Application: everyone plugged, firing Init event");
 
         injector.getEventBus().fireEvent(AppEvents.INIT);
-        
-        new MetricsCollector();
 	}
 
 	protected void createCaches(AppInjector injector) {
