@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Calendar;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 
@@ -35,26 +34,38 @@ enum ColumnAppender {
 		@Override
 		void append(StringBuilder sb, ResultSet rs, int column)
 				throws SQLException {
-			sb.append(rs.getString(column));
+			int value = rs.getInt(column);
+			if(rs.wasNull()) {
+				sb.append("NULL");
+			} else {
+				sb.append(value);
+			}
 		}
 	},
 	DATE {
 		@Override
 		void append(StringBuilder sb, ResultSet rs, int column)
 				throws SQLException {
-			LocalDate date = new LocalDate(rs.getDate(column));
-			
-			sb.append('\'').append(date.toString()).append('\'');
+			Date date = rs.getDate(column);
+			if(date == null) {
+				sb.append("NULL");
+			} else { 
+				LocalDate localDate = new LocalDate(date);
+				sb.append('\'').append(localDate.toString()).append('\'');
+			}
 		}
 	},
 	REAL {
-
 		@Override
 		void append(StringBuilder sb, ResultSet rs, int column)
 				throws SQLException {
-			sb.append(rs.getDouble(column));
+			double value = rs.getDouble(column);
+			if(rs.wasNull()) {
+				sb.append("NULL");
+			} else {
+				sb.append(value);
+			}
 		}
-		
 	};
 	
 	abstract void append(StringBuilder sb, ResultSet rs, int column) throws SQLException;
@@ -65,6 +76,7 @@ enum ColumnAppender {
 		case Types.NVARCHAR:
 		case Types.LONGVARCHAR:
 		case Types.LONGNVARCHAR:
+		case Types.CLOB:
 			return ColumnAppender.STRING;
 			
 		case Types.BIT:
