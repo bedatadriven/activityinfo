@@ -116,7 +116,7 @@ public class Site implements java.io.Serializable, Deleteable {
      *
      * @return the geographic Location of this Site
      */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LocationId", nullable = false)
 	public Location getLocation() {
 		return this.location;
