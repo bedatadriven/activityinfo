@@ -1,5 +1,8 @@
 package org.activityinfo.client.offline.sync;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.i18n.I18N;
 
@@ -16,6 +19,8 @@ public class AppCacheSynchronizer implements ProgressEventHandler, AsyncCommand 
 
 	private final EventBus eventBus;
 	private final AppCache appCache = AppCacheFactory.get();
+	
+	private static final Logger LOGGER = Logger.getLogger(AppCacheSynchronizer.class.getName());
 	
 	@Inject
 	public AppCacheSynchronizer(EventBus eventBus) {
@@ -40,8 +45,9 @@ public class AppCacheSynchronizer implements ProgressEventHandler, AsyncCommand 
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				LOGGER.log(Level.SEVERE, "Exception in AppCache Synchronizer", caught);
 				progressRegistration.removeHandler();
-				callback.onFailure(new SynchronizerConnectionException());
+				callback.onFailure(new SynchronizerConnectionException(caught));
 			}
 		});
 	}
