@@ -64,6 +64,7 @@ public class LocationUpdateBuilder implements UpdateBuilder {
 		SqlQuery query = SqlQuery.select()
 				.appendColumn("LocationId")
 				.appendColumn("Name")
+				.appendColumn("Axe")
 				.appendColumn("X")
 				.appendColumn("Y")
 				.appendColumn("LocationTypeId")
