@@ -40,7 +40,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
 	@Inject
     public SelectionServlet(Provider<EntityManager> entityManager) {
         registerProvider("locale", new LocaleProvider(entityManager));
-        registerProvider("log_level", new LogLevelProvider());
+        registerProvider("gwt.logging.logLevel", new LogLevelProvider());
     }
 
     private class LocaleProvider implements PropertyProvider {
@@ -105,12 +105,12 @@ public class SelectionServlet extends DefaultSelectionServlet {
         public String get(HttpServletRequest request) {
             if(request.getServerName().contains("localhost") ||
                request.getServerName().contains("127.0.0.1") ||
-               request.getServerName().contains("trace.")) {
+               request.getServerName().contains("appspot")) {
 
-                return "TRACE";
+                return "FINEST";
 
             } else {
-                return "OFF";
+                return "SEVERE";
             }
         }
     }

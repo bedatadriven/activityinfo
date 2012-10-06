@@ -13,18 +13,25 @@
     <set-property-fallback name="locale" value="en"/>
     <set-property name="locale" value="en,fr"/>
 
-	<set-property name="gwt.logging.enabled" value="FALSE"/> 
-<!--     <set-property name="gwt.logging.logLevel" value="FINEST"/>     -->
-
-<!--  	<set-property name="compiler.stackMode" value="emulated" />  -->
-<!--  	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers"  -->
-<!--  		value="true" />  -->
-<!--  	<set-configuration-property name="compiler.emulatedStack.recordFileNames"  -->
-<!--  		value="true" />   -->
+    <set-property name="gwt.logging.logLevel" value="SEVERE,FINEST"/>    
+    
+    <!-- Create a single, special debug permutation when logLevel=FINEST -->
+    
+ 	<set-property name="compiler.stackMode" value="emulated">
+ 		<when-property-is name="gwt.logging.logLevel" value="FINEST"/>
+ 	</set-property> 
+ 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" 
+ 		value="true"/> 
+ 	<set-configuration-property name="compiler.emulatedStack.recordFileNames" 
+ 		value="true"/> 
+ 	<set-property name="user.agent" value="safari">
+ 		<when-property-is name="gwt.logging.logLevel" value="FINEST"/> 		
+ 	</set-property>  
+ 	<set-property name="locale" value="en">
+ 		<when-property-is name="gwt.logging.logLevel" value="FINEST"/> 		
+ 	</set-property>  
+ 	
  		
-    <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/>
-
- 
- 		
+    <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/> 
 </module>
 
