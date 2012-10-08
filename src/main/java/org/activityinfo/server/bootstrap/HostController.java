@@ -69,7 +69,6 @@ public class HostController extends AbstractController {
     	return !userAgentProvider.canSupportGears(req);
 	}
 
-	@Transactional
     protected Authentication getAuthentication(HttpServletRequest request) throws NoValidAuthentication {
         String authToken = request.getParameter("auth");
         if(isEmpty(authToken)) {
