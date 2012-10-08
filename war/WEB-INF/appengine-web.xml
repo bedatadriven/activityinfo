@@ -8,12 +8,19 @@
   </system-properties>
 
   <static-files>
+  	<include path="/robots.txt" expiration="1d"/>
   	<include path="/ActivityInfo/**.gif" expiration="365d"/>
   	<include path="/ActivityInfo/**.png" expiration="365d"/>
   	<include path="/ActivityInfo/**.js" expiration="365d"/>
   	<include path="/ActivityInfo/**.css" expiration="365d"/>
+  	<include path="/ActivityInfo/**.swf" expiration="365d"/>
     <include path="/ActivityInfo/**.cache.html" expiration="365d"/>
     <include path="/**.nocache.html" expiration="0s"/>
+  	<include path="/Login/**.css" expiration="365d"/>
+    <include path="/Login/**.cache.html" expiration="365d"/>
+    <include path="/static/**.png" expiration="365d"/>
+
+
   </static-files>
   
   <sessions-enabled>false</sessions-enabled>
