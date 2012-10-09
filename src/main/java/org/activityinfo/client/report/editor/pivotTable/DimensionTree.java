@@ -25,6 +25,7 @@ import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.PivotTableReportElement;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
@@ -83,6 +84,13 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 		treePanel.getStyle().setNodeOpenIcon(null);
 		treePanel.setStateful(true);
 		treePanel.setDisplayProperty("name");
+		treePanel.addListener(Events.Expand, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				applyModelState();
+			}
+		});
 
 		/* enable drag and drop for dev */
 		// TreePanelDragSource source = new TreePanelDragSource(treePanel);
@@ -128,7 +136,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 	@Override
 	public void bind(PivotTableReportElement model) {
 		this.model = model;
-		
+		applyModelState();
 	}
 
 	@Override
