@@ -42,6 +42,8 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 	private PivotFilterPanel filterPane;
 	private ReportViewBinder<PivotContent, PivotTableReportElement> viewBinder;
 	
+	private DimensionPruner pruner;
+	
 	private LayoutContainer center;
 	private PivotGridPanel gridPanel;
 	
@@ -53,14 +55,17 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 		this.eventBus = eventBus;
 		this.service = service;
 		this.stateMgr = stateMgr;
-
+		
 		initializeComponent();
 
 		createPane();
 		createFilterPane();
 		createGridContainer();
-		
+
+		this.pruner = new DimensionPruner(eventBus, service);
+
 		events = new ReportEventHelper(eventBus, this);
+
 
 //		initialDrillDownListener = new Listener<PivotCellEvent>() {
 //			@Override
@@ -153,6 +158,7 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 		pivotPanel.bind(model);
 		filterPane.bind(model);
 		viewBinder.bind(model);
+		pruner.bind(model);
 	}
 	
 	@Override
@@ -160,6 +166,7 @@ public class PivotTableEditor extends LayoutContainer implements ReportElementEd
 		pivotPanel.disconnect();
 		filterPane.disconnect();
 		viewBinder.disconnect();
+		pruner.disconnect();
 	}
 
 	@Override

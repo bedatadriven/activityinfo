@@ -124,7 +124,6 @@ public class DimensionSelectionListView implements HasReportElement<PivotTableRe
 		});			
 	}
 
-	
 	private List<Dimension> getSelection() {
 		switch(axis) {
 		case ROW:
@@ -183,5 +182,4 @@ public class DimensionSelectionListView implements HasReportElement<PivotTableRe
 	public Component asComponent() {
 		return list;
 	}
-	
 }
