@@ -105,7 +105,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
         public String get(HttpServletRequest request) {
             if(request.getServerName().contains("localhost") ||
                request.getServerName().contains("127.0.0.1") ||
-               request.getServerName().contains("appspot")) {
+               request.getServerName().contains("trace")) {
 
                 return "FINEST";
 

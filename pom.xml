@@ -27,6 +27,7 @@
 		<display.version>${project.version}</display.version>
 
 		<gae.version>1.7.2</gae.version>
+		<gae.application.version>2</gae.application.version>
 
 	</properties>
 
@@ -530,8 +531,11 @@
 					<warSourceExcludes>ActivityInfo/compile-report,*.log</warSourceExcludes>
 					<webResources>
 						<resource>
-							<directory>deploy</directory>
+							<directory>war</directory>
 							<filtering>true</filtering>
+							<includes>
+								<include>**/appengine-web.xml</include>
+							</includes>
 						</resource>
 					</webResources>
 				</configuration>
@@ -731,7 +735,8 @@
 	<profile>
 			<id>ci</id>
 			<properties>
-				<display.version>2.7-b${BUILD_NUMBER}</display.version>
+				<display.version>2.7 Build ${BUILD_NUMBER}</display.version>
+				<gae.application.version>build${BUILD_NUMBER}</gae.application.version>
 			</properties>
 			<build>
 				<plugins>
