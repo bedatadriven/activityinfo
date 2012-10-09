@@ -10,45 +10,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activityinfo.client.AppEvents;
-import org.activityinfo.client.EventBus;
-import org.activityinfo.client.event.PivotCellEvent;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.PivotTableData;
-import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.PivotReportElement;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.DelayedTask;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.i18n.client.NumberFormat;
-import com.google.inject.Inject;
 
 
 public class PivotGridPanel extends ContentPanel implements ReportView<PivotReportElement> {
 
+	private static final int ROW_INDENT = 15;
+	
     private PivotReportElement element;
-    private TreeGrid<PivotTableRow> grid;
-    private TreeStore<PivotTableRow> store;
-    private ColumnModel columnModel;
+    private Grid<PivotTableRow> grid;
+    private ListStore<PivotTableRow> store;
     private Map<PivotTableData.Axis, String> propertyMap;
     private Map<Integer, PivotTableData.Axis> columnMap;
+
+	private ColumnModel columnModel;
 
     public PivotGridPanel() {
         setLayout(new FitLayout());
@@ -57,23 +55,25 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
     public class PivotTableRow extends BaseTreeModel {
 
         private PivotTableData.Axis rowAxis;
+        private int depth;
 
-        public PivotTableRow(PivotTableData.Axis axis) {
+        public PivotTableRow(PivotTableData.Axis axis, int depth) {
             this.rowAxis = axis;
+            this.depth = depth;
             set("header", axis.getLabel());
 
             for(Map.Entry<PivotTableData.Axis, PivotTableData.Cell> entry : axis.getCells().entrySet()) {
                 set(propertyMap.get(entry.getKey()), entry.getValue().getValue());
-            }
-
-            for(PivotTableData.Axis child : axis.getChildren()) {
-                add(new PivotTableRow(child));
             }
         }
 
         public PivotTableData.Axis getRowAxis() {
             return rowAxis;
         }
+
+		public int getDepth() {
+			return depth;
+		}
     }
 
     @Override
@@ -88,20 +88,16 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
 
         propertyMap = new HashMap<PivotTableData.Axis, String>();
         columnMap = new HashMap<Integer, PivotTableData.Axis>();
-
-        store = new TreeStore<PivotTableRow>();
-
         columnModel = createColumnModel(data);
+        
+        store = new ListStore<PivotTableRow>();
 
-        for(PivotTableData.Axis axis : data.getRootRow().getChildren()) {
-            store.add(new PivotTableRow(axis), true);
-        }
+        addRows(data.getRootRow(), 0);
 
-        grid = new TreeGrid<PivotTableRow>(store, createColumnModel(data));
-        grid.getStyle().setNodeCloseIcon(null);
-        grid.getStyle().setNodeOpenIcon(null);
+        grid = new Grid<PivotTableRow>(store, columnModel);
         grid.setAutoExpandColumn("header");
         grid.setAutoExpandMin(150);
+        grid.setSelectionModel(new CellSelectionModel<PivotGridPanel.PivotTableRow>());
         grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<PivotTableRow>>() {
             @Override
 			public void handleEvent(GridEvent<PivotTableRow> ge) {
@@ -118,17 +114,14 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
 
         layout();
 
-        new DelayedTask(new Listener<BaseEvent>() {
-            @Override
-			public void handleEvent(BaseEvent be) {
-                for(PivotTableRow row : store.getRootItems()) {
-                    grid.setExpanded(row, true, true);
-                }
-
-            }
-        }).delay(1);
-
     }
+
+	private void addRows(PivotTableData.Axis parent, int depth) {
+		for(PivotTableData.Axis axis : parent.getChildren()) {
+            store.add(new PivotTableRow(axis, depth));
+            addRows(axis, depth+1);
+        }
+	}
 
     protected int findIndicatorId(PivotTableData.Axis axis) {
         while(axis != null) {
@@ -140,12 +133,26 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
         return -1;
     }
 
+    private static class RowHeaderRenderer implements GridCellRenderer<PivotTableRow> {
+
+
+		@Override
+		public Object render(PivotTableRow model, String property,
+				ColumnData config, int rowIndex, int colIndex,
+				ListStore<PivotTableRow> store, Grid<PivotTableRow> grid) {
+			String indent = (model.getDepth() * ROW_INDENT) + "px";
+			return "<span style=\"margin-left:" + indent + "\">" + 
+					Format.htmlEncode((String)model.get("header")) + "</span>";
+		}
+    	
+    }
+    
     protected ColumnModel createColumnModel(PivotTableData data) {
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
         ColumnConfig rowHeader = new ColumnConfig("header", "", 150);
-        rowHeader.setRenderer(new TreeGridCellRenderer());
+        rowHeader.setRenderer(new RowHeaderRenderer());
         rowHeader.setSortable(false);
         rowHeader.setMenuDisabled(true);
         config.add(rowHeader);
