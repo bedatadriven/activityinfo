@@ -169,6 +169,8 @@ public class DimensionSelectionListView implements HasReportElement<PivotTableRe
 				return new DimensionModel(dim, I18N.CONSTANTS.project());
 			case Location:
 				return new DimensionModel(dim, I18N.CONSTANTS.location());
+			case Target:
+				return new DimensionModel(dim, I18N.CONSTANTS.realizedOrTargeted());
 			}
 		}
 		return null;
