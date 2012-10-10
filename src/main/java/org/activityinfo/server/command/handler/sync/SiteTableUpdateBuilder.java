@@ -16,15 +16,16 @@ import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 
 public class SiteTableUpdateBuilder implements UpdateBuilder {
 
-    private final JpaUpdateBuilder builder = new JpaUpdateBuilder();
+    public static final String CURRENT_VERSION = "2";
+	private final JpaUpdateBuilder builder = new JpaUpdateBuilder();
 
     @Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
         SyncRegionUpdate update = new SyncRegionUpdate();
         update.setComplete(true);
-        update.setVersion("2");
+        update.setVersion(CURRENT_VERSION);
 
-        if(! "2".equals(request.getLocalVersion()) ) {
+        if(! CURRENT_VERSION.equals(request.getLocalVersion()) ) {
 
             builder.createTableIfNotExists(Site.class);
             builder.createTableIfNotExists(ReportingPeriod.class);

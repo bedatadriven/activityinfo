@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.GetPartnersWithSites;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.result.Bucket;
@@ -25,7 +26,8 @@ public class GetPartnersWithSitesHandler implements CommandHandlerAsync<GetPartn
 
 		final Dimension dimension = new Dimension(DimensionType.Partner);
 
-		context.execute(new PivotSites(Collections.singleton(dimension),  cmd.getFilter()), new AsyncCallback<PivotSites.PivotResult>() {
+		context.execute(new PivotSites(Collections.singleton(dimension),
+				cmd.getFilter()), new AsyncCallback<PivotSites.PivotResult>() {
 
 			@Override
 			public void onSuccess(PivotSites.PivotResult result) {
@@ -34,11 +36,14 @@ public class GetPartnersWithSitesHandler implements CommandHandlerAsync<GetPartn
 
 				for(Bucket bucket : result.getBuckets()) {
 					EntityCategory category = (EntityCategory)bucket.getCategory(dimension);
-					PartnerDTO partner = new PartnerDTO();
-					partner.setId(category.getId());
-					partner.setName(category.getLabel());
-
-					partners.add(partner);
+					if(category == null) {
+						Log.debug("Partner is null: " + bucket.toString());
+					} else {
+						PartnerDTO partner = new PartnerDTO();
+						partner.setId(category.getId());
+						partner.setName(category.getLabel());
+						partners.add(partner);
+					}
 				}
 
 				List<PartnerDTO> list = new ArrayList<PartnerDTO>(partners);

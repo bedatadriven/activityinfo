@@ -8,6 +8,8 @@ import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.report.model.Dimension;
 
+import com.google.common.collect.Sets;
+
 public class PivotSites implements Command<PivotResult> {
 
 	public enum ValueType {
@@ -34,6 +36,10 @@ public class PivotSites implements Command<PivotResult> {
 
 	public void setDimensions(Set<Dimension> dimensions) {
 		this.dimensions = dimensions;
+	}
+	
+	public void setDimensions(Dimension... dimensions) {
+		this.dimensions = Sets.newHashSet(dimensions);
 	}
 
 	public Filter getFilter() {

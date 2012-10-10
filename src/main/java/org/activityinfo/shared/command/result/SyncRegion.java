@@ -9,21 +9,22 @@ import java.io.Serializable;
 
 public class SyncRegion implements Serializable{
     private String id;
-    private boolean required;
-
+    private String currentVersion;
+    
     public SyncRegion() {
     }
 
     public SyncRegion(String id) {
         this.id = id;
     }
+    
+    public SyncRegion(String id, String currentVersion) {
+		super();
+		this.id = id;
+		this.currentVersion = currentVersion;
+	}
 
-    public SyncRegion(String id, boolean required) {
-        this.id = id;
-        this.required = required;
-    }
-
-    public String getId() {
+	public String getId() {
         return id;
     }
 
@@ -31,11 +32,13 @@ public class SyncRegion implements Serializable{
         this.id = id;
     }
 
-    public boolean isRequired() {
-        return required;
-    }
+	public String getCurrentVersion() {
+		return currentVersion;
+	}
 
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
+	public void setCurrentVersion(String currentVersion) {
+		this.currentVersion = currentVersion;
+	}
+    
+    
 }

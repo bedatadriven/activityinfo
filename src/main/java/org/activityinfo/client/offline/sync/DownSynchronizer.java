@@ -119,7 +119,13 @@ public class DownSynchronizer implements AsyncCommand {
 
 			@Override
 			public void onSuccess(String localVersion) {
-				doUpdate(region, localVersion);
+				if(localVersion == null || region.getCurrentVersion() == null ||
+					!localVersion.equals(region.getCurrentVersion())) {
+					doUpdate(region, localVersion);
+				} else {
+					Log.debug("Region " + region.getId() + " is up to date");
+					doNextUpdate();
+				}
 			}			
 		});
     }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.server.database.hibernate.HibernateExecutor;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.jdbc.Work;
 
@@ -63,4 +64,5 @@ public class SqlQueryUtil {
 		});
 		return result.get(0);
 	}
+
 }

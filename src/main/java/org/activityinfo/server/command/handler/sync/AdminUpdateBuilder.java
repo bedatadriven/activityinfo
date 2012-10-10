@@ -26,7 +26,7 @@ public class AdminUpdateBuilder implements UpdateBuilder {
     private EntityManager em;
     private int levelId;
     private AdminLocalState localState;
-    private static final int LAST_VERSION_NUMBER = 1;
+    public static final int LAST_VERSION_NUMBER = 1;
     private SqliteBatchBuilder builder;
 
     @Inject

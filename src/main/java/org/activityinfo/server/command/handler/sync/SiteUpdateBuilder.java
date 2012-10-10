@@ -105,6 +105,12 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 		batch.addStatement("DELETE FROM indicatorvalue WHERE reportingperiodid IN " +
 				"(SELECT reportingperiodid FROM reportingperiod WHERE siteId IN " + updatedIds + ")");
 		batch.addStatement("DELETE FROM reportingperiod WHERE siteId IN " + updatedIds);
+		
+		// there seem to be some clients left in an inconsistent state, probably due to 
+		// errors on the server side earlier. So we clean up.
+		batch.addStatement("DELETE FROM indicatorvalue WHERE indicatorvalue.reportingperiodid " +
+				"NOT IN (select reportingperiodid from reportingperiod)");
+		
 	}
 
 	private SqlQuery updatedSites() {

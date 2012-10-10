@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
@@ -39,6 +41,7 @@ import org.activityinfo.shared.util.Collector;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,6 +59,10 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 	@Inject
 	private KeyGenerator keyGenerator;
 
+	@Before
+	public void setupLogging() {
+		Logger.getLogger("org.hibernate").setLevel(Level.ALL);
+	}
 	
     private long nowIsh;
 
