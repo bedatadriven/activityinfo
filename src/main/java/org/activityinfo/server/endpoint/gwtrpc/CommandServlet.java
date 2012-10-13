@@ -11,7 +11,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
+import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -24,7 +28,9 @@ import org.activityinfo.shared.dto.AnonymousUser;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 
+import com.google.appengine.api.utils.SystemProperty.Environment;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -52,8 +58,22 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
     @Inject
     private ServerSideAuthProvider authProvider;
-
+    
+    private AppEnginePolicyProvider policyProvider;
+    
+    
+    
     @Override
+	public void init(ServletConfig config) throws ServletException {
+    	super.init(config);
+    	if(DeploymentEnvironment.isAppEngine()) {
+    		policyProvider = new AppEnginePolicyProvider(getServletContext());
+    	}
+    }
+
+
+
+	@Override
     @LogException
     public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
     	checkAuthentication(authToken);
@@ -119,6 +139,28 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 		return result;
     }
     
+  	@Override
+	public void log(String message, Throwable t) {
+		super.log(message, t);
+		LOGGER.log(Level.SEVERE, message, t);
+	}
+
+	@Override
+	public void log(String msg) {
+		super.log(msg);
+		LOGGER.log(Level.INFO, msg);
+	}
+
+	@Override
+	protected SerializationPolicy doGetSerializationPolicy(
+			HttpServletRequest request, String moduleBaseURL, String strongName) {
+		if(policyProvider == null) {
+			return super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
+		} else {
+			return policyProvider.getSerializationPolicy(moduleBaseURL, strongName);
+		}
+	}
+
 	private void checkAuthentication(String authToken) {
     	if(authToken.equals(AnonymousUser.AUTHTOKEN)) {
     		authProvider.set(AuthenticatedUser.getAnonymous());
