@@ -1,6 +1,7 @@
 package org.activityinfo.server.command.handler;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
@@ -27,6 +28,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel, ReportDTO> {
+	
+	private static final Logger LOGGER = Logger.getLogger(GetReportModelHandler.class.getName());
+	
 	private final EntityManager em;
 
 	@Inject
@@ -40,6 +44,8 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
 
 		ReportDTO reportDTO = null;
 		Integer reportId = cmd.getReportId();
+		
+		LOGGER.finest("Loading model for report id = "  + reportId);
 
 		if (reportId != null) {
 
@@ -48,7 +54,11 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
 			Report report = new Report();
 
 			try {
+				LOGGER.finest("Starting to parse xml (size = " + entity.getXml().length() + ")");
+				
 				report = ReportParserJaxb.parseXml(entity.getXml());
+				
+				LOGGER.finest("Parsing complete");
 			} catch (JAXBException e) {
 				throw new UnexpectedCommandException(e);
 			}
