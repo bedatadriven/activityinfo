@@ -10,6 +10,7 @@ import java.util.Set;
 import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.GetPartnersWithSites;
 import org.activityinfo.shared.command.PivotSites;
+import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.command.result.PartnerResult;
 import org.activityinfo.shared.dto.PartnerDTO;
@@ -26,8 +27,11 @@ public class GetPartnersWithSitesHandler implements CommandHandlerAsync<GetPartn
 
 		final Dimension dimension = new Dimension(DimensionType.Partner);
 
-		context.execute(new PivotSites(Collections.singleton(dimension),
-				cmd.getFilter()), new AsyncCallback<PivotSites.PivotResult>() {
+		PivotSites query = new PivotSites();
+		query.setFilter(cmd.getFilter());
+		query.setDimensions(dimension);
+		query.setValueType(ValueType.TOTAL_SITES);
+		context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
 
 			@Override
 			public void onSuccess(PivotSites.PivotResult result) {
