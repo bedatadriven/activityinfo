@@ -5,7 +5,6 @@
 
 package org.activityinfo.server.report.renderer.ppt;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,11 +27,7 @@ import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 
 import com.google.code.appengine.awt.Dimension;
-import com.google.code.appengine.awt.Graphics2D;
 import com.google.code.appengine.awt.Rectangle;
-import com.google.code.appengine.awt.color.ColorSpace;
-import com.google.code.appengine.awt.image.BufferedImage;
-import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
 
 /**
@@ -135,20 +130,6 @@ public class PPTMapRenderer extends ImageMapRenderer {
             icon.setAnchor(new Rectangle(iconRect.getX(), iconRect.getY(), iconRect.getWidth(), iconRect.getHeight()));
             slide.addShape(icon);
         }
-    }
-
-    private byte[] renderBasemap(MapReportElement element) throws IOException {
-
-        BufferedImage image = new BufferedImage(element.getWidth(), element.getHeight(), ColorSpace.TYPE_RGB);
-        Graphics2D g2d = image.createGraphics();
-
-        drawBasemap(g2d, element);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        ImageIO.write(image, "PNG", out);
-
-        return out.toByteArray();
     }
 
     private Dimension computePageSize(MapReportElement element) {

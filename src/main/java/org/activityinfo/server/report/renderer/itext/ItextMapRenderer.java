@@ -76,8 +76,8 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 
 	public void renderMap(DocWriter writer, MapReportElement element, Document doc) throws BadElementException, DocumentException {
     	
-		ItextGraphic graphic = imageCreator.create(element.getWidth(), element.getHeight());
-    	drawBasemap(element, new ItextTileHandler(graphic, element.getHeight()));
+		ItextGraphic graphic = imageCreator.createMap(element.getWidth(), element.getHeight());
+    	drawBasemap(element, new ItextTileHandler(graphic));
 		drawOverlays(element, graphic.getGraphics());
 		
 		doc.add(graphic.toItextImage());

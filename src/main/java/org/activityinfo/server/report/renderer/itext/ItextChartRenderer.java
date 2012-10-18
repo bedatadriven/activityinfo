@@ -1,6 +1,7 @@
 
 package org.activityinfo.server.report.renderer.itext;
 
+import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.report.renderer.ChartRendererJC;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.server.report.renderer.image.ItextGraphic;
@@ -38,7 +39,7 @@ public class ItextChartRenderer implements ItextRenderer<PivotChartReportElement
 		ItextRendererHelper.addDateFilterDescription(doc, element.getFilter().getDateRange());
 
 		if(element.getContent().getData().isEmpty()) {
-			Paragraph para = new Paragraph("Aucune Données");
+			Paragraph para = new Paragraph(I18N.CONSTANTS.noData());
 			para.setFont(new Font(Font.HELVETICA, 12, Font.NORMAL, new Color(0, 0, 0)));
 			doc.add(para);
 

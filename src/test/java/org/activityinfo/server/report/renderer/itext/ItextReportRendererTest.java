@@ -171,7 +171,7 @@ public class ItextReportRendererTest {
 		chartContent.setYStep(100);
 		chartContent.setFilterDescriptions(Collections.EMPTY_LIST);
 		
-		PivotChartReportElement chart = new PivotChartReportElement(Type.Bar);
+		PivotChartReportElement chart = new PivotChartReportElement(Type.Pie);
 		chart.setTitle("My Pie Chart");
 		chart.setCategoryDimensions(data.colDims);
 		chart.setSeriesDimension(data.rowDims);
@@ -235,8 +235,10 @@ public class ItextReportRendererTest {
 		
 
 		
-		renderToPdf(report, "google map.pdf");
-	}
+		//renderToPdf(report, "google map.pdf");
+		//renderToHtml(report, "google map.html");
+		renderToRtf(report, "google map.rtf");
+	}	
 	
 	@Test
 	public void legendTest() throws IOException {

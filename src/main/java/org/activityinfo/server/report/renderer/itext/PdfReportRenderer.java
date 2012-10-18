@@ -74,18 +74,25 @@ public class PdfReportRenderer extends ItextReportRenderer {
 			PdfContentByte cb = writer.getDirectContent();
 			PdfTemplate template = cb.createTemplate(width, height);
 			
-			return new PdfVectorImage(template, template.createGraphics(width, height));
+			return new PdfVectorImage(template, template.createGraphics(width, height), height);
+		}
+
+		@Override
+		public ItextGraphic createMap(int width, int height) {
+			return create(width, height);
 		}
 	}
 
 	private static class PdfVectorImage implements ItextGraphic {
 		private PdfTemplate template;
 		private Graphics2D g2d;
+		private int height;
 
-		public PdfVectorImage(PdfTemplate template, Graphics2D g2d) {
+		public PdfVectorImage(PdfTemplate template, Graphics2D g2d, int height) {
 			super();
 			this.template = template;
 			this.g2d = g2d;
+			this.height = height;
 		}
 
 		@Override
@@ -113,7 +120,8 @@ public class PdfReportRenderer extends ItextReportRenderer {
 				return;
 			}
 			try {
-				image.setAbsolutePosition(x, y);
+				int top = this.height - y - height;
+				image.setAbsolutePosition(x, top);
 				template.addImage(image, false);
 
 			} catch (DocumentException e) {

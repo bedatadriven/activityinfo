@@ -102,6 +102,11 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 
 			return new HtmlImage(image, g2d);
 		}
+
+		@Override
+		public ItextGraphic createMap(int width, int height) {
+			return create(width, height);
+		}
 	}
 	
 	public static class MyImage extends Image {
@@ -169,7 +174,7 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-			g2d.drawImage(img, x, image.getHeight() - y - height, null);
+			g2d.drawImage(img, x, y, null);
 		}	
 	}
 }

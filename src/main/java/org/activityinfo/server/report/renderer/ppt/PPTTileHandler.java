@@ -6,10 +6,10 @@ import java.net.URL;
 
 import org.activityinfo.server.report.renderer.image.TileHandler;
 import org.apache.poi.hslf.model.Picture;
+import org.apache.poi.hslf.model.ShapeGroup;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.usermodel.SlideShow;
 
-import com.google.code.appengine.awt.Color;
 import com.google.code.appengine.awt.Rectangle;
 import com.google.common.io.Resources;
 
@@ -17,10 +17,13 @@ public class PPTTileHandler implements TileHandler{
 
 	private SlideShow ppt;
 	private Slide slide;
+	private ShapeGroup shapeGroup;
 
 	public PPTTileHandler(SlideShow ppt, Slide slide) {
 		this.ppt = ppt;
 		this.slide = slide;
+		this.shapeGroup = new ShapeGroup();
+		this.slide.addShape(shapeGroup);
 	}
 
 	@Override
@@ -31,12 +34,11 @@ public class PPTTileHandler implements TileHandler{
 	        Picture basemap = new Picture(pictureIndex);
 	        basemap.setAnchor(new Rectangle(x, y, width, height));
 	        basemap.setLineWidth(0);
-	        slide.addShape(basemap);
+	        shapeGroup.addShape(basemap);
 		} catch(MalformedURLException e) {
 			throw new RuntimeException("Bad tile URL", e);
 		} catch(IOException e) {
 			// ignore missing tiles
 		}		
 	}
-
 }
