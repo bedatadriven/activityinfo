@@ -76,7 +76,7 @@ public class StaticElementRenderTest{
 	@Test
 	public void testHtmlRender() throws JAXBException, IOException {
 		Report r = getStatic();
-		HtmlReportRenderer renderer =new HtmlReportRenderer("", new NullImageStorageProvider()); 
+		HtmlReportRenderer renderer =new HtmlReportRenderer("", new NullStorageProvider()); 
 		FileOutputStream fos = new FileOutputStream("target/report-tests/render-static" + renderer.getFileSuffix());
 		renderer.render(r, fos);
 		fos.close();

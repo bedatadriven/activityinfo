@@ -2,6 +2,7 @@ package org.activityinfo.server.report.output;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.security.SecureRandom;
 import java.util.Date;
@@ -20,7 +21,7 @@ import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
 import com.google.inject.Provider;
 
-public class AppEngineStorageProvider implements ImageStorageProvider {
+public class AppEngineStorageProvider implements StorageProvider {
 
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	private SecureRandom random = new SecureRandom();
@@ -31,7 +32,7 @@ public class AppEngineStorageProvider implements ImageStorageProvider {
 	}
 	
 	@Override
-	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
+	public TempStorage allocateTemporaryFile(String mimeType, String filename) throws IOException {
 		
 		Key tempFileKey = KeyFactory.createKey("TempFile", Long.toString(Math.abs(random.nextLong()), 16));
 		
@@ -43,9 +44,11 @@ public class AppEngineStorageProvider implements ImageStorageProvider {
 		url.append(request.get().getServerPort());
 		url.append("/generated/");
 		url.append(tempFileKey.getName());
+		url.append("/");
+		url.append(filename);
 		
-		return new ImageStorage(url.toString(), 
-				new TempOutputStream(mimeType, suffix, tempFileKey));
+		return new TempStorage(url.toString(), 
+				new TempOutputStream(mimeType, filename, tempFileKey));
 	}
 	
 	private class TempOutputStream extends OutputStream {
@@ -56,16 +59,17 @@ public class AppEngineStorageProvider implements ImageStorageProvider {
 		private FileService fileService;
 		private Key tempFileKey;
 		private String mimeType;
+		private String filename;
 
-		public TempOutputStream(String mimeType, String suffix, Key tempFileKey) throws IOException {
+		public TempOutputStream(String mimeType, String filename, Key tempFileKey) throws IOException {
 			this.tempFileKey = tempFileKey;
 			this.mimeType = mimeType;
+			this.filename = filename;
 			
 			fileService = FileServiceFactory.getFileService();
-		    writableFile = fileService.createNewBlobFile(mimeType, "activityinfo" + suffix);
+		    writableFile = fileService.createNewBlobFile(mimeType, filename);
 		    writeChannel = fileService.openWriteChannel(writableFile, true);
 		    out = Channels.newOutputStream(writeChannel);
-		    
 		}
 		
 		@Override
@@ -97,6 +101,7 @@ public class AppEngineStorageProvider implements ImageStorageProvider {
 			entity.setUnindexedProperty("mimeType", mimeType);
 			entity.setUnindexedProperty("created", new Date());
 			entity.setUnindexedProperty("blobKey", blobKey);
+			entity.setUnindexedProperty("filename", filename);
 			datastore.put(entity);
 		}
 	}

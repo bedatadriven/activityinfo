@@ -7,8 +7,8 @@ package org.activityinfo.server.command.handler;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.report.generator.ReportGenerator;
-import org.activityinfo.server.report.output.ImageStorage;
-import org.activityinfo.server.report.output.ImageStorageProvider;
+import org.activityinfo.server.report.output.TempStorage;
+import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.RendererFactory;
 import org.activityinfo.shared.command.Filter;
@@ -29,11 +29,11 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
 
     private final RendererFactory rendererFactory;
     private final ReportGenerator generator;
-	private ImageStorageProvider storageProvider;
+	private StorageProvider storageProvider;
 
 
     @Inject
-    public RenderElementHandler(RendererFactory rendererFactory, ReportGenerator generator, ImageStorageProvider storageProvider) {
+    public RenderElementHandler(RendererFactory rendererFactory, ReportGenerator generator, StorageProvider storageProvider) {
         this.rendererFactory = rendererFactory;
         this.generator = generator;
         this.storageProvider = storageProvider;
@@ -42,7 +42,9 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
     public CommandResult execute(RenderElement cmd, User user) throws CommandException {
 		try {
 			Renderer renderer = rendererFactory.get(cmd.getFormat());
-			ImageStorage storage = storageProvider.getImageUrl(renderer.getMimeType(), renderer.getFileSuffix());
+			TempStorage storage = storageProvider.allocateTemporaryFile(
+					renderer.getMimeType(), 
+					cmd.getFilename() + renderer.getFileSuffix());
 			try {
 		        generator.generateElement(user, cmd.getElement(), new Filter(), new DateRange());
 				renderer.render(cmd.getElement(), storage.getOutputStream());      

@@ -14,22 +14,16 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
-import com.google.gwt.core.client.GWT;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
-import com.teklabs.gwt.i18n.server.I18nFilter;
 
 public class ExportDialog extends Dialog {
 	
@@ -82,11 +76,15 @@ public class ExportDialog extends Dialog {
 	}
 
 
-	public void export(ReportElement model, Format format) {
+	public void export(String filename, ReportElement model, Format format) {
 		show();
 		bar.updateText(I18N.CONSTANTS.exportProgress());
 		bar.auto();
-		dispatcher.execute(new RenderElement(model, format), new AsyncCallback<UrlResult>() {
+		
+		RenderElement command = new RenderElement(model, format);
+		command.setFilename(filename);
+		
+		dispatcher.execute(command, new AsyncCallback<UrlResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

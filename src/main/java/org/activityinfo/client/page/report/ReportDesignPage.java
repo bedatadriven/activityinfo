@@ -1,6 +1,9 @@
 package org.activityinfo.client.page.report;
 
+import java.util.Date;
+
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -29,7 +32,6 @@ import org.activityinfo.shared.dto.ReportDTO;
 import org.activityinfo.shared.dto.ReportMetadataDTO;
 import org.activityinfo.shared.report.model.Report;
 
-import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.EditorEvent;
@@ -44,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.common.base.Strings;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -434,8 +437,13 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 
 	@Override
 	public void export(final Format format) {
+		StringBuilder fileName = new StringBuilder();
+		fileName.append(untitled() ? I18N.CONSTANTS.untitledReport() : currentModel.getTitle());
+		fileName.append(" ");
+		fileName.append(DateTimeFormat.getFormat("yyyyMMdd_HHmm").format(new Date()));
+		
 		ExportDialog dialog = new ExportDialog(dispatcher);
-		dialog.export(currentEditor.getModel(), format);
+		dialog.export(fileName.toString(), currentEditor.getModel(), format);
 	}
 
 	private boolean untitled() {

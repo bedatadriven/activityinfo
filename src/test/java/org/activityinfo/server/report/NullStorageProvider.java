@@ -8,15 +8,15 @@ package org.activityinfo.server.report;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.activityinfo.server.report.output.ImageStorage;
-import org.activityinfo.server.report.output.ImageStorageProvider;
+import org.activityinfo.server.report.output.TempStorage;
+import org.activityinfo.server.report.output.StorageProvider;
 
-public class NullImageStorageProvider implements ImageStorageProvider {
+public class NullStorageProvider implements StorageProvider {
 
 	@Override
-	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
+	public TempStorage allocateTemporaryFile(String mimeType, String suffix) throws IOException {
 		
-		return new ImageStorage("http://", new OutputStream() {
+		return new TempStorage("http://", new OutputStream() {
 
 			@Override
 			public void write(int b) throws IOException {

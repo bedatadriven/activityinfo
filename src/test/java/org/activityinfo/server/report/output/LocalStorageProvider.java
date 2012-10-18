@@ -11,20 +11,20 @@ import java.io.OutputStream;
 import java.util.Date;
 
 
-public class LocalImageStorageProvider implements ImageStorageProvider {
+public class LocalStorageProvider implements StorageProvider {
 
 	private String folder;
 	
-	public LocalImageStorageProvider(String folder) {
+	public LocalStorageProvider(String folder) {
 		this.folder = folder.replace('\\', '/');
 	}
 	
 	@Override
-	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
+	public TempStorage allocateTemporaryFile(String mimeType, String suffix) throws IOException {
 		String path = folder + "/img" + Long.toString((new Date()).getTime()) + suffix;
 		OutputStream stream = new FileOutputStream(path);
 		
-		return new ImageStorage("file://" + path, stream);
+		return new TempStorage("file://" + path, stream);
 	}
 
 }

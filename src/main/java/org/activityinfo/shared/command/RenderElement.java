@@ -31,6 +31,7 @@ public class RenderElement implements Command<UrlResult> {
     }
 
     private Format format;
+    private String filename;
     private ReportElement element;
 
     public RenderElement() {
@@ -64,5 +65,13 @@ public class RenderElement implements Command<UrlResult> {
     public void setElement(ReportElement element) {
         this.element = element;
     }
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 }
 	

@@ -1,8 +1,8 @@
 package org.activityinfo.server.report;
 
 import org.activityinfo.server.report.generator.MapIconPath;
-import org.activityinfo.server.report.output.ImageStorageProvider;
-import org.activityinfo.server.report.output.LocalImageStorageProvider;
+import org.activityinfo.server.report.output.StorageProvider;
+import org.activityinfo.server.report.output.LocalStorageProvider;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.inject.AbstractModule;
@@ -18,8 +18,8 @@ public class ReportStubModule extends AbstractModule {
 	}
     
     @Provides
-    public ImageStorageProvider provideImageStorageProvider() {
-        return new LocalImageStorageProvider("target");
+    public StorageProvider provideImageStorageProvider() {
+        return new LocalStorageProvider("target");
     }
     
     @Provides

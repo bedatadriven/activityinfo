@@ -11,8 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.activityinfo.server.report.DummyPivotTableData;
-import org.activityinfo.server.report.output.ImageStorage;
-import org.activityinfo.server.report.output.ImageStorageProvider;
+import org.activityinfo.server.report.output.TempStorage;
+import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.excel.ExcelReportRenderer;
 import org.activityinfo.server.report.renderer.itext.HtmlReportRenderer;
@@ -479,15 +479,15 @@ public class ItextReportRendererTest {
 		renderer.render(map, new FileOutputStream("target/report-tests/" + name));
 	}
 	
-	private static class TestImageStorageProvider implements ImageStorageProvider {
+	private static class TestImageStorageProvider implements StorageProvider {
 
 		private static int nextId = 1;
 		
 		@Override
-		public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {			
+		public TempStorage allocateTemporaryFile(String mimeType, String suffix) throws IOException {			
 			String fileName = (nextId++) + suffix;
 			File file = new File("target/report-tests/" + fileName);
-			return new ImageStorage(file.toURI().toURL().toString(), new FileOutputStream(file));
+			return new TempStorage(file.toURI().toURL().toString(), new FileOutputStream(file));
 		}
 	}
 }

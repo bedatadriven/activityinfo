@@ -40,7 +40,6 @@ public class AttachmentServlet extends HttpServlet {
 		this.entityManager = entityManager;
 		this.dispatcher = dispatcher;
 	}
-	
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -82,8 +81,7 @@ public class AttachmentServlet extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
-
-
+	
 	private FileItem getFirstUploadFile(HttpServletRequest request) throws FileUploadException {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (isMultipart) {
@@ -99,6 +97,4 @@ public class AttachmentServlet extends HttpServlet {
 		}
 		throw new RuntimeException("No upload provided");
 	}
-
-
 }

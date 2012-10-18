@@ -22,8 +22,8 @@ import java.util.List;
 
 import com.google.code.appengine.imageio.ImageIO;
 
-import org.activityinfo.server.report.output.ImageStorage;
-import org.activityinfo.server.report.output.ImageStorageProvider;
+import org.activityinfo.server.report.output.TempStorage;
+import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.shared.exception.ReportModelException;
 import org.activityinfo.shared.report.Theme;
 import org.activityinfo.shared.report.content.PivotChartContent;
@@ -71,11 +71,11 @@ public class ChartRendererJC  {
 
     private static final String SANS_SERIF = null;
 
-	public String renderToUrl(PivotChartReportElement element, boolean includeTitle, ImageStorageProvider istorageProvider,
+	public String renderToUrl(PivotChartReportElement element, boolean includeTitle, StorageProvider istorageProvider,
                               int width, int height, int dpi) throws IOException {
         try {
             Chart chart = createChart(element, includeTitle, width, height, dpi);
-            ImageStorage storage = istorageProvider.getImageUrl(null, ".jpg");
+            TempStorage storage = istorageProvider.allocateTemporaryFile(null, "activityinfo.jpg");
             JPEGEncoder.encode(chart,  0.75f, storage.getOutputStream());
             return storage.getUrl();
 

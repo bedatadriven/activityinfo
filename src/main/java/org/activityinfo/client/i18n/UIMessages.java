@@ -219,6 +219,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	
 	@DefaultMessage("{0} days ago")
 	String daysAgo(int hours);
-	
+
 }
 

@@ -13,8 +13,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.activityinfo.server.report.generator.MapIconPath;
-import org.activityinfo.server.report.output.ImageStorage;
-import org.activityinfo.server.report.output.ImageStorageProvider;
+import org.activityinfo.server.report.output.TempStorage;
+import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.server.report.renderer.image.ItextGraphic;
 import org.activityinfo.shared.report.model.ReportElement;
@@ -40,10 +40,10 @@ import com.lowagie.text.html.HtmlWriter;
  */
 public class HtmlReportRenderer extends ItextReportRenderer {
 
-	private final ImageStorageProvider imageStorageProvider;
+	private final StorageProvider imageStorageProvider;
 
 	@Inject
-	public HtmlReportRenderer(@MapIconPath String mapIconPath, ImageStorageProvider imageStorageProvider) {
+	public HtmlReportRenderer(@MapIconPath String mapIconPath, StorageProvider imageStorageProvider) {
 		super(mapIconPath);
 		this.imageStorageProvider = imageStorageProvider;
 	}
@@ -150,7 +150,7 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 		@Override
 		public Image toItextImage() throws BadElementException {
 			try {
-				ImageStorage storage = imageStorageProvider.getImageUrl(null, ".png");
+				TempStorage storage = imageStorageProvider.allocateTemporaryFile("image/png", "activityinfo.png");
 				ImageIO.write(image, "PNG", storage.getOutputStream());
 				storage.getOutputStream().close();
 				

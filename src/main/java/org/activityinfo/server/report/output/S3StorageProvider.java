@@ -17,7 +17,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.StorageClass;
 import com.google.inject.Inject;
 
-public class S3StorageProvider implements ImageStorageProvider {
+public class S3StorageProvider implements StorageProvider {
 	private String bucket;
 	private AmazonS3Client client;
 	
@@ -30,14 +30,14 @@ public class S3StorageProvider implements ImageStorageProvider {
 	}
 
 	@Override
-	public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
+	public TempStorage allocateTemporaryFile(String mimeType, String suffix) throws IOException {
 		
 		String key = SecureTokenGenerator.generate();
 		
 		// generate url
 		URL url = client.generatePresignedUrl(bucket, key, new Date( new Date().getTime() + 1000 * 60 * 120 ) );
 
-		return new ImageStorage(url.toString(), new S3OutputStream(key, suffix));
+		return new TempStorage(url.toString(), new S3OutputStream(key, suffix));
 	}
 
 	private class S3OutputStream extends OutputStream {

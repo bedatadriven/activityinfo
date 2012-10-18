@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.common.annotations.VisibleForTesting;
 
 @Singleton
 public class AppEngineStorageServlet extends HttpServlet {
@@ -28,9 +29,7 @@ public class AppEngineStorageServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		String uri = req.getRequestURI();
-		int lastSlash = uri.lastIndexOf('/');
-		String keyName = uri.substring(lastSlash+1);
+		String keyName = parseBlobKey(req.getRequestURI());
 		Key key = KeyFactory.createKey("TempFile", keyName);
 		
 		Entity entity;
@@ -43,8 +42,23 @@ public class AppEngineStorageServlet extends HttpServlet {
 		BlobKey blobKey = (BlobKey) entity.getProperty("blobKey");
 		
 		resp.setContentType((String)entity.getProperty("mimeType"));
-		resp.setHeader("Content-Disposition", "attachment; filename=\"activityinfo\"");
+		resp.setHeader("Content-Disposition", "attachment");
 		blobstore.serve(blobKey, resp);
+	}
+
+	@VisibleForTesting
+	static String parseBlobKey(String uri) {
+		String prefix = "/generated/";
+		int start = uri.indexOf(prefix);
+		if(start == -1) {
+			throw new IllegalArgumentException(uri);
+		}
+		start += prefix.length();
+		int keyEnd = uri.indexOf('/', start+1);
+		if(keyEnd == -1) {
+			throw new IllegalArgumentException(uri);
+		}
+		return uri.substring(start, keyEnd);
 	}
 
 }

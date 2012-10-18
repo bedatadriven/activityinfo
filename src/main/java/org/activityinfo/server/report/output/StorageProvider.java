@@ -8,16 +8,16 @@ package org.activityinfo.server.report.output;
 import java.io.IOException;
 
 
-public interface ImageStorageProvider {
+public interface StorageProvider {
 
     /**
      * Creates a web-accessible temporary file
-     * @param mimeType TODO
-     * @param suffix The suffix to be appended to the temporary file (should include necessary ".")
+     * @param mimeType the mime type of the file
+     * @param filename The name of the user-facing file 
      *
      * @return
      * @throws IOException
      */
-	ImageStorage getImageUrl(String mimeType, String suffix) throws IOException;
+	TempStorage allocateTemporaryFile(String mimeType, String filename) throws IOException;
 	
 }

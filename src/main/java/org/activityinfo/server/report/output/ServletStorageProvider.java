@@ -14,20 +14,20 @@ import org.activityinfo.server.authentication.SecureTokenGenerator;
 
 import com.google.inject.Provider;
 
-public class ServletImageStorageProvider implements ImageStorageProvider {
+public class ServletStorageProvider implements StorageProvider {
 
     private String urlBase;
     private String tempPath;
 	private Provider<HttpServletRequest> provider;
 
-	public ServletImageStorageProvider(String urlBase, String tempPath, Provider<HttpServletRequest> httpRequestProvider) {
+	public ServletStorageProvider(String urlBase, String tempPath, Provider<HttpServletRequest> httpRequestProvider) {
         this.urlBase = urlBase;
         this.tempPath = tempPath;
         this.provider = httpRequestProvider;
     }
 
     @Override
-    public ImageStorage getImageUrl(String mimeType, String suffix) throws IOException {
+    public TempStorage allocateTemporaryFile(String mimeType, String suffix) throws IOException {
         String filename = SecureTokenGenerator.generate() + suffix;
         HttpServletRequest req = provider.get();
         
@@ -44,6 +44,6 @@ public class ServletImageStorageProvider implements ImageStorageProvider {
 
         FileOutputStream os = new FileOutputStream(path);
 
-        return new ImageStorage(sb.toString(), os);
+        return new TempStorage(sb.toString(), os);
     }
 }

@@ -16,8 +16,8 @@ import org.activityinfo.server.endpoint.gwtrpc.MapIconServlet;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.output.AppEngineStorageProvider;
 import org.activityinfo.server.report.output.AppEngineStorageServlet;
-import org.activityinfo.server.report.output.ImageStorageProvider;
-import org.activityinfo.server.report.output.ServletImageStorageProvider;
+import org.activityinfo.server.report.output.StorageProvider;
+import org.activityinfo.server.report.output.ServletStorageProvider;
 
 import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
@@ -47,7 +47,7 @@ public class ReportModule extends ServletModule {
     }
     
     @Provides
-    public ImageStorageProvider provideImageStorageProvider(ServletContext context, 
+    public StorageProvider provideImageStorageProvider(ServletContext context, 
     		Provider<HttpServletRequest> requestProvider) {
     
     	if(!Strings.isNullOrEmpty(System.getProperty("com.google.appengine.runtime.environment"))) {
@@ -58,7 +58,7 @@ public class ReportModule extends ServletModule {
         if(!tempPath.exists()) {
             tempPath.mkdir();
         }
-        ServletImageStorageProvider isp = new ServletImageStorageProvider("temp/",
+        ServletStorageProvider isp = new ServletStorageProvider("temp/",
                 tempPath.getAbsolutePath(), requestProvider);
         return isp;
     }
