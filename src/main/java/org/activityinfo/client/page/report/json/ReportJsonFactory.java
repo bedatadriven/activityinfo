@@ -19,7 +19,6 @@ import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.activityinfo.shared.report.model.EmailDelivery;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.activityinfo.shared.report.model.PivotTableReportElement;
@@ -31,15 +30,14 @@ import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
-import org.activityinfo.shared.report.model.layers.ScalingType;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
+import org.activityinfo.shared.report.model.layers.ScalingType;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.inject.Inject;
 
 public class ReportJsonFactory implements ReportSerializer {
@@ -395,9 +393,9 @@ public class ReportJsonFactory implements ReportSerializer {
 			jsonLayer.addProperty("isVisible", (Boolean) layer.isVisible());
 			jsonLayer.add("indicatorIds",
 					encodeIntegerList(layer.getIndicatorIds()));
-			jsonLayer.addProperty("labelSequence", layer.getLabelSequence()
-					.next());
-			jsonLayer.addProperty("cluster", (Boolean) layer.isClustered());
+//			jsonLayer.addProperty("labelSequence", layer.getLabelSequence()
+//					.next());
+//			jsonLayer.addProperty("cluster", (Boolean) layer.isClustered());
 			jsonLayer.addProperty("name", layer.getName());
 			jsonLayer.add("filter", encodeFilter(layer.getFilter()));
 

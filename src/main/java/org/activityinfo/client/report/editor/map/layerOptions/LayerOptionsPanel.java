@@ -10,6 +10,7 @@ import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PointMapLayer;
 
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -73,8 +74,8 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		clusteringOptions.addValueChangeHandler(new ValueChangeHandler<Clustering>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Clustering> event) {
-				if (selectedMapLayer != null) {
-					selectedMapLayer.setClustering(event.getValue());
+				if (selectedMapLayer instanceof PointMapLayer) {
+					((PointMapLayer)selectedMapLayer).setClustering(event.getValue());
 					ValueChangeEvent.fire(LayerOptionsPanel.this, selectedMapLayer);
 				}
 			}
@@ -244,7 +245,12 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 			
 			setStyleOptions(layerOptionsWidget);
 			clusteringOptions.loadForm(mapLayer);
-			clusteringOptions.setValue(mapLayer.getClustering(), false);
+			if(mapLayer instanceof PointMapLayer) {
+				clusteringOptions.setValue(((PointMapLayer) mapLayer).getClustering(), false);
+				clusteringOptions.setVisible(true);
+			} else {
+				clusteringOptions.setVisible(false);
+			}
 	
 			filterPanel.getFilterPanelSet().applyBaseFilter(baseFilterFromLayer(mapLayer));
 			filterPanel.setValue(mapLayer.getFilter(), false);

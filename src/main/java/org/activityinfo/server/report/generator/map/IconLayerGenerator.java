@@ -25,22 +25,12 @@ import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.util.mapping.Extents;
 
 
-public class IconLayerGenerator 
-	extends 
-		AbstractLayerGenerator
-	implements 
-		LayerGenerator {
-
-    private final IconMapLayer layer;
+public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
 
     private MapIcon icon;
-	private List<SiteDTO> sites;
 
-
-    public IconLayerGenerator(IconMapLayer layer, List<SiteDTO> sites) {
-        this.layer = layer;
-        this.sites=sites;
-
+    public IconLayerGenerator(IconMapLayer layer) {
+    	super(layer);
         this.icon = new MapIcon(layer.getIcon(), 32, 37, 16, 35);
     }
 

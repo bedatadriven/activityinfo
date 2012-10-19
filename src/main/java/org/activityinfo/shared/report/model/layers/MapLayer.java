@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.report.model.clustering.Clustering;
-import org.activityinfo.shared.report.model.labeling.LabelSequence;
 
 /**
  * A layer representing one or more indicators on a MapElement
@@ -24,16 +22,8 @@ public interface MapLayer extends Serializable {
 	List<Integer> getIndicatorIds();
 	void addIndicatorId(int Id);
 	
-	LabelSequence getLabelSequence();
-	void setLabelSequence(LabelSequence labelSequence);
-
-	boolean isClustered();
-	
 	boolean supportsMultipleIndicators();
 	boolean hasMultipleIndicators();
-	
-	Clustering getClustering();
-	void setClustering(Clustering clustering);
 	
 	String getName();
 	void setName(String name);

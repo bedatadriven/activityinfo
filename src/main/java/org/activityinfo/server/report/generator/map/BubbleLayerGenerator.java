@@ -30,14 +30,11 @@ import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.ScalingType;
 import org.activityinfo.shared.util.mapping.Extents;
 
-public class BubbleLayerGenerator extends AbstractLayerGenerator {
+public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
 
-    private BubbleMapLayer layer;
-    private List<SiteDTO> sites;
 
-    public BubbleLayerGenerator(BubbleMapLayer layer, List<SiteDTO> sites) {
-        this.layer = layer;
-        this.sites=sites;
+    public BubbleLayerGenerator(BubbleMapLayer layer) {
+    	super(layer);
     }
 
     public Extents calculateExtents() {

@@ -15,6 +15,7 @@ import org.activityinfo.client.report.editor.map.layerOptions.LayerOptionsPanel;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.clustering.NoClustering;
 import org.activityinfo.shared.report.model.layers.MapLayer;
+import org.activityinfo.shared.report.model.layers.PointMapLayer;
 
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
@@ -332,7 +333,9 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 	}
 
 	public void addLayer(MapLayer layer) {
-		layer.setClustering(new NoClustering());
+		if(layer instanceof PointMapLayer) {
+			((PointMapLayer) layer).setClustering(new NoClustering());
+		}
 		mapElement.getLayers().add(layer);
 		events.fireChange();
 		updateStore();
