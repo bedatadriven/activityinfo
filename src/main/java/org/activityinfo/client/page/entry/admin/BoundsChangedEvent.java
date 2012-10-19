@@ -1,6 +1,6 @@
 package org.activityinfo.client.page.entry.admin;
 
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
@@ -13,20 +13,20 @@ public class BoundsChangedEvent extends BaseEvent {
 
 	public static final EventType TYPE = new EventType();
 	
-	private BoundingBoxDTO bounds;
+	private Extents bounds;
 	private String name;
 	
-	public BoundsChangedEvent(BoundingBoxDTO bounds, String name) {
+	public BoundsChangedEvent(Extents bounds, String name) {
 		super(TYPE);
 		this.bounds = bounds;
 		this.name = name;
 	}
 
-	public BoundingBoxDTO getBounds() {
+	public Extents getBounds() {
 		return bounds;
 	}
 
-	public void setBounds(BoundingBoxDTO bounds) {
+	public void setBounds(Extents bounds) {
 		this.bounds = bounds;
 	}
 

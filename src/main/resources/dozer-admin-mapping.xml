@@ -67,7 +67,7 @@
 	
 		<mapping wildcard="false">
 		<class-a>org.activityinfo.server.database.hibernate.entity.Bounds</class-a>
-		<class-b>org.activityinfo.shared.util.mapping.BoundingBoxDTO</class-b>
+		<class-b>org.activityinfo.shared.util.mapping.Extents</class-b>
 	
 		<field>
 			<a>x1</a>

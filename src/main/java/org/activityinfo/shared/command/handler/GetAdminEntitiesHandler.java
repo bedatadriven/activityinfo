@@ -8,7 +8,7 @@ import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -93,7 +93,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 		if(!row.isNull("adminEntityParentId")) {
 			entity.setParentId(row.getInt("adminEntityParentId"));
 		}
-		BoundingBoxDTO bounds = BoundingBoxDTO.empty();
+		Extents bounds = Extents.empty();
 		if(!row.isNull("x1")) {
 			bounds.setMinLon(row.getDouble("x1"));
 			bounds.setMinLat(row.getDouble("y1"));

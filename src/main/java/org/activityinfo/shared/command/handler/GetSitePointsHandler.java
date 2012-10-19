@@ -16,7 +16,7 @@ import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.dto.SitePointDTO;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -47,7 +47,7 @@ public class GetSitePointsHandler implements CommandHandlerAsync<GetSitePoints, 
 	}
 
 	protected SitePointList toPointList(List<SiteDTO> sites) {
-        BoundingBoxDTO bounds = BoundingBoxDTO.empty();
+        Extents bounds = Extents.empty();
 
         List<SitePointDTO> points = new ArrayList<SitePointDTO>(sites.size());
         for (SiteDTO site : sites) {

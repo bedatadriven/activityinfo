@@ -3,14 +3,14 @@ package org.activityinfo.shared.report.content;
 import java.io.Serializable;
 
 import org.activityinfo.shared.dto.AdminEntityDTO;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 public class Polygon implements Serializable {
 	private int adminEntityId;
 	private String name;
 	private Double value;
 	private String color;
-	private BoundingBoxDTO bounds;
+	private Extents bounds;
 	
 	public Polygon(AdminEntityDTO entity) {
 		this.adminEntityId = entity.getId();
@@ -35,10 +35,10 @@ public class Polygon implements Serializable {
 	public void setColor(String color) {
 		this.color = color;
 	}
-	public BoundingBoxDTO getBounds() {
+	public Extents getBounds() {
 		return bounds;
 	}
-	public void setBounds(BoundingBoxDTO bounds) {
+	public void setBounds(Extents bounds) {
 		this.bounds = bounds;
 	}
 	public String getName() {

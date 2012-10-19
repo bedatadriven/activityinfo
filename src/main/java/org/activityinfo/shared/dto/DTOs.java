@@ -17,7 +17,7 @@ import org.activityinfo.shared.command.result.ListResult;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.command.result.UserResult;
 import org.activityinfo.shared.map.TileBaseMap;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.google.common.collect.Lists;
 
@@ -36,10 +36,10 @@ public class DTOs {
 	public static final LocationTypeDTO LOCALITE = new LocationTypeDTO(1, "Localite");
 
     public static final AdminEntityDTO NordKivu = rootEntity().atLevel(PROVINCE).named("North Kivu")
-    			.withBounds(BoundingBoxDTO.create(0, 0, 100, 100)).build();
+    			.withBounds(Extents.create(0, 0, 100, 100)).build();
     
     public static final AdminEntityDTO Beni = childOf(NordKivu).atLevel(TERRITOIRE).named("Beni")
-    			.withBounds(BoundingBoxDTO.create(0, 0, 25, 25)).build();
+    			.withBounds(Extents.create(0, 0, 25, 25)).build();
 
     public static final AdminEntityDTO Watalina = childOf(Beni).atLevel(SECTEUR).named("Watalina")
     			.build();
@@ -48,12 +48,12 @@ public class DTOs {
     			.build();
         
     public static final AdminEntityDTO Masisi = childOf(NordKivu).atLevel(TERRITOIRE).named("Masisi")
-    			.withBounds(BoundingBoxDTO.create(0, 25, 25, 50)).build();
+    			.withBounds(Extents.create(0, 25, 25, 50)).build();
 
     public static final AdminEntityResult NORD_KIVU_TERRITOIRES = new AdminEntityResult(Lists.newArrayList(Beni, Masisi));    
   
     public static final AdminEntityDTO SudKivu = rootEntity().atLevel(PROVINCE).named("Sud Kivu")
-    			.withBounds(BoundingBoxDTO.create(0, 0, -100, -100)).build();
+    			.withBounds(Extents.create(0, 0, -100, -100)).build();
     
     public static final AdminEntityDTO SHABUNDA = childOf(SudKivu).atLevel(TERRITOIRE).named("Shabunda")
 				.build();
@@ -68,7 +68,7 @@ public class DTOs {
     
     static {
     	DRC = new CountryDTO(1, "RDC");
-        DRC.setBounds(BoundingBoxDTO.create(0, 0, 300, 300));
+        DRC.setBounds(Extents.create(0, 0, 300, 300));
         DRC.setAdminLevels(Arrays.asList(PROVINCE, TERRITOIRE, SECTEUR));
         DRC.setLocationTypes(Arrays.asList(LOCALITE, ECOLE));
     }
@@ -330,7 +330,7 @@ public class DTOs {
     		return this;
     	}
     	
-    	public EntityBuilder withBounds(BoundingBoxDTO bounds) {
+    	public EntityBuilder withBounds(Extents bounds) {
     		entity.setBounds(bounds);
     		return this;
     	}

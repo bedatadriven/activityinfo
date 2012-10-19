@@ -10,7 +10,7 @@ import org.activityinfo.shared.command.result.LocationResult;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.dto.LocationTypeDTO;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -37,7 +37,7 @@ public class LocationSearchPresenter extends BaseObservable {
 	private final ListStore<LocationDTO> store;
 	
 	private SearchLocations currentSearch;
-	private BoundingBoxDTO searchBounds;
+	private Extents searchBounds;
 
 	private LocationDTO selection;
 	
@@ -66,11 +66,11 @@ public class LocationSearchPresenter extends BaseObservable {
 		return store;
 	}
 	
-	public BoundingBoxDTO getBounds() {
+	public Extents getBounds() {
 		return searchBounds;
 	}
 	
-	public void search(String name, Collection<Integer> collection, BoundingBoxDTO bounds) {
+	public void search(String name, Collection<Integer> collection, Extents bounds) {
 		searchBounds = bounds;
 		currentSearch = new SearchLocations()
 		.setName(name)

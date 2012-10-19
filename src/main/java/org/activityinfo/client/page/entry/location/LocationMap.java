@@ -8,7 +8,7 @@ import org.activityinfo.client.widget.GoogleMapsPanel;
 import org.activityinfo.client.widget.CoordinateField.Axis;
 import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -51,7 +51,7 @@ public class LocationMap extends GoogleMapsPanel {
 
 	@Override
 	protected void configureMap(MapWidget map) {
-		BoundingBoxDTO countryBounds = searchPresenter.getCountry().getBounds();
+		Extents countryBounds = searchPresenter.getCountry().getBounds();
 		map.addControl(new SmallMapControl());
         map.setCenter(LatLng.newInstance(
                 countryBounds.getCenterY(),
@@ -135,7 +135,7 @@ public class LocationMap extends GoogleMapsPanel {
 		
 		GoogleChartsIconBuilder iconBuilder = new GoogleChartsIconBuilder();
 		
-		BoundingBoxDTO bounds = BoundingBoxDTO.empty();
+		Extents bounds = Extents.empty();
 		
 		for(LocationDTO location : Lists.reverse(searchPresenter.getStore().getModels())) {
 			if(location.hasCoordinates()) {

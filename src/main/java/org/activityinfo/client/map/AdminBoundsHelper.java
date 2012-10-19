@@ -13,7 +13,7 @@ import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.HasAdminEntityValues;
 import org.activityinfo.shared.dto.SiteDTO;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 /**
  * Utility class to help calculate the lat/lng bounds of an
@@ -38,7 +38,7 @@ public final class AdminBoundsHelper {
      * @param site
      * @return the normative lat/lng bounds
      */
-    public static BoundingBoxDTO calculate(ActivityDTO activity, final SiteDTO site) {
+    public static Extents calculate(ActivityDTO activity, final SiteDTO site) {
         return calculate(activity, new HasAdminEntityValues() {
             @Override
 			public AdminEntityDTO getAdminEntity(int levelId) {
@@ -61,7 +61,7 @@ public final class AdminBoundsHelper {
      * of a site.
      * @return the normative lat/lng bounds
      */
-    public static BoundingBoxDTO calculate(ActivityDTO activity, HasAdminEntityValues entityAccessor) {
+    public static Extents calculate(ActivityDTO activity, HasAdminEntityValues entityAccessor) {
         return calculate(activity.getDatabase().getCountry(), activity.getAdminLevels(),  entityAccessor);
     }
 
@@ -79,13 +79,13 @@ public final class AdminBoundsHelper {
      * of a site.
      * @return the normative lat/lng bounds
      */
-    public static BoundingBoxDTO calculate(CountryDTO country, Collection<AdminLevelDTO> levels, HasAdminEntityValues entityAccessor) {
-        BoundingBoxDTO bounds = null;
+    public static Extents calculate(CountryDTO country, Collection<AdminLevelDTO> levels, HasAdminEntityValues entityAccessor) {
+        Extents bounds = null;
         if(country != null) {
-            bounds = new BoundingBoxDTO(country.getBounds());
+            bounds = new Extents(country.getBounds());
         }
         if(bounds == null) {
-            bounds = BoundingBoxDTO.maxGeoBounds();
+            bounds = Extents.maxGeoBounds();
         }
 
         for(AdminLevelDTO level  : levels) {
@@ -108,7 +108,7 @@ public final class AdminBoundsHelper {
      * @param site
      * @return
      */
-    public static String name(ActivityDTO activity, BoundingBoxDTO bounds, final SiteDTO site) {
+    public static String name(ActivityDTO activity, Extents bounds, final SiteDTO site) {
         return name(bounds, activity.getAdminLevels(), new HasAdminEntityValues() {
             @Override
 			public AdminEntityDTO getAdminEntity(int levelId) {
@@ -123,7 +123,7 @@ public final class AdminBoundsHelper {
      * @param getter
      * @return
      */
-    public static String name(BoundingBoxDTO bounds, Collection<AdminLevelDTO> levels, HasAdminEntityValues getter) {
+    public static String name(Extents bounds, Collection<AdminLevelDTO> levels, HasAdminEntityValues getter) {
         // find the entities that are the limiting bounds.
         // E.g., if the user selects North Kivu, distict de North Kivu, and territoire
         // de Beni, the name we give to this bounds should just be 'Beni'.
@@ -135,7 +135,7 @@ public final class AdminBoundsHelper {
             for(AdminLevelDTO level : levels) {
                 AdminEntityDTO entity = getter.getAdminEntity(level.getId());
                 if(entity!=null && entity.hasBounds()) {
-                    BoundingBoxDTO b = entity.getBounds();
+                    Extents b = entity.getBounds();
 
                     if(b!=null && (!b.contains(bounds) || b.equals(bounds))) {
                         if(sb.length()!=0) {

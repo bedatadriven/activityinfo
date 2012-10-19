@@ -26,7 +26,7 @@ public class MapTest {
 //        // and that, in the absence of X/Y data, the marker is set to
 //        // the center of these Bounds
 //
-//        BoundingBoxDTO bounds = new BoundingBoxDTO(0, 0, 300, 300);
+//        Extents bounds = new Extents(0, 0, 300, 300);
 //
 //        presenter.setSite(new SiteDTO(), null, bounds);
 //
@@ -46,7 +46,7 @@ public class MapTest {
 //
 //        // VERIFY that marker movement updates the coordinates
 //
-//        BoundingBoxDTO bounds = new BoundingBoxDTO(0, 0, 300, 200);
+//        Extents bounds = new Extents(0, 0, 300, 200);
 //        SiteDTO site = new SiteDTO();
 //        site.setX(25.0);
 //        site.setY(30.0);

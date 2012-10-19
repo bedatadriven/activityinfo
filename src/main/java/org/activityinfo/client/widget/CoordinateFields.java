@@ -3,7 +3,7 @@ package org.activityinfo.client.widget;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.widget.CoordinateField.Axis;
 import org.activityinfo.shared.report.content.AiLatLng;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -26,8 +26,8 @@ public class CoordinateFields {
 		latitudeField.setToolTip(toolTip);
 	}
 	
-	public void setBounds(String name, BoundingBoxDTO bounds) {
-		longitudeField.setBounds(name, bounds.getMinLng(), bounds.getMaxLng());
+	public void setBounds(String name, Extents bounds) {
+		longitudeField.setBounds(name, bounds.getMinLon(), bounds.getMaxLon());
 		latitudeField.setBounds(name, bounds.getMinLat(), bounds.getMaxLat());
 	}
 
