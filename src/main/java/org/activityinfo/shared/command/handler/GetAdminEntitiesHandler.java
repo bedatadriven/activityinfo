@@ -95,10 +95,10 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 		}
 		BoundingBoxDTO bounds = BoundingBoxDTO.empty();
 		if(!row.isNull("x1")) {
-			bounds.setX1(row.getDouble("x1"));
-			bounds.setY1(row.getDouble("y1"));
-			bounds.setX2(row.getDouble("x2"));
-			bounds.setY2(row.getDouble("y2"));
+			bounds.setMinLon(row.getDouble("x1"));
+			bounds.setMinLat(row.getDouble("y1"));
+			bounds.setMaxLon(row.getDouble("x2"));
+			bounds.setMaxLat(row.getDouble("y2"));
 			entity.setBounds(bounds);
 		}
 		return entity;

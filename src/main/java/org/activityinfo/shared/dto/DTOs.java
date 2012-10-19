@@ -36,10 +36,10 @@ public class DTOs {
 	public static final LocationTypeDTO LOCALITE = new LocationTypeDTO(1, "Localite");
 
     public static final AdminEntityDTO NordKivu = rootEntity().atLevel(PROVINCE).named("North Kivu")
-    			.withBounds(new BoundingBoxDTO(0, 0, 100, 100)).build();
+    			.withBounds(BoundingBoxDTO.create(0, 0, 100, 100)).build();
     
     public static final AdminEntityDTO Beni = childOf(NordKivu).atLevel(TERRITOIRE).named("Beni")
-    			.withBounds(new BoundingBoxDTO(0, 0, 25, 25)).build();
+    			.withBounds(BoundingBoxDTO.create(0, 0, 25, 25)).build();
 
     public static final AdminEntityDTO Watalina = childOf(Beni).atLevel(SECTEUR).named("Watalina")
     			.build();
@@ -48,12 +48,12 @@ public class DTOs {
     			.build();
         
     public static final AdminEntityDTO Masisi = childOf(NordKivu).atLevel(TERRITOIRE).named("Masisi")
-    			.withBounds(new BoundingBoxDTO(0, 25, 25, 50)).build();
+    			.withBounds(BoundingBoxDTO.create(0, 25, 25, 50)).build();
 
     public static final AdminEntityResult NORD_KIVU_TERRITOIRES = new AdminEntityResult(Lists.newArrayList(Beni, Masisi));    
   
     public static final AdminEntityDTO SudKivu = rootEntity().atLevel(PROVINCE).named("Sud Kivu")
-    			.withBounds(new BoundingBoxDTO(0, 0, -100, -100)).build();
+    			.withBounds(BoundingBoxDTO.create(0, 0, -100, -100)).build();
     
     public static final AdminEntityDTO SHABUNDA = childOf(SudKivu).atLevel(TERRITOIRE).named("Shabunda")
 				.build();
@@ -68,7 +68,7 @@ public class DTOs {
     
     static {
     	DRC = new CountryDTO(1, "RDC");
-        DRC.setBounds(new BoundingBoxDTO(0, 0, 300, 300));
+        DRC.setBounds(BoundingBoxDTO.create(0, 0, 300, 300));
         DRC.setAdminLevels(Arrays.asList(PROVINCE, TERRITOIRE, SECTEUR));
         DRC.setLocationTypes(Arrays.asList(LOCALITE, ECOLE));
     }

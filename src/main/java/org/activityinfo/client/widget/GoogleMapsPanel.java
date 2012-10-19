@@ -136,8 +136,8 @@ public class GoogleMapsPanel extends ContentPanel {
 
 	protected final LatLngBounds newLatLngBounds(BoundingBoxDTO bounds) {
 		return LatLngBounds.newInstance(
-				LatLng.newInstance(bounds.getY1(), bounds.getX1()),
-				LatLng.newInstance(bounds.getY2(), bounds.getX2()));
+				LatLng.newInstance(bounds.getMinLat(), bounds.getMinLon()),
+				LatLng.newInstance(bounds.getMaxLat(), bounds.getMaxLon()));
 	}
 
 	protected final LatLng newLatLng(AiLatLng latLng) {
@@ -152,8 +152,8 @@ public class GoogleMapsPanel extends ContentPanel {
 
 	protected final BoundingBoxDTO createBounds(LatLngBounds latlngbounds) {
 		return new BoundingBoxDTO(latlngbounds.getNorthEast().getLongitude(),
-				latlngbounds.getSouthWest().getLatitude(),
 				latlngbounds.getSouthWest().getLongitude(),
+				latlngbounds.getSouthWest().getLatitude(),
 				latlngbounds.getNorthEast().getLatitude());
 	}
 

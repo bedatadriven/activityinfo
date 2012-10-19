@@ -90,8 +90,8 @@ public class AdminLevelClusterer implements Clusterer {
 			return null;
 		} else {
 			AiLatLng center = new AiLatLng( 
-					(entity.getBounds().getY1() + entity.getBounds().getY2()) / 2d,
-					(entity.getBounds().getX1() + entity.getBounds().getX2()) / 2d);
+					(entity.getBounds().getMinLat() + entity.getBounds().getMaxLat()) / 2d,
+					(entity.getBounds().getMinLon() + entity.getBounds().getMaxLon()) / 2d);
 					
 			return map.fromLatLngToPixel(center);
 		}

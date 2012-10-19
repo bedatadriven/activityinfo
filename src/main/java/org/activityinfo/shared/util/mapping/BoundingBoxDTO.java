@@ -21,10 +21,10 @@ public final class BoundingBoxDTO implements Serializable {
 	private static final int LAT_MIN = -LAT_MAX;
 	private static final int LNG_MIN = -180;
 	
-	private double x1;
-    private double y1;
-    private double x2;
-    private double y2;
+	private double minLon;
+    private double minLat;
+    private double maxLon;
+    private double maxLat;
 
     /**
      * 
@@ -39,34 +39,38 @@ public final class BoundingBoxDTO implements Serializable {
      * @return maximum geographic bounds (-180, -90, 180, 90)
      */
     public static BoundingBoxDTO maxGeoBounds() {
-    	return new BoundingBoxDTO(LNG_MIN, LAT_MIN, LNG_MAX, LAT_MAX);
+    	return new BoundingBoxDTO(LNG_MIN, LNG_MAX, LAT_MIN, LAT_MAX);
     }
     
     private BoundingBoxDTO() {
-        this.x1 = LNG_MAX;
-        this.y1 = LAT_MAX;
-        this.x2 = LNG_MIN;
-        this.y2 = LAT_MIN;
+        this.minLon = LNG_MAX;
+        this.minLat = LAT_MAX;
+        this.maxLon = LNG_MIN;
+        this.maxLat = LAT_MIN;
     }
 
     /**
      * 
      * @param x1
      *            Minimum x value (most westernly longitude)
-     * @param y1
-     *            Minimum y value (most southernly latitude)
      * @param x2
      *            Maximum x value (most easternly longitude)
+     * @param y1
+     *            Minimum y value (most southernly latitude)
      * @param y2
      *            Maximum y value (most northernly latitude)
      */
-    public BoundingBoxDTO(double x1, double y1, double x2, double y2) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
+    public BoundingBoxDTO(double x1, double x2, double y1, double y2) {
+        this.minLon = x1;
+        this.minLat = y1;
+        this.maxLon = x2;
+        this.maxLat = y2;
     }
 
+    public static BoundingBoxDTO create(double x1, double y1, double x2, double y2) {
+    	return new BoundingBoxDTO(x1,x2,y1,y2);
+    }
+    
     /**
      * Constructs a copy of the given BoundingBoxDTO
      * 
@@ -74,27 +78,27 @@ public final class BoundingBoxDTO implements Serializable {
      *            the instance to copy
      */
     public BoundingBoxDTO(BoundingBoxDTO bounds) {
-        this.x1 = bounds.getX1();
-        this.y1 = bounds.getY1();
-        this.x2 = bounds.getX2();
-        this.y2 = bounds.getY2();
+        this.minLon = bounds.getMinLon();
+        this.minLat = bounds.getMinLat();
+        this.maxLon = bounds.getMaxLon();
+        this.maxLat = bounds.getMaxLat();
     }
 
     /**
      * Grows this BoundingBoxDTO to include the point at X, Y
      */
     public void grow(double x, double y) {
-        if (x < x1) {
-            x1 = x;
+        if (x < minLon) {
+            minLon = x;
         }
-        if (x > x2) {
-            x2 = x;
+        if (x > maxLon) {
+            maxLon = x;
         }
-        if (y < y1) {
-            y1 = y;
+        if (y < minLat) {
+            minLat = y;
         }
-        if (y > y2) {
-            y2 = y;
+        if (y > maxLat) {
+            maxLat = y;
         }
     }
 
@@ -102,17 +106,17 @@ public final class BoundingBoxDTO implements Serializable {
      * Grows this BoundingBoxDTO to include the given bounds
      */
 	public void grow(BoundingBoxDTO bounds) {
-		if(bounds.x1 < x1) {
-			this.x1 = bounds.x1;
+		if(bounds.minLon < minLon) {
+			this.minLon = bounds.minLon;
 		}
-		if(bounds.y1 < y1) {
-			this.y1 = bounds.y1;
+		if(bounds.minLat < minLat) {
+			this.minLat = bounds.minLat;
 		}
-		if(bounds.x2 > x2) {
-			this.x2 = bounds.x2;
+		if(bounds.maxLon > maxLon) {
+			this.maxLon = bounds.maxLon;
 		}
-		if(bounds.y2 > y2) {
-			this.y2 = bounds.y2;
+		if(bounds.maxLat > maxLat) {
+			this.maxLat = bounds.maxLat;
 		}
 	}
     
@@ -121,7 +125,7 @@ public final class BoundingBoxDTO implements Serializable {
      * @return true if the BoundingBoxDTO is empty
      */
     public boolean isEmpty() {
-        return x1 > x2 || y1 > y2;
+        return minLon > maxLon || minLat > maxLat;
     }
 
     /**
@@ -129,7 +133,7 @@ public final class BoundingBoxDTO implements Serializable {
      *         (x1+x2)/2
      */
     public double getCenterX() {
-        return (x1 + x2) / 2;
+        return (minLon + maxLon) / 2;
     }
 
     /**
@@ -138,7 +142,7 @@ public final class BoundingBoxDTO implements Serializable {
      *         (y1+y2)/2
      */
     public double getCenterY() {
-        return (y1 + y2) / 2;
+        return (minLat + maxLat) / 2;
     }
 
     /**
@@ -151,14 +155,14 @@ public final class BoundingBoxDTO implements Serializable {
      * @return the intersection of the two BoundingBoxDTOs
      */
     public BoundingBoxDTO intersect(BoundingBoxDTO b) {
-        return new BoundingBoxDTO(Math.max(x1, b.x1), Math.max(y1, b.y1), Math.min(x2, b.x2), Math.min(y2, b.y2));
+        return new BoundingBoxDTO(Math.max(minLon, b.minLon), Math.min(maxLon, b.maxLon), Math.max(minLat, b.minLat), Math.min(maxLat, b.maxLat));
     }
 
     /**
      * @return true if this BoundingBoxDTO intersects with <code>b</code>
      */
     public boolean intersects(BoundingBoxDTO b) {
-        return !(b.x2 < x1 || b.x1 > x2 || b.y2 < y1 || b.y1 > y2);
+        return !(b.maxLon < minLon || b.minLon > maxLon || b.maxLat < minLat || b.minLat > maxLat);
     }
 
     /**
@@ -167,7 +171,7 @@ public final class BoundingBoxDTO implements Serializable {
      * @return true if this BoundingBoxDTO contains <code>b</code>
      */
     public boolean contains(BoundingBoxDTO b) {
-        return b.x1 >= x1 && b.x2 <= x2 && b.y1 >= y1 && b.y2 <= y2;
+        return b.minLon >= minLon && b.maxLon <= maxLon && b.minLat >= minLat && b.maxLat <= maxLat;
     }
 
 	public boolean contains(AiLatLng center) {
@@ -180,7 +184,7 @@ public final class BoundingBoxDTO implements Serializable {
      * @return true if this BoundingBoxDTO contains the point at (x,y)
      */
     public boolean contains(double x, double y) {
-        return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+        return x >= minLon && x <= maxLon && y >= minLat && y <= maxLat;
     }
 
     /**
@@ -193,11 +197,11 @@ public final class BoundingBoxDTO implements Serializable {
      * @return the clamped value
      */
     public double clampX(double x) {
-        if (x < x1) {
-            return x1;
+        if (x < minLon) {
+            return minLon;
         }
-        if (x > x2) {
-            return x2;
+        if (x > maxLon) {
+            return maxLon;
         }
         return x;
     }
@@ -212,11 +216,11 @@ public final class BoundingBoxDTO implements Serializable {
      * @return the clamped value
      */
     public double clampY(double y) {
-        if (y < y1) {
-            return y1;
+        if (y < minLat) {
+            return minLat;
         }
-        if (y > y2) {
-            return y2;
+        if (y > maxLat) {
+            return maxLat;
         }
         return y;
     }
@@ -225,7 +229,7 @@ public final class BoundingBoxDTO implements Serializable {
     public boolean equals(Object o) {
         if (o instanceof BoundingBoxDTO) {
             BoundingBoxDTO b = (BoundingBoxDTO) o;
-            return b.x1 == x1 && b.y1 == y1 && b.x2 == x2 && b.y2 == y2;
+            return b.minLon == minLon && b.minLat == minLat && b.maxLon == maxLon && b.maxLat == maxLat;
         }
         return false;
     }
@@ -234,95 +238,88 @@ public final class BoundingBoxDTO implements Serializable {
 	public int hashCode() {
     	// probably not a great hash code but we can't use
     	// Double.longBits and this satisfies the contract
-		return Double.valueOf(x1).hashCode();
+		return Double.valueOf(minLon).hashCode();
 	}
 
 	/**
      * 
      * @return the minimum x (longitudinal) coordinate
      */
-    public double getX1() {
-        return x1;
+    public double getMinLon() {
+        return minLon;
     }
 
     /**
      * 
      * @return the minimum y (latitudinal) coordinate
      */
-    public double getY1() {
-        return y1;
+    public double getMinLat() {
+        return minLat;
     }
 
     /**
      * 
      * @return the maximum x (longitudinal) coordinate
      */
-    public double getX2() {
-        return x2;
+    public double getMaxLon() {
+        return maxLon;
     }
 
     /**
      * @return the maximum y (latitudinal) coordinate
      */
-    public double getY2() {
-        return y2;
+    public double getMaxLat() {
+        return maxLat;
     }
 
     /**
      * Sets the minimum x (longitudinal) value
      */
-    public void setX1(double x1) {
-        this.x1 = x1;
+    public void setMinLon(double x1) {
+        this.minLon = x1;
     }
 
     /**
      * Sets the minimum y (latitudinal) value
      */
-    public void setY1(double y1) {
-        this.y1 = y1;
+    public void setMinLat(double y1) {
+        this.minLat = y1;
     }
 
     /**
      * Sets the maximum x (longitudinal) value
      */
-    public void setX2(double x2) {
-        this.x2 = x2;
+    public void setMaxLon(double x2) {
+        this.maxLon = x2;
     }
 
     /**
      * Sets the maximum y (latitudinal) value
      */
-    public void setY2(double y2) {
-        this.y2 = y2;
+    public void setMaxLat(double y2) {
+        this.maxLat = y2;
     }
-    
-	public double getMinLat() {
-		return y1;
-	}
-	
-	public double getMaxLat() {
-		return y2;
-	}
+   
 	
 	public double getMinLng() {
-		return x1;
+		return minLon;
 	}
 	
 	public double getMaxLng() {
-		return x2;
+		return maxLon;
 	}
 	
     @Override
     public String toString() {
-        return "x1:" + x1 + ";x2:" + x2 + ";y1:" + y1 + ";y2:" + y2;
+        return "x1:" + minLon + ";x2:" + maxLon + ";y1:" + minLat + ";y2:" + maxLat;
     }
 
 	public double getWidth() {
-		return x2-x1;
+		return maxLon-minLon;
 	}
 	
 	public double getHeight() {
-		return y2-y1;
+		return maxLat-minLat;
 	}
 
 	public AiLatLng centroid() {

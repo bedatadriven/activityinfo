@@ -70,8 +70,8 @@ public class GetSchemaHandler implements
 							country.setName(rs.getString("name"));
 
 							BoundingBoxDTO bounds = new BoundingBoxDTO(rs
-									.getDouble("x1"), rs.getDouble("y1"), rs
-									.getDouble("x2"), rs.getDouble("y2"));
+									.getDouble("x1"), rs
+									.getDouble("x2"), rs.getDouble("y1"), rs.getDouble("y2"));
 
 							country.setBounds(bounds);
 
