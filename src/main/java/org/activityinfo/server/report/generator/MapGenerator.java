@@ -23,6 +23,7 @@ import org.activityinfo.server.report.generator.map.IconLayerGenerator;
 import org.activityinfo.server.report.generator.map.LayerGenerator;
 import org.activityinfo.server.report.generator.map.Margins;
 import org.activityinfo.server.report.generator.map.PiechartLayerGenerator;
+import org.activityinfo.server.report.generator.map.PolygonLayerGenerator;
 import org.activityinfo.server.report.generator.map.TiledMap;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetBaseMaps;
@@ -41,6 +42,7 @@ import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 import org.activityinfo.shared.util.mapping.Extents;
 import org.activityinfo.shared.util.mapping.TileMath;
 
@@ -146,6 +148,8 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 			return new IconLayerGenerator((IconMapLayer) layer);
 		} else if (layer instanceof PiechartMapLayer) {
 			return new PiechartLayerGenerator((PiechartMapLayer) layer);
+		} else if( layer instanceof PolygonMapLayer) {
+			return new PolygonLayerGenerator((PolygonMapLayer) layer);
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -197,7 +201,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 		Set<Country> countries = queryCountries(indicators);
 		if(countries.size() == 1) {
 			Country country = countries.iterator().next();
-			if(country.getCodeISO().equals("CD")) {
+			if("CD".equals(country.getCodeISO())) {
 				return "admin";
 			}
 		}

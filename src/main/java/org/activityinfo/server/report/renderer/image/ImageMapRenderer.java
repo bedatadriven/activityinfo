@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,16 +18,22 @@ import java.util.logging.Logger;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
 import org.activityinfo.server.report.generator.map.TiledMap;
+import org.activityinfo.server.report.renderer.geo.AdminGeo;
+import org.activityinfo.server.report.renderer.geo.AdminGeometryProvider;
+import org.activityinfo.server.report.renderer.geo.TestingGeometryProvider;
 import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.server.util.mapping.GoogleStaticMapsApi;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.GoogleBaseMap;
 import org.activityinfo.shared.map.TileBaseMap;
+import org.activityinfo.shared.report.content.AdminOverlay;
+import org.activityinfo.shared.report.content.AdminPolygon;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.IconMapMarker;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.shared.report.model.MapReportElement;
 
 import com.google.code.appengine.awt.BasicStroke;
@@ -38,6 +45,10 @@ import com.google.code.appengine.awt.geom.Ellipse2D;
 import com.google.code.appengine.awt.image.BufferedImage;
 import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Renders a MapElement and its generated MapContent
@@ -68,6 +79,8 @@ public class ImageMapRenderer {
 
 	private Map<String, BufferedImage> iconImages = new HashMap<String, BufferedImage>();
 
+	private AdminGeometryProvider geometryProvider = new TestingGeometryProvider();
+	
     @Inject
     public ImageMapRenderer(@MapIconPath String mapIconPath) {
         this.mapIconRoot = mapIconPath;
@@ -102,6 +115,12 @@ public class ImageMapRenderer {
     }
 
 	protected void drawOverlays(MapReportElement element, Graphics2D g2d) {
+		TiledMap map = createTileMap(element);
+		
+		for(AdminOverlay overlay : element.getContent().getAdminOverlays()) {
+			drawAdminOverlay(map, g2d, overlay);
+		}
+		
 		for(MapMarker marker : element.getContent().getMarkers()) {
             if(marker instanceof IconMapMarker) {
                 drawIcon(g2d, (IconMapMarker) marker);
@@ -113,7 +132,32 @@ public class ImageMapRenderer {
         }
 	}
 
-    public static void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {
+	private void drawAdminOverlay(TiledMap map, Graphics2D g2d, AdminOverlay overlay) {
+		List<AdminGeo> geometry = geometryProvider.getGeometry(overlay.getAdminLevelId());
+		for(AdminGeo adminGeo : geometry) {
+			AdminPolygon polygon = overlay.getPolygon(adminGeo.getId());
+            g2d.setColor(bubbleFillColor(ColorUtil.colorFromString(polygon.getColor())));
+            fill(map, g2d, adminGeo.getGeometry());
+		}
+		
+	}
+
+	private void fill(TiledMap map, Graphics2D g2d, Geometry geometry) {
+		for(int i=0;i!=geometry.getNumGeometries();++i) {
+			Polygon polygon = (Polygon) geometry.getGeometryN(i);
+			Coordinate[] coordinates = polygon.getCoordinates();
+			int x[] = new int[coordinates.length];
+			int y[] = new int[coordinates.length];
+			for(int j=0;j!=coordinates.length;++j) {
+				Point point = map.fromLatLngToPixel(new AiLatLng(coordinates[j].y,coordinates[j].x));
+				x[j] = point.getX();
+				y[j] = point.getY();
+			}
+			g2d.fillPolygon(x, y, x.length);
+		}
+	}
+
+	public static void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {
 
         // Determine the total area
         Rectangle area = new Rectangle();

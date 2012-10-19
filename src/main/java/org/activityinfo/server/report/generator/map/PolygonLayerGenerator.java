@@ -9,9 +9,9 @@ import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.report.content.AdminOverlay;
+import org.activityinfo.shared.report.content.AdminPolygon;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.MapContent;
-import org.activityinfo.shared.report.content.Polygon;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
@@ -38,7 +38,9 @@ public class PolygonLayerGenerator implements LayerGenerator {
 
 		queryBounds(dispatcher, layerFilter);
 		queryBuckets(dispatcher, layerFilter);	
+		color();
 	}
+
 
 	private void queryBounds(DispatcherSync dispatcher, Filter layerFilter) {
 		GetAdminEntities query = new GetAdminEntities();
@@ -46,9 +48,8 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		
 		AdminEntityResult entities = dispatcher.execute(query);
 		for(AdminEntityDTO entity : entities.getData()) {
-			overlay.addPolygon(new Polygon(entity));
+			overlay.addPolygon(new AdminPolygon(entity));
 		}
-	
 	}
 
 	private void queryBuckets(DispatcherSync dispatcher, Filter layerFilter) {
@@ -64,13 +65,24 @@ public class PolygonLayerGenerator implements LayerGenerator {
 			overlay.getPolygon(adminEntityId).setValue(bucket.doubleValue());
 		}
 	}
+	
+
+	private void color() {
+		for(AdminPolygon polygon : overlay.getPolygons()) {
+			if(polygon.hasValue()) {
+				polygon.setColor("#FF0000");
+			} else {
+				polygon.setColor("#FFFFFF");
+			}
+		}
+	}
 
 	@Override
 	public Extents calculateExtents() {
 		Extents extents = Extents.emptyExtents();
-		for(Polygon polygon : overlay.getPolygons()) {
+		for(AdminPolygon polygon : overlay.getPolygons()) {
 			if(polygon.hasValue()) {
-				
+				extents.grow(polygon.getExtents());
 			}
 		}
 		return extents;
@@ -83,6 +95,6 @@ public class PolygonLayerGenerator implements LayerGenerator {
 
 	@Override
 	public void generate(TiledMap map, MapContent content) {
-		
+		content.getAdminOverlays().add(overlay);
 	}
 }

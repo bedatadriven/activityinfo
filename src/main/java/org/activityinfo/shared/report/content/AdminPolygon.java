@@ -5,14 +5,14 @@ import java.io.Serializable;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.util.mapping.Extents;
 
-public class Polygon implements Serializable {
+public class AdminPolygon implements Serializable {
 	private int adminEntityId;
 	private String name;
 	private Double value;
 	private String color;
 	private Extents bounds;
 	
-	public Polygon(AdminEntityDTO entity) {
+	public AdminPolygon(AdminEntityDTO entity) {
 		this.adminEntityId = entity.getId();
 		this.name = entity.getName();
 		this.bounds = entity.getBounds();
@@ -35,7 +35,7 @@ public class Polygon implements Serializable {
 	public void setColor(String color) {
 		this.color = color;
 	}
-	public Extents getBounds() {
+	public Extents getExtents() {
 		return bounds;
 	}
 	public void setBounds(Extents bounds) {
@@ -51,5 +51,8 @@ public class Polygon implements Serializable {
 		return value != null;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return name + "[" + adminEntityId + "] => " + value + " (" + color + ")";
+	}
 }

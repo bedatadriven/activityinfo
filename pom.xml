@@ -178,7 +178,13 @@
 			<artifactId>dozer</artifactId>
 			<version>5.1</version>
 		</dependency>
-
+		
+		<dependency>
+		    <groupId>com.vividsolutions</groupId>
+		    <artifactId>jts</artifactId>
+		    <version>1.12</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker-gae</artifactId>

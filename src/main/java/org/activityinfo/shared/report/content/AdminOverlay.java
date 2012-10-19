@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 
 
 
 public class AdminOverlay implements Serializable {
 	
-	private Map<Integer, Polygon> polygons;
+	private Map<Integer, AdminPolygon> polygons;
 	private int adminLevelId;
 	
 	public AdminOverlay() {
@@ -23,15 +24,15 @@ public class AdminOverlay implements Serializable {
 		this.polygons = Maps.newHashMap();
 	}
 
-	public Polygon getPolygon(int adminLevelId) {
-		return polygons.get(adminLevelId);
+	public AdminPolygon getPolygon(int adminEntityId) {
+		return polygons.get(adminEntityId);
 	}
 	
-	public Collection<Polygon> getPolygons() {
+	public Collection<AdminPolygon> getPolygons() {
 		return polygons.values();
 	}
 
-	public void setPolygons(Map<Integer, Polygon> polygons) {
+	public void setPolygons(Map<Integer, AdminPolygon> polygons) {
 		this.polygons = polygons;
 	}
 
@@ -43,8 +44,13 @@ public class AdminOverlay implements Serializable {
 		this.adminLevelId = adminLevelId;
 	}
 
-	public void addPolygon(Polygon polygon) {
+	public void addPolygon(AdminPolygon polygon) {
 		polygons.put(polygon.getAdminEntityId(), polygon);
+	}
+	
+	@Override
+	public String toString() {
+		return Joiner.on("\n").join(polygons.values());
 	}
 	
 }
