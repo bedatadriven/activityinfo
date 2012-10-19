@@ -1,0 +1,55 @@
+package org.activityinfo.shared.report.content;
+
+import java.io.Serializable;
+
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+
+public class Polygon implements Serializable {
+	private int adminEntityId;
+	private String name;
+	private Double value;
+	private String color;
+	private BoundingBoxDTO bounds;
+	
+	public Polygon(AdminEntityDTO entity) {
+		this.adminEntityId = entity.getId();
+		this.name = entity.getName();
+		this.bounds = entity.getBounds();
+	}
+	public int getAdminEntityId() {
+		return adminEntityId;
+	}
+	public void setAdminEntityId(int adminEntityId) {
+		this.adminEntityId = adminEntityId;
+	}
+	public double getValue() {
+		return value;
+	}
+	public void setValue(Double value) {
+		this.value = value;
+	}
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
+	public BoundingBoxDTO getBounds() {
+		return bounds;
+	}
+	public void setBounds(BoundingBoxDTO bounds) {
+		this.bounds = bounds;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public boolean hasValue() {
+		return value != null;
+	}
+	
+	
+}
