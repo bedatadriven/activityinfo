@@ -6,7 +6,6 @@ import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.report.ReportModule;
-import org.activityinfo.shared.command.GeneratePivotTable;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.content.PivotContent;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
@@ -30,10 +29,15 @@ public class GeneratePivotTableHandlerTest extends CommandTestCase2 {
 		PivotTableReportElement element = new PivotTableReportElement();
 		element.setRowDimensions(Arrays.asList(new Dimension(DimensionType.Indicator)));
 		element.setColumnDimensions(Arrays.asList(new Dimension(DimensionType.Partner)));
+		
+		Filter filter = new Filter();
+		filter.addRestriction(DimensionType.Indicator, Arrays.asList(1,2,103));
+		element.setFilter(filter);
 
 		PivotContent content = execute(new GeneratePivotTable(element));
 		
-		System.out.println(content.getData());
+//		TODO real test
+//		System.out.println(content.getData());
 		
 	}
 	
@@ -42,10 +46,14 @@ public class GeneratePivotTableHandlerTest extends CommandTestCase2 {
 		PivotTableReportElement element = new PivotTableReportElement();
 		element.setRowDimensions(Arrays.asList(new Dimension(DimensionType.Indicator)));
 		element.setColumnDimensions(Arrays.asList((Dimension)new AttributeGroupDimension(1)));
-		
+
+		Filter filter = new Filter();
+		filter.addRestriction(DimensionType.Indicator, Arrays.asList(1,2,103));
+		element.setFilter(filter);
+
 		PivotContent content = execute(new GeneratePivotTable(element));
-		
-		System.out.println(content.getData());
+//		TODO real test
+//		System.out.println(content.getData());
 		
 	}
 	

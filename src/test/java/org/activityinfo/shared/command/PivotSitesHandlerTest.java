@@ -8,6 +8,7 @@ package org.activityinfo.shared.command;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -67,7 +68,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
 
 	@Test
-	public void testBasic() {
+	public void testNoIndicator() {
 		withIndicatorAsDimension();
 
 		execute();
@@ -75,6 +76,17 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 		assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
 	}
 
+	@Test
+	public void testBasic() {
+		withIndicatorAsDimension();
+		filter.addRestriction(DimensionType.Indicator, 1);
+
+		execute();
+
+		assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
+	}
+	
+	
 	@Test
 	public void testTotalSiteCount() {
 		forTotalSiteCounts();
@@ -240,10 +252,11 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
 		filter.addRestriction(DimensionType.Database, 1);
 		filter.addRestriction(DimensionType.Project, 1);
-
+		filter.addRestriction(DimensionType.Indicator, Arrays.asList(1,2,103));
+		
 		execute();
 
-		assertBucketCount(4);
+		assertBucketCount(3);
 
 		assertThat().forIndicator(1).thereIsOneBucketWithValue(5100);
 		assertThat().forIndicator(2).thereIsOneBucketWithValue(1700);
@@ -282,9 +295,10 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 	public void testDeletedNotIncluded() {
 
 		withIndicatorAsDimension();
-
+		filter.addRestriction(DimensionType.Indicator, 1);
+		
 		execute();
-
+		
 		assertEquals(1, buckets.size());
 		assertEquals(13600, (int) buckets.get(0).doubleValue());
 
@@ -295,7 +309,8 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 	public void testZerosExcluded() {
 
 		withIndicatorAsDimension();
-
+		filter.addRestriction(DimensionType.Indicator, 5);
+		
 		execute();
 
 		assertEquals(1, buckets.size());
@@ -310,6 +325,8 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 		final Dimension weekDim = new DateDimension(DateUnit.WEEK_MON);
 		dimensions.add(weekDim);
 
+		filter.addRestriction(DimensionType.Indicator, 1);
+		
 		execute();
 
 		assertEquals(3, buckets.size());
@@ -326,8 +343,8 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 		final Dimension quarterDim = new DateDimension(DateUnit.QUARTER);
 		dimensions.add(quarterDim);
 
-		Filter filter = new Filter();
-
+		filter.addRestriction(DimensionType.Indicator, 1);
+		
 		execute();
 
 		assertEquals(3, buckets.size());
@@ -336,6 +353,26 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 		assertEquals(10000, (int) findBucketByQuarter(buckets, 2008, 4).doubleValue());
 	}
 
+	@Test
+	@OnDataSet("/dbunit/sites-linked.db.xml")
+	public void testLinked() {
+		withIndicatorAsDimension();
+		filter.addRestriction(DimensionType.Indicator, 1);
+		execute();
+		assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
+	}
+
+	@Test
+	@OnDataSet("/dbunit/sites-linked.db.xml")
+	public void testLinkedValuesAreDuplicated() {
+		withIndicatorAsDimension();
+		filter.addRestriction(DimensionType.Indicator, Arrays.asList(1,3));
+		execute();
+		assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
+		assertThat().forIndicator(3).thereIsOneBucketWithValue(1500);
+	}
+	
+	
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets, Dimension dim, DimensionCategory cat) {
         List<Bucket> matching = new ArrayList<Bucket>();
         for (Bucket bucket : buckets) {

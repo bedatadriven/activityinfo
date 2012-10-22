@@ -11,8 +11,9 @@ import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.handler.pivot.PivotQuery;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
 
-import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.allen_sauer.gwt.log.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -35,8 +36,12 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
 	public void execute(PivotSites command, ExecutionContext context, AsyncCallback<PivotResult> callback) {
 
         final List<Bucket> buckets = new ArrayList<Bucket>();
-        
 		if (command.getValueType() == ValueType.INDICATOR) {
+			if (command.getFilter() == null || 
+					command.getFilter().getRestrictions(DimensionType.Indicator).isEmpty()) {
+				Log.error("No indicator filter provided to pivot query");
+			}
+			
 			new PivotQuery(context.getTransaction(), dialect, command, context.getUser().getId())
 					.addTo(buckets)
 					.queryForTargetValues();
@@ -49,7 +54,6 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
 					.addTo(buckets)
 					.callbackTo(callback)
 					.queryForSiteCountIndicators();
-
 
         } else {
 	        new PivotQuery(context.getTransaction(), dialect, command, context.getUser().getId())
