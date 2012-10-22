@@ -22,6 +22,7 @@ public class DispatcherSyncImpl implements DispatcherSync {
 		this.userProvider = userProvider;
 	}
 	
+	@Override
 	public <C extends Command<R>, R extends CommandResult> R execute(C command) throws CommandException {
 		if(ServerExecutionContext.inProgress()) {
 			return ServerExecutionContext.current().execute(command);

@@ -21,6 +21,7 @@ public class SearchTest extends CommandTestCase2 {
 
 	
 	@Test
+	@Ignore
 	public void testSearchAll() throws CommandException {
 		SearchResult result = execute(new Search("kivu"));
 

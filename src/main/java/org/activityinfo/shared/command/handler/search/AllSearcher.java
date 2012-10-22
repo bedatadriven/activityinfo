@@ -63,6 +63,7 @@ public class AllSearcher {
 
 			@Override
 			public void onSuccess(Filter result) {
+				// TODO possible bug
 				callback.onSuccess(filter);
 			}
 		});

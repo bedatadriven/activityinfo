@@ -8,7 +8,6 @@ import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.PivotResult;
-import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.handler.pivot.bundler.Bundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.EntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.MonthBundler;
@@ -93,16 +92,31 @@ public class PivotQuery {
         * this saves us some work and hopefully the SQL server will optimize out any unused
         * tables
         */
-    	query.from(" indicatorvalue V " +
-                "LEFT JOIN reportingperiod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
-                "LEFT JOIN indicator Indicator ON (Indicator.IndicatorId = V.IndicatorId) " +
+    	query.from(
+    		" indicatorvalue V " +
+    			"LEFT JOIN reportingperiod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
+        		"LEFT JOIN (" + 
+        			"SELECT IndicatorId SourceId, IndicatorId, Name, SortOrder, Aggregation, ActivityId " +
+        			"FROM indicator " + 
+        			"WHERE DateDeleted IS NULL and IndicatorId " + inIndicatorIds() + 
+        			
+        			"UNION ALL " +
+        			
+        			"SELECT L.SourceIndicatorId SourceId, D.IndicatorId, D.Name, D.SortOrder, D.Aggregation, D.ActivityId " + 
+        			"FROM indicator D " + 
+        				"INNER JOIN indicatorlink L ON (D.IndicatorId=L.DestinationIndicatorId) " + 
+        				"INNER JOIN indicator S ON (S.IndicatorId=L.SourceIndicatorId) " + 
+        			"WHERE D.dateDeleted IS NULL " +
+        				"AND S.dateDeleted IS NULL " +
+        				"AND D.IndicatorId " + inIndicatorIds() + 
+        		") AS Indicator ON (Indicator.SourceId = V.IndicatorId) " +
                 "LEFT JOIN site Site ON (Period.SiteId = Site.SiteId) " +
                 "LEFT JOIN partner Partner ON (Site.PartnerId = Partner.PartnerId)" +
                 "LEFT JOIN project Project ON (Site.ProjectId = Project.ProjectId) " +
                 "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
-                "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
-
+				"LEFT JOIN activity Activity ON (Activity.ActivityId = Indicator.ActivityId) " +
+                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) "
+		);
 		addSumAndAverageBundler();
 
 		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
@@ -147,8 +161,7 @@ public class PivotQuery {
 		String aggregationTypeAlias = appendColumn("Indicator.Aggregation");
 		String sumAlias = appendColumn("SUM(V.Value)");
 		String avgAlias = appendColumn("AVG(V.Value)");
-
-		query.groupBy("V.IndicatorId");
+		query.groupBy("Indicator.IndicatorId");
 		query.groupBy("Indicator.Aggregation");
 		query.whereTrue(" ((V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
 
@@ -178,7 +191,8 @@ public class PivotQuery {
         String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
         query.groupBy("Indicator.IndicatorId");
         query.whereTrue("Indicator.Aggregation=2 ");
-
+		query.whereTrue("Indicator.DateDeleted is NULL");
+		query.whereTrue("Indicator.IndicatorId " + inIndicatorIds());
         bundlers.add(new SiteCountBundler(count));
 
 		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
@@ -193,10 +207,10 @@ public class PivotQuery {
                 "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
                 "LEFT JOIN reportingperiod Period ON (Period.SiteId = Site.SiteId) ");
 
-        /* First add the indicator to the query: we can't aggregate values from different
-        * indicators so this is a must
-        *
-        */
+        /* 
+         * First add the indicator to the query: we can't aggregate values from different
+         * indicators so this is a must
+         */
         String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
 
         bundlers.add(new SiteCountBundler(count));
@@ -212,7 +226,7 @@ public class PivotQuery {
         		Log.error("NULL dimension provided to pivot query: dimensions = " + dimensions);
         		
         	} else if (dimension.getType() == DimensionType.Activity) {
-            	addOrderedEntityDimension(dimension, "Site.ActivityId", "Activity.Name", "Activity.SortOrder");
+            	addOrderedEntityDimension(dimension, "Activity.ActivityId", "Activity.Name", "Activity.SortOrder");
 
             } else if (dimension.getType() == DimensionType.ActivityCategory) {
                 addSimpleDimension(dimension, "Activity.Category");
@@ -258,7 +272,7 @@ public class PivotQuery {
                 } else if (dateDim.getUnit() == DateUnit.WEEK_MON) {
                 	// Mode = 3 means " Monday	1-53	with more than 3 days this year" 
                 	// see http://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_week
-                	if(dialect.isMySql()) {
+                	if (dialect.isMySql()) {
 	                	String weekAlias = appendDimColumn("YEARWEEK(Period.Date2, 3)");
 	                	bundlers.add(new MySqlYearWeekBundler(dimension, weekAlias));
                 	}
@@ -320,12 +334,9 @@ public class PivotQuery {
 
         query.where("Activity.dateDeleted").isNull();
         query.where("UserDatabase.dateDeleted").isNull();
-        if(command.getValueType() == ValueType.INDICATOR) {
-        	query.where("Indicator.dateDeleted").isNull();
-        }
-        
+                
         // and only allow results that are visible to this user.
-        if(!GWT.isClient()) {
+        if (!GWT.isClient()) {
         	appendVisibilityFilter();
         }
 
@@ -338,7 +349,6 @@ public class PivotQuery {
         }
 
         appendDimensionRestrictions();
-
         
         query.execute(tx, new SqlResultCallback() {
 			
@@ -370,7 +380,6 @@ public class PivotQuery {
 		bundlers.add(new EntityBundler(dimension, idAlias, labelAlias));
 	}
 
-
 	private void addOrderedEntityDimension(Dimension dimension, String id, String label, String sortOrder) {
 		String idAlias = appendDimColumn(id);
 		String labelAlias = appendDimColumn(label);
@@ -397,7 +406,8 @@ public class PivotQuery {
     private void appendDimensionRestrictions() {
         for (DimensionType type : filter.getRestrictedDimensions()) {
             if (type == DimensionType.Indicator) {
-            	query.where("Indicator.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator));
+            	// replaced by inIndicatorIds()
+				// query.where("Indicator.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator));
             } else if (type == DimensionType.Activity) {
 				query.where("Activity.ActivityId").in(filter.getRestrictions(DimensionType.Activity));
             } else if (type == DimensionType.Database) {
@@ -415,4 +425,23 @@ public class PivotQuery {
             }
         }
     }
+
+	private String inIndicatorIds() {
+		if (filter.getRestrictions(DimensionType.Indicator).isEmpty()) {
+			 return " is not null ";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(" in (");
+			boolean needsComma = false;
+			for (Integer id : filter.getRestrictions(DimensionType.Indicator)) {
+				if (needsComma) {
+					sb.append(",");
+				}
+				sb.append(id);
+				needsComma = true;
+			}
+			sb.append(") ");
+			return sb.toString();
+		}
+	}
 }

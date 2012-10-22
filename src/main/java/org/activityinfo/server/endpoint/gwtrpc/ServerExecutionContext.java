@@ -150,7 +150,7 @@ public class ServerExecutionContext implements ExecutionContext {
 			throw new IllegalStateException("Command execution has not started yet");
 		}
 		
-		ResultCollector<R> collector = new ResultCollector<R>();
+		ResultCollector<R> collector = new ResultCollector<R>(command.getClass().getSimpleName());
 		execute(command, collector);
 		return collector.get();
 	}
@@ -210,7 +210,6 @@ public class ServerExecutionContext implements ExecutionContext {
 			 */
 			try {
 				callback.onSuccess((R) ((CommandHandler)handler).execute(command, retrieveUserEntity()));
-				
 			} catch(Exception e) {
 				callback.onFailure(e);
 			}
@@ -246,22 +245,30 @@ public class ServerExecutionContext implements ExecutionContext {
 
 	private static class ResultCollector<R> implements AsyncCallback<R> {
 
+		private String name;
 		private int callbackCount=0;
 		private R result = null;
 		private Throwable caught = null;
+	
 		
+		
+		public ResultCollector(String name) {
+			super();
+			this.name = name;
+		}
+
 		@Override
 		public void onFailure(Throwable caught) {
 			this.callbackCount++;
 			if(callbackCount > 1) {
-				throw new RuntimeException("Callback called multiple times");
+				throw new RuntimeException("Callback for '" + name + "' called multiple times");
 			}
 			this.caught = caught;
 		}
 
 		public R get() throws CommandException {
 			if(callbackCount != 1) {
-				throw new IllegalStateException("Callback called " + callbackCount + " times");
+				throw new IllegalStateException("Callback for '" + name + "' called " + callbackCount + " times");
 			} else if(caught != null) {
 				throw wrapException(caught);
 			}

@@ -12,7 +12,6 @@ import org.activityinfo.shared.command.handler.search.AllSearcher;
 import org.activityinfo.shared.command.handler.search.QueryParser;
 import org.activityinfo.shared.command.result.SearchResult;
 import org.activityinfo.shared.command.result.SiteResult;
-import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.content.PivotContent;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -53,7 +52,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		parser.parse(command.getSearchQuery().trim());
 		if (parser.hasFailed()) {
 			callback.onFailure(new SearchParserException(parser.getFailReason()));
-		} else if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries 
+		} else if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries
 			searchDimensions(parser, context, callback);
 		} else { // assume first time search
 			searchAll(parser.getSimpleSearchTerms(), context, callback);
@@ -117,6 +116,7 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		if (resultFilter.getRestrictedDimensions().size() > 0) {
 			pivotTable.setFilter(resultFilter);
 			GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
+			
 			context.execute(zmd, new AsyncCallback<PivotContent>() {
 
 				@Override
