@@ -5,14 +5,14 @@ import java.io.Serializable;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.util.mapping.Extents;
 
-public class AdminPolygon implements Serializable {
+public class AdminMarker implements Serializable {
 	private int adminEntityId;
 	private String name;
 	private Double value;
 	private String color;
 	private Extents bounds;
 	
-	public AdminPolygon(AdminEntityDTO entity) {
+	public AdminMarker(AdminEntityDTO entity) {
 		this.adminEntityId = entity.getId();
 		this.name = entity.getName();
 		this.bounds = entity.getBounds();

@@ -194,18 +194,7 @@ public class Extents implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(maxLat);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(maxLon);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(minLat);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(minLon);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
+		return (minLon+"").hashCode();
 	}
 
 	@Override
@@ -220,23 +209,10 @@ public class Extents implements Serializable {
 			return false;
 		}
 		Extents other = (Extents) obj;
-		if (Double.doubleToLongBits(maxLat) != Double
-				.doubleToLongBits(other.maxLat)) {
-			return false;
-		}
-		if (Double.doubleToLongBits(maxLon) != Double
-				.doubleToLongBits(other.maxLon)) {
-			return false;
-		}
-		if (Double.doubleToLongBits(minLat) != Double
-				.doubleToLongBits(other.minLat)) {
-			return false;
-		}
-		if (Double.doubleToLongBits(minLon) != Double
-				.doubleToLongBits(other.minLon)) {
-			return false;
-		}
-		return true;
+		return minLat == other.minLat &&
+			   maxLat == other.maxLat && 
+			   minLon == other.minLon &&
+			   maxLon == other.maxLon;
 	}
 
 	@Override

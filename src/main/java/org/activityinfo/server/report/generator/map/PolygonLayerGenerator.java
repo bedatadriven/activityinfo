@@ -9,7 +9,7 @@ import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.report.content.AdminOverlay;
-import org.activityinfo.shared.report.content.AdminPolygon;
+import org.activityinfo.shared.report.content.AdminMarker;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.model.AdminDimension;
@@ -48,7 +48,7 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		
 		AdminEntityResult entities = dispatcher.execute(query);
 		for(AdminEntityDTO entity : entities.getData()) {
-			overlay.addPolygon(new AdminPolygon(entity));
+			overlay.addPolygon(new AdminMarker(entity));
 		}
 	}
 
@@ -68,7 +68,7 @@ public class PolygonLayerGenerator implements LayerGenerator {
 	
 
 	private void color() {
-		for(AdminPolygon polygon : overlay.getPolygons()) {
+		for(AdminMarker polygon : overlay.getPolygons()) {
 			if(polygon.hasValue()) {
 				polygon.setColor("#FF0000");
 			} else {
@@ -80,7 +80,7 @@ public class PolygonLayerGenerator implements LayerGenerator {
 	@Override
 	public Extents calculateExtents() {
 		Extents extents = Extents.emptyExtents();
-		for(AdminPolygon polygon : overlay.getPolygons()) {
+		for(AdminMarker polygon : overlay.getPolygons()) {
 			if(polygon.hasValue()) {
 				extents.grow(polygon.getExtents());
 			}

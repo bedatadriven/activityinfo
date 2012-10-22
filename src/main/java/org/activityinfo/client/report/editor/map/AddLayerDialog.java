@@ -9,6 +9,7 @@ import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -56,11 +57,12 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	private Image imageCanSelectMultiple = new Image();
     
 	// Choice for type of layer
-	private FieldSet fieldsetLayerType = new FieldSet();
-	private RadioGroup radiogroupLayerType = new RadioGroup();
-	private Radio radioProportionalCircle = new Radio();
-	private Radio radioIcon = new Radio();
-	private Radio radioPiechart = new Radio();
+	private FieldSet typeFieldSet = new FieldSet();
+	private RadioGroup typeRadioGroup = new RadioGroup();
+	private Radio proportionalCircleRadio = new Radio();
+	private Radio iconRadio = new Radio();
+	private Radio piechartRadio = new Radio();
+	private Radio polygonRadio = new Radio();
 	
 	@Inject
 	public AddLayerDialog(Dispatcher service) {
@@ -80,7 +82,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 	        }  
         }));
 		
-		radioProportionalCircle.setValue(true);
+		proportionalCircleRadio.setValue(true);
 	}
 	
 	public void setAddButtonText(String text) {
@@ -103,30 +105,33 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		HorizontalPanel radioPanel = new HorizontalPanel();
 		HorizontalPanel muliselectPanel = new HorizontalPanel();
 		
-		fieldsetLayerType.setHeading(I18N.CONSTANTS.typeOfLayer());
-		fieldsetLayerType.setLayout(new RowLayout(Orientation.VERTICAL));
-		radioProportionalCircle.setBoxLabel(I18N.CONSTANTS.proportionalCircle());
-		radioIcon.setBoxLabel(I18N.CONSTANTS.icon());
-		radioPiechart.setBoxLabel(I18N.CONSTANTS.pieChart());
+		typeFieldSet.setHeading(I18N.CONSTANTS.typeOfLayer());
+		typeFieldSet.setLayout(new RowLayout(Orientation.VERTICAL));
+		proportionalCircleRadio.setBoxLabel(I18N.CONSTANTS.proportionalCircle());
+		iconRadio.setBoxLabel(I18N.CONSTANTS.icon());
+		piechartRadio.setBoxLabel(I18N.CONSTANTS.pieChart());
+		polygonRadio.setBoxLabel("Shaded Polygons");
 		
-		radiogroupLayerType.add(radioPiechart);
-		radiogroupLayerType.add(radioProportionalCircle);
-		radiogroupLayerType.add(radioIcon);
+		typeRadioGroup.add(piechartRadio);
+		typeRadioGroup.add(proportionalCircleRadio);
+		typeRadioGroup.add(iconRadio);
+		typeRadioGroup.add(polygonRadio);
 		
-		radioPanel.add(radioProportionalCircle);
-		radioPanel.add(radioIcon);
-		radioPanel.add(radioPiechart);
+		radioPanel.add(proportionalCircleRadio);
+		radioPanel.add(iconRadio);
+		radioPanel.add(piechartRadio);
+		radioPanel.add(polygonRadio);
 		
 		imageCanSelectMultiple.setWidth("32px");
 		muliselectPanel.add(imageCanSelectMultiple);
 		muliselectPanel.add(labelCanSelectMultiple);
 		
-		fieldsetLayerType.add(radioPanel);
-		fieldsetLayerType.add(muliselectPanel);
+		typeFieldSet.add(radioPanel);
+		typeFieldSet.add(muliselectPanel);
 		
 		// Let the user know whether or not he can select multiple indicators for the layer
 		// he wants to add to the map
-		radiogroupLayerType.addListener(Events.Change, new Listener<FieldEvent>() {
+		typeRadioGroup.addListener(Events.Change, new Listener<FieldEvent>() {
 			@Override
 			public void handleEvent(FieldEvent be) {
 				if ((Boolean)be.getValue())
@@ -139,7 +144,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 			}
 		});
 		
-		add(fieldsetLayerType);
+		add(typeFieldSet);
 	}
 	
 	/*
@@ -164,7 +169,7 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 
 	protected void addLayer() {
 		if (indicatorsStore.getModels().size() > 0) {
-			Radio selected = radiogroupLayerType.getValue();
+			Radio selected = typeRadioGroup.getValue();
 			
 			// Create the new layer based on the selected type
 			newLayer = fromRadio(selected);
@@ -189,19 +194,18 @@ public final class AddLayerDialog extends Window implements HasValue<MapLayer> {
 		addButton.setEnabled(false);
 	}
 	
-	/*
-	 * Factory method for a MapLayer based on given Radio widget
-	 */
 	private MapLayer fromRadio(Radio radio) {
-		if (radio.equals(radioIcon)) {
+		if (radio.equals(iconRadio)) {
 			return new IconMapLayer();
-		}
-		if (radio.equals(radioPiechart)) {
+		} else if (radio.equals(piechartRadio)) {
 			return new PiechartMapLayer();
-		}
-		if (radio.equals(radioProportionalCircle)) {
+		} else if (radio.equals(proportionalCircleRadio)) {
 			return new BubbleMapLayer();
-		}
+		} else if(radio.equals(polygonRadio)) {
+			PolygonMapLayer polygonMapLayer = new PolygonMapLayer();
+			polygonMapLayer.setAdminLevelId(1383); // hardcoded for testing
+			return polygonMapLayer;
+		} 
 		
 		return null;
 	}

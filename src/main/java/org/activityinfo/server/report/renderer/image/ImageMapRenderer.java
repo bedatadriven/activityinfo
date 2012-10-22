@@ -27,7 +27,7 @@ import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.GoogleBaseMap;
 import org.activityinfo.shared.map.TileBaseMap;
 import org.activityinfo.shared.report.content.AdminOverlay;
-import org.activityinfo.shared.report.content.AdminPolygon;
+import org.activityinfo.shared.report.content.AdminMarker;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.IconMapMarker;
@@ -135,7 +135,7 @@ public class ImageMapRenderer {
 	private void drawAdminOverlay(TiledMap map, Graphics2D g2d, AdminOverlay overlay) {
 		List<AdminGeo> geometry = geometryProvider.getGeometry(overlay.getAdminLevelId());
 		for(AdminGeo adminGeo : geometry) {
-			AdminPolygon polygon = overlay.getPolygon(adminGeo.getId());
+			AdminMarker polygon = overlay.getPolygon(adminGeo.getId());
             g2d.setColor(bubbleFillColor(ColorUtil.colorFromString(polygon.getColor())));
             fill(map, g2d, adminGeo.getGeometry());
 		}
