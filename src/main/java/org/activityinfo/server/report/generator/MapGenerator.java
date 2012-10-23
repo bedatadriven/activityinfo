@@ -91,13 +91,16 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         AiLatLng center;
         int zoom;
         
+        Extents extents = Extents.emptyExtents();
+        Margins margins = new Margins(0);
+        for (LayerGenerator layerGtor : layerGenerators) {
+            extents.grow(layerGtor.calculateExtents());
+            margins.grow(layerGtor.calculateMargins());
+        }
+        content.setExtents(extents);
+        
         if(element.getCenter() == null) {
-	        Extents extents = Extents.emptyExtents();
-	        Margins margins = new Margins(0);
-	        for (LayerGenerator layerGtor : layerGenerators) {
-	            extents.grow(layerGtor.calculateExtents());
-	            margins.grow(layerGtor.calculateMargins());
-	        }
+
 	        // Now we're ready to calculate the zoom level
 	        // and the projection
 	        zoom = TileMath.zoomLevelForExtents(extents, width, height);

@@ -70,6 +70,8 @@ public class MapEditorMapView extends GoogleMapsPanel implements HasReportElemen
     
     // Model of a the map
     private MapContent content;
+    
+    private boolean zoomSet = false;
 	
 	// True when the first layer is just put on the map
 	private boolean isFirstLayerUpdate=true;
@@ -216,15 +218,14 @@ public class MapEditorMapView extends GoogleMapsPanel implements HasReportElemen
 		statusWidget.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 
 		overlays.setBaseMap(result.getBaseMap());
-		Extents extents = overlays.addMarkers(result.getMarkers());
-		
-		// can we zoom in further and still see all the markers?
-		if(getMapWidget().getBounds().containsBounds(newLatLngBounds(extents))) {
-			zoomToBounds(extents);
+		overlays.addMarkers(result.getMarkers());
+		for(AdminOverlay overlay : result.getAdminOverlays()) {
+			overlays.addAdminLayer(overlay);
 		}
 		
-		for(final AdminOverlay adminOverlay : result.getAdminOverlays()) {
-			overlays.addAdminLayer(adminOverlay);
+		if(!zoomSet) {
+			zoomToBounds(result.getExtents());
+			zoomSet = true;
 		}
 			
 	}

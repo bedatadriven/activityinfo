@@ -8,8 +8,8 @@ import org.activityinfo.shared.command.PivotSites.PivotResult;
 import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.dto.AdminEntityDTO;
-import org.activityinfo.shared.report.content.AdminOverlay;
 import org.activityinfo.shared.report.content.AdminMarker;
+import org.activityinfo.shared.report.content.AdminOverlay;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.model.AdminDimension;
@@ -22,7 +22,7 @@ public class PolygonLayerGenerator implements LayerGenerator {
 
 	private PolygonMapLayer layer;
 	private PivotResult buckets;
-	
+	private MagnitudeScale colorScale = new MagnitudeScale();
 	private AdminOverlay overlay;
 	
 	public PolygonLayerGenerator(PolygonMapLayer layer) {
@@ -63,6 +63,7 @@ public class PolygonLayerGenerator implements LayerGenerator {
 			EntityCategory category = (EntityCategory) bucket.getCategory(adminDimension);
 			int adminEntityId = category.getId(); 
 			overlay.getPolygon(adminEntityId).setValue(bucket.doubleValue());
+			colorScale.addValue(bucket.doubleValue());
 		}
 	}
 	
@@ -70,9 +71,9 @@ public class PolygonLayerGenerator implements LayerGenerator {
 	private void color() {
 		for(AdminMarker polygon : overlay.getPolygons()) {
 			if(polygon.hasValue()) {
-				polygon.setColor("#FF0000");
+				polygon.setColor(colorScale.color(polygon.getValue()).toHexString());
 			} else {
-				polygon.setColor("#FFFFFF");
+				polygon.setColor(colorScale.nullColor().toHexString());
 			}
 		}
 	}

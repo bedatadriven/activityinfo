@@ -11,6 +11,7 @@ import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.activityinfo.shared.report.model.layers.PointMapLayer;
+import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -42,6 +43,7 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 	private BubbleLayerOptions bubbleMapLayerOptions = new BubbleLayerOptions();
 	private IconLayerOptions iconMapLayerOptions = new IconLayerOptions();
 	private PiechartLayerOptions piechartMapLayerOptions;
+	private PolygonLayerOptions polygonLayerOptions = new PolygonLayerOptions();
 
 	// Clustering options
 	private ClusteringOptionsWidget clusteringOptions;
@@ -182,15 +184,15 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 	private LayerOptionsWidget fromLayer(MapLayer mapLayer) {
 		if (mapLayer instanceof BubbleMapLayer) {
 			return bubbleMapLayerOptions;
-		}
-		if (mapLayer instanceof IconMapLayer) {
+		} else if (mapLayer instanceof IconMapLayer) {
 			return iconMapLayerOptions;
-		}
-		if (mapLayer instanceof PiechartMapLayer) {
+		} else if (mapLayer instanceof PiechartMapLayer) {
 			return piechartMapLayerOptions;
+		} else if (mapLayer instanceof PolygonMapLayer) {
+			return polygonLayerOptions;
 		}
-		
-		return null;
+		 
+		throw new IllegalArgumentException("layer: " + mapLayer.getClass().getName());
 	}
 	
 	private Filter baseFilterFromLayer(MapLayer layer) {
@@ -232,24 +234,15 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		if(mapLayer != selectedMapLayer) {
 			this.selectedMapLayer = mapLayer;
 			LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
-			
-			if (mapLayer instanceof BubbleMapLayer) {
-				bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
-			}
-			if (mapLayer instanceof IconMapLayer) {
-				iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
-			}
-			if (mapLayer instanceof PiechartMapLayer) {
-				piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
-			}
+			layerOptionsWidget.setValue(mapLayer);
 			
 			setStyleOptions(layerOptionsWidget);
 			clusteringOptions.loadForm(mapLayer);
 			if(mapLayer instanceof PointMapLayer) {
 				clusteringOptions.setValue(((PointMapLayer) mapLayer).getClustering(), false);
-				clusteringOptions.setVisible(true);
+				clusteringPanel.show();
 			} else {
-				clusteringOptions.setVisible(false);
+				clusteringPanel.hide();
 			}
 	
 			filterPanel.getFilterPanelSet().applyBaseFilter(baseFilterFromLayer(mapLayer));

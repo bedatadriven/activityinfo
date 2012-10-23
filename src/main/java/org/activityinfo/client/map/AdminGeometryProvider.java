@@ -3,6 +3,7 @@ package org.activityinfo.client.map;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -28,5 +29,10 @@ public final class AdminGeometryProvider {
 				callback.onFailure(exception);
 			}
 		});
+		try {
+			request.send();
+		} catch (RequestException e) {
+			callback.onFailure(e);
+		}
 	}
 }

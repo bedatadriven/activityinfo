@@ -63,6 +63,8 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 	private BaseMapPanel baseMapPanel;
 	
 	private Menu layerMenu;
+
+	private MenuItem clusterMenuItem;
 	
 	@Inject
 	public LayersWidget(Dispatcher service, EventBus eventBus, LayerOptionsPanel optionsPanel) {
@@ -202,7 +204,7 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 				store.update(layerModel);
 			}
 		} else {
-			showOptionsMenu(event.getIndex());
+			showOptionsMenu(event.getModel().getMapLayer(), event.getIndex());
 		}
 		optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
 	}
@@ -224,13 +226,13 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 		return view.getSelectionModel().getSelectedItem().getMapLayer();
 	}
 
-	private void showOptionsMenu(int index) {
+	private void showOptionsMenu(MapLayer mapLayer, int index) {
 		if(layerMenu == null) {
 			createLayerMenu();
 		}
 		int x = this.getAbsoluteLeft() - CONTEXT_MENU_WIDTH;
 		int y = view.getElement(index).getAbsoluteTop();
-		
+		clusterMenuItem.setVisible(mapLayer instanceof PointMapLayer);
 		layerMenu.showAt(x, y);
 	}
 
@@ -244,14 +246,15 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 				optionsPanel.showStyle(getSelectedLayer());
 			}
 		}));
-		layerMenu.add(new MenuItem(I18N.CONSTANTS.clustering(),
+		clusterMenuItem = new MenuItem(I18N.CONSTANTS.clustering(),
 					AbstractImagePrototype.create(MapResources.INSTANCE.clusterIcon()),
 					new SelectionListener<MenuEvent>() {
 			@Override
 			public void componentSelected(MenuEvent ce) {
 				optionsPanel.showAggregation(getSelectedLayer());
 			}
-		}));
+		});
+		layerMenu.add(clusterMenuItem);
 		layerMenu.add(new MenuItem(I18N.CONSTANTS.filter(),
 				IconImageBundle.ICONS.filter(),
 				new SelectionListener<MenuEvent>() {

@@ -12,6 +12,10 @@ public class AdminMarker implements Serializable {
 	private String color;
 	private Extents bounds;
 	
+	public AdminMarker() {
+		
+	}
+	
 	public AdminMarker(AdminEntityDTO entity) {
 		this.adminEntityId = entity.getId();
 		this.name = entity.getName();
@@ -23,7 +27,7 @@ public class AdminMarker implements Serializable {
 	public void setAdminEntityId(int adminEntityId) {
 		this.adminEntityId = adminEntityId;
 	}
-	public double getValue() {
+	public Double getValue() {
 		return value;
 	}
 	public void setValue(Double value) {

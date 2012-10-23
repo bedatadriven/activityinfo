@@ -32,6 +32,7 @@ public class MapContent implements Content {
     private List<AdminOverlay> adminOverlays = Lists.newArrayList();
     private int zoomLevel;
     private AiLatLng center;
+    private Extents extents;
 
     public MapContent() {
 
@@ -133,4 +134,13 @@ public class MapContent implements Content {
         }
         return map;
     }
+
+	public Extents getExtents() {
+		return extents;
+	}
+
+	public void setExtents(Extents extents) {
+		this.extents = extents;
+	}
+	
 }
