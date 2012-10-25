@@ -452,7 +452,7 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToPdf(Report report, String name) throws IOException {
-		PdfReportRenderer reportRenderer = new PdfReportRenderer(new ClasspathGeometryProvider(), mapIconPath());
+		PdfReportRenderer reportRenderer = new PdfReportRenderer(TestGeometry.get(), mapIconPath());
 		renderTo(report, reportRenderer, name);
 	}
 	
@@ -463,22 +463,22 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToHtml(Report report, String name) throws IOException {
-		renderTo(report, new HtmlReportRenderer(new ClasspathGeometryProvider(),  mapIconPath(), new TestImageStorageProvider()), name);
+		renderTo(report, new HtmlReportRenderer(TestGeometry.get(),  mapIconPath(), new TestImageStorageProvider()), name);
 	}
 	
 	private void renderToHtmlUsingWriter(Report report, String name) throws IOException {
 		FileWriter writer = new FileWriter("target/report-tests/" + name);
-		HtmlReportRenderer renderer = new HtmlReportRenderer(new ClasspathGeometryProvider(), mapIconPath(), new TestImageStorageProvider());
+		HtmlReportRenderer renderer = new HtmlReportRenderer(TestGeometry.get(), mapIconPath(), new TestImageStorageProvider());
 		renderer.render(report, writer);
 		writer.close();
 	}
 	
 	private void renderToRtf(Report report, String name) throws IOException {
-		renderTo(report, new RtfReportRenderer(new ClasspathGeometryProvider(), mapIconPath()), name);
+		renderTo(report, new RtfReportRenderer(TestGeometry.get(), mapIconPath()), name);
 	}
 	
 	private void renderToPpt(MapReportElement map, String name) throws FileNotFoundException, IOException {
-		PPTMapRenderer renderer = new PPTMapRenderer(new ClasspathGeometryProvider(), mapIconPath());
+		PPTMapRenderer renderer = new PPTMapRenderer(TestGeometry.get(), mapIconPath());
 		renderer.render(map, new FileOutputStream("target/report-tests/" + name));
 	}
 	

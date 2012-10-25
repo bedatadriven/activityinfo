@@ -9,6 +9,7 @@ import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.geo.ClasspathGeometryProvider;
 import org.activityinfo.server.report.generator.MapGenerator;
 import org.activityinfo.server.report.renderer.itext.PdfReportRenderer;
+import org.activityinfo.server.report.renderer.itext.TestGeometry;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.model.MapReportElement;
@@ -43,7 +44,7 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
 		map.setContent(content);
 		
 		FileOutputStream fos = new FileOutputStream("target/report-tests/polygon.pdf");
-		PdfReportRenderer pdfr = new PdfReportRenderer(new ClasspathGeometryProvider(), "");
+		PdfReportRenderer pdfr = new PdfReportRenderer(TestGeometry.get(), "");
 		pdfr.render(map, fos);
 		fos.close();
 		

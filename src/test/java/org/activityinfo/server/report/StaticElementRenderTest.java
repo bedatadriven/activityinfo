@@ -11,10 +11,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.activityinfo.server.geo.ClasspathGeometryProvider;
 import org.activityinfo.server.report.renderer.itext.HtmlReportRenderer;
 import org.activityinfo.server.report.renderer.itext.PdfReportRenderer;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
+import org.activityinfo.server.report.renderer.itext.TestGeometry;
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.content.ReportContent;
 import org.activityinfo.shared.report.model.Report;
@@ -57,7 +57,7 @@ public class StaticElementRenderTest{
 	@Test
 	public void testPdfRender() throws JAXBException, IOException {
 		Report r = getStatic();
-		PdfReportRenderer renderer = new PdfReportRenderer(new ClasspathGeometryProvider(), ""); 
+		PdfReportRenderer renderer = new PdfReportRenderer(TestGeometry.get(), ""); 
 	
 		FileOutputStream fos = new FileOutputStream("target/report-tests/render-static" + renderer.getFileSuffix());
 		renderer.render(r, fos);
@@ -67,7 +67,7 @@ public class StaticElementRenderTest{
 	@Test
 	public void testRtfRender() throws JAXBException, IOException {
 		Report r = getStatic();
-		RtfReportRenderer renderer = new RtfReportRenderer(new ClasspathGeometryProvider(), ""); 
+		RtfReportRenderer renderer = new RtfReportRenderer(TestGeometry.get(), ""); 
 	
 		FileOutputStream fos = new FileOutputStream("target/report-tests/render-static" + renderer.getFileSuffix());
 		renderer.render(r, fos);
@@ -77,7 +77,7 @@ public class StaticElementRenderTest{
 	@Test
 	public void testHtmlRender() throws JAXBException, IOException {
 		Report r = getStatic();
-		HtmlReportRenderer renderer =new HtmlReportRenderer(new ClasspathGeometryProvider(), "", new NullStorageProvider()); 
+		HtmlReportRenderer renderer =new HtmlReportRenderer(TestGeometry.get(), "", new NullStorageProvider()); 
 		FileOutputStream fos = new FileOutputStream("target/report-tests/render-static" + renderer.getFileSuffix());
 		renderer.render(r, fos);
 		fos.close();

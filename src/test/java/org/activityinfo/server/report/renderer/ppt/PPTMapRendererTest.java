@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import org.activityinfo.server.geo.ClasspathGeometryProvider;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
+import org.activityinfo.server.report.renderer.itext.TestGeometry;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.GoogleBaseMap;
 import org.activityinfo.shared.map.TileBaseMap;
@@ -66,7 +67,7 @@ public class PPTMapRendererTest {
 			IOException {
 		FileOutputStream fos = new FileOutputStream("target/report-tests/" + filename);
 		
-		PPTMapRenderer renderer = new PPTMapRenderer(new ClasspathGeometryProvider(), "");
+		PPTMapRenderer renderer = new PPTMapRenderer(TestGeometry.get(), "");
 		renderer.render(map, fos);
 		
 		fos.close();
@@ -95,7 +96,7 @@ public class PPTMapRendererTest {
 		
 		FileOutputStream fos = new FileOutputStream("target/report-tests/map-custom-extents.ppt");
 		
-		PPTMapRenderer renderer = new PPTMapRenderer(new ClasspathGeometryProvider(), "");
+		PPTMapRenderer renderer = new PPTMapRenderer(TestGeometry.get(), "");
 		renderer.render(element, fos);
 		
 		fos.close();	
