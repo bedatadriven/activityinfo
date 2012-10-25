@@ -8,6 +8,7 @@ package org.activityinfo.server.report.renderer.itext;
 
 import java.io.IOException;
 
+import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.BubbleLegendRenderer;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
@@ -52,8 +53,8 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 	private ImageCreator imageCreator;
 	
     @Inject
-    public ItextMapRenderer(@MapIconPath String mapIconPath, ImageCreator imageCreator) {
-        super(mapIconPath);
+    public ItextMapRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath, ImageCreator imageCreator) {
+        super(geometryProvider, mapIconPath);
         this.imageCreator = imageCreator;
     }
 

@@ -12,8 +12,7 @@
 		x2="4.24496793746948" 
 		y2="25" />
 
-	<adminLevel countryId="383" adminLevelId="1383" name="Region"
-		AllowAdd="0" />
+	<adminLevel countryId="383" adminLevelId="1383" name="Region" />
 
 	<locationType locationTypeId="1" countryId="383" name="Village"
 		reuse="1" />

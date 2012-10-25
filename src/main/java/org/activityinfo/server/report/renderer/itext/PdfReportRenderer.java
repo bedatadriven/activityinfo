@@ -8,6 +8,7 @@ package org.activityinfo.server.report.renderer.itext;
 import java.io.OutputStream;
 import java.net.URL;
 
+import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.server.report.renderer.image.ItextGraphic;
@@ -35,8 +36,8 @@ public class PdfReportRenderer extends ItextReportRenderer {
 	private PdfWriter writer;
 
 	@Inject
-	public PdfReportRenderer(@MapIconPath String mapIconPath) {
-		super(mapIconPath);
+	public PdfReportRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath) {
+		super(geometryProvider, mapIconPath);
 	}
 
 	@Override

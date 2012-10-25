@@ -15,12 +15,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activityinfo.server.geo.AdminGeo;
+import org.activityinfo.server.geo.AdminGeometryProvider;
+import org.activityinfo.server.geo.TestingGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
 import org.activityinfo.server.report.generator.map.TiledMap;
-import org.activityinfo.server.report.renderer.geo.AdminGeo;
-import org.activityinfo.server.report.renderer.geo.AdminGeometryProvider;
-import org.activityinfo.server.report.renderer.geo.TestingGeometryProvider;
 import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.server.util.mapping.GoogleStaticMapsApi;
 import org.activityinfo.shared.map.BaseMap;
@@ -79,10 +79,11 @@ public class ImageMapRenderer {
 
 	private Map<String, BufferedImage> iconImages = new HashMap<String, BufferedImage>();
 
-	private AdminGeometryProvider geometryProvider = new TestingGeometryProvider();
+	private AdminGeometryProvider geometryProvider;
 	
     @Inject
-    public ImageMapRenderer(@MapIconPath String mapIconPath) {
+    public ImageMapRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath) {
+    	this.geometryProvider = geometryProvider;
         this.mapIconRoot = mapIconPath;
     }
     

@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.IconRectCalculator;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
@@ -36,8 +37,8 @@ import com.google.inject.Inject;
 public class PPTMapRenderer extends ImageMapRenderer {
 
     @Inject
-    public PPTMapRenderer(@MapIconPath String mapIconPath) {
-        super(mapIconPath);
+    public PPTMapRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath) {
+        super(geometryProvider, mapIconPath);
     }
 
     @Override

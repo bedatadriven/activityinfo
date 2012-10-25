@@ -43,6 +43,7 @@ public class DatabaseCleaner {
 					String tableName = tables.getString(3);
 					if(!tableName.toLowerCase().startsWith(LIQUIBASE_TABLE_PREFIX)) {
 						statement.execute("DELETE FROM " + tableName);
+						System.err.println("Dropped all from " + tableName);
 					}
 				}
 			} finally {
@@ -59,6 +60,7 @@ public class DatabaseCleaner {
 			try {
 				connection.close();
 			} catch (SQLException ignored) {
+				ignored.printStackTrace();
 			}			
 		}
     }

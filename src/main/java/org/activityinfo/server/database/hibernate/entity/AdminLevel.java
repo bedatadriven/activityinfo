@@ -20,9 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-/**
- * @author Alex Bertram
- */
+
 @Entity
 public class AdminLevel implements java.io.Serializable {
 
@@ -30,31 +28,17 @@ public class AdminLevel implements java.io.Serializable {
 	private Country country;
 	private AdminLevel parent;
 	private String name;
-	private boolean allowAdd;
+	private boolean polygons;
 	private Set<AdminEntity> entities = new HashSet<AdminEntity>(0);
 	private Set<AdminLevel> childLevels = new HashSet<AdminLevel>(0);
 
 	public AdminLevel() {
 	}
 
-	public AdminLevel(int adminLevelId, Country country, String name,
-			boolean allowAdd) {
+	public AdminLevel(int adminLevelId, Country country, String name) {
 		this.id = adminLevelId;
 		this.country = country;
 		this.name = name;
-		this.allowAdd = allowAdd;
-	}
-
-	public AdminLevel(int adminLevelId, Country country, AdminLevel adminLevel,
-			String name, boolean allowAdd, Set<AdminEntity> entities,
-			Set<AdminLevel> childLevels) {
-		this.id = adminLevelId;
-		this.country = country;
-		this.parent = adminLevel;
-		this.name = name;
-		this.allowAdd = allowAdd;
-		this.entities = entities;
-		this.childLevels = childLevels;
 	}
 
 	@Id
@@ -96,14 +80,14 @@ public class AdminLevel implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	@Column(name = "AllowAdd", nullable = false)
-	public boolean isAllowAdd() {
-		return this.allowAdd;
+	
+	@Column(nullable = false)
+	public boolean isPolygons() {
+		return polygons;
 	}
 
-	public void setAllowAdd(boolean allowAdd) {
-		this.allowAdd = allowAdd;
+	public void setPolygons(boolean polygons) {
+		this.polygons = polygons;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "level")

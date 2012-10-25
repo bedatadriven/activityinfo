@@ -22,13 +22,14 @@ public class PolygonLayerGenerator implements LayerGenerator {
 
 	private PolygonMapLayer layer;
 	private PivotResult buckets;
-	private MagnitudeScale colorScale = new MagnitudeScale();
+	private MagnitudeScale colorScale;
 	private AdminOverlay overlay;
 	
 	public PolygonLayerGenerator(PolygonMapLayer layer) {
 		super();
 		this.layer = layer;
 		this.overlay = new AdminOverlay(layer.getAdminLevelId());
+		this.colorScale = new MagnitudeScale(layer.getMaxColor());
 	}
 
 	@Override

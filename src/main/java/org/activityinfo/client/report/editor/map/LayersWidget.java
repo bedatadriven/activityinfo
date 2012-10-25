@@ -58,7 +58,7 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 	private ListView<LayerModel> view = new ListView<LayerModel>();
 
 	private ContentPanel layersPanel;
-	private AddLayerDialog addLayersDialog;
+	private NewLayerWizard addLayersDialog;
 	private LayerOptionsPanel optionsPanel;
 	private BaseMapPanel baseMapPanel;
 	
@@ -98,15 +98,15 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 	}
 
 	private void createAddLayersDialog() {
-		addLayersDialog = new AddLayerDialog(service);
-		addLayersDialog.addValueChangeHandler(new ValueChangeHandler<MapLayer>(){
-			@Override
-			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-				if (event.getValue() != null) {
-					addLayer(event.getValue());
-				}
-			}
-		});
+		addLayersDialog = new NewLayerWizard(service);
+//		addLayersDialog.addValueChangeHandler(new ValueChangeHandler<MapLayer>(){
+//			@Override
+//			public void onValueChange(ValueChangeEvent<MapLayer> event) {
+//				if (event.getValue() != null) {
+//					addLayer(event.getValue());
+//				}
+//			}
+//		});
 	}
 
 	private void createAddLayerButton() {
@@ -118,7 +118,10 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 		    	  if(addLayersDialog == null) {
 		    		  createAddLayersDialog();
 		    	  }
-		    	  addLayersDialog.show();
+		    	  NewLayerWizard wizard = new NewLayerWizard(service);
+		    	  WizardDialog dialog = new WizardDialog(wizard);
+		    	  dialog.show();
+		    	  //addLayersDialog.show();
 		      }
 		});
 		
@@ -216,10 +219,10 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 			layerMenu.hide();		
 			layerMenu.removeAllListeners();
 		}
-		if(addLayersDialog != null) {
-			addLayersDialog.hide();
-			addLayersDialog.removeAllListeners();
-		}
+//		if(addLayersDialog != null) {
+//			addLayersDialog.hide();
+//			addLayersDialog.removeAllListeners();
+//		}
 	}
 	
 	private MapLayer getSelectedLayer() {

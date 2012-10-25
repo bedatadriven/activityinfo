@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.output.StorageProvider;
@@ -43,8 +44,8 @@ public class HtmlReportRenderer extends ItextReportRenderer {
 	private final StorageProvider imageStorageProvider;
 
 	@Inject
-	public HtmlReportRenderer(@MapIconPath String mapIconPath, StorageProvider imageStorageProvider) {
-		super(mapIconPath);
+	public HtmlReportRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath, StorageProvider imageStorageProvider) {
+		super(geometryProvider, mapIconPath);
 		this.imageStorageProvider = imageStorageProvider;
 	}
 

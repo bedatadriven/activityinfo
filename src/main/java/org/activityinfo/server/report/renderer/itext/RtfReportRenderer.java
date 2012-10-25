@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
+import org.activityinfo.server.geo.AdminGeo;
+import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.server.report.renderer.image.ItextGraphic;
@@ -35,8 +37,8 @@ import com.lowagie.text.rtf.RtfWriter2;
 public class RtfReportRenderer extends ItextReportRenderer {
 
     @Inject
-    public RtfReportRenderer(@MapIconPath String mapIconPath) {
-        super(mapIconPath);
+    public RtfReportRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath) {
+        super(geometryProvider, mapIconPath);
     }
 
     @Override

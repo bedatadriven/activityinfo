@@ -13,5 +13,6 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
   <include file="org/activityinfo/database/changelog/db.changelog-008-charsets.xml"/> 
   <include file="org/activityinfo/database/changelog/db.changelog-009-schema-updates.xml"/> 
   <include file="org/activityinfo/database/changelog/db.changelog-010-indicator.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-011-polygons.xml"/> 
   
 </databaseChangeLog> 

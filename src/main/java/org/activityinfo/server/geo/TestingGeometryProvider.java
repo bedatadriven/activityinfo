@@ -1,4 +1,4 @@
-package org.activityinfo.server.report.renderer.geo;
+package org.activityinfo.server.geo;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

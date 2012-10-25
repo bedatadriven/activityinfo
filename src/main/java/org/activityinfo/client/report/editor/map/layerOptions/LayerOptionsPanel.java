@@ -62,10 +62,11 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		this.dispatcher = service;
 
 		initializeComponent();
-		
-		createBubbleLayerOptionsWidget();
-		createIconLayerOptionsWidget();
-		createPiechartLayerOptionsWidget();
+		this.piechartMapLayerOptions = new PiechartLayerOptions(service);
+		bindLayerOptions(bubbleMapLayerOptions);
+		bindLayerOptions(iconMapLayerOptions);
+		bindLayerOptions(piechartMapLayerOptions);
+		bindLayerOptions(polygonLayerOptions);
 
 		createClusteringOptions(service);
 		createFilterPanel(service);
@@ -85,29 +86,10 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		clusteringPanel.add(clusteringOptions);
 	}
 
-	private void createPiechartLayerOptionsWidget() {
-		piechartMapLayerOptions = new PiechartLayerOptions(dispatcher);
-		piechartMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<PiechartMapLayer>() {
+	private <L extends MapLayer> void bindLayerOptions(HasValue<L> layerOptions) {
+		layerOptions.addValueChangeHandler(new ValueChangeHandler<L>() {
 			@Override
-			public void onValueChange(ValueChangeEvent<PiechartMapLayer> event) {
-				ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
-			}
-		});
-	}
-
-	private void createIconLayerOptionsWidget() {
-		iconMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<IconMapLayer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<IconMapLayer> event) {
-				ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
-			}
-		});
-	}
-
-	private void createBubbleLayerOptionsWidget() {
-		bubbleMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<BubbleMapLayer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<BubbleMapLayer> event) {
+			public void onValueChange(ValueChangeEvent<L> event) {
 				ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
 			}
 		});

@@ -12,8 +12,8 @@
 	
 	<country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
 
-	<adminLevel countryId="1" adminLevelId="1" name="Province" AllowAdd="0"	/>
-	<adminLevel countryId="1" adminLevelId="2" name="Territoire" AllowAdd="0" ParentId="1"/>
+	<adminLevel countryId="1" adminLevelId="1" name="Province" />
+	<adminLevel countryId="1" adminLevelId="2" name="Territoire" ParentId="1"/>
 	
 	<adminEntity adminLevelId="1" adminEntityId="1" name="Kinshasa" code="10" x1="0" y1="0" x2="0" y2="0"/>
 	<adminEntity adminLevelId="1" adminEntityId="2" name="Sud Kivu" code="20" x1="0" y1="0" x2="0" y2="0"/>
