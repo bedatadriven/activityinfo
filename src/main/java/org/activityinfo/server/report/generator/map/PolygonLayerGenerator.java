@@ -49,7 +49,9 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		
 		AdminEntityResult entities = dispatcher.execute(query);
 		for(AdminEntityDTO entity : entities.getData()) {
-			overlay.addPolygon(new AdminMarker(entity));
+			AdminMarker marker = new AdminMarker(entity);
+			marker.setColor(colorScale.nullColor().toHexString());
+			overlay.addPolygon(marker);
 		}
 	}
 
@@ -62,9 +64,11 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		this.buckets = dispatcher.execute(query);
 		for(Bucket bucket : buckets.getBuckets()) {
 			EntityCategory category = (EntityCategory) bucket.getCategory(adminDimension);
-			int adminEntityId = category.getId(); 
-			overlay.getPolygon(adminEntityId).setValue(bucket.doubleValue());
-			colorScale.addValue(bucket.doubleValue());
+			if(category != null) {
+				int adminEntityId = category.getId(); 
+				overlay.getPolygon(adminEntityId).setValue(bucket.doubleValue());
+				colorScale.addValue(bucket.doubleValue());
+			}
 		}
 	}
 	
@@ -73,8 +77,6 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		for(AdminMarker polygon : overlay.getPolygons()) {
 			if(polygon.hasValue()) {
 				polygon.setColor(colorScale.color(polygon.getValue()).toHexString());
-			} else {
-				polygon.setColor(colorScale.nullColor().toHexString());
 			}
 		}
 	}

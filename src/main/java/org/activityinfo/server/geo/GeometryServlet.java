@@ -8,18 +8,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Serves pre-encoded administrative unit geometry for the client. 
  *
  */
+@Singleton
 public class GeometryServlet extends HttpServlet {
 	
 	public static final String END_POINT = "/geometry/*";
 	
-	private BlobstoreService blobstore = BlobstoreServiceFactory.getBlobstoreService();
+	private GeometryStorage storage;
+	
+	@Inject
+	public GeometryServlet(GeometryStorage storage) {
+		super();
+		this.storage = storage;
+	}
+
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -27,9 +35,8 @@ public class GeometryServlet extends HttpServlet {
 		
 		if(req.getRequestURI().matches("/geometry/(\\d.*)")) {
 			int levelId = Integer.parseInt(req.getRequestURI().substring("/geometry/".length()));
-			BlobKey blobKey = blobstore.createGsBlobKey("/gs/aigeo/" + levelId + ".json");
 			resp.setContentType("application/json");
-			blobstore.serve(blobKey, resp);
+			storage.serveJson(levelId, resp);
 		} else {
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}

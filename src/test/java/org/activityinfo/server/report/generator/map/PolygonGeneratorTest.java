@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
-import org.activityinfo.server.geo.TestingGeometryProvider;
+import org.activityinfo.server.geo.ClasspathGeometryProvider;
 import org.activityinfo.server.report.generator.MapGenerator;
 import org.activityinfo.server.report.renderer.itext.PdfReportRenderer;
 import org.activityinfo.shared.command.GenerateElement;
@@ -43,7 +43,7 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
 		map.setContent(content);
 		
 		FileOutputStream fos = new FileOutputStream("target/report-tests/polygon.pdf");
-		PdfReportRenderer pdfr = new PdfReportRenderer(new TestingGeometryProvider(), "");
+		PdfReportRenderer pdfr = new PdfReportRenderer(new ClasspathGeometryProvider(), "");
 		pdfr.render(map, fos);
 		fos.close();
 		

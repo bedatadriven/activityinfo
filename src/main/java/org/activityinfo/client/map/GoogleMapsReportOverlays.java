@@ -114,7 +114,6 @@ public class GoogleMapsReportOverlays {
 						marker.hasValue(), marker.getColor(), 0.5, true);
 				
 				mapWidget.addOverlay(polygon);
-				
 			}
 		}
 		

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.activityinfo.server.geo.TestingGeometryProvider;
+import org.activityinfo.server.geo.ClasspathGeometryProvider;
 import org.activityinfo.server.report.DummyPivotTableData;
 import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.output.StorageProvider;
@@ -452,7 +452,7 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToPdf(Report report, String name) throws IOException {
-		PdfReportRenderer reportRenderer = new PdfReportRenderer(new TestingGeometryProvider(), mapIconPath());
+		PdfReportRenderer reportRenderer = new PdfReportRenderer(new ClasspathGeometryProvider(), mapIconPath());
 		renderTo(report, reportRenderer, name);
 	}
 	
@@ -463,22 +463,22 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToHtml(Report report, String name) throws IOException {
-		renderTo(report, new HtmlReportRenderer(new TestingGeometryProvider(),  mapIconPath(), new TestImageStorageProvider()), name);
+		renderTo(report, new HtmlReportRenderer(new ClasspathGeometryProvider(),  mapIconPath(), new TestImageStorageProvider()), name);
 	}
 	
 	private void renderToHtmlUsingWriter(Report report, String name) throws IOException {
 		FileWriter writer = new FileWriter("target/report-tests/" + name);
-		HtmlReportRenderer renderer = new HtmlReportRenderer(new TestingGeometryProvider(), mapIconPath(), new TestImageStorageProvider());
+		HtmlReportRenderer renderer = new HtmlReportRenderer(new ClasspathGeometryProvider(), mapIconPath(), new TestImageStorageProvider());
 		renderer.render(report, writer);
 		writer.close();
 	}
 	
 	private void renderToRtf(Report report, String name) throws IOException {
-		renderTo(report, new RtfReportRenderer(new TestingGeometryProvider(), mapIconPath()), name);
+		renderTo(report, new RtfReportRenderer(new ClasspathGeometryProvider(), mapIconPath()), name);
 	}
 	
 	private void renderToPpt(MapReportElement map, String name) throws FileNotFoundException, IOException {
-		PPTMapRenderer renderer = new PPTMapRenderer(new TestingGeometryProvider(), mapIconPath());
+		PPTMapRenderer renderer = new PPTMapRenderer(new ClasspathGeometryProvider(), mapIconPath());
 		renderer.render(map, new FileOutputStream("target/report-tests/" + name));
 	}
 	

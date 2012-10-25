@@ -12,7 +12,7 @@ public final class AdminGeometryProvider {
 	public static AdminGeometryProvider INSTANCE = new AdminGeometryProvider();
 	
 	public void get(int levelId, final AsyncCallback<AdminGeometry> callback) {
-		RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/1383.json");
+		RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/geometry/" + levelId);
 		request.setCallback(new RequestCallback() {
 			
 			@Override

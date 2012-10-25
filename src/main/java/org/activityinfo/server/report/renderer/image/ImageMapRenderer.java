@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import org.activityinfo.server.geo.AdminGeo;
 import org.activityinfo.server.geo.AdminGeometryProvider;
-import org.activityinfo.server.geo.TestingGeometryProvider;
+import org.activityinfo.server.geo.ClasspathGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
 import org.activityinfo.server.report.generator.map.TiledMap;
