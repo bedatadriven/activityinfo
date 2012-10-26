@@ -34,11 +34,19 @@ public class GcsGeometryStorage implements GeometryStorage {
 	}
 
 	@Override
-	public void serveJson(int adminLevelId, HttpServletResponse response) throws IOException {
-		FileReadChannel readChannel = openChannel(adminLevelId, ".wkb");
+	public void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response) throws IOException {
+
+		FileReadChannel readChannel = openChannel(adminLevelId, gzip ? ".json.gz" : ".json");
 		InputStream in = Channels.newInputStream(readChannel);
-		ByteStreams.copy(in, response.getOutputStream());
+		byte[] bytes = ByteStreams.toByteArray(in);
 		readChannel.close();
+		
+		response.setContentType("application/json");
+		if(gzip) {
+			response.setHeader("Content-Encoding", "gzip");
+		}
+		response.setContentLength(bytes.length);
+		response.getOutputStream().write(bytes);
 	}
 	
 	private FileReadChannel openChannel(int adminLevelId, String suffix)

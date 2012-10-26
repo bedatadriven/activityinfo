@@ -17,7 +17,7 @@ public class ClasspathGeometryProvider implements GeometryStorage {
 	}
 
 	@Override
-	public void serveJson(int adminLevelId, HttpServletResponse response) {
+	public void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response) {
 		throw new UnsupportedOperationException();
 	}
 

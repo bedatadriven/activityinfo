@@ -41,7 +41,7 @@ public class LocalGeometryStorage implements GeometryStorage {
 	}
 
 	@Override
-	public void serveJson(int adminLevelId, HttpServletResponse response) throws IOException {
+	public void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response) throws IOException {
 		File jsonFile = new File(geoRoot, adminLevelId + ".json");
 		Files.copy(jsonFile, response.getOutputStream());
 	}

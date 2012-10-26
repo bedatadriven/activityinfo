@@ -18,7 +18,7 @@ public class RemoteGcsStorage implements GeometryStorage {
 	}
 
 	@Override
-	public void serveJson(int adminLevelId, HttpServletResponse response)
+	public void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response)
 			throws IOException {
 		URL url = new URL("http://commondatastorage.googleapis.com/aigeo/" + adminLevelId  + ".json.gz");
 		response.setHeader("Content-Encoding", "gzip");

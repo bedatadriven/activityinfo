@@ -9,6 +9,6 @@ public interface GeometryStorage {
 
 	InputStream openWkb(int adminLevelId) throws IOException;
 	
-	void serveJson(int adminLevelId, HttpServletResponse response) throws IOException;
+	void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response) throws IOException;
 	
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.blobstore.BlobKey;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -35,8 +36,9 @@ public class GeometryServlet extends HttpServlet {
 		
 		if(req.getRequestURI().matches("/geometry/(\\d.*)")) {
 			int levelId = Integer.parseInt(req.getRequestURI().substring("/geometry/".length()));
+			boolean gzip = Strings.nullToEmpty(req.getHeader("Accept-Encoding")).contains("gzip");
 			resp.setContentType("application/json");
-			storage.serveJson(levelId, resp);
+			storage.serveJson(levelId, gzip, resp);
 		} else {
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
