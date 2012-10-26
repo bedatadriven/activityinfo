@@ -1,14 +1,18 @@
 package org.activityinfo.server.geo;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.Channels;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreInputStream;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.files.AppEngineFile;
+import com.google.appengine.api.files.FileReadChannel;
+import com.google.appengine.api.files.FileService;
+import com.google.appengine.api.files.FileServiceFactory;
+import com.google.appengine.api.files.LockException;
+import com.google.common.io.ByteStreams;
 import com.google.inject.Singleton;
 
 /**
@@ -21,20 +25,27 @@ import com.google.inject.Singleton;
 @Singleton
 public class GcsGeometryStorage implements GeometryStorage {
 
-	private BlobstoreService blobstore = BlobstoreServiceFactory.getBlobstoreService();
-
+	private FileService fileService = FileServiceFactory.getFileService();
 
 	@Override
 	public InputStream openWkb(int adminLevelId) throws IOException {
-		BlobKey blobKey = blobstore.createGsBlobKey("/gs/aigeo/" + adminLevelId + ".wkb");
-		return new BlobstoreInputStream(blobKey);
+		FileReadChannel readChannel = openChannel(adminLevelId, ".wkb");
+		return Channels.newInputStream(readChannel);
 	}
 
 	@Override
 	public void serveJson(int adminLevelId, HttpServletResponse response) throws IOException {
-		BlobKey blobKey = blobstore.createGsBlobKey("/gs/aigeo/" + adminLevelId + ".json.gz");
-		response.setHeader("Content-Encoding", "gzip");
-		blobstore.serve(blobKey, response);
+		FileReadChannel readChannel = openChannel(adminLevelId, ".wkb");
+		InputStream in = Channels.newInputStream(readChannel);
+		ByteStreams.copy(in, response.getOutputStream());
+		readChannel.close();
 	}
-
+	
+	private FileReadChannel openChannel(int adminLevelId, String suffix)
+			throws FileNotFoundException, LockException, IOException {
+		boolean lockForRead = false;
+		String filename = "/gs/aigeo/" + adminLevelId + suffix;
+		AppEngineFile readableFile = new AppEngineFile(filename);
+		return fileService.openReadChannel(readableFile, lockForRead);
+	}
 }
