@@ -19,10 +19,12 @@
   	<include path="/Login/**.css" expiration="365d"/>
     <include path="/Login/**.cache.html" expiration="365d"/>
     <include path="/static/**.png" expiration="365d"/>
-
-
   </static-files>
-  
+
+	<admin-console>
+		<page name="Appstats" url="/appstats" />
+	</admin-console>
+ 
   <sessions-enabled>false</sessions-enabled>
   <precompilation-enabled>false</precompilation-enabled>
   <threadsafe>true</threadsafe>

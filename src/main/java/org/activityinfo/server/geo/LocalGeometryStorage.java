@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,10 +35,16 @@ public class LocalGeometryStorage implements GeometryStorage {
 			}
 		}	
 	}
+	
+	public LocalGeometryStorage(File georoot) {
+		this.geoRoot = georoot;
+	}
 
 	@Override
 	public InputStream openWkb(int adminLevelId) throws IOException {
-		return new FileInputStream(new File(geoRoot, adminLevelId + ".wkb" ));
+		return
+			new GZIPInputStream(
+						new FileInputStream(new File(geoRoot, adminLevelId + ".wkb.gz" )));
 	}
 
 	@Override

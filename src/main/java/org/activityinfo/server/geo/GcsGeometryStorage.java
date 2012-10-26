@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.Channels;
+import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,10 +33,10 @@ public class GcsGeometryStorage implements GeometryStorage {
 
 	@Override
 	public InputStream openWkb(int adminLevelId) throws IOException {
-		FileReadChannel readChannel = openChannel(adminLevelId, ".wkb");
+		FileReadChannel readChannel = openChannel(adminLevelId, ".wkb.gz");
 		InputStream in = Channels.newInputStream(readChannel);
 		BufferedInputStream bufferedIn = new BufferedInputStream(in, 1024 * 50);
-		return bufferedIn;
+		return new GZIPInputStream(bufferedIn);
 	}
 
 	@Override
