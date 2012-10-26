@@ -22,6 +22,7 @@ import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.generator.map.TileProvider;
 import org.activityinfo.server.report.generator.map.TiledMap;
 import org.activityinfo.server.util.ColorUtil;
+import org.activityinfo.server.util.logging.LogSlow;
 import org.activityinfo.server.util.mapping.GoogleStaticMapsApi;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.GoogleBaseMap;
@@ -133,14 +134,14 @@ public class ImageMapRenderer {
         }
 	}
 
-	private void drawAdminOverlay(TiledMap map, Graphics2D g2d, AdminOverlay overlay) {
+	@LogSlow(threshold = 50)
+	protected void drawAdminOverlay(TiledMap map, Graphics2D g2d, AdminOverlay overlay) {
 		List<AdminGeo> geometry = geometryProvider.getGeometry(overlay.getAdminLevelId());
 		for(AdminGeo adminGeo : geometry) {
 			AdminMarker polygon = overlay.getPolygon(adminGeo.getId());
             g2d.setColor(bubbleFillColor(ColorUtil.colorFromString(polygon.getColor())));
             fill(map, g2d, adminGeo.getGeometry());
-		}
-		
+		}		
 	}
 
 	private void fill(TiledMap map, Graphics2D g2d, Geometry geometry) {
@@ -303,7 +304,9 @@ public class ImageMapRenderer {
 		map.drawLayer(handler, tileProvider);
 	}
 
-	private void drawGoogleBaseMap(TileHandler tileHandler, TiledMap map, GoogleBaseMap baseMap) throws IOException {
+	
+	@LogSlow(threshold = 100)
+	protected void drawGoogleBaseMap(TileHandler tileHandler, TiledMap map, GoogleBaseMap baseMap) throws IOException {
 		
 		// the google maps static api imposes a limit to the image sizes we can request, 
 		// so we have to acquire the map imagery in batches

@@ -1,11 +1,14 @@
 package org.activityinfo.server.geo;
 
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.Channels;
 
 import javax.servlet.http.HttpServletResponse;
+
+import org.activityinfo.server.util.logging.LogSlow;
 
 import com.google.appengine.api.files.AppEngineFile;
 import com.google.appengine.api.files.FileReadChannel;
@@ -30,10 +33,13 @@ public class GcsGeometryStorage implements GeometryStorage {
 	@Override
 	public InputStream openWkb(int adminLevelId) throws IOException {
 		FileReadChannel readChannel = openChannel(adminLevelId, ".wkb");
-		return Channels.newInputStream(readChannel);
+		InputStream in = Channels.newInputStream(readChannel);
+		BufferedInputStream bufferedIn = new BufferedInputStream(in, 1024 * 50);
+		return bufferedIn;
 	}
 
 	@Override
+	@LogSlow(threshold = 100)
 	public void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response) throws IOException {
 
 		FileReadChannel readChannel = openChannel(adminLevelId, gzip ? ".json.gz" : ".json");
@@ -49,7 +55,8 @@ public class GcsGeometryStorage implements GeometryStorage {
 		response.getOutputStream().write(bytes);
 	}
 	
-	private FileReadChannel openChannel(int adminLevelId, String suffix)
+	@LogSlow(threshold = 100)
+	protected FileReadChannel openChannel(int adminLevelId, String suffix)
 			throws FileNotFoundException, LockException, IOException {
 		boolean lockForRead = false;
 		String filename = "/gs/aigeo/" + adminLevelId + suffix;
