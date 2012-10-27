@@ -59,7 +59,6 @@
 			<role-name>admin</role-name>
 		</auth-constraint>
 	</security-constraint>
-
   <servlet>
     <servlet-name>SystemServiceServlet</servlet-name>
     <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>

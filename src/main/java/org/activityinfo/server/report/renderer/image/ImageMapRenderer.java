@@ -41,8 +41,10 @@ import com.google.code.appengine.awt.BasicStroke;
 import com.google.code.appengine.awt.Color;
 import com.google.code.appengine.awt.Graphics2D;
 import com.google.code.appengine.awt.Rectangle;
+import com.google.code.appengine.awt.Stroke;
 import com.google.code.appengine.awt.color.ColorSpace;
 import com.google.code.appengine.awt.geom.Ellipse2D;
+import com.google.code.appengine.awt.geom.GeneralPath;
 import com.google.code.appengine.awt.image.BufferedImage;
 import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
@@ -120,7 +122,7 @@ public class ImageMapRenderer {
 		TiledMap map = createTileMap(element);
 		
 		for(AdminOverlay overlay : element.getContent().getAdminOverlays()) {
-			drawAdminOverlay(map, g2d, overlay);
+			drawAdminOverlay(map, g2d,  overlay);
 		}
 		
 		for(MapMarker marker : element.getContent().getMarkers()) {
@@ -136,27 +138,49 @@ public class ImageMapRenderer {
 
 	@LogSlow(threshold = 50)
 	protected void drawAdminOverlay(TiledMap map, Graphics2D g2d, AdminOverlay overlay) {
+		
+	
 		List<AdminGeo> geometry = geometryProvider.getGeometry(overlay.getAdminLevelId());
+		
+		Color strokeColor = ColorUtil.colorFromString(overlay.getOutlineColor());	
+		g2d.setStroke(new BasicStroke(2));
+		
 		for(AdminGeo adminGeo : geometry) {
 			AdminMarker polygon = overlay.getPolygon(adminGeo.getId());
-            g2d.setColor(bubbleFillColor(ColorUtil.colorFromString(polygon.getColor())));
-            fill(map, g2d, adminGeo.getGeometry());
+			if(polygon != null) {
+				GeneralPath path = toPath(map, adminGeo.getGeometry());
+	            g2d.setColor(bubbleFillColor(ColorUtil.colorFromString(polygon.getColor())));
+	            g2d.fill(path);
+	            g2d.setColor(strokeColor);
+	            g2d.draw(path);
+			}
 		}		
 	}
 
-	private void fill(TiledMap map, Graphics2D g2d, Geometry geometry) {
+	private GeneralPath toPath(TiledMap map, Geometry geometry) {
+		GeneralPath path = new GeneralPath();
 		for(int i=0;i!=geometry.getNumGeometries();++i) {
-			Polygon polygon = (Polygon) geometry.getGeometryN(i);
-			Coordinate[] coordinates = polygon.getCoordinates();
-			int x[] = new int[coordinates.length];
-			int y[] = new int[coordinates.length];
-			for(int j=0;j!=coordinates.length;++j) {
-				Point point = map.fromLatLngToPixel(new AiLatLng(coordinates[j].y,coordinates[j].x));
-				x[j] = point.getX();
-				y[j] = point.getY();
+			Polygon polygon = (Polygon) geometry.getGeometryN(i);		
+			addRingToPath(map, path, polygon.getExteriorRing().getCoordinates());
+			for(int j=0;j!=polygon.getNumInteriorRing();++j) {
+				addRingToPath(map, path, polygon.getInteriorRingN(j).getCoordinates());
 			}
-			g2d.fillPolygon(x, y, x.length);
+			break;
 		}
+		return path;
+	}
+
+	private void addRingToPath(TiledMap map, GeneralPath path,
+			Coordinate[] coordinates) {
+		for(int j=0;j!=coordinates.length;++j) {
+			Point point = map.fromLatLngToPixel(new AiLatLng(coordinates[j].y,coordinates[j].x));
+			if(j == 0) {
+				path.moveTo((float)point.getDoubleX(), (float)point.getDoubleY());
+			} else {
+				path.lineTo((float)point.getDoubleX(), (float)point.getDoubleY());
+			}
+		}
+		path.closePath();
 	}
 
 	public static void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {

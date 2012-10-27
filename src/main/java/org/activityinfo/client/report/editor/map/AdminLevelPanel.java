@@ -2,7 +2,6 @@ package org.activityinfo.client.report.editor.map;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
@@ -10,10 +9,6 @@ import org.activityinfo.shared.command.GetAdminLevels;
 import org.activityinfo.shared.command.result.AdminLevelResult;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.Radio;

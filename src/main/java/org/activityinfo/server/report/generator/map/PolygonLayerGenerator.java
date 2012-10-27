@@ -29,6 +29,7 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		super();
 		this.layer = layer;
 		this.overlay = new AdminOverlay(layer.getAdminLevelId());
+		this.overlay.setOutlineColor(layer.getMaxColor());
 		this.colorScale = new MagnitudeScale(layer.getMaxColor());
 	}
 

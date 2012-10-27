@@ -13,6 +13,7 @@ public class AdminOverlay implements Serializable {
 	
 	private Map<Integer, AdminMarker> polygons;
 	private int adminLevelId;
+	private String outlineColor;
 	
 	public AdminOverlay() {
 		
@@ -48,6 +49,14 @@ public class AdminOverlay implements Serializable {
 		polygons.put(polygon.getAdminEntityId(), polygon);
 	}
 	
+	public String getOutlineColor() {
+		return outlineColor;
+	}
+
+	public void setOutlineColor(String outlineColor) {
+		this.outlineColor = outlineColor;
+	}
+
 	@Override
 	public String toString() {
 		return Joiner.on("\n").join(polygons.values());
