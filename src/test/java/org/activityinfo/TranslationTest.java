@@ -1,10 +1,12 @@
 package org.activityinfo;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.i18n.UIMessages;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TranslationTest {
@@ -44,4 +46,11 @@ public class TranslationTest {
 		}
 	}
 
+	@Test
+	public void testParseXml() throws Exception {
+		UiXmlRefFinder finder = new UiXmlRefFinder(UIConstants.class);
+		finder.parseXmlFile(new File("src/main/java/org/activityinfo/client/page/report/ReportTitleWidget.ui.xml"));
+		
+		Assert.assertTrue(finder.getReferences().contains("changeTitle"));
+	}
 }

@@ -2,7 +2,6 @@ package org.activityinfo;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +13,6 @@ import java.util.Set;
 
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.i18n.UIMessages;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 
 import com.google.appengine.repackaged.com.google.common.base.Charsets;
 import com.google.common.collect.Sets;
@@ -26,22 +21,20 @@ import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 public class TranslationTool {
 
-	public static void main(String[] args) throws IOException {
-		
+	public static void main(String[] args) throws Exception {
 		cleanConstants();
 		cleanMessages();
-		
 	}
 
 
-	private static void cleanConstants() throws IOException {
+	private static void cleanConstants() throws Exception {
 		Set<String> references = findReferences(UIConstants.class);
 		cleanProperties(UIConstants.class, null, references);
 		cleanProperties(UIConstants.class, "fr", references);
 	}
 
 
-	private static void cleanMessages() throws IOException {
+	private static void cleanMessages() throws Exception {
 		Set<String> references = findReferences(UIMessages.class);
 		cleanProperties(loadTranslationsFromInterface(UIMessages.class), references);
 		cleanProperties(UIMessages.class, "fr", references);
@@ -49,6 +42,18 @@ public class TranslationTool {
 	
 	
 	
+	private static Set<String> findReferences(Class i18nClass) throws Exception {
+		Set<String> references = Sets.newHashSet();
+
+		File classRoot = new File("war/WEB-INF/classes");
+		references.addAll(new ClassRefFinder(i18nClass).scan(classRoot));
+
+		File srcRoot = new File("src/main/java");
+		references.addAll(new UiXmlRefFinder(i18nClass).scan(srcRoot));
+		return references;
+	}
+
+
 	private static void cleanProperties(Properties defined, Set<String> referenced) {
 		for(Object definedKey : defined.keySet()) {
 			if(!referenced.contains(definedKey)) {
@@ -97,62 +102,6 @@ public class TranslationTool {
 		return key;
 	}
 
-	public static Set<String> findReferences(Class i18nClass) throws IOException {
-		Set<String> references = Sets.newHashSet();
-		File root = new File("war/WEB-INF/classes");
-		scanClasses(i18nClass, root, references);
-		return references;
-	}
-	
-	private static void scanClasses(Class i18nClass, File parent, Set<String> references) throws IOException {
-		for(File file : parent.listFiles()) {
-			if(file.getName().endsWith(".class")) {
-				ClassReader reader = new ClassReader(new FileInputStream(file));
-				reader.accept(new I18NRefFindingClassVisitor(i18nClass, references), 0);
-			} else if(file.isDirectory()) {
-				scanClasses(i18nClass, file, references);
-			}
-		}
-	}
-	
-	private static class I18NRefFindingClassVisitor extends ClassVisitor implements Opcodes {
-
-		private Class clazz;
-		private Set<String> references;
-
-		public I18NRefFindingClassVisitor(Class clazz, Set<String> references) {
-			super(Opcodes.ASM4);
-			this.clazz = clazz;
-			this.references = references;
-		}
-
-		@Override
-		public MethodVisitor visitMethod(int access, String name, String desc,
-				String signature, String[] exceptions) {
-			return new I18NRefFindingMethodVisitor(clazz, references);
-		}
-	}
-	
-	private static class I18NRefFindingMethodVisitor extends MethodVisitor {
-
-		private String className;
-		private Set<String> references;
-
-		public I18NRefFindingMethodVisitor(Class clazz, Set<String> references) {
-			super(Opcodes.ASM4);
-			this.className = clazz.getName().replace('.', '/');
-			this.references = references;
-		}
-
-		@Override
-		public void visitMethodInsn(int opcode, String owner, String name,
-				String desc) {
-			if(className.equals(owner)) {
-				references.add(name);
-			}
-		}
-	
-	}
 	
 
 	public static Properties loadTranslations(Class clazz, String locale) throws IOException {
