@@ -6,18 +6,10 @@ import java.util.Date;
  * Messages for the application.
  * 
  * <p>
- * Note that this file is no longer generated, it should be edited directly
+ * Note that this file is no longer generated, it should be edited directly here
  * instead of editing UIMessages.properties (removed).
  */
 public interface UIMessages extends com.google.gwt.i18n.client.Messages {
-
-	/**
-	 * Translated "{0} - {1}".
-	 * 
-	 * @return translated "{0} - {1}"
-	 */
-	@DefaultMessage("{0} - {1}")
-	String activityTitle(String arg0, String arg1);
 
 
 
@@ -50,33 +42,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("Last Sync''d: {0}")
 	String lastSynced(String arg0);
 
-
-	/**
-	 * Translated
-	 * "Found no existing locations. Make geography less specific, or add a new location."
-	 * .
-	 * 
-	 * @return translated
-	 *         "Found no existing locations. Make geography less specific, or add a new location."
-	 */
-	@DefaultMessage("Found no existing sites. Make geography less specific, or add a new location.")
-	String noLocationsFound();
-
-	/**
-	 * Translated "Database {0} has no projects defined".
-	 * 
-	 * @return translated "Database {0} has no projects defined"
-	 */
-	@DefaultMessage("Database {0} has no projects defined")
-	String noProjectsDefinedForDatabase(String arg0);
-
-	/**
-	 * Translated "No results found for search query \"{0}\".".
-	 * 
-	 * @return translated "No results found for search query \"{0}\"."
-	 */
-	@DefaultMessage("No results found for search query \"{0}\".")
-	String noSearchResults(String arg0);
 
 	/**
 	 * Translated
@@ -152,26 +117,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("For query \"{0}\", found {1} databases, {2} activities and {3} indicators")
 	String searchResultsFound(String arg0, String arg1, String arg2, String arg3);
 
-	/**
-	 * Translated
-	 * "Showing locks for database [{0}], project [{1}] for activity [{2}]".
-	 * 
-	 * @return translated
-	 *         "Showing locks for database [{0}], project [{1}] for activity [{2}]"
-	 */
-	@DefaultMessage("Showing locks for database [{0}], project [{1}] for activity [{2}]")
-	String showLockedPeriodsTitle(String arg0, String arg1, String arg2);
-
-
-
-	/**
-	 * Translated "ActivityInfo r{0}".
-	 * 
-	 * @return translated "ActivityInfo r{0}"
-	 */
-	@DefaultMessage("ActivityInfo r{0}")
-	String versionedActivityInfoTitle(String arg0);
-
 	@DefaultMessage("Add new intervention for activity ''{0}''")
 	String addNewSiteForActivity(String activityName);
 	
@@ -184,12 +129,6 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("Targets for database {0}")
 	String targetsForDatabase(String arg0);
 
-	@DefaultMessage("Please enter email address to subscribe.")
-	String noEmailAddress();
-	
-	@DefaultMessage("{0} Users")
-	String users(String groupName);
-	
 	@DefaultMessage("Report ''{0}'' added to dashboard.")
 	String addedToDashboard(String reportName);
 	
