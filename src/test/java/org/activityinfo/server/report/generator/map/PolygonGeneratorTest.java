@@ -1,5 +1,6 @@
 package org.activityinfo.server.report.generator.map;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,6 +36,12 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
 	@Inject
 	private MapGenerator generator;
 
+
+	@Before
+	public void setUpDirs() {
+		new File("target/report-tests").mkdirs();
+	}
+	
 	
 	@Test
 	public void basicTest() throws IOException {
