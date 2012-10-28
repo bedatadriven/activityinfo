@@ -1,6 +1,7 @@
 package org.activityinfo.client.report.editor.map;
 
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 
@@ -68,7 +69,7 @@ public final class NewLayerWizard implements Wizard {
 
 	@Override
 	public String getTitle() {
-		return "New Layer";
+		return I18N.CONSTANTS.addLayer();
 	}
 
 	@Override

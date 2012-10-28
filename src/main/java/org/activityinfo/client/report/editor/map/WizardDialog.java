@@ -1,6 +1,8 @@
 package org.activityinfo.client.report.editor.map;
 
 
+import org.activityinfo.client.i18n.I18N;
+
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -46,28 +48,28 @@ public class WizardDialog extends Window {
 			add(page);
 		}
 		
-		addButton(cancelButton = new Button("Cancel", new SelectionListener<ButtonEvent>() {
+		addButton(cancelButton = new Button(I18N.CONSTANTS.cancel(), new SelectionListener<ButtonEvent>() {
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				onCancel();
 			}
 		}));
-		addButton(prevButton = new Button("&laquo; Back", new SelectionListener<ButtonEvent>() {
+		addButton(prevButton = new Button(I18N.CONSTANTS.backButton(), new SelectionListener<ButtonEvent>() {
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				onBack();
 			}
 		}));
-		addButton(nextButton = new Button("Next &raquo;", new SelectionListener<ButtonEvent>() {
+		addButton(nextButton = new Button(I18N.CONSTANTS.nextButton(), new SelectionListener<ButtonEvent>() {
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				onNext();
 			}
 		}));
-		addButton(finishButton = new Button("Finish", new SelectionListener<ButtonEvent>() {
+		addButton(finishButton = new Button(I18N.CONSTANTS.finish(), new SelectionListener<ButtonEvent>() {
 			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
