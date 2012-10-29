@@ -111,12 +111,19 @@ public class GoogleMapsReportOverlays {
 				EncodedPolyline[] polylines = toPolylines(entityGeometry, 
 						geometry.getZoomFactor(), geometry.getNumLevels());
 				Polygon polygon = Polygon.fromEncoded(polylines, 
-						marker.hasValue(), marker.getColor(), 0.5, true);
+						marker.hasValue(), formatColor(marker), 0.5, true);
 				
 				mapWidget.addOverlay(polygon);
 			}
 		}
 		
+	}
+
+	private String formatColor(AdminMarker marker) {
+		if(marker.getColor().startsWith("#")) {
+			return marker.getColor();
+		}
+		return "#" + marker.getColor();
 	}
 
 	private EncodedPolyline[] toPolylines(AdminEntityGeometry entityGeometry, int zoomFactor, int numLevels) {
