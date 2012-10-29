@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.filter.IndicatorTreePanel;
+import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.widget.wizard.WizardPage;
 import org.activityinfo.shared.dto.IndicatorDTO;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -28,7 +30,7 @@ public class IndicatorPage extends WizardPage {
 		pageLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
 		setLayout(pageLayout);
 		
-		add(new Text("Choose the indicator to display on your map."));
+		add(new Text(I18N.CONSTANTS.chooseIndicatorsToMap()));
 		
 		VBoxLayoutData indicatorLayout = new VBoxLayoutData();
 		indicatorLayout.setFlex(1);
@@ -40,6 +42,7 @@ public class IndicatorPage extends WizardPage {
 			@Override
 			public void handleEvent(TreePanelEvent be) {	
 				IndicatorPage.this.fireEvent(Events.SelectionChange, new BaseEvent(Events.SelectionChange));
+				IndicatorPage.this.fireEvent(Events.Enable, new BaseEvent(Events.Enable));
 			}
 		});
 		
@@ -52,5 +55,10 @@ public class IndicatorPage extends WizardPage {
 
 	public List<Integer> getSelectedIds() {
 		return treePanel.getSelectedIds();
+	}
+
+	@Override
+	public boolean isNextEnabled() {
+		return !treePanel.getSelection().isEmpty();
 	}
 }

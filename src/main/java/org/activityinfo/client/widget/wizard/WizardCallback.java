@@ -1,4 +1,4 @@
-package org.activityinfo.client.report.editor.map;
+package org.activityinfo.client.widget.wizard;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

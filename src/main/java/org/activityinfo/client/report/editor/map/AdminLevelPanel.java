@@ -9,10 +9,15 @@ import org.activityinfo.shared.command.GetAdminLevels;
 import org.activityinfo.shared.command.result.AdminLevelResult;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
+import com.extjs.gxt.ui.client.widget.layout.FlowData;
 import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -49,7 +54,11 @@ public class AdminLevelPanel extends LayoutContainer {
 
 	protected void showOptions(List<AdminLevelDTO> levels) {
 		removeAll();
+		if(radioGroup != null) {
+			radioGroup.removeAllListeners();
+		}
 		radioGroup = new RadioGroup();
+		boolean missingPolygons = false;
 		for(AdminLevelDTO level : levels) {
 			Radio radio = new Radio();
 			radio.setBoxLabel(level.getName());
@@ -57,8 +66,30 @@ public class AdminLevelPanel extends LayoutContainer {
 			radio.setData("adminLevelId", level.getId());
 			radioGroup.add(radio);
 			add(radio);
+			
+			if(!level.getPolygons()) {
+				missingPolygons = true;
+			}
 		}
+		
+		if(missingPolygons) {
+			addMissingPolygonMessage();
+		}
+		
+		radioGroup.addListener(Events.Change, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				AdminLevelPanel.this.fireEvent(Events.Change, new BaseEvent(Events.Change));
+			}
+		});
 		layout();
+	}
+
+	private void addMissingPolygonMessage() {
+		Text text = new Text(I18N.CONSTANTS.noPolygonsWarning());
+		Margins margin = new Margins(15, 0, 15, 0);
+		add(text, new FlowData(margin));
 	}
 
 	private void showLoading() {
@@ -74,7 +105,10 @@ public class AdminLevelPanel extends LayoutContainer {
 		layout();
 	}
 
-	public int getSelectedLevelId() {
+	public Integer getSelectedLevelId() {
+		if(radioGroup.getValue() == null) {
+			return null;
+		}
 		return (Integer)radioGroup.getValue().getData("adminLevelId");
 	}
 	

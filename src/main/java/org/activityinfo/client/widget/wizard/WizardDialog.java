@@ -1,10 +1,10 @@
-package org.activityinfo.client.report.editor.map;
+package org.activityinfo.client.widget.wizard;
 
 
 import org.activityinfo.client.i18n.I18N;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -35,12 +35,14 @@ public class WizardDialog extends Window {
 		setHeight(350);
 		setHeading(wizard.getTitle());
 		
-		Listener<ComponentEvent> pageListener = new Listener<ComponentEvent>() {
+		Listener<BaseEvent> pageListener = new Listener<BaseEvent>() {
 			@Override
-			public void handleEvent(ComponentEvent be) {
+			public void handleEvent(BaseEvent be) {
 				enableButtons();
 			}
 		};
+		
+		wizard.addListener(Events.Change, pageListener);
 		
 		for(WizardPage page : pages) {
 			page.addListener(Events.Enable, pageListener);
@@ -123,7 +125,6 @@ public class WizardDialog extends Window {
 	}
 
 	private void setPage(int pageIndex) {
-		finishButton.setEnabled(nextPageIndex()+1 == pages.length);
 		cardLayout.setActiveItem(pages[pageIndex]);
 
 		currentPageIndex = pageIndex;
@@ -131,13 +132,15 @@ public class WizardDialog extends Window {
 	}
 
 	private void enableButtons() {
+		finishButton.setEnabled(wizard.isFinishEnabled());
 		prevButton.setEnabled(prevPageIndex() >= 0);
-		nextButton.setEnabled(nextPageIndex() < pages.length);
+		nextButton.setEnabled(pages[currentPageIndex].isNextEnabled() &&
+				nextPageIndex() < pages.length);
 	}
 	
 	private int prevPageIndex() {
 		int i=currentPageIndex-1;
-		if(i >= 0 && !pages[i].isEnabled()) {
+		if(i >= 0 && !wizard.isPageEnabled(pages[i])) {
 			i--;
 		}
 		return i;
@@ -145,7 +148,7 @@ public class WizardDialog extends Window {
 	
 	private int nextPageIndex() {
 		int i=currentPageIndex+1;
-		if(i<pages.length && !pages[i].isEnabled()) {
+		if(i<pages.length && !wizard.isPageEnabled(pages[i])) {
 			i++;
 		}
 		return i;

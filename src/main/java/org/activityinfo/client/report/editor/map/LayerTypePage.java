@@ -1,7 +1,7 @@
 package org.activityinfo.client.report.editor.map;
 
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.shared.report.content.PieMapMarker;
+import org.activityinfo.client.widget.wizard.WizardPage;
 import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
@@ -12,9 +12,12 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
+import com.extjs.gxt.ui.client.widget.layout.FlowData;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 
 public class LayerTypePage extends WizardPage {
 
@@ -26,19 +29,27 @@ public class LayerTypePage extends WizardPage {
 	
 	public LayerTypePage() {
 		
+		FlowLayout layout = new FlowLayout();
+		layout.setMargin(15);
+		setLayout(layout);
+		
 		proportionalCircleRadio.setValue(true);
 
 		proportionalCircleRadio.setBoxLabel(I18N.CONSTANTS.proportionalCircle());
 		iconRadio.setBoxLabel(I18N.CONSTANTS.icon());
 		piechartRadio.setBoxLabel(I18N.CONSTANTS.pieChart());
-		polygonRadio.setBoxLabel("Shaded Polygons");
+		polygonRadio.setBoxLabel(I18N.CONSTANTS.shadedPolygons());
 		
 		radioGroup.add(piechartRadio);
 		radioGroup.add(proportionalCircleRadio);
 		radioGroup.add(iconRadio);
 		radioGroup.add(polygonRadio);
 		
-		add(new Text("Choose how your indicators will be display on the map:"));
+		Text header = new Text(I18N.CONSTANTS.chooseSymbol());
+		header.setTagName("h2");
+				
+		add(header, new FlowData(new Margins(0, 0, 15, 0)));
+		
 		add(proportionalCircleRadio);
 		add(iconRadio);
 		add(piechartRadio);
