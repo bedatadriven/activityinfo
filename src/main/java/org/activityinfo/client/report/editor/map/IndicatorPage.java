@@ -46,7 +46,6 @@ public class IndicatorPage extends WizardPage {
 			@Override
 			public void handleEvent(TreePanelEvent be) {	
 				IndicatorPage.this.fireEvent(Events.SelectionChange, new BaseEvent(Events.SelectionChange));
-				IndicatorPage.this.fireEvent(Events.Enable, new BaseEvent(Events.Enable));
 			}
 		});
 		

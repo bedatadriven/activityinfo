@@ -50,6 +50,7 @@ public final class NewLayerWizard extends Wizard {
 	
 	private void onIndicatorsChanged() {
 		adminLevelPage.setIndicators(indicatorPage.getSelectedIds());
+		fireEvent(Events.Change, new BaseEvent(Events.Change));	
 	}
 
 	private void onTypeChanged() {

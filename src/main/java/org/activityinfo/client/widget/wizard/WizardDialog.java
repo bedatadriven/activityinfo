@@ -31,9 +31,14 @@ public class WizardDialog extends Window {
 		
 		cardLayout = new CardLayout();
 		setLayout(cardLayout);
-		setWidth(450);
-		setHeight(350);
+		setWidth(Math.max(550, relativeWidth()));
+		setHeight(relativeHeight());
+		
 		setHeading(wizard.getTitle());
+		
+		for(WizardPage page : pages) {
+			add(page);
+		}
 		
 		wizard.addListener(Events.Change, new Listener<BaseEvent>() {
 			@Override
@@ -72,6 +77,14 @@ public class WizardDialog extends Window {
 		}));
 		
 		setPage(0);
+	}
+
+	private int relativeHeight() {
+		return (int) (((double)com.google.gwt.user.client.Window.getClientHeight()) * 0.75);
+	}
+
+	private int relativeWidth() {
+		return (int) (((double)com.google.gwt.user.client.Window.getClientWidth()) * 0.80);
 	}
 	
 	private void enableForm(boolean enabled) {
