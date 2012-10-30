@@ -74,6 +74,7 @@ public class GoogleStaticMapsApi {
 		.append("&size=").append(width).append("x").append(height)
 		.append("&maptype=").append(baseMap.getFormatId())
 		.append("&sensor=false")
+		.append("&key=AIzaSyD3GtyU21LWTZj0eShb3qNB1gec9bdkAj8")
 		.toString();
 		return url;
 	}
