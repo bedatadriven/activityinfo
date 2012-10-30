@@ -53,7 +53,6 @@ public final class NewLayerWizard extends Wizard {
 	}
 
 	private void onTypeChanged() {
-		adminLevelPage.setEnabled(layerTypePage.newLayer() instanceof PolygonMapLayer);
 		fireEvent(Events.Change, new BaseEvent(Events.Change));
 	}
 

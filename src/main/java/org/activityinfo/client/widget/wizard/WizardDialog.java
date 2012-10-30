@@ -35,21 +35,13 @@ public class WizardDialog extends Window {
 		setHeight(350);
 		setHeading(wizard.getTitle());
 		
-		Listener<BaseEvent> pageListener = new Listener<BaseEvent>() {
+		wizard.addListener(Events.Change, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
 				enableButtons();
 			}
-		};
-		
-		wizard.addListener(Events.Change, pageListener);
-		
-		for(WizardPage page : pages) {
-			page.addListener(Events.Enable, pageListener);
-			page.addListener(Events.Disable, pageListener);
-			add(page);
-		}
-		
+		});
+	
 		addButton(cancelButton = new Button(I18N.CONSTANTS.cancel(), new SelectionListener<ButtonEvent>() {
 			
 			@Override

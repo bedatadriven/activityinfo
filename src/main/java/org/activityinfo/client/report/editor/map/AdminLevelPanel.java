@@ -88,7 +88,7 @@ public class AdminLevelPanel extends LayoutContainer {
 
 	private void addMissingPolygonMessage() {
 		Text text = new Text(I18N.CONSTANTS.noPolygonsWarning());
-		Margins margin = new Margins(15, 0, 15, 0);
+		Margins margin = new Margins(15, 15, 0, 0);
 		add(text, new FlowData(margin));
 	}
 
@@ -97,8 +97,7 @@ public class AdminLevelPanel extends LayoutContainer {
 		add(new Text(I18N.CONSTANTS.loading()));
 		layout();
 	}
-
-
+	
 	private void showLoadingFailed() {
 		removeAll();
 		add(new Text(I18N.CONSTANTS.connectionProblem()));	

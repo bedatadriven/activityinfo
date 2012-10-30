@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
+import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
@@ -28,9 +29,12 @@ public class IndicatorPage extends WizardPage {
 		
 		VBoxLayout pageLayout = new VBoxLayout();
 		pageLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+		pageLayout.setPadding(new Padding(15));
 		setLayout(pageLayout);
 		
-		add(new Text(I18N.CONSTANTS.chooseIndicatorsToMap()));
+		Text header = new Text(I18N.CONSTANTS.chooseIndicatorsToMap());
+		header.setTagName("h2");
+		add(header);
 		
 		VBoxLayoutData indicatorLayout = new VBoxLayoutData();
 		indicatorLayout.setFlex(1);
