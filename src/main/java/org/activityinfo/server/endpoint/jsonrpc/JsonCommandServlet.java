@@ -16,14 +16,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet;
+import org.activityinfo.server.endpoint.jsonrpc.serde.ModelDataSerializer;
 import org.activityinfo.server.endpoint.jsonrpc.serde.SyncRegionUpdateSerializer;
 import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.AnonymousUser;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
@@ -47,6 +51,7 @@ public class JsonCommandServlet extends HttpServlet {
         this.commandServlet = commandServlet;
         this.gson = new GsonBuilder()
                 .setPrettyPrinting()
+                .registerTypeAdapter(AdminEntityDTO.class, new ModelDataSerializer())
                 .registerTypeAdapter(SyncRegionUpdate.class, new SyncRegionUpdateSerializer())
                 .create();
     }
@@ -84,7 +89,10 @@ public class JsonCommandServlet extends HttpServlet {
         }
 
         authToken = req.getParameter("authToken");
-
+        if(authToken == null) {
+        	return AnonymousUser.AUTHTOKEN;
+        }
+        
         return authToken;
     }
 

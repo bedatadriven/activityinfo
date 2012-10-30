@@ -12,9 +12,12 @@ import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
 import org.activityinfo.client.page.report.ReportEventHelper;
 import org.activityinfo.client.report.editor.map.layerOptions.LayerOptionsPanel;
+import org.activityinfo.client.widget.wizard.WizardCallback;
+import org.activityinfo.client.widget.wizard.WizardDialog;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.clustering.NoClustering;
 import org.activityinfo.shared.report.model.layers.MapLayer;
+import org.activityinfo.shared.report.model.layers.PointMapLayer;
 
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
 import com.extjs.gxt.ui.client.dnd.ListViewDragSource;
@@ -57,11 +60,13 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 	private ListView<LayerModel> view = new ListView<LayerModel>();
 
 	private ContentPanel layersPanel;
-	private AddLayerDialog addLayersDialog;
+	private WizardDialog addLayersDialog;
 	private LayerOptionsPanel optionsPanel;
 	private BaseMapPanel baseMapPanel;
 	
 	private Menu layerMenu;
+
+	private MenuItem clusterMenuItem;
 	
 	@Inject
 	public LayersWidget(Dispatcher service, EventBus eventBus, LayerOptionsPanel optionsPanel) {
@@ -94,17 +99,6 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 		 mapElement = new MapReportElement();
 	}
 
-	private void createAddLayersDialog() {
-		addLayersDialog = new AddLayerDialog(service);
-		addLayersDialog.addValueChangeHandler(new ValueChangeHandler<MapLayer>(){
-			@Override
-			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-				if (event.getValue() != null) {
-					addLayer(event.getValue());
-				}
-			}
-		});
-	}
 
 	private void createAddLayerButton() {
 		Button addLayerButton = new Button();
@@ -112,10 +106,16 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 		addLayerButton.addListener(Events.Select, new SelectionListener<ButtonEvent>() {  
 		      @Override  
 		      public void componentSelected(ButtonEvent ce) {  
-		    	  if(addLayersDialog == null) {
-		    		  createAddLayersDialog();
-		    	  }
-		    	  addLayersDialog.show();
+		    	  final NewLayerWizard wizard = new NewLayerWizard(service);
+		    	  addLayersDialog = new WizardDialog(wizard);
+		    	  addLayersDialog.show(new WizardCallback() {
+
+		  			@Override
+		  			public void onFinished() {
+		  				addLayer(wizard.createLayer());
+		  			}
+		  			
+		  		});
 		      }
 		});
 		
@@ -201,7 +201,7 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 				store.update(layerModel);
 			}
 		} else {
-			showOptionsMenu(event.getIndex());
+			showOptionsMenu(event.getModel().getMapLayer(), event.getIndex());
 		}
 		optionsPanel.onLayerSelectionChanged(event.getModel().getMapLayer());
 	}
@@ -223,13 +223,13 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 		return view.getSelectionModel().getSelectedItem().getMapLayer();
 	}
 
-	private void showOptionsMenu(int index) {
+	private void showOptionsMenu(MapLayer mapLayer, int index) {
 		if(layerMenu == null) {
 			createLayerMenu();
 		}
 		int x = this.getAbsoluteLeft() - CONTEXT_MENU_WIDTH;
 		int y = view.getElement(index).getAbsoluteTop();
-		
+		clusterMenuItem.setVisible(mapLayer instanceof PointMapLayer);
 		layerMenu.showAt(x, y);
 	}
 
@@ -243,14 +243,15 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 				optionsPanel.showStyle(getSelectedLayer());
 			}
 		}));
-		layerMenu.add(new MenuItem(I18N.CONSTANTS.clustering(),
+		clusterMenuItem = new MenuItem(I18N.CONSTANTS.clustering(),
 					AbstractImagePrototype.create(MapResources.INSTANCE.clusterIcon()),
 					new SelectionListener<MenuEvent>() {
 			@Override
 			public void componentSelected(MenuEvent ce) {
 				optionsPanel.showAggregation(getSelectedLayer());
 			}
-		}));
+		});
+		layerMenu.add(clusterMenuItem);
 		layerMenu.add(new MenuItem(I18N.CONSTANTS.filter(),
 				IconImageBundle.ICONS.filter(),
 				new SelectionListener<MenuEvent>() {
@@ -332,7 +333,9 @@ public final class LayersWidget extends LayoutContainer implements HasReportElem
 	}
 
 	public void addLayer(MapLayer layer) {
-		layer.setClustering(new NoClustering());
+		if(layer instanceof PointMapLayer) {
+			((PointMapLayer) layer).setClustering(new NoClustering());
+		}
 		mapElement.getLayers().add(layer);
 		events.fireChange();
 		updateStore();

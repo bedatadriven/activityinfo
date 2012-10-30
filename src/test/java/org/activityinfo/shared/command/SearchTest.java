@@ -3,6 +3,9 @@ package org.activityinfo.shared.command;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.shared.command.handler.search.AllSearcher;
@@ -15,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class SearchTest extends CommandTestCase2 {
@@ -23,6 +27,9 @@ public class SearchTest extends CommandTestCase2 {
 	@Test
 	@Ignore
 	public void testSearchAll() throws CommandException {
+		
+		Logger.getLogger("com.bedatadriven.rebar").setLevel(Level.ALL);
+		
 		SearchResult result = execute(new Search("kivu"));
 
 		assertTrue("Expected all searchers to succeed", result.getFailedSearchers().isEmpty());

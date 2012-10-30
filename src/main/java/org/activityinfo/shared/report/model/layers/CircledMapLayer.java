@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlElement;
 /*
  * Convenience class for layers using a circle to visualize indicators
  */
-public abstract class CircledMapLayer extends AbstractMapLayer {
+public abstract class CircledMapLayer extends PointMapLayer {
 
 	private int minRadius = 8;
 	private int maxRadius = 32;

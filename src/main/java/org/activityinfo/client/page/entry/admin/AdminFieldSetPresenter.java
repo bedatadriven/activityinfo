@@ -17,7 +17,7 @@ import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.HasAdminEntityValues;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -165,7 +165,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     private List<AdminLevelDTO> levels;
     private Map<Integer, Level> levelMap;
     
-    private BoundingBoxDTO bounds = BoundingBoxDTO.maxGeoBounds();
+    private Extents bounds = Extents.maxGeoBounds();
     private String boundsName = "";
     
     public AdminFieldSetPresenter(Dispatcher dispatcher, CountryDTO country, List<AdminLevelDTO> levels) {
@@ -240,7 +240,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     	fireEvent(event.getType(), event);
     }
 
-    public BoundingBoxDTO getBounds() {
+    public Extents getBounds() {
         return bounds;
     }
 
@@ -249,7 +249,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     }
 
     private void updateBounds() {
-        BoundingBoxDTO oldBounds = bounds;
+        Extents oldBounds = bounds;
         bounds = AdminBoundsHelper.calculate(country, levels, new HasAdminEntityValues() {
             @Override
 			public AdminEntityDTO getAdminEntity(int levelId) {

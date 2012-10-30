@@ -130,6 +130,14 @@ public final class AdminLevelDTO extends BaseModelData implements DTO {
 		return (Integer)get("countryId");
 	}
 	
+	public boolean getPolygons() {
+		return (Boolean)get("polygons", false);
+	}
+	
+	public void setPolygons(boolean polygons) {
+		set("polygons", polygons);
+	}
+	
 	@Override
 	public String toString() {
 		return getName();

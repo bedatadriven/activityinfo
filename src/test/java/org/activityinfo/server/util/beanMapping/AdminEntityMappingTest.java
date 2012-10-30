@@ -53,9 +53,9 @@ public class AdminEntityMappingTest {
         Assert.assertEquals("levelId", level.getId(), dto.getLevelId());
 
         Assert.assertNotNull("bounds", dto.getBounds());
-        Assert.assertEquals("x1", bounds.getX1(), dto.getBounds().getX1());
-        Assert.assertEquals("y1", bounds.getY1(), dto.getBounds().getY1());
-        Assert.assertEquals("x2", bounds.getX2(), dto.getBounds().getX2());
-        Assert.assertEquals("y2", bounds.getY2(), dto.getBounds().getY2());
+        Assert.assertEquals("x1", bounds.getX1(), dto.getBounds().getMinLon());
+        Assert.assertEquals("y1", bounds.getY1(), dto.getBounds().getMinLat());
+        Assert.assertEquals("x2", bounds.getX2(), dto.getBounds().getMaxLon());
+        Assert.assertEquals("y2", bounds.getY2(), dto.getBounds().getMaxLat());
     }
 }

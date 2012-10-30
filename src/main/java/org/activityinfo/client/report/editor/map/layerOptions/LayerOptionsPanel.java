@@ -10,6 +10,8 @@ import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PointMapLayer;
+import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -41,6 +43,7 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 	private BubbleLayerOptions bubbleMapLayerOptions = new BubbleLayerOptions();
 	private IconLayerOptions iconMapLayerOptions = new IconLayerOptions();
 	private PiechartLayerOptions piechartMapLayerOptions;
+	private PolygonLayerOptions polygonLayerOptions = new PolygonLayerOptions();
 
 	// Clustering options
 	private ClusteringOptionsWidget clusteringOptions;
@@ -59,10 +62,11 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		this.dispatcher = service;
 
 		initializeComponent();
-		
-		createBubbleLayerOptionsWidget();
-		createIconLayerOptionsWidget();
-		createPiechartLayerOptionsWidget();
+		this.piechartMapLayerOptions = new PiechartLayerOptions(service);
+		bindLayerOptions(bubbleMapLayerOptions);
+		bindLayerOptions(iconMapLayerOptions);
+		bindLayerOptions(piechartMapLayerOptions);
+		bindLayerOptions(polygonLayerOptions);
 
 		createClusteringOptions(service);
 		createFilterPanel(service);
@@ -73,8 +77,8 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		clusteringOptions.addValueChangeHandler(new ValueChangeHandler<Clustering>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Clustering> event) {
-				if (selectedMapLayer != null) {
-					selectedMapLayer.setClustering(event.getValue());
+				if (selectedMapLayer instanceof PointMapLayer) {
+					((PointMapLayer)selectedMapLayer).setClustering(event.getValue());
 					ValueChangeEvent.fire(LayerOptionsPanel.this, selectedMapLayer);
 				}
 			}
@@ -82,29 +86,10 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		clusteringPanel.add(clusteringOptions);
 	}
 
-	private void createPiechartLayerOptionsWidget() {
-		piechartMapLayerOptions = new PiechartLayerOptions(dispatcher);
-		piechartMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<PiechartMapLayer>() {
+	private <L extends MapLayer> void bindLayerOptions(HasValue<L> layerOptions) {
+		layerOptions.addValueChangeHandler(new ValueChangeHandler<L>() {
 			@Override
-			public void onValueChange(ValueChangeEvent<PiechartMapLayer> event) {
-				ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
-			}
-		});
-	}
-
-	private void createIconLayerOptionsWidget() {
-		iconMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<IconMapLayer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<IconMapLayer> event) {
-				ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
-			}
-		});
-	}
-
-	private void createBubbleLayerOptionsWidget() {
-		bubbleMapLayerOptions.addValueChangeHandler(new ValueChangeHandler<BubbleMapLayer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<BubbleMapLayer> event) {
+			public void onValueChange(ValueChangeEvent<L> event) {
 				ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
 			}
 		});
@@ -181,15 +166,15 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 	private LayerOptionsWidget fromLayer(MapLayer mapLayer) {
 		if (mapLayer instanceof BubbleMapLayer) {
 			return bubbleMapLayerOptions;
-		}
-		if (mapLayer instanceof IconMapLayer) {
+		} else if (mapLayer instanceof IconMapLayer) {
 			return iconMapLayerOptions;
-		}
-		if (mapLayer instanceof PiechartMapLayer) {
+		} else if (mapLayer instanceof PiechartMapLayer) {
 			return piechartMapLayerOptions;
+		} else if (mapLayer instanceof PolygonMapLayer) {
+			return polygonLayerOptions;
 		}
-		
-		return null;
+		 
+		throw new IllegalArgumentException("layer: " + mapLayer.getClass().getName());
 	}
 	
 	private Filter baseFilterFromLayer(MapLayer layer) {
@@ -231,20 +216,16 @@ public final class LayerOptionsPanel extends LayoutContainer implements HasValue
 		if(mapLayer != selectedMapLayer) {
 			this.selectedMapLayer = mapLayer;
 			LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
-			
-			if (mapLayer instanceof BubbleMapLayer) {
-				bubbleMapLayerOptions.setValue((BubbleMapLayer) mapLayer);
-			}
-			if (mapLayer instanceof IconMapLayer) {
-				iconMapLayerOptions.setValue((IconMapLayer) mapLayer);
-			}
-			if (mapLayer instanceof PiechartMapLayer) {
-				piechartMapLayerOptions.setValue((PiechartMapLayer) mapLayer);
-			}
+			layerOptionsWidget.setValue(mapLayer);
 			
 			setStyleOptions(layerOptionsWidget);
 			clusteringOptions.loadForm(mapLayer);
-			clusteringOptions.setValue(mapLayer.getClustering(), false);
+			if(mapLayer instanceof PointMapLayer) {
+				clusteringOptions.setValue(((PointMapLayer) mapLayer).getClustering(), false);
+				clusteringPanel.show();
+			} else {
+				clusteringPanel.hide();
+			}
 	
 			filterPanel.getFilterPanelSet().applyBaseFilter(baseFilterFromLayer(mapLayer));
 			filterPanel.setValue(mapLayer.getFilter(), false);

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!-- ~ All Sigmah code is released under the GNU General Public License v3 
+	~ See COPYRIGHT.txt and LICENSE.txt. -->
+
+<dataset>
+
+
+	<!-- Country setup -->
+	<country countryId="383" name="Mali" 
+		x1="-12.2426099777222" 
+		y1="10.1595134735107" 
+		x2="4.24496793746948" 
+		y2="25" />
+
+	<adminLevel countryId="383" adminLevelId="1383" name="Region" />
+
+	<locationType locationTypeId="1" countryId="383" name="Village"
+		reuse="1" />
+		
+	 <adminEntity name="Bamako" x1="-8.07381916046143" y1="12.5052070617676" x2="-7.90468072891235" y2="12.7047967910767" adminEntityId="1926" adminLevelId="1383"/>   
+	 <adminEntity name="Gao" x1="-1.70700001716614" y1="14.9458255767822" x2="4.24163675308228" y2="19.0389995574951" adminEntityId="1927" adminLevelId="1383"/>       
+	 <adminEntity name="Kayes" x1="-12.2426099777222" y1="11.8929996490479" x2="-8.13199996948242" y2="15.6922798156738" adminEntityId="1928" adminLevelId="1383"/>    
+	 <adminEntity name="Kidal" x1="-2.05599904060364" y1="17.7267208099365" x2="4.24496793746948" y2="21.9113235473633" adminEntityId="1929" adminLevelId="1383"/>     
+	 <adminEntity name="Koulikoro" x1="-9.13778945874044" y1="11.443320274353" x2="-5.96390008926392" y2="15.4996757507324" adminEntityId="1930" adminLevelId="1383"/> 
+	 <adminEntity name="Mopti" x1="-5.66400003433228" y1="13.1579284667969" x2="-0.745689708401119" y2="15.8624696731567" adminEntityId="1931" adminLevelId="1383"/>   
+	 <adminEntity name="Segou" x1="-7.08099985122681" y1="12.5494003295898" x2="-3.95799899101257" y2="15.5530004501343" adminEntityId="1932" adminLevelId="1383"/>    
+	 <adminEntity name="Sikasso" x1="-8.68235492706299" y1="10.1595134735107" x2="-4.3934588432312" y2="12.8174295425415" adminEntityId="1933" adminLevelId="1383"/>   
+	 <adminEntity name="Tombouctou" x1="-6.56440496444702" y1="15.0661602782674" x2="-0.0130309266969562" y2="25" adminEntityId="1934" adminLevelId="1383"/>  
+
+
+	<!-- User setup -->
+	<userLogin userId="1" name="Alex" email="akbertram@gmail.com"
+		password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+		locale="fr" newUser="1" />
+	
+
+	<!-- Database: PEAR -->
+
+	<userDatabase databaseId="1" name="EHA" countryId="383"
+		ownerUserId="1" lastSchemaUpdate="2009-01-01" />
+
+	<partner partnerId="1" name="NRC" />
+	<partnerInDatabase partnerId="1" databaseId="1" />
+
+
+	<activity activityId="1" databaseId="1" name="Water Trucking"
+		reportingFrequency="0" allowEdit="1" sortOrder="1"
+		locationTypeId="1"   published="0" />
+
+
+	<!-- Our Indicator -->
+
+	<indicator indicatorId="1" activityId="1" name="beneficiaries"
+		units="menages" 
+		aggregation="0" 
+		category="inputs" 
+		sortOrder="1" />
+
+	<!-- Bamako -->		
+		
+	<location locationId="1" name="Bamako" locationTypeId="1" timeEdited="1" />
+	<locationAdminLink locationId="1" adminEntityId="1926" />
+
+	<site siteId="1" activityId="1" locationId="1" partnerId="1"
+		Date1="2009-01-01" Date2="2009-01-02"
+		DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3"/>
+		
+	<reportingPeriod reportingPeriodId="1" siteId="1"
+		date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01"
+		DateEdited="2009-02-01" />
+	<indicatorValue reportingPeriodId="1" indicatorId="1"
+		value="1500" />
+
+
+
+</dataset>

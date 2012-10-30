@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
 import org.hibernate.ejb.HibernateEntityManager;
@@ -53,7 +54,7 @@ public class SchemaServlet extends HttpServlet {
 				Liquibase liquibase;
 				try {
 					liquibase = new Liquibase("org/activityinfo/database/changelog/db.changelog-master.xml",
-							new ClassLoaderResourceAccessor(), new JdbcConnection(connection));
+							new ClassLoaderResourceAccessor(), new CloudSqlConnection(connection));
 					liquibase.update(null);
 				} catch (Exception e) {
 					LOGGER.log(Level.SEVERE, "Exception whilst migrating schema", e);
@@ -63,6 +64,17 @@ public class SchemaServlet extends HttpServlet {
 		
 	}
 	
-	
+	private static class CloudSqlConnection extends JdbcConnection {
+
+		public CloudSqlConnection(Connection connection) {
+			super(connection);
+		}
+
+		@Override
+		public String getDatabaseProductName() throws DatabaseException {
+			return "MySQL";
+		}
+		
+	}
 	
 }

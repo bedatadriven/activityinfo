@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.SuccessCallback;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.GetSchema;
@@ -84,25 +85,19 @@ public class IndicatorTreePanel extends ContentPanel {
 		
 		tree = new TreePanel<ModelData>(store);
 
-		setAllNodesCheckable();
-		
-		/*
-		 * 
-		 *  No. No. No! NO!! NONONO!!! Seriously. Don't.
-		 *  
-		 *  1. In postbacks, complete model is serialized in a cookie.
-		 *  2. Cookie gets send, server can't handle cookie size of half the database
-		 *  3. You wonder where the HTTP 413 comes from, and seriously consider hiring cookiemonster.
-		 */
-		// tree.setAutoExpand(true);
+		tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
+		tree.setCheckStyle(CheckCascade.CHILDREN);
 		
 		tree.getStyle().setNodeCloseIcon(null);
 		tree.getStyle().setNodeOpenIcon(null);
 		
-		setTreeLabelProvider();
+		tree.setLabelProvider(new NodeLabelProvider());
 				
-		setTreeConfigurations();
-		
+		tree.setCheckable(true);
+		tree.expandAll();
+		tree.setStateId("indicatorPanel");
+		tree.setStateful(true);
+		tree.setAutoSelect(true);		
 		tree.addListener(Events.BrowserEvent,
 				new Listener<TreePanelEvent<ModelData>>() {
 
@@ -145,14 +140,6 @@ public class IndicatorTreePanel extends ContentPanel {
 		});
 	}
 	
-	private void setTreeConfigurations(){
-		tree.setCheckable(true);
-		tree.expandAll();
-		tree.setStateId("indicatorPanel");
-		tree.setStateful(true);
-		tree.setAutoSelect(true);
-	}
-	
 	private void setStoreKeyProvider(){
 		store.setKeyProvider(new ModelKeyProvider<ModelData>() {
 
@@ -167,23 +154,6 @@ public class IndicatorTreePanel extends ContentPanel {
 				}
 				throw new IllegalStateException(
 						"Unknown type: expected activity, userdb, indicator or indicatorgroup");
-			}
-		});
-	}
-	
-	private void setTreeLabelProvider(){
-		tree.setLabelProvider(new ModelStringProvider<ModelData>() {
-			@Override
-			public String getStringValue(ModelData model, String property) {
-				String name = model.get("name");
-				if (model instanceof IndicatorDTO) {
-					return name;
-				} else {
-					if (name == null) {
-						name = "noname";
-					}
-					return "<b>" + name + "</b>";
-				}
 			}
 		});
 	}
@@ -229,6 +199,22 @@ public class IndicatorTreePanel extends ContentPanel {
 		setTopComponent(toolBar);
 	}
 
+	private final class NodeLabelProvider implements
+			ModelStringProvider<ModelData> {
+		@Override
+		public String getStringValue(ModelData model, String property) {
+			String name = model.get("name");
+			if (model instanceof IndicatorDTO) {
+				return name;
+			} else {
+				if (name == null) {
+					name = "noname";
+				}
+				return "<b>" + name + "</b>";
+			}
+		}
+	}
+
 	private class Proxy implements DataProxy<List<ModelData>> {
 		private SchemaDTO schema;
 
@@ -237,7 +223,8 @@ public class IndicatorTreePanel extends ContentPanel {
 				Object parent, final AsyncCallback<List<ModelData>> callback) {
 
 			if (parent == null) {
-				dispatcher.execute(new GetSchema(), new SuccessCallback<SchemaDTO>() {
+				dispatcher.execute(new GetSchema(), new MaskingAsyncMonitor(IndicatorTreePanel.this, I18N.CONSTANTS.loading()),
+						new SuccessCallback<SchemaDTO>() {
 				
 					@Override
 					public void onSuccess(SchemaDTO result) {
@@ -394,11 +381,6 @@ public class IndicatorTreePanel extends ContentPanel {
 		tree.setCheckNodes(TreePanel.CheckNodes.LEAF);
 	}
 	
-	public void setAllNodesCheckable() {
-		tree.setCheckNodes(TreePanel.CheckNodes.BOTH);
-		tree.setCheckStyle(CheckCascade.CHILDREN);
-	}
-
 	private void applySelection() {
 		for(ModelData model : tree.getStore().getAllItems()){
 			if(model instanceof IndicatorDTO) {

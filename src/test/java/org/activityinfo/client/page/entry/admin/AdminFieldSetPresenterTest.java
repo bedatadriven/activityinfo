@@ -42,7 +42,7 @@ import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.DTOs.PEAR;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -204,7 +204,7 @@ public class AdminFieldSetPresenterTest {
 		replay(levelStateChangeListener);
 	}
 	
-	private void expectBounds(BoundingBoxDTO bounds, String name) {
+	private void expectBounds(Extents bounds, String name) {
 		resetToDefault(boundsListener);
 		boundsListener.handleEvent(eq(new BoundsChangedEvent(bounds, name)));
 		replay(boundsListener);

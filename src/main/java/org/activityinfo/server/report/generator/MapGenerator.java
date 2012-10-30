@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.dao.IndicatorDAO;
@@ -21,13 +23,12 @@ import org.activityinfo.server.report.generator.map.IconLayerGenerator;
 import org.activityinfo.server.report.generator.map.LayerGenerator;
 import org.activityinfo.server.report.generator.map.Margins;
 import org.activityinfo.server.report.generator.map.PiechartLayerGenerator;
+import org.activityinfo.server.report.generator.map.PolygonLayerGenerator;
 import org.activityinfo.server.report.generator.map.TiledMap;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetBaseMaps;
-import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.BaseMapResult;
 import org.activityinfo.shared.dto.IndicatorDTO;
-import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.GoogleBaseMap;
 import org.activityinfo.shared.map.PredefinedBaseMaps;
@@ -37,16 +38,13 @@ import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.MapReportElement;
-import org.activityinfo.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 import org.activityinfo.shared.util.mapping.Extents;
 import org.activityinfo.shared.util.mapping.TileMath;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -81,17 +79,9 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         List<LayerGenerator> layerGenerators = new ArrayList<LayerGenerator>();
         for (MapLayer layer : element.getLayers()) {
         	if (layer.isVisible()) {
-        		// Add indicator
-        		GetSites query = queryFor(effectiveFilter, layer);
-				List<SiteDTO> sites = getDispatcher().execute(query).getData();
-                
-	            if (layer instanceof BubbleMapLayer) {
-	                layerGenerators.add(new BubbleLayerGenerator((BubbleMapLayer) layer, sites));
-	            } else if (layer instanceof IconMapLayer) {
-	                layerGenerators.add(new IconLayerGenerator((IconMapLayer) layer, sites));
-	            } else if (layer instanceof PiechartMapLayer) {
-	            	layerGenerators.add(new PiechartLayerGenerator((PiechartMapLayer) layer, sites));
-	            }
+        		LayerGenerator layerGtor = createGenerator(layer);
+	            layerGtor.query(getDispatcher(), effectiveFilter);
+	            layerGenerators.add(layerGtor);
         	}
         }
 
@@ -101,13 +91,16 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         AiLatLng center;
         int zoom;
         
+        Extents extents = Extents.emptyExtents();
+        Margins margins = new Margins(0);
+        for (LayerGenerator layerGtor : layerGenerators) {
+            extents.grow(layerGtor.calculateExtents());
+            margins.grow(layerGtor.calculateMargins());
+        }
+        content.setExtents(extents);
+        
         if(element.getCenter() == null) {
-	        Extents extents = Extents.emptyExtents();
-	        Margins margins = new Margins(0);
-	        for (LayerGenerator layerGtor : layerGenerators) {
-	            extents.grow(layerGtor.calculateExtents());
-	            margins.grow(layerGtor.calculateMargins());
-	        }
+
 	        // Now we're ready to calculate the zoom level
 	        // and the projection
 	        zoom = TileMath.zoomLevelForExtents(extents, width, height);
@@ -145,27 +138,26 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         for (LayerGenerator layerGtor : layerGenerators) {
             layerGtor.generate(map, content);
         }
-        
-
-        
-        
+                
         content.setIndicators(toDTOs(indicators));
         element.setContent(content);
 
     }
 
-	private GetSites queryFor(Filter effectiveFilter, MapLayer layer) {
-		Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
-		layerFilter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
-		GetSites query = new GetSites();
-		query.setFilter(layerFilter);
-		query.setFetchAttributes(false);
-		query.setFetchAdminEntities(layer.getClustering() instanceof AdministrativeLevelClustering);
-		query.setFetchAllIndicators(false);
-		query.setFetchIndicators(layer.getIndicatorIds());
-		
-		return query;
+	private LayerGenerator createGenerator(MapLayer layer) {
+		if (layer instanceof BubbleMapLayer) {
+			return new BubbleLayerGenerator((BubbleMapLayer) layer);
+		} else if (layer instanceof IconMapLayer) {
+			return new IconLayerGenerator((IconMapLayer) layer);
+		} else if (layer instanceof PiechartMapLayer) {
+			return new PiechartLayerGenerator((PiechartMapLayer) layer);
+		} else if( layer instanceof PolygonMapLayer) {
+			return new PolygonLayerGenerator((PolygonMapLayer) layer);
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
+
 
 	private List<Indicator> queryIndicators(MapReportElement element) {
 		
@@ -212,7 +204,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 		Set<Country> countries = queryCountries(indicators);
 		if(countries.size() == 1) {
 			Country country = countries.iterator().next();
-			if(country.getCodeISO().equals("CD")) {
+			if("CD".equals(country.getCodeISO())) {
 				return "admin";
 			}
 		}

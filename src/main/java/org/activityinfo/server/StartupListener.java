@@ -21,6 +21,7 @@ import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.healthcheck.HealthCheckModule;
 import org.activityinfo.server.endpoint.jsonrpc.JsonRpcModule;
 import org.activityinfo.server.endpoint.kml.KmlModule;
+import org.activityinfo.server.geo.GeometryModule;
 import org.activityinfo.server.i18n.LocaleModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
@@ -65,6 +66,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new ServerDatabaseModule(),
                 new HibernateModule(), 
                 new ContentModule(),
+                new GeometryModule(),
                 new QuartzModule(),
                 new AuthenticationModule(),
                 new AttachmentModule(),

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.activityinfo.server.geo.ClasspathGeometryProvider;
 import org.activityinfo.server.report.DummyPivotTableData;
 import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.output.StorageProvider;
@@ -451,7 +452,7 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToPdf(Report report, String name) throws IOException {
-		PdfReportRenderer reportRenderer = new PdfReportRenderer(mapIconPath());
+		PdfReportRenderer reportRenderer = new PdfReportRenderer(TestGeometry.get(), mapIconPath());
 		renderTo(report, reportRenderer, name);
 	}
 	
@@ -462,22 +463,22 @@ public class ItextReportRendererTest {
 	}
 	
 	private void renderToHtml(Report report, String name) throws IOException {
-		renderTo(report, new HtmlReportRenderer(mapIconPath(), new TestImageStorageProvider()), name);
+		renderTo(report, new HtmlReportRenderer(TestGeometry.get(),  mapIconPath(), new TestImageStorageProvider()), name);
 	}
 	
 	private void renderToHtmlUsingWriter(Report report, String name) throws IOException {
 		FileWriter writer = new FileWriter("target/report-tests/" + name);
-		HtmlReportRenderer renderer = new HtmlReportRenderer(mapIconPath(), new TestImageStorageProvider());
+		HtmlReportRenderer renderer = new HtmlReportRenderer(TestGeometry.get(), mapIconPath(), new TestImageStorageProvider());
 		renderer.render(report, writer);
 		writer.close();
 	}
 	
 	private void renderToRtf(Report report, String name) throws IOException {
-		renderTo(report, new RtfReportRenderer(mapIconPath()), name);
+		renderTo(report, new RtfReportRenderer(TestGeometry.get(), mapIconPath()), name);
 	}
 	
 	private void renderToPpt(MapReportElement map, String name) throws FileNotFoundException, IOException {
-		PPTMapRenderer renderer = new PPTMapRenderer(mapIconPath());
+		PPTMapRenderer renderer = new PPTMapRenderer(TestGeometry.get(), mapIconPath());
 		renderer.render(map, new FileOutputStream("target/report-tests/" + name));
 	}
 	

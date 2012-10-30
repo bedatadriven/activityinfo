@@ -20,7 +20,7 @@ import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -69,9 +69,9 @@ public class GetSchemaHandler implements
 							country.setId(rs.getInt("id"));
 							country.setName(rs.getString("name"));
 
-							BoundingBoxDTO bounds = new BoundingBoxDTO(rs
-									.getDouble("x1"), rs.getDouble("y1"), rs
-									.getDouble("x2"), rs.getDouble("y2"));
+							Extents bounds = new Extents(
+									rs.getDouble("y1"), rs.getDouble("y2"),
+									rs.getDouble("x1"), rs.getDouble("x2"));
 
 							country.setBounds(bounds);
 

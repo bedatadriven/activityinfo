@@ -1,41 +1,64 @@
-<?xml version = '1.0' encoding = 'ISO-8859-1'?>
-<!--
-  ~ All Sigmah code is released under the GNU General Public License v3
-  ~ See COPYRIGHT.txt and LICENSE.txt.
-  -->
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><!-- ~ All Sigmah 
+	code is released under the GNU General Public License v3 ~ See COPYRIGHT.txt 
+	and LICENSE.txt. --><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+	<display-name>ActivityInfo</display-name>
 
-    <display-name>ActivityInfo</display-name>
+	<filter>
+		<filter-name>guiceFilter</filter-name>
+		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>guiceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>org.activityinfo.server.StartupListener</listener-class>
+	</listener>
 
-    <filter>
-        <filter-name>guiceFilter</filter-name>
-        <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>guiceFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <listener>
-        <listener-class>org.activityinfo.server.StartupListener</listener-class>
-    </listener>
-    
-    
-    <mime-mapping>
-    	<extension>.crx</extension>
-    	<mime-type>application/x-chrome-extension</mime-type>
-    </mime-mapping>
-    
-    
-    <security-constraint>
-        <web-resource-collection>
-            <url-pattern>/tasks/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>admin</role-name>
-        </auth-constraint>
-    </security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/tasks/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+
+	<filter>
+		<filter-name>appstats</filter-name>
+		<filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
+		 <init-param>
+            <param-name>logMessage</param-name>
+            <param-value>Appstats available: /appstats/details?time={ID}</param-value>
+        </init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>appstats</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>appstats</servlet-name>
+		<servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>appstats</servlet-name>
+		<url-pattern>/appstats/*</url-pattern>
+	</servlet-mapping>
+
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/appstats/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+
 
 </web-app>

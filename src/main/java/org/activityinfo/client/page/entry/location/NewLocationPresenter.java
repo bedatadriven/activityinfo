@@ -3,7 +3,7 @@ package org.activityinfo.client.page.entry.location;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
@@ -20,12 +20,12 @@ public class NewLocationPresenter extends BaseObservable {
 	private AiLatLng latLng;
 	private boolean provisional;
 	private boolean active;
-	private BoundingBoxDTO bounds;
+	private Extents bounds;
 	
 	public NewLocationPresenter(CountryDTO country) {
 		provisional = true;
 		bounds = country.getBounds();
-		latLng = bounds.centroid();
+		latLng = bounds.center();
 	}
 	
 	public AiLatLng getLatLng() {
@@ -51,17 +51,17 @@ public class NewLocationPresenter extends BaseObservable {
 		fireEvent(POSITION_CHANGED, new BaseEvent(POSITION_CHANGED));
 	}
 	
-	public void setBounds(BoundingBoxDTO bounds) {
+	public void setBounds(Extents bounds) {
 		this.bounds = bounds;
 		if(!bounds.contains(latLng)) {
-			latLng = bounds.centroid();
+			latLng = bounds.center();
 			provisional = true;
 			fireEvent(POSITION_CHANGED, new BaseEvent(POSITION_CHANGED));
 		}
 		fireEvent(BOUNDS_CHANGED, new BaseEvent(BOUNDS_CHANGED));
 	}
 
-	public BoundingBoxDTO getBounds() {
+	public Extents getBounds() {
 		return bounds;
 	}
 	

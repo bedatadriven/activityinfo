@@ -28,14 +28,10 @@ import org.activityinfo.shared.report.model.layers.ScalingType;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
 import org.activityinfo.shared.util.mapping.Extents;
 
-public class PiechartLayerGenerator extends AbstractLayerGenerator {
+public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer> {
 
-    private PiechartMapLayer layer;
-	private List<SiteDTO> sites;
-
-    public PiechartLayerGenerator(PiechartMapLayer layer, List<SiteDTO> sites) {
-        this.layer = layer;
-        this.sites=sites;
+    public PiechartLayerGenerator(PiechartMapLayer layer) {
+        super(layer);
     }
 
     public Extents calculateExtents() {
@@ -220,7 +216,5 @@ public class PiechartLayerGenerator extends AbstractLayerGenerator {
 	@Override
 	public Margins calculateMargins() {
         return new Margins(layer.getMaxRadius());
-
 	}
-
 }

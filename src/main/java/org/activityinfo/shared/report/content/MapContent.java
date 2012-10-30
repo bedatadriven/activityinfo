@@ -16,6 +16,8 @@ import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.util.mapping.Extents;
 
+import com.google.common.collect.Lists;
+
 /*
  * Model of a fully generated and realized map. 
  * 
@@ -27,8 +29,10 @@ public class MapContent implements Content {
     private List<MapMarker> markers = new ArrayList<MapMarker>();
     private Set<Integer> unmappedSites = new HashSet<Integer>();
     private Set<IndicatorDTO> indicators = new HashSet<IndicatorDTO>();
+    private List<AdminOverlay> adminOverlays = Lists.newArrayList();
     private int zoomLevel;
     private AiLatLng center;
+    private Extents extents;
 
     public MapContent() {
 
@@ -110,6 +114,14 @@ public class MapContent implements Content {
 	public void addLegend(MapLayerLegend legend) {
 		this.legends.add(legend);
 	}
+	
+	public List<AdminOverlay> getAdminOverlays() {
+		return adminOverlays;
+	}
+
+	public void setAdminOverlays(List<AdminOverlay> adminOverlays) {
+		this.adminOverlays = adminOverlays;
+	}
 
 	public Map<Integer, String> siteLabelMap() {
         Map<Integer, String> map = new HashMap<Integer, String>();
@@ -122,4 +134,13 @@ public class MapContent implements Content {
         }
         return map;
     }
+
+	public Extents getExtents() {
+		return extents;
+	}
+
+	public void setExtents(Extents extents) {
+		this.extents = extents;
+	}
+	
 }

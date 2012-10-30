@@ -9,7 +9,7 @@ package org.activityinfo.shared.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -22,7 +22,7 @@ public final class CountryDTO extends BaseModelData implements DTO {
     
     private List<AdminLevelDTO> adminLevels = new ArrayList<AdminLevelDTO>(0);
 	private List<LocationTypeDTO> locationTypes = new ArrayList<LocationTypeDTO>(0);
-    private BoundingBoxDTO bounds;
+    private Extents bounds;
 
 	public CountryDTO() {
 	}
@@ -65,11 +65,11 @@ public final class CountryDTO extends BaseModelData implements DTO {
 		this.locationTypes = types;
 	}
 
-    public BoundingBoxDTO getBounds() {
+    public Extents getBounds() {
         return bounds;
     }
 
-    public void setBounds(BoundingBoxDTO bounds) {
+    public void setBounds(Extents bounds) {
         this.bounds = bounds;
     }
     

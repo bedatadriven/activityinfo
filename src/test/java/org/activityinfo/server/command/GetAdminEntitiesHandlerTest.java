@@ -50,10 +50,10 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase2 {
         AdminEntityDTO kalehe = result.getData().get(0);
         assertThat(kalehe.getName(), equalTo("Kalehe"));
         assertThat(kalehe.getBounds(), is(not(nullValue())));
-        assertThat(kalehe.getBounds().getX1(), equalTo(-44d));
-        assertThat(kalehe.getBounds().getY1(), equalTo(-22d));
-        assertThat(kalehe.getBounds().getX2(), equalTo(33.5d));
-        assertThat(kalehe.getBounds().getY2(), equalTo(40d));
+        assertThat(kalehe.getBounds().getMinLon(), equalTo(-44d));
+        assertThat(kalehe.getBounds().getMinLat(), equalTo(-22d));
+        assertThat(kalehe.getBounds().getMaxLon(), equalTo(33.5d));
+        assertThat(kalehe.getBounds().getMaxLat(), equalTo(40d));
     }
 
     @Test

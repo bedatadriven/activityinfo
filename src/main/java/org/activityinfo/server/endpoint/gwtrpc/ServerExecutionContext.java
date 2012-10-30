@@ -46,6 +46,7 @@ public class ServerExecutionContext implements ExecutionContext {
 		this.user = injector.getInstance(AuthenticatedUser.class);
 		this.entityManager = (HibernateEntityManager) injector.getInstance(EntityManager.class);
 		this.scheduler = new JdbcScheduler();
+		this.scheduler.allowNestedProcessing();
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class ServerExecutionContext implements ExecutionContext {
 			 */
 			this.tx = new SyncTransactionAdapter(new HibernateExecutor(this.entityManager), 
 					scheduler, new TransactionCallback());
-			
+			this.tx.withManualCommitting();
 			
 			/*
 			 * Execute the command
@@ -103,6 +104,8 @@ public class ServerExecutionContext implements ExecutionContext {
 			
 			try {
 				result = execute(command);
+				
+				scheduler.process();
 								
 			} catch(Exception e) {
 				/*
@@ -152,6 +155,9 @@ public class ServerExecutionContext implements ExecutionContext {
 		
 		ResultCollector<R> collector = new ResultCollector<R>(command.getClass().getSimpleName());
 		execute(command, collector);
+		
+		scheduler.process();
+				
 		return collector.get();
 	}
 	
@@ -192,8 +198,6 @@ public class ServerExecutionContext implements ExecutionContext {
 		} else {
 			onAuthorized(command, callback);
 		}
-		tx.process();
-		scheduler.process();
 	}
 
 	private <C extends Command<R>, R extends CommandResult> void onAuthorized(C command, final AsyncCallback<R> callback) {

@@ -5,6 +5,9 @@
 
 package org.activityinfo.server.command.handler;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.output.TempStorage;
@@ -27,6 +30,8 @@ import com.google.inject.Inject;
  */
 public class RenderElementHandler implements CommandHandler<RenderElement> {
 
+	private static final Logger LOGGER = Logger.getLogger(RenderElementHandler.class.getName());
+	
     private final RendererFactory rendererFactory;
     private final ReportGenerator generator;
 	private StorageProvider storageProvider;
@@ -49,9 +54,12 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
 		        generator.generateElement(user, cmd.getElement(), new Filter(), new DateRange());
 				renderer.render(cmd.getElement(), storage.getOutputStream());      
 			} finally {
-		        storage.getOutputStream().close();
+				try {
+					storage.getOutputStream().close();
+				} catch(Exception e) {
+					LOGGER.log(Level.WARNING, "Exception while closing storage: " + e.getMessage(), e);
+				}
 			}
-	
 				
 	        return new UrlResult(storage.getUrl());
 		} catch(Exception e) {

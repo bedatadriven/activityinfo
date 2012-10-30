@@ -10,30 +10,30 @@ import java.util.List;
 
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.dto.SitePointDTO;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 
 /**
  * @author Alex Bertram
  */
 public class SitePointList implements CommandResult {
 
-    private BoundingBoxDTO bounds;
+    private Extents bounds;
     private List<SitePointDTO> points;
 
     private SitePointList() {
 
     }
 
-    public SitePointList(BoundingBoxDTO bounds, List<SitePointDTO> points) {
+    public SitePointList(Extents bounds, List<SitePointDTO> points) {
         this.bounds = bounds;
         this.points = points;
     }
 
-    public BoundingBoxDTO getBounds() {
+    public Extents getBounds() {
         return bounds;
     }
 
-    public void setBounds(BoundingBoxDTO bounds) {
+    public void setBounds(Extents bounds) {
         this.bounds = bounds;
     }
 

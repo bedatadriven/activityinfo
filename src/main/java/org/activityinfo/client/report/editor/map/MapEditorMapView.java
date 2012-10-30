@@ -5,50 +5,46 @@
 
 package org.activityinfo.client.report.editor.map;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.map.AdminEntityGeometry;
+import org.activityinfo.client.map.AdminGeometry;
+import org.activityinfo.client.map.AdminGeometryProvider;
+import org.activityinfo.client.map.AdminPolygon;
 import org.activityinfo.client.map.GoogleMapsReportOverlays;
-import org.activityinfo.client.map.IconFactory;
-import org.activityinfo.client.map.MapTypeFactory;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
 import org.activityinfo.client.page.report.ReportEventHelper;
 import org.activityinfo.client.widget.GoogleMapsPanel;
 import org.activityinfo.shared.command.GenerateElement;
-import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.map.BaseMap;
+import org.activityinfo.shared.report.content.AdminMarker;
+import org.activityinfo.shared.report.content.AdminOverlay;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.util.mapping.Extents;
 
-import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.common.base.Objects;
 import com.google.gwt.maps.client.InfoWindowContent;
-import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.ControlAnchor;
 import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
+import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.overlay.Icon;
+import com.google.gwt.maps.client.overlay.EncodedPolyline;
 import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.MarkerOptions;
-import com.google.gwt.maps.client.overlay.Overlay;
+import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -74,6 +70,8 @@ public class MapEditorMapView extends GoogleMapsPanel implements HasReportElemen
     
     // Model of a the map
     private MapContent content;
+    
+    private boolean zoomSet = false;
 	
 	// True when the first layer is just put on the map
 	private boolean isFirstLayerUpdate=true;
@@ -220,15 +218,20 @@ public class MapEditorMapView extends GoogleMapsPanel implements HasReportElemen
 		statusWidget.setStatus(result.getUnmappedSites().size() + " " + I18N.CONSTANTS.siteLackCoordiantes(), null);
 
 		overlays.setBaseMap(result.getBaseMap());
-		Extents extents = overlays.addMarkers(result.getMarkers());
-		
-		// can we zoom in further and still see all the markers?
-		if(getMapWidget().getBounds().containsBounds(newLatLngBounds(extents))) {
-			zoomToBounds(extents);
+		overlays.addMarkers(result.getMarkers());
+		for(AdminOverlay overlay : result.getAdminOverlays()) {
+			overlays.addAdminLayer(overlay);
 		}
+		
+		if(!zoomSet) {
+			zoomToBounds(result.getExtents());
+			zoomSet = true;
+		}
+			
 	}
     
 	
+
 	private void onMapClick(MapClickEvent event) {
 		if(event.getOverlay() != null) {
 			MapMarker marker = overlays.getMapMarker(event.getOverlay());

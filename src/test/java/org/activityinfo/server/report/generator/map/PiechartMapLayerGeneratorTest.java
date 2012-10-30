@@ -5,8 +5,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 
-import org.activityinfo.server.report.generator.map.PiechartLayerGenerator;
-import org.activityinfo.server.report.generator.map.TiledMap;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
@@ -39,8 +37,8 @@ public class PiechartMapLayerGeneratorTest {
 		
 		TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
 
-		PiechartLayerGenerator gen = new PiechartLayerGenerator(pcml, 
-				Arrays.asList(siteData));
+		PiechartLayerGenerator gen = new PiechartLayerGenerator(pcml);
+		gen.setSites(Arrays.asList(siteData));
 		
 		MapContent mc = new MapContent(); 
 		
@@ -49,5 +47,4 @@ public class PiechartMapLayerGeneratorTest {
 		assertThat(mc.getMarkers().size(), equalTo(1));
 		assertThat(((PieMapMarker)mc.getMarkers().get(0)).getSlices().size(), equalTo(4));
 	}
-	
 }

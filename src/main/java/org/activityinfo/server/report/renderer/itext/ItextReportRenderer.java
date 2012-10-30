@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.image.ImageCreator;
@@ -41,8 +42,8 @@ public abstract class ItextReportRenderer implements Renderer {
 	private final Map<Class, ItextRenderer> renderers = new HashMap<Class, ItextRenderer>();
 	
     @Inject
-    protected ItextReportRenderer(@MapIconPath String mapIconPath) {    	
-    	ItextMapRenderer itextMapRenderer = new ItextMapRenderer(mapIconPath, getImageCreator());
+    protected ItextReportRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath) {    	
+    	ItextMapRenderer itextMapRenderer = new ItextMapRenderer(geometryProvider, mapIconPath, getImageCreator());
 		
     	renderers.put(PivotTableReportElement.class, new ItextPivotTableRenderer());
     	renderers.put(PivotChartReportElement.class, new ItextChartRenderer(getImageCreator()));

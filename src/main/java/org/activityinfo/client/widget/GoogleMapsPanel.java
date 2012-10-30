@@ -9,7 +9,7 @@ package org.activityinfo.client.widget;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.map.MapApiLoader;
 import org.activityinfo.shared.report.content.AiLatLng;
-import org.activityinfo.shared.util.mapping.BoundingBoxDTO;
+import org.activityinfo.shared.util.mapping.Extents;
 import org.activityinfo.shared.util.mapping.Extents;
 
 import org.activityinfo.client.Log;
@@ -134,12 +134,6 @@ public class GoogleMapsPanel extends ContentPanel {
 		zoomToBounds(newLatLngBounds(extents));
 	}
 
-	protected final LatLngBounds newLatLngBounds(BoundingBoxDTO bounds) {
-		return LatLngBounds.newInstance(
-				LatLng.newInstance(bounds.getY1(), bounds.getX1()),
-				LatLng.newInstance(bounds.getY2(), bounds.getX2()));
-	}
-
 	protected final LatLng newLatLng(AiLatLng latLng) {
 		return LatLng.newInstance(latLng.getLat(), latLng.getLng());
 	}
@@ -150,11 +144,12 @@ public class GoogleMapsPanel extends ContentPanel {
 				LatLng.newInstance(extents.getMaxLat(), extents.getMaxLon()));
 	}
 
-	protected final BoundingBoxDTO createBounds(LatLngBounds latlngbounds) {
-		return new BoundingBoxDTO(latlngbounds.getNorthEast().getLongitude(),
+	protected final Extents createBounds(LatLngBounds latlngbounds) {
+		return new Extents(
 				latlngbounds.getSouthWest().getLatitude(),
-				latlngbounds.getSouthWest().getLongitude(),
-				latlngbounds.getNorthEast().getLatitude());
+				latlngbounds.getNorthEast().getLatitude(),
+				latlngbounds.getNorthEast().getLongitude(),
+				latlngbounds.getSouthWest().getLongitude());
 	}
 
 	protected final MapWidget getMapWidget() {

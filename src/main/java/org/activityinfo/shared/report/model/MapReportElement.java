@@ -22,6 +22,7 @@ import org.activityinfo.shared.report.model.layers.BubbleMapLayer;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 
 import com.google.common.collect.Sets;
 
@@ -77,7 +78,8 @@ public class MapReportElement extends ReportElement<MapContent> {
     @XmlElements({
         @XmlElement(name="bubbles", type=BubbleMapLayer.class),
         @XmlElement(name="pie", type=PiechartMapLayer.class),
-        @XmlElement(name="icons", type=IconMapLayer.class)
+        @XmlElement(name="icons", type=IconMapLayer.class),
+        @XmlElement(name="polygons", type=PolygonMapLayer.class)
     })
     public List<MapLayer> getLayers() {
         return layers;
