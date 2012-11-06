@@ -116,7 +116,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 	}
 
 	private void addLocationDimension() {
-		store.add(geographyRoot, new DimensionModel(DimensionType.Site, I18N.CONSTANTS.location()), false);
+		store.add(geographyRoot, new DimensionModel(DimensionType.Location, I18N.CONSTANTS.location()), false);
 	}
 
 	private void addDimension(DimensionType type, String name) {
