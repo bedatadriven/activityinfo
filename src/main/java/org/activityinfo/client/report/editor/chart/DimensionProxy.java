@@ -44,6 +44,8 @@ public class DimensionProxy extends RpcProxy<ListLoadResult<DimensionModel>> {
 		list.add(new DimensionModel(DimensionType.Indicator, I18N.CONSTANTS.indicator()));
 		list.add(new DimensionModel(DimensionType.Partner, I18N.CONSTANTS.partner()));
 		list.add(new DimensionModel(DimensionType.Project, I18N.CONSTANTS.project()));
+		list.add(new DimensionModel(DimensionType.Target, I18N.CONSTANTS.realizedOrTargeted()));
+
 		list.add(new DimensionModel(DateUnit.YEAR));
 		list.add(new DimensionModel(DateUnit.QUARTER));
 		list.add(new DimensionModel(DateUnit.MONTH));
