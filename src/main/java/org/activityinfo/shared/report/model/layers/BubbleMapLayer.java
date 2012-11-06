@@ -95,4 +95,11 @@ public class BubbleMapLayer extends CircledMapLayer {
 	public String getTypeName() {
 		return "Bubble";
 	}
+
+	@Override
+	public String toString() {
+		return "BubbleMapLayer [ indicators=" + getIndicatorIds() + "]";
+	}
+	
+	
 }

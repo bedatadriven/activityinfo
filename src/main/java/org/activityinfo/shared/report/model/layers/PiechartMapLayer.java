@@ -69,6 +69,12 @@ public class PiechartMapLayer extends CircledMapLayer {
 		// Use a modulo to prevent OutOfRangeException for indicator-happy users
 		return colors.get(slices.size() % colors.size());
 	}
+	
+
+	@Override
+	public String toString() {
+		return "PiechartMapLayer [slices=" + slices + "]";
+	}
 
 	public static class Slice implements Serializable {
 		private String color;
@@ -98,5 +104,13 @@ public class PiechartMapLayer extends CircledMapLayer {
 		public void setIndicatorId(int indicatorId) {
 			this.indicatorId = indicatorId;
 		}
+
+		@Override
+		public String toString() {
+			return "Slice [color=" + color + ", indicatorId=" + indicatorId
+					+ "]";
+		}
+		
+		
 	}
 }

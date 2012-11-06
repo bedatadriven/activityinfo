@@ -58,6 +58,12 @@ public class PivotSites implements Command<PivotResult> {
 		this.valueType = valueType;
 	}
 
+	@Override
+	public String toString() {
+		return "PivotSites [dimensions=" + dimensions + ", filter=" + filter
+				+ ", valueType=" + valueType + "]";
+	}
+
 
 
 	public static class PivotResult implements CommandResult {

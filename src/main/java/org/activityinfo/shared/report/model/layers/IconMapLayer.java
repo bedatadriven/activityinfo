@@ -69,4 +69,12 @@ public class IconMapLayer extends PointMapLayer {
 	public String getTypeName() {
 		return "Icon";
 	}
+
+	@Override
+	public String toString() {
+		return "IconMapLayer [indicatorIds=" + getIndicatorIds() + ", icon=" + icon
+				+ "]";
+	}
+	
+	
 }

@@ -31,5 +31,11 @@ public class PolygonMapLayer extends AbstractMapLayer {
 	public void setMaxColor(String maxColor) {
 		this.maxColor = maxColor;
 	}
+
+	@Override
+	public String toString() {
+		return "PolygonMapLayer [adminLevelId=" + adminLevelId + ", maxColor="
+				+ maxColor + "]";
+	}
 	
 }

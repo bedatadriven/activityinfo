@@ -113,7 +113,7 @@ public class MapReportElement extends ReportElement<MapContent> {
 	 * Returns the zoomlevel of the map background
 	 * 
      * When null, ignored by the generator. Instead, the generator calculates the 
-     * zoomleve by the set of locations on the map and the size of the map
+     * zoomlevel by the set of locations on the map and the size of the map
 	 */
     @XmlTransient
 	public int getZoomLevel() {

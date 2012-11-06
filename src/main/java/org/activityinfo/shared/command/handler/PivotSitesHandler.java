@@ -3,6 +3,7 @@ package org.activityinfo.shared.command.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
@@ -22,6 +23,8 @@ import com.google.inject.Inject;
 public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotSites.PivotResult> {
 
     private final SqlDialect dialect;
+    
+    private static final Logger LOGGER = Logger.getLogger(PivotSitesHandler.class.getName());
 
     @Inject
     public PivotSitesHandler(SqlDialect dialect) {
@@ -35,6 +38,8 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
 	@Override
 	public void execute(PivotSites command, ExecutionContext context, AsyncCallback<PivotResult> callback) {
 
+		LOGGER.fine("Pivoting: " + command);
+		
         final List<Bucket> buckets = new ArrayList<Bucket>();
 		if (command.getValueType() == ValueType.INDICATOR) {
 			if (command.getFilter() == null || 

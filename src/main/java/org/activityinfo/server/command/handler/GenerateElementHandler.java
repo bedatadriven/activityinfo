@@ -5,6 +5,8 @@
 
 package org.activityinfo.server.command.handler;
 
+import java.util.logging.Logger;
+
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.shared.command.GenerateElement;
@@ -19,7 +21,8 @@ import com.google.inject.Inject;
  */
 public class GenerateElementHandler implements CommandHandler<GenerateElement> {
 
-
+	private static final Logger LOGGER = Logger.getLogger(GenerateElementHandler.class.getName());
+	
     private final ReportGenerator generator;
 
     @Inject
@@ -29,6 +32,8 @@ public class GenerateElementHandler implements CommandHandler<GenerateElement> {
 
     public CommandResult execute(GenerateElement cmd, User user) throws CommandException {
 
+    	LOGGER.fine("GenerateElement.element = " + cmd.getElement());
+    	
         return generator.generateElement(user, cmd.getElement(), null, new DateRange());
 
     }
