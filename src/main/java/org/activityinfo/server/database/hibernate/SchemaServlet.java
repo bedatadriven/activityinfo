@@ -54,7 +54,7 @@ public class SchemaServlet extends HttpServlet {
 				Liquibase liquibase;
 				try {
 					liquibase = new Liquibase("org/activityinfo/database/changelog/db.changelog-master.xml",
-							new ClassLoaderResourceAccessor(), new CloudSqlConnection(connection));
+							new ClassLoaderResourceAccessor(), new JdbcConnection(connection));
 					liquibase.update(null);
 				} catch (Exception e) {
 					LOGGER.log(Level.SEVERE, "Exception whilst migrating schema", e);

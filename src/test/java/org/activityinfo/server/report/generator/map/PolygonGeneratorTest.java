@@ -42,7 +42,6 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
 		new File("target/report-tests").mkdirs();
 	}
 	
-	
 	@Test
 	public void basicTest() throws IOException {
 		

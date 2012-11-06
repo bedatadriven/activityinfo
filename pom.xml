@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>2.0.2</version>
+			<version>2.0.2-bdd</version>
 		</dependency>
 		<dependency>
 			<groupId>geronimo-spec</groupId>
@@ -398,7 +398,7 @@
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
-				<version>2.0.2</version>
+				<version>2.0.2-bdd</version>
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
 					<changeLogFile>org/activityinfo/database/changelog/db.changelog-master.xml</changeLogFile>
