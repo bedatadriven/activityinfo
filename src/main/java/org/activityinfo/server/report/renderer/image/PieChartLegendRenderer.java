@@ -1,14 +1,10 @@
 package org.activityinfo.server.report.renderer.image;
 
-import com.google.code.appengine.awt.Color;
-import com.google.code.appengine.awt.Graphics2D;
-import com.google.code.appengine.awt.Image;
-import com.google.code.appengine.awt.color.ColorSpace;
-import com.google.code.appengine.awt.image.BufferedImage;
-
 import org.activityinfo.shared.report.content.PieChartLegend;
 import org.activityinfo.shared.report.content.PieMapMarker;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
+
+import com.google.code.appengine.awt.Graphics2D;
 
 public class PieChartLegendRenderer {
 

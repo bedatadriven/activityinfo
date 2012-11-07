@@ -15,12 +15,14 @@ import org.activityinfo.server.report.renderer.image.ImageCreator;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 import org.activityinfo.server.report.renderer.image.ItextGraphic;
 import org.activityinfo.server.report.renderer.image.PieChartLegendRenderer;
+import org.activityinfo.server.report.renderer.image.PolygonLegendRenderer;
 import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.report.content.BubbleLayerLegend;
 import org.activityinfo.shared.report.content.IconLayerLegend;
 import org.activityinfo.shared.report.content.MapLayerLegend;
 import org.activityinfo.shared.report.content.PieChartLegend;
+import org.activityinfo.shared.report.content.PolygonLegend;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.layers.MapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
@@ -157,6 +159,9 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 			MapLayer layer, Cell descriptionCell) {
 		int indicatorId = layer.getIndicatorIds().get(0);
 		IndicatorDTO indicator = element.getContent().getIndicatorById(indicatorId);
+		if(indicator == null) {
+			throw new NullPointerException("indicatorId:" + indicatorId);
+		}
 		descriptionCell.add(ThemeHelper.filterDescription(indicator.getName()));
 	}
 
@@ -179,6 +184,8 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
     		return createIconImage((IconLayerLegend)legend);
     	} else if(legend instanceof PieChartLegend) {
     		return new PieChartLegendRenderer((PieChartLegend) legend).createImage(creator).toItextImage();
+    	} else if(legend instanceof PolygonLegend) {
+    		return new PolygonLegendRenderer((PolygonLegend) legend).createImage(creator).toItextImage();
     	} else {
     		throw new IllegalArgumentException();
     	}

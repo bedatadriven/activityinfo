@@ -8,6 +8,7 @@ import org.activityinfo.shared.command.PivotSites.PivotResult;
 import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.map.RgbColor;
 import org.activityinfo.shared.report.content.AdminMarker;
 import org.activityinfo.shared.report.content.AdminOverlay;
 import org.activityinfo.shared.report.content.EntityCategory;
@@ -17,20 +18,22 @@ import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 import org.activityinfo.shared.util.mapping.Extents;
 
+import com.google.common.base.Function;
+
 
 public class PolygonLayerGenerator implements LayerGenerator {
 
 	private PolygonMapLayer layer;
 	private PivotResult buckets;
-	private MagnitudeScale colorScale;
+	private MagnitudeScaleBuilder.Scale colorScale;
 	private AdminOverlay overlay;
+	private Jenks breakBuilder = new Jenks();
 	
 	public PolygonLayerGenerator(PolygonMapLayer layer) {
 		super();
 		this.layer = layer;
 		this.overlay = new AdminOverlay(layer.getAdminLevelId());
 		this.overlay.setOutlineColor(layer.getMaxColor());
-		this.colorScale = new MagnitudeScale(layer.getMaxColor());
 	}
 
 	@Override
@@ -51,7 +54,6 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		AdminEntityResult entities = dispatcher.execute(query);
 		for(AdminEntityDTO entity : entities.getData()) {
 			AdminMarker marker = new AdminMarker(entity);
-			marker.setColor(colorScale.nullColor().toHexString());
 			overlay.addPolygon(marker);
 		}
 	}
@@ -62,15 +64,18 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		AdminDimension adminDimension = new AdminDimension(layer.getAdminLevelId());
 		query.setDimensions(adminDimension);
 		
+		MagnitudeScaleBuilder scaleBuilder = new MagnitudeScaleBuilder(layer);
+		
 		this.buckets = dispatcher.execute(query);
 		for(Bucket bucket : buckets.getBuckets()) {
 			EntityCategory category = (EntityCategory) bucket.getCategory(adminDimension);
 			if(category != null) {
 				int adminEntityId = category.getId(); 
 				overlay.getPolygon(adminEntityId).setValue(bucket.doubleValue());
-				colorScale.addValue(bucket.doubleValue());
+				scaleBuilder.addValue(bucket.doubleValue());
 			}
 		}
+		colorScale = scaleBuilder.build();
 	}
 	
 
@@ -78,6 +83,8 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		for(AdminMarker polygon : overlay.getPolygons()) {
 			if(polygon.hasValue()) {
 				polygon.setColor(colorScale.color(polygon.getValue()).toHexString());
+			} else {
+				polygon.setColor(colorScale.color(null).toHexString());
 			}
 		}
 	}
@@ -101,5 +108,6 @@ public class PolygonLayerGenerator implements LayerGenerator {
 	@Override
 	public void generate(TiledMap map, MapContent content) {
 		content.getAdminOverlays().add(overlay);
+		content.getLegends().add(colorScale.legend());
 	}
 }
