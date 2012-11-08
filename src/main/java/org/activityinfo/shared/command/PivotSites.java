@@ -7,6 +7,7 @@ import org.activityinfo.shared.command.PivotSites.PivotResult;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.report.model.Dimension;
+import org.activityinfo.shared.report.model.DimensionType;
 
 import com.google.common.collect.Sets;
 
@@ -64,6 +65,14 @@ public class PivotSites implements Command<PivotResult> {
 				+ ", valueType=" + valueType + "]";
 	}
 
+	public boolean isPivotedBy(DimensionType dimType) {
+		for(Dimension dim : dimensions) {
+			if(dim.getType() == dimType) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 	public static class PivotResult implements CommandResult {

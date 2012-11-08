@@ -13,6 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
@@ -64,6 +67,10 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
     @BeforeClass
     public static void setup() {
+    	Logger.getLogger("org.activityinfo").setLevel(Level.ALL);
+    	Logger.getLogger("org.activityinfo").addHandler(new ConsoleHandler());
+    	
+    	Logger.getLogger("com.bedatadriven.rebar").setLevel(Level.ALL);
 
     }
 

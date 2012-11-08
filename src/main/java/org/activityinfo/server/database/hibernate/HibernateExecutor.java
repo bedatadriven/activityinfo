@@ -57,7 +57,8 @@ public class HibernateExecutor extends JdbcExecutor {
 						String formatted = format(statement);
 						LOGGER.warning("Slow query completed in " + elapsed + "ms:\n" + formatted);
 					}
-				} catch (Exception e) {
+				} catch (Throwable e) {
+					LOGGER.log(Level.SEVERE, "Exception occured while executing query: " + statement, e);
 					throw new SQLException(e);
 				}
 			}

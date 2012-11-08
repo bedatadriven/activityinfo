@@ -2,12 +2,12 @@ package org.activityinfo.shared.command.handler.pivot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.PivotSites;
-import org.activityinfo.shared.command.PivotSites.PivotResult;
 import org.activityinfo.shared.command.handler.pivot.bundler.Bundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.EntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.MonthBundler;
@@ -15,12 +15,11 @@ import org.activityinfo.shared.command.handler.pivot.bundler.MySqlYearWeekBundle
 import org.activityinfo.shared.command.handler.pivot.bundler.OrderedEntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.QuarterBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.SimpleBundler;
-import org.activityinfo.shared.command.handler.pivot.bundler.SiteCountBundler;
-import org.activityinfo.shared.command.handler.pivot.bundler.SumAndAverageBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.YearBundler;
 import org.activityinfo.shared.command.result.Bucket;
+import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.db.Tables;
-import org.activityinfo.shared.report.content.TargetCategory;
+import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateDimension;
@@ -34,192 +33,118 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PivotQuery {
-	private final PivotSites command;
 	private final Filter filter;
-	
 	private final Set<Dimension> dimensions;
+
+	private final BaseTable baseTable;
+
 	private final int userId;
 	private final SqlDialect dialect;
 		
 	private final SqlTransaction tx;
 	
-	private List<Bucket> buckets;	
 	private final SqlQuery query = new SqlQuery();
 	private final List<Bundler> bundlers = new ArrayList<Bundler>();
+		
+	private PivotSites command;
+	private PivotQueryContext context;
 	
-	private AsyncCallback<PivotSites.PivotResult> callback = null;
-	
-	private int nextColumnIndex = 1;
-	
-    public PivotQuery(SqlTransaction tx, SqlDialect dialect, PivotSites command, int userId) {
+	private Set<String> dimColumns = Sets.newHashSet();
+
+    public PivotQuery(PivotQueryContext context, BaseTable baseTable) {
 		super();
-		this.command = command;
-		this.filter = command.getFilter();
-		this.dimensions = command.getDimensions();
-		this.userId = userId;
-		this.dialect = dialect;
-		this.tx = tx;
+		this.context = context;
+		this.command = context.getCommand();
+		this.filter = context.getCommand().getFilter();
+		this.dimensions = context.getCommand().getDimensions();
+		this.dialect = context.getDialect();
+		this.userId = context.getExecutionContext().getUser().getUserId();
+		this.tx = context.getExecutionContext().getTransaction();
+		this.baseTable = baseTable;
 	}
-    
-	public PivotQuery addTo(List<Bucket> buckets) {
-		this.buckets = buckets;
-		return this;
-	}
-    
-    
-    public PivotQuery callbackTo(AsyncCallback<PivotResult> callback) {
-    	this.callback = callback;
-    	return this;
-    }
-    
-    private String appendColumn(String expr) {
-    	String alias = "c" + (nextColumnIndex++);
-    	query.appendColumn(expr, alias);
-    	return alias;
-    }
     
     private String appendDimColumn(String expr) {
-		query.groupBy(expr);
-		return appendColumn(expr);
+		String alias = expr.replace('.', '_');
+		return appendDimColumn(alias, expr);
 	}
 
-    public void queryForSumAndAverages() {
-        /* We're just going to go ahead and add all the tables we need to the SQL statement;
-        * this saves us some work and hopefully the SQL server will optimize out any unused
-        * tables
-        */
-    	query.from(
-    		" indicatorvalue V " +
-    			"LEFT JOIN reportingperiod Period ON (Period.ReportingPeriodId=V.ReportingPeriodId) " +
-        		"LEFT JOIN (" + 
-        			"SELECT IndicatorId SourceId, IndicatorId, Name, SortOrder, Aggregation, ActivityId " +
-        			"FROM indicator " + 
-        			"WHERE DateDeleted IS NULL and IndicatorId " + inIndicatorIds() + 
-        			
-        			"UNION ALL " +
-        			
-        			"SELECT L.SourceIndicatorId SourceId, D.IndicatorId, D.Name, D.SortOrder, D.Aggregation, D.ActivityId " + 
-        			"FROM indicator D " + 
-        				"INNER JOIN indicatorlink L ON (D.IndicatorId=L.DestinationIndicatorId) " + 
-        				"INNER JOIN indicator S ON (S.IndicatorId=L.SourceIndicatorId) " + 
-        			"WHERE D.dateDeleted IS NULL " +
-        				"AND S.dateDeleted IS NULL " +
-        				"AND D.IndicatorId " + inIndicatorIds() + 
-        		") AS Indicator ON (Indicator.SourceId = V.IndicatorId) " +
-                "LEFT JOIN site Site ON (Period.SiteId = Site.SiteId) " +
-                "LEFT JOIN partner Partner ON (Site.PartnerId = Partner.PartnerId)" +
-                "LEFT JOIN project Project ON (Site.ProjectId = Project.ProjectId) " +
-                "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
-				"LEFT JOIN activity Activity ON (Activity.ActivityId = Indicator.ActivityId) " +
-                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) "
-		);
-		addSumAndAverageBundler();
-
-		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
-    }
-
-	// FIXME mind the Period alias
-	public void queryForTargetValues() {
-		if (suitableDimensionsForTargetValues()) {
-			query.from(" targetvalue V " + "LEFT JOIN target AS Period ON (Period.TargetId = V.TargetId) "
-					+ "LEFT JOIN indicator Indicator ON (Indicator.IndicatorId = V.IndicatorId) "
-					+ "LEFT JOIN partner Partner ON (Period.PartnerId = Partner.PartnerId) "
-					+ "LEFT JOIN project Project ON (Period.ProjectId = Project.ProjectId) "
-					+ "LEFT JOIN activity Activity ON (Activity.ActivityId = Indicator.ActivityId) "
-					+ "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) ");
-
-			addSumAndAverageBundler();
-
-			buildAndExecuteRestOfQuery(TargetCategory.TARGETED);
-		} else {
-			finish();
+	private String appendDimColumn(String alias, String expr) {
+		if(!dimColumns.contains(alias)) {
+			query.groupBy(expr);
+			query.appendColumn(expr, alias);
+			dimColumns.add(alias);
 		}
+		return alias;
 	}
-
-	private boolean suitableDimensionsForTargetValues() {
-		boolean containsTarget = false;
-		for (Dimension dimension : dimensions) {
-			if (dimension instanceof AdminDimension || dimension.getType() == DimensionType.Location) {
-				return false;
-			}
-			if (dimension.equals(Dimension.TARGET)) {
-				containsTarget = true;
-			}
-		}
-		return containsTarget;
-	}
-
-	private void addSumAndAverageBundler() {
-		/*
-		 * Add the indicator to the query: we can't aggregate values from
-		 * different indicators so this is a must
-		 */
-		String aggregationTypeAlias = appendColumn("Indicator.Aggregation");
-		String sumAlias = appendColumn("SUM(V.Value)");
-		String avgAlias = appendColumn("AVG(V.Value)");
-		query.groupBy("Indicator.IndicatorId");
-		query.groupBy("Indicator.Aggregation");
-		query.whereTrue(" ((V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
-
-		bundlers.add(new SumAndAverageBundler(aggregationTypeAlias, sumAlias, avgAlias));
-	}
-
-    public void queryForSiteCountIndicators() {
-
-        /* We're just going to go ahead and add all the tables we need to the SQL statement;
-        * this saves us some work and hopefully the SQL server will optimze out any unused
-        * tables
-        */
-
-        query.from(" site Site " +
-                "LEFT JOIN partner Partner ON (Site.PartnerId = Partner.PartnerId) " +
-                "LEFT JOIN project Project ON (Site.ProjectId = Project.ProjectId) " +
-                "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
-                "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN indicator Indicator ON (Indicator.ActivityId = Activity.ActivityId) " +
-                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
-                "LEFT JOIN reportingperiod Period ON (Period.SiteId = Site.SiteId) ");
-
-        /* First add the indicator to the query: we can't aggregate values from different
-        * indicators so this is a must
-        *
-        */
-        String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
-        query.groupBy("Indicator.IndicatorId");
-        query.whereTrue("Indicator.Aggregation=2 ");
-		query.whereTrue("Indicator.DateDeleted is NULL");
-		query.whereTrue("Indicator.IndicatorId " + inIndicatorIds());
-        bundlers.add(new SiteCountBundler(count));
-
-		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
-    }
     
-    public void queryForTotalSiteCounts() {
-        query.from(" site Site " +
-                "LEFT JOIN partner Partner ON (Site.PartnerId = Partner.PartnerId) " +
-                "LEFT JOIN project Project ON (Site.ProjectId = Project.ProjectId) " +
-                "LEFT JOIN location Location ON (Location.LocationId = Site.LocationId) " +
-                "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
-                "LEFT JOIN reportingperiod Period ON (Period.SiteId = Site.SiteId) ");
+	public void execute(final AsyncCallback<Void> callback) {
+		
+		baseTable.setupQuery(command, query);
+		
+		if(command.isPivotedBy(DimensionType.Location)) {
+			query.leftJoin(Tables.LOCATION, "Location").on("Location.LocationId=" + 
+					baseTable.getDimensionIdColumn(DimensionType.Location));
+		}
+		if(command.isPivotedBy(DimensionType.Partner)) {
+			query.leftJoin(Tables.PARTNER, "Partner").on("Partner.PartnerId=" + 
+					baseTable.getDimensionIdColumn(DimensionType.Partner));
 
-        /* 
-         * First add the indicator to the query: we can't aggregate values from different
-         * indicators so this is a must
-         */
-        String count = appendColumn("COUNT(DISTINCT Site.SiteId)");
+		}
+		if(command.isPivotedBy(DimensionType.Project)) {
+			query.leftJoin(Tables.PROJECT, "Project").on("Project.ProjectId=" + 
+					baseTable.getDimensionIdColumn(DimensionType.Project));
+		}
+		
+		
+        addDimensionBundlers();
+               
+        // and only allow results that are visible to this user.
+        if (!GWT.isClient()) {
+        	appendVisibilityFilter();
+        }
 
-        bundlers.add(new SiteCountBundler(count));
 
-		buildAndExecuteRestOfQuery(TargetCategory.REALIZED);
+        if (filter.getMinDate() != null) {
+            query.where(baseTable.getDateCompleteColumn()).greaterThanOrEqualTo(filter.getMinDate());
+        }
+        if (filter.getMaxDate() != null) {
+        	query.where(baseTable.getDateCompleteColumn()).lessThanOrEqualTo(filter.getMaxDate());
+        }
+
+        appendDimensionRestrictions();
+                
+        query.execute(tx, new SqlResultCallback() {
+			
+			@Override
+			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+				for(SqlResultSetRow row : results.getRows()) {
+					Bucket bucket = new Bucket();
+					bucket.setAggregationMethod(row.getInt(ValueFields.AGGREGATION));
+					bucket.setCount(row.getInt(ValueFields.COUNT));
+					if(!row.isNull(ValueFields.SUM)) {
+						bucket.setSum(row.getInt(ValueFields.SUM));
+					}
+					bucket.setCategory(new Dimension(DimensionType.Target), baseTable.getTargetCategory());
+					
+                    for (Bundler bundler : bundlers) {
+                        bundler.bundle(row, bucket);
+                    }
+                    context.addBucket(bucket);
+				}
+				
+				callback.onSuccess(null);
+			}
+		});    
     }
 
-	protected void buildAndExecuteRestOfQuery(final TargetCategory targetCategory) {
-        /* Now add any other dimensions  */
+	private void addDimensionBundlers() {
+		/* Now add any other dimensions  */
         for (Dimension dimension : dimensions) {
 
         	if (dimension == null) {
@@ -253,27 +178,26 @@ public class PivotQuery {
                 DateDimension dateDim = (DateDimension) dimension;
 
                 if (dateDim.getUnit() == DateUnit.YEAR) {
-                	String yearAlias = appendDimColumn(dialect.yearFunction("Period.Date2"));
+                	String yearAlias = appendDimColumn("year", dialect.yearFunction(baseTable.getDateCompleteColumn()));
 
                     bundlers.add(new YearBundler(dimension, yearAlias));
 
                 } else if (dateDim.getUnit() == DateUnit.MONTH) {
-                	String yearAlias = appendDimColumn(dialect.yearFunction("Period.Date2"));
-                	String monthAlias = appendDimColumn(dialect.monthFunction("Period.Date2"));
+                	String yearAlias = appendDimColumn("year", dialect.yearFunction(baseTable.getDateCompleteColumn()));
+                	String monthAlias = appendDimColumn("month", dialect.monthFunction(baseTable.getDateCompleteColumn()));
                 	
                     bundlers.add(new MonthBundler(dimension, yearAlias, monthAlias));
 
                 } else if (dateDim.getUnit() == DateUnit.QUARTER) {
-                	String yearAlias = appendDimColumn(dialect.yearFunction("Period.Date2"));
-                	String quarterAlias = appendDimColumn(dialect.quarterFunction("Period.Date2"));
+                	String yearAlias = appendDimColumn("year", dialect.yearFunction(baseTable.getDateCompleteColumn()));
+                	String quarterAlias = appendDimColumn("quarter", dialect.quarterFunction(baseTable.getDateCompleteColumn()));
 
                 	bundlers.add(new QuarterBundler(dimension, yearAlias, quarterAlias));
-                    nextColumnIndex += 2;
                 } else if (dateDim.getUnit() == DateUnit.WEEK_MON) {
                 	// Mode = 3 means " Monday	1-53	with more than 3 days this year" 
                 	// see http://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_week
                 	if (dialect.isMySql()) {
-	                	String weekAlias = appendDimColumn("YEARWEEK(Period.Date2, 3)");
+	                	String weekAlias = appendDimColumn("yearweek", "YEARWEEK(" + baseTable.getDateCompleteColumn() + ", 3)");
 	                	bundlers.add(new MySqlYearWeekBundler(dimension, weekAlias));
                 	}
                 	// TODO: sqlite
@@ -290,7 +214,8 @@ public class PivotQuery {
                         "LEFT JOIN adminentity E ON (L.AdminEntityId=E.AdminEntityID) " +
                         "WHERE E.AdminLevelId=").append(adminDim.getLevelId())
                         .append(") AS ").append(tableAlias)
-                        .append(" ON (Location.LocationId=").append(tableAlias).append(".LocationId)").toString());
+                        .append(" ON (").append(baseTable.getDimensionIdColumn(DimensionType.Location))
+                        .append(" =").append(tableAlias).append(".LocationId)").toString());
 
                 addEntityDimension(dimension, tableAlias + ".AdminEntityId", tableAlias + ".Name");
                 
@@ -316,7 +241,7 @@ public class PivotQuery {
             		.groupBy("v.siteId");
             	
             	query.leftJoin(derivedValueQuery, valueQueryAlias)
-            		.on("Site.SiteId=" + valueQueryAlias + ".SiteId");
+            		.on(baseTable.getDimensionIdColumn(DimensionType.Site) + "="+ valueQueryAlias + ".SiteId");
             	
             	// now we need the names of the attributes we've just selected
             	query.leftJoin("attribute", labelQueryAlias)
@@ -325,53 +250,8 @@ public class PivotQuery {
             	addEntityDimension(attrGroupDim, valueQueryAlias + ".AttributeId", labelQueryAlias + ".Name");
             }
         }
-
-
-        /* And start on our where clause... */
-		if (TargetCategory.REALIZED == targetCategory) {
-			query.where("Site.dateDeleted").isNull();
-		}
-
-        query.where("Activity.dateDeleted").isNull();
-        query.where("UserDatabase.dateDeleted").isNull();
-                
-        // and only allow results that are visible to this user.
-        if (!GWT.isClient()) {
-        	appendVisibilityFilter();
-        }
-
-
-        if (filter.getMinDate() != null) {
-            query.where("Period.date2").greaterThanOrEqualTo(filter.getMinDate());
-        }
-        if (filter.getMaxDate() != null) {
-        	query.where("Period.date2").lessThanOrEqualTo(filter.getMaxDate());
-        }
-
-        appendDimensionRestrictions();
-        
-        query.execute(tx, new SqlResultCallback() {
-			
-			@Override
-			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-				for(SqlResultSetRow row : results.getRows()) {
-					Bucket bucket = new Bucket();
-					bucket.setCategory(Dimension.TARGET, targetCategory);
-                    for (Bundler bundler : bundlers) {
-                        bundler.bundle(row, bucket);
-                    }
-                    buckets.add(bucket);
-				}
-				finish();
-			}
-		});    
-    }
-
-	public void finish() {
-		if (callback != null) {
-			callback.onSuccess(new PivotResult(buckets));
-		}
 	}
+
 
 	private void addEntityDimension(Dimension dimension, String id, String label) {
 		String idAlias = appendDimColumn(id);
@@ -405,43 +285,14 @@ public class PivotQuery {
 
     private void appendDimensionRestrictions() {
         for (DimensionType type : filter.getRestrictedDimensions()) {
-            if (type == DimensionType.Indicator) {
-            	// replaced by inIndicatorIds()
-				// query.where("Indicator.IndicatorId").in(filter.getRestrictions(DimensionType.Indicator));
-            } else if (type == DimensionType.Activity) {
-				query.where("Activity.ActivityId").in(filter.getRestrictions(DimensionType.Activity));
-            } else if (type == DimensionType.Database) {
-            	query.where("Activity.DatabaseId").in(filter.getRestrictions(DimensionType.Database));
-            } else if (type == DimensionType.Partner) {
-				query.where("Partner.PartnerId").in(filter.getRestrictions(DimensionType.Partner));
-            } else if (type == DimensionType.Project) {
-				query.where("Project.ProjectId").in(filter.getRestrictions(DimensionType.Project));
-            } else if (type == DimensionType.Location) {
-            	query.where("Site.LocationId").in(filter.getRestrictions(DimensionType.Location));
-            } else if (type == DimensionType.AdminLevel) {
-            	query.where("Site.LocationId").in(
+        	if (type == DimensionType.AdminLevel) {
+            	query.where(baseTable.getDimensionIdColumn(DimensionType.Location)).in(
             			SqlQuery.select("Link.LocationId").from(Tables.LOCATION_ADMIN_LINK, "Link")
             				.where("Link.AdminEntityId").in(filter.getRestrictions(DimensionType.AdminLevel)));
+            } else {
+            	query.where(baseTable.getDimensionIdColumn(type)).in(filter.getRestrictions(type));
             }
         }
     }
 
-	private String inIndicatorIds() {
-		if (filter.getRestrictions(DimensionType.Indicator).isEmpty()) {
-			 return " is not null ";
-		} else {
-			StringBuilder sb = new StringBuilder();
-			sb.append(" in (");
-			boolean needsComma = false;
-			for (Integer id : filter.getRestrictions(DimensionType.Indicator)) {
-				if (needsComma) {
-					sb.append(",");
-				}
-				sb.append(id);
-				needsComma = true;
-			}
-			sb.append(") ");
-			return sb.toString();
-		}
-	}
 }

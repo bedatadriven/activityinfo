@@ -25,4 +25,6 @@ public class EntityBundler implements Bundler {
 	                row.getString(labelAlias)));
 		}
     }
+	
+	
 }

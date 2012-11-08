@@ -132,8 +132,12 @@ public class Filter implements Serializable {
 	}
 	
 	public boolean isRestricted(DimensionType type) {
-		Set<Integer> set = restrictions.get(type);
-		return set != null && !set.isEmpty();
+		if(type == DimensionType.Date) {
+			return isDateRestricted();
+		} else {
+			Set<Integer> set = restrictions.get(type);
+			return set != null && !set.isEmpty();
+		}
 	}
 	
 	public boolean isNull() {

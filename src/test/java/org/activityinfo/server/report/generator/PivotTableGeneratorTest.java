@@ -150,8 +150,7 @@ public class PivotTableGeneratorTest {
     }
 
     public Bucket newBucket(double value, AndCategory... pairs) {
-        Bucket bucket = new Bucket();
-        bucket.setDoubleValue(value);
+        Bucket bucket = new Bucket(value);
         for (AndCategory pair : pairs) {
             bucket.setCategory(pair.getDimension(), pair.getCategory());
         }
