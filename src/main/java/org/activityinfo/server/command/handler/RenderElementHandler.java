@@ -45,11 +45,15 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
     }
 
     public CommandResult execute(RenderElement cmd, User user) throws CommandException {
+    	   	
 		try {
 			Renderer renderer = rendererFactory.get(cmd.getFormat());
 			TempStorage storage = storageProvider.allocateTemporaryFile(
 					renderer.getMimeType(), 
 					cmd.getFilename() + renderer.getFileSuffix());
+			
+	    	LOGGER.fine("Rendering element: " + cmd + "\nURL: " + storage.getUrl());
+
 			try {
 		        generator.generateElement(user, cmd.getElement(), new Filter(), new DateRange());
 				renderer.render(cmd.getElement(), storage.getOutputStream());      
@@ -67,11 +71,4 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
 		}
     }
 
-	private String composeFilename(RenderElement cmd, Renderer renderer) {
-		if(Strings.isNullOrEmpty(cmd.getElement().getTitle())) {
-			return "Report" + renderer.getFileSuffix();
-		} else {
-			return cmd.getElement().getTitle() +  renderer.getFileSuffix();
-		}
-	}
 }

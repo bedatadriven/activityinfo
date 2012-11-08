@@ -143,7 +143,7 @@ public class ImageMapRenderer {
 		List<AdminGeo> geometry = geometryProvider.getGeometry(overlay.getAdminLevelId());
 		
 		Color strokeColor = ColorUtil.colorFromString(overlay.getOutlineColor());	
-		g2d.setStroke(new BasicStroke(2));
+		g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 		
 		for(AdminGeo adminGeo : geometry) {
 			AdminMarker polygon = overlay.getPolygon(adminGeo.getId());

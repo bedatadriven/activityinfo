@@ -53,8 +53,10 @@ public class PolygonLayerGenerator implements LayerGenerator {
 		
 		AdminEntityResult entities = dispatcher.execute(query);
 		for(AdminEntityDTO entity : entities.getData()) {
-			AdminMarker marker = new AdminMarker(entity);
-			overlay.addPolygon(marker);
+			if(entity.hasBounds()) {
+				AdminMarker marker = new AdminMarker(entity);
+				overlay.addPolygon(marker);
+			}
 		}
 	}
 
@@ -71,8 +73,11 @@ public class PolygonLayerGenerator implements LayerGenerator {
 			EntityCategory category = (EntityCategory) bucket.getCategory(adminDimension);
 			if(category != null) {
 				int adminEntityId = category.getId(); 
-				overlay.getPolygon(adminEntityId).setValue(bucket.doubleValue());
-				scaleBuilder.addValue(bucket.doubleValue());
+				AdminMarker polygon = overlay.getPolygon(adminEntityId);
+				if(polygon != null) {
+					polygon.setValue(bucket.doubleValue());
+					scaleBuilder.addValue(bucket.doubleValue());
+				}
 			}
 		}
 		colorScale = scaleBuilder.build();
