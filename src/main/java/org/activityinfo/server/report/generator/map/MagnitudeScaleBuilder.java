@@ -51,7 +51,8 @@ public class MagnitudeScaleBuilder {
 				return minColor;
 			} else {
 				// we add an extra category for 0/null
-				return RgbColor.interpolate(minColor, maxColor, (breaks.classOf(value)+1) / (breaks.numClassses()+1));
+				double p = ((double)(breaks.classOf(value)+1)) / ((double)(breaks.numClassses()+1));
+				return RgbColor.interpolate(minColor, maxColor, p);
 			}
 		}
 		

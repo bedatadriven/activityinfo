@@ -18,10 +18,12 @@ public class PolygonLegendRenderer {
 
 	private static final int PADDING = 2;
 	
-	private static final int SWATCH_WIDTH = 50;
+	private static final int SWATCH_WIDTH = 25;
 	private static final int SWATCH_HEIGHT = 25;
 		
 	private static final int LABEL_HEIGHT = 12;
+	private static final int LABEL_WIDTH = 75;
+	
 	
 	private PolygonLegend legend;
 	private PolygonMapLayer layer;
@@ -47,7 +49,7 @@ public class PolygonLegendRenderer {
 	}
 
 	private void calculateSize() {
-		this.width = PADDING + SWATCH_WIDTH + PADDING + SWATCH_WIDTH + PADDING;
+		this.width = PADDING + SWATCH_WIDTH + PADDING + LABEL_WIDTH + PADDING;
 		this.height = ((PADDING + SWATCH_HEIGHT) * legend.getClasses().size()) + PADDING; 
 	}
 	
@@ -81,19 +83,7 @@ public class PolygonLegendRenderer {
 		}
 		return label.toString();
 	}
+	
 
-	private void drawBubbleLegendLabel(Graphics2D g2d, int x, int y, double value) {
-    	Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
-        String label = labelFormat.format(value);
-        LineMetrics metrics = font.getLineMetrics(label, g2d.getFontRenderContext());
-        Rectangle2D bounds = font.getStringBounds(label, g2d.getFontRenderContext());
-        
-        x -= bounds.getWidth() / 2d;
-        y += metrics.getAscent();
-        
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(font);
-        g2d.drawString(label, x, y);
-    }
 
 }
