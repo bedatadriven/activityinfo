@@ -3,6 +3,7 @@ package org.activityinfo.client.offline.capability;
 
 import org.activityinfo.client.Log;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * FireFox offline capability profile.
@@ -14,34 +15,37 @@ import com.google.gwt.user.client.Window;
  * However, we do handle the exceptional case where the user has an old
  * version of FireFox (<= 3.6) that supports the Gears plugin. 
  */
-public class FFCapabilityProfile extends GearsCapabilityProfile {
+public class FFCapabilityProfile extends OfflineCapabilityProfile {
 
-	private static final double FIREFOX_4 = 2.0;
 	
-	private double revision;
+	private boolean hasPlugin;
 	
 	public FFCapabilityProfile() {
 		Log.debug("FireFox version: " + Window.Navigator.getUserAgent());
-		String rv = fireFoxVersion();
-		revision = Double.parseDouble(rv);
+		hasPlugin = hasPlugin();
+	}
+
+	@Override
+	public boolean isOfflineModeSupported() {
+		return hasPlugin;
+	}
+
+
+	@Override
+	public void acquirePermission(AsyncCallback<Void> callback) {
+		callback.onSuccess(null);
 	}
 
 	@Override
 	public String getInstallInstructions() {
 		if(isOfflineModeSupported()) {
 			return ProfileResources.INSTANCE.startupMessage().getText();
-		} else if(revision < FIREFOX_4) {
-			return ProfileResources.INSTANCE.startupMessageFirefox().getText() +
-				   ProfileResources.INSTANCE.startupMessageFirefox36().getText();
-
 		} else {
 			return ProfileResources.INSTANCE.startupMessageFirefox().getText();
 		}
 	}
 	
-	private static native String fireFoxVersion() /*-{
-		var pattern = /rv:(\d+\.\d+)/;
-		$wnd.navigator.userAgent.match(pattern);
-		return RegExp.$1;
+	private static native boolean hasPlugin() /*-{
+		return !!$wnd.openDatabase;
 	}-*/;
 }

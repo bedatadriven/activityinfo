@@ -21,9 +21,6 @@ public interface ProfileResources extends ClientBundle {
 	@Source("StartupMessageFirefox.html")
 	TextResource startupMessageFirefox();
 	
-	@Source("StartupMessageFirefox36.html")
-	TextResource startupMessageFirefox36();
-
 	@Source("Startup.css")
 	StartupStyle style();
 	
