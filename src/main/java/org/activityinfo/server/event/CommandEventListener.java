@@ -19,14 +19,17 @@ public abstract class CommandEventListener {
 
 	@Subscribe
 	public void handleEvent(CommandEvent event) {
-		LOGGER.fine("listening on event "+event);
-		
 		Class<? extends Command> commandClass = event.getCommand().getClass();
 
 		for (Class<?> trigger : triggers) {
 			if (trigger.isAssignableFrom(commandClass)) {
-				LOGGER.fine(trigger.getSimpleName()+" command triggered execution of handler "+this.getClass().getSimpleName());
-				onEvent(event);
+				LOGGER.fine("handler "+this.getClass().getSimpleName() +" triggered by command "+event.getCommand());
+				try {
+					onEvent(event);
+				} catch (Exception e) {
+					LOGGER.warning("couldn't handle command "+commandClass.getSimpleName()+": "+e.getMessage());
+					LOGGER.throwing(this.getClass().getSimpleName(), "handleEvent", e);
+				}
 			}
 		}
 	}
