@@ -11,10 +11,10 @@ public class EventModule extends ServletModule {
 	@Override
 	protected void configureServlets() {
 		// eventbus
-		bind(ServerEventBus.class).to(ServerEventBus.class).in(Singleton.class);
+		bind(ServerEventBus.class).in(Singleton.class);
 		
 		// listeners
-		bind(SiteChangeListener.class).to(SiteChangeListener.class).in(Singleton.class);
+		bind(SiteChangeListener.class).in(Singleton.class);
 		
 		// define endpoints for async callbacks
 		serve(SiteChangeServlet.ENDPOINT).with(SiteChangeServlet.class);

@@ -25,7 +25,7 @@ public class SiteChangeServlet extends HttpServlet {
 
 	private static final Logger LOGGER = Logger.getLogger(SiteChangeServlet.class.getName());
 	
-	public static final String ENDPOINT = "/ActivityInfo/event/sitechange";
+	public static final String ENDPOINT = "/task/notifysitechange";
 	public static final String PARAM_SITE = "site";
 	public static final String PARAM_USER = "user";
 	
@@ -40,16 +40,22 @@ public class SiteChangeServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-		Site site = entityManager.get().find(Site.class, Integer.parseInt(req.getParameter(PARAM_SITE)));
-		User editor = entityManager.get().find(User.class, Integer.parseInt(req.getParameter(PARAM_USER)));
-		Date date = new Date();
-		List<User> recipients = findRecipients(site);
-		
-		for (User recipient : recipients) {
-			LOGGER.fine("sending sitechange message to recipient ["+recipient.getId()+"] for site ["+site.getId()+"]");
+		try {
+			Site site = entityManager.get().find(Site.class, Integer.parseInt(req.getParameter(PARAM_SITE)));
+			User editor = entityManager.get().find(User.class, Integer.parseInt(req.getParameter(PARAM_USER)));
+			Date date = new Date();
+			List<User> recipients = findRecipients(site);
 			
-			MailMessage message = new SiteChangeMessage(recipient, editor, site, date);
-			mailSender.get().send(message);
+			for (User recipient : recipients) {
+				LOGGER.fine("sending sitechange message to recipient ["+recipient.getId()+"] for site ["+site.getId()+"]");
+				
+				MailMessage message = new SiteChangeMessage(recipient, editor, site, date);
+				mailSender.get().send(message);
+			}
+			
+		} catch (Throwable t) {
+			LOGGER.warning("can't complete notify task: "+t.getMessage());
+			LOGGER.throwing(this.getClass().getSimpleName(), "doGet", t);
 		}
 	}
 	
