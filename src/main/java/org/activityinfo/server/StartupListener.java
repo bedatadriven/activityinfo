@@ -6,6 +6,7 @@
 package org.activityinfo.server;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 
@@ -21,6 +22,7 @@ import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.healthcheck.HealthCheckModule;
 import org.activityinfo.server.endpoint.jsonrpc.JsonRpcModule;
 import org.activityinfo.server.endpoint.kml.KmlModule;
+import org.activityinfo.server.event.EventModule;
 import org.activityinfo.server.geo.GeometryModule;
 import org.activityinfo.server.i18n.LocaleModule;
 import org.activityinfo.server.mail.MailModule;
@@ -31,7 +33,6 @@ import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.server.util.monitoring.MonitoringModule;
-import java.util.logging.Logger;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -61,8 +62,11 @@ public class StartupListener extends GuiceServletContextListener {
     protected Injector getInjector() {
 
         return Guice.createInjector(
-                new ConfigModule(), new LoggingModule(),
-                new TemplateModule(), new BeanMappingModule(), new MailModule(),
+                new ConfigModule(), 
+                new LoggingModule(),
+                new TemplateModule(), 
+                new BeanMappingModule(), 
+                new MailModule(),
                 new ServerDatabaseModule(),
                 new HibernateModule(), 
                 new ContentModule(),
@@ -71,6 +75,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new AuthenticationModule(),
                 new AttachmentModule(),
                 new ReportModule(),
+                new EventModule(),
                 new BootstrapModule(),
                 new GwtRpcModule(),
                 new HealthCheckModule(),

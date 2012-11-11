@@ -19,6 +19,8 @@ import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.event.CommandEvent;
+import org.activityinfo.server.event.ServerEventBus;
 import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
@@ -28,7 +30,6 @@ import org.activityinfo.shared.dto.AnonymousUser;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.UnexpectedCommandException;
 
-import com.google.appengine.api.utils.SystemProperty.Environment;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.inject.Inject;
@@ -55,6 +56,9 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 	
     @Inject
     private Injector injector;
+
+    @Inject
+    private ServerEventBus serverEventBus;
 
     @Inject
     private ServerSideAuthProvider authProvider;
@@ -136,6 +140,10 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 		if(timeElapsed > 1000) {
 			LOGGER.warning("Command " + command.toString() + " completed in " + timeElapsed + "ms" );
 		}
+		
+		// notify listeners of the completion of this command
+		serverEventBus.post(new CommandEvent(command, result, context));
+		
 		return result;
     }
     
