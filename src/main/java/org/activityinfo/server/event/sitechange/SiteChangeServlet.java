@@ -10,10 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.client.page.entry.form.SiteRenderer;
 import org.activityinfo.server.database.hibernate.entity.Site;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.mail.MailMessage;
 import org.activityinfo.server.mail.MailSender;
+import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.SiteDTO;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -45,12 +48,16 @@ public class SiteChangeServlet extends HttpServlet {
 			User editor = entityManager.get().find(User.class, Integer.parseInt(req.getParameter(PARAM_USER)));
 			Date date = new Date();
 			List<User> recipients = findRecipients(site);
-			
+
+			// TODO create & send email message 
+			SiteDTO siteDTO = null;
+			ActivityDTO activityDTO = null;
+			SiteRenderer renderer = new SiteRenderer();
+			String message = renderer.renderSite(siteDTO, activityDTO, false, true); 
 			for (User recipient : recipients) {
 				LOGGER.fine("sending sitechange message to recipient ["+recipient.getId()+"] for site ["+site.getId()+"]");
-				
-				MailMessage message = new SiteChangeMessage(recipient, editor, site, date);
-				mailSender.get().send(message);
+//				MailMessage message = new SiteChangeMessage(recipient, editor, site, date);
+//				mailSender.get().send(message);
 			}
 			
 		} catch (Throwable t) {
@@ -60,7 +67,7 @@ public class SiteChangeServlet extends HttpServlet {
 	}
 	
 	private List<User> findRecipients(Site site) {
-		// TODO find real recipients:
+		// TODO query recipients
 		// - those with "Design" priviledge and database owner OR
 		// - those users with userpermissions who have the EmailNotifications checked in UserLogin
 		List<User> recipients = new ArrayList<User>();
