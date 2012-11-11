@@ -50,7 +50,8 @@ public class HostController extends AbstractController {
                 AuthCookieUtil.addAuthCookie(resp, auth, false);
                 resp.sendRedirect(HostController.ENDPOINT);
             } else {
-                HostPageModel model = new HostPageModel(auth, computeAppUrl(req));
+                HostPageModel model = new HostPageModel();
+                model.setAppUrl(HostPageModel.computeAppUrl(req));
                 model.setAppCacheEnabled(checkAppCacheEnabled(req));
                 model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
 				writeView(resp, model);
@@ -92,17 +93,4 @@ public class HostController extends AbstractController {
 		return authToken == null || authToken.length() == 0;
 	}
 
-	/**
-     * @return  The url used for the desktop shortcut
-     */
-    private String computeAppUrl(HttpServletRequest request) {
-        StringBuilder url = new StringBuilder();
-        url.append("http://");
-        url.append(request.getServerName());
-        if(request.getServerPort() != 80) {
-           url.append(":").append(request.getServerPort());
-        }
-        url.append(request.getRequestURI());
-        return url.toString();
-    }
 }

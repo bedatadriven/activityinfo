@@ -16,6 +16,7 @@ public class BootstrapModule extends ServletModule {
     @Override
     protected void configureServlets() {
         serve(HostController.ENDPOINT).with(HostController.class);
+        serve(MozillaAppController.ENDPOINT).with(MozillaAppController.class);
         serve(LoginController.ENDPOINT).with(LoginController.class);
         serve(ConfirmInviteController.ENDPOINT).with(ConfirmInviteController.class);
         serve(LogoutController.ENDPOINT).with(LogoutController.class);

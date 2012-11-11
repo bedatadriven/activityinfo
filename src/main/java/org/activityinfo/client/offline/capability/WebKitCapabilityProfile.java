@@ -16,7 +16,7 @@ public class WebKitCapabilityProfile extends OfflineCapabilityProfile {
 
 	@Override
 	public String getInstallInstructions() {
-		return ProfileResources.INSTANCE.startupMessage().getText();
+		return null;
 	}
 
 	@Override
@@ -29,7 +29,4 @@ public class WebKitCapabilityProfile extends OfflineCapabilityProfile {
 	public boolean hasPermission() {
 		return true;
 	}
-	
-	
-
 }

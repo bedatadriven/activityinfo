@@ -81,7 +81,9 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
     	
     	List<SyncRegion> locationRegions = new ArrayList<SyncRegion>();
     	for(Object[] region : regions) {
-    		locationRegions.add(new SyncRegion("location/" + region[0], region[1].toString()));
+    		if(region[1] != null) {
+    			locationRegions.add(new SyncRegion("location/" + region[0], region[1].toString()));
+    		}
     	}
     	return locationRegions;
 	}

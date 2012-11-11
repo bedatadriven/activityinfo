@@ -12,7 +12,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public abstract class GearsCapabilityProfile extends OfflineCapabilityProfile {
 	
-
 	
 	protected final boolean isGearsInstalled() {
 		return Factory.getInstance() != null;

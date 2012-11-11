@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.dispatch.AsyncMonitor;
@@ -30,17 +31,16 @@ import org.activityinfo.client.offline.sync.SyncHistoryTable;
 import org.activityinfo.client.offline.sync.SyncStatusEvent;
 import org.activityinfo.client.offline.sync.Synchronizer;
 import org.activityinfo.client.offline.sync.SynchronizerConnectionException;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
-import org.activityinfo.client.Log;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.inject.Inject;
@@ -87,7 +87,19 @@ public class OfflineController implements Dispatcher {
 		
 		Log.trace("OfflineManager: starting");
 
-		activateStrategy(new LoadingOfflineStrategy());
+		if(capabilityProfile.isOfflineModeSupported()) {
+			activateStrategy(new LoadingOfflineStrategy());
+		} else {
+			activateStrategy(new NotInstalledStrategy());
+		}
+		
+		eventBus.addListener(AppEvents.INIT, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				fireStatus();
+			}
+		});
 	}
 	
 	public Date getLastSyncTime() {
@@ -127,7 +139,7 @@ public class OfflineController implements Dispatcher {
 		try {
 			this.activeStrategy = strategy;
 			this.activeStrategy.activate();
-			eventBus.fireEvent(new OfflineStateChangeEvent(this.activeStrategy.getState()));
+			fireStatus();
 
 		} catch (Exception caught) {
 			// errors really ought to be handled by the strategy that is passing
@@ -138,6 +150,10 @@ public class OfflineController implements Dispatcher {
 			Log.error("Uncaught exception while activatign strategy, defaulting to Not INstalled");
 			activateStrategy(new NotInstalledStrategy());
 		}
+	}
+
+	private void fireStatus() {
+		eventBus.fireEvent(new OfflineStateChangeEvent(this.activeStrategy.getState()));
 	}
 
 	private void loadSynchronizerImpl(final AsyncCallback<Synchronizer> callback) {

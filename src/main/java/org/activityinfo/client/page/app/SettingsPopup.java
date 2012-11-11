@@ -3,17 +3,19 @@ package org.activityinfo.client.page.app;
 import java.util.Date;
 
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.offline.OfflineController;
 import org.activityinfo.client.offline.OfflineStateChangeEvent;
 import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
+import org.activityinfo.client.offline.capability.OfflineCapabilityProfile;
 import org.activityinfo.client.offline.sync.SyncCompleteEvent;
 import org.activityinfo.client.offline.sync.SyncStatusEvent;
 
-import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -84,8 +86,12 @@ public class SettingsPopup extends PopupPanel {
 	private OfflineStateChangeEvent.State state = State.CHECKING;
 
 	private OfflineController offlineController;
+
+	private OfflineCapabilityProfile offlineCapabilityProfile = GWT.create(OfflineCapabilityProfile.class);
+
 	
-	public SettingsPopup(EventBus eventBus, OfflineController offlineController) {
+	public SettingsPopup(EventBus eventBus, 
+			OfflineController offlineController) {
 		this.eventBus = eventBus;
 		this.offlineController = offlineController;
 		
@@ -190,7 +196,11 @@ public class SettingsPopup extends PopupPanel {
 	public void onOfflineInstallClicked(ClickEvent e) {
 		switch(state) {
 		case UNINSTALLED:
-			offlineController.install();
+			if(offlineCapabilityProfile.isOfflineModeSupported()) {
+				offlineController.install();
+			} else {
+				MessageBox.info("Offline Mode not supported", offlineCapabilityProfile.getInstallInstructions(), null);
+			}
 		}
 	}
 	

@@ -9,8 +9,6 @@ public interface ProfileResources extends ClientBundle {
 
 	public static ProfileResources INSTANCE = GWT.create(ProfileResources.class);
 	
-	@Source("StartupMessage.html")
-	TextResource startupMessage();
 	
 	@Source("StartupMessageIE.html")
 	TextResource startupMessageIE();

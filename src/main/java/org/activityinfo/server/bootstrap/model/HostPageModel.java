@@ -5,22 +5,18 @@
 
 package org.activityinfo.server.bootstrap.model;
 
-import org.activityinfo.server.database.hibernate.entity.Authentication;
+import javax.servlet.http.HttpServletRequest;
+
 
 public class HostPageModel extends PageModel {
-    private Authentication auth;
     private String appUrl;
     private boolean appCacheEnabled;
     private String mapsApiKey;
+    private boolean redirectIfNoAuthCookie = true;
     
-    public HostPageModel(Authentication auth, String appUrl) {
-        this.auth = auth;
-        this.appUrl = appUrl;
-    }
-
-    public Authentication getAuth() {
-        return auth;
-    }
+    public void setAppUrl(String appUrl) {
+		this.appUrl = appUrl;
+	}
 
     public String getAppUrl() {
         return appUrl;
@@ -41,4 +37,26 @@ public class HostPageModel extends PageModel {
 	public void setMapsApiKey(String mapsApiKey) {
 		this.mapsApiKey = mapsApiKey;
 	}
+	
+	public boolean isRedirectIfNoAuthCookie() {
+		return redirectIfNoAuthCookie;
+	}
+
+	public void setRedirectIfNoAuthCookie(boolean redirectIfNoAuthCookie) {
+		this.redirectIfNoAuthCookie = redirectIfNoAuthCookie;
+	}
+
+	/**
+     * @return  The url used for the desktop shortcut
+     */
+    public static String computeAppUrl(HttpServletRequest request) {
+        StringBuilder url = new StringBuilder();
+        url.append("http://");
+        url.append(request.getServerName());
+        if(request.getServerPort() != 80) {
+           url.append(":").append(request.getServerPort());
+        }
+        url.append(request.getRequestURI());
+        return url.toString();
+    }
 }
