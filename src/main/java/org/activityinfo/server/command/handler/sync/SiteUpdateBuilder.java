@@ -141,6 +141,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 			.from(Tables.REPORTING_PERIOD, "rp")
 			.leftJoin(Tables.SITE, "s").on("rp.SiteId = s.SiteId")
 			.leftJoin(Tables.ACTIVITY, "a").on("s.ActivityId = a.ActivityId")
+			.appendColumn("rp.ReportingPeriodId")
 			.appendColumn("rp.SiteId")
 			.appendColumn("rp.Date1")
 			.appendColumn("rp.Date2")
