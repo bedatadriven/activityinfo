@@ -14,7 +14,6 @@
 
     <inherits name="org.activityinfo.ActivityInfo"/>
 
-    <!-- ie6, gecko, gecko1_8, safari or opera -->
     <set-property name="user.agent" value="gecko1_8"/>
     <set-property name="locale" value="en"/>
     

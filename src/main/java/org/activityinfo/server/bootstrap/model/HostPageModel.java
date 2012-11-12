@@ -13,6 +13,7 @@ public class HostPageModel extends PageModel {
     private boolean appCacheEnabled;
     private String mapsApiKey;
     private boolean redirectIfNoAuthCookie = true;
+    private String moduleName = "ActivityInfo";
     
     public void setAppUrl(String appUrl) {
 		this.appUrl = appUrl;
@@ -44,6 +45,14 @@ public class HostPageModel extends PageModel {
 
 	public void setRedirectIfNoAuthCookie(boolean redirectIfNoAuthCookie) {
 		this.redirectIfNoAuthCookie = redirectIfNoAuthCookie;
+	}
+
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
 	}
 
 	/**

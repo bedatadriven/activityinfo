@@ -16,13 +16,13 @@ import com.google.inject.Singleton;
 import freemarker.template.Configuration;
 
 @Singleton
-public class MozillaAppController extends AbstractController {
+public class MozAppController extends AbstractController {
 
-	public static final String ENDPOINT = "/desktop";
+	public static final String ENDPOINT = "/moz";
 	private DeploymentConfiguration deployConfig;
 
 	@Inject
-	public MozillaAppController(Injector injector,
+	public MozAppController(Injector injector,
 			Configuration templateConfig, DeploymentConfiguration deployConfig) {
 		super(injector, templateConfig);
 		this.deployConfig = deployConfig;
@@ -35,7 +35,9 @@ public class MozillaAppController extends AbstractController {
 		HostPageModel model = new HostPageModel();
 		model.setAppUrl(HostPageModel.computeAppUrl(req));
 		model.setAppCacheEnabled(true);
+		model.setModuleName("ActivityInfoMozApp");
 		model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
+		
 		writeView(resp, model);
-	}	
+	}
 }
