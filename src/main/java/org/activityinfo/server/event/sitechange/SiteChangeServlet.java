@@ -1,14 +1,12 @@
 package org.activityinfo.server.event.sitechange;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +17,6 @@ import org.activityinfo.client.page.entry.form.SiteRenderer;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
-import org.activityinfo.server.mail.MailMessage;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.util.html.HtmlWriter;
@@ -31,6 +28,7 @@ import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -73,32 +71,50 @@ public class SiteChangeServlet extends HttpServlet {
 	}
 	
 	private void sendNotifications(int userId, int siteId) {
-		List<User> recipients = findRecipients(siteId);
-		
 		User user = entityManager.get().find(User.class, userId);
 		
 		SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));
         SiteDTO siteDTO = siteResult.getData().get(0);
         
 		SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
+		ActivityDTO activityDTO = schemaDTO.getActivityById(siteDTO.getActivityId());
+		UserDatabaseDTO userDatabaseDTO = activityDTO.getDatabase();
 
 		Date date = new Date();
 		
+		List<User> recipients = findRecipients(userDatabaseDTO.getId());
 		for (User recipient : recipients) {
 			try {
-				LOGGER.fine("sending notification email to "+recipient.getName()+" <"+recipient.getEmail()+">");
-				Message msg = createLocalizedMessage(recipient, user, siteDTO, schemaDTO, date);
+				LOGGER.fine("sending sitechange notification email to "+recipient.getName()+" <"+recipient.getEmail()+">");
+				Message msg = createLocalizedMessage(recipient, user, date, siteDTO, activityDTO, userDatabaseDTO);
 				mailSender.get().send(msg);
 			} catch (Throwable t) {
 				LOGGER.warning("failed sending notification email to "+recipient.getName()+" <"+recipient.getEmail()+">: "+t.getMessage());
 			}
 		}
 	}
+	
+	// select owners/designers with the emailNotification flag set to true
+	@VisibleForTesting
+    @SuppressWarnings("unchecked")
+	List<User> findRecipients(int userDatabaseId) {
+        Query query = entityManager.get().createNativeQuery(
+        		"select u.* from userlogin u" +
+        		"left join (" +
+        			"select p.userid uid from userpermission p where p.databaseid = ?1 and p.allowdesign = b'1'" +
+        			"union" +
+        			"select d.owneruserid uid from userdatabase d where d.DatabaseId = ?2" +
+        		") su on su.uid = u.userid" +
+        		"where u.emailnotification = b'1'",
+        		User.class)
+                .setParameter(1, userDatabaseId)
+                .setParameter(2, userDatabaseId);
 
-	private Message createLocalizedMessage(User recipient, User editor, SiteDTO siteDTO, SchemaDTO schemaDTO, Date date) throws MessagingException {
-		ActivityDTO activityDTO = schemaDTO.getActivityById(siteDTO.getActivityId());
-		UserDatabaseDTO userDatabaseDTO = activityDTO.getDatabase();
-		
+		return query.getResultList();
+	}
+
+	private Message createLocalizedMessage(User recipient, User editor, Date date, SiteDTO siteDTO, 
+			ActivityDTO activityDTO, UserDatabaseDTO userDatabaseDTO) throws MessagingException {
 		// set the locale of the messages
 		LocaleProxy.setLocale(LocaleHelper.getLocaleObject(recipient));
 		
@@ -118,17 +134,13 @@ public class SiteChangeServlet extends HttpServlet {
 	    
 	    String greeting = I18N.MESSAGES.sitechangeGreeting(recipient.getFirstName());
 	    htmlWriter.paragraph(greeting);
-	
-	    String intro = I18N.MESSAGES.sitechangeIntro(
-	    					User.getUserCompleteName(editor),
-	    					editor.getEmail(),
-	    					userDatabaseDTO.getName(),
-	    					date);
+
+	    String intro = I18N.MESSAGES.sitechangeIntro(User.getUserCompleteName(editor), editor.getEmail(), userDatabaseDTO.getName(), date);
 	    htmlWriter.paragraph(intro);
 
 	    String siteHtml = new SiteRenderer().renderSite(siteDTO, activityDTO, false, true);
 	    htmlWriter.paragraph(siteHtml);
-	    		
+
 	    String signature = I18N.MESSAGES.sitechangeSignature();
 	    htmlWriter.paragraph(signature);
 	
@@ -137,14 +149,6 @@ public class SiteChangeServlet extends HttpServlet {
 	
 	    message.body(htmlWriter.toString());
 	    return message.build();
-	}
-	
-	private List<User> findRecipients(int site) {
-		// TODO query recipients
-		// - those with "Design" priviledge and database owner OR
-		// - those users with userpermissions who have the EmailNotifications checked in UserLogin
-		List<User> recipients = new ArrayList<User>();
-		return recipients;
 	}
 	
 	@Override
