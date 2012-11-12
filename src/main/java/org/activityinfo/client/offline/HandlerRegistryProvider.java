@@ -3,6 +3,7 @@ package org.activityinfo.client.offline;
 import org.activityinfo.client.offline.command.HandlerRegistry;
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.GeneratePivotTable;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.GetLocation;
@@ -15,6 +16,7 @@ import org.activityinfo.shared.command.SearchLocations;
 import org.activityinfo.shared.command.UpdateSite;
 import org.activityinfo.shared.command.handler.CreateLocationHandler;
 import org.activityinfo.shared.command.handler.CreateSiteHandler;
+import org.activityinfo.shared.command.handler.DeleteSiteHandler;
 import org.activityinfo.shared.command.handler.GeneratePivotTableHandler;
 import org.activityinfo.shared.command.handler.GetAdminEntitiesHandler;
 import org.activityinfo.shared.command.handler.GetLocationHandler;
@@ -47,6 +49,7 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
             PivotSitesHandler pivotSitesHandler,
             GeneratePivotTableHandler generatePivotTableHandler,
             GetLocationHandler getLocationHandler,
+            DeleteSiteHandler deleteSiteHandler,
             GetSiteAttachmentsHandler getSiteAttachmentsHandler) {
 		
 		registry = new HandlerRegistry();
@@ -62,6 +65,7 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
     	registry.registerHandler(GeneratePivotTable.class, generatePivotTableHandler);
     	registry.registerHandler(PivotSites.class, pivotSitesHandler);
     	registry.registerHandler(GetLocation.class, getLocationHandler);
+    	registry.registerHandler(DeleteSite.class, deleteSiteHandler);	
     	registry.registerHandler(GetSiteAttachments.class, getSiteAttachmentsHandler);
 	}
 

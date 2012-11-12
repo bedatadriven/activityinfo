@@ -81,6 +81,8 @@ public abstract class LocalHandlerTestCase {
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
         
+    	System.err.println("Sqlite database = " + databaseName);
+    	
     	localDatabase = new JdbcDatabase(databaseName);
         
         setUser(1); // default is db owner

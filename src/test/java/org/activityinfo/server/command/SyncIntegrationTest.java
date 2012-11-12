@@ -101,6 +101,10 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         
         Thread.sleep(1000);
         
+        SiteDTO s1 = executeLocally(GetSites.byId(1)).getData().get(0);
+        assertThat(s1.getIndicatorValue(1), equalTo(1500d));
+
+        
         Map<String, Object> changes = Maps.newHashMap();
         changes.put(AttributeDTO.getPropertyName(1), true);
         changes.put("comments", "newComments");
@@ -108,12 +112,15 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         
         synchronize();
         
-        SiteResult siteResult = executeLocally(GetSites.byId(1));
-        SiteDTO s1 = siteResult.getData().get(0);
-        
+        s1 = executeLocally(GetSites.byId(1)).getData().get(0);
+
         assertThat(s1.getAttributeValue(1), equalTo(true));
         assertThat(s1.getAttributeValue(2), equalTo(false));
         assertThat(s1.getComments(), equalTo("newComments"));
+
+        // old values are preserved...
+        assertThat(s1.getIndicatorValue(1), equalTo(1500d));
+
         
         // Try deleting a site
         
@@ -121,11 +128,16 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         
         synchronize();
         
-        siteResult = executeLocally(GetSites.byId(1));
+        SiteResult siteResult = executeLocally(GetSites.byId(1));
         
         assertThat(siteResult.getData().size(), equalTo(0));
         
+        // Verify that we haven't toasted the other data
         
+        SiteDTO site = executeLocally(GetSites.byId(3)).getData().get(0);
+        assertThat(site.getIndicatorValue(1), equalTo(10000d));
+        
+
     }
 
 

@@ -9,6 +9,7 @@ import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.LocalHandlerTestCase;
 import org.activityinfo.shared.command.RemovePartner;
@@ -87,7 +88,27 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
         pagingRequest.setLimit(1);
     	
         loadResult = executeLocally(pagingRequest);
+     
         
+    }
+    
+
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void delete() throws CommandException {
+    	
+    	synchronizeFirstTime();
+
+        executeLocally(new DeleteSite(1));
+        
+        assertThat(executeLocally(GetSites.byId(1)).getTotalLength(), equalTo(0));
+        
+        synchronize();
+        
+        assertThat(executeRemotely(GetSites.byId(1)).getTotalLength(), equalTo(0));
+        assertThat(executeLocally(GetSites.byId(1)).getTotalLength(), equalTo(0));
+
+    	
     }
 	
 
