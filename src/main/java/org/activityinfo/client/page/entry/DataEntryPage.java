@@ -24,6 +24,7 @@ import org.activityinfo.client.page.entry.grouping.GroupingComboBox;
 import org.activityinfo.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.client.widget.CollapsibleTabPanel;
 import org.activityinfo.shared.command.Delete;
+import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.FilterUrlSerializer;
 import org.activityinfo.shared.command.GetSchema;
@@ -380,7 +381,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	}
 
 	private void delete() {
-		dispatcher.execute(new Delete(gridPanel.getSelection()), new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
+		dispatcher.execute(new DeleteSite(gridPanel.getSelection().getId()), 
+				new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
 				new AsyncCallback<VoidResult>() {
 
 			@Override

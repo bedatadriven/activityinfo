@@ -12,6 +12,7 @@ import org.activityinfo.client.offline.sync.SyncRequestEvent;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.UpdateSite;
 
 import org.activityinfo.client.Log;
@@ -200,11 +201,20 @@ public class CommandQueue {
 			return serialize((UpdateSite)cmd);
 		} else if(cmd instanceof CreateLocation) {
 			return serialize((CreateLocation)cmd);
+		} else if(cmd instanceof DeleteSite) {
+			return serialize((DeleteSite)cmd);
 		} else {
 			throw new IllegalArgumentException("Cannot serialize commands of type " + cmd.getClass());
 		}
 	}
 
+	private JsonObject serialize(DeleteSite cmd) {
+		JsonObject root = new JsonObject();
+		root.addProperty("commandClass", "DeleteSite");
+		root.addProperty("id", cmd.getId());
+		return root;
+	}
+	
 	private JsonObject serialize(CreateSite cmd) {
 		JsonObject root = new JsonObject();
 		root.addProperty("commandClass", "CreateSite");
@@ -237,11 +247,18 @@ public class CommandQueue {
 			return deserializeUpdateSite(root);
 		} else if("CreateLocation".equals(commandClass)) {
 			return deserializeCreateLocation(root);
+		} else if("DeleteSite".equals(commandClass)) {
+			return deserializeDeleteSite(root);
 		} else {
 			throw new RuntimeException("Cannot deserialize queud command of class " + commandClass);
 		}
 	}
 
+	private DeleteSite deserializeDeleteSite(JsonObject root) {
+		DeleteSite cmd = new DeleteSite();
+		cmd.setId(root.get("id").getAsInt());
+		return cmd;
+	}
 
 	private CreateSite deserializeCreateSite(JsonObject root) {
 		return new CreateSite(
