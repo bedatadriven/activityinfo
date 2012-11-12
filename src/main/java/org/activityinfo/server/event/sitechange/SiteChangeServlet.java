@@ -70,7 +70,8 @@ public class SiteChangeServlet extends HttpServlet {
 		}
 	}
 	
-	private void sendNotifications(int userId, int siteId) {
+	@VisibleForTesting
+	void sendNotifications(int userId, int siteId) {
 		User user = entityManager.get().find(User.class, userId);
 		
 		SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));

@@ -98,7 +98,7 @@ public class User implements java.io.Serializable {
         this.newUser = newUser;
     }
 
-    @Column(name = "EmailNotification")
+    @Column(name = "EmailNotification", nullable = false)
     public boolean isEmailNotification() {
         return this.emailNotification;
     }

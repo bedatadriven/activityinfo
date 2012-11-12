@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 @RunWith(InjectionSupport.class)
-@OnDataSet("/dbunit/schema1.db.xml")
+@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class SiteChangeServletTest extends CommandTestCase2 {
 
 	@Inject
@@ -32,27 +32,27 @@ public class SiteChangeServletTest extends CommandTestCase2 {
 		SiteChangeServlet underTest = createServlet();
 		
 		List<User> users = underTest.findRecipients(1);
-		assertThat(users.size(), is(equalTo(1)));
+		assertThat(users.size(), is(equalTo(2)));
+		
+		User alex = users.get(0);
+		assertThat(alex.getName(), is(equalTo("Alex")));
+		assertThat(alex.isEmailNotification(), is(true));
+		assertThat(alex.getLocale(), is(equalTo("fr")));
+		
+		User marlene = users.get(1);
+		assertThat(marlene.getName(), is(equalTo("Marlene")));
+		assertThat(marlene.isEmailNotification(), is(true));
+		assertThat(marlene.getLocale(), is(equalTo("en")));
     }
 
-	
 	private SiteChangeServlet createServlet() {
-		Provider<EntityManager> emp = new Provider<EntityManager>() {
-			 @Override
-	        public EntityManager get() {
-				 return entityManager;
-			 }
-		};
-		
-		Provider<MailSender> mailp = new Provider<MailSender>() {
-			 @Override
-	        public MailSender get() {
-				 return createMock("mailer", MailSender.class);
-			 }
-		};
-		
-		SiteChangeServlet servlet = new SiteChangeServlet(emp, mailp, getDispatcherSync());
-		
-		return servlet;
+		return new SiteChangeServlet(
+				new Provider<EntityManager>() {
+					@Override public EntityManager get() { return entityManager; }
+				}, 
+				new Provider<MailSender>() {
+					@Override public MailSender get() { return createMock("mailer", MailSender.class); }
+				}, 
+				getDispatcherSync());
 	}
 }
