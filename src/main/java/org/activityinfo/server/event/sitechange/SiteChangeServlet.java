@@ -40,7 +40,7 @@ public class SiteChangeServlet extends HttpServlet {
 
 	private static final Logger LOGGER = Logger.getLogger(SiteChangeServlet.class.getName());
 	
-	public static final String ENDPOINT = "/task/notifysitechange";
+	public static final String ENDPOINT = "/tasks/notifysitechange";
 	public static final String PARAM_USER = "u";
 	public static final String PARAM_SITE = "s";
 	
