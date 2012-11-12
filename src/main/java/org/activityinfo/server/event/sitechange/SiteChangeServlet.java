@@ -99,12 +99,12 @@ public class SiteChangeServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
 	List<User> findRecipients(int userDatabaseId) {
         Query query = entityManager.get().createNativeQuery(
-        		"select u.* from userlogin u" +
+        		"select u.* from userlogin u " +
         		"left join (" +
-        			"select p.userid uid from userpermission p where p.databaseid = ?1 and p.allowdesign = b'1'" +
-        			"union" +
-        			"select d.owneruserid uid from userdatabase d where d.DatabaseId = ?2" +
-        		") su on su.uid = u.userid" +
+        			"select p.userid uid from userpermission p where p.databaseid = ?1 and p.allowdesign = b'1' " +
+        			"union " +
+        			"select d.owneruserid uid from userdatabase d where d.DatabaseId = ?2 " +
+        		") su on su.uid = u.userid " +
         		"where u.emailnotification = b'1'",
         		User.class)
                 .setParameter(1, userDatabaseId)
