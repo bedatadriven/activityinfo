@@ -165,7 +165,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("Hi {0},")
 	String sitechangeGreeting(String userName);
 	
-	@DefaultMessage("User {0} ({1}) edited database {2} on {3,date,dd-MM-yyyy 'on' HH:mm}.")
+	@DefaultMessage("User {0} ({1}) edited database {2} on {3,date,dd-MM-yyyy 'at' HH:mm}.")
 	String sitechangeIntro(String userName, String userEmail, String databaseName, Date date);
 	
 	@DefaultMessage("Best regards,<br>The ActivityInfo Team")

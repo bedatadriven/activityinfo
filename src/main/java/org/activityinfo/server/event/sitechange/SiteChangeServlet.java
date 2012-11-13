@@ -1,4 +1,5 @@
 package org.activityinfo.server.event.sitechange;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.entry.form.SiteRenderer;
+import org.activityinfo.client.page.entry.form.SiteRenderer.IndicatorValueFormatter;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
@@ -86,11 +88,12 @@ public class SiteChangeServlet extends HttpServlet {
 		List<User> recipients = findRecipients(userDatabaseDTO.getId());
 		for (User recipient : recipients) {
 			try {
-				LOGGER.fine("sending sitechange notification email to "+recipient.getName()+" <"+recipient.getEmail()+">");
+				LOGGER.info("sending sitechange notification email to "+recipient.getEmail());
 				Message msg = createLocalizedMessage(recipient, user, date, siteDTO, activityDTO, userDatabaseDTO);
 				mailSender.get().send(msg);
 			} catch (Throwable t) {
 				LOGGER.warning("failed sending notification email to "+recipient.getName()+" <"+recipient.getEmail()+">: "+t.getMessage());
+				t.printStackTrace();
 			}
 		}
 	}
@@ -121,16 +124,22 @@ public class SiteChangeServlet extends HttpServlet {
 		
 		// create message, set recipient & bcc
 		MessageBuilder message = new MessageBuilder();
-		message.to(recipient.getEmail(), recipient.getName());
+		message.to(recipient.getEmail(), User.getUserCompleteName(recipient));
 		message.bcc("akbertram@gmail.com");
 	    
 	    // set the subject
-	    message.subject(I18N.MESSAGES.sitechangeSubject(userDatabaseDTO.getName()));
+		String subject = I18N.MESSAGES.sitechangeSubject(userDatabaseDTO.getName());
+	    message.subject(subject);
 	    
 	    // create the html body
 	    HtmlWriter htmlWriter = new HtmlWriter();
 	
 	    htmlWriter.startDocument();
+	    
+	    htmlWriter.startDocumentHeader();
+	    htmlWriter.documentTitle(subject);
+	    htmlWriter.endDocumentHeader();
+	    
 	    htmlWriter.startDocumentBody();
 	    
 	    String greeting = I18N.MESSAGES.sitechangeGreeting(recipient.getFirstName());
@@ -139,7 +148,14 @@ public class SiteChangeServlet extends HttpServlet {
 	    String intro = I18N.MESSAGES.sitechangeIntro(User.getUserCompleteName(editor), editor.getEmail(), userDatabaseDTO.getName(), date);
 	    htmlWriter.paragraph(intro);
 
-	    String siteHtml = new SiteRenderer().renderSite(siteDTO, activityDTO, false, true);
+	    SiteRenderer siteRenderer = new SiteRenderer();
+	    siteRenderer.setIndicatorValueFormatter(new IndicatorValueFormatter() {
+			@Override
+			public String format(Double value) {
+				return new DecimalFormat("#,##0.####").format(value);
+			}
+		});
+	    String siteHtml = siteRenderer.renderSite(siteDTO, activityDTO, false, true); 
 	    htmlWriter.paragraph(siteHtml);
 
 	    String signature = I18N.MESSAGES.sitechangeSignature();
@@ -148,7 +164,8 @@ public class SiteChangeServlet extends HttpServlet {
 	    htmlWriter.endDocumentBody();
 	    htmlWriter.endDocument();
 	
-	    message.body(htmlWriter.toString());
+	    message.htmlBody(htmlWriter.toString());
+		
 	    return message.build();
 	}
 	
