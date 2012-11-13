@@ -32,7 +32,7 @@ public class SiteChangeListener extends CommandEventListener {
 		String userId = getUserId(event);
 		
 		if (siteId != null && userId != null) {
-			Queue queue = QueueFactory.getDefaultQueue();
+			Queue queue = QueueFactory.getQueue("commandevent");
 		    queue.add(withUrl(SiteChangeServlet.ENDPOINT)
 		    			.param(SiteChangeServlet.PARAM_SITE, siteId)
 		    			.param(SiteChangeServlet.PARAM_USER, userId));
