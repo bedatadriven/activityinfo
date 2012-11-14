@@ -16,12 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.entry.form.SiteRenderer;
 import org.activityinfo.client.page.entry.form.SiteRenderer.IndicatorValueFormatter;
+import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.util.html.HtmlWriter;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
@@ -48,13 +50,17 @@ public class SiteChangeServlet extends HttpServlet {
 	
 	private Provider<EntityManager> entityManager;
 	private Provider<MailSender> mailSender;
+	private ServerSideAuthProvider authProvider;
 	private DispatcherSync dispatcher;
 	
 	
 	@Inject
-	public SiteChangeServlet(Provider<EntityManager> entityManager, Provider<MailSender> mailSender, DispatcherSync dispatcher) {
+	public SiteChangeServlet(Provider<EntityManager> entityManager, Provider<MailSender> mailSender, 
+			ServerSideAuthProvider authProvider,
+			DispatcherSync dispatcher) {
 		this.entityManager = entityManager;
 		this.mailSender = mailSender;
+		this.authProvider = authProvider;
 		this.dispatcher = dispatcher;
 	}
 
@@ -76,6 +82,13 @@ public class SiteChangeServlet extends HttpServlet {
 	void sendNotifications(int userId, int siteId) {
 		User user = entityManager.get().find(User.class, userId);
 		
+		/*
+		 * For our purposes, the user who initiated the change will
+		 * be considered the authenticated user for this thread
+		 */
+		
+		authProvider.set(user);
+		
 		SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));
         SiteDTO siteDTO = siteResult.getData().get(0);
         
@@ -89,8 +102,10 @@ public class SiteChangeServlet extends HttpServlet {
 		for (User recipient : recipients) {
 			try {
 				LOGGER.info("sending sitechange notification email to "+recipient.getEmail());
+				
 				Message msg = createLocalizedMessage(recipient, user, date, siteDTO, activityDTO, userDatabaseDTO);
 				mailSender.get().send(msg);
+				
 			} catch (Throwable t) {
 				LOGGER.warning("failed sending notification email to "+recipient.getName()+" <"+recipient.getEmail()+">: "+t.getMessage());
 				t.printStackTrace();

@@ -13,6 +13,7 @@ import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.persistence.EntityManager;
 
+import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -86,6 +87,7 @@ public class SiteChangeServletTest extends CommandTestCase2 {
 				new Provider<MailSender>() {
 					@Override public MailSender get() { return mailSender; }
 				}, 
+				new ServerSideAuthProvider(),
 				getDispatcherSync());
 	}
 	

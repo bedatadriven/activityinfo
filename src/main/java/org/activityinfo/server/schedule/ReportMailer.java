@@ -76,7 +76,7 @@ public class ReportMailer {
 
 		// set up authentication for the subscriber of this report
 
-		authProvider.set(new AuthenticatedUser("", sub.getUser().getId(), sub.getUser().getEmail()));
+		authProvider.set(sub.getUser());
 		DomainFilters.applyUserFilter(sub.getUser(), em);
 
 		// render the report to a temp file
