@@ -66,6 +66,12 @@ public class S3AttachmentService implements AttachmentService {
 	public FileItemFactory createFileItemFactory() {
 		return new DiskFileItemFactory();
 	}
+
+	@Override
+	public void delete(String key) {
+		AmazonS3Client client = new AmazonS3Client(credentials);
+		client.deleteObject(bucketName, key);
+	}
 	
 
 }

@@ -30,12 +30,17 @@ import com.google.common.io.ByteStreams;
 public class AppEngineAttachmentService implements AttachmentService {
 
 	
-	
+	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
 	@Override
 	public void serveAttachment(String blobId, HttpServletResponse response) throws IOException {
-		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();		
-		BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/activityinfo-attachments/" + blobId);
+		BlobKey blobKey = blobKey(blobId);
 		blobstoreService.serve(blobKey, response);
+	}
+
+	private BlobKey blobKey(String blobId) {
+		BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/activityinfo-attachments/" + blobId);
+		return blobKey;
 	}
 
 	@Override
@@ -61,6 +66,11 @@ public class AppEngineAttachmentService implements AttachmentService {
 		} catch(Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void delete(String key) {
+		blobstoreService.delete(blobKey(key));
 	}
 
 	@Override
