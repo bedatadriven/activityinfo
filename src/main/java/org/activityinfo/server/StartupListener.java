@@ -26,7 +26,6 @@ import org.activityinfo.server.geo.GeometryModule;
 import org.activityinfo.server.i18n.LocaleModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
-import org.activityinfo.server.schedule.QuartzModule;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.config.ConfigModule;
@@ -52,10 +51,7 @@ public class StartupListener extends GuiceServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         logger.info("ActivityInfo servlet context is initializing");
         super.contextInitialized(servletContextEvent);
-        
-        if(DeploymentEnvironment.isAppEngineDevelopment()) {
-        	
-        }
+
     }
 
 
@@ -72,7 +68,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new HibernateModule(), 
                 new ContentModule(),
                 new GeometryModule(),
-                new QuartzModule(),
                 new AuthenticationModule(),
                 new AttachmentModule(),
                 new ReportModule(),
