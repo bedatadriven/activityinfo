@@ -36,7 +36,7 @@
                sortOrder="1"/>
 
 
-    <userLogin userId="1" name="Alex" email="user1@user.com" locale="fr" newUser="1" />
+    <userLogin userId="1" firstname="Alex" name="Alex" email="user1@user.com" locale="fr" newUser="1" emailnotification="1" />
 
     <userDatabase databaseId="1" name="PEAR" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 
@@ -90,7 +90,7 @@
             date2="2011-11-29 00:00:00" />
               
 
-    <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org" locale="fr" newUser="1" />
+    <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org" locale="fr" newUser="1" emailnotification="0" />
     <userPermission
             userPermissionId="1"
             databaseId="1"
@@ -100,10 +100,10 @@
             allowEdit="1" allowEditAll="0"
             allowManageUsers="1" allowManageAllUsers="0"
             allowDesign="0"
-            lastSchemaUpdate="2009-01-02"/>
+            lastSchemaUpdate="2009-01-02" />
 
 
-    <userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr" newUser="1" />
+    <userLogin userId="3" name="Stefan" email="stefan@irc.org" locale="fr" newUser="1" emailnotification="0" />
 
     <userDatabase databaseId="2" name="RRM" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
 

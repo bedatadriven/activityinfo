@@ -1,5 +1,7 @@
 package org.activityinfo.client.page.entry.form;
 
+import java.text.DecimalFormat;
+
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
@@ -9,9 +11,12 @@ import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.IndicatorGroup;
 import org.activityinfo.shared.dto.SiteDTO;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 
 public class SiteRenderer {
+	
+	private IndicatorValueFormatter indicatorValueFormatter;
 	
 	public String renderSite(SiteDTO site, ActivityDTO activity, boolean showEmptyRows, boolean renderComments) {
         StringBuilder html = new StringBuilder();
@@ -83,7 +88,11 @@ public class SiteRenderer {
         if(value == null) {
             return "-";
         } else {
-            return IndicatorNumberFormat.INSTANCE.format(value);
+        	if (indicatorValueFormatter != null) {
+        		return indicatorValueFormatter.format(value);
+        	} else {
+        		return IndicatorNumberFormat.INSTANCE.format(value);
+        	}
         }
     }
 
@@ -108,5 +117,13 @@ public class SiteRenderer {
 		        html.append("</span></p>");
 		    }
         }
+    }
+    
+    public void setIndicatorValueFormatter(IndicatorValueFormatter indicatorValueFormatter2) {
+    	this.indicatorValueFormatter = indicatorValueFormatter2;
+    }
+    
+    public static interface IndicatorValueFormatter {
+    	String format(Double value);
     }
 }

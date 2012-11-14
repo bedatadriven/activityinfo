@@ -46,7 +46,8 @@ public class User implements java.io.Serializable {
     private String changePasswordKey;
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
-
+    private boolean emailNotification;
+    
     public User() {
     }	
 
@@ -95,6 +96,15 @@ public class User implements java.io.Serializable {
 
     public void setNewUser(boolean newUser) {
         this.newUser = newUser;
+    }
+
+    @Column(name = "EmailNotification", nullable = false)
+    public boolean isEmailNotification() {
+        return this.emailNotification;
+    }
+
+    public void setEmailNotification(boolean emailNotification) {
+        this.emailNotification = emailNotification;
     }
 
     @Column(name = "Locale", nullable = false, length = 10)

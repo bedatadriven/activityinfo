@@ -1,5 +1,6 @@
 package org.activityinfo.server.authentication;
 
+import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
@@ -31,6 +32,10 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 	
 	public void set(AuthenticatedUser user) {
 		currentUser.set(user);
+	}
+	
+	public void set(User user) {
+		set(new AuthenticatedUser("", user.getId(), user.getEmail()));
 	}
 	
 	public void clear() {
