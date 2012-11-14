@@ -5,7 +5,6 @@
 
 package org.activityinfo.server;
 
-import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
@@ -48,13 +47,15 @@ public class StartupListener extends GuiceServletContextListener {
 
     private static Logger logger = Logger.getLogger(StartupListener.class.getName());
 
-	private Random RNG = new Random();
-
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         logger.info("ActivityInfo servlet context is initializing");
         super.contextInitialized(servletContextEvent);
+        
+        if(DeploymentEnvironment.isAppEngineDevelopment()) {
+        	
+        }
     }
 
 
