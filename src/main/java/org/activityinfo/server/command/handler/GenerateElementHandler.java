@@ -32,7 +32,7 @@ public class GenerateElementHandler implements CommandHandler<GenerateElement> {
 
     public CommandResult execute(GenerateElement cmd, User user) throws CommandException {
 
-    	LOGGER.fine("GenerateElement.element = " + cmd.getElement());
+    	LOGGER.info("GenerateElement.element = " + cmd.getElement());
     	
         return generator.generateElement(user, cmd.getElement(), null, new DateRange());
 

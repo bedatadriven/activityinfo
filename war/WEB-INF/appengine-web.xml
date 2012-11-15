@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>gactivityinfo</application>
-  <version>${gae.application.version}</version>
+  <application>${gae.application.version}</application>
+  <version>1</version>
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     <property name="user.name" value="ActivityInfo"/>
+    
+    <!--  JAXB Context Initialization was taking up to 2 seconds on AppEngine -->
+    <property name="com.sun.xml.bind.v2.runtime.JAXBContextImpl.fastBoot" value="true"/>
   </system-properties>
 
   <static-files>
