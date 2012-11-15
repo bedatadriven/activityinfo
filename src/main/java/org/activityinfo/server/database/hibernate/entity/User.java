@@ -80,11 +80,13 @@ public class User implements java.io.Serializable {
         this.name = name;
     }
 
+    @Deprecated
     @Column(name = "FirstName", nullable = true, length = 50)
     public String getFirstName() {
         return firstName;
     }
-
+    
+    @Deprecated
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -219,6 +221,7 @@ public class User implements java.io.Serializable {
      *            The user
      * @return The complete name.
      */
+    @Deprecated
     public static String getUserCompleteName(final User user) {
 
         final StringBuilder sb = new StringBuilder();
@@ -250,6 +253,7 @@ public class User implements java.io.Serializable {
      *            The user last name.
      * @return The complete name.
      */
+    @Deprecated
     public static String getUserCompleteName(final String firstName, final String lastName) {
 
         final StringBuilder sb = new StringBuilder();
@@ -279,6 +283,7 @@ public class User implements java.io.Serializable {
      *            The user
      * @return The short name.
      */
+    @Deprecated
     public static String getUserShortName(final User user) {
 
         final StringBuilder sb = new StringBuilder();
@@ -310,6 +315,7 @@ public class User implements java.io.Serializable {
      *            The user last name.
      * @return The short name.
      */
+    @Deprecated
     public static String getUserShortName(final String firstName, final String lastName) {
 
         final StringBuilder sb = new StringBuilder();

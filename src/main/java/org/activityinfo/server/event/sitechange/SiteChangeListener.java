@@ -35,7 +35,8 @@ public class SiteChangeListener extends CommandEventListener {
 			Queue queue = QueueFactory.getQueue("commandevent");
 		    queue.add(withUrl(SiteChangeServlet.ENDPOINT)
 		    			.param(SiteChangeServlet.PARAM_SITE, siteId)
-		    			.param(SiteChangeServlet.PARAM_USER, userId));
+		    			.param(SiteChangeServlet.PARAM_USER, userId)
+		    			.param(SiteChangeServlet.PARAM_NEW, event.getCommand() instanceof CreateSite ? "true" : "false"));
 		} else {
 			LOGGER.warning("sitechange event fired without site and/or user!");
 		}

@@ -1,22 +1,52 @@
 package org.activityinfo.client.page.entry.form;
 
-import java.text.DecimalFormat;
+import java.util.List;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AdminEntityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.IndicatorGroup;
 import org.activityinfo.shared.dto.SiteDTO;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.NumberFormat;
+import com.google.common.base.Strings;
+
 
 public class SiteRenderer {
 	
 	private IndicatorValueFormatter indicatorValueFormatter;
+	
+	public String renderLocation(SiteDTO site, ActivityDTO activity) {
+        StringBuilder html = new StringBuilder();
+
+        html.append("<table cellspacing='0'>");
+        if(!activity.getLocationType().isAdminLevel()) {
+	        html.append("<tr><td>");
+	        html.append(activity.getLocationType().getName()).append(": ");
+	        html.append("</td><td>");
+	        html.append(site.getLocationName());
+	        if(!Strings.isNullOrEmpty(site.getLocationAxe())) {
+	        	html.append("<br>").append(site.getLocationAxe());
+	        }
+	        html.append("</td></tr>");
+        }
+        for(AdminLevelDTO level : activity.getAdminLevels()) {
+        	AdminEntityDTO entity = site.getAdminEntity(level.getId());
+        	if(entity != null) {
+        		html.append("<tr><td>");
+        		html.append(level.getName()).append(":</td><td>");
+        		html.append(entity.getName());
+        		html.append("</td></tr>");
+        	}
+        }
+        
+        html.append("</table>");
+        return html.toString();
+	}
 	
 	public String renderSite(SiteDTO site, ActivityDTO activity, boolean showEmptyRows, boolean renderComments) {
         StringBuilder html = new StringBuilder();

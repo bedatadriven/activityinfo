@@ -47,6 +47,8 @@ public class SiteChangeServlet extends HttpServlet {
 	public static final String ENDPOINT = "/tasks/notifysitechange";
 	public static final String PARAM_USER = "u";
 	public static final String PARAM_SITE = "s";
+	public static final String PARAM_NEW = "n";
+
 	
 	private Provider<EntityManager> entityManager;
 	private Provider<MailSender> mailSender;
@@ -69,8 +71,8 @@ public class SiteChangeServlet extends HttpServlet {
 		try {
 			int userId = Integer.parseInt(req.getParameter(PARAM_USER));
 			int siteId = Integer.parseInt(req.getParameter(PARAM_SITE));
-			
-			sendNotifications(userId, siteId);
+			boolean isNew = Boolean.parseBoolean(req.getParameter(PARAM_NEW));
+			sendNotifications(userId, siteId, isNew);
 			
 		} catch (Throwable t) {
 			LOGGER.warning("can't complete notify task: "+t.getMessage());
@@ -79,7 +81,7 @@ public class SiteChangeServlet extends HttpServlet {
 	}
 	
 	@VisibleForTesting
-	void sendNotifications(int userId, int siteId) {
+	void sendNotifications(int userId, int siteId, boolean newSite) {
 		User user = entityManager.get().find(User.class, userId);
 		
 		/*
@@ -103,8 +105,16 @@ public class SiteChangeServlet extends HttpServlet {
 			try {
 				LOGGER.info("sending sitechange notification email to "+recipient.getEmail());
 				
-				Message msg = createLocalizedMessage(recipient, user, date, siteDTO, activityDTO, userDatabaseDTO);
-				mailSender.get().send(msg);
+				UpdateMessageBuilder message = new UpdateMessageBuilder();
+				message.setDate(date);
+				message.setEditor(user);
+				message.setRecipient(recipient);
+				message.setUserDatabaseDTO(userDatabaseDTO);
+				message.setSiteDTO(siteDTO);
+				message.setActivityDTO(activityDTO);
+				message.setNewSite(newSite);
+				
+				mailSender.get().send(message.build());
 				
 			} catch (Throwable t) {
 				LOGGER.warning("failed sending notification email to "+recipient.getName()+" <"+recipient.getEmail()+">: "+t.getMessage());
@@ -130,58 +140,6 @@ public class SiteChangeServlet extends HttpServlet {
                 .setParameter(2, userDatabaseId);
 
 		return query.getResultList();
-	}
-
-	private Message createLocalizedMessage(User recipient, User editor, Date date, SiteDTO siteDTO, 
-			ActivityDTO activityDTO, UserDatabaseDTO userDatabaseDTO) throws MessagingException {
-		// set the locale of the messages
-		LocaleProxy.setLocale(LocaleHelper.getLocaleObject(recipient));
-		
-		// create message, set recipient & bcc
-		MessageBuilder message = new MessageBuilder();
-		message.to(recipient.getEmail(), User.getUserCompleteName(recipient));
-		message.bcc("akbertram@gmail.com");
-	    
-	    // set the subject
-		String subject = I18N.MESSAGES.sitechangeSubject(userDatabaseDTO.getName());
-	    message.subject(subject);
-	    
-	    // create the html body
-	    HtmlWriter htmlWriter = new HtmlWriter();
-	
-	    htmlWriter.startDocument();
-	    
-	    htmlWriter.startDocumentHeader();
-	    htmlWriter.documentTitle(subject);
-	    htmlWriter.endDocumentHeader();
-	    
-	    htmlWriter.startDocumentBody();
-	    
-	    String greeting = I18N.MESSAGES.sitechangeGreeting(recipient.getFirstName());
-	    htmlWriter.paragraph(greeting);
-
-	    String intro = I18N.MESSAGES.sitechangeIntro(User.getUserCompleteName(editor), editor.getEmail(), userDatabaseDTO.getName(), date);
-	    htmlWriter.paragraph(intro);
-
-	    SiteRenderer siteRenderer = new SiteRenderer();
-	    siteRenderer.setIndicatorValueFormatter(new IndicatorValueFormatter() {
-			@Override
-			public String format(Double value) {
-				return new DecimalFormat("#,##0.####").format(value);
-			}
-		});
-	    String siteHtml = siteRenderer.renderSite(siteDTO, activityDTO, false, true); 
-	    htmlWriter.paragraph(siteHtml);
-
-	    String signature = I18N.MESSAGES.sitechangeSignature();
-	    htmlWriter.paragraph(signature);
-	
-	    htmlWriter.endDocumentBody();
-	    htmlWriter.endDocument();
-	
-	    message.htmlBody(htmlWriter.toString());
-		
-	    return message.build();
 	}
 	
 	@Override

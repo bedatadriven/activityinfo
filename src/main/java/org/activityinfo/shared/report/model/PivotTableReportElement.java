@@ -63,4 +63,11 @@ public class PivotTableReportElement extends PivotReportElement<PivotContent> im
 		return set;
 	}
 
+	@Override
+	public String toString() {
+		return "PivotTableReportElement [columnDimensions=" + columnDimensions
+				+ ", rowDimensions=" + rowDimensions + ", getFilter()="
+				+ getFilter() + "]";
+	}
+
 }
