@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
@@ -78,7 +79,13 @@ public class HibernateModule extends ServletModule {
         	}
         	config.setProperty(Environment.HBM2DDL_AUTO, "");
         	config.setNamingStrategy(new AINamingStrategy());
-        	return config.buildEntityManagerFactory();
+        	EntityManagerFactory emf = config.buildEntityManagerFactory();
+        	
+        	if(DeploymentEnvironment.isAppEngineDevelopment()) {
+        		SchemaServlet.performMigration((HibernateEntityManager) emf.createEntityManager());
+        	}
+        	
+			return emf;
         }
     }
 

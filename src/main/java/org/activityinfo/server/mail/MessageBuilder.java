@@ -1,5 +1,9 @@
 package org.activityinfo.server.mail;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
@@ -57,6 +61,10 @@ public class MessageBuilder {
 	public void body(String text) throws MessagingException {
 		msg.setText(text);
 	}
+	
+	public void htmlBody(String html)throws MessagingException {
+		msg.setDataHandler(new DataHandler(new HTMLDataSource(html)));
+	}
 
 	public PartBuilder addPart() throws MessagingException {
 		if(mp == null) {
@@ -64,7 +72,6 @@ public class MessageBuilder {
 		}
 		return new PartBuilder();
 	}
-	
 	
 	public Message build() throws MessagingException {
 		if(mp != null) {
@@ -99,6 +106,29 @@ public class MessageBuilder {
 		}
 	}
 
-	
+	static class HTMLDataSource implements DataSource {
+        private String html;
+ 
+        public HTMLDataSource(String htmlString) {
+            html = htmlString;
+        }
+ 
+        public InputStream getInputStream() throws IOException {
+            if (html == null) throw new IOException("Null HTML");
+            return new ByteArrayInputStream(html.getBytes());
+        }
+ 
+        public OutputStream getOutputStream() throws IOException {
+            throw new IOException("This DataHandler cannot write HTML");
+        }
+ 
+        public String getContentType() {
+            return "text/html";
+        }
+ 
+        public String getName() {
+            return "text/html dataSource";
+        }
+    }
 
 }

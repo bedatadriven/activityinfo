@@ -13,4 +13,9 @@ public class DeploymentEnvironment {
 		return SystemProperty.environment.value() == SystemProperty.Environment.Value.Production;
 	}
 
+	public static boolean isAppEngineDevelopment() {
+		return SystemProperty.environment.value() == SystemProperty.Environment.Value.Development;
+
+	}
+
 }

@@ -14,7 +14,7 @@ import java.util.Set;
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.i18n.UIMessages;
 
-import com.google.appengine.repackaged.com.google.common.base.Charsets;
+import com.google.common.base.Charsets;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gwt.i18n.client.Messages.DefaultMessage;

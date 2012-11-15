@@ -5,10 +5,7 @@ import java.util.Map;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.db.Tables;
-import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.TargetCategory;
-import org.activityinfo.shared.report.model.AdminDimension;
-import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
@@ -16,22 +13,34 @@ import com.google.common.collect.Maps;
 
 public class Targets extends BaseTable {
 
+	private Map<DimensionType, String> fieldNames;
+	
+	public Targets() {
+		fieldNames = Maps.newHashMap();
+		fieldNames.put(DimensionType.Partner, "Target.PartnerId");
+		fieldNames.put(DimensionType.Activity, "Indicator.ActivityId");
+		fieldNames.put(DimensionType.Indicator, "Indicator.IndicatorId");
+		fieldNames.put(DimensionType.Project, "Target.ProjectId");
+		fieldNames.put(DimensionType.Database, "Activity.DatabaseId");
+	}
+	
 
 	@Override
 	public boolean accept(PivotSites command) {
 		if(command.getValueType() != ValueType.INDICATOR) {
 			return false;
 		}
-		boolean containsTarget = false;
-		for (Dimension dimension : command.getDimensions()) {
-			if (dimension instanceof AdminDimension || dimension.getType() == DimensionType.Location) {
-				return false;
-			}
-			if (dimension.equals(Dimension.TARGET)) {
-				containsTarget = true;
-			}
+		if(!command.getDimensionTypes().contains(DimensionType.Target)) {
+			return false;
 		}
-		return containsTarget;
+		if(!fieldNames.keySet().containsAll(command.getDimensionTypes())) {
+			return false;
+		}
+		if(!fieldNames.keySet().containsAll(command.getFilter().getRestrictedDimensions())) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 
@@ -56,19 +65,10 @@ public class Targets extends BaseTable {
 
 	@Override
 	public String getDimensionIdColumn(DimensionType type) {
-		switch(type) {
-		case Partner:
-			return "Target.PartnerId";
-		case Activity:
-			return "Indicator.ActivityId";
-		case Indicator:
-			return "Indicator.IndicatorId";
-		case Project: 
-			return "Target.ProjectId";
-		case Database:
-			return "Activity.DatabaseId";
+		if(!fieldNames.containsKey(type)) {
+			throw new UnsupportedOperationException("type: " + type);
 		}
-		throw new UnsupportedOperationException();
+		return fieldNames.get(type);
 	}
 
 	@Override

@@ -14,4 +14,6 @@ public interface AttachmentService {
 	void upload(String key, FileItem fileItem, InputStream uploadingStream);
 	
 	FileItemFactory createFileItemFactory();
+	
+	void delete(String key);
 }

@@ -12,6 +12,7 @@
                locale="fr"
                newUser="1"
                password="$2a$10$/A6O/S4jDQMCXtP8dicJL.0LJmg9PjqKmrk1dn9F58kitlHQIzyRS"
+               emailnotification="0" 
                />
     <!-- "monday" -->
 
@@ -21,6 +22,7 @@
                locale="fr"
                newUser="1"
                password="$2a$10$EtQt1mcO7CXwBfIORjsN5OByNMzc48I2LfUjDa9iKfE2FVxaIBPwq"
+               emailnotification="0" 
                />
     <!-- tuesday -->
 

@@ -1,0 +1,8 @@
+<queue-entries>
+  <queue>
+    <name>commandevent</name>
+    <rate>20/s</rate>
+    <bucket-size>40</bucket-size>
+    <max-concurrent-requests>10</max-concurrent-requests>
+  </queue>
+</queue-entries>

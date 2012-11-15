@@ -28,7 +28,7 @@ import com.google.inject.Inject;
 
 public class ReportMailer {
 	
-    private static final Logger LOGGER = Logger.getLogger(ReportMailerJob.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ReportMailer.class.getName());
 
 	private final EntityManager em;
 	private final ReportGenerator reportGenerator;
@@ -76,7 +76,7 @@ public class ReportMailer {
 
 		// set up authentication for the subscriber of this report
 
-		authProvider.set(new AuthenticatedUser("", sub.getUser().getId(), sub.getUser().getEmail()));
+		authProvider.set(sub.getUser());
 		DomainFilters.applyUserFilter(sub.getUser(), em);
 
 		// render the report to a temp file

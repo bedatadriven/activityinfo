@@ -45,7 +45,13 @@ public class SchemaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		HibernateEntityManager entityManager = (HibernateEntityManager) this.entityManager.get();
+		performMigration((HibernateEntityManager) this.entityManager.get());
+		
+	}
+
+
+
+	public static void performMigration(HibernateEntityManager entityManager) {
 		entityManager.getSession().doWork(new Work() {
 			
 			@Override
@@ -61,7 +67,6 @@ public class SchemaServlet extends HttpServlet {
 				}
 			}
 		});
-		
 	}
 	
 	private static class CloudSqlConnection extends JdbcConnection {

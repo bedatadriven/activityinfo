@@ -80,6 +80,7 @@ public abstract class ControllerTestCase {
 
         newUser.setEmail(NEW_USER_EMAIL);
         newUser.setNewUser(true);
+        newUser.setEmailNotification(false);
         newUser.setHashedPassword("$2$Foo");
         newUser.setChangePasswordKey(NEW_USER_KEY);
 

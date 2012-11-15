@@ -46,7 +46,8 @@ public class User implements java.io.Serializable {
     private String changePasswordKey;
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
-
+    private boolean emailNotification;
+    
     public User() {
     }	
 
@@ -79,11 +80,13 @@ public class User implements java.io.Serializable {
         this.name = name;
     }
 
+    @Deprecated
     @Column(name = "FirstName", nullable = true, length = 50)
     public String getFirstName() {
         return firstName;
     }
-
+    
+    @Deprecated
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -95,6 +98,15 @@ public class User implements java.io.Serializable {
 
     public void setNewUser(boolean newUser) {
         this.newUser = newUser;
+    }
+
+    @Column(name = "EmailNotification", nullable = false)
+    public boolean isEmailNotification() {
+        return this.emailNotification;
+    }
+
+    public void setEmailNotification(boolean emailNotification) {
+        this.emailNotification = emailNotification;
     }
 
     @Column(name = "Locale", nullable = false, length = 10)
@@ -209,6 +221,7 @@ public class User implements java.io.Serializable {
      *            The user
      * @return The complete name.
      */
+    @Deprecated
     public static String getUserCompleteName(final User user) {
 
         final StringBuilder sb = new StringBuilder();
@@ -240,6 +253,7 @@ public class User implements java.io.Serializable {
      *            The user last name.
      * @return The complete name.
      */
+    @Deprecated
     public static String getUserCompleteName(final String firstName, final String lastName) {
 
         final StringBuilder sb = new StringBuilder();
@@ -269,6 +283,7 @@ public class User implements java.io.Serializable {
      *            The user
      * @return The short name.
      */
+    @Deprecated
     public static String getUserShortName(final User user) {
 
         final StringBuilder sb = new StringBuilder();
@@ -300,6 +315,7 @@ public class User implements java.io.Serializable {
      *            The user last name.
      * @return The short name.
      */
+    @Deprecated
     public static String getUserShortName(final String firstName, final String lastName) {
 
         final StringBuilder sb = new StringBuilder();

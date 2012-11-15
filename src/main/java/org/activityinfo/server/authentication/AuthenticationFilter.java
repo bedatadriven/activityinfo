@@ -74,7 +74,7 @@ public class AuthenticationFilter implements Filter {
 				authProvider.set(currentUser);
 		        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(currentUser));
 			} catch (Exception e) {
-				authProvider.set(null);
+				authProvider.clear();
 			}
 		}
 		filterChain.doFilter(request, response);

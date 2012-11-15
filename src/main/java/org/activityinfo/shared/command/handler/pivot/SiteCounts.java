@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
+import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.TargetCategory;
@@ -27,10 +28,20 @@ public class SiteCounts extends BaseTable {
 	
 	@Override
 	public void setupQuery(PivotSites command, SqlQuery query) {
-	    query.from(" site Site " +
-                "LEFT JOIN activity Activity ON (Activity.ActivityId = Site.ActivityId) " +
-                "LEFT JOIN userdatabase UserDatabase ON (Activity.DatabaseId = UserDatabase.DatabaseId) " +
-                "LEFT JOIN reportingperiod Period ON (Period.SiteId = Site.SiteId) ");
+		if(command.getFilter().isRestricted(DimensionType.Indicator)) {
+			// we only need to pull in indicator values if there is a 
+			// filter on indicators
+			query.from(Tables.INDICATOR_VALUE, "V");
+			query.leftJoin(Tables.REPORTING_PERIOD, "RP").on("V.ReportingPeriodId = RP.ReportingPeriodId");
+			query.leftJoin(Tables.SITE, "Site").on("RP.SiteId = Site.SiteId");
+
+		} else {
+		    query.from(Tables.SITE, "Site");
+		}
+
+		query.leftJoin(Tables.ACTIVITY, "Activity").on("Activity.ActivityId = Site.ActivityId");
+		query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId");
+		query.leftJoin(Tables.REPORTING_PERIOD, "Period").on("Period.SiteId = Site.SiteId");
 
 	    query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
 	    query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT), ValueFields.AGGREGATION);
@@ -50,6 +61,8 @@ public class SiteCounts extends BaseTable {
 			return "Site.ProjectId";
 		case Location:
 			return "Site.LocationId";
+		case Indicator:
+			return "V.IndicatorId";
 		}
 		throw new UnsupportedOperationException(type.name());
 	}

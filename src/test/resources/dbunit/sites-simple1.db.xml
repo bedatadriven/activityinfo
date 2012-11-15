@@ -45,19 +45,19 @@
 		y2="0" />
 
 	<!-- User setup -->
-	<userLogin userId="1" name="Alex" email="akbertram@gmail.com"
+	<userLogin userId="1" firstname="Alex" name="Alex" email="akbertram@gmail.com"
 		password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-		locale="fr" newUser="1" />
+		locale="fr" newUser="1" emailnotification="1" />
 	<userLogin userId="2" name="Bavon" email="bavon@nrc.org"
 		password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-		locale="fr" newUser="1" />
+		locale="fr" newUser="1" emailnotification="0" />
 	<userLogin userId="5" name="Christian" email="christian@nrc.org"
-		password="xyz" locale="fr" newUser="1" />
-	<userLogin userId="3" name="Lisa" email="lisa@solidarites"
-		password="xyz" locale="fr" newUser="1" />
+		password="xyz" locale="fr" newUser="1" emailnotification="0" />
+	<userLogin userId="3" firstname="Lisa" name="Lisa" email="lisa@solidarites"
+		password="xyz" locale="fr" newUser="1" emailnotification="0" />
 
-	<userLogin userId="4" name="Marlene" email="marlene@solidarites"
-		password="xyz" locale="fr" newUser="1" />
+	<userLogin userId="4" firstname="Marlene" name="Marlene" email="marlene@solidarites"
+		password="xyz" locale="en" newUser="1" emailnotification="1" />
 
 	<!-- Attributes -->
 
