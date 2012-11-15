@@ -171,7 +171,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("{0} ({1}) updated the {2} at {3} in the {4} database on {5,date,dd-MM-yyyy 'at' HH:mm}. Here are the details:")
 	String siteChangeIntro(String userName, String userEmail, String activityName, String locationName, String database, Date date);
 
-	@DefaultMessage("{0} ({1}) created a new {2} at {3} in the {3} database on {4,date,dd-MM-yyyy 'at' HH:mm}. Here are the details:")
+	@DefaultMessage("{0} ({1}) created a new {2} at {3} in the {4} database on {5,date,dd-MM-yyyy 'at' HH:mm}. Here are the details:")
 	String siteCreateIntro(String userName, String userEmail, String activityName, String locationName, String databaseName, Date date);
 
 	
