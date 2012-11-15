@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @RunWith(InjectionSupport.class)
 @Modules({TestDatabaseModule.class})
@@ -275,6 +276,38 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 	}
 
 	@Test
+	public void siteCountWithIndicatorFilter() {
+		
+		//PivotSites [dimensions=[Partner], filter=Indicator={ 275 274 278 277 276 129 4736 119 118 125 124 123 122 121 }, 
+		// valueType=TOTAL_SITES]
+		withPartnerAsDimension();
+		forTotalSiteCounts();
+		filter.addRestriction(DimensionType.Indicator, Lists.newArrayList(1,2,3));
+		
+		execute();
+	}
+	
+	@Test
+	public void targetFilter() {
+		// Pivoting: PivotSites [dimensions=[Date, Partner, Date, Target, Activity, Indicator], 
+		// filter=AdminLevel={ 141801 }, Partner={ 130 },
+		// Indicator={ 747 746 745 744 749 748 739 738 743 740 119 118 3661 125 124 123 122 121 }, valueType=INDICATOR]
+		
+		withPartnerAsDimension();
+		dimensions.add(new DateDimension(DateUnit.YEAR));
+		dimensions.add(new Dimension(DimensionType.Target));
+		dimensions.add(new Dimension(DimensionType.Activity));
+		dimensions.add(new Dimension(DimensionType.Indicator));
+		
+		filter.addRestriction(DimensionType.AdminLevel, 141801);
+		filter.addRestriction(DimensionType.Partner, 130);
+		filter.addRestriction(DimensionType.Indicator, 1);
+		
+		execute();
+		
+	}
+	
+	@Test
 	public void testIndicatorOrder() {
 
 		withIndicatorAsDimension();
@@ -409,7 +442,6 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         }
         throw new AssertionError("No bucket for " + year + " W " + week);
     }
-
 
     @Before
     public void setUp() throws Exception {

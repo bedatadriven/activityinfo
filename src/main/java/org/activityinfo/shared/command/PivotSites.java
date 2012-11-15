@@ -34,6 +34,14 @@ public class PivotSites implements Command<PivotResult> {
 	public Set<Dimension> getDimensions() {
 		return dimensions;
 	}
+	
+	public Set<DimensionType> getDimensionTypes() {
+		Set<DimensionType> set = Sets.newHashSet();
+		for(Dimension dim : getDimensions()) {
+			set.add(dim.getType());
+		}
+		return set;
+	}
 
 	public void setDimensions(Set<Dimension> dimensions) {
 		this.dimensions = dimensions;
