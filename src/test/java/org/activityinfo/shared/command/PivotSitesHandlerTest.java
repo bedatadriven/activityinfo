@@ -43,7 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.common.collect.Lists;
 
 @RunWith(InjectionSupport.class)
 @Modules({TestDatabaseModule.class})

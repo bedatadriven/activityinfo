@@ -22,6 +22,7 @@ public class Targets extends BaseTable {
 		fieldNames.put(DimensionType.Indicator, "Indicator.IndicatorId");
 		fieldNames.put(DimensionType.Project, "Target.ProjectId");
 		fieldNames.put(DimensionType.Database, "Activity.DatabaseId");
+		fieldNames.put(DimensionType.Date, "Target.Date2");
 	}
 	
 
