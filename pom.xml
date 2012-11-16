@@ -467,7 +467,7 @@
 
 					<execution>
 						<id>activityinfo-compile</id>
-						<phase>process-classes</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>compile</goal>
 						</goals>
