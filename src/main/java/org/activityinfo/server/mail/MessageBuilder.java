@@ -123,7 +123,7 @@ public class MessageBuilder {
         }
  
         public String getContentType() {
-            return "text/html";
+            return "text/html; charset=UTF-8";
         }
  
         public String getName() {
