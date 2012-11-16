@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.login.shared.AnonymousUser;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet;
 import org.activityinfo.server.endpoint.jsonrpc.serde.ModelDataSerializer;
 import org.activityinfo.server.endpoint.jsonrpc.serde.SyncRegionUpdateSerializer;
@@ -23,7 +24,6 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 import org.activityinfo.shared.dto.AdminEntityDTO;
-import org.activityinfo.shared.dto.AnonymousUser;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 

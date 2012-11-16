@@ -4,6 +4,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.login.shared.LoginException;
 import org.activityinfo.login.shared.LoginService;
 import org.activityinfo.login.shared.PasswordExpiredException;
@@ -14,7 +15,6 @@ import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;

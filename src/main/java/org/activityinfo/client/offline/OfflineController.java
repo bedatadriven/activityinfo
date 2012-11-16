@@ -30,7 +30,7 @@ import org.activityinfo.client.offline.sync.SyncHistoryTable;
 import org.activityinfo.client.offline.sync.SyncStatusEvent;
 import org.activityinfo.client.offline.sync.Synchronizer;
 import org.activityinfo.client.offline.sync.SynchronizerConnectionException;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;

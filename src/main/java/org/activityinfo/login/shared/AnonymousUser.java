@@ -1,4 +1,4 @@
-package org.activityinfo.shared.dto;
+package org.activityinfo.login.shared;
 
 import com.google.gwt.user.client.Cookies;
 

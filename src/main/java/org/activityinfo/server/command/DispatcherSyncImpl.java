@@ -1,8 +1,8 @@
 package org.activityinfo.server.command;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.ServerExecutionContext;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;

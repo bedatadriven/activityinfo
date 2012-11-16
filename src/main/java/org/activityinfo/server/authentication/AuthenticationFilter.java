@@ -15,9 +15,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.i18n.LocaleHelper;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

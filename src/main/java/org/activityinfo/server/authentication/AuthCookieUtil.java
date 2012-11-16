@@ -8,8 +8,8 @@ package org.activityinfo.server.authentication;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 public final class AuthCookieUtil {
     

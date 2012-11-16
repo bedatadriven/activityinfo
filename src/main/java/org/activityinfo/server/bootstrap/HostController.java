@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.authentication.AuthCookieUtil;
 import org.activityinfo.server.bootstrap.exception.NoValidAuthentication;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
@@ -19,7 +20,6 @@ import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.server.util.logging.LogException;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.common.base.Strings;

@@ -11,7 +11,7 @@ import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.offline.HandlerRegistryProvider;
 import org.activityinfo.client.offline.command.HandlerRegistry;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;

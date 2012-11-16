@@ -1,6 +1,5 @@
 package org.activityinfo.login.shared;
 
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

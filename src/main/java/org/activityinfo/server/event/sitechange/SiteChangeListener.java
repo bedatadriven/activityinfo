@@ -5,10 +5,10 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import java.util.Arrays;
 import java.util.List;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.event.CommandEvent;
 import org.activityinfo.server.event.CommandEventListener;
 import org.activityinfo.server.event.ServerEventBus;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.UpdateSite;

@@ -3,9 +3,8 @@
  * See COPYRIGHT.txt and LICENSE.txt.
  */
 
-package org.activityinfo.shared.auth;
+package org.activityinfo.login.shared;
 
-import org.activityinfo.shared.dto.AnonymousUser;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.rpc.IsSerializable;

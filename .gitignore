@@ -8,3 +8,9 @@ target/
 .*
 .metadata/
 /SomeXmlTest.xml
+war/Login
+war/ActivityInfo
+war/Embed
+war/WEB-INF/deploy
+war/WEB-INF/classes
+war/WEB-INF/appengine-generated

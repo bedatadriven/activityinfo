@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.offline.sync.ServerStateChangeEvent;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;

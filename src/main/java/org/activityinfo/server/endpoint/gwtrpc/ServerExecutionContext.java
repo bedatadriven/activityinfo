@@ -5,11 +5,11 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.database.hibernate.HibernateExecutor;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.handler.AuthorizationHandler;

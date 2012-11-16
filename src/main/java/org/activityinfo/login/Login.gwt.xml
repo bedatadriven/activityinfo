@@ -3,7 +3,6 @@
 <module rename-to="Login">
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="org.activityinfo.login.LoginApi"/>
-	<inherits name="org.activityinfo.ActivityInfoCore"/>
 	
 	<source path="client" />
 	<entry-point class="org.activityinfo.login.client.LoginEntryPoint" />

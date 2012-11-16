@@ -26,7 +26,7 @@ import org.activityinfo.client.page.common.GalleryPage;
 import org.activityinfo.client.page.common.GalleryView;
 import org.activityinfo.client.util.state.GxtStateProvider;
 import org.activityinfo.client.util.state.StateProvider;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;
 
 import com.google.gwt.core.client.Scheduler;

@@ -14,8 +14,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.DefaultSelectionServlet;
 import com.bedatadriven.rebar.appcache.server.PropertyProvider;

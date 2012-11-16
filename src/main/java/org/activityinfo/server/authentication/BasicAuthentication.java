@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.persistence.NoResultException;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.base.Charsets;

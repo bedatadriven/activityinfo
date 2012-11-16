@@ -1,9 +1,9 @@
 package org.activityinfo.server.report;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.output.LocalStorageProvider;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

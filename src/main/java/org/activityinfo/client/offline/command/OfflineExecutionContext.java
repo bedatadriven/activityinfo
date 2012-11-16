@@ -1,6 +1,6 @@
 package org.activityinfo.client.offline.command;
 
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.handler.ExecutionContext;

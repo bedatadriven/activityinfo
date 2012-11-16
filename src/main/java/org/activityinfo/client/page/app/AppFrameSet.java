@@ -21,7 +21,7 @@ import org.activityinfo.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.client.page.report.ReportsPlace;
 import org.activityinfo.client.page.search.SearchPageState;
 import org.activityinfo.client.widget.LoadingPlaceHolder;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 
 import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;

@@ -8,7 +8,7 @@ package org.activityinfo.client.offline;
 import org.activityinfo.client.offline.command.HandlerRegistry;
 import org.activityinfo.client.offline.sync.Synchronizer;
 import org.activityinfo.client.offline.sync.SynchronizerImpl;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlDatabaseFactory;

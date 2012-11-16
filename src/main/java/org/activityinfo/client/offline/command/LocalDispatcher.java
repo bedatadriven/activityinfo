@@ -10,7 +10,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
 import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.offline.sync.ServerStateChangeEvent;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.result.CommandResult;

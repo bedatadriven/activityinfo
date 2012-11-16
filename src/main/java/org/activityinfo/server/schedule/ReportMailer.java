@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.ReportSubscription;
@@ -19,7 +20,6 @@ import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Report;
 import org.xml.sax.SAXException;
