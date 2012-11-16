@@ -467,7 +467,7 @@
 
 					<execution>
 						<id>activityinfo-compile</id>
-						<phase>prepare-package</phase>
+						<phase>process-classes</phase>
 						<goals>
 							<goal>compile</goal>
 						</goals>
@@ -508,10 +508,18 @@
 						<fileset>
 							<directory>war/WEB-INF/lib</directory>
 						</fileset>
+						<fileset>
+							<directory>war/WEB-INF/deploy</directory>
+						</fileset>
+						<fileset>
+							<directory>war/WEB-INF/appengine-generated</directory>
+						</fileset>
+						<fileset>
+							<directory>war/temp</directory>
+						</fileset>
 					</filesets>
 				</configuration>
 			</plugin>
-
 
 			<!-- Exclude GWT integration tests from the test phase -->
 			<!-- we want to run them during the integration-test phase with the gwt-maven 
@@ -541,7 +549,7 @@
 
 				<configuration>
 					<warSourceDirectory>${basedir}/war</warSourceDirectory>
-					<warSourceExcludes>ActivityInfo/compile-report,*.log</warSourceExcludes>
+					<warSourceExcludes>ActivityInfo/compile-report,*.log,**/*.symbolMap</warSourceExcludes>
 					<webResources>
 						<resource>
 							<directory>war</directory>
