@@ -1,6 +1,7 @@
 package org.activityinfo.shared.command.handler.pivot;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
@@ -34,16 +35,35 @@ public class Targets extends BaseTable {
 		if(!command.getDimensionTypes().contains(DimensionType.Target)) {
 			return false;
 		}
-		if(!fieldNames.keySet().containsAll(command.getDimensionTypes())) {
+		if(!supported(command.getDimensionTypes())) {
 			return false;
 		}
-		if(!fieldNames.keySet().containsAll(command.getFilter().getRestrictedDimensions())) {
+		if(!supported(command.getFilter().getRestrictedDimensions())) {
 			return false;
 		}
 		
 		return true;
 	}
 	
+
+	private boolean supported(Set<DimensionType> dimensionTypes) {
+		for(DimensionType type : dimensionTypes) {
+			switch(type) {
+			case Partner: 
+			case Activity: 
+			case Indicator:
+			case Project:
+			case Database:
+			case Date:
+			case Target:
+				continue;
+			default:
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	@Override
 	public TargetCategory getTargetCategory() {
@@ -66,10 +86,19 @@ public class Targets extends BaseTable {
 
 	@Override
 	public String getDimensionIdColumn(DimensionType type) {
-		if(!fieldNames.containsKey(type)) {
-			throw new UnsupportedOperationException("type: " + type);
+		switch(type) {
+		case Partner: 
+			return "Target.PartnerId";
+		case Activity: 
+			return  "Indicator.ActivityId";
+		case Indicator:
+			return "Indicator.IndicatorId";
+		case Project:
+			return "Target.ProjectId";
+		case Database: 
+			return "Activity.DatabaseId";
 		}
-		return fieldNames.get(type);
+		throw new UnsupportedOperationException("type: " + type);
 	}
 
 	@Override
