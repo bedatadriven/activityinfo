@@ -25,7 +25,7 @@ import javax.mail.util.ByteArrayDataSource;
 public class MessageBuilder {
 
 	public Multipart mp = null;
-	private Message msg;
+	private MimeMessage msg;
 
 	public MessageBuilder() throws MessagingException {
 		Properties props = new Properties();
@@ -54,12 +54,12 @@ public class MessageBuilder {
 	}
 
 	public MessageBuilder subject(String subject) throws MessagingException {
-		msg.setSubject(subject);
+		msg.setSubject(subject, "utf-8");
 		return this;
 	}
 
 	public void body(String text) throws MessagingException {
-		msg.setText(text);
+		msg.setText(text, "utf-8");
 	}
 	
 	public void htmlBody(String html)throws MessagingException {
@@ -110,7 +110,19 @@ public class MessageBuilder {
         private String html;
  
         public HTMLDataSource(String htmlString) {
-            html = htmlString;
+        	// transform non-ascii characters into entities to avoid 
+        	// encoding issues
+        	StringBuilder encoded = new StringBuilder();
+        	for(int i=0;i!=htmlString.length();++i) {
+        		int cp = htmlString.codePointAt(i);
+        		if(cp <= 127) {
+        			encoded.appendCodePoint(cp);
+        		} else {
+        			encoded.append("&#").append(cp).append(';');
+        		}
+        	}
+        	
+            html = encoded.toString();
         }
  
         public InputStream getInputStream() throws IOException {
