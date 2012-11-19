@@ -17,6 +17,7 @@ import org.activityinfo.server.util.html.HtmlWriter;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
+import org.activityinfo.shared.report.model.MapReportElement;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
@@ -61,7 +62,6 @@ public class UpdateMessageBuilder {
 		this.userDatabaseDTO = userDatabaseDTO;
 	}
 
-
 	public Message build() throws MessagingException {
 		// set the locale of the messages
 		LocaleProxy.setLocale(LocaleHelper.getLocaleObject(recipient));
@@ -69,7 +69,7 @@ public class UpdateMessageBuilder {
 		// create message, set recipient & bcc
 		MessageBuilder message = new MessageBuilder();
 		message.to(recipient.getEmail(), recipient.getName());
-		message.bcc("akbertram@gmail.com");
+		message.bcc("alex@bedatadriven.com");
 	    
 	    // set the subject 
 		String subject;
@@ -118,6 +118,10 @@ public class UpdateMessageBuilder {
 	    htmlWriter.paragraph(siteRenderer.renderLocation(siteDTO, activityDTO));
 	    htmlWriter.paragraph(siteRenderer.renderSite(siteDTO, activityDTO, false, true));
 
+	    String url = "http://www.activityinfo.org/#data-entry/Activity+" + activityDTO.getId();
+	    
+	    htmlWriter.paragraph("<a href=\"" + url + "\">Open in ActivityInfo</a>");
+	    
 	    String signature = I18N.MESSAGES.sitechangeSignature();
 	    htmlWriter.paragraph(signature);
 	
