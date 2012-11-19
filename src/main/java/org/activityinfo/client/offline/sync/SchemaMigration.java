@@ -24,7 +24,8 @@ public class SchemaMigration {
 		"CREATE TABLE IF NOT EXISTS  siteattachment (blobid TEXT, siteid INT, filename TEXT, uploadedBy INT, blobSize REAL, contentType TEXT)",
 		"ALTER TABLE UserDatabase ADD COLUMN version REAL",
 		"ALTER TABLE UserPermission ADD COLUMN version REAL",
-		"ALTER TABLE AdminLevel ADD COLUMN polygons INT"
+		"ALTER TABLE AdminLevel ADD COLUMN polygons INT",
+		"ALTER TABLE UserLogin ADD COLUMN emailnotification INT"
 	};
 	
 	@Inject
