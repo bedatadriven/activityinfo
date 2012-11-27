@@ -81,8 +81,8 @@ public class SiteChangeServlet extends HttpServlet {
 	}
 	
 	@VisibleForTesting
-	void sendNotifications(int userId, int siteId, boolean newSite) {
-		User user = entityManager.get().find(User.class, userId);
+	void sendNotifications(int editorUserId, int siteId, boolean newSite) {
+		User user = entityManager.get().find(User.class, editorUserId);
 		
 		/*
 		 * For our purposes, the user who initiated the change will
@@ -105,16 +105,20 @@ public class SiteChangeServlet extends HttpServlet {
 			try {
 				LOGGER.info("sending sitechange notification email to "+recipient.getEmail());
 				
-				UpdateMessageBuilder message = new UpdateMessageBuilder();
-				message.setDate(date);
-				message.setEditor(user);
-				message.setRecipient(recipient);
-				message.setUserDatabaseDTO(userDatabaseDTO);
-				message.setSiteDTO(siteDTO);
-				message.setActivityDTO(activityDTO);
-				message.setNewSite(newSite);
-				
-				mailSender.get().send(message.build());
+				// do not send users who modified the report an email to themselves!
+				if(recipient.getId() != editorUserId) {
+					
+					UpdateMessageBuilder message = new UpdateMessageBuilder();
+					message.setDate(date);
+					message.setEditor(user);
+					message.setRecipient(recipient);
+					message.setUserDatabaseDTO(userDatabaseDTO);
+					message.setSiteDTO(siteDTO);
+					message.setActivityDTO(activityDTO);
+					message.setNewSite(newSite);
+					
+					mailSender.get().send(message.build());
+				}
 				
 			} catch (Throwable t) {
 				LOGGER.warning("failed sending notification email to "+recipient.getName()+" <"+recipient.getEmail()+">: "+t.getMessage());
