@@ -73,7 +73,7 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         List<Object[]> regions = entityManager.createQuery("SELECT " +
     			"a.locationType.id, " +
     			"MAX(loc.timeEdited) " +
-    		"FROM Activity a LEFT JOIN a.locationType.locations loc " +
+    		"FROM Activity a INNER JOIN a.locationType.locations loc " +
     		"WHERE a.database.id in (:dbs) " +
     		"GROUP BY a.locationType")
     	.setParameter("dbs", databases)
