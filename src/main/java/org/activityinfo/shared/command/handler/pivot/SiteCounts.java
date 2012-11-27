@@ -55,6 +55,8 @@ public class SiteCounts extends BaseTable {
 			return "Site.PartnerId";
 		case Activity:
 			return "Site.ActivityId";
+		case Database:
+			return "Activity.DatabaseId";
 		case Site:
 			return "Site.SiteId";
 		case Project:
