@@ -29,6 +29,7 @@ import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.EntityCategory;
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.content.IconLayerLegend;
+import org.activityinfo.shared.report.content.IconMapMarker;
 import org.activityinfo.shared.report.content.MapContent;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.content.NullContent;
@@ -45,6 +46,7 @@ import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.MapIcon;
+import org.activityinfo.shared.report.model.MapIcon.Icon;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.activityinfo.shared.report.model.PivotTableReportElement;
@@ -240,6 +242,52 @@ public class ItextReportRendererTest {
 		//renderToHtml(report, "google map.html");
 		renderToRtf(report, "google map.rtf");
 	}	
+	
+	
+	@Test
+	public void iconTest() throws IOException {
+
+		IconMapMarker marker1 = new IconMapMarker();
+		marker1.setIcon(MapIcon.fromEnum(Icon.Default));
+		marker1.setLat(-2.45);
+		marker1.setLng(28.8);
+		marker1.setX(100);
+		marker1.setY(100);
+	
+		TileBaseMap baseMap = new TileBaseMap();
+		baseMap.setTileUrlPattern("http://mt{s}.aimaps.net/nordkivu.cd/v1/z{z}/{x}x{y}.png");
+		
+		
+		IconMapLayer layer3 = new IconMapLayer();
+		layer3.setIcon(MapIcon.Icon.Default.name());
+		layer3.getIndicatorIds().add(101);
+		
+		
+		MapContent mapContent = new MapContent();
+		mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
+		mapContent.setBaseMap(baseMap);
+		mapContent.setZoomLevel(8);
+		mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
+		mapContent.setMarkers(Arrays.asList((MapMarker)marker1));
+		
+		MapReportElement map = new MapReportElement();
+		map.setTitle("My Map");
+		map.setContent(mapContent);
+		map.addLayer(layer3);
+		
+		
+		ReportContent content = new ReportContent();
+		content.setFilterDescriptions(Collections.EMPTY_LIST);
+		
+		Report report = new Report();
+		report.setContent(content);
+		report.addElement(map);
+		
+		renderToPdf(report, "iconMarker.pdf");
+		renderToHtml(report, "iconMarker.html");
+		renderToRtf(report, "iconMarker.rtf");
+		renderToPpt(map, "iconMarker.ppt");
+	}
 	
 	@Test
 	public void legendTest() throws IOException {

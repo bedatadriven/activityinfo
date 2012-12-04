@@ -131,7 +131,7 @@ public final class MapIcon implements Serializable, ImageResource {
 		return false;
 	}
 	
-	public static ImageResource fromEnum(Icon icon) {
+	public static MapIcon fromEnum(Icon icon) {
 		return new MapIcon(icon.toString());
 	}
     

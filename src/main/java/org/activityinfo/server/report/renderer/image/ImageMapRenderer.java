@@ -244,7 +244,7 @@ public class ImageMapRenderer {
 //                (int)(marker.getY() + (lm.getAscent() / 2)));
     }
 
-    private void drawIcon(Graphics2D g2d, IconMapMarker marker) {
+    protected void drawIcon(Graphics2D g2d, IconMapMarker marker) {
         BufferedImage image = getIconImage(marker);
         if(image != null) {
              g2d.drawImage(image, null,
@@ -354,8 +354,6 @@ public class ImageMapRenderer {
 			}
 		}
 	}
-
-	
 
     public static Color bubbleFillColor(Color colorRgb) {
         return new Color(colorRgb.getRed(), colorRgb.getGreen(), colorRgb.getBlue(), 179); //179=0.7*255
