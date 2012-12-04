@@ -65,21 +65,12 @@ public class SiteChangeServletTest extends CommandTestCase2 {
 		underTest.sendNotifications(1, 1, true);
 	
 		List<Message> msgs = ((MailSenderStub)mailSender).sentMail;
-		assertThat(msgs.size(), is(equalTo(2)));
+		assertThat(msgs.size(), is(equalTo(1)));
 		
-		Message msgToAlex = msgs.get(0);
-		assertThat(msgToAlex.getRecipients(RecipientType.TO)[0].toString(), is(equalTo("Alex <akbertram@gmail.com>")));
-		assertTrue(msgToAlex.getContentType().startsWith("text/html"));
-		
-		// these asserts also test localization
-		assertThat(msgToAlex.getSubject(), is(equalTo("PEAR: New NFI at Penekusu Kivu by NRC")));
-		//assertThat((String)msgToAlex.getContent(), startsWith("<html><head><title>PEAR: New NFI at Penekusu Kivu by NRC</title></head><body><p>Hi Alex,</p>"));
-				
-		Message msgToMarlene = msgs.get(1);
+		Message msgToMarlene = msgs.get(0);
 		assertThat(msgToMarlene.getRecipients(RecipientType.TO)[0].toString(), is(equalTo("Marlene <marlene@solidarites>")));
 		assertTrue(msgToMarlene.getContentType().startsWith("text/html"));
 		assertThat(msgToMarlene.getSubject(), is(equalTo("PEAR: New NFI at Penekusu Kivu by NRC")));
-//		assertTrue(msgToMarlene.getContent().toString().startsWith("<html><head><title>Database PEAR has been edited</title></head><body><p>Hi Marlene,</p>"));
 	}
 	
 	private Matcher<String> startsWith(final String expected) {
