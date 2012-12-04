@@ -6,7 +6,10 @@
 package org.activityinfo.server.report.renderer.itext;
 
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
@@ -20,6 +23,7 @@ import org.activityinfo.server.util.ColorUtil;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.report.content.BubbleLayerLegend;
 import org.activityinfo.shared.report.content.IconLayerLegend;
+import org.activityinfo.shared.report.content.IconMapMarker;
 import org.activityinfo.shared.report.content.MapLayerLegend;
 import org.activityinfo.shared.report.content.PieChartLegend;
 import org.activityinfo.shared.report.content.PolygonLegend;
@@ -29,6 +33,7 @@ import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer.Slice;
 
 import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Graphics2D;
 import com.google.inject.Inject;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
@@ -43,6 +48,7 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfGraphics2D;
 
 
 /**
@@ -53,6 +59,7 @@ import com.lowagie.text.Table;
 public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<MapReportElement> {
 
 	private ImageCreator imageCreator;
+	private ItextGraphic graphic;
 	
     @Inject
     public ItextMapRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath, ImageCreator imageCreator) {
@@ -79,12 +86,30 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
 
 	public void renderMap(DocWriter writer, MapReportElement element, Document doc) throws BadElementException, DocumentException {
     	
-		ItextGraphic graphic = imageCreator.createMap(element.getWidth(), element.getHeight());
+		graphic = imageCreator.createMap(element.getWidth(), element.getHeight());
     	drawBasemap(element, new ItextTileHandler(graphic));
 		drawOverlays(element, graphic.getGraphics());
 		
 		doc.add(graphic.toItextImage());
 	}
+
+	
+	
+	@Override
+	protected void drawIcon(Graphics2D g2d, IconMapMarker marker) {
+		int x = marker.getX() - marker.getIcon().getAnchorX();
+        int y = marker.getY() - marker.getIcon().getAnchorY();
+        File imageFile = getImageFile(marker.getIcon().getName());
+
+        try {
+	        Image image = Image.getInstance(imageFile.getAbsolutePath());
+	        image.setAbsolutePosition(x,  y);
+	        
+	        graphic.addImage(imageFile.toURI().toURL().toString(), x, y, marker.getIcon().getWidth(), marker.getIcon().getHeight());
+        } catch(Exception e) {
+        	throw new RuntimeException(e);
+        }
+  	}
 
 	private void renderLegend(MapReportElement element, Document doc) throws DocumentException, IOException {
 	    	
@@ -190,6 +215,7 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
     		throw new IllegalArgumentException();
     	}
     }
+    
 
     private Image createIconImage(IconLayerLegend legend) {
     	try {
