@@ -116,10 +116,6 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
 				.leftJoin(mySubscriptions, "s").on("r.reportTemplateId = s.reportId")
 				.where("r.ownerUserId").equalTo(userId)
 				.where("r.reportTemplateId").equalTo(reportId)
-				.or("r.reportTemplateId").in(
-						SqlQuery.select("reportId")
-								.from("reportvisibility", "v")
-								.where("v.databaseid").in(myDatabases))
 				.execute(context.getTransaction(), new SqlResultCallback() {
 
 					@Override
