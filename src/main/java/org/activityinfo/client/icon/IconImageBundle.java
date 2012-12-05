@@ -250,5 +250,7 @@ public interface IconImageBundle extends ImageBundle {
     
     @Resource(value="html_add.png")
     AbstractImagePrototype embed();
+    
+    AbstractImagePrototype text();
 
 }

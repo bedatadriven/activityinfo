@@ -1,17 +1,16 @@
 package org.activityinfo.client.page.report.editor;
 
-import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.editor.ElementDialog.Callback;
 import org.activityinfo.client.report.view.ChartOFCView;
-import org.activityinfo.client.report.view.ReportViewBinder;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.command.RenderReportHtml;
 import org.activityinfo.shared.command.result.HtmlResult;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.activityinfo.shared.report.model.ReportElement;
+import org.activityinfo.shared.report.model.TextReportElement;
 
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -25,6 +24,7 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
@@ -133,20 +133,34 @@ public class ElementWidget extends Composite {
 		
 		contentElement.setInnerHTML("");
 		loadingElement.getStyle().setDisplay(Display.BLOCK);
-		dispatcher.execute(new RenderReportHtml(model), new AsyncCallback<HtmlResult>() {
+		if(model instanceof TextReportElement) {
+			renderStaticHtml();
+		} else {
+			dispatcher.execute(new RenderReportHtml(model), new AsyncCallback<HtmlResult>() {
+	
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void onSuccess(HtmlResult result) {
+					updateHtml(result.getHtml());
+				}
+			});
+		}
+	}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+	private void renderStaticHtml() {
+		String text = ((TextReportElement) model).getText();
+		updateHtml(SafeHtmlUtils.htmlEscape(text));
+	}
+	
 
-			@Override
-			public void onSuccess(HtmlResult result) {
-				loadingElement.getStyle().setDisplay(Display.NONE);
-				contentElement.setInnerHTML(result.getHtml());
-			}
-		});
+	private void updateHtml(String html) {
+		loadingElement.getStyle().setDisplay(Display.NONE);
+		contentElement.setInnerHTML(html);
 	}
 
 	@Override

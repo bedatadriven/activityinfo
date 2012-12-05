@@ -8,9 +8,8 @@ import org.activityinfo.client.page.report.template.ChartTemplate;
 import org.activityinfo.client.page.report.template.MapTemplate;
 import org.activityinfo.client.page.report.template.PivotTableTemplate;
 import org.activityinfo.client.page.report.template.ReportElementTemplate;
-import org.activityinfo.shared.report.model.MapReportElement;
-import org.activityinfo.shared.report.model.PivotTableReportElement;
 import org.activityinfo.shared.report.model.ReportElement;
+import org.activityinfo.shared.report.model.TextReportElement;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -68,7 +67,13 @@ public class AddElementPanel extends LayoutContainer {
 				addElement(new MapTemplate(dispatcher));
 			}
 		}));
-		
+		add(createAddButton(I18N.CONSTANTS.addText(), IconImageBundle.ICONS.text(), new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				addElement(new TextReportElement());
+			}
+		}));
 	}
 	
 

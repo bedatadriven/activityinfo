@@ -11,6 +11,7 @@ import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.report.content.Content;
+import org.activityinfo.shared.report.content.NullContent;
 import org.activityinfo.shared.report.content.ReportContent;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -20,6 +21,7 @@ import org.activityinfo.shared.report.model.PivotTableReportElement;
 import org.activityinfo.shared.report.model.Report;
 import org.activityinfo.shared.report.model.ReportElement;
 import org.activityinfo.shared.report.model.TableElement;
+import org.activityinfo.shared.report.model.TextReportElement;
 
 import com.google.inject.Inject;
 
@@ -65,6 +67,10 @@ public class ReportGenerator extends BaseGenerator<Report> {
         } else if(element instanceof Report) {
         	generateReport(user, (Report) element, inheritedFilter, dateRange);
         	return element.getContent();
+        
+        } else if(element instanceof TextReportElement) {
+        	return new NullContent();
+        	
         } else {
             throw new RuntimeException("Unknown element type " + element.getClass().getName());
         }
