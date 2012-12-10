@@ -97,7 +97,6 @@ public class Attribute implements Serializable, Deleteable, Orderable, SchemaEle
 	@Override
 	@Transient
 	public boolean isDeleted() {
-		return getDateDeleted() == null;
+		return getDateDeleted() != null;
 	}
-
 }
