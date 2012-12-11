@@ -1,11 +1,8 @@
 package org.activityinfo.server.event.sitechange;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.servlet.ServletException;
@@ -13,17 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.page.entry.form.SiteRenderer;
-import org.activityinfo.client.page.entry.form.SiteRenderer.IndicatorValueFormatter;
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.mail.MailSender;
-import org.activityinfo.server.mail.MessageBuilder;
-import org.activityinfo.server.util.html.HtmlWriter;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
@@ -36,7 +26,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 @Singleton
 public class SiteChangeServlet extends HttpServlet {
@@ -103,10 +92,9 @@ public class SiteChangeServlet extends HttpServlet {
 		List<User> recipients = findRecipients(userDatabaseDTO.getId());
 		for (User recipient : recipients) {
 			try {
-				LOGGER.info("sending sitechange notification email to "+recipient.getEmail());
-				
 				// do not send users who modified the report an email to themselves!
 				if(recipient.getId() != editorUserId) {
+					LOGGER.info("sending sitechange notification email to "+recipient.getEmail());
 					
 					UpdateMessageBuilder message = new UpdateMessageBuilder();
 					message.setDate(date);
