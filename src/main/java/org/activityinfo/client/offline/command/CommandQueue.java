@@ -14,17 +14,20 @@ import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.UpdateSite;
-import org.activityinfo.shared.util.JsonUtil;
 
+import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.async.AsyncFunction;
 import com.bedatadriven.rebar.async.NullCallback;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
+import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRowList;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
+import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.fn.AsyncSql;
+import com.bedatadriven.rebar.sql.client.fn.QueryFunction;
 import com.bedatadriven.rebar.sql.client.fn.TxAsyncFunction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
@@ -215,7 +218,7 @@ public class CommandQueue {
 	private JsonObject serialize(CreateSite cmd) {
 		JsonObject root = new JsonObject();
 		root.addProperty("commandClass", "CreateSite");
-		root.add("properties", JsonUtil.encodeMap(cmd.getProperties().getTransientMap()));
+		root.add("properties", encodeMap(cmd.getProperties().getTransientMap()));
 		return root;
 	}
 	
@@ -223,14 +226,14 @@ public class CommandQueue {
 		JsonObject root = new JsonObject();
 		root.addProperty("commandClass", "UpdateSite");
 		root.addProperty("siteId", cmd.getSiteId());
-		root.add("changes", JsonUtil.encodeMap(cmd.getChanges().getTransientMap()));
+		root.add("changes", encodeMap(cmd.getChanges().getTransientMap()));
 		return root;
 	}
 	
 	private JsonObject serialize(CreateLocation cmd) {
 		JsonObject root = new JsonObject();
 		root.addProperty("commandClass", "CreateLocation");
-		root.add("properties", JsonUtil.encodeMap(cmd.getProperties().getTransientMap()));
+		root.add("properties", encodeMap(cmd.getProperties().getTransientMap()));
 		return root;
 	}
 	
@@ -259,84 +262,84 @@ public class CommandQueue {
 
 	private CreateSite deserializeCreateSite(JsonObject root) {
 		return new CreateSite(
-				JsonUtil.decodeMap(root.get("properties").getAsJsonObject()));
+			decodeMap(root.get("properties").getAsJsonObject()));
 	}
 
 	private UpdateSite deserializeUpdateSite(JsonObject root) {
 		return new UpdateSite(root.get("siteId").getAsInt(), 
-				JsonUtil.decodeMap(root.get("changes").getAsJsonObject()));
+				decodeMap(root.get("changes").getAsJsonObject()));
 	}
 	
 	private CreateLocation deserializeCreateLocation(JsonObject root) {
-		return new CreateLocation(JsonUtil.decodeMap(root.get("properties").getAsJsonObject()));
+		return new CreateLocation(decodeMap(root.get("properties").getAsJsonObject()));
 	}
 
-//	
-//	private JsonObject encodeMap(Map<String, Object> map) {
-//		JsonObject root = new JsonObject();
-//		for(Entry<String,Object> property : map.entrySet()) {
-//			if(property.getValue() != null) {
-//				JsonObject value = new JsonObject();
-//				
-//				if(property.getValue() instanceof String) {
-//					value.addProperty("type", "String");
-//					value.addProperty("value", (String)property.getValue());
-//				} else if(property.getValue() instanceof Integer ) {
-//					value.addProperty("type", "Integer");
-//					value.addProperty("value", (Integer)property.getValue());
-//				} else if(property.getValue() instanceof Double) {
-//					value.addProperty("type", "Double");
-//					value.addProperty("value", (Double)property.getValue());
-//				} else if(property.getValue() instanceof Date) {
-//					Date date = (Date)property.getValue();
-//	
-//					value.addProperty("type", "Date");
-//					value.addProperty("time", date.getTime());
-//				} else if(property.getValue() instanceof Boolean) {
-//					value.addProperty("type", "Boolean");
-//					value.addProperty("value", (Boolean)property.getValue());
-//				} else if(property.getValue() instanceof LocalDate) {
-//					value.addProperty("type", "LocalDate");
-//					value.addProperty("value", property.getValue().toString());
-//					
-//				} else {
-//          Log.error("Cannot convert handle map value '" + property.getKey() + ", type " + property.getKey() +
-//							": " + property.getValue().getClass().getName());
-//          value = null;
-//				}
-//
-//        if(value != null ) {
-//				  root.add(property.getKey(), value);
-//        }
-//			}
-//		}
-//		return root;
-//	}
-//	
-//	private Map<String,Object> decodeMap(JsonObject root) {
-//		Map<String,Object> map = new HashMap<String, Object>();
-//		for(Entry<String,JsonElement> property : root.entrySet()) {
-//			JsonObject value = (JsonObject)property.getValue();
-//			String type = value.get("type").getAsString();
-//			
-//			if("String".equals(type)) {
-//				map.put(property.getKey(), value.get("value").getAsString());
-//			} else if("Integer".equals(type)) {
-//				map.put(property.getKey(), value.get("value").getAsInt());
-//			} else if("Double".equals(type)) {
-//				map.put(property.getKey(), value.get("value").getAsDouble());
-//			} else if("Date".equals(type)) {
-//				map.put(property.getKey(), new Date(value.get("time").getAsLong()));
-//			} else if("Boolean".equals(type)) {
-//				map.put(property.getKey(), value.get("value").getAsBoolean());
-//			} else if("LocalDate".equals(type)) {
-//				map.put(property.getKey(), LocalDate.parse( value.get("value").getAsString()));
-//			} else {
-//				throw new IllegalArgumentException("map contains key with unsupported value type -- " + 
-//					property.getKey() + ": " + type);
-//			}
-//			
-//		}
-//		return map;
-//	}
+	
+	private JsonObject encodeMap(Map<String, Object> map) {
+		JsonObject root = new JsonObject();
+		for(Entry<String,Object> property : map.entrySet()) {
+			if(property.getValue() != null) {
+				JsonObject value = new JsonObject();
+				
+				if(property.getValue() instanceof String) {
+					value.addProperty("type", "String");
+					value.addProperty("value", (String)property.getValue());
+				} else if(property.getValue() instanceof Integer ) {
+					value.addProperty("type", "Integer");
+					value.addProperty("value", (Integer)property.getValue());
+				} else if(property.getValue() instanceof Double) {
+					value.addProperty("type", "Double");
+					value.addProperty("value", (Double)property.getValue());
+				} else if(property.getValue() instanceof Date) {
+					Date date = (Date)property.getValue();
+	
+					value.addProperty("type", "Date");
+					value.addProperty("time", date.getTime());
+				} else if(property.getValue() instanceof Boolean) {
+					value.addProperty("type", "Boolean");
+					value.addProperty("value", (Boolean)property.getValue());
+				} else if(property.getValue() instanceof LocalDate) {
+					value.addProperty("type", "LocalDate");
+					value.addProperty("value", property.getValue().toString());
+					
+				} else {
+          Log.error("Cannot convert handle map value '" + property.getKey() + ", type " + property.getKey() +
+							": " + property.getValue().getClass().getName());
+          value = null;
+				}
+
+        if(value != null ) {
+				  root.add(property.getKey(), value);
+        }
+			}
+		}
+		return root;
+	}
+	
+	private Map<String,Object> decodeMap(JsonObject root) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		for(Entry<String,JsonElement> property : root.entrySet()) {
+			JsonObject value = (JsonObject)property.getValue();
+			String type = value.get("type").getAsString();
+			
+			if("String".equals(type)) {
+				map.put(property.getKey(), value.get("value").getAsString());
+			} else if("Integer".equals(type)) {
+				map.put(property.getKey(), value.get("value").getAsInt());
+			} else if("Double".equals(type)) {
+				map.put(property.getKey(), value.get("value").getAsDouble());
+			} else if("Date".equals(type)) {
+				map.put(property.getKey(), new Date(value.get("time").getAsLong()));
+			} else if("Boolean".equals(type)) {
+				map.put(property.getKey(), value.get("value").getAsBoolean());
+			} else if("LocalDate".equals(type)) {
+				map.put(property.getKey(), LocalDate.parse( value.get("value").getAsString()));
+			} else {
+				throw new IllegalArgumentException("map contains key with unsupported value type -- " + 
+					property.getKey() + ": " + type);
+			}
+			
+		}
+		return map;
+	}
 }

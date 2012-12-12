@@ -10,7 +10,6 @@ org.activityinfo.server.database.hibernate.entity.ReportSubscription
 org.activityinfo.server.database.hibernate.entity.Attribute
 org.activityinfo.server.database.hibernate.entity.Country
 org.activityinfo.server.database.hibernate.entity.Site
-org.activityinfo.server.database.hibernate.entity.SiteHistory
 org.activityinfo.server.database.hibernate.entity.Authentication
 org.activityinfo.server.database.hibernate.entity.UserDatabase
 org.activityinfo.server.database.hibernate.entity.Indicator

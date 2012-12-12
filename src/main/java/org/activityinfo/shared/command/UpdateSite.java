@@ -10,7 +10,7 @@ import org.activityinfo.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.data.RpcMap;
 
-public class UpdateSite implements MutatingCommand<VoidResult>, SiteCommand {
+public class UpdateSite implements MutatingCommand<VoidResult> {
 
 	private int siteId;
 	private RpcMap changes;
@@ -66,9 +66,6 @@ public class UpdateSite implements MutatingCommand<VoidResult>, SiteCommand {
 	}
 	public void setSiteId(int siteId) {
 		this.siteId = siteId;
-	}
-	public RpcMap getProperties() {
-		return getChanges();
 	}
 	public RpcMap getChanges() {
 		return changes;

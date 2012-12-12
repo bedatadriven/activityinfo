@@ -141,11 +141,9 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 			LOGGER.warning("Command " + command.toString() + " completed in " + timeElapsed + "ms" );
 		}
 		
-		if ( !(result instanceof CommandException))  {
-			// if the command completed successfully, notify listeners
-			LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
-			serverEventBus.post(new CommandEvent(command, result, context));
-		}
+		// notify listeners of the completion of this command
+		LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
+		serverEventBus.post(new CommandEvent(command, result, context));
 		
 		return result;
     }

@@ -2,9 +2,14 @@ package org.activityinfo.server.event.sitechange;
 
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.event.CommandEvent;
 import org.activityinfo.server.event.CommandEventListener;
 import org.activityinfo.server.event.ServerEventBus;
+import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.UpdateSite;
 
@@ -18,31 +23,42 @@ public class SiteChangeListener extends CommandEventListener {
 	@SuppressWarnings("unchecked")
 	public SiteChangeListener(ServerEventBus serverEventBus) {
 		super(serverEventBus, CreateSite.class, UpdateSite.class);
+		LOGGER.info("initializing EventListener for commands CreateSite, UpdateSite");
 	}
 
 	@Override
 	public void onEvent(CommandEvent event) {
-		Integer userId = event.getUserId();
-		Integer siteId = event.getSiteId();
+		String siteId = getSiteId(event);
+		String userId = getUserId(event);
 		
 		if (siteId != null && userId != null) {
-			onEvent(event, userId, siteId);
+			Queue queue = QueueFactory.getQueue("commandevent");
+		    queue.add(withUrl(SiteChangeServlet.ENDPOINT)
+		    			.param(SiteChangeServlet.PARAM_SITE, siteId)
+		    			.param(SiteChangeServlet.PARAM_USER, userId)
+		    			.param(SiteChangeServlet.PARAM_NEW, event.getCommand() instanceof CreateSite ? "true" : "false"));
 		} else {
-			LOGGER.warning("event fired without site and/or user!");
+			LOGGER.warning("sitechange event fired without site and/or user!");
 		}
 	}
 	
-	protected void onEvent(CommandEvent event, int userId, int siteId) {
-		boolean isNew = isNew(event);
-		
-		Queue queue = QueueFactory.getQueue("commandevent");
-	    queue.add(withUrl(SiteChangeServlet.ENDPOINT)
-	    			.param(SiteChangeServlet.PARAM_SITE, String.valueOf(siteId))
-	    			.param(SiteChangeServlet.PARAM_USER, String.valueOf(userId))
-	    			.param(SiteChangeServlet.PARAM_NEW, String.valueOf(isNew)));
+	public String getSiteId(CommandEvent event) {
+		String siteId = null;
+		Command cmd = event.getCommand();
+		if (cmd instanceof CreateSite) {
+			siteId = String.valueOf(((CreateSite)cmd).getSiteId());
+		} else if (cmd instanceof UpdateSite) {
+			siteId = String.valueOf(((UpdateSite)cmd).getSiteId());
+		}
+		return siteId;
 	}
 	
-	protected boolean isNew(CommandEvent event) {
-		return (event.getCommand() instanceof CreateSite);
+	public String getUserId(CommandEvent event) {
+		String userId = null;
+		AuthenticatedUser au = event.getContext().getUser();
+		if (au != null) {
+			userId = String.valueOf(au.getUserId());
+		}
+		return userId;
 	}
 }

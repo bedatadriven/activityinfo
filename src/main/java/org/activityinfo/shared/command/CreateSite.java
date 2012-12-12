@@ -10,7 +10,7 @@ import org.activityinfo.shared.dto.SiteDTO;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 
-public class CreateSite implements MutatingCommand<CreateResult>, SiteCommand {
+public class CreateSite implements MutatingCommand<CreateResult> {
 
 	private RpcMap properties;
 	

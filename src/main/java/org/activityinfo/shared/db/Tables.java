@@ -28,7 +28,6 @@ public class Tables {
 	public static final String REPORT_VISIBILITY =  "reportvisibility";
 	public static final String SITE =  "site";
 	public static final String SITE_ATTACHMENT =  "siteattachment";
-	public static final String SITE_HISTORY =  "sitehistory";
 	public static final String TARGET =  "target";
 	public static final String TARGET_VALUE =  "targetvalue";
 	public static final String USER_DATABASE =  "userdatabase";
