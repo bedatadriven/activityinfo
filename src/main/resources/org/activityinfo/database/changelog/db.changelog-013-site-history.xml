@@ -11,19 +11,19 @@
 			<column name="id" type="int" autoIncrement="true">
 				<constraints nullable="false" primaryKey="true" />
 			</column>
-			<column name="userid" type="int">
-				<constraints nullable="false" foreignKeyName="fk_sitehistory_userlogin" references="userlogin(userid)" />
-			</column>
 			<column name="siteid" type="int">
 				<constraints nullable="false" foreignKeyName="fk_sitehistory_site" references="site(siteid)" />
+			</column>
+			<column name="userid" type="int">
+				<constraints nullable="false" foreignKeyName="fk_sitehistory_userlogin" references="userlogin(userid)" />
 			</column>
 			<column name="timecreated" type="bigint" defaultValueNumeric="0">
 				<constraints nullable="false" /> 
 			</column>
-			<column name="json" type="longtext" />
-			<column name="isnew" type="bit" defaultValueBoolean="false">
+			<column name="initial" type="bit" defaultValueBoolean="false">
 				<constraints nullable="false"/>
 			</column>
+			<column name="json" type="longtext" />
 		</createTable>
 	</changeSet>
 

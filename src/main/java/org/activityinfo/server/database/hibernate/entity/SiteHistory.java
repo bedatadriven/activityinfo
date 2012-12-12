@@ -25,7 +25,7 @@ public class SiteHistory implements java.io.Serializable {
 	private User user;
 	private String json;
 	private long timeCreated;
-	private boolean isNew;
+	private boolean initial;
 
     public SiteHistory() {
 	}
@@ -79,13 +79,13 @@ public class SiteHistory implements java.io.Serializable {
 		this.timeCreated = timeCreated;
 	}
 	
-    @Column(name = "isnew", nullable = false)
-    public boolean isNew() {
-        return this.isNew;
+    @Column(name = "initial", nullable = false)
+    public boolean isInitial() {
+        return this.initial;
     }
 
-    public void setNew(boolean isNew) {
-        this.isNew = isNew;
+    public void setInitial(boolean initial) {
+        this.initial = initial;
     }
 
 }
