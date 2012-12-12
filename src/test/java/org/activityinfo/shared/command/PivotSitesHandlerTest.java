@@ -341,8 +341,21 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 		
 		assertEquals(1, buckets.size());
 		assertEquals(13600, (int) buckets.get(0).doubleValue());
-
 	}
+
+	@Test
+	@OnDataSet("/dbunit/sites-deleted.db.xml")
+	public void testDeletedNotLinked() {
+
+		withIndicatorAsDimension();
+		filter.addRestriction(DimensionType.Indicator, Arrays.asList(400,401));
+		
+		execute();
+		
+		assertEquals(1, buckets.size());
+		assertEquals(13600, (int) buckets.get(0).doubleValue());
+	}
+	
 
 	@Test
 	@OnDataSet("/dbunit/sites-zeros.db.xml")
