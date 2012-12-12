@@ -37,6 +37,10 @@ public class GetDimensionLabelsHandler implements CommandHandlerAsync<GetDimensi
 		String primaryKey;
 		
 		switch(command.getType()) {
+		case Site:
+			tableName = "(select s.siteid, l.name from site s left join location l on (s.locationid=l.locationid))";
+			primaryKey = "siteid";
+			break;
 		case Database:
 			tableName = "UserDatabase";
 			primaryKey = "DatabaseId";
@@ -53,7 +57,7 @@ public class GetDimensionLabelsHandler implements CommandHandlerAsync<GetDimensi
 		return SqlQuery.select()
 				.appendColumn("name")
 				.appendColumn(primaryKey, "id")
-				.from(tableName.toLowerCase())
+				.from(tableName.toLowerCase(), "t")
 				.where(primaryKey)
 				.in(command.getIds());
 	}
