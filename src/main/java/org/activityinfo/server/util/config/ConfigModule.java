@@ -103,7 +103,7 @@ public class ConfigModule extends AbstractModule {
         String key = BeanstalkEnvironment.getConfigurationPropertiesKey();
         if(Strings.isNullOrEmpty(key)) {
         	logger.log(Level.SEVERE, "AWS Credentials provided, but PARAM2 does not contain the configuration file's key");
-        }
+        }	
         
         AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey));
         try {
@@ -130,7 +130,7 @@ public class ConfigModule extends AbstractModule {
     	if(suffixStart != -1) {
     		appVersion = appVersion.substring(0, suffixStart);
     	}
-        return new File(context.getRealPath("WEB-INF") + File.separator + "activityinfo. " + appVersion + ".properties");
+        return new File(context.getRealPath("WEB-INF") + File.separator + "activityinfo." + appVersion + ".properties");
     }
     
     private File systemSettings() {
