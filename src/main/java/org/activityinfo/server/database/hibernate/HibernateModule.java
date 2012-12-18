@@ -71,12 +71,12 @@ public class HibernateModule extends ServletModule {
 
         @Override
         public EntityManagerFactory get() {
-        	// ensure that hibernate does NOT do schema updating--liquibase is in charge
         	Ejb3Configuration config = new Ejb3Configuration();
         	config.addProperties(configProperties.asProperties());
         	for(Class clazz : getPersistentClasses()) {
         		config.addAnnotatedClass(clazz);
         	}
+        	// ensure that hibernate does NOT do schema updating--liquibase is in charge
         	config.setProperty(Environment.HBM2DDL_AUTO, "");
         	config.setNamingStrategy(new AINamingStrategy());
         	EntityManagerFactory emf = config.buildEntityManagerFactory();

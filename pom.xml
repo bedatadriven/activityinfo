@@ -754,10 +754,45 @@
 
 	<profiles>
 	<profile>
-			<id>ci</id>
+			<id>production</id>
 			<properties>
 				<display.version>2.7 Build ${BUILD_NUMBER}</display.version>
 				<gae.application.version>build${BUILD_NUMBER}</gae.application.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>net.kindleit</groupId>
+						<artifactId>maven-gae-plugin</artifactId>
+						<version>0.9.4</version>
+						<configuration>
+							<serverId>appengine.google.com</serverId>
+						</configuration>
+						<executions>
+							<execution>
+								<id>unpack</id>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<phase>initialize</phase>
+							</execution>
+							<execution>
+								<id>deploy</id>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+								<phase>deploy</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>staging</id>
+			<properties>
+				<display.version>Staging b${BUILD_NUMBER}</display.version>
+				<gae.application.version>staging</gae.application.version>
 			</properties>
 			<build>
 				<plugins>
