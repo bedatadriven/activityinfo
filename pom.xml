@@ -151,7 +151,7 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>2.0.5</version>
+			<version>2.0.2-bdd</version>
 		</dependency>
 		<dependency>
 			<groupId>geronimo-spec</groupId>
@@ -791,7 +791,7 @@
 		<profile>
 			<id>staging</id>
 			<properties>
-				<display.version>Staging Build ${BUILD_NUMBER}</display.version>
+				<display.version>Staging b${BUILD_NUMBER}</display.version>
 				<gae.application.version>staging</gae.application.version>
 			</properties>
 			<build>
