@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -43,6 +44,7 @@ public class ConfigModule extends AbstractModule {
         tryToLoadFrom(properties, systemSettings());
         tryToLoadFrom(properties, userSettings());
         tryToLoadFromS3(properties);
+        tryToLoadFrom(properties, versionSpecific(context));
 
         return new DeploymentConfiguration(properties);
     }
@@ -114,6 +116,21 @@ public class ConfigModule extends AbstractModule {
     
     private File webInfDirectory(ServletContext context) {
         return new File(context.getRealPath("WEB-INF") + File.separator + "activityinfo.properties");
+    }
+    
+    /**
+     * Path to an override properties files for the current appEngine version.
+     * For example, if we have the appengine version staging, the path will be
+     * WEB-INF/activityinfo.staging.properties.
+     *
+     */
+    private File versionSpecific(ServletContext context) {
+    	String appVersion = Strings.nullToEmpty(SystemProperty.applicationVersion.get());
+    	int suffixStart = appVersion.lastIndexOf('.');
+    	if(suffixStart != -1) {
+    		appVersion = appVersion.substring(0, suffixStart);
+    	}
+        return new File(context.getRealPath("WEB-INF") + File.separator + "activityinfo. " + appVersion + ".properties");
     }
     
     private File systemSettings() {
