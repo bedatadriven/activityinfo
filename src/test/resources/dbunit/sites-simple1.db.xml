@@ -287,6 +287,12 @@
 	<indicatorValue reportingPeriodId="1" indicatorId="2"
 		value="500" />
 
+	<sitehistory id="1" siteid="1" userid="1" timecreated="1355342502769" initial="true"
+		json="{'id':{'type':'Integer','value':1},'I4925':{'type':'Double','value':54.0},'comments':{'type':'String','value':'site 1 my first comment'}}" />
+	<sitehistory id="2" siteid="1" userid="3" timecreated="1355342502792" initial="false"
+		json="{'comments':{'type':'String','value':'site 1 changed comment'}}" />
+
+
 
 	<!-- id=2 NFI Distribution at Ngwshe, Sud Kivu 16 jan 2009 -->
 
@@ -308,6 +314,12 @@
 		value="3600" />
 	<indicatorValue reportingPeriodId="2" indicatorId="2"
 		value="1200" />
+
+	<sitehistory id="3" siteid="2" userid="1" timecreated="1355342502769" initial="false"
+		json="{'id':{'type':'Integer','value':1},'I4925':{'type':'Double','value':54.0},'comments':{'type':'String','value':'site 2 my first comment'}}" />
+	<sitehistory id="4" siteid="2" userid="3" timecreated="1355342502792" initial="false"
+		json="{'comments':{'type':'String','value':'site 2 changed comment'}}" />
+
 
 	<!-- id=3 NFI Distribution at Boga, Ituri 2008 -->
 

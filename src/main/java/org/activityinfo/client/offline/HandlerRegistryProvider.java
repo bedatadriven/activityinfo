@@ -6,7 +6,7 @@ import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.GeneratePivotTable;
 import org.activityinfo.shared.command.GetAdminEntities;
-import org.activityinfo.shared.command.GetLocation;
+import org.activityinfo.shared.command.GetLocations;
 import org.activityinfo.shared.command.GetPartnersWithSites;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSiteAttachments;
@@ -19,7 +19,7 @@ import org.activityinfo.shared.command.handler.CreateSiteHandler;
 import org.activityinfo.shared.command.handler.DeleteSiteHandler;
 import org.activityinfo.shared.command.handler.GeneratePivotTableHandler;
 import org.activityinfo.shared.command.handler.GetAdminEntitiesHandler;
-import org.activityinfo.shared.command.handler.GetLocationHandler;
+import org.activityinfo.shared.command.handler.GetLocationsHandler;
 import org.activityinfo.shared.command.handler.GetPartnersWithSitesHandler;
 import org.activityinfo.shared.command.handler.GetSchemaHandler;
 import org.activityinfo.shared.command.handler.GetSiteAttachmentsHandler;
@@ -44,11 +44,11 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
             CreateSiteHandler createSiteHandler,
             UpdateSiteHandler updateSiteHandler,
             CreateLocationHandler createLocationHandler,
-            SearchLocationsHandler getLocationsHandler,
+            SearchLocationsHandler searchLocationsHandler,
             //SearchHandler searchHandler,
             PivotSitesHandler pivotSitesHandler,
             GeneratePivotTableHandler generatePivotTableHandler,
-            GetLocationHandler getLocationHandler,
+            GetLocationsHandler getLocationsHandler,
             DeleteSiteHandler deleteSiteHandler,
             GetSiteAttachmentsHandler getSiteAttachmentsHandler) {
 		
@@ -61,10 +61,10 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
     	registry.registerHandler(UpdateSite.class, updateSiteHandler);
     	registry.registerHandler(CreateLocation.class, createLocationHandler);
     	//registry.registerHandler(Search.class, searchHandler);
-    	registry.registerHandler(SearchLocations.class, getLocationsHandler);
+    	registry.registerHandler(SearchLocations.class, searchLocationsHandler);
     	registry.registerHandler(GeneratePivotTable.class, generatePivotTableHandler);
     	registry.registerHandler(PivotSites.class, pivotSitesHandler);
-    	registry.registerHandler(GetLocation.class, getLocationHandler);
+    	registry.registerHandler(GetLocations.class, getLocationsHandler);
     	registry.registerHandler(DeleteSite.class, deleteSiteHandler);	
     	registry.registerHandler(GetSiteAttachments.class, getSiteAttachmentsHandler);
 	}

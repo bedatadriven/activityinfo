@@ -4,8 +4,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.shared.command.GetLocation;
+import org.activityinfo.shared.command.GetLocations;
 import org.activityinfo.shared.command.SearchLocations;
+import org.activityinfo.shared.command.GetLocations.GetLocationsResult;
 import org.activityinfo.shared.command.result.LocationResult;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.LocationDTO;
@@ -108,7 +109,7 @@ public class LocationSearchPresenter extends BaseObservable {
 	
 	public void accept() {
 		// retrieve the full version of this location
-		dispatcher.execute(new GetLocation(selection.getId()), new AsyncCallback<LocationDTO>() {
+		dispatcher.execute(new GetLocations(selection.getId()), new AsyncCallback<GetLocationsResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -116,8 +117,8 @@ public class LocationSearchPresenter extends BaseObservable {
 			}
 
 			@Override
-			public void onSuccess(LocationDTO result) {
-				selection = result;
+			public void onSuccess(GetLocationsResult result) {
+				selection = result.getLocation();
 				fireEvent(ACCEPTED, new BaseEvent(ACCEPTED));
 			}
 		});
