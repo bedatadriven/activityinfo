@@ -13,6 +13,7 @@ import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.dto.SiteHistoryDTO;
+import org.mortbay.log.Log;
 
 import com.google.common.collect.Lists;
 
@@ -62,6 +63,9 @@ public class SiteHistoryRenderer {
 	}
 	
 	private String renderUpdates(Context ctx) {
+		
+		Log.debug("History json = " + ctx.getHistory().getJson());
+		
 		StringBuilder updates = new StringBuilder();
 		updates.append("<ul style='margin:0px 0px 10px 20px; font-size: 11px;'>");
 		for (Map.Entry<String, Object> entry : ctx.getHistory().getJsonMap().entrySet()) {
