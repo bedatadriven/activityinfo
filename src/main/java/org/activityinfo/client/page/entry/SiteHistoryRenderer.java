@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
@@ -13,7 +13,6 @@ import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.dto.SiteHistoryDTO;
-import org.mortbay.log.Log;
 
 import com.google.common.collect.Lists;
 
