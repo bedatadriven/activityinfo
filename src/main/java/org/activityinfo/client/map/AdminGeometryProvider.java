@@ -26,7 +26,7 @@ public final class AdminGeometryProvider {
 
 	private void fetchGeometry(final int levelId,
 			final AsyncCallback<AdminGeometry> callback) {
-		RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/geometry/" + levelId);
+		RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "//geometry.activityinfo.org/" + levelId + ".json");
 		request.setCallback(new RequestCallback() {
 			
 			@Override
