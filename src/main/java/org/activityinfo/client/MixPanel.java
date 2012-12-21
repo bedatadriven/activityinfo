@@ -26,7 +26,7 @@ public class MixPanel {
 		$wnd.mixpanel.identify(id);
 	}-*/;
 	
-	private static native void doTrack(String eventName) /*- {
+	private static native void doTrack(String eventName) /*-{
 		$wnd.mixpanel.track(eventName);
 	}-*/;
 	
