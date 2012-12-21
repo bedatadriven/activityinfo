@@ -65,6 +65,8 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         
 
         injector.getUsageTracker();
+        injector.createMixPanelTracker();
+        
         injector.getHistoryManager();
         
     	injector.createOfflineController();	
