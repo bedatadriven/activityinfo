@@ -2,7 +2,6 @@ package org.activityinfo.shared.command.handler;
 
 import java.util.List;
 
-import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.GetSiteHistory;
 import org.activityinfo.shared.command.GetSiteHistory.GetSiteHistoryResult;
 import org.activityinfo.shared.dto.SiteHistoryDTO;
@@ -19,7 +18,6 @@ public class GetSiteHistoryHandler implements CommandHandlerAsync<GetSiteHistory
 
 	@Override
 	public void execute(final GetSiteHistory command, ExecutionContext context, final AsyncCallback<GetSiteHistoryResult> callback) {
-		Log.debug("executing GetSiteHistoryHandler");
 		
 		SqlQuery.select()
 				.appendColumn("h.id", "id")
@@ -47,8 +45,6 @@ public class GetSiteHistoryHandler implements CommandHandlerAsync<GetSiteHistory
 							siteHistory.setUserName(row.getString("username"));
 							siteHistory.setUserEmail(row.getString("useremail"));
 							siteHistories.add(siteHistory);
-							
-							Log.debug("row "+siteHistory.getId()+" json: "+siteHistory.getJson());
 						}
 						callback.onSuccess(new GetSiteHistoryResult(siteHistories));
 					}
