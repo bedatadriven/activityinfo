@@ -18,6 +18,7 @@ public class GetSiteHistoryHandler implements CommandHandlerAsync<GetSiteHistory
 
 	@Override
 	public void execute(final GetSiteHistory command, ExecutionContext context, final AsyncCallback<GetSiteHistoryResult> callback) {
+		
 		SqlQuery.select()
 				.appendColumn("h.id", "id")
 				.appendColumn("h.timecreated", "timecreated")
