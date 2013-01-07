@@ -66,7 +66,7 @@ public class OfflineController implements Dispatcher {
 	private UIConstants uiConstants;
 	private final Dispatcher remoteDispatcher;
 	private final OfflineCapabilityProfile capabilityProfile;
-	private final SyncHistoryTable historyTable;
+	private final Provider<SyncHistoryTable> historyTable;
 	
 	private Strategy activeStrategy;
 	private Date lastSynced = null;
@@ -77,7 +77,7 @@ public class OfflineController implements Dispatcher {
 			Provider<Synchronizer> gateway,
 			OfflineCapabilityProfile capabilityProfile, 
 			UIConstants uiConstants,
-			SyncHistoryTable historyTable) {
+			Provider<SyncHistoryTable> historyTable) {
 		this.eventBus = eventBus;
 		this.remoteDispatcher = remoteDispatcher;
 		this.synchronizerProvider = gateway;
@@ -301,7 +301,7 @@ public class OfflineController implements Dispatcher {
 		Strategy activate() {
 			pending = new ArrayList<CommandRequest>();
 			try {
-				historyTable.get(new AsyncCallback<Date>() {
+				historyTable.get().get(new AsyncCallback<Date>() {
 					
 					@Override
 					public void onSuccess(Date result) {

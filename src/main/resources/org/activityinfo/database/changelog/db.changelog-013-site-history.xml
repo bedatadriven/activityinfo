@@ -33,4 +33,11 @@
 		</comment>
 		<modifyDataType tableName="sitehistory" columnName="json" newDataType="varchar(5000)"/>
 	</changeSet>
+	<changeSet author="alex" id="013-03">
+		<comment>
+			Alters the sitehistory table, changing the json column back to longtext following
+			fix in rebar library
+		</comment>
+		<modifyDataType tableName="sitehistory" columnName="json" newDataType="longtext"/>
+	</changeSet>
 </databaseChangeLog>
