@@ -21,10 +21,11 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	private Filter filter;
 
 	public GetAdminEntities() {
-
+		super();
 	}
 
 	public GetAdminEntities(int levelId) {
+		super();
 		this.levelId = levelId;
 	}
 
@@ -34,6 +35,11 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 		this.parentId = parentId;
 	}
 
+	public GetAdminEntities(int countryId, Filter filter) {
+		super();
+		this.countryId = countryId;
+		this.filter = filter;
+	}
 
 	public Integer getLevelId() {
 		return levelId;
@@ -112,7 +118,7 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	@Override
 	public String toString() {
 		return "GetAdminEntities [levelId=" + levelId + ", parentId="
-		+ parentId + ", filter=" + filter + "]";
+		+ parentId + ", filter=" + filter + ", country=" + countryId+"]";
 	}
 
 
