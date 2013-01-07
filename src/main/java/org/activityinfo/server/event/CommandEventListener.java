@@ -16,7 +16,7 @@ public abstract class CommandEventListener {
 		serverEventBus.register(this);
 		this.triggers = triggers;
 	}
-
+	
 	@Subscribe
 	public void handleEvent(CommandEvent event) {
 		Class<? extends Command> commandClass = event.getCommand().getClass();
@@ -34,5 +34,5 @@ public abstract class CommandEventListener {
 		}
 	}
 	
-	public abstract void onEvent(CommandEvent event);
+	protected abstract void onEvent(CommandEvent event);
 }

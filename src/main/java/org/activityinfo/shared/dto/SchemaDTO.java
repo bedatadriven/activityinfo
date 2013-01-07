@@ -10,11 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activityinfo.client.report.editor.pivotTable.DimensionModel;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -91,6 +88,16 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 			PartnerDTO partner = getById(database.getPartners(), partnerId);
 			if(partner!=null) {
                 return partner;
+            }
+		}
+		return null;
+	}
+	
+	public ProjectDTO getProjectById(int projectId) {
+		for (UserDatabaseDTO database : databases) {
+			ProjectDTO project = getById(database.getProjects(), projectId);
+			if (project != null) {
+                return project;
             }
 		}
 		return null;
@@ -224,6 +231,18 @@ public final class SchemaDTO extends BaseModelData implements DTO {
 				AttributeGroupDTO group = activity.getAttributeGroupById(attributeGroupId);
 				if(group != null) {
 					return group;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public AttributeDTO getAttributeById(int attributeId) {
+		for (UserDatabaseDTO db : getDatabases()) {
+			for (ActivityDTO activity : db.getActivities()) {
+				AttributeDTO attr = activity.getAttributeById(attributeId);
+				if (attr != null) {
+					return attr;
 				}
 			}
 		}

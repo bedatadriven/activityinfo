@@ -10,6 +10,7 @@ package org.activityinfo.client.inject;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.HistoryManager;
+import org.activityinfo.client.MixPanel;
 import org.activityinfo.client.UsageTracker;
 import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
@@ -58,4 +59,5 @@ public interface AppInjector extends Ginjector {
     SchemaCache createSchemaCache();
     AdminEntityCache createAdminCache();
 	
+    MixPanel createMixPanelTracker();
 }
