@@ -174,8 +174,25 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	@DefaultMessage("{0} ({1}) created a new {2} at {3} in the {4} database on {5,date,dd-MM-yyyy 'at' HH:mm}. Here are the details:")
 	String siteCreateIntro(String userName, String userEmail, String activityName, String locationName, String databaseName, Date date);
 
-	
 	@DefaultMessage("Best regards,<br>The ActivityInfo Team")
 	String sitechangeSignature();
+	
+	@DefaultMessage("{0,date,dd-MM-yyyy - HH:mm} {1} ({2}) created the site.")
+	String siteHistoryCreated(Date date, String userName, String userEmail);
+
+	@DefaultMessage("{0,date,dd-MM-yyyy - HH:mm} {1} ({2}) updated the site:")
+	String siteHistoryUpdated(Date date, String userName, String userEmail);
+	
+	@DefaultMessage("was: {0}")
+	String siteHistoryOldValue(Object oldValue);
+
+	@DefaultMessage("was: blank")
+	String siteHistoryOldValueBlank();
+	
+	@DefaultMessage("Added attribute {0}")
+	String siteHistoryAttrAdd(String attrName);
+
+	@DefaultMessage("Removed attribute {0}")
+	String siteHistoryAttrRemove(String attrName);
 }
 

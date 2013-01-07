@@ -65,6 +65,9 @@ public class SiteRenderer {
             renderAttribute(html, group, site);
         }
 
+        html.append("<p><span class='groupName'>");
+        html.append(I18N.CONSTANTS.indicators());
+        html.append(":</p>");
         html.append("<table class='indicatorTable' cellspacing='0'>");
         for(IndicatorGroup group : activity.groupIndicators())  {
             renderIndicatorGroup(html, group, site, showEmptyRows);

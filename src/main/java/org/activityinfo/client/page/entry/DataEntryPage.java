@@ -54,6 +54,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * This is the container for the DataEntry page.
@@ -81,6 +82,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	private DataEntryPlace currentPlace = new DataEntryPlace();
 
 	private AttachmentsTab attachmentsTab;
+
+	private SiteHistoryTab siteHistoryTab;
 
 	private ActionToolBar toolBar;
 
@@ -142,10 +145,13 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 		
 		attachmentsTab = new AttachmentsTab(dispatcher, eventBus);
 						
+		siteHistoryTab = new SiteHistoryTab(dispatcher);
+		
 		tabPanel = new CollapsibleTabPanel();
 		tabPanel.add(detailTab);
 		tabPanel.add(monthlyTab);
 		tabPanel.add(attachmentsTab);
+		tabPanel.add(siteHistoryTab);
 		tabPanel.setSelection(detailTab);
 		center.add(tabPanel, tabPanel.getBorderLayoutData());
 		
@@ -222,6 +228,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 				tabPanel.setSelection(detailTab);
 			}
 		}
+		siteHistoryTab.setSite(site);
 	}
 	
 	private void onNoSelection() {
