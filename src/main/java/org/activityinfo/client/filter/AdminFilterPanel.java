@@ -17,6 +17,7 @@ import org.activityinfo.client.filter.FilterToolBar.RemoveFilterHandler;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetAdminLevels;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.CountryDTO;
@@ -65,37 +66,7 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
         createAdminEntitiesTree();
         createFilterToolBar();
-        
-        loadData();
-        
-        layout(true);
     }
-
-	private void loadData() {
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				GWT.log("Failed to load admin entities", caught);
-			}
-
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				Set<Integer> activities = value.getRestrictions(DimensionType.Activity);
-				if(!activities.isEmpty()) {
-					loadCountry(result.getActivityById(activities.iterator().next()).getDatabase().getCountry());
-				} else if(!result.getCountries().isEmpty()) {
-					loadCountry(result.getCountries().iterator().next());
-				}
-				// TODO: support multiple countries!
-			}
-		});	
-	}
-	
-	private void loadCountry(CountryDTO country) {
-		loader.setCountry(country);
-		loader.setFilter(baseFilter);
-		loader.load();
-	}
 
 	private void createAdminEntitiesTree() {
 		tree = new TreePanel<AdminEntityDTO>(store) {
@@ -203,7 +174,6 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 	}
 
 	private void removeFilter() {
-		
 		for(AdminEntityDTO entity : tree.getCheckedSelection()) {
 			tree.setChecked(entity, false);
 		}
@@ -243,10 +213,11 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 		Filter filter = new Filter(providedFilter);
 		filter.clearRestrictions(DimensionType.AdminLevel);
 		
-		if(baseFilter == null || !baseFilter.equals(filter)) {
-			baseFilter = filter;
-			loader.setFilter(baseFilter);
+		if (baseFilter == null || !baseFilter.equals(filter)) {
+			loader.setFilter(filter);
 			loader.load();
+			
+			baseFilter = filter;
 		}
 	}
 	
