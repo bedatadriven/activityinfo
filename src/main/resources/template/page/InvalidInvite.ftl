@@ -1,13 +1,18 @@
-<html>
-<head>
-    <title>ActivityInfo - Invalid Key</title>
-</head>
+<#include "Scaffolding.ftl">
+<@scaffolding title="Invalid or expired invite">
 
-<body>
+	<@content>
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="page-header"><h1 class="page-title">Invalid invitation</h1></div>
+			
+			<p>Sorry, this invitiation is invalid or has already been used.</p>
+			
+			<p>If you've already chosen a password for ActivityInfo, you can login in directly.</p>
+			
+			<p><a href="login" class="btn btn-primary">Login now</a></p>
+		 </div>
+	</div>
+	</@content>
 
-<h1>Invalid Invite</h1>
-
-<p>This invitation is invalid or has already been used. You can access the login
-    page from <a href="login">here</a></p>
-
-</body>
+</@scaffolding>

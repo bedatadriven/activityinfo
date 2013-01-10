@@ -1,55 +1,38 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<#include "Scaffolding.ftl">
+<@scaffolding title="Reset your password">
 
-<link href="static/login.css" rel="stylesheet" type="text/css"/>
-
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-
-    <meta http-equiv="Cache-Control" content="no-cache" />
-    <meta name="description" content="ActivityInfo est la solution ">
-    <title>ActivityInfo</title>
-</head>
-<body class="login" >
-
-	<form name="Form1" method="post" id="Form1" action="loginProblem" method="post">
-
-		<div id="login">
-			<div id="cap-top"></div>
-            <div id="cap-body">
-                <div id="bar-top"></div>
-
-                <div id="panelLogin">
-
-                <div id="loginPanel">
-					<p class="instructions">Saisir votre addresse email et on va vous envoyer un message qui vous permettre de choisir un nouveau mot
-			                    de passe</p>
-
-                    <label>Addresse Email</label>
-
-                    <input name="email" type="text" value="" id="txtLogin" class="textboxX"/>
+	<@content>
+	<div class="row-fluid">
+		<div class="span12">
+		
+			<div class="page-header"><h1 class="page-title">Reset your password</h1></div>
+			
+			<p>Saisir votre addresse email et on va vous envoyer un message qui vous 
+				permettre de choisir un nouveau mot de passe</p>
+				
+			<form class="form-inline" action="loginProblem" method="POST">
+			  <input type="text" name="email" class="input-xlarge" placeholder="my.name@ngo.org">
+			  <button type="submit" class="btn btn-primary">Reset</button>
+			</form>
+		
+            <#if loginError == true>
+	            <div class="alert alert-error">
+	           		<a class="close" data-dismiss="alert" href="#">&times;</a>
+	                On ne peut trouve une compte ActivityInfo avec cette addresse email. 
+				</div>
+            </#if>
+            <#if emailSent == true>
+				<div class="alert alert-success">            	
+                	Un email a ete bien envoyé
                 </div>
-               
-                <div id="errorPanel">
-                <#if loginError == true>
-                    On ne peut trouve une compte ActivityInfo avec cette addresse email.
-                </#if>
-                <#if emailSent == true>
-                    Un email a ete bien envoyé
-                </#if>
-                <#if emailError == true>
-                    Il y avait une erreur en envoyant la message. Essayer plus tard.
-                </#if>
-                </div>
-                <div class="rememberBox" id="rememberPanel">
+            </#if>
+            <#if emailError == true>
+            	<div class="alert alert-error">
+                	Il y avait une erreur en envoyant la message. Essayer plus tard.
+				</div>
+            </#if>
+		</div>
+	</div>
+	</@content>
 
-               		<input type="submit" value="Envoyer le lien"></span></a></span>
-             
-           		</div>
-
-          	</div>
-            <div id="cap-bottom"></div>
-        </div>
-    </form>
-</body>
-</html>
+</@scaffolding>
