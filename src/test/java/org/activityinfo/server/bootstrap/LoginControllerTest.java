@@ -28,7 +28,7 @@ public class LoginControllerTest extends ControllerTestCase {
     	MailSender sender = createMock(MailSender.class);
     	replay(sender);
     	
-        controller = new LoginController(injector, templateCfg, sender);
+        controller = new LoginController(injector, templateCfg, sender, null);
 
         req.setRequestURL("http://activityinfo.org/login");
     }
