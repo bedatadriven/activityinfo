@@ -5,7 +5,7 @@
 	<div class="row-fluid">
 		<div class="span12">
 		
-			<div class="page-header"><h1 class="page-title">Reset your password</h1></div>
+			<h3>Reset your password</h3>
 			
 			<p>Saisir votre addresse email et on va vous envoyer un message qui vous 
 				permettre de choisir un nouveau mot de passe</p>

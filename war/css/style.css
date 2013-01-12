@@ -207,10 +207,10 @@ ul.pagination li.unavailable:hover a, ul.pagination li.unavailable a:focus { bor
 .comment .vcard .comment-text{ padding-left: 0; padding-right: 0; }
 
 /* Misc */
-.alert.feature { background:#f9f9f9; border:1px solid #eee; color:#666; text-shadow:0 -1px 0 rgba(255,255,255,0.8); padding-left:30px; margin-bottom:10px; font-weight:bold; }
+.alert.feature { background:#f9f9f9; border:1px solid #eee; color:#666; text-shadow:0 -1px 0 rgba(255,255,255,0.8); padding-left:30px; margin-bottom:10px; font-weight:normal; font-size: 15px; }
 .alert.feature span { position:absolute; margin-left:-20px; margin-top:3px; }
 
-.form-signin { text-shadow:0 -1px 0 rgba(255,255,255,0.7); margin-top:20px; padding:40px 25px; background-color: #f9f9f9; border: 1px solid #e5e5e5; border-radius: 3px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), inset 0 3px 100px rgba(0,0,0,0.05), 0 1px 5px rgba(0,0,0,.1); }
+.form-signin { text-shadow:0 -1px 0 rgba(255,255,255,0.7); margin-top:20px; padding:40px 25px ; padding-bottom:20px; background-color: #f9f9f9; border: 1px solid #e5e5e5; border-radius: 3px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), inset 0 3px 100px rgba(0,0,0,0.05), 0 1px 5px rgba(0,0,0,.1); }
 .form-signin .form-signin-heading { margin-top:0; font-size:20px; line-height:20px; margin-bottom:15px; }
 .form-signin .checkbox { float:  right; margin: 6px 55px 0 0; line-height:22px; font-size:12px; }
 .form-signin button { font-size:14px; padding:7px 15px; font-weight:bold; }
@@ -222,3 +222,5 @@ hr {border-top:1px solid #ccc;}
 
 .page-title{ font-size: 40px; line-height:40px; margin-top:5px; border-bottom:2px solid #eee; letter-spacing:-2px; font-family: 'Aller Bold', sans-serif; }
 .page-header { padding-bottom:0; margin: 0 0 10px; border-bottom: 0px; }
+
+.login-problem { margin-top: 20px; }
