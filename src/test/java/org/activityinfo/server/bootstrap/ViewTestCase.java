@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateModelException;
 
 /**
  * @author Alex Bertram
@@ -24,7 +25,7 @@ public abstract class ViewTestCase {
     protected static Configuration templateCfg;
 
     @BeforeClass
-    public static void setUpTemplateConfig() {
+    public static void setUpTemplateConfig() throws TemplateModelException  {
         TemplateModule module = new TemplateModule();
         templateCfg = module.provideConfiguration();
     }

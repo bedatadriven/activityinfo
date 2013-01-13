@@ -26,7 +26,7 @@ public class TemplateModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public Configuration provideConfiguration(I18nTemplateModel i18nModel) throws TemplateModelException {
+    public Configuration provideConfiguration() throws TemplateModelException {
     	
     	
         Configuration config = new Configuration();
