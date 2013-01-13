@@ -1,49 +1,92 @@
-<#-- @ftlvariable name="" type="org.activityinfo.server.bootstrap.model.ConfirmInvitePageModel" -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Cache-Control" content="no-cache"/>
-    <meta name="description" content="ActivityInfo est la solution ">
-    <title>ActivityInfo - Welcome</title>
-</head>
-<body>
+<#include "Scaffolding.ftl">
+<@scaffolding title="Welcome to ActivityInfo">
 
-<h1>Welcome to ActivityInfo</h1>
-
-<p>Before we get started, let's set up your account. Confirm your name and preferred language,
-    and then choose a password.</p>
-
-<form name="Form1" method="post" id="Form1" action="confirm" method="post">
-    <input type="hidden" name="key" value="${user.changePasswordKey}"></input>
-    <table>
-        <tr>
-            <td>Confirm your name:</td>
-            <td><input name="name" value="${user.name}"></td>
-        </tr>
-        <tr>
-            <td>Confirm your preferred language:</td>
-            <td>
+	<@content>
+	<div class="row-fluid">
+		<div class="span12">
+		
+			<h3>Welcome to ActivityInfo</h3>
+			
+			<p class="well">Before we get started, let's set up your account. Confirm your name and preferred language,
+    			and then choose a password.</p>
+			
+			<form class="form-horizontal" action="" method="post" id="confirmForm">
+			  <input type="hidden" name="key" value="${user.changePasswordKey}"></input>
+			
+			  <div class="control-group" id="nameGroup">
+			    <label class="control-label" for="nameInput">Confirm your name:</label>
+			    <div class="controls">
+			      <input type="text" name="name" id="nameInput" value="${user.name}" >
+			      <span class="help-inline hide" id="nameHelp">Please enter your full name</span>
+			    </div>
+			  </div>
+			  <div class="control-group">
+			    <label class="control-label" for="inputEmail">Confirm your preferred language:</label>
+			    <div class="controls">
                 <select name="locale">
                     <option value="en">English</option>
-                    <option value="fr">French / Français</option>
+                    <option value="fr">Français</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Choose a password:</td>
-            <td><input name="password" type="password"></td>
-        </tr>
-        <tr>
-            <td>Confirm your password:</td>
-            <td><input name="password2" type="password"></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td><input type="submit" value="Continue"></td>
-        </tr>
-    </table>
-</form>
-</body>
-</html>
+       			</div>
+			  </div>
+			  <div class="control-group">
+			    <label class="control-label" for="passwordInput">Choose a password:</label>
+			    <div class="controls">
+			      <input type="password" name="password" id="passwordInput" placeholder="Password">
+			      <span class="help-inline hide" id="passwordHelp">Password must be at least six characters.</span>
+			      
+			    </div>
+			  </div>
+			  <div class="control-group" id="confirmPasswordGroup">
+			    <label class="control-label" for="confirmPasswordInput">Confirm your password:</label>
+			    <div class="controls">
+			      <input type="password" name="password2" id="confirmPasswordInput" placeholder="Password">
+			      <span class="help-inline hide" id="confirmPasswordHelp">The passwords do not match</span>			      
+			    </div>
+			  </div>
+			  <div class="control-group">
+			    <div class="controls">
+
+			      <button type="submit" class="btn btn-primary btn-large">Continue  &raquo;</button>
+			    </div>
+			  </div>
+			</form>
+				
+		</div>
+	</div>
+	</@content>
+	<@scripts>
+	<script type="text/javascript">
+	
+		var validateName = function() {
+			var valid = !!( $('#nameInput').val() );
+			$('#nameGroup').toggleClass('error', !valid);
+			$('#nameHelp').toggleClass('hide', valid);
+			return valid;
+		};
+		
+		var validatePass = function() {
+			var pass1 = $('#passwordInput').val();
+			var pass2 = $('#confirmPasswordInput').val();
+			
+			var valid = pass1 && pass1.length >= 6;
+			$('#passwordGroup').toggleClass('error', !valid);
+			$('#passwordHelp').toggleClass('hide', valid);
+			
+			var confirmed = pass2 && (pass1 == pass2);
+			$('#confirmPasswordGroup').toggleClass('error', !confirmed);
+			$('#confirmPasswordHelp').toggleClass('hide', confirmed);
+			
+			return valid && confirmed;
+		};
+	
+		$("#nameInput").change(validateName);
+		$("#passwordInput").change(validatePass);
+		$("#confirmPasswordInput").change(validatePass);
+		$("#confirmForm").submit(function() {
+		  var valid = validateName() && validatePass();
+		  return !!valid;
+		});
+	</script>
+	</@scripts>
+</@scaffolding>

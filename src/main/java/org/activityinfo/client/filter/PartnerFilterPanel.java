@@ -113,7 +113,7 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 		final Filter filter = new Filter(rawFilter);
 		filter.clearRestrictions(DimensionType.Partner);
 		
-		if(baseFilter == null || !baseFilter.equals(filter)) {
+		if (baseFilter == null || !baseFilter.equals(filter)) {
 			service.execute(new GetPartnersWithSites(filter), new AsyncCallback<PartnerResult>() {
 	
 				@Override

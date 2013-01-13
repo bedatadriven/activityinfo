@@ -297,12 +297,14 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 	}
 
 	private void doNavigate() {
-		gridPanel.load(currentPlace.getGrouping(), currentPlace.getFilter());
-		groupingComboBox.setFilter(currentPlace.getFilter());
-		filterPane.getSet().applyBaseFilter(new Filter());
+		Filter filter = currentPlace.getFilter();
+		
+		gridPanel.load(currentPlace.getGrouping(), filter);
+		groupingComboBox.setFilter(filter);
+		filterPane.getSet().applyBaseFilter(filter);
 		
 		// currently the print form only does one activity
-		Set<Integer> activities = currentPlace.getFilter().getRestrictions(DimensionType.Activity);			
+		Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);			
 		toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
 		toolBar.setActionEnabled(UIActions.EXPORT, activities.size() == 1);
 		

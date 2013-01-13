@@ -6,7 +6,7 @@ import com.google.gwt.user.client.Window.Location;
 public class SessionUtil {
 
 	public static void forceLogin() {
-		Window.Location.assign("/content/");
+		Window.Location.assign("/login");
 	}
 	
 	public static void logout() {

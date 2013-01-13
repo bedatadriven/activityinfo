@@ -15,14 +15,13 @@ import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.authentication.AuthCookieUtil;
 import org.activityinfo.server.bootstrap.exception.NoValidAuthentication;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
+import org.activityinfo.server.bootstrap.model.LoginPageModel;
 import org.activityinfo.server.database.hibernate.dao.AuthenticationDAO;
-import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.server.util.logging.LogException;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -56,7 +55,7 @@ public class HostController extends AbstractController {
 				writeView(resp, model);
             }
         } catch (NoValidAuthentication noValidAuthentication) {
-            resp.sendRedirect("/content/" + parseUrlSuffix(req));
+            writeView(resp, new LoginPageModel());
         }
     }
 

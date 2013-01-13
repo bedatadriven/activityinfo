@@ -5,7 +5,6 @@
 
 package org.activityinfo.server.bootstrap;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -15,13 +14,13 @@ import javax.servlet.ServletException;
 
 import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
+import org.activityinfo.server.bootstrap.model.LoginPageModel;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
 public class HostControllerTest extends ControllerTestCase {
 
-	private static final String CONTENT_ROOT = "/content/";
 	
     @Before
     public void setupController() {
@@ -34,7 +33,7 @@ public class HostControllerTest extends ControllerTestCase {
 
         get();
 
-        assertEquals(resp.redirectUrl, CONTENT_ROOT);
+        assertTemplateUsed(LoginPageModel.class);
     }
 
     @Test
@@ -52,16 +51,7 @@ public class HostControllerTest extends ControllerTestCase {
 
         get();
 
-        assertEquals(CONTENT_ROOT, resp.redirectUrl);
+        assertTemplateUsed(LoginPageModel.class);
     }
 
-    @Test
-    public void verifyThatBookmarksArePassedOnToLoginPage() throws IOException, ServletException {
-
-        req.setRequestURL("http://www.activityinfo.org/#charts");
-
-        get();
-
-        assertTrue(resp.redirectUrl.endsWith("#charts"));
-    }
 }

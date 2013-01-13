@@ -58,7 +58,7 @@ public class AppBar extends Composite  {
 
 	@UiHandler("logo")
 	void handleLogoClick(ClickEvent e) {
-		Window.open("http://www.activityinfo.org/content/", "_blank", null);
+		Window.open("http://about.activityinfo.org/", "_blank", null);
 	}
 	
 	@UiHandler("settingsButton")
