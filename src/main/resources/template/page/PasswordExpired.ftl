@@ -4,7 +4,7 @@
 	<@content>
 	<div class="row-fluid">
 		<div class="span12">
-			<div class="page-header"><h1 class="page-title">Invalid invitation</h1></div>
+			<h3>Invalid invitation</h3>
 			
 			<p class="well">
 			Pour des raisons securitaire, votre mot de passe a expiré. Nous avons vous envoyer une email à 

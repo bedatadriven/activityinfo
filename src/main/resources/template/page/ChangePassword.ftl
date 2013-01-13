@@ -5,7 +5,7 @@
 	<div class="row-fluid">
 		<div class="span12">
 		
-			<div class="page-header"><h1 class="page-title">Choose a new password</h1></div>
+			<h3>Choose a new password</h3>
 			
 			<form class="form" method="post" id="loginForm" action="changePassword" method="post">
 		    	<input type="hidden" name="key" value="${user.changePasswordKey}"></input>

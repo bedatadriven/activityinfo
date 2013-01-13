@@ -18,7 +18,7 @@
         </div>
  		<div class="span4">										
 			<form class="form-signin" id="loginForm" action="http://www.activityinfo.org/login" method="POST">
-				<h3 class="form-signin-heading">Log in</h3>
+				<h3 class="form-signin-heading">${label.login}</h3>
 			   	<input type="text" name="email" id="emailInput" class="input-block-level" placeholder="Email address">
                	<input type="password" name="password" id="passwordInput" class="input-block-level" placeholder="Password">
 
@@ -28,7 +28,7 @@
                	<label class="checkbox">
                 	<input type="checkbox" value="remember-me"> Remember me
                 </label>			  			
-                <button class="btn btn-info btn-primary btn-large" type="submit">Log in</button> 
+                <button class="btn btn-info btn-primary btn-large" type="submit" id="loginButton">Log in</button> 
                 <img src="img/ajax-loader-spinner.gif" width="16" height="16" class="hide" id="loginSpinner">
 			
 				<div class="login-problem"><a href="loginProblem">Forgotten your password?</a></div>
@@ -61,7 +61,11 @@
 				ajax: 'true'
 			},
 			success: function() {
-				window.location = '/' + window.location.search;
+				if(window.location.pathname != '/') {
+					window.location = '/' + window.location.search + window.location.hash;
+				} else {
+					window.location.reload(true);
+				}
 			},
 			error: function(xhr) {
 				$('#loginAlert').toggleClass('hide', false);
@@ -72,6 +76,8 @@
 		});
 		return false;
 	});
+	
+	$('#emailInput').focus();
 	</script>
 	</@scripts>
 </@scaffolding>

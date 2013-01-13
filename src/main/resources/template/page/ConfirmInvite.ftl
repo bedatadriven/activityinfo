@@ -5,7 +5,7 @@
 	<div class="row-fluid">
 		<div class="span12">
 		
-			<h2>Welcome to ActivityInfo</h2>
+			<h3>Welcome to ActivityInfo</h3>
 			
 			<p class="well">Before we get started, let's set up your account. Confirm your name and preferred language,
     			and then choose a password.</p>
