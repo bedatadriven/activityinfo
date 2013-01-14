@@ -182,7 +182,13 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 
 	@DefaultMessage("{0,date,dd-MM-yyyy - HH:mm} {1} ({2}) updated the site:")
 	String siteHistoryUpdated(Date date, String userName, String userEmail);
+
+	@DefaultMessage("No history is available for this site.")
+	String siteHistoryNotAvailable();
 	
+	@DefaultMessage("History on sites is only available from {0,date,dd MMMM yyyy} onward.")
+	String siteHistoryAvailableFrom(Date date);
+
 	@DefaultMessage("was: {0}")
 	String siteHistoryOldValue(Object oldValue);
 

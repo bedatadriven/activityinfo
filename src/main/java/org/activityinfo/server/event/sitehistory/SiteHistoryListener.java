@@ -48,20 +48,20 @@ public class SiteHistoryListener extends SiteChangeListener {
 			q.setParameter("site", site);
 			Long count = (Long) q.getSingleResult();
 			if (count == 0) {
-				// update, but first entry -> repair history by adding record with complete site json
-				LOGGER.fine("site is not new, but history was empty. Repairing..");
+				// update, but first entry -> repair history by adding baseline record with complete site json
+				LOGGER.fine("site is not new, but history was empty. Adding baseline record..");
 				SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));
 				SiteDTO siteDTO = siteResult.getData().get(0);
 				String fulljson = JsonUtil.encodeMap(siteDTO.getProperties()).toString();
 			
-				SiteHistory repair = new SiteHistory();
-				repair.setSite(site);
-				repair.setUser(user);
-				repair.setJson(fulljson);
-				repair.setTimeCreated(new Date().getTime());
-				repair.setInitial(false);
+				SiteHistory baseline = new SiteHistory();
+				baseline.setSite(site);
+				baseline.setUser(user);
+				baseline.setJson(fulljson);
+				baseline.setTimeCreated(new Date().getTime());
+				baseline.setInitial(false);
 
-				persist(em, repair);
+				persist(em, baseline);
 			}
 		}
 

@@ -154,6 +154,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		.appendColumn("db.DatabaseId", "DatabaseId")
 		.appendColumn("site.Date1", "Date1")
 		.appendColumn("site.Date2", "Date2")
+		.appendColumn("site.DateCreated", "DateCreated")
 		.appendColumn("partner.PartnerId", "PartnerId")
 		.appendColumn("partner.name", "PartnerName")
 		.appendColumn("site.projectId", "ProjectId")
@@ -193,6 +194,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("db.DatabaseId", "DatabaseId")
 			.appendColumn("site.Date1", "Date1")
 			.appendColumn("site.Date2", "Date2")
+			.appendColumn("site.DateCreated", "DateCreated")
 			.appendColumn("partner.PartnerId", "PartnerId")
 			.appendColumn("partner.name", "PartnerName")
 			.appendColumn("site.projectId", "ProjectId")
@@ -503,11 +505,12 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	private SiteDTO toSite(SqlResultSetRow row) {
 	    SiteDTO model = new SiteDTO();
         model.setId( row.getInt("SiteId") );
-        model.setLinked( row.getBoolean("Linked"));
+        model.setLinked( row.getBoolean("Linked") );
         model.setActivityId( row.getInt("ActivityId") );
         model.setDate1( row.getDate("Date1") );
         model.setDate2( row.getDate("Date2") );
-        model.setLocationId(row.getInt("LocationId"));
+        model.setDateCreated( row.getDate("DateCreated") );
+        model.setLocationId( row.getInt("LocationId") );
         model.setLocationName( row.getString("LocationName") );
         model.setLocationAxe( row.getString("LocationAxe") );
         
