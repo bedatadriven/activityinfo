@@ -7,8 +7,8 @@ package org.activityinfo.client.filter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.filter.FilterToolBar.ApplyFilterEvent;
 import org.activityinfo.client.filter.FilterToolBar.ApplyFilterHandler;
@@ -17,11 +17,7 @@ import org.activityinfo.client.filter.FilterToolBar.RemoveFilterHandler;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.GetAdminLevels;
-import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.AdminEntityDTO;
-import org.activityinfo.shared.dto.CountryDTO;
-import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
@@ -33,11 +29,9 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -209,7 +203,6 @@ public class AdminFilterPanel extends ContentPanel implements FilterPanel {
 
 	@Override
 	public void applyBaseFilter(final Filter providedFilter) {
-		
 		Filter filter = new Filter(providedFilter);
 		filter.clearRestrictions(DimensionType.AdminLevel);
 		

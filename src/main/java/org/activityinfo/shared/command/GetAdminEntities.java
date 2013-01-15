@@ -5,6 +5,11 @@
 
 package org.activityinfo.shared.command;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import org.activityinfo.shared.command.result.AdminEntityResult;
 
 /**
@@ -15,7 +20,7 @@ import org.activityinfo.shared.command.result.AdminEntityResult;
  */
 public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 
-	private Integer countryId;
+	private Collection<Integer> countryIds;
 	private Integer levelId;
 	private Integer parentId;
 	private Filter filter;
@@ -37,7 +42,13 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 
 	public GetAdminEntities(int countryId, Filter filter) {
 		super();
-		this.countryId = countryId;
+		this.countryIds = Arrays.asList(countryId);
+		this.filter = filter;
+	}
+
+	public GetAdminEntities(Collection<Integer> countryIds, Filter filter) {
+		super();
+		this.countryIds = countryIds;
 		this.filter = filter;
 	}
 
@@ -54,12 +65,16 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 		this.parentId = parentId;
 	}
 
-	public Integer getCountryId() {
-		return countryId;
+	public Collection<Integer> getCountryIds() {
+		return countryIds;
 	}
 
 	public void setCountryId(Integer countryId) {
-		this.countryId = countryId;
+		this.countryIds = Arrays.asList(countryId);
+	}
+
+	public void setCountryIds(Collection<Integer> countryIds) {
+		this.countryIds = countryIds;
 	}
 
 	public Filter getFilter() {
@@ -118,7 +133,7 @@ public class GetAdminEntities extends GetListCommand<AdminEntityResult> {
 	@Override
 	public String toString() {
 		return "GetAdminEntities [levelId=" + levelId + ", parentId="
-		+ parentId + ", filter=" + filter + ", country=" + countryId+"]";
+		+ parentId + ", filter=" + filter + ", country=" + countryIds+"]";
 	}
 
 

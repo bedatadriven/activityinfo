@@ -16,13 +16,12 @@ import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.AdminEntityResult;
-import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
-import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.util.CollectionUtil;
 
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
@@ -59,16 +58,16 @@ class AdminTreeProxy implements DataProxy<List<AdminEntityDTO>> {
 
 			@Override
 			public void onSuccess(SchemaDTO schema) {
-				final CountryDTO country = findCountry(schema);
+				final Set<CountryDTO> countries = findCountries(schema);
 				
-		    	if (country == null) {
+		    	if (CollectionUtil.isEmpty(countries)) {
 		    		callback.onSuccess(new ArrayList<AdminEntityDTO>());
 		    		return;
 		    	}
-
-	    		initLevelsWithChildren(country);
+		    	
+	    		initLevelsWithChildren(countries);
 	    		
-		    	GetAdminEntities request = new GetAdminEntities(country.getId(), filter);
+		    	GetAdminEntities request = new GetAdminEntities(toIdSet(countries), filter);
 		    	
 		        if (parent != null) {
 		            assert parent instanceof AdminEntityDTO : "expecting AdminEntityDTO";
@@ -81,7 +80,7 @@ class AdminTreeProxy implements DataProxy<List<AdminEntityDTO>> {
 		            }
 		
 		            public void onSuccess(AdminEntityResult result) {
-		            	prepareData(country, result.getData());
+		            	prepareData(countries, result.getData());
 		                callback.onSuccess(result.getData());
 		            }
 		        });
@@ -89,38 +88,63 @@ class AdminTreeProxy implements DataProxy<List<AdminEntityDTO>> {
     	});
     }
 
-    private CountryDTO findCountry(SchemaDTO schema) {
-    	CountryDTO country = null;
+    private Set<CountryDTO> findCountries(SchemaDTO schema) {
+    	Set<CountryDTO> countries = new HashSet<CountryDTO>();
     	
 		Set<Integer> activityIds = filter.getRestrictions(DimensionType.Activity);
-		if (!activityIds.isEmpty()) {
-			ActivityDTO activity = schema.getActivityById(activityIds.iterator().next());
-			country = activity.getDatabase().getCountry();
-		} else {
-			Set<Integer> databaseIds = filter.getRestrictions(DimensionType.Database);
-			if (!databaseIds.isEmpty()) {
-				UserDatabaseDTO database = schema.getDatabaseById(databaseIds.iterator().next());
-				country = database.getCountry();
-			}
+		for (Integer activityId : activityIds) {
+			countries.add(schema.getActivityById(activityId).getDatabase().getCountry());
 		}
 		
-		return country;
+		Set<Integer> databaseIds = filter.getRestrictions(DimensionType.Database);
+		for (Integer databaseId : databaseIds) {
+			countries.add(schema.getDatabaseById(databaseId).getCountry());
+		} 
+		
+		Set<Integer> indicatorIds = filter.getRestrictions(DimensionType.Indicator);
+		for (Integer indicatorId : indicatorIds) {
+			countries.add(schema.getActivityByIndicatorId(indicatorId).getDatabase().getCountry());
+		}
+
+		return countries;
     }
     
-    private void initLevelsWithChildren(CountryDTO country) {
+    private Set<Integer> toIdSet(Set<CountryDTO> countries) {
+    	Set<Integer> ids = new HashSet<Integer>();
+    	for (CountryDTO country : countries) {
+    		ids.add(country.getId());
+    	}
+    	return ids;
+    }
+    
+    private void initLevelsWithChildren(Set<CountryDTO> countries) {
 		levelsWithChildren = new HashSet<Integer>();
-		for (AdminLevelDTO level : country.getAdminLevels()) {
-			levelsWithChildren.add(level.getParentLevelId());
+		for (CountryDTO country : countries) {
+			for (AdminLevelDTO level : country.getAdminLevels()) {
+				levelsWithChildren.add(level.getParentLevelId());
+			}
 		}
     }
 
-	private void prepareData(CountryDTO country, List<AdminEntityDTO> list) {
+	private void prepareData(Set<CountryDTO> countries, List<AdminEntityDTO> list) {
 		if (!sameLevel(list)) {
 			for (AdminEntityDTO entity : list) {
-				AdminLevelDTO level = country.getAdminLevelById(entity.getLevelId());
-				entity.setName( entity.getName() + " [" + level.getName() + "]");
+				AdminLevelDTO level = findLevel(countries, entity);
+				if (level != null) {
+					entity.setName( entity.getName() + " [" + level.getName() + "]");
+				}
 			}
 		}
+	}
+	
+	private AdminLevelDTO findLevel(Set<CountryDTO> countries, AdminEntityDTO entity) {
+		for (CountryDTO country : countries) {
+			AdminLevelDTO level = country.getAdminLevelById(entity.getLevelId());
+			if (level != null) {
+				return level;
+			}
+		}
+		return null;
 	}
 	
 	private boolean sameLevel(List<AdminEntityDTO> entities) {
