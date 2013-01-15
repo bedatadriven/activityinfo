@@ -8,7 +8,6 @@ package org.activityinfo.client.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.filter.FilterToolBar.ApplyFilterEvent;
 import org.activityinfo.client.filter.FilterToolBar.ApplyFilterHandler;
