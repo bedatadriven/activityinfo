@@ -20,12 +20,13 @@ import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DatabaseForm extends FormPanel {
-    private FormBinding binding;
+    private final FormBinding binding;
 
     public DatabaseForm(final Dispatcher dispatcher) {
         binding = new FormBinding(this);
@@ -49,17 +50,21 @@ public class DatabaseForm extends FormPanel {
         countryField.setValueField("id");
         countryField.setDisplayField("name");
         countryField.setAllowBlank(false);
-        binding.addFieldBinding( new FieldBinding(countryField, "country") {
+		countryField.getStore().getLoader().load();
+		countryField.setTriggerAction(TriggerAction.ALL);
+       
+		binding.addFieldBinding(new FieldBinding(countryField, "country") {
             @Override
             public void updateModel() {
-                ((UserDatabaseDTO)model).setCountry((CountryDTO) field.getValue());
-            }
-        });
+                ((UserDatabaseDTO)model).setCountry((CountryDTO) field
+						.getValue());
+			}
+		});
 
-        add(countryField);
+		add(countryField);
 	}
 
-    private static ListStore<CountryDTO> createCountryStore(final Dispatcher dispatcher) {
+  private static ListStore<CountryDTO> createCountryStore(final Dispatcher dispatcher) {
         return new ListStore<CountryDTO>(new BaseListLoader<CountryResult>(new DataProxy<CountryResult>(){
             @Override
             public void load(DataReader<CountryResult> countryResultDataReader, Object loadConfig, final AsyncCallback<CountryResult> callback) {

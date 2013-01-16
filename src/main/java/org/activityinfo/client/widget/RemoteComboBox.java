@@ -27,8 +27,7 @@ public class RemoteComboBox<T extends ModelData> extends ComboBox<T> {
     @Override
     public void doQuery(String q, boolean forceAll) {
         // load every time
-        store.getLoader().load(getParams(q));
-        store.filter(getDisplayField(), q);
+		store.filter(getDisplayField(), q);
         expand();
     }
 }
