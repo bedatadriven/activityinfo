@@ -549,14 +549,11 @@
 
 				<configuration>
 					<warSourceDirectory>${basedir}/war</warSourceDirectory>
-					<warSourceExcludes>ActivityInfo/compile-report,*.log,**/*.symbolMap</warSourceExcludes>
+					<warSourceExcludes>WEB-INF/appengine-web.xml,ActivityInfo/compile-report,*.log,**/*.symbolMap</warSourceExcludes>
 					<webResources>
 						<resource>
-							<directory>war</directory>
+							<directory>src/main/webapp</directory>
 							<filtering>true</filtering>
-							<includes>
-								<include>**/appengine-web.xml</include>
-							</includes>
 						</resource>
 					</webResources>
 				</configuration>

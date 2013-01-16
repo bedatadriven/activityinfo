@@ -8,6 +8,7 @@ import org.activityinfo.shared.command.result.AdminEntityResult;
 import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.report.model.DimensionType;
+import org.activityinfo.shared.util.CollectionUtil;
 import org.activityinfo.shared.util.mapping.Extents;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
@@ -30,17 +31,21 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
 					"AdminEntity.adminLevelId",
 					"AdminEntity.adminEntityParentId",
 					"x1","y1","x2","y2")
-					.from(Tables.ADMIN_ENTITY, "AdminEntity")
-					.orderBy("AdminEntity.name");
+					.from(Tables.ADMIN_ENTITY, "AdminEntity");
 
-		if(cmd.getCountryId() != null) {
+		if (CollectionUtil.isNotEmpty(cmd.getCountryIds())) {
 			query.leftJoin(Tables.ADMIN_LEVEL, "AdminLevel").on("AdminLevel.AdminLevelId=AdminEntity.AdminLevelId");
-			query.where("AdminLevel.CountryId").equalTo(cmd.getCountryId());
+			query.where("AdminLevel.CountryId").in(cmd.getCountryIds());
 
 			if(cmd.getParentId() == null && cmd.getLevelId() == null) {
 				query.where("AdminLevel.ParentId is null");
 			}
+			
+			query.orderBy("AdminLevel.CountryId");
 		}
+		
+		query.orderBy("AdminEntity.name");
+		
 
 		if(cmd.getLevelId() != null) {
 			query.where("AdminEntity.AdminLevelId").equalTo(cmd.getLevelId());

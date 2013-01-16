@@ -1,4 +1,4 @@
-package org.activityinfo.client.page.entry;
+package org.activityinfo.client.page.entry.sitehistory;
 
 import java.util.List;
 
@@ -38,9 +38,12 @@ public class SiteHistoryTab extends TabItem {
 	
 	// retrieve all needed data: sitehistoryresult, schema, and locations
 	public void setSite(final SiteDTO site) {
+		renderLoading();
+		
 		dispatcher.execute(new GetSiteHistory(site.getId()), new AsyncCallback<GetSiteHistoryResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				renderNotAvailable(site);
 			}
 			@Override
 			public void onSuccess(final GetSiteHistoryResult historyResult) {
@@ -48,12 +51,14 @@ public class SiteHistoryTab extends TabItem {
 					dispatcher.execute(new GetLocations(historyResult.collectLocationIds()), new AsyncCallback<GetLocationsResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
+							renderNotAvailable(site);
 						}
 						@Override
 						public void onSuccess(final GetLocationsResult locationsResult) {
 							dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 								@Override
 								public void onFailure(Throwable caught) {
+									renderNotAvailable(site);
 								}
 								@Override
 								public void onSuccess(SchemaDTO schema) {
@@ -62,12 +67,22 @@ public class SiteHistoryTab extends TabItem {
 							});
 						}
 					});
+				} else {
+					renderNotAvailable(site);
 				}
 			}
 		});
 	}
-
-	private void render(SchemaDTO schema, List<LocationDTO> locations, SiteDTO site, List<SiteHistoryDTO> histories) {
+	
+	private void render(final SchemaDTO schema, final List<LocationDTO> locations, final SiteDTO site, final List<SiteHistoryDTO> histories) {
 		content.setHtml(new SiteHistoryRenderer().render(schema, locations, site, histories));
+	}
+
+	private void renderNotAvailable(final SiteDTO site) {
+		content.setHtml(new SiteHistoryRenderer().renderNotAvailable(site));
+	}
+
+	private void renderLoading() {
+		content.setHtml(new SiteHistoryRenderer().renderLoading());
 	}
 }

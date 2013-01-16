@@ -22,8 +22,8 @@ import org.activityinfo.client.page.entry.form.SiteDialogCallback;
 import org.activityinfo.client.page.entry.form.SiteDialogLauncher;
 import org.activityinfo.client.page.entry.grouping.GroupingComboBox;
 import org.activityinfo.client.page.entry.place.DataEntryPlace;
+import org.activityinfo.client.page.entry.sitehistory.SiteHistoryTab;
 import org.activityinfo.client.widget.CollapsibleTabPanel;
-import org.activityinfo.shared.command.Delete;
 import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.FilterUrlSerializer;
@@ -54,7 +54,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 /**
  * This is the container for the DataEntry page.

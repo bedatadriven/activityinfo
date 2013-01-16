@@ -1,71 +1,83 @@
-<#-- @ftlvariable name="" type="org.activityinfo.server.bootstrap.model.LoginPageModel" -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<#include "Scaffolding.ftl">
+<@scaffolding title="Login">
 
-    <link href="static/login.css" rel="stylesheet" type="text/css"/>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Cache-Control" content="no-cache"/>
-    <script language="javascript" src="Login/Login.nocache.js"></script>
-    <title>ActivityInfo Login</title>
-</head>
-<body class="login">
+	<@content>
 
-<form method="post" id="loginForm" action="javascript:__do_login()" method="post">
-    <input type="hidden" name="urlSuffix" value="${urlSuffix}">
-
-    <div id="login">
-        <div id="cap-top"></div>
-        <div id="cap-body">
-            <div id="bar-top"></div>
-
-              <div id="panelLogin">
-                <div id="loginPanel">
-                    <label>Addresse Email</label>
-
-                    <input name="email" type="text" value="" id="emailField" class="textboxX"/>
-                </div>
-                <div id="passwordPanel">
-                    <label>Mot de passe</label>
-                    <input name="password" type="password" id="passwordField" class="textboxX"/>
-                </div>
-                <div id="errorPanel">
-                <#if loginError == true>
-                    L'addresse email ou mot de passe est incorrect.
-                </#if>
-                </div>
-                <div class="rememberBox" id="rememberPanel">
-                    <label for="remember"><input name="remember" type="checkbox" value="true" id="remember"
-                                                 class="checkBox"/>Rester connecté</label>
-
-                    <span id="loginBox"><input type="image" src="static/login_fr.png"
-                                               id="loginButton"></span></a></span>
-                    <div style="clear:both"/>
-                </div>
-
- 				<div id="loginHelp"><a href="loginProblem">Vous avez oublié votre mot de passe ?</a></div>
-
-            </div>
-
+    <div id="main" class="span12 clearfix" role="main">
+      <br>
+      <div class="row-fluid">
+        <div class="span8">
+          <h3>What is ActivityInfo?</h3>
+          <p class="lead">ActivityInfo is an open-source, web-based humanitarian monitoring tool that helps humanitarian organizations to collect, manage, map and analyze indicators.</p>
+          
+          <div class="row-fluid">
+          	<div class="span3"><a href="http://about.activityinfo.org" class="btn">Learn more &raquo;</a></div>
+          	
+          </div>
+		  
         </div>
-        <div id="cap-bottom"></div>
-    </div>
+ 		<div class="span4">										
+			<form class="form-signin" id="loginForm" action="http://www.activityinfo.org/login" method="POST">
+				<h3 class="form-signin-heading">${label.login}</h3>
+			   	<input type="text" name="email" id="emailInput" class="input-block-level" placeholder="Email address">
+               	<input type="password" name="password" id="passwordInput" class="input-block-level" placeholder="Password">
 
-</form>
-<script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-    try {
-        var pageTracker = _gat._getTracker("UA-11567120-1");
-    <#if loginError == false>
-        pageTracker._trackPageview("login");
-        <#else>
-            pageTracker._trackPageview("login/error");
-    </#if>
-    } catch(err) {
-    }</script>
-</body>
-</html>
+			 	<div class="alert alert-error <#if !loginError>hide</#if>" id="loginAlert">
+					The login is not correct, please double check your email and password.
+			  	</div>
+               	<label class="checkbox">
+                	<input type="checkbox" value="remember-me"> Remember me
+                </label>			  			
+                <button class="btn btn-info btn-primary btn-large" type="submit" id="loginButton">Log in</button> 
+                <img src="img/ajax-loader-spinner.gif" width="16" height="16" class="hide" id="loginSpinner">
+			
+				<div class="login-problem"><a href="loginProblem">Forgotten your password?</a></div>
+
+			</form>
+      	</div>
+      </div>	
+	</div>
+	</@content>
+	<@scripts>
+	<script type="text/javascript">
+	
+	
+	var enableForm = function(enabled) {
+		$('#loginButton').prop('disabled', !enabled);
+		$('#loginSpinner').toggleClass('hide', enabled);
+	}	
+
+	$('#loginForm').submit(function() {
+		
+		$('#loginAlert').addClass('hide');
+	
+		enableForm(false);		
+		$.ajax({
+			url: '/login',
+			type: 'POST', 
+			data: {
+				email: $('#emailInput').val(),
+				password: $('#passwordInput').val(),
+				ajax: 'true'
+			},
+			success: function() {
+				if(window.location.pathname != '/') {
+					window.location = '/' + window.location.search + window.location.hash;
+				} else {
+					window.location.reload(true);
+				}
+			},
+			error: function(xhr) {
+				$('#loginAlert').toggleClass('hide', false);
+			},
+			complete: function() {
+				enableForm(true);
+			}
+		});
+		return false;
+	});
+	
+	$('#emailInput').focus();
+	</script>
+	</@scripts>
+</@scaffolding>

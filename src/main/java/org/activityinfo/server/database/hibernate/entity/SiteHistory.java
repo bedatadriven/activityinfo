@@ -78,7 +78,11 @@ public class SiteHistory implements java.io.Serializable {
 	public void setTimeCreated(long timeCreated) {
 		this.timeCreated = timeCreated;
 	}
-	
+
+	/**
+	 * @return true if this sitehistory entry was created when the site itself was created.
+	 * False if the entry is an update, or baseline 'repair' record.
+	 */
 	@Basic
     public boolean isInitial() {
         return this.initial;

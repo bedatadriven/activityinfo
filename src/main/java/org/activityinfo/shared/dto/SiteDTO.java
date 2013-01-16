@@ -118,14 +118,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 	public LocalDate getDate2() {
 		return get("date2");
 	}
-	
-	public void setReportingPeriodId(int id) {
-		set("reportingPeriodId", id);
-	}
-	
-	public Integer getReportingPeriod() {
-		return get("reportingPeriodId");
-	}
 
     /**
      * Sets the end of work at this Site
@@ -144,6 +136,26 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 		set("date2", date2);
 	}
 	
+	public LocalDate getDateCreated() {
+		return get("dateCreated");
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		if(dateCreated == null) {
+			set("dateCreated", null);
+		} else {
+			set("dateCreated", new LocalDate(dateCreated));
+		}
+	}
+	
+	public void setReportingPeriodId(int id) {
+		set("reportingPeriodId", id);
+	}
+	
+	public Integer getReportingPeriod() {
+		return get("reportingPeriodId");
+	}
+
 	public boolean isLinked() {
 		return get("linked", false);
 	}
