@@ -26,8 +26,11 @@ public class RemoteComboBox<T extends ModelData> extends ComboBox<T> {
 
     @Override
     public void doQuery(String q, boolean forceAll) {
-        // load every time
-		store.filter(getDisplayField(), q);
-        expand();
+		if (forceAll && getSelection().size() <= 0) {
+			store.getLoader().load();
+		} else {
+			store.filter(getDisplayField(), q);
+		}
+		expand();
     }
 }
