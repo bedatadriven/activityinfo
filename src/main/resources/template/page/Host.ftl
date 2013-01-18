@@ -108,8 +108,8 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="ActivityInfo/gxt224/images/default/shared/large-loading.gif" alt=""/>
-            ActivityInfo $[display.version]<br/>
-            <span id="loading-msg">Chargement en cours...</span>
+            $activityInfo $[display.version]<br/>
+            <span id="loading-msg">${label.loading}</span>
 
         </div>
     </div>

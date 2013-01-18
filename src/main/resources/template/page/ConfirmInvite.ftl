@@ -1,53 +1,52 @@
 <#include "Scaffolding.ftl">
-<@scaffolding title="Welcome to ActivityInfo">
+<@scaffolding title="${label.welcomeToActivityInfo}">
 
 	<@content>
 	<div class="row-fluid">
 		<div class="span12">
 		
-			<h3>Welcome to ActivityInfo</h3>
+			<h3>${label.welcomeToActivityInfo}</h3>
 			
-			<p class="well">Before we get started, let's set up your account. Confirm your name and preferred language,
-    			and then choose a password.</p>
+			<p class="well">${label.setupAccount}</p>
 			
 			<form class="form-horizontal" action="" method="post" id="confirmForm">
 			  <input type="hidden" name="key" value="${user.changePasswordKey}"></input>
 			
 			  <div class="control-group" id="nameGroup">
-			    <label class="control-label" for="nameInput">Confirm your name:</label>
+			    <label class="control-label" for="nameInput">${labe.confirmYourName}:</label>
 			    <div class="controls">
 			      <input type="text" name="name" id="nameInput" value="${user.name}" >
-			      <span class="help-inline hide" id="nameHelp">Please enter your full name</span>
+			      <span class="help-inline hide" id="nameHelp">${label.pleaseEnterYourFullName}:</span>
 			    </div>
 			  </div>
 			  <div class="control-group">
-			    <label class="control-label" for="inputEmail">Confirm your preferred language:</label>
+			    <label class="control-label" for="inputEmail">${label.confirmYourPreferredLanguage}:</label>
 			    <div class="controls">
                 <select name="locale">
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
+                    <option value="en">${label.english}</option>
+                    <option value="fr">${label.français}</option>
                 </select>
        			</div>
 			  </div>
 			  <div class="control-group">
-			    <label class="control-label" for="passwordInput">Choose a password:</label>
+			    <label class="control-label" for="passwordInput">${label.choosePassword}:</label>
 			    <div class="controls">
-			      <input type="password" name="password" id="passwordInput" placeholder="Password">
-			      <span class="help-inline hide" id="passwordHelp">Password must be at least six characters.</span>
+			      <input type="password" name="password" id="passwordInput" placeholder="${label.password}">
+			      <span class="help-inline hide" id="passwordHelp">${label.passwordHelp}.</span>
 			      
 			    </div>
 			  </div>
 			  <div class="control-group" id="confirmPasswordGroup">
-			    <label class="control-label" for="confirmPasswordInput">Confirm your password:</label>
+			    <label class="control-label" for="confirmPasswordInput">${label.confirmYourPassword}:</label>
 			    <div class="controls">
-			      <input type="password" name="password2" id="confirmPasswordInput" placeholder="Password">
-			      <span class="help-inline hide" id="confirmPasswordHelp">The passwords do not match</span>			      
+			      <input type="password" name="password2" id="confirmPasswordInput" placeholder="${label.password}">
+			      <span class="help-inline hide" id="confirmPasswordHelp">${label.passwordDoNotMatch}</span>			      
 			    </div>
 			  </div>
 			  <div class="control-group">
 			    <div class="controls">
 
-			      <button type="submit" class="btn btn-primary btn-large">Continue  &raquo;</button>
+			      <button type="submit" class="btn btn-primary btn-large">${label.continue}  &raquo;</button>
 			    </div>
 			  </div>
 			</form>
