@@ -108,7 +108,7 @@
     <div id="loading-box">
         <div class="loading-indicator">
             <img src="ActivityInfo/gxt224/images/default/shared/large-loading.gif" alt=""/>
-            ${label.activityInfo} $[display.version]<br/>
+            $activityInfo $[display.version]<br/>
             <span id="loading-msg">${label.loading}</span>
 
         </div>
