@@ -13,7 +13,7 @@
 			  <input type="hidden" name="key" value="${user.changePasswordKey}"></input>
 			
 			  <div class="control-group" id="nameGroup">
-			    <label class="control-label" for="nameInput">${labe.confirmYourName}:</label>
+			    <label class="control-label" for="nameInput">${label.confirmYourName}:</label>
 			    <div class="controls">
 			      <input type="text" name="name" id="nameInput" value="${user.name}" >
 			      <span class="help-inline hide" id="nameHelp">${label.pleaseEnterYourFullName}:</span>
