@@ -72,7 +72,7 @@ public class SiteHistoryRenderer {
 	
 	private Item availableFrom(SiteDTO site) {
 		Item item = new Item();
-		if (site.getDateCreated().before(HISTORY_AVAILABLE_FROM)) {
+		if (site != null && site.getDateCreated() != null && site.getDateCreated().before(HISTORY_AVAILABLE_FROM)) {
 			item.setMsg(I18N.MESSAGES.siteHistoryAvailableFrom(HISTORY_AVAILABLE_FROM.atMidnightInMyTimezone()));
 		}
 		return item;
