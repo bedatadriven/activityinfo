@@ -24,7 +24,13 @@
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
                 </a>
-               
+               <div class="pull-right">
+		         <ul class="upper nav">
+		          <li class="language english active"><a href="/">en</a></li>
+		          <li class="language french"><a href="/">fr</a></li> 
+		         </ul>
+		        </div>	
+		
               </nav>
             </div>
           </div>
@@ -56,6 +62,15 @@
 <#macro scripts>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script>
+  		$('.language').click(function() {
+  			var language = $(this).text();
+  			var now = new Date();
+   			now.setMonth( now.getMonth() + 1 );
+   			document.cookie="locale" + "=" + language +";expires=" + now.toUTCString();
+			
+	 	});
+  </script>
   <#nested>
 </#macro>
 

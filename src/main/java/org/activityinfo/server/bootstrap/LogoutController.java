@@ -38,5 +38,6 @@ public class LogoutController extends AbstractController {
         removeCookie(resp, AuthenticatedUser.AUTH_TOKEN_COOKIE);
         removeCookie(resp, AuthenticatedUser.EMAIL_COOKIE);
         removeCookie(resp, AuthenticatedUser.USER_ID_COOKIE);
+		removeCookie(resp, AuthenticatedUser.USER_LOCAL_COOKIE);
     }
 }

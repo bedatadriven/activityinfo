@@ -38,10 +38,10 @@ public class ChangePasswordController extends AbstractController {
         try {
             User user = findUserByKey(req.getQueryString());
 
-            writeView(resp, new ChangePasswordPageModel(user));
+			writeView(resp, req, new ChangePasswordPageModel(user));
 
         } catch (InvalidKeyException e) {
-            writeView(resp, new InvalidInvitePageModel());
+			writeView(resp, req, new InvalidInvitePageModel());
         }
 
 	}
@@ -53,7 +53,7 @@ public class ChangePasswordController extends AbstractController {
         try {
             user = findUserByKey(req.getParameter("key"));
         } catch (InvalidKeyException e) {
-            writeView(resp, new InvalidInvitePageModel());
+			writeView(resp, req, new InvalidInvitePageModel());
         }
 
         try {
@@ -61,7 +61,7 @@ public class ChangePasswordController extends AbstractController {
             resp.sendRedirect(HostController.ENDPOINT);
 
         } catch (IncompleteFormException e) {
-            writeView(resp, new ChangePasswordPageModel(user));
+			writeView(resp, req, new ChangePasswordPageModel(user));
         }
     }
 

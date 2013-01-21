@@ -24,7 +24,7 @@
 			    <div class="controls">
                 <select name="locale">
                     <option value="en">${label.english}</option>
-                    <option value="fr">${label.français}</option>
+                    <option value="fr">${label.francais}</option>
                 </select>
        			</div>
 			  </div>

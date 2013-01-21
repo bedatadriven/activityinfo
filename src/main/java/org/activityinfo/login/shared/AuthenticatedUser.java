@@ -28,10 +28,7 @@ public class AuthenticatedUser implements IsSerializable {
 	public static final String AUTH_TOKEN_COOKIE = "authToken";
 	public static final String EMAIL_COOKIE = "email";
 	public static final String USER_ID_COOKIE = "userId";
-	
-	private AuthenticatedUser() {
-		
-	}
+	public static final String USER_LOCAL_COOKIE = "locale";
 	
 	public AuthenticatedUser(String authToken, int userId, String userEmail,
 			String userLocale) {
