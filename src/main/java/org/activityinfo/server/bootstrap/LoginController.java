@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activityinfo.login.server.LoginServiceServlet;
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.login.shared.LoginException;
 import org.activityinfo.server.bootstrap.model.LoginPageModel;
 import org.activityinfo.server.mail.MailSender;
@@ -28,20 +27,18 @@ import freemarker.template.Configuration;
 public class LoginController extends AbstractController {
     public static final String ENDPOINT = "/login";
 
-    private final MailSender sender;
-    private LoginServiceServlet loginService;
+    private final LoginServiceServlet loginService;
     
     @Inject
     public LoginController(Injector injector, Configuration templateCfg, MailSender sender, LoginServiceServlet loginService) {
         super(injector, templateCfg);
-        this.sender = sender;
         this.loginService = loginService;
     }
 
     @Override
     @LogException(emailAlert = true)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        writeView(resp, new LoginPageModel(parseUrlSuffix(req)));
+		writeView(resp, req, new LoginPageModel(parseUrlSuffix(req)));
     }
 
 	@Override
@@ -60,7 +57,8 @@ public class LoginController extends AbstractController {
 			if(ajax) {
 				resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
-				writeView(resp, LoginPageModel.unsuccessful(parseUrlSuffix(req)));
+				writeView(resp, req,
+						LoginPageModel.unsuccessful(parseUrlSuffix(req)));
 			}
 		}
 	}

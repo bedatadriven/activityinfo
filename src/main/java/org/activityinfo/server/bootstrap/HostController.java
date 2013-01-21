@@ -32,7 +32,7 @@ import freemarker.template.Configuration;
 public class HostController extends AbstractController {
     public static final String ENDPOINT = "/";
 
-    private DeploymentConfiguration deployConfig;
+    private final DeploymentConfiguration deployConfig;
     
     @Inject
     public HostController(Injector injector, Configuration templateCfg, DeploymentConfiguration deployConfig) {
@@ -52,10 +52,10 @@ public class HostController extends AbstractController {
                 HostPageModel model = new HostPageModel(auth, computeAppUrl(req));
                 model.setAppCacheEnabled(checkAppCacheEnabled(req));
                 model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
-				writeView(resp, model);
+				writeView(resp, req, model);
             }
         } catch (NoValidAuthentication noValidAuthentication) {
-            writeView(resp, new LoginPageModel());
+			writeView(resp, req, new LoginPageModel());
         }
     }
 
