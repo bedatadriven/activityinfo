@@ -5,10 +5,8 @@
 
 package org.activityinfo.login.shared;
 
-
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 
 /**
  * Encapsulates user identity and their authorization to access the server.
@@ -29,7 +27,11 @@ public class AuthenticatedUser implements IsSerializable {
 	public static final String EMAIL_COOKIE = "email";
 	public static final String USER_ID_COOKIE = "userId";
 	public static final String USER_LOCAL_COOKIE = "locale";
-	
+
+	public AuthenticatedUser() {
+
+	}
+
 	public AuthenticatedUser(String authToken, int userId, String userEmail,
 			String userLocale) {
 		super();
@@ -38,7 +40,7 @@ public class AuthenticatedUser implements IsSerializable {
 		this.userEmail = userEmail;
 		this.userLocale = userLocale;
 	}
-	
+
 	public AuthenticatedUser(String authToken, int userId, String userEmail) {
 		super();
 		this.authToken = authToken;
@@ -46,23 +48,23 @@ public class AuthenticatedUser implements IsSerializable {
 		this.userEmail = userEmail;
 		this.userLocale = "en";
 	}
-	
+
 	public String getAuthToken() {
 		return authToken;
 	}
-	
+
 	public void setAuthToken(String authToken) {
 		this.authToken = authToken;
 	}
-	
+
 	public int getUserId() {
 		return userId;
 	}
-	
+
 	public String getEmail() {
 		return userEmail;
 	}
-	
+
 	public String getUserLocale() {
 		return userLocale;
 	}
@@ -70,15 +72,17 @@ public class AuthenticatedUser implements IsSerializable {
 	public int getId() {
 		return userId;
 	}
-	
+
 	public static AuthenticatedUser getAnonymous() {
-		return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0, AnonymousUser.USER_EMAIL);
+		return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0,
+				AnonymousUser.USER_EMAIL);
 	}
 
 	public static AuthenticatedUser getAnonymous(LocaleInfo currentLocale) {
-		return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0, AnonymousUser.USER_EMAIL, currentLocale.getLocaleName());
+		return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0,
+				AnonymousUser.USER_EMAIL, currentLocale.getLocaleName());
 	}
-	
+
 	public boolean isAnonymous() {
 		return AnonymousUser.AUTHTOKEN.equals(authToken);
 	}
