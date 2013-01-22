@@ -22,6 +22,7 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.common.collect.HashMultimap;
@@ -326,11 +327,14 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	                query.where("site.SiteId").in(filter.getRestrictions(type));
 	            }
 	        }
-	        if (filter.getMinDate() != null) {
-	        	query.where("site.Date2").greaterThanOrEqualTo(filter.getMinDate());
+	        
+	        LocalDate filterMinDate = filter.getDateRange().getMinLocalDate();
+	        if (filterMinDate != null) {
+	        	query.where("site.Date2").greaterThanOrEqualTo(filterMinDate);
 	        }
-	        if (filter.getMaxDate() != null) {
-	        	query.where("site.Date2").lessThanOrEqualTo(filter.getMaxDate());
+	        LocalDate filterMaxDate = filter.getDateRange().getMaxLocalDate();
+	        if (filterMaxDate != null) {
+	        	query.where("site.Date2").lessThanOrEqualTo(filterMaxDate);
 	        }
 		}
 	}

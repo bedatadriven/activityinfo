@@ -43,7 +43,7 @@ public class ResetPasswordController extends AbstractController {
 	@LogException(emailAlert = true)
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		writeView(resp, new ResetPasswordPageModel());
+		writeView(resp, req, new ResetPasswordPageModel());
 	}
 
 	@Override
@@ -61,18 +61,18 @@ public class ResetPasswordController extends AbstractController {
         	ResetPasswordPageModel model = new ResetPasswordPageModel();
         	model.setEmailSent(true);
         	
-        	writeView(resp, model);
+			writeView(resp, req, model);
         	
         } catch (InvalidLoginException e) {
         	ResetPasswordPageModel model = new ResetPasswordPageModel();
         	model.setLoginError(true);
         	
-            writeView(resp, model);
+			writeView(resp, req, model);
         } catch (Exception e) {
         	ResetPasswordPageModel model = new ResetPasswordPageModel();
         	model.setEmailError(true);
         	
-        	writeView(resp, model);
+			writeView(resp, req, model);
 		}
     }
 

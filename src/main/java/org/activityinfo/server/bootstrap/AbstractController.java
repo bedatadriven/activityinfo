@@ -6,6 +6,7 @@
 package org.activityinfo.server.bootstrap;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
@@ -77,11 +78,13 @@ public class AbstractController extends HttpServlet {
         doPost(req, resp);
     }
 
-    protected void writeView(HttpServletResponse response, PageModel model) throws IOException {
+	protected void writeView(HttpServletResponse response,HttpServletRequest request, PageModel model) throws IOException {
         Template template = templateCfg.getTemplate(model.getTemplateName());
         response.setContentType("text/html");
         try {
             template.process(model, response.getWriter());
+			String language = getCookie(request, "locale");
+			template.setLocale(new Locale(language == null ? "en" : language));
         } catch (TemplateException e) {
             response.setContentType("text/plain");
             e.printStackTrace(response.getWriter());
