@@ -82,9 +82,9 @@ public class AbstractController extends HttpServlet {
         Template template = templateCfg.getTemplate(model.getTemplateName());
         response.setContentType("text/html");
         try {
-            template.process(model, response.getWriter());
 			String language = getCookie(request, "locale");
 			template.setLocale(new Locale(language == null ? "en" : language));
+            template.process(model, response.getWriter());
         } catch (TemplateException e) {
             response.setContentType("text/plain");
             e.printStackTrace(response.getWriter());
