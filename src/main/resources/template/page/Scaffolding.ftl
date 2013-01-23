@@ -26,8 +26,8 @@
                 </a>
                <div class="pull-right">
 		         <ul class="upper nav">
-		          <li class="language english active"><a href="">en</a></li>
-		          <li class="language french"><a href="">fr</a></li> 
+		          <li  class="language english en"><a href="">en</a></li>
+		          <li  class="language french fr"><a href="">fr</a></li> 
 		         </ul>
 		        </div>	
 		
@@ -63,6 +63,7 @@
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script>
+	 
   		$('.language').click(function() {
   			var language = $(this).text();
   			var now = new Date();
@@ -70,6 +71,17 @@
    			document.cookie="locale" + "=" + language +";expires=" + now.toUTCString();
 			
 	 	});
+	 	
+	 function getCook(cookiename) 
+	  {
+		  // Get name followed by anything except a semicolon
+		  var cookiestring=RegExp(""+cookiename+"[^;]+").exec(document.cookie);
+		  // Return everything after the equal sign
+		  return unescape(!!cookiestring ? cookiestring.toString().replace(/^[^=]+/,"").replace("=","") : "");
+	  }
+	
+		var locale = getCook('locale');
+	 	$('.'+locale).addClass("active");
 	 	
   </script>
   <#nested>

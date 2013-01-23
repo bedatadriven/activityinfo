@@ -84,16 +84,17 @@ public class AbstractController extends HttpServlet {
         Template template = templateCfg.getTemplate(model.getTemplateName());
         response.setContentType("text/html");
         try {
-        	String language = getCookie(request, "locale");
+			String language = getCookie(request, "locale");
 			template.setLocale(new Locale(language == null ? "en" : language));
 			template.getConfiguration().setSharedVariable(
 					"label",
 					new freemarker.ext.beans.ResourceBundleModel(ResourceBundle
 							.getBundle("template/page/Labels",
-									template.getLocale()), new BeansWrapper()));
+									template.getLocale()),
+							new BeansWrapper()));
 
-			template.process(model, response.getWriter());
-      } catch (TemplateException e) {
+            template.process(model, response.getWriter());
+        } catch (TemplateException e) {
             response.setContentType("text/plain");
             e.printStackTrace(response.getWriter());
         }
