@@ -7,6 +7,7 @@ package org.activityinfo.server.bootstrap;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
@@ -31,6 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -82,10 +84,16 @@ public class AbstractController extends HttpServlet {
         Template template = templateCfg.getTemplate(model.getTemplateName());
         response.setContentType("text/html");
         try {
-            template.process(model, response.getWriter());
-			String language = getCookie(request, "locale");
+        	String language = getCookie(request, "locale");
 			template.setLocale(new Locale(language == null ? "en" : language));
-        } catch (TemplateException e) {
+			template.getConfiguration().setSharedVariable(
+					"label",
+					new freemarker.ext.beans.ResourceBundleModel(ResourceBundle
+							.getBundle("template/page/Labels",
+									template.getLocale()), new BeansWrapper()));
+
+			template.process(model, response.getWriter());
+      } catch (TemplateException e) {
             response.setContentType("text/plain");
             e.printStackTrace(response.getWriter());
         }

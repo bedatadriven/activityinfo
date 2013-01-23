@@ -26,8 +26,8 @@
                 </a>
                <div class="pull-right">
 		         <ul class="upper nav">
-		          <li class="language english active"><a href="/">en</a></li>
-		          <li class="language french"><a href="/">fr</a></li> 
+		          <li class="language english active"><a href="">en</a></li>
+		          <li class="language french"><a href="">fr</a></li> 
 		         </ul>
 		        </div>	
 		
@@ -70,6 +70,7 @@
    			document.cookie="locale" + "=" + language +";expires=" + now.toUTCString();
 			
 	 	});
+	 	
   </script>
   <#nested>
 </#macro>
