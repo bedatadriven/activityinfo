@@ -4,7 +4,7 @@
   <!-- appengine configuration for DEVELOPMENT only, it is not deployed -->
   <!-- the PRODUCTION appengine-web.xml is in src/main/webapp -->
 
-  <application>gactivityinfo</application>
+  <application>activityinfoeu</application>
   <version>dev</version>
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
