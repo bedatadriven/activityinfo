@@ -1,6 +1,6 @@
 <#macro scaffolding title>
-
 <!DOCTYPE html>
+
 <html>
 <head>
   <title>ActivityInfo - Login</title>
@@ -24,13 +24,15 @@
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
                 </a>
+                <#--
+                Disabled for release
                <div class="pull-right">
 		         <ul class="upper nav">
 		          <li class="language english active"><a href="/">en</a></li>
 		          <li class="language french"><a href="/">fr</a></li> 
 		         </ul>
 		        </div>	
-		
+				-->
               </nav>
             </div>
           </div>
