@@ -31,6 +31,7 @@ import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.server.util.monitoring.MonitoringModule;
+import org.activityinfo.server.util.tracking.TrackingModule;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -79,6 +80,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new MonitoringModule(),
                 new JsonRpcModule(),
                 new KmlModule(),
+                new TrackingModule(),
                 new LocaleModule(),
                 new LoginModule());
     }
