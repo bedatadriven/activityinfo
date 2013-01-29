@@ -28,6 +28,7 @@
 
 		<gae.version>1.7.2</gae.version>
 		<gae.application.version>2</gae.application.version>
+		<appengine.export.version>0.1.1-SNAPSHOT</appengine.export.version>
 
 	</properties>
 
@@ -107,27 +108,27 @@
 		<dependency>
 			<groupId>com.bedatadriven.appengine.export</groupId>
 			<artifactId>appengine-itext</artifactId>
-			<version>0.1.0</version>
+			<version>${appengine.export.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.bedatadriven.appengine.export</groupId>
 			<artifactId>appengine-awt</artifactId>
-			<version>0.1.0</version>
+			<version>${appengine.export.version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>com.bedatadriven.appengine.export</groupId>
 			<artifactId>appengine-ppt</artifactId>
-			<version>0.1.0</version>
+			<version>${appengine.export.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.bedatadriven.appengine.export</groupId>
 			<artifactId>appengine-jcharts</artifactId>
-			<version>0.1.0</version>
+			<version>${appengine.export.version}</version>
 		</dependency>			
 		<dependency>
 			<groupId>com.bedatadriven.appengine.export</groupId>
 			<artifactId>appengine-emf</artifactId>
-			<version>0.1.0</version>
+			<version>${appengine.export.version}</version>
 		</dependency>		
 
 	 	<dependency>

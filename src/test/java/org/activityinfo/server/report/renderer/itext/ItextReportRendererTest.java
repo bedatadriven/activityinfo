@@ -11,11 +11,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.activityinfo.server.geo.ClasspathGeometryProvider;
+import org.activityinfo.server.geo.LocalGeometryStorage;
+import org.activityinfo.server.geo.WkbGeometryProvider;
 import org.activityinfo.server.report.DummyPivotTableData;
 import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.excel.ExcelReportRenderer;
+import org.activityinfo.server.report.renderer.image.ImageMapRenderer;
 import org.activityinfo.server.report.renderer.itext.HtmlReportRenderer;
 import org.activityinfo.server.report.renderer.itext.PdfReportRenderer;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
@@ -287,6 +290,7 @@ public class ItextReportRendererTest {
 		renderToHtml(report, "iconMarker.html");
 		renderToRtf(report, "iconMarker.rtf");
 		renderToPpt(map, "iconMarker.ppt");
+		renderToImage(map, "iconMarker.png");
 	}
 	
 	@Test
@@ -504,6 +508,13 @@ public class ItextReportRendererTest {
 		renderTo(report, reportRenderer, name);
 	}
 	
+	private void renderToImage(MapReportElement map, String name) throws IOException {
+		ImageMapRenderer mapRenderer = new ImageMapRenderer(TestGeometry.get(),
+				mapIconPath());
+		mapRenderer.renderToFile(map, new File("target/report-tests/" + name));
+		
+	}
+
 
 	private void renderToXls(Report report, String name) throws IOException {
 		ExcelReportRenderer reportRenderer = new ExcelReportRenderer();
