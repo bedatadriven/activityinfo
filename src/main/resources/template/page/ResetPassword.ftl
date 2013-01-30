@@ -10,7 +10,7 @@
 			<p>${label.resetDetailMessage}</p>
 				
 			<form class="form-inline" action="loginProblem" method="POST">
-			  <input type="text" name="email" class="input-xlarge" placeholder="my.name@ngo.org">
+			  <input type="text" name="email" class="input-xlarge" placeholder="${label.emailAddress}">
 			  <button type="submit" class="btn btn-primary">${label.reset}</button>
 			</form>
 		

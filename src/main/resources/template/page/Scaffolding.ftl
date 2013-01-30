@@ -24,15 +24,12 @@
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
                 </a>
-                <#--
-                Disabled for release
                <div class="pull-right">
 		         <ul class="upper nav">
-		          <li  class="language english en"><a href="">en</a></li>
-		          <li  class="language french fr"><a href="">fr</a></li> 
+		          <li  class="language <#if lang="en">active</#if>"><a href="">en</a></li>
+		          <li  class="language <#if lang="fr">active</#if>"><a href="">fr</a></li> 
 		         </ul>
 		        </div>	
-				-->
               </nav>
             </div>
           </div>
@@ -74,16 +71,6 @@
 			
 	 	});
 	 	
-	 function getCook(cookiename) 
-	  {
-		  // Get name followed by anything except a semicolon
-		  var cookiestring=RegExp(""+cookiename+"[^;]+").exec(document.cookie);
-		  // Return everything after the equal sign
-		  return unescape(!!cookiestring ? cookiestring.toString().replace(/^[^=]+/,"").replace("=","") : "");
-	  }
-	
-		var locale = getCook('locale');
-	 	$('.'+locale).addClass("active");
 	 	
   </script>
   <#nested>

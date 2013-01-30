@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activityinfo.server.authentication.AuthCookieUtil;
+import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.bootstrap.exception.IncompleteFormException;
 import org.activityinfo.server.bootstrap.exception.InvalidKeyException;
 import org.activityinfo.server.bootstrap.model.PageModel;
@@ -84,8 +85,9 @@ public class AbstractController extends HttpServlet {
         Template template = templateCfg.getTemplate(model.getTemplateName());
         response.setContentType("text/html");
         try {
-			String language = getCookie(request, "locale");
-			template.setLocale(new Locale(language == null ? "en" : language));
+			String language = getCurrentLanguage(request);
+			template.setLocale(new Locale(language));
+			template.getConfiguration().setSharedVariable("lang", language);
 			template.getConfiguration().setSharedVariable(
 					"label",
 					new freemarker.ext.beans.ResourceBundleModel(ResourceBundle
@@ -99,6 +101,34 @@ public class AbstractController extends HttpServlet {
             e.printStackTrace(response.getWriter());
         }
     }
+
+	private String getCurrentLanguage(HttpServletRequest request) {
+		// look at the language explicitly set by the user
+		String language = getCookie(request, "locale");
+		
+		// finally, fall back to the browser header 
+		if(language == null) {
+			language = languageFromHeader(request);
+		}
+		
+		// if no information, default to English
+		if(language == null) {
+			language = "en";
+		}
+		return language;
+	}
+
+	private String languageFromHeader(HttpServletRequest request) {
+		String acceptLanguages[] = Strings.nullToEmpty(request.getHeader("Accept-Language")).split(",");
+		for(String lang : acceptLanguages) {
+			if(lang.startsWith("en")) {
+				return "en";
+			} else if(lang.startsWith("fr")) {
+				return "fr"; 
+			}
+		}
+		return null;
+	}
 
     protected String getCookie(HttpServletRequest request, String name) {
         if (request.getCookies() == null) {

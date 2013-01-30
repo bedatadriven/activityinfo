@@ -11,7 +11,7 @@
           <p class="lead">${label.activityInfoIntro}</p>
           
           <div class="row-fluid">
-          	<div class="span3"><a href="http://about.activityinfo.org" class="btn">${label.learnMore} &raquo;</a></div>
+          	<div class="span3"><a href="http://about.activityinfo.org/<#if lang="fr">fr</#if>" class="btn btn-large btn-success">${label.learnMore} &raquo;</a></div>
           	
           </div>
 		  
@@ -25,10 +25,8 @@
 			 	<div class="alert alert-error <#if !loginError>hide</#if>" id="loginAlert">
 					${label.incorrectLogin}
 			  	</div>
-               	<label class="checkbox">
-                	<input type="checkbox" value="remember-me"> ${label.rememberMe}
-                </label>			  			
-                <button class="btn btn-info btn-primary btn-large" type="submit" id="loginButton">${label.login}</button> 
+			  	
+			  	<button class="btn btn-info btn-primary btn-large" type="submit" id="loginButton">${label.login}</button> 
                 <img src="img/ajax-loader-spinner.gif" width="16" height="16" class="hide" id="loginSpinner">
 			
 				<div class="login-problem"><a href="loginProblem">${label.forgottenYourPassword}</a></div>
