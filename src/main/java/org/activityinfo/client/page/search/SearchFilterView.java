@@ -62,12 +62,13 @@ public class SearchFilterView extends ContentPanel {
 			EntityPanel entityPanel = new EntityPanel(dimension);
 			dimensionPanels.put(dimension, entityPanel);
 			add(entityPanel);
-			entityPanel.addDimensionAddedHandler(new DimensionAddedEventHandler() {
-				@Override
-				public void onDimensionAdded(DimensionAddedEvent event) {
-					eventBus.fireEvent(new DimensionAddedEvent(event.getAddedEntity()));
-				}
-			});
+			// FIXME temporary removed the dimension search
+//			entityPanel.addDimensionAddedHandler(new DimensionAddedEventHandler() {
+//				@Override
+//				public void onDimensionAdded(DimensionAddedEvent event) {
+//					eventBus.fireEvent(new DimensionAddedEvent(event.getAddedEntity()));
+//				}
+//			});
 		}
 		layout(true);
 	}
@@ -156,7 +157,7 @@ public class SearchFilterView extends ContentPanel {
 			labelNoSearch.setStyleAttribute("color", "grey");
 			add(labelNoSearch);
 			
-			addListenerToListview();
+//			addListenerToListview();
 			listviewEntities.setItemSelector(".searchSmall");
 			listviewEntities.setSelectStyle(".searchSmallSelect");
 			listviewEntities.setStyleAttribute("margin", "4px 8px 4px 22px");

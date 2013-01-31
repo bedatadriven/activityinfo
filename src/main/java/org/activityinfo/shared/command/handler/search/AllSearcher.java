@@ -18,7 +18,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AllSearcher {
 	private static Map<DimensionType, Searcher> searchers = new HashMap<DimensionType, Searcher>();
 	private List<Searcher> failedSearchers = new ArrayList<Searcher>();
-	private Filter filter = new Filter();
+	private Filter filter = new Filter(true); // create lenient filter - we want to have a wide search
 	
 	private final SqlTransaction tx;
 	
