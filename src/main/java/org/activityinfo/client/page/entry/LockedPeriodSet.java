@@ -54,8 +54,7 @@ public class LockedPeriodSet {
 		if(isActivityLocked(site.getActivityId(), site.getDate2())) {
 			return true;
 		}
-		if(site.getProject() != null) {
-			
+		if(site.getProject() != null) {			
 			if(dateRangeLocked(site.getDate2(), projectLocks.get(site.getProject().getId()))) {
 				return true;
 			}

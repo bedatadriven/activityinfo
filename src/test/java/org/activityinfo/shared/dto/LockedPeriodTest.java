@@ -17,13 +17,17 @@ public class LockedPeriodTest {
 		lockedPeriod.setToDate(new LocalDate(2000,1,2));
 		lockedPeriod.setEnabled(true);
 		
-		SiteDTO site = createSite();
+		SiteDTO site = new SiteDTO(1);
+		site.setDate1(new LocalDate(2000,1,1));
+		site.setDate2(new LocalDate(2000,1,2));
 		site.setActivityId(1);
 		
 		ActivityDTO activity = new ActivityDTO(1, "woei");
 		activity.setDatabase(db);
 		activity.getLockedPeriods().add(lockedPeriod);
 
+		db.getActivities().add(activity);
+		
 		Assert.assertTrue("Site should fall within LockedPeriod", new LockedPeriodSet(activity).isLocked(site));
 		
 		
@@ -47,11 +51,4 @@ public class LockedPeriodTest {
 		//Assert.assertTrue("No affected LockedPeriods should be available", site1.getAffectedLockedPeriods(activity1).size() == 0);
 	}
 
-	private SiteDTO createSite() {
-		SiteDTO site = new SiteDTO(1);
-		site.setDate1(new LocalDate(2000,1,1));
-		site.setDate2(new LocalDate(2000,1,2));
-		return site;
-	}
-	
 }
