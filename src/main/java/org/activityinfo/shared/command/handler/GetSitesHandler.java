@@ -168,6 +168,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		.appendColumn("site.comments", "Comments")
 		.appendColumn("location.x", "x")
 		.appendColumn("location.y", "y")
+		.appendColumn("site.DateEdited")
 		.from(Tables.SITE)
 		.whereTrue("site.dateDeleted is null")
 		.leftJoin(Tables.ACTIVITY).on("site.ActivityId = activity.ActivityId")
@@ -207,7 +208,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("locationType.name", "LocationTypeName")
 			.appendColumn("site.comments", "Comments")
 			.appendColumn("location.x", "x")
-			.appendColumn("location.y", "y");
+			.appendColumn("location.y", "y")
+			.appendColumn("site.DateEdited");
 		
 		if(command.getFilter().isRestricted(DimensionType.Indicator)) {
 			/*
@@ -296,6 +298,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
     				.leftJoin(Tables.REPORTING_PERIOD, "r").on("v.ReportingPeriodId=r.ReportingPeriodId")
     				.whereTrue("v.IndicatorId=" + indicatorId)
     				.and("r.SiteId=u.SiteId"), ascending);
+            } else if(field.equals("DateEdited")) {
+            	query.orderBy("DateEdited", ascending);
             } else {
             	Log.error("Unimplemented sort on GetSites: '" + field + "");
             }

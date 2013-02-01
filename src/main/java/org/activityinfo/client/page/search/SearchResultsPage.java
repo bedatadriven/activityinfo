@@ -39,7 +39,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 	private VerticalPanel panelSearchResults;
 	private LayoutContainer containerFilterAndResult;
 	private PivotContent pivotContent;
-	private SearchFilterView filterView;
+	//private SearchFilterView filterView;
 	private RecentSitesView recentSitesView;
 
 	private TextBox textboxSearch;
@@ -53,7 +53,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		createRecentSitesView();
 		
 		createCompleteResultPanel();
-		createFilterView();
+		//createFilterView();
 		createSearchResultsPanel();
 
 		createSearchBox();
@@ -99,16 +99,16 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 		add(containerFilterAndResult, bld);
 	}
 
-	private void createFilterView() {
-		filterView = new SearchFilterView();
-		containerFilterAndResult.add(filterView);
-		filterView.addDimensionAddedHandler(new DimensionAddedEventHandler() {
-			@Override
-			public void onDimensionAdded(DimensionAddedEvent event) {
-				addEntityToSearchBox(event.getAddedEntity());
-			}
-		});
-	}
+//	private void createFilterView() {
+//		filterView = new SearchFilterView();
+//		containerFilterAndResult.add(filterView);
+//		filterView.addDimensionAddedHandler(new DimensionAddedEventHandler() {
+//			@Override
+//			public void onDimensionAdded(DimensionAddedEvent event) {
+//				addEntityToSearchBox(event.getAddedEntity());
+//			}
+//		});
+//	}
 	
 	private void showError(String error) {
 		containerFilterAndResult.el().mask(error);
@@ -255,7 +255,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
 
 	@Override
 	public void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
-		filterView.setFilter(affectedEntities);
+	//	filterView.setFilter(affectedEntities);
 	}
 
 	@Override
