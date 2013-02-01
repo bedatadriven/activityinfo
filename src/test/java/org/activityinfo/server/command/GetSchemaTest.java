@@ -12,10 +12,10 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import org.activityinfo.client.page.entry.LockedPeriodSet;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 
 
 @RunWith(InjectionSupport.class)
@@ -77,6 +78,23 @@ public class GetSchemaTest extends CommandTestCase2 {
         SchemaDTO schema = execute(new GetSchema());
 
         assertThat(schema.getDatabases().size(), equalTo(1));
+    }
+    
+    @Test
+    public void testLockedProjects() {
+    	setUser(1);
+    	SchemaDTO schema = execute(new GetSchema());
+    	
+    	assertThat(schema.getProjectById(1).getLockedPeriods().size(), equalTo(1));
+    	
+    	LockedPeriodSet locks = new LockedPeriodSet(schema);
+    	assertTrue(locks.isProjectLocked(1, new LocalDate(2009,1,1)));
+    	assertTrue(locks.isProjectLocked(1, new LocalDate(2009,1,6)));
+    	assertTrue(locks.isProjectLocked(1, new LocalDate(2009,1,12)));
+    	assertFalse(locks.isProjectLocked(1, new LocalDate(2008,1,12)));
+    	assertFalse(locks.isProjectLocked(1, new LocalDate(2010,1,12)));
+    	
+    	
     }
     
     @Test

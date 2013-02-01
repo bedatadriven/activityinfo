@@ -6,6 +6,7 @@
 package org.activityinfo.client.page.entry.form;
 
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.page.entry.LockedPeriodSet;
 import org.activityinfo.client.page.entry.form.field.PartnerComboBox;
 import org.activityinfo.client.page.entry.form.field.ProjectComboBox;
 import org.activityinfo.shared.dto.ActivityDTO;
@@ -20,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.form.Validator;
 public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
     
 	private final ActivityDTO activity;
+	private final LockedPeriodSet locks;
 	
 	private DateField dateField1;
     private DateField dateField2;
@@ -30,6 +32,7 @@ public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
     	super();
     	
     	this.activity = activity;
+    	this.locks = new LockedPeriodSet(activity);
     	
     	getFormLayout().setLabelWidth(100);
     	getFormLayout().setDefaultWidth(200);
@@ -73,9 +76,14 @@ public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
                         if(dateField2.getValue().before(dateField1.getValue())) {
                             return I18N.CONSTANTS.inconsistentDateRangeWarning();
                         }
-                        if (SiteDTO.fallsWithinLockedPeriods(
-                        		activity.getDatabase().getEnabledLockedPeriods(), activity, dateField2.getValue())) {
-                        	return I18N.CONSTANTS.dateFallsWithinLockedPeriodWarning();
+                        if (locks.isActivityLocked(activity.getId(), dateField2.getValue())) {
+                        	return I18N.CONSTANTS.dateFallsWithinLockedPeriodWarning();                        	
+                        } 
+                        if(projectCombo.getValue() != null) {
+                        	int projectId = projectCombo.getValue().getId();
+                        	if(locks.isProjectLocked(projectId, dateField2.getValue())) {
+                            	return I18N.CONSTANTS.dateFallsWithinLockedPeriodWarning();                        	
+                        	}
                         }
                     }
                     return null;
