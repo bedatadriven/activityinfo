@@ -115,7 +115,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 							.setFilter(event.getValue())) );
 			}
 		});
-	//	filterPane.getSet().applyBaseFilter(new Filter());
 	}
 
 	private void addCenter() {

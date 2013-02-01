@@ -144,7 +144,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public String getHeader(String name) {
     	if(name.equals("User-Agent")) {
     		return "Mozilla/5.0 (Windows NT x.y; rv:2.0.1) Gecko/20100101 Firefox/4.0.1";
-    	} 
+    	} else if(name.equals("Accept-Language")) {
+    		return "en";	
+    	}
         throw new UnsupportedOperationException();
     }
 

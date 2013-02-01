@@ -28,6 +28,7 @@ public abstract class ViewTestCase {
     public static void setUpTemplateConfig() throws TemplateModelException  {
         TemplateModule module = new TemplateModule();
         templateCfg = module.provideConfiguration();
+        templateCfg.setSharedVariable("lang", "en");
     }
 
     protected String process(PageModel model) throws IOException, TemplateException {

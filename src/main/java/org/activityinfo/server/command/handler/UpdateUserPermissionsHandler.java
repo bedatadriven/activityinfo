@@ -6,6 +6,8 @@
 package org.activityinfo.server.command.handler;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.activityinfo.server.database.hibernate.dao.PartnerDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
@@ -22,9 +24,6 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.UserPermissionDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 

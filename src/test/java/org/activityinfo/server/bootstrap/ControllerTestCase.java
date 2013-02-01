@@ -39,6 +39,8 @@ import org.junit.Before;
 
 import com.google.inject.Injector;
 
+import freemarker.template.TemplateModelException;
+
 /**
  * @author Alex Bertram
  */
@@ -70,7 +72,7 @@ public abstract class ControllerTestCase {
     }
 
     @Before
-    public final void setUpDependencies()  {
+    public final void setUpDependencies() throws TemplateModelException  {
         req = new MockHttpServletRequest();
         resp = new MockHttpServletResponse();
 
