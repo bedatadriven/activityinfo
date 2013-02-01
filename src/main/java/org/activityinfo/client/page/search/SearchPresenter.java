@@ -161,14 +161,19 @@ public class SearchPresenter implements SearchView.SearchHandler, Page {
 
 		if (sites != null) {
 			for (SiteDTO site : sites) {
-				RecentSiteModel recent = new RecentSiteModel(site);
+				RecentSiteModel recent = null;
 				if (schema != null) {
 					ActivityDTO activity = schema.getActivityById(site.getActivityId());
-					recent.setActivityName(activity.getName());
-					recent.setActivityLink(PageStateSerializer.asLink(new DataEntryPlace(activity)));
-					recent.setDatabaseName(activity.getDatabase().getName() == null ? "[Database]" : activity.getDatabase().getName());
+					if (activity != null) {
+						recent = new RecentSiteModel(site);
+						recent.setActivityName(activity.getName());
+						recent.setActivityLink(PageStateSerializer.asLink(new DataEntryPlace(activity)));
+						recent.setDatabaseName(activity.getDatabase().getName() == null ? "[Database]" : activity.getDatabase().getName());
+					}
 				}
-				result.add(recent);
+				if (recent != null) {
+					result.add(recent);
+				}
 			}
 		}
 		

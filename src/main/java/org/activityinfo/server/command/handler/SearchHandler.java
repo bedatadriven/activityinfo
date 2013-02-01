@@ -52,8 +52,9 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 		parser.parse(command.getSearchQuery().trim());
 		if (parser.hasFailed()) {
 			callback.onFailure(new SearchParserException(parser.getFailReason()));
-		} else if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries
-			searchDimensions(parser, context, callback);
+		// FIXME temporary removed the dimension search
+		// } else if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries
+		//	searchDimensions(parser, context, callback);
 		} else { // assume first time search
 			searchAll(parser.getSimpleSearchTerms(), context, callback);
 		}
@@ -110,15 +111,15 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 			final AsyncCallback<SearchResult> callback,
 			final Filter resultFilter) {
 		
-		final PivotTableReportElement pivotTable = createSearchPivotTableElement();
 		final SearchResult searchResult = new SearchResult();
 		
 		if (resultFilter.getRestrictedDimensions().size() > 0) {
+
+			// pivot data query
+			final PivotTableReportElement pivotTable = createSearchPivotTableElement();
 			pivotTable.setFilter(resultFilter);
 			GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
-			
 			context.execute(zmd, new AsyncCallback<PivotContent>() {
-
 				@Override
 				public void onFailure(Throwable caught) {
 					callback.onFailure(caught);
@@ -128,6 +129,8 @@ public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> 
 				public void onSuccess(PivotContent content) {
 					content.setEffectiveFilter(resultFilter);
 					searchResult.setPivotTabelData(content);
+					
+					// recent sites query
 					GetSites getSites = createGetSitesCommand(resultFilter);
 					context.execute(getSites, new AsyncCallback<SiteResult>() {
 						@Override
