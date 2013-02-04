@@ -38,8 +38,9 @@
 	gwt-image: "search" !important;
 }
 
+
 @Sprite .searchSmall {
-	gwt-image: "searchSmall";
+    gwt-image: "searchSmall";
 	display: inline;
 	margin-rigth: 4px;
 }
@@ -117,7 +118,7 @@ a {
 }
 
 .entity:hover {
-	background-color:red;
+	/** background-color:red; */
 }
 
 .searchResults {

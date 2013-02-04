@@ -2,7 +2,6 @@ package org.activityinfo.shared.command.handler.pivot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.activityinfo.client.Log;
@@ -17,9 +16,7 @@ import org.activityinfo.shared.command.handler.pivot.bundler.QuarterBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.SimpleBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.YearBundler;
 import org.activityinfo.shared.command.result.Bucket;
-import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.db.Tables;
-import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateDimension;
@@ -33,7 +30,6 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -284,15 +280,37 @@ public class PivotQuery {
     }
 
     private void appendDimensionRestrictions() {
-        for (DimensionType type : filter.getRestrictedDimensions()) {
-        	if (type == DimensionType.AdminLevel) {
-            	query.where(baseTable.getDimensionIdColumn(DimensionType.Location)).in(
-            			SqlQuery.select("Link.LocationId").from(Tables.LOCATION_ADMIN_LINK, "Link")
-            				.where("Link.AdminEntityId").in(filter.getRestrictions(DimensionType.AdminLevel)));
-            } else {
-            	query.where(baseTable.getDimensionIdColumn(type)).in(filter.getRestrictions(type));
-            }
-        }
+		if (filter != null) {
+			if (filter.getRestrictedDimensions() != null && filter.getRestrictedDimensions().size() > 0) {
+				query.onlyWhere(" AND (");
+				boolean isFirst = true;
+		        for (DimensionType type : filter.getRestrictedDimensions()) {
+		        	addJoint(query, filter.isLenient(), isFirst);
+		        	
+		        	if (isFirst) {
+		        		isFirst = false;
+		        	}
+		        	
+		        	if (type == DimensionType.AdminLevel) {
+		            	query.onlyWhere(baseTable.getDimensionIdColumn(DimensionType.Location)).in(
+		            			SqlQuery.select("Link.LocationId").from(Tables.LOCATION_ADMIN_LINK, "Link")
+		            				.where("Link.AdminEntityId").in(filter.getRestrictions(DimensionType.AdminLevel)));
+		            } else {
+		            	query.onlyWhere(baseTable.getDimensionIdColumn(type)).in(filter.getRestrictions(type));
+		            }
+		        }
+		        query.onlyWhere(")");
+			}
+		}
     }
-
+	
+	private void addJoint(SqlQuery query, boolean lenient, boolean first) {
+		if (!first) {
+			if (lenient) {
+				query.onlyWhere(" OR ");
+			} else {
+				query.onlyWhere(" AND ");
+			}
+		}
+	}
 }

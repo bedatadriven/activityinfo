@@ -39,14 +39,20 @@ public class Filter implements Serializable {
 
  	private DateRange dateRange = new DateRange();
 
+ 	private boolean lenient = false;
+ 	
     /**
      * Constructs a <code>Filter</code> with no restrictions. All data visible to the user
      * will be included.
      */
 	public Filter() {
-
 	}
 
+	public Filter(boolean lenient) {
+		this.lenient = lenient;
+	}
+
+	
     /**
      * Constructs a copy of the given <code>filter</code>
      *
@@ -58,6 +64,7 @@ public class Filter implements Serializable {
             this.restrictions.put(entry.getKey(), new HashSet<Integer>(entry.getValue()));
         }
         this.dateRange = filter.dateRange;
+        this.lenient = filter.lenient;
     }
 
 
@@ -219,7 +226,15 @@ public class Filter implements Serializable {
         return dateRange;
     }
 
-    @Override
+    public boolean isLenient() {
+		return lenient;
+	}
+
+	public void setLenient(boolean lenient) {
+		this.lenient = lenient;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for(DimensionType type : getRestrictedDimensions()) {
@@ -245,6 +260,12 @@ public class Filter implements Serializable {
                 sb.append(dateRange.getMaxDate()).append("]");
             }
         }
+        if(sb.length()!=0) {
+            sb.append(", ");
+        }
+        sb.append("lenient: ");
+        sb.append(lenient);
+       
         return sb.toString();
     }
 

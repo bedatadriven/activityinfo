@@ -1,7 +1,9 @@
 package org.activityinfo.client.page.entry.form;
 
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.page.entry.LockedPeriodSet;
 import org.activityinfo.client.page.entry.location.LocationDialog;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSchema;
@@ -12,6 +14,8 @@ import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
 import org.activityinfo.client.Log;
+
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SiteDialogLauncher {
@@ -58,6 +62,13 @@ public class SiteDialogLauncher {
 
 			@Override
 			public void onSuccess(SchemaDTO schema) {
+				// check whether the site has been locked
+				LockedPeriodSet locks = new LockedPeriodSet(schema);
+				if(locks.isLocked(site)) {
+					MessageBox.alert(I18N.CONSTANTS.lockedSiteTitle(), I18N.CONSTANTS.siteIsLocked(), null);
+					return;
+				} 
+				
 				ActivityDTO activity = schema.getActivityById(site.getActivityId());
 				SiteDialog dialog = new SiteDialog(dispatcher, activity);
 				dialog.showExisting(site, callback);

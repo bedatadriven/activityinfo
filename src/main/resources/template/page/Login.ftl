@@ -1,5 +1,5 @@
 <#include "Scaffolding.ftl">
-<@scaffolding title="Login">
+<@scaffolding title="${label.login}">
 
 	<@content>
 
@@ -7,11 +7,11 @@
       <br>
       <div class="row-fluid">
         <div class="span8">
-          <h3>What is ActivityInfo?</h3>
-          <p class="lead">ActivityInfo is an open-source, web-based humanitarian monitoring tool that helps humanitarian organizations to collect, manage, map and analyze indicators.</p>
+          <h3>${label.whatIsActivityInfo}</h3>
+          <p class="lead">${label.activityInfoIntro}</p>
           
           <div class="row-fluid">
-          	<div class="span3"><a href="http://about.activityinfo.org" class="btn">Learn more &raquo;</a></div>
+          	<div class="span3"><a href="http://about.activityinfo.org/<#if lang="fr">fr</#if>" class="btn btn-large btn-success">${label.learnMore} &raquo;</a></div>
           	
           </div>
 		  
@@ -19,19 +19,17 @@
  		<div class="span4">										
 			<form class="form-signin" id="loginForm" action="http://www.activityinfo.org/login" method="POST">
 				<h3 class="form-signin-heading">${label.login}</h3>
-			   	<input type="text" name="email" id="emailInput" class="input-block-level" placeholder="Email address">
-               	<input type="password" name="password" id="passwordInput" class="input-block-level" placeholder="Password">
+			   	<input type="text" name="email" id="emailInput" class="input-block-level" placeholder="${label.emailAddress}">
+               	<input type="password" name="password" id="passwordInput" class="input-block-level" placeholder="${label.password}">
 
 			 	<div class="alert alert-error <#if !loginError>hide</#if>" id="loginAlert">
-					The login is not correct, please double check your email and password.
+					${label.incorrectLogin}
 			  	</div>
-               	<label class="checkbox">
-                	<input type="checkbox" value="remember-me"> Remember me
-                </label>			  			
-                <button class="btn btn-info btn-primary btn-large" type="submit" id="loginButton">Log in</button> 
+			  	
+			  	<button class="btn btn-info btn-primary btn-large" type="submit" id="loginButton">${label.login}</button> 
                 <img src="img/ajax-loader-spinner.gif" width="16" height="16" class="hide" id="loginSpinner">
 			
-				<div class="login-problem"><a href="loginProblem">Forgotten your password?</a></div>
+				<div class="login-problem"><a href="loginProblem">${label.forgottenYourPassword}</a></div>
 
 			</form>
       	</div>

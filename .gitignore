@@ -14,3 +14,5 @@ war/Embed
 war/WEB-INF/deploy
 war/WEB-INF/classes
 war/WEB-INF/appengine-generated
+/ActivityInfo Chrome.launch
+/ActivityInfo Firefox.launch

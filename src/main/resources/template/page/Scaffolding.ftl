@@ -1,6 +1,6 @@
 <#macro scaffolding title>
-
 <!DOCTYPE html>
+
 <html>
 <head>
   <title>ActivityInfo - Login</title>
@@ -18,13 +18,18 @@
           <div class="navbar-inner">
             <div class="container-fluid nav-container">
               <nav role="navigation">
-                <a class="brand" href="http://about.activityinfo.org" style=""><img src="img/logo-shadow.png"><span>ActivityInfo</span></a>
+                <a class="brand" href="http://about.activityinfo.org" style=""><img src="img/logo-shadow.png"><span>${label.activityInfo}</span></a>
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
                 </a>
-               
+               <div class="pull-right">
+		         <ul class="upper nav">
+		          <li  class="language <#if lang="en">active</#if>"><a href="">en</a></li>
+		          <li  class="language <#if lang="fr">active</#if>"><a href="">fr</a></li> 
+		         </ul>
+		        </div>	
               </nav>
             </div>
           </div>
@@ -56,6 +61,18 @@
 <#macro scripts>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script>
+	 
+  		$('.language').click(function() {
+  			var language = $(this).text();
+  			var now = new Date();
+   			now.setMonth( now.getMonth() + 1 );
+   			document.cookie="locale" + "=" + language +";expires=" + now.toUTCString();
+			
+	 	});
+	 	
+	 	
+  </script>
   <#nested>
 </#macro>
 

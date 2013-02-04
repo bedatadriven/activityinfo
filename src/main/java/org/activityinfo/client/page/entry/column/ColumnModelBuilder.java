@@ -5,6 +5,7 @@ import java.util.List;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.client.page.common.columns.ReadTextColumn;
+import org.activityinfo.client.page.entry.LockedPeriodSet;
 import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
@@ -115,7 +116,7 @@ public class ColumnModelBuilder {
 
 	public ColumnModelBuilder maybeAddLockColumn(final ActivityDTO activity) {
 		ColumnConfig columnLocked = new ColumnConfig("x", "", 28);
-        columnLocked.setRenderer(new LockedColumnRenderer(activity));
+        columnLocked.setRenderer(new LockedColumnRenderer(new LockedPeriodSet(activity)));
         columnLocked.setSortable(false);
         columnLocked.setMenuDisabled(true);
         columns.add(columnLocked);

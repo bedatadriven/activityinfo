@@ -18,6 +18,7 @@ import org.activityinfo.server.report.output.AppEngineStorageProvider;
 import org.activityinfo.server.report.output.AppEngineStorageServlet;
 import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.output.ServletStorageProvider;
+import org.activityinfo.server.schedule.ReportMailerServlet;
 
 import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
@@ -44,6 +45,7 @@ public class ReportModule extends ServletModule {
 		
 		serve("/icon*").with(MapIconServlet.class);
 		serve("/generated/*").with(AppEngineStorageServlet.class);
+		serve("/tasks/mailSubscriptions").with(ReportMailerServlet.class);
     }
     
     @Provides

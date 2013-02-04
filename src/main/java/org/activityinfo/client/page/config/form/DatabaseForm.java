@@ -6,6 +6,7 @@
 package org.activityinfo.client.page.config.form;
 
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.widget.RemoteComboBox;
 import org.activityinfo.shared.command.GetCountries;
@@ -19,13 +20,15 @@ import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DatabaseForm extends FormPanel {
-    private FormBinding binding;
+    private final FormBinding binding;
 
     public DatabaseForm(final Dispatcher dispatcher) {
         binding = new FormBinding(this);
@@ -44,26 +47,34 @@ public class DatabaseForm extends FormPanel {
 		add(fullNameField);
 
         ComboBox<CountryDTO> countryField = new RemoteComboBox<CountryDTO>();
-        countryField.setStore(createCountryStore(dispatcher));
+		countryField.setStore(createCountryStore(dispatcher, countryField));
         countryField.setFieldLabel(I18N.CONSTANTS.country());
         countryField.setValueField("id");
         countryField.setDisplayField("name");
         countryField.setAllowBlank(false);
-        binding.addFieldBinding( new FieldBinding(countryField, "country") {
+		countryField.setTriggerAction(TriggerAction.ALL);
+
+		binding.addFieldBinding(new FieldBinding(countryField, "country") {
             @Override
             public void updateModel() {
-                ((UserDatabaseDTO)model).setCountry((CountryDTO) field.getValue());
-            }
-        });
+                ((UserDatabaseDTO)model).setCountry((CountryDTO) field
+						.getValue());
+			}
+		});
 
-        add(countryField);
+		add(countryField);
 	}
 
-    private static ListStore<CountryDTO> createCountryStore(final Dispatcher dispatcher) {
+	private static ListStore<CountryDTO> createCountryStore(
+			final Dispatcher dispatcher, final Component component) {
+
         return new ListStore<CountryDTO>(new BaseListLoader<CountryResult>(new DataProxy<CountryResult>(){
             @Override
             public void load(DataReader<CountryResult> countryResultDataReader, Object loadConfig, final AsyncCallback<CountryResult> callback) {
-                dispatcher.execute(new GetCountries(), callback);
+						dispatcher.execute(new GetCountries(),
+								new MaskingAsyncMonitor(component,
+										I18N.CONSTANTS.loading()), callback);
+
             }
         }));
     }

@@ -12,6 +12,7 @@ import java.io.Writer;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateModelException;
 
 /**
  * @author Alex Bertram
@@ -20,8 +21,17 @@ public class MockTemplateConfiguration extends Configuration {
 
     public String lastTemplateName;
     public Object lastModel;
+    
+    
 
-    @Override
+    public MockTemplateConfiguration() throws TemplateModelException {
+		super();
+		setSharedVariable("lang", "en");
+    }
+
+
+
+	@Override
     public Template getTemplate(String name) throws IOException {
 
         this.lastTemplateName = name;

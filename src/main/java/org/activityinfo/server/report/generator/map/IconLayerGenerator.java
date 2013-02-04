@@ -72,17 +72,6 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
 	public void generate(TiledMap map, MapContent content) {
         List<PointValue> points = new ArrayList<PointValue>();
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
-
-        for(SiteDTO site : sites) {
-            if(meetsCriteria(site)) {
-                if(site.hasLatLong()) {
-                    Point point = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
-                    points.add(new PointValue(site, point, rectCalculator.iconRect(point), getValue(site, layer.getIndicatorIds())));
-                } else {
-                    content.getUnmappedSites().add(site.getId());
-                }
-            }
-        }
         
         IntersectionCalculator intersectionCalculator = new IntersectionCalculator() {
 			@Override
@@ -93,6 +82,22 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
         
 		Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), rectCalculator, intersectionCalculator);
 		
+        for(SiteDTO site : sites) {
+            if(meetsCriteria(site)) {
+                if(clusterer.isMapped(site)) {
+                    Point point = null;
+                    if(site.hasLatLong()) {
+                    	point = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
+                    }
+                    points.add(new PointValue(site, point, 
+                    		point == null ? null : rectCalculator.iconRect(point), 
+                    				getValue(site, layer.getIndicatorIds())));
+                } else {
+                    content.getUnmappedSites().add(site.getId());
+                }
+            }
+        }
+        
         List<Cluster> clusters = clusterer.cluster(map, points);
         createMarkersFrom(clusters, map, content);
         
@@ -113,6 +118,10 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
             marker.setTitle(formatTitle(cluster));
             marker.setIcon(icon);
             marker.setIndicatorId(layer.getIndicatorIds().get(0));
+            
+            for(PointValue pv : cluster.getPointValues()) {
+            	marker.getSiteIds().add(pv.getSite().getId());
+            }
             content.getMarkers().add(marker);
         }
 	}

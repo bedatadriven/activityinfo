@@ -115,7 +115,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 							.setFilter(event.getValue())) );
 			}
 		});
-	//	filterPane.getSet().applyBaseFilter(new Filter());
 	}
 
 	private void addCenter() {
@@ -355,6 +354,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 					gridPanel.refresh();
 				}
 			});
+		
 			
 		} else if(UIActions.DELETE.equals(actionId)) {
 			
@@ -387,6 +387,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 			dialog.show(currentPlace);
 		}
 	}
+
 
 	private void delete() {
 		dispatcher.execute(new DeleteSite(gridPanel.getSelection().getId()), 

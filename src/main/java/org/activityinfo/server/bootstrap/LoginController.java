@@ -8,6 +8,7 @@ package org.activityinfo.server.bootstrap;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,20 +29,18 @@ import freemarker.template.Configuration;
 public class LoginController extends AbstractController {
     public static final String ENDPOINT = "/login";
 
-    private final MailSender sender;
-    private LoginServiceServlet loginService;
+    private final LoginServiceServlet loginService;
     
     @Inject
     public LoginController(Injector injector, Configuration templateCfg, MailSender sender, LoginServiceServlet loginService) {
         super(injector, templateCfg);
-        this.sender = sender;
         this.loginService = loginService;
     }
 
     @Override
     @LogException(emailAlert = true)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        writeView(resp, new LoginPageModel(parseUrlSuffix(req)));
+		writeView(resp, req, new LoginPageModel(parseUrlSuffix(req)));
     }
 
 	@Override
@@ -49,8 +48,9 @@ public class LoginController extends AbstractController {
 			throws ServletException, IOException {
 		boolean ajax = "true".equals(req.getParameter("ajax"));
 		try {
-			loginService.login(req.getParameter("email"), req.getParameter("password"), 
+			AuthenticatedUser user = loginService.login(req.getParameter("email"), req.getParameter("password"), 
 					false);
+			addLocaleCookie(resp, user);
 			if(ajax) {
 				resp.setStatus(HttpServletResponse.SC_OK);
 			} else {
@@ -60,9 +60,24 @@ public class LoginController extends AbstractController {
 			if(ajax) {
 				resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
-				writeView(resp, LoginPageModel.unsuccessful(parseUrlSuffix(req)));
+				writeView(resp, req,
+						LoginPageModel.unsuccessful(parseUrlSuffix(req)));
 			}
 		}
+	}
+
+	/**
+	 * Adds the user's locale as a cookie, so that we preserve the right
+	 * language even after they log out.
+	 * @param resp
+	 * @param user
+	 */
+	private void addLocaleCookie(HttpServletResponse resp,
+			AuthenticatedUser user) {
+		Cookie cookie = new Cookie("locale", user.getUserLocale());
+		cookie.setMaxAge(60 * 60 * 24 * 365);
+		cookie.setPath("/");
+		resp.addCookie(cookie);
 	}
     
     

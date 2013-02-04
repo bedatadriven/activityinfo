@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.entry.column;
 
 import org.activityinfo.client.icon.IconImageBundle;
-import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.client.page.entry.LockedPeriodSet;
 import org.activityinfo.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -12,10 +12,11 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 
 public class LockedColumnRenderer implements
 		GridCellRenderer<ModelData> {
-	private final ActivityDTO activity;
+	private final LockedPeriodSet lockSet;
 
-	public LockedColumnRenderer(ActivityDTO activity) {
-		this.activity = activity;
+	public LockedColumnRenderer(LockedPeriodSet lockSet) {
+		super();
+		this.lockSet = lockSet;
 	}
 
 	@Override
@@ -25,7 +26,7 @@ public class LockedColumnRenderer implements
 	    	StringBuilder builder = new StringBuilder();
 	    	if (siteModel.isLinked()) {
 	    		return IconImageBundle.ICONS.link().getHTML();
-	    	} else if (siteModel.fallsWithinLockedPeriod(activity)) {
+	    	} else if (lockSet.isLocked(siteModel)) {
 	    		//String tooltip = buildTooltip(model, activity);
 	    		
 	    		//builder.append("<span qtip='");

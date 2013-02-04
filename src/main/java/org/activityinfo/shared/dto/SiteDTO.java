@@ -5,12 +5,9 @@
 
 package org.activityinfo.shared.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -414,57 +411,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 		set("project", project);
 	}
 	
-	/*
-	 * Returns true when this Site is locked for C/U/D operations
-	 */
-	public boolean fallsWithinLockedPeriod(ActivityDTO activity) {
-		return fallsWithinLockedPeriods(getRelevantLockedPeriods(activity), activity, this.getDate2());
-	}
-
-	private List<LockedPeriodDTO> getRelevantLockedPeriods(ActivityDTO activity) {
-		List<LockedPeriodDTO> lockedPeriods = new ArrayList<LockedPeriodDTO>();
-		
-		lockedPeriods.addAll(activity.getEnabledLockedPeriods());
-		if (activity.getDatabase() != null) {
-			lockedPeriods.addAll(activity.getDatabase().getEnabledLockedPeriods());
-		}
-		if (getProject() != null) {
-			lockedPeriods.addAll(getProject().getEnabledLockedPeriods());
-		}
-		
-		return lockedPeriods;
-	}
-	
-	/*
-	 * Returns true when this Site falls within at least one of given LockedPeriods
-	 */
-	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, LocalDate date) {
-		for (LockedPeriodDTO lockedPeriod : lockedPeriods) {
-			// For reporting purposes, only the Date2 is 'counted'.  
-			if (date != null && lockedPeriod.fallsWithinPeriod(date)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static boolean fallsWithinLockedPeriods(Iterable<LockedPeriodDTO> lockedPeriods, ActivityDTO activity, Date date) {
-		return fallsWithinLockedPeriods(lockedPeriods, activity, new LocalDate(date));
-	}
-	
-	public Set<LockedPeriodDTO> getAffectedLockedPeriods(ActivityDTO activity) {
-		Set<LockedPeriodDTO> affectedLockedPeriods = new HashSet<LockedPeriodDTO>();
-		
-		for (LockedPeriodDTO lockedPeriod : getRelevantLockedPeriods(activity)) {
-			// For reporting purposes, only the Date2 is 'counted'.  
-			if (lockedPeriod.fallsWithinPeriod(getDate2())) {
-				affectedLockedPeriods.add(lockedPeriod);
-			}
-		}
-		
-		return affectedLockedPeriods;
-	}
-
 	/**
 	 * Returns the location in the format of [LocationName (LocationAxe)]
 	 */

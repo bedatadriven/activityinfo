@@ -22,6 +22,8 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
+import com.bedatadriven.rebar.sql.client.query.SqlQuery.WhereClauseBuilder;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.common.collect.HashMultimap;
@@ -166,6 +168,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 		.appendColumn("site.comments", "Comments")
 		.appendColumn("location.x", "x")
 		.appendColumn("location.y", "y")
+		.appendColumn("site.DateEdited")
 		.from(Tables.SITE)
 		.whereTrue("site.dateDeleted is null")
 		.leftJoin(Tables.ACTIVITY).on("site.ActivityId = activity.ActivityId")
@@ -205,7 +208,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			.appendColumn("locationType.name", "LocationTypeName")
 			.appendColumn("site.comments", "Comments")
 			.appendColumn("location.x", "x")
-			.appendColumn("location.y", "y");
+			.appendColumn("location.y", "y")
+			.appendColumn("site.DateEdited");
 		
 		if(command.getFilter().isRestricted(DimensionType.Indicator)) {
 			/*
@@ -294,6 +298,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
     				.leftJoin(Tables.REPORTING_PERIOD, "r").on("v.ReportingPeriodId=r.ReportingPeriodId")
     				.whereTrue("v.IndicatorId=" + indicatorId)
     				.and("r.SiteId=u.SiteId"), ascending);
+            } else if(field.equals("DateEdited")) {
+            	query.orderBy("DateEdited", ascending);
             } else {
             	Log.error("Unimplemented sort on GetSites: '" + field + "");
             }
@@ -301,37 +307,80 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 	
 	private void applyFilter(SqlQuery query, Filter filter) {
-		if(filter != null) {
-	        for (DimensionType type : filter.getRestrictedDimensions()) {
-	            if (type == DimensionType.Activity) {
-	                query.where("activity.ActivityId").in(filter.getRestrictions(type));
-	
-	            } else if (type == DimensionType.Database) {
-	                query.where("activity.DatabaseId").in(filter.getRestrictions(type));
-	
-	            } else if (type == DimensionType.Partner) {
-	                query.where("site.PartnerId").in(filter.getRestrictions(type));
-	                
-	            } else if (type == DimensionType.Project) {
-	            	query.where("site.ProjectId").in(filter.getRestrictions(type));
-	
-	            } else if (type == DimensionType.AdminLevel) {
-	                query.where("site.LocationId").in(
-	                        SqlQuery.select("Link.LocationId")
-	                        	.from(Tables.LOCATION_ADMIN_LINK, "Link")
-	                        	.where("Link.AdminEntityId")
-	                            .in(filter.getRestrictions(type)));
-	
-	            } else if(type == DimensionType.Site) {
-	                query.where("site.SiteId").in(filter.getRestrictions(type));
-	            }
+		if (filter != null) {
+			if (filter.getRestrictedDimensions() != null && filter.getRestrictedDimensions().size() > 0) {
+				query.onlyWhere(" AND (");
+				
+				boolean isFirst = true;
+				boolean isRestricted = false;
+		        for (DimensionType type : filter.getRestrictedDimensions()) {
+		        	if (isQueryableType(type)) {
+		        		addJoint(query, filter.isLenient(), isFirst);
+		        		isRestricted = true;
+		        	}
+		        	
+		        	
+		            if (type == DimensionType.Activity) {
+		            	query.onlyWhere("activity.ActivityId").in(filter.getRestrictions(type));
+		
+		            } else if (type == DimensionType.Database) {
+		            	query.onlyWhere("activity.DatabaseId").in(filter.getRestrictions(type));
+		
+		            } else if (type == DimensionType.Partner) {
+		            	query.onlyWhere("site.PartnerId").in(filter.getRestrictions(type));
+		                
+		            } else if (type == DimensionType.Project) {
+		            	query.onlyWhere("site.ProjectId").in(filter.getRestrictions(type));
+		
+		            } else if (type == DimensionType.AdminLevel) {
+		            	query.onlyWhere("site.LocationId").in(
+		                        SqlQuery.select("Link.LocationId")
+		                        	.from(Tables.LOCATION_ADMIN_LINK, "Link")
+		                        	.where("Link.AdminEntityId")
+		                            .in(filter.getRestrictions(type)));
+		
+		            } else if(type == DimensionType.Site) {
+		            	query.onlyWhere("site.SiteId").in(filter.getRestrictions(type));
+		            }
+		            
+		            
+		        	if (isQueryableType(type) && isFirst) {
+		        		isFirst = false;
+		        	}
+		        }
+		        if (!isRestricted) {
+		        	query.onlyWhere(" 1=1 ");
+		        }
+		        query.onlyWhere(")");
+			}
+			
+	        LocalDate filterMinDate = filter.getDateRange().getMinLocalDate();
+	        if (filterMinDate != null) {
+	        	query.where("site.Date2").greaterThanOrEqualTo(filterMinDate);
 	        }
-	        if (filter.getMinDate() != null) {
-	        	query.where("site.Date2").greaterThanOrEqualTo(filter.getMinDate());
+	        LocalDate filterMaxDate = filter.getDateRange().getMaxLocalDate();
+	        if (filterMaxDate != null) {
+	        	query.where("site.Date2").lessThanOrEqualTo(filterMaxDate);
 	        }
-	        if (filter.getMaxDate() != null) {
-	        	query.where("site.Date2").lessThanOrEqualTo(filter.getMaxDate());
-	        }
+		}
+	}
+	
+	private boolean isQueryableType(DimensionType type) {
+		return (type == DimensionType.Activity || 
+				type == DimensionType.Database ||
+				type == DimensionType.Partner ||
+				type == DimensionType.Project ||
+				type == DimensionType.AdminLevel ||
+				type == DimensionType.Site);	
+	}
+	
+	private void addJoint(SqlQuery query, boolean lenient, boolean first) {
+		if (!first) {
+			if (lenient) {
+				query.onlyWhere(" OR ");
+			} else {
+				query.onlyWhere(" AND ");
+			}
 		}
 	}
 

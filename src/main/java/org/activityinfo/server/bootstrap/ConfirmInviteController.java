@@ -44,10 +44,10 @@ public class ConfirmInviteController extends AbstractController {
             User user = findUserByKey(req.getQueryString());
             ConfirmInvitePageModel model = new ConfirmInvitePageModel(user);
 
-            writeView(resp, model);
+			writeView(resp, req, model);
 
         } catch (InvalidKeyException e) {
-            writeView(resp, new InvalidInvitePageModel());
+			writeView(resp, req, new InvalidInvitePageModel());
         }
     }
 
@@ -59,7 +59,7 @@ public class ConfirmInviteController extends AbstractController {
         try {
             user = findUserByKey(req.getParameter("key"));
         } catch (InvalidKeyException e) {
-            writeView(resp, new InvalidInvitePageModel());
+			writeView(resp, req, new InvalidInvitePageModel());
         }
 
         try {
@@ -67,7 +67,7 @@ public class ConfirmInviteController extends AbstractController {
             resp.sendRedirect(HostController.ENDPOINT);
 
         } catch (IncompleteFormException e) {
-            writeView(resp, ConfirmInvitePageModel.incompleteForm(user));
+			writeView(resp, req, ConfirmInvitePageModel.incompleteForm(user));
         }
     }
 

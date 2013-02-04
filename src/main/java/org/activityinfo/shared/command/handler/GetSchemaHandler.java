@@ -296,12 +296,14 @@ public class GetSchemaHandler implements
 							}
 							parentFound = true;
 						}
-						if (!row.isNull("projectID")) {
+						if (!row.isNull("projectId")) {
 							Integer projectId = row.getInt("projectId");
 							ProjectDTO project = projects.get(projectId);
-							project.getLockedPeriods().add(lockedPeriod);
-							lockedPeriod.setParent(project);
-							parentFound = true;
+							if(project != null) {
+								project.getLockedPeriods().add(lockedPeriod);
+								lockedPeriod.setParent(project);
+								parentFound = true;
+							}
 						}
 
 						if (!parentFound) {
