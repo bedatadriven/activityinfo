@@ -87,6 +87,7 @@ enum ColumnAppender {
 		case Types.DECIMAL:
 		case Types.DOUBLE:
 		case Types.FLOAT:
+		case Types.BIGINT:
 			return ColumnAppender.REAL;
 			
 		case Types.DATE:

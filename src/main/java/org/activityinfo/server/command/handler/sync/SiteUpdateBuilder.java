@@ -175,6 +175,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 			.appendColumn("s.PartnerId")
 			.appendColumn("s.ProjectId")
 			.appendColumn("s.Comments")
+			.appendColumn("s.timeEdited")
 			.where("s.timeEdited").greaterThan(localVersion)
 			.where("a.DatabaseId").equalTo(databaseId)
 			.whereTrue("s.dateDeleted IS NULL");
