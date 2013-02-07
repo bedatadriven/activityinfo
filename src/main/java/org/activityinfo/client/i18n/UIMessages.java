@@ -88,6 +88,14 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 	String recentlyAddedSites(String arg0);
 
 	/**
+	 * Translated "{0} most recent edited sites for search query".
+	 * 
+	 * @return translated "{0} most recent edited sites for search query"
+	 */
+	@DefaultMessage("{0} most recent edited sites for search query")
+	String recentlyEditedSites(String arg0);
+
+	/**
 	 * Translated
 	 * "Nothing entered to search on: please enter something you want to search for"
 	 * .

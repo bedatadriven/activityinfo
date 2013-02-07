@@ -25,10 +25,10 @@ public class AllSearcher {
 	static {
 		searchers.put(DimensionType.Partner, new GenericSearcher(DimensionType.Partner));
 		searchers.put(DimensionType.Project, new GenericSearcher(DimensionType.Project));
-		searchers.put(DimensionType.AttributeGroup, new GenericSearcher(DimensionType.AttributeGroup));
+		// searchers.put(DimensionType.AttributeGroup, new GenericSearcher(DimensionType.AttributeGroup));
 		searchers.put(DimensionType.Location, new LocationSearcher());
 		searchers.put(DimensionType.AdminLevel, new AdminEntitySearcher());
-		//searchers.add(new SiteSearcher());
+		// searchers.add(new SiteSearcher());
 		searchers.put(DimensionType.Indicator, new IndicatorSearcher());
 	}
 	

@@ -62,7 +62,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 				
 		SqlQuery unioned = unionedQuery(context, command);
 		unioned.appendAllColumns();
-		applySort(unioned, command.getSortInfo());
 		
 		if(isMySql()) {
 			// with this feature, MySQL will keep track of the total
@@ -74,8 +73,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			unioned.appendKeyword("SQL_CALC_FOUND_ROWS");
 		}
 		
-		applyPaging(unioned, command);
 		applySort(unioned, command.getSortInfo());
+		applyPaging(unioned, command);
 		
 		final Multimap<Integer, SiteDTO> siteMap = HashMultimap.create();
 		final List<SiteDTO> sites = new ArrayList<SiteDTO>();
