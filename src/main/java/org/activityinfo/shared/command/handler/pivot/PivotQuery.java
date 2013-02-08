@@ -282,7 +282,7 @@ public class PivotQuery {
     private void appendDimensionRestrictions() {
 		if (filter != null) {
 			if (filter.getRestrictedDimensions() != null && filter.getRestrictedDimensions().size() > 0) {
-				query.onlyWhere(" AND (");
+				query.where("(");
 				boolean isFirst = true;
 		        for (DimensionType type : filter.getRestrictedDimensions()) {
 		        	addJoint(query, filter.isLenient(), isFirst);
