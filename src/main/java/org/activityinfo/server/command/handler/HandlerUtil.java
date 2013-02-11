@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.endpoint.gwtrpc.ServerExecutionContext;
+import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.command.handler.AuthorizationHandler;

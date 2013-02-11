@@ -1,8 +1,8 @@
 package org.activityinfo.client.offline.ui;
 
 import org.activityinfo.client.EventBus;
-import org.activityinfo.client.offline.OfflineStateChangeEvent;
-import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
+import org.activityinfo.client.offline.LocalStateChangeEvent;
+import org.activityinfo.client.offline.LocalStateChangeEvent.State;
 import org.activityinfo.client.offline.sync.SyncCompleteEvent;
 import org.activityinfo.client.offline.sync.SyncStatusEvent;
 
@@ -34,10 +34,10 @@ public class WorkStatus extends Status {
 			}
 		});
 		
-		eventBus.addListener(OfflineStateChangeEvent.TYPE, new Listener<OfflineStateChangeEvent>() {
+		eventBus.addListener(LocalStateChangeEvent.TYPE, new Listener<LocalStateChangeEvent>() {
 
 			@Override
-			public void handleEvent(OfflineStateChangeEvent be) {
+			public void handleEvent(LocalStateChangeEvent be) {
 				onOfflineStatusChange(be.getState());
 			}
 		});

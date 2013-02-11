@@ -1,7 +1,7 @@
 package org.activityinfo.client.offline.ui;
 
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.offline.OfflineController;
+import org.activityinfo.client.offline.LocalController;
 import org.activityinfo.client.offline.capability.ProfileResources;
 import org.activityinfo.client.util.state.CrossSessionStateProvider;
 
@@ -22,11 +22,11 @@ public class PromptOfflineDialog extends BasePromptDialog {
 	private static final String DONT_ASK_STATE_KEY = "offlineSilent";
 
 	private final CrossSessionStateProvider stateProvider;
-	private final OfflineController offlineController;
+	private final LocalController offlineController;
 	
 	@Inject
 	public PromptOfflineDialog(CrossSessionStateProvider stateProvider,
-			OfflineController controller) {
+			LocalController controller) {
 		super(capabilityProfile.getInstallInstructions());
 		
 		this.stateProvider = stateProvider;

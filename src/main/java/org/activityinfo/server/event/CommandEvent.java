@@ -1,7 +1,7 @@
 package org.activityinfo.server.event;
 
 import org.activityinfo.login.shared.AuthenticatedUser;
-import org.activityinfo.server.endpoint.gwtrpc.ServerExecutionContext;
+import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.SiteCommand;
@@ -14,9 +14,9 @@ import com.extjs.gxt.ui.client.data.RpcMap;
 public class CommandEvent {
 	private Command command;
 	private CommandResult result;
-	private ServerExecutionContext context;
+	private RemoteExecutionContext context;
 	
-	public CommandEvent(Command command, CommandResult result, ServerExecutionContext context) {
+	public CommandEvent(Command command, CommandResult result, RemoteExecutionContext context) {
 		this.command = command;
 		this.result = result;
 		this.context = context;
@@ -30,7 +30,7 @@ public class CommandEvent {
 		return result;
 	}
 	
-	public ServerExecutionContext getContext() {
+	public RemoteExecutionContext getContext() {
 		return context;
 	}
 	

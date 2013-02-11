@@ -21,7 +21,7 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.i18n.UIConstants;
-import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
+import org.activityinfo.client.offline.LocalStateChangeEvent.State;
 import org.activityinfo.client.offline.capability.OfflineCapabilityProfile;
 import org.activityinfo.client.offline.capability.PermissionRefusedException;
 import org.activityinfo.client.offline.sync.AppOutOfDateException;
@@ -53,7 +53,7 @@ import com.google.inject.Singleton;
  * goes into offline mode.
  */
 @Singleton
-public class OfflineController implements Dispatcher {
+public class LocalController implements Dispatcher {
 
 	public interface PromptConnectCallback {
 		void onCancel();
@@ -72,7 +72,7 @@ public class OfflineController implements Dispatcher {
 	private Date lastSynced = null;
 
 	@Inject
-	public OfflineController(EventBus eventBus,
+	public LocalController(EventBus eventBus,
 			@Remote Dispatcher remoteDispatcher,
 			Provider<Synchronizer> gateway,
 			OfflineCapabilityProfile capabilityProfile, 
@@ -87,7 +87,7 @@ public class OfflineController implements Dispatcher {
 		
 		Log.trace("OfflineManager: starting");
 
-		activateStrategy(new LoadingOfflineStrategy());
+		activateStrategy(new LoadingLocalStrategy());
 	}
 	
 	public Date getLastSyncTime() {
@@ -101,8 +101,8 @@ public class OfflineController implements Dispatcher {
 	}
 	
 	public void synchronize() {
-		if(activeStrategy instanceof OfflineStrategy) {
-			((OfflineStrategy)activeStrategy).synchronize();
+		if(activeStrategy instanceof LocalStrategy) {
+			((LocalStrategy)activeStrategy).synchronize();
 		}
 	}
 
@@ -127,7 +127,7 @@ public class OfflineController implements Dispatcher {
 		try {
 			this.activeStrategy = strategy;
 			this.activeStrategy.activate();
-			eventBus.fireEvent(new OfflineStateChangeEvent(this.activeStrategy.getState()));
+			eventBus.fireEvent(new LocalStateChangeEvent(this.activeStrategy.getState()));
 
 		} catch (Exception caught) {
 			// errors really ought to be handled by the strategy that is passing
@@ -265,12 +265,12 @@ public class OfflineController implements Dispatcher {
 						@Override
 						public void onFailure(Throwable caught) {
 							activateStrategy(new NotInstalledStrategy());
-							OfflineController.this.reportFailure(caught);
+							LocalController.this.reportFailure(caught);
 						}
 
 						@Override
 						public void onSuccess(Void result) {
-							activateStrategy(new OfflineStrategy(gateway));
+							activateStrategy(new LocalStrategy(gateway));
 						}
 					});
 				}
@@ -285,7 +285,7 @@ public class OfflineController implements Dispatcher {
 	 * and then if so, while we'ere loading the offline module 
 	 * async fragment.
 	 */
-	private class LoadingOfflineStrategy extends Strategy {
+	private class LoadingLocalStrategy extends Strategy {
 
 		/**
 		 * Commands cannot be executed until everything is loaded...
@@ -337,7 +337,7 @@ public class OfflineController implements Dispatcher {
 
 						@Override
 						public void onSuccess(Void result) {
-							activateStrategy(new OfflineStrategy(gateway));
+							activateStrategy(new LocalStrategy(gateway));
 							doDispatch(pending);
 						}
 					});
@@ -370,15 +370,15 @@ public class OfflineController implements Dispatcher {
 	 * encountered, we offer the user the chance to connect.
 	 * 
 	 */
-	private final class OfflineStrategy extends Strategy {
-		private Synchronizer offlineManger;
+	private final class LocalStrategy extends Strategy {
+		private Synchronizer localManager;
 
-		private OfflineStrategy(Synchronizer offlineManger) {
-			this.offlineManger = offlineManger;
+		private LocalStrategy(Synchronizer localManager) {
+			this.localManager = localManager;
 		}
 
 		public void synchronize() {
-			offlineManger.synchronize();
+			localManager.synchronize();
 		}
 
 		@Override
@@ -387,12 +387,12 @@ public class OfflineController implements Dispatcher {
 		}
 
 		@Override
-		public OfflineStrategy activate() {
+		public LocalStrategy activate() {
 			
 			// ensure that's the user's authentication is persisted across sessions!
 			ClientSideAuthProvider.ensurePersisted();
 			
-			offlineManger.getLastSyncTime(new AsyncCallback<Date>() {
+			localManager.getLastSyncTime(new AsyncCallback<Date>() {
 
 				@Override
 				public void onSuccess(Date result) {
@@ -400,12 +400,12 @@ public class OfflineController implements Dispatcher {
 					eventBus.fireEvent(new SyncCompleteEvent(result));
 				
 					// do an initial synchronization attempt
-					offlineManger.synchronize();
+					localManager.synchronize();
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
-					offlineManger.synchronize();
+					localManager.synchronize();
 				}
 			});
 			return this;
@@ -414,7 +414,7 @@ public class OfflineController implements Dispatcher {
 		@Override
 		void dispatch(Command command, AsyncCallback callback) {
 
-			offlineManger.execute(command, callback);
+			localManager.execute(command, callback);
 		}
 	}
 

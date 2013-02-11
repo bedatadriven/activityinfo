@@ -14,8 +14,8 @@ import org.activityinfo.client.MixPanel;
 import org.activityinfo.client.UsageTracker;
 import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
-import org.activityinfo.client.offline.OfflineController;
-import org.activityinfo.client.offline.OfflineModule;
+import org.activityinfo.client.offline.LocalController;
+import org.activityinfo.client.offline.LocalModule;
 import org.activityinfo.client.page.config.ConfigLoader;
 import org.activityinfo.client.page.config.ConfigModule;
 import org.activityinfo.client.page.dashboard.DashboardLoader;
@@ -42,7 +42,7 @@ import com.google.gwt.inject.client.Ginjector;
         EntryModule.class,
         MapModule.class,
         ConfigModule.class,
-        OfflineModule.class,
+        LocalModule.class,
         SearchModule.class
 })
 public interface AppInjector extends Ginjector {
@@ -51,7 +51,7 @@ public interface AppInjector extends Ginjector {
     DataEntryLoader createDataEntryLoader();
     ReportLoader createReportLoader();
     ConfigLoader createConfigLoader();
-    OfflineController createOfflineController();
+    LocalController createOfflineController();
     UsageTracker getUsageTracker();
 	SearchLoader createSearchLoader();
 	DashboardLoader createDashboardLoader();

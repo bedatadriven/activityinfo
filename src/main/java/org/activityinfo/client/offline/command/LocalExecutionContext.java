@@ -9,7 +9,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class OfflineExecutionContext implements ExecutionContext {
+public class LocalExecutionContext implements ExecutionContext {
 
 	private AuthenticatedUser user;
 	private SqlTransaction tx;
@@ -17,7 +17,7 @@ public class OfflineExecutionContext implements ExecutionContext {
 	private CommandQueue commandQueue;
 	
 		
-	public OfflineExecutionContext(AuthenticatedUser user, SqlTransaction tx,
+	public LocalExecutionContext(AuthenticatedUser user, SqlTransaction tx,
 			HandlerRegistry registry,
 			CommandQueue commandQueue) {
 		super();
@@ -25,6 +25,11 @@ public class OfflineExecutionContext implements ExecutionContext {
 		this.tx = tx;
 		this.registry = registry;
 		this.commandQueue = commandQueue;
+	}
+
+	@Override
+	public boolean isLocal() {
+		return true;
 	}
 
 	@Override

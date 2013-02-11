@@ -2,7 +2,7 @@ package org.activityinfo.client.page.app;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.offline.OfflineController;
+import org.activityinfo.client.offline.LocalController;
 import org.activityinfo.client.page.NavigationHandler;
 import org.activityinfo.client.page.search.SearchPageState;
 
@@ -37,7 +37,7 @@ public class AppBar extends Composite  {
 
 	private EventBus eventBus;
 
-	private OfflineController offlineController;
+	private LocalController offlineController;
 	
 	public static int HEIGHT = 50;
 
@@ -45,7 +45,7 @@ public class AppBar extends Composite  {
 	}
 	
 	@Inject
-	public AppBar(EventBus eventBus, OfflineController offlineController) {
+	public AppBar(EventBus eventBus, LocalController offlineController) {
 		this.eventBus = eventBus;
 		this.offlineController = offlineController;
 		

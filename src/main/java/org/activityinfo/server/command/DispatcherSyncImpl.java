@@ -2,7 +2,7 @@ package org.activityinfo.server.command;
 
 import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.endpoint.gwtrpc.ServerExecutionContext;
+import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
@@ -24,15 +24,15 @@ public class DispatcherSyncImpl implements DispatcherSync {
 	
 	@Override
 	public <C extends Command<R>, R extends CommandResult> R execute(C command) throws CommandException {
-		if(ServerExecutionContext.inProgress()) {
-			return ServerExecutionContext.current().execute(command);
+		if(RemoteExecutionContext.inProgress()) {
+			return RemoteExecutionContext.current().execute(command);
 		} else {
 			User user = new User();
 			user.setId(userProvider.get().getUserId());
 			user.setEmail(userProvider.get().getEmail());
 			user.setLocale(userProvider.get().getUserLocale());
 			
-			ServerExecutionContext context = new ServerExecutionContext(injector);
+			RemoteExecutionContext context = new RemoteExecutionContext(injector);
 			return context.startExecute(command);
 		}
 	}

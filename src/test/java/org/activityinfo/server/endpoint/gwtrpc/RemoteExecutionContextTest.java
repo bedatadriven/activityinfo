@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-public class ServerExecutionContextTest {
+public class RemoteExecutionContextTest {
 		
 	
 	@Test

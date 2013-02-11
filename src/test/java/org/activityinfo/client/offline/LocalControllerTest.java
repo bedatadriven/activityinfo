@@ -6,7 +6,7 @@
 package org.activityinfo.client.offline;
 
 
-public class OfflineControllerTest {
+public class LocalControllerTest {
 //    private ViewStub view;
 //    private MockEventBus eventBus;
 //    private Provider<Synchronizer> synchronizerProvider;

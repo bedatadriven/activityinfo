@@ -88,7 +88,7 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
 
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(User user, Command command) throws CommandException {
-    	ServerExecutionContext context = new ServerExecutionContext(injector);
+    	RemoteExecutionContext context = new RemoteExecutionContext(injector);
     	return context.execute(command);
     }
     

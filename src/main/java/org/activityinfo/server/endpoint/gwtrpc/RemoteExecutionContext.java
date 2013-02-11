@@ -28,11 +28,11 @@ import com.bedatadriven.rebar.sql.shared.adapter.SyncTransactionAdapter;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 
-public class ServerExecutionContext implements ExecutionContext {
+public class RemoteExecutionContext implements ExecutionContext {
 	
-	private static Logger LOGGER = Logger.getLogger(ServerExecutionContext.class.getName());
+	private static Logger LOGGER = Logger.getLogger(RemoteExecutionContext.class.getName());
 
-	private static ThreadLocal<ServerExecutionContext> CURRENT = new ThreadLocal<ServerExecutionContext>();
+	private static ThreadLocal<RemoteExecutionContext> CURRENT = new ThreadLocal<RemoteExecutionContext>();
 	
 	private AuthenticatedUser user;
 	private Injector injector;
@@ -40,13 +40,18 @@ public class ServerExecutionContext implements ExecutionContext {
 	private HibernateEntityManager entityManager;
 	private JdbcScheduler scheduler;
 
-	public ServerExecutionContext(Injector injector) {
+	public RemoteExecutionContext(Injector injector) {
 		super();		
 		this.injector = injector;
 		this.user = injector.getInstance(AuthenticatedUser.class);
 		this.entityManager = (HibernateEntityManager) injector.getInstance(EntityManager.class);
 		this.scheduler = new JdbcScheduler();
 		this.scheduler.allowNestedProcessing();
+	}
+
+	@Override
+	public boolean isLocal() {
+		return false;
 	}
 
 	@Override
@@ -59,8 +64,8 @@ public class ServerExecutionContext implements ExecutionContext {
 		return tx;
 	}
 	
-	public static ServerExecutionContext current() {
-		ServerExecutionContext current = CURRENT.get();
+	public static RemoteExecutionContext current() {
+		RemoteExecutionContext current = CURRENT.get();
 		if(current == null) {
 			throw new IllegalStateException("No current command execution context");
 		}

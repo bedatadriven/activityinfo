@@ -8,7 +8,7 @@ import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet2;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
-import org.activityinfo.server.endpoint.gwtrpc.ServerExecutionContext;
+import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.shared.command.Command;
@@ -68,7 +68,7 @@ public class CommandTestCase2 {
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
         
-        ServerExecutionContext context = new ServerExecutionContext(injector);
+        RemoteExecutionContext context = new RemoteExecutionContext(injector);
         T result =  context.startExecute(command);
         
         // normally each request and so each handleCommand() gets its own

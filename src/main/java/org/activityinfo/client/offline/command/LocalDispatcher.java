@@ -72,7 +72,7 @@ public class LocalDispatcher extends AbstractDispatcher {
 				
 				@Override
 				public void begin(SqlTransaction tx) {
-					OfflineExecutionContext context = new OfflineExecutionContext(auth, tx, registry, commandQueue);
+					LocalExecutionContext context = new LocalExecutionContext(auth, tx, registry, commandQueue);
 					context.execute(command, commandResult);
 				}
 	

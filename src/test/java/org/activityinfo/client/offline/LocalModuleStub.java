@@ -1,4 +1,4 @@
-package org.activityinfo.client.client.offline;
+package org.activityinfo.client.offline;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -9,7 +9,6 @@ import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.i18n.UIConstants;
-import org.activityinfo.client.offline.HandlerRegistryProvider;
 import org.activityinfo.client.offline.command.HandlerRegistry;
 import org.activityinfo.login.shared.AuthenticatedUser;
 
@@ -19,13 +18,13 @@ import com.bedatadriven.rebar.sql.client.query.SqliteDialect;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
-public class OfflineModuleStub extends AbstractModule {
+public class LocalModuleStub extends AbstractModule {
 	
 	private final SqlDatabase database;
 	private final AuthenticatedUser authentication;
 	private Dispatcher remoteDispatcher;
 	
-	public OfflineModuleStub(AuthenticatedUser auth, SqlDatabase database, 
+	public LocalModuleStub(AuthenticatedUser auth, SqlDatabase database, 
 			Dispatcher remoteDispatcher) {
 		this.database = database;
 		this.authentication = auth;

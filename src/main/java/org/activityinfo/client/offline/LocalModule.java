@@ -20,7 +20,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 
-public class OfflineModule extends AbstractGinModule {
+public class LocalModule extends AbstractGinModule {
 
     @Override
     protected void configure() {

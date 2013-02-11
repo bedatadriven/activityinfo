@@ -11,6 +11,8 @@ public interface ExecutionContext {
 
 	AuthenticatedUser getUser();
 
+	boolean isLocal();
+	
 	/**
 	 * 
 	 * @return the SqlTransaction associated with the execution of the current command. 

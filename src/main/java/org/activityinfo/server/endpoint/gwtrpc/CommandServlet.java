@@ -133,7 +133,7 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(Command command) throws CommandException {
     	long timeStart = System.currentTimeMillis();
-    	ServerExecutionContext context = new ServerExecutionContext(injector);
+    	RemoteExecutionContext context = new RemoteExecutionContext(injector);
 		CommandResult result = context.startExecute(command);
 
 		long timeElapsed = System.currentTimeMillis() - timeStart;
