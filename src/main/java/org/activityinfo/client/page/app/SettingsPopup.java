@@ -6,11 +6,11 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.offline.LocalController;
-import org.activityinfo.client.offline.LocalStateChangeEvent;
-import org.activityinfo.client.offline.LocalStateChangeEvent.State;
-import org.activityinfo.client.offline.sync.SyncCompleteEvent;
-import org.activityinfo.client.offline.sync.SyncStatusEvent;
+import org.activityinfo.client.local.LocalController;
+import org.activityinfo.client.local.LocalStateChangeEvent;
+import org.activityinfo.client.local.LocalStateChangeEvent.State;
+import org.activityinfo.client.local.sync.SyncCompleteEvent;
+import org.activityinfo.client.local.sync.SyncStatusEvent;
 
 import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;

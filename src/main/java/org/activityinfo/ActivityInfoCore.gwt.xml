@@ -25,7 +25,7 @@
    	<inherits name="com.bedatadriven.rebar.appcache.AppCache"/>
     <inherits name="com.bedatadriven.rebar.Time"/>
     
-    <inherits name="org.activityinfo.login.LoginApi"/>
+    <inherits name="org.activityinfo.login.LoginApi"/>	
     
     <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
 
@@ -34,30 +34,30 @@
 
 	<!-- Configure deferred binding for offline module depending on browser capability -->
     
-    <replace-with class="org.activityinfo.client.offline.capability.IECapabilityProfile">
-        <when-type-is class="org.activityinfo.client.offline.capability.OfflineCapabilityProfile"/>
+    <replace-with class="org.activityinfo.client.local.capability.IECapabilityProfile">
+        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
 		<any>
 			<when-property-is name="user.agent" value="ie6"/>
 			<when-property-is name="user.agent" value="ie8" />
 	    </any>	
 	</replace-with>
 	
-        <replace-with class="org.activityinfo.client.offline.capability.IE9CapabilityProfile">
-        <when-type-is class="org.activityinfo.client.offline.capability.OfflineCapabilityProfile"/>
+        <replace-with class="org.activityinfo.client.local.capability.IE9CapabilityProfile">
+        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
         <any>
             <when-property-is name="user.agent" value="ie9" />
         </any>  
     </replace-with>
     
-	<replace-with class="org.activityinfo.client.offline.capability.FFCapabilityProfile">
-        <when-type-is class="org.activityinfo.client.offline.capability.OfflineCapabilityProfile"/>
+	<replace-with class="org.activityinfo.client.local.capability.FFCapabilityProfile">
+        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
 		<any>
 			<when-property-is name="user.agent" value="gecko1_8"/>
 	    </any>	
 	</replace-with>
 
-    <replace-with class="org.activityinfo.client.offline.capability.WebKitCapabilityProfile">
-        <when-type-is class="org.activityinfo.client.offline.capability.OfflineCapabilityProfile"/>
+    <replace-with class="org.activityinfo.client.local.capability.WebKitCapabilityProfile">
+        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
         <any>
             <when-property-is name="user.agent" value="safari"/>
             <!-- Have to double check but think opera is pretty consistent with webkit -->

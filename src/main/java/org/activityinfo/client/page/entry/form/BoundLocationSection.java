@@ -1,7 +1,7 @@
 package org.activityinfo.client.page.entry.form;
 
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.client.page.entry.admin.AdminComboBox;
 import org.activityinfo.client.page.entry.admin.AdminComboBoxSet;
 import org.activityinfo.client.page.entry.admin.AdminFieldSetPresenter;

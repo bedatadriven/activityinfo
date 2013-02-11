@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.server.command.handler.sync.TimestampHelper;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;

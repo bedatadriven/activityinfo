@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.GregorianCalendar;
 
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;

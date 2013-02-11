@@ -14,7 +14,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.DispatchListener;
-import org.activityinfo.client.offline.sync.SyncCompleteEvent;
+import org.activityinfo.client.local.sync.SyncCompleteEvent;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 

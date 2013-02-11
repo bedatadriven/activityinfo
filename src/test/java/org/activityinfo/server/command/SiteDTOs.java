@@ -2,7 +2,7 @@ package org.activityinfo.server.command;
 
 import java.util.GregorianCalendar;
 
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.SiteDTO;

@@ -11,7 +11,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.database.hibernate.entity.IndicatorValue;
 import org.activityinfo.server.database.hibernate.entity.ReportingPeriod;

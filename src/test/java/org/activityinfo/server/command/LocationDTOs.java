@@ -1,6 +1,6 @@
 package org.activityinfo.server.command;
 
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.shared.dto.LocationDTO;
 
 public class LocationDTOs {

@@ -2,7 +2,7 @@ package org.activityinfo.client.page.entry.form;
 
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.client.page.entry.LockedPeriodSet;
 import org.activityinfo.client.page.entry.location.LocationDialog;
 import org.activityinfo.shared.command.Filter;

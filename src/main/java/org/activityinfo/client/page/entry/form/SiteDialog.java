@@ -5,7 +5,7 @@ import java.util.List;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
-import org.activityinfo.client.offline.command.handler.KeyGenerator;
+import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.UpdateSite;

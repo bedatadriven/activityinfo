@@ -8,7 +8,7 @@ package org.activityinfo.client.page.app;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.offline.ui.SyncStatusBar;
+import org.activityinfo.client.local.ui.SyncStatusBar;
 import org.activityinfo.client.page.Frame;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.NavigationHandler;
