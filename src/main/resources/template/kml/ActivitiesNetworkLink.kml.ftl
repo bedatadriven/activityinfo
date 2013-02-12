@@ -10,7 +10,7 @@
 		<refreshVisibility>0</refreshVisibility>
 		<flyToView>1</flyToView>
 		<Link>
-			<href>${baseURL}${activity.id}</href>
+			<href>${baseURL}${activity.id?c}</href>
 		</Link>
 		</NetworkLink>
 	</#list>
