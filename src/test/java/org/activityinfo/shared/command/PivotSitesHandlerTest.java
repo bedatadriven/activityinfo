@@ -65,7 +65,6 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private static final int OWNER_USER_ID = 1;
     private static final int NB_BENEFICIARIES_ID = 1;
 
-
     @BeforeClass
     public static void setup() {
     	Logger.getLogger("org.activityinfo").setLevel(Level.ALL);
@@ -74,7 +73,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     	Logger.getLogger("com.bedatadriven.rebar").setLevel(Level.ALL);
 
     }
-
+    
 	@Test
 	public void testNoIndicator() {
 		withIndicatorAsDimension();
@@ -502,17 +501,15 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 			throw new RuntimeException(e);
 		}
   
-        System.err.println("buckets = [");
+        System.out.println("Buckets = [");
         for (Bucket bucket : buckets) {
-            System.err.println("  { value: " + bucket.doubleValue());
+            System.out.print("  { Value: " + bucket.doubleValue());
             for (Dimension dim : bucket.dimensions()) {
                 DimensionCategory cat = bucket.getCategory(dim);
-                System.err.print("    " + dim.toString() + ": ");
-                System.err.print(cat.toString());
-                System.err.println("  ]");
-
-            }
-        }
+                System.out.print("\n    " + dim.toString() + ": ");
+                System.out.print(cat.toString());
+            } System.out.println("\n  }");
+        } System.out.print("]\n");
     }
 
     public AssertionBuilder assertThat() {

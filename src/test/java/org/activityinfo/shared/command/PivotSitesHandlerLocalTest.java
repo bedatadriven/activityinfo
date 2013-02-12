@@ -45,8 +45,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import com.google.common.collect.Lists;
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
+/**
+ * FIXME: commented tests
+ * 
+ * @author jasperfontaine
+ *
+ */
 @RunWith(InjectionSupport.class)
 @Modules({
     MockHibernateModule.class,
@@ -72,16 +78,14 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
     private static final int OWNER_USER_ID = 1;
     private static final int NB_BENEFICIARIES_ID = 1;
 
-
     @BeforeClass
     public static void setup() {
     	Logger.getLogger("org.activityinfo").setLevel(Level.ALL);
     	Logger.getLogger("org.activityinfo").addHandler(new ConsoleHandler());
     	
     	Logger.getLogger("com.bedatadriven.rebar").setLevel(Level.ALL);
-
     }
-
+    
     @Before
     public void init() throws Exception {
     	dimensions = new HashSet<Dimension>();
@@ -123,38 +127,41 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
 		assertThat().thereIsOneBucketWithValue(8);
 	}
 
-//	@Test
-//	public void testYears() {
-//		forTotalSiteCounts();
-//		dimensions.add(new DateDimension(DateUnit.YEAR));
-//
-//		execute();
-//
-//		assertThat().forYear(2008).thereIsOneBucketWithValue(1);
-//		assertThat().forYear(2009).thereIsOneBucketWithValue(4);
-//	}
-//
-//	@Test
-//	public void testSiteCountOnQuarters() {
-//		forTotalSiteCounts();
-//		dimensions.add(new DateDimension(DateUnit.QUARTER));
-//
-//		execute();
-//
-//		assertThat().forQuarter(2008, 4).thereIsOneBucketWithValue(1);
-//		assertThat().forQuarter(2009, 1).thereIsOneBucketWithValue(4);
-//	}
-//
-//	@Test
-//	public void testMonths() {
-//		forTotalSiteCounts();
-//		dimensions.add(new DateDimension(DateUnit.MONTH));
-//		filter.setDateRange(new DateUtilCalendarImpl().yearRange(2009));
-//
-//		execute();
-//
-//		assertThat().thereAre(3).buckets();
-//	}
+    /**
+     * year, quarter and month functions in SqliteDialect throw java.lang.UnsupportedOperationException
+     */
+    @Test (expected=RuntimeException.class)
+	public void testYears() {
+		forTotalSiteCounts();
+		dimensions.add(new DateDimension(DateUnit.YEAR));
+
+		execute();
+
+		assertThat().forYear(2008).thereIsOneBucketWithValue(1);
+		assertThat().forYear(2009).thereIsOneBucketWithValue(4);
+	}
+
+	@Test (expected=RuntimeException.class)
+	public void testSiteCountOnQuarters() {
+		forTotalSiteCounts();
+		dimensions.add(new DateDimension(DateUnit.QUARTER));
+
+		execute();
+
+		assertThat().forQuarter(2008, 4).thereIsOneBucketWithValue(1);
+		assertThat().forQuarter(2009, 1).thereIsOneBucketWithValue(4);
+	}
+
+	@Test (expected=RuntimeException.class)
+	public void testMonths() {
+		forTotalSiteCounts();
+		dimensions.add(new DateDimension(DateUnit.MONTH));
+		filter.setDateRange(new DateUtilCalendarImpl().yearRange(2009));
+
+		execute();
+
+		assertThat().thereAre(3).buckets();
+	}
 
 	@Test
 	public void testIndicatorFilter() {
@@ -194,20 +201,22 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
 		assertThat().forPartner(2).thereIsOneBucketWithValue(10000).andItsPartnerLabelIs("Solidarites");
 	}
 
-//    @Test
-//	@OnDataSet("/dbunit/sites-simple-target.db.xml")
-//    public void testTargetPivot() {
-//
-//        withIndicatorAsDimension();
-//        dimensions.add(new DateDimension(DateUnit.YEAR));
-//        dimensions.add(new Dimension(DimensionType.Target));
-//        filter.addRestriction(DimensionType.Indicator, 1);
-//        filter.setDateRange(new DateRange(new LocalDate(2008, 1, 1), new LocalDate(2008, 12, 31)));
-//        execute();
-//
-//        assertThat().thereAre(2).buckets();
-//    }
+  /**
+   * year, quarter and month functions in SqliteDialect throw java.lang.UnsupportedOperationException
+   */
+  @Test (expected=RuntimeException.class)
+  @OnDataSet("/dbunit/sites-simple-target.db.xml")
+  public void testTargetPivot() {
 
+        withIndicatorAsDimension();
+        dimensions.add(new DateDimension(DateUnit.YEAR));
+        dimensions.add(new Dimension(DimensionType.Target));
+        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.setDateRange(new DateRange(new LocalDate(2008, 1, 1), new LocalDate(2008, 12, 31)));
+        execute();
+
+        assertThat().thereAre(2).buckets();
+    }
     
 	@Test
 	public void testAttributePivot() {
@@ -494,17 +503,15 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
 			throw new RuntimeException(e);
 		}
   
-        System.err.println("buckets = [");
+        System.out.println("Buckets = [");
         for (Bucket bucket : buckets) {
-            System.err.println("  { value: " + bucket.doubleValue());
+            System.out.print("  { Value: " + bucket.doubleValue());
             for (Dimension dim : bucket.dimensions()) {
                 DimensionCategory cat = bucket.getCategory(dim);
-                System.err.print("    " + dim.toString() + ": ");
-                System.err.print(cat.toString());
-                System.err.println("  ]");
-
-            }
-        }
+                System.out.print("\n    " + dim.toString() + ": ");
+                System.out.print(cat.toString());
+            } System.out.println("\n  }");
+        } System.out.print("]\n");
     }
 
     public AssertionBuilder assertThat() {

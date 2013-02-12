@@ -254,11 +254,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 	}
 
 	private void applyPermissions(final SqlQuery query, ExecutionContext context) {
-		// Apply permissions if we are on the server, 
-		// otherwise permissions have already been taken into account
-		// during synchronization
+		// Apply permissions if we are on the server, otherwise permissions have 
+		// already been taken into account during synchronization
 
-		if(!GWT.isClient()) {    
+		if (context.isRemote()) {    
 			query.whereTrue("activity.DateDeleted IS NULL")
 				.and("db.DateDeleted IS NULL");
 			query.whereTrue(
@@ -273,6 +272,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 			query.appendParameter(context.getUser().getId());
 			query.appendParameter(context.getUser().getId());
 		}
+	}
+	
+	private boolean isRemote(ExecutionContext context) {
+		return context.isRemote();
 	}
 
 	private void applySort(SqlQuery query, SortInfo sortInfo) {

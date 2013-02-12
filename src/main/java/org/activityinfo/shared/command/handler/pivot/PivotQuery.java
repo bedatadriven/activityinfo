@@ -100,8 +100,9 @@ public class PivotQuery {
 		
         addDimensionBundlers();
                
-        // and only allow results that are visible to this user.
-        if (!GWT.isClient()) {
+        // Only allow results that are visible to this user if we are on the server, 
+        // otherwise permissions have already been taken into account during synchronization
+        if (isRemote()) {
         	appendVisibilityFilter();
         }
 
@@ -114,7 +115,11 @@ public class PivotQuery {
         }
 
         appendDimensionRestrictions();
-                
+            
+        if (Log.isDebugEnabled()) {
+        	Log.debug("PivotQuery executing query: "+query.sql());
+        }
+        
         query.execute(tx, new SqlResultCallback() {
 			
 			@Override
@@ -139,6 +144,10 @@ public class PivotQuery {
 		});    
     }
 
+	private boolean isRemote() {
+		return this.context.getExecutionContext().isRemote();
+	}
+	
 	private void addDimensionBundlers() {
 		/* Now add any other dimensions  */
         for (Dimension dimension : dimensions) {

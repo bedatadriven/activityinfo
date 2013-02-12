@@ -11,7 +11,7 @@ public interface ExecutionContext {
 
 	AuthenticatedUser getUser();
 
-	boolean isLocal();
+	boolean isRemote();
 	
 	/**
 	 * 

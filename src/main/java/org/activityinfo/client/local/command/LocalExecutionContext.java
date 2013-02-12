@@ -28,8 +28,8 @@ public class LocalExecutionContext implements ExecutionContext {
 	}
 
 	@Override
-	public boolean isLocal() {
-		return true;
+	public boolean isRemote() {
+		return false;
 	}
 
 	@Override

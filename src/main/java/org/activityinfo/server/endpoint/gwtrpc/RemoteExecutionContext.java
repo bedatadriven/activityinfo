@@ -50,8 +50,8 @@ public class RemoteExecutionContext implements ExecutionContext {
 	}
 
 	@Override
-	public boolean isLocal() {
-		return false;
+	public boolean isRemote() {
+		return true;
 	}
 
 	@Override
