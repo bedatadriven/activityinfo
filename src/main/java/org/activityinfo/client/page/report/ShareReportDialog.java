@@ -19,6 +19,7 @@ import org.activityinfo.shared.command.result.ReportVisibilityResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.ReportDTO;
 import org.activityinfo.shared.dto.ReportMetadataDTO;
 import org.activityinfo.shared.dto.ReportVisibilityDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
@@ -40,17 +41,16 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ShareReportDialog extends Dialog {
 	
-	private Dispatcher dispatcher;
-	private ListStore<ReportVisibilityDTO> gridStore;
+	private final Dispatcher dispatcher;
+	private final ListStore<ReportVisibilityDTO> gridStore;
 	private CheckColumnConfig visibleColumn;
 	private CheckColumnConfig dashboardColumn;
 	private Report currentReport;
-	private Grid<ReportVisibilityDTO> grid;
+	private final Grid<ReportVisibilityDTO> grid;
 
 	public ShareReportDialog(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
@@ -119,7 +119,7 @@ public class ShareReportDialog extends Dialog {
 		BatchCommand batch = new BatchCommand();
 		batch.add(new GetReportModel(metadata.getId()));
 		batch.add(new GetSchema());
-		batch.add(new GetReportVisibility(currentReport.getId()));
+		batch.add(new GetReportVisibility(metadata.getId()));
 		
 		dispatcher.execute(batch, new MaskingAsyncMonitor(grid, I18N.CONSTANTS.loading()),
 				new AsyncCallback<BatchResult>() {
@@ -132,7 +132,8 @@ public class ShareReportDialog extends Dialog {
 			@Override
 			public void onSuccess(BatchResult batch) {
 
-				currentReport = batch.getResult(0);
+						currentReport = ((ReportDTO) batch.getResult(0))
+								.getReport();
 				
 				populateGrid((SchemaDTO)batch.getResult(1), 
 							 (ReportVisibilityResult)batch.getResult(2));
