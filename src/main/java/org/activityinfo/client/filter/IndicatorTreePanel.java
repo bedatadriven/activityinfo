@@ -120,8 +120,7 @@ public class IndicatorTreePanel extends ContentPanel {
 			@Override
 			public void storeDataChanged(StoreEvent<ModelData> se) {
 				// apply our internal state to the newly loaded list
-				tree.expandAll();
-				applySelection();	
+				applySelection();
 			}
 		});
 		
@@ -376,6 +375,7 @@ public class IndicatorTreePanel extends ContentPanel {
 	}
 
 	public void setChecked(IndicatorDTO indicator, boolean b) {
+		tree.setExpanded(indicator, b);
 		tree.setChecked(indicator, b);
 	}
 	
