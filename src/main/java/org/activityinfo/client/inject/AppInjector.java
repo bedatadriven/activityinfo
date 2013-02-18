@@ -16,6 +16,7 @@ import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
 import org.activityinfo.client.dispatch.remote.cache.SchemaCache;
 import org.activityinfo.client.local.LocalController;
 import org.activityinfo.client.local.LocalModule;
+import org.activityinfo.client.local.ui.PromptOfflineDialog;
 import org.activityinfo.client.page.config.ConfigLoader;
 import org.activityinfo.client.page.config.ConfigModule;
 import org.activityinfo.client.page.dashboard.DashboardLoader;
@@ -52,6 +53,9 @@ public interface AppInjector extends Ginjector {
     ReportLoader createReportLoader();
     ConfigLoader createConfigLoader();
     LocalController createOfflineController();
+
+    PromptOfflineDialog createPromptOfflineDialog();
+
     UsageTracker getUsageTracker();
 	SearchLoader createSearchLoader();
 	DashboardLoader createDashboardLoader();

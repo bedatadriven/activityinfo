@@ -1,0 +1,17 @@
+{
+  "name": "ActivityInfo",
+  "description": "Database and GIS platform for those working in humanitarian and development operations",
+  "launch_path": "/moz",
+  "icons": {
+    "128": "/ActivityInfo/desktopicons/128x128.png",
+    "64": "/ActivityInfo/desktopicons/64x64.png",
+    "32": "/ActivityInfo/desktopicons/32x32.png",
+    "48": "/ActivityInfo/desktopicons/48x48.png",
+    "16": "/ActivityInfo/desktopicons/16x16.png"
+  },
+  "developer": {
+    "name": "bedatadriven",
+    "url": "http://www.activityinfo.org"
+  },
+  "default_locale": "en"
+}

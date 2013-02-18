@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-
   <!-- appengine configuration for DEVELOPMENT only, it is not deployed -->
   <!-- the PRODUCTION appengine-web.xml is in src/main/webapp -->
 

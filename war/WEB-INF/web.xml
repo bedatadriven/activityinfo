@@ -60,5 +60,8 @@
 		</auth-constraint>
 	</security-constraint>
 
-
+	<mime-mapping>
+        <extension>webapp</extension>
+        <mime-type>audio/x-mpeg</mime-type>
+    </mime-mapping>
 </web-app>

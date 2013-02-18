@@ -1,7 +1,6 @@
 package org.activityinfo.client.local.capability;
 
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Internet Explorer 6-8 offline capability profile.
@@ -17,12 +16,7 @@ public class IECapabilityProfile extends GearsCapabilityProfile {
 
 	@Override
 	public String getInstallInstructions() {
-		if(isOfflineModeSupported()) {
-			return ProfileResources.INSTANCE.startupMessage().getText();
-		} else {
-			return ProfileResources.INSTANCE.startupMessageIE().getText();
-		}
+		return ProfileResources.INSTANCE.startupMessageIE().getText();
 	}
-
 	
 }

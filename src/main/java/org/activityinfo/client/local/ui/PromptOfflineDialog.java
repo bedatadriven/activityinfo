@@ -1,15 +1,23 @@
 package org.activityinfo.client.local.ui;
 
+import org.activityinfo.client.EventBus;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.local.LocalController;
+import org.activityinfo.client.local.LocalStateChangeEvent;
 import org.activityinfo.client.local.capability.ProfileResources;
+import org.activityinfo.client.offline.OfflineController;
+import org.activityinfo.client.offline.OfflineStateChangeEvent;
+import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
+import org.activityinfo.client.offline.capability.ProfileResources;
 import org.activityinfo.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 
 /**
@@ -17,17 +25,20 @@ import com.google.inject.Inject;
  * activation of offline mode
  * 
  */
+@Singleton
 public class PromptOfflineDialog extends BasePromptDialog {
 
-	private static final String DONT_ASK_STATE_KEY = "offlineSilent";
+	private static final String DONT_ASK_STATE_KEY = "offlineSilent2";
 
 	private final CrossSessionStateProvider stateProvider;
 	private final LocalController offlineController;
 	
+	private boolean promptedThisSession = false;
+	
 	@Inject
-	public PromptOfflineDialog(CrossSessionStateProvider stateProvider,
+	public PromptOfflineDialog(EventBus eventBus, CrossSessionStateProvider stateProvider,
 			LocalController controller) {
-		super(capabilityProfile.getInstallInstructions());
+		super(composeHtml());
 		
 		this.stateProvider = stateProvider;
 		this.offlineController = controller;
@@ -36,13 +47,15 @@ public class PromptOfflineDialog extends BasePromptDialog {
 		setHeight(350);
 		setHeading(I18N.CONSTANTS.installOffline());
 		setModal(true);
-		
-		Html bodyHtml = new Html(capabilityProfile.getInstallInstructions());
-		bodyHtml.addStyleName(ProfileResources.INSTANCE.style().startupDialogBody());
-        
-		add(bodyHtml);
 
 		getButtonBar().removeAll();
+		
+		eventBus.addListener(LocalStateChangeEvent.TYPE, new Listener<LocalStateChangeEvent>() {
+			@Override
+			public void handleEvent(LocalStateChangeEvent be) {
+				onOfflineStatusChange(be.getState());
+			}
+		});
 		
 		if(capabilityProfile.isOfflineModeSupported()) {
 			addButton(new Button(I18N.CONSTANTS.installOffline(), new SelectionListener<ButtonEvent>() {
@@ -50,6 +63,7 @@ public class PromptOfflineDialog extends BasePromptDialog {
 				@Override
 				public void componentSelected(ButtonEvent ce) { 
 					offlineController.install();
+					hide();
 				}
 			}));
 		}
@@ -67,6 +81,26 @@ public class PromptOfflineDialog extends BasePromptDialog {
 			}
 		}));		
 	}
+
+	private static String composeHtml() {
+		StringBuilder html = new StringBuilder();
+		html.append("<p>").append(I18N.CONSTANTS.offlineIntro1()).append("</p>");
+		if(capabilityProfile.isOfflineModeSupported()) {
+			html.append("<p>").append(I18N.CONSTANTS.offlineIntro2()).append("</p>");
+			html.append("<p>").append(I18N.CONSTANTS.offlineIntro3()).append("</p>");
+			html.append("<p>").append(I18N.CONSTANTS.offlineIntro4()).append("</p>");
+		} else {
+			html.append(capabilityProfile.isOfflineModeSupported());
+		}
+		return html.toString();
+	}
+
+	private void onOfflineStatusChange(State state) {
+		if(state == State.UNINSTALLED && !promptedThisSession && shouldAskAgain()) {
+			promptedThisSession = true;
+			show();
+		}
+	}
 	
 	private void askMeLater() {
 		hide();
@@ -76,9 +110,8 @@ public class PromptOfflineDialog extends BasePromptDialog {
 		stateProvider.set(DONT_ASK_STATE_KEY, Boolean.TRUE.toString());
 		hide();
 	}
-
 	
-	public static boolean shouldAskAgain(CrossSessionStateProvider stateProvider ) {
+	public boolean shouldAskAgain() {
 		return !Boolean.TRUE.toString().equals(stateProvider.getString(DONT_ASK_STATE_KEY));
 	}
 }

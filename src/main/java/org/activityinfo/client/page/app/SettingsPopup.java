@@ -3,6 +3,7 @@ package org.activityinfo.client.page.app;
 import java.util.Date;
 
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.i18n.I18N;
@@ -12,8 +13,8 @@ import org.activityinfo.client.local.LocalStateChangeEvent.State;
 import org.activityinfo.client.local.sync.SyncCompleteEvent;
 import org.activityinfo.client.local.sync.SyncStatusEvent;
 
-import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -190,7 +191,11 @@ public class SettingsPopup extends PopupPanel {
 	public void onOfflineInstallClicked(ClickEvent e) {
 		switch(state) {
 		case UNINSTALLED:
-			offlineController.install();
+			if(offlineCapabilityProfile.isOfflineModeSupported()) {
+				offlineController.install();
+			} else {
+				MessageBox.info("Offline Mode not supported", offlineCapabilityProfile.getInstallInstructions(), null);
+			}
 		}
 	}
 	

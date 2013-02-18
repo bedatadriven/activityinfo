@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Log;
 import org.activityinfo.client.SessionUtil;
@@ -34,6 +35,8 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.client.Scheduler;
@@ -84,7 +87,19 @@ public class LocalController implements Dispatcher {
 		
 		Log.trace("OfflineManager: starting");
 
-		activateStrategy(new LoadingLocalStrategy());
+		if(capabilityProfile.isOfflineModeSupported()) {
+			activateStrategy(new LoadingLocalStrategy());
+		} else {
+			activateStrategy(new NotInstalledStrategy());
+		}
+		
+		eventBus.addListener(AppEvents.INIT, new Listener<BaseEvent>() {
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				fireStatus();
+			}
+		});
 	}
 	
 	public Date getLastSyncTime() {
@@ -124,7 +139,7 @@ public class LocalController implements Dispatcher {
 		try {
 			this.activeStrategy = strategy;
 			this.activeStrategy.activate();
-			eventBus.fireEvent(new LocalStateChangeEvent(this.activeStrategy.getState()));
+			fireStatus();
 
 		} catch (Exception caught) {
 			// errors really ought to be handled by the strategy that is passing
@@ -135,6 +150,10 @@ public class LocalController implements Dispatcher {
 			Log.error("Uncaught exception while activatign strategy, defaulting to Not INstalled");
 			activateStrategy(new NotInstalledStrategy());
 		}
+	}
+
+	private void fireStatus() {
+		eventBus.fireEvent(new LocalStateChangeEvent(this.activeStrategy.getState()));
 	}
 
 	private void loadSynchronizerImpl(final AsyncCallback<Synchronizer> callback) {
