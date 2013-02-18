@@ -99,7 +99,7 @@ public class ReportMailerTest {
 
         ReportSubscription sub = new ReportSubscription();
         sub.setTemplate(new ReportDefinition());
-        sub.getTemplate().setId(1);
+        sub.getTemplate().setId(5040);
         sub.setUser(user);
         sub.setEmailDelivery(EmailDelivery.WEEKLY);
         sub.setEmailDay(1);
@@ -107,12 +107,12 @@ public class ReportMailerTest {
         Report report = new Report();
         report.setTitle("Rapport RRM Mensuelle");
 
-
         String text = ReportMailerHelper.composeTextEmail(sub, report);
 
         System.out.println(text);
 
         Assert.assertTrue("user name is present", text.contains(user.getName()));
+        Assert.assertTrue("link is correct without comma", text.contains("#report/5040"));
 
     }
 

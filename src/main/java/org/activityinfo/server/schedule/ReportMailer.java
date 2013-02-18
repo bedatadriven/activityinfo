@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.ReportSubscription;
@@ -24,6 +23,8 @@ import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Report;
 import org.xml.sax.SAXException;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.inject.Inject;
 
 public class ReportMailer {
@@ -53,7 +54,12 @@ public class ReportMailer {
 		reportDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 
 	}
+
 	public void execute(Date today) {
+		execute(today, Predicates.<ReportSubscription>alwaysTrue());
+	}
+	
+	public void execute(Date today, Predicate<ReportSubscription> filter) {
 
 		LOGGER.info("Starting nightly mailing job for " + today);
 

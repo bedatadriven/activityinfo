@@ -69,7 +69,7 @@ public class ReportDesignPage extends ContentPanel implements Page, ExportCallba
 	}
 
 
-	public static final PageId PAGE_ID = new PageId("reportdesign");
+	public static final PageId PAGE_ID = new PageId("report");
 
 	private final EventBus eventBus;
 	private final Dispatcher dispatcher;
