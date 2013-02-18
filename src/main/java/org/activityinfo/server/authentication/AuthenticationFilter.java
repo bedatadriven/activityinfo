@@ -3,6 +3,7 @@ package org.activityinfo.server.authentication;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -37,6 +38,8 @@ import com.teklabs.gwt.i18n.server.LocaleProxy;
 @Singleton
 public class AuthenticationFilter implements Filter {
 
+	private static final Logger LOGGER = Logger.getLogger(AuthenticationFilter.class.getName());
+	
 	private final Provider<HttpServletRequest> request;
 	private final Provider<EntityManager> entityManager;
 	private final ServerSideAuthProvider authProvider;
@@ -73,6 +76,9 @@ public class AuthenticationFilter implements Filter {
 				AuthenticatedUser currentUser = authTokenCache.get(authToken);
 				authProvider.set(currentUser);
 		        LocaleProxy.setLocale(LocaleHelper.getLocaleObject(currentUser));
+		        
+		        LOGGER.info("Setting locale to " + currentUser.getUserLocale());
+		        
 			} catch (Exception e) {
 				authProvider.clear();
 			}
@@ -94,7 +100,9 @@ public class AuthenticationFilter implements Filter {
 		if(entity == null) {
 			throw new IllegalArgumentException();
 		}
-		return new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
+		AuthenticatedUser authenticatedUser = new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
+		authenticatedUser.setUserLocale(entity.getUser().getLocale());
+		return authenticatedUser;
 	}
 	
 

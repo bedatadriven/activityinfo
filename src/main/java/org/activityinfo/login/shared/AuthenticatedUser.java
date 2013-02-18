@@ -68,6 +68,10 @@ public class AuthenticatedUser implements IsSerializable {
 	public String getUserLocale() {
 		return userLocale;
 	}
+	
+	public void setUserLocale(String locale) {
+		this.userLocale = locale;
+	}
 
 	public int getId() {
 		return userId;

@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.report.generator.ReportGenerator;
-import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.output.StorageProvider;
+import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.RendererFactory;
 import org.activityinfo.shared.command.Filter;
@@ -21,7 +21,6 @@ import org.activityinfo.shared.command.result.UrlResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.model.DateRange;
 
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 /**
