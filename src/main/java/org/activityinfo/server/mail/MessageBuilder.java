@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -42,6 +43,16 @@ public class MessageBuilder {
 		return this;
 	}
 
+	public MessageBuilder replyTo(String email, String name) throws MessagingException {
+		Address address;
+		try {
+			address = new InternetAddress(email, name);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e); // should not happen
+		}
+		msg.setReplyTo(new Address[] { address } );
+		return this;
+	}
 
 	public MessageBuilder to(String email) throws MessagingException {
 		msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));

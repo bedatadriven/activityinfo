@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 import org.activityinfo.server.i18n.LocaleHelper;
 
@@ -33,11 +34,7 @@ public abstract class MailSender {
 
 	public void send(MailMessage model) {
 		try {
-			MessageBuilder message = new MessageBuilder();
-			message.to(model.getRecipient().getEmail(), model.getRecipient().getName());
-			message.bcc("akbertram@gmail.com");
-			message.subject(getSubject(model));
-			message.body(composeMessage(model));
+			MessageBuilder message = createMessage(model);
 			send(message.build());
 			
 		} catch(MessagingException e) {
@@ -47,6 +44,17 @@ public abstract class MailSender {
 		} catch (TemplateException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public MessageBuilder createMessage(MailMessage model)
+			throws MessagingException, AddressException, IOException,
+			TemplateException {
+		MessageBuilder message = new MessageBuilder();
+		message.to(model.getRecipient().getEmail(), model.getRecipient().getName());
+		message.bcc("akbertram@gmail.com");
+		message.subject(getSubject(model));
+		message.body(composeMessage(model));
+		return message;
 	}
 
 	private String composeMessage(MailMessage model)

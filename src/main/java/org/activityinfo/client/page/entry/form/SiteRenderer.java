@@ -1,7 +1,5 @@
 package org.activityinfo.client.page.entry.form;
 
-import java.util.List;
-
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
@@ -65,23 +63,34 @@ public class SiteRenderer {
             renderAttribute(html, group, site);
         }
 
-        html.append("<p><span class='groupName'>");
-        html.append(I18N.CONSTANTS.indicators());
-        html.append(":</p>");
-        html.append("<table class='indicatorTable' cellspacing='0'>");
-        for(IndicatorGroup group : activity.groupIndicators())  {
-            renderIndicatorGroup(html, group, site, showEmptyRows);
+        if(activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
+	        html.append(renderIndicators(site, activity, showEmptyRows));
         }
-        html.append("</table>");
 
         return html.toString();
 	}
+
+	private String renderIndicators(SiteDTO site, ActivityDTO activity,
+			boolean showEmptyRows) {
+		StringBuilder html = new StringBuilder();
+		html.append("<p><span class='groupName'>");
+		html.append(I18N.CONSTANTS.indicators());
+		html.append(":</p>");
+		html.append("<table class='indicatorTable' cellspacing='0'>");
+		boolean hasContent = false;
+		for(IndicatorGroup group : activity.groupIndicators())  {
+		    hasContent = hasContent || renderIndicatorGroup(html, group, site, showEmptyRows);
+		}
+		html.append("</table>");
+		
+		return hasContent ? html.toString() : "";
+	}
 	
 	
-    private void renderIndicatorGroup(StringBuilder html, IndicatorGroup group, SiteDTO site, boolean showEmptyRows) {
+    private boolean renderIndicatorGroup(StringBuilder html, IndicatorGroup group, SiteDTO site, boolean showEmptyRows) {
         StringBuilder groupHtml = new StringBuilder();
         boolean empty = true;
-
+        
         if(group.getName()!=null) {
             groupHtml.append("<tr><td class='indicatorGroupHeading'>").append(group.getName()).
                     append("</td><td>&nbsp;</td></tr>");
@@ -114,6 +123,9 @@ public class SiteRenderer {
         }
         if(showEmptyRows || !empty) {
             html.append(groupHtml.toString());
+            return true;
+        } else {
+        	return false;
         }
     }
 
