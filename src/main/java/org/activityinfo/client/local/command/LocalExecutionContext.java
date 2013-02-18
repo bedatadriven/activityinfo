@@ -1,6 +1,6 @@
 package org.activityinfo.client.local.command;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.handler.ExecutionContext;

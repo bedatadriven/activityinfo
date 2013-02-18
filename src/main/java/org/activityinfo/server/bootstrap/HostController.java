@@ -5,57 +5,52 @@
 
 package org.activityinfo.server.bootstrap;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.activityinfo.login.shared.AuthenticatedUser;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import org.activityinfo.server.authentication.AuthCookieUtil;
 import org.activityinfo.server.bootstrap.exception.NoValidAuthentication;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
 import org.activityinfo.server.bootstrap.model.LoginPageModel;
+import org.activityinfo.server.bootstrap.model.Redirect;
 import org.activityinfo.server.database.hibernate.dao.AuthenticationDAO;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
 
-import freemarker.template.Configuration;
-
-@Singleton
+@Path(HostController.ENDPOINT)
 public class HostController extends AbstractController {
     public static final String ENDPOINT = "/";
 
-    private final DeploymentConfiguration deployConfig;
-    
     @Inject
-    public HostController(Injector injector, Configuration templateCfg, DeploymentConfiguration deployConfig) {
-        super(injector, templateCfg);
-        this.deployConfig = deployConfig;
-    }
-
-    @Override
+    private DeploymentConfiguration deployConfig;
+    
+    @GET
     @LogException(emailAlert = true)
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public Response onGet(@Context HttpServletRequest req) throws Exception {
         try {
             Authentication auth = getAuthentication(req);
             if("true".equals(req.getParameter("redirect"))) {
-                AuthCookieUtil.addAuthCookie(resp, auth, false);
-                resp.sendRedirect(HostController.ENDPOINT);
+                ResponseBuilder responseBuilder = Response.ok(new Redirect(HostController.ENDPOINT));
+                
+                AuthCookieUtil.addAuthCookie(responseBuilder, auth, false);
+                
+				return responseBuilder.build();
             } else {
                 HostPageModel model = new HostPageModel(auth, computeAppUrl(req));
                 model.setAppCacheEnabled(checkAppCacheEnabled(req));
                 model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
-				writeView(resp, req, model);
+				return writeView(req, model);
             }
         } catch (NoValidAuthentication noValidAuthentication) {
-			writeView(resp, req, new LoginPageModel());
+			return writeView(req, new LoginPageModel());
         }
     }
 

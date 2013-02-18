@@ -5,8 +5,8 @@
 
 package org.activityinfo.shared.report.model;
 
-import java.io.Serializable;
 
+import java.io.Serializable;
 import com.google.gwt.resources.client.ImageResource;
 
 /**

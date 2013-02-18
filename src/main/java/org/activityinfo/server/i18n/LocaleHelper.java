@@ -2,8 +2,8 @@ package org.activityinfo.server.i18n;
 
 import java.util.Locale;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 /**
  * Static Locale helper methods.

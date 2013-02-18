@@ -8,7 +8,7 @@ package org.activityinfo.client.local;
 import org.activityinfo.client.local.command.HandlerRegistry;
 import org.activityinfo.client.local.sync.Synchronizer;
 import org.activityinfo.client.local.sync.SynchronizerImpl;
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlDatabaseFactory;

@@ -5,7 +5,7 @@
 
 package org.activityinfo.server.authentication;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.inject.servlet.ServletModule;
 

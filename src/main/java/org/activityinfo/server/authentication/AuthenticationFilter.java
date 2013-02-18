@@ -1,12 +1,10 @@
 package org.activityinfo.server.authentication;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,9 +14,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.i18n.LocaleHelper;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

@@ -1,6 +1,6 @@
 package org.activityinfo.shared.command.handler;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 

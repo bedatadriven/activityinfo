@@ -15,8 +15,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.activityinfo.login.shared.AnonymousUser;
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
@@ -24,6 +22,8 @@ import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.event.CommandEvent;
 import org.activityinfo.server.event.ServerEventBus;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.shared.auth.AnonymousUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
 import org.activityinfo.shared.command.result.CommandResult;

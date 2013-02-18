@@ -14,9 +14,11 @@ import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Environment;
 import org.hibernate.ejb.Ejb3Configuration;
 import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.ejb.HibernateEntityManagerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
@@ -87,6 +89,12 @@ public class HibernateModule extends ServletModule {
         	
 			return emf;
         }
+    }
+    
+    @Provides
+    public static SessionFactory getSessionFactory(EntityManagerFactory emf) {
+    	HibernateEntityManagerFactory hemf = (HibernateEntityManagerFactory)emf;
+    	return hemf.getSessionFactory();
     }
 
     public static List<Class> getPersistentClasses() {

@@ -1,8 +1,8 @@
 package org.activityinfo.server.authentication;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.CommandServlet;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
 import com.google.inject.Provider;

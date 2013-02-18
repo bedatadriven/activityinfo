@@ -19,6 +19,7 @@ import org.activityinfo.server.mail.MessageBuilder;
 import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Report;
 import org.xml.sax.SAXException;

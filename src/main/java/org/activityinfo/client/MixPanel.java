@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.page.NavigationHandler;
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.extjs.gxt.ui.client.event.Listener;
 

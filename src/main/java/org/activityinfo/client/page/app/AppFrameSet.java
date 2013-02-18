@@ -6,6 +6,7 @@
 package org.activityinfo.client.page.app;
 
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.local.ui.SyncStatusBar;
@@ -21,9 +22,8 @@ import org.activityinfo.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.client.page.report.ReportsPlace;
 import org.activityinfo.client.page.search.SearchPageState;
 import org.activityinfo.client.widget.LoadingPlaceHolder;
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
-import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Viewport;

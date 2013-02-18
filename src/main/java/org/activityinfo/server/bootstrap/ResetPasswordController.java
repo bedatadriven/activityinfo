@@ -10,8 +10,11 @@ import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import org.activityinfo.server.authentication.SecureTokenGenerator;
 import org.activityinfo.server.bootstrap.model.ResetPasswordPageModel;
 import org.activityinfo.server.database.hibernate.dao.Transactional;
@@ -22,36 +25,26 @@ import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.exception.InvalidLoginException;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
 
-import freemarker.template.Configuration;
-
-@Singleton
+@Path(ResetPasswordController.ENDPOINT)
 public class ResetPasswordController extends AbstractController {
 	public static final String ENDPOINT = "/loginProblem";
 
-	private final MailSender mailer;
-
 	@Inject
-	public ResetPasswordController(Injector injector, Configuration templateCfg, MailSender mailer) {
-		super(injector, templateCfg);
-		this.mailer = mailer;
-	}
+	private MailSender mailer;
 
-	@Override
+	@GET
 	@LogException(emailAlert = true)
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	public Response onGet(@Context HttpServletRequest req)
 			throws ServletException, IOException {
-		writeView(resp, req, new ResetPasswordPageModel());
+		return writeView(req, new ResetPasswordPageModel());
 	}
 
-	@Override
+	@POST
     @LogException(emailAlert = true)
     @Transactional
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public Response onPost(@Context HttpServletRequest req) throws ServletException, IOException {
         try {
-        	
             User user = findUserByEmail(req.getParameter("email"));
             user.setChangePasswordKey(SecureTokenGenerator.generate());
             user.setDateChangePasswordKeyIssued(new Date());
@@ -61,20 +54,17 @@ public class ResetPasswordController extends AbstractController {
         	ResetPasswordPageModel model = new ResetPasswordPageModel();
         	model.setEmailSent(true);
         	
-			writeView(resp, req, model);
-        	
+			return writeView(req, model);
         } catch (InvalidLoginException e) {
         	ResetPasswordPageModel model = new ResetPasswordPageModel();
         	model.setLoginError(true);
         	
-			writeView(resp, req, model);
+			return writeView(req, model);
         } catch (Exception e) {
         	ResetPasswordPageModel model = new ResetPasswordPageModel();
         	model.setEmailError(true);
         	
-			writeView(resp, req, model);
+			return writeView(req, model);
 		}
     }
-
-
 }

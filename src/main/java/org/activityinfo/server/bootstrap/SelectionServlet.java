@@ -14,8 +14,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.server.DefaultSelectionServlet;
 import com.bedatadriven.rebar.appcache.server.PropertyProvider;
@@ -36,6 +36,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class SelectionServlet extends DefaultSelectionServlet {
+	private static final long serialVersionUID = 5078231093739821294L;
 
 	@Inject
     public SelectionServlet(Provider<EntityManager> entityManager) {
@@ -71,6 +72,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
     }
     
     private class UserNotAuthenticatedException extends SelectionException {
+		private static final long serialVersionUID = 7911507877946155993L;
 
 		public UserNotAuthenticatedException(String message) {
 			super(message);

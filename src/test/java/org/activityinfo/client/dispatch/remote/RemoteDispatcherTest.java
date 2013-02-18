@@ -24,7 +24,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.cache.CacheManager;
 import org.activityinfo.client.dispatch.remote.cache.CachingDispatcher;
 import org.activityinfo.client.dispatch.remote.cache.CacheResult;
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RemoteCommandServiceAsync;

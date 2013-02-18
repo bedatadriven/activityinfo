@@ -7,7 +7,7 @@ package org.activityinfo.client.authentication;
 
 import java.util.Date;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
 import com.google.gwt.i18n.client.LocaleInfo;

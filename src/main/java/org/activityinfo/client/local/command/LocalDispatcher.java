@@ -6,17 +6,17 @@
 package org.activityinfo.client.local.command;
 
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
 import org.activityinfo.client.dispatch.remote.Remote;
 import org.activityinfo.client.local.sync.ServerStateChangeEvent;
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.util.Collector;
 
-import org.activityinfo.client.Log;
 import com.bedatadriven.rebar.async.ChainedCallback;
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;

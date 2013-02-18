@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 public class ThrowingConnection implements Connection {
 
@@ -282,4 +283,20 @@ public class ThrowingConnection implements Connection {
 		throw new UnsupportedOperationException();
 	}
 
+	public void setSchema(String schema) throws SQLException {
+	}
+
+	public String getSchema() throws SQLException {
+		return null;
+	}
+
+	public void abort(Executor executor) throws SQLException {
+	}
+
+	public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+	}
+
+	public int getNetworkTimeout() throws SQLException {
+		return 0;
+	}
 }

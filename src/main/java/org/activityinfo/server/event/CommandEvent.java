@@ -1,11 +1,9 @@
 package org.activityinfo.server.event;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
-import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.SiteCommand;
-import org.activityinfo.shared.command.UpdateSite;
 import org.activityinfo.shared.command.result.CommandResult;
 
 import com.extjs.gxt.ui.client.data.RpcMap;

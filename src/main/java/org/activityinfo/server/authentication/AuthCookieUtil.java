@@ -5,34 +5,32 @@
 
 package org.activityinfo.server.authentication;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 public final class AuthCookieUtil {
     
 	private AuthCookieUtil() {}
 	
-    private static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
-    private static final int THIS_SESSION = -1;
+    public static final int THIRTY_DAYS = 30 * 24 * 60 * 60;
+    public static final int THIS_SESSION = -1;
+    
     private static final String ROOT= "/";
     
-    public static void addAuthCookie(HttpServletResponse response, Authentication auth, boolean remember) {
-        
-    	response.addCookie(createCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE,auth.getId(), remember ));
+    public static void addAuthCookie(ResponseBuilder response, Authentication auth, boolean remember) {
+    	response.cookie(createCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE,auth.getId(), remember ));
 
-    	response.addCookie(createCookie(AuthenticatedUser.USER_ID_COOKIE,String.valueOf(auth.getUser().getId()), remember ));
+    	response.cookie(createCookie(AuthenticatedUser.USER_ID_COOKIE,String.valueOf(auth.getUser().getId()), remember ));
         
-    	response.addCookie(createCookie(AuthenticatedUser.EMAIL_COOKIE,auth.getUser().getEmail(), remember ));
+    	response.cookie(createCookie(AuthenticatedUser.EMAIL_COOKIE,auth.getUser().getEmail(), remember ));
     }
     
-    public static Cookie createCookie(String name, String value, boolean remember){
-    	Cookie cookie = new Cookie(name, value);
-    	cookie.setMaxAge(remember ? THIRTY_DAYS : THIS_SESSION);
-    	cookie.setPath(ROOT);
-        
+    public static NewCookie createCookie(String name, String value, boolean remember) {
+    	NewCookie cookie = new NewCookie(name, value, ROOT, null, 1, null, remember ? THIRTY_DAYS : THIS_SESSION, false);
+    	
         return cookie;
     }
 }

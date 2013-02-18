@@ -28,8 +28,9 @@
 
 		<gae.version>1.7.2</gae.version>
 		<gae.application.version>2</gae.application.version>
-		<appengine.export.version>0.1.1-SNAPSHOT</appengine.export.version>
 
+		<jersey.version>1.17</jersey.version>
+		<appengine.export.version>0.1.1-SNAPSHOT</appengine.export.version>
 	</properties>
 
 	<dependencies>
@@ -290,7 +291,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.3</version>
+			<version>1.7</version>
 		</dependency>
 
 		<dependency>
@@ -330,7 +331,25 @@
 		    <version>4.1</version>
 		    <scope>test</scope>
 		</dependency>
-	</dependencies>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-guice</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+  	</dependencies>
 
 	<build>
 		<resources>
@@ -487,7 +506,6 @@
 							<modules>
 								<module>org.activityinfo.ActivityInfoProduction</module>
 								<module>org.activityinfo.embed.Embed</module>
-								<module>org.activityinfo.login.Login</module>
 							</modules>
 						</configuration>
 					</execution>
@@ -851,7 +869,6 @@
 									<draftCompile>true</draftCompile>
 									<modules>
 										<module>org.activityinfo.ActivityInfoFFTest</module>
-										<module>org.activityinfo.login.Login</module>
 									</modules>
 									<style>pretty</style>
 								</configuration>
@@ -926,7 +943,6 @@
 									<draftCompile>true</draftCompile>
 									<modules>
 										<module>org.activityinfo.ActivityInfoSafariTest</module>
-										<module>org.activityinfo.login.Login</module>
 									</modules>
 								</configuration>
 								<goals>
@@ -939,23 +955,6 @@
 			</build>
 		</profile>
 
-		<profile>
-			<id>login</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<version>1.2</version>
-						<configuration>
-							<draftCompile>true</draftCompile>
-							<module>org.activityinfo.login.Login</module>
-							<runTarget>login.html</runTarget>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<!-- Build the Application Module with a single permutation but with soyc 
 			enabled -->
 		<profile>

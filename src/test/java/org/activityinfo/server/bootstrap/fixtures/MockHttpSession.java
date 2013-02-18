@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSessionContext;
 /**
  * @author Alex Bertram
  */
+@SuppressWarnings({ "rawtypes", "deprecation" })
 public class MockHttpSession implements HttpSession {
 
     @Override

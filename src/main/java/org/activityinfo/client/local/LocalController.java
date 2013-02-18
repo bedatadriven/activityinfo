@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.dispatch.AsyncMonitor;
@@ -30,17 +30,14 @@ import org.activityinfo.client.local.sync.SyncHistoryTable;
 import org.activityinfo.client.local.sync.SyncStatusEvent;
 import org.activityinfo.client.local.sync.Synchronizer;
 import org.activityinfo.client.local.sync.SynchronizerConnectionException;
-import org.activityinfo.login.shared.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
-import org.activityinfo.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.inject.Inject;

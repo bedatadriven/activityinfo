@@ -6,38 +6,39 @@
 package org.activityinfo.server.bootstrap;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.activityinfo.login.shared.AuthenticatedUser;
+import org.activityinfo.server.bootstrap.model.Redirect;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-
-import freemarker.template.Configuration;
-
-@Singleton
+@Path(LogoutController.ENDPOINT)
 public class LogoutController extends AbstractController {
     public static final String ENDPOINT = "/logout";
 
-    @Inject
-    public LogoutController(Injector injector, Configuration templateCfg) {
-        super(injector, templateCfg);
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @GET
+    public Response onGet(@Context HttpServletRequest req) throws ServletException, IOException {
+    	ResponseBuilder resp = Response.ok(new Redirect(LoginController.ENDPOINT));
+    	
         logUserOut(resp);
-        resp.sendRedirect("/login");
+        
+        return resp.build();
     }
+    
+    static final Collection<String> COOKIES_TO_DELETE = Arrays.asList(AuthenticatedUser.AUTH_TOKEN_COOKIE, AuthenticatedUser.EMAIL_COOKIE, AuthenticatedUser.USER_ID_COOKIE, AuthenticatedUser.USER_LOCAL_COOKIE);
 
-    protected void logUserOut(HttpServletResponse resp) {
-        removeCookie(resp, AuthenticatedUser.AUTH_TOKEN_COOKIE);
-        removeCookie(resp, AuthenticatedUser.EMAIL_COOKIE);
-        removeCookie(resp, AuthenticatedUser.USER_ID_COOKIE);
-		removeCookie(resp, AuthenticatedUser.USER_LOCAL_COOKIE);
+    protected void logUserOut(ResponseBuilder resp) {
+		for (String ctd : COOKIES_TO_DELETE) {
+			resp.cookie(new NewCookie(ctd, null));
+		}
     }
 }

@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 
-import org.activityinfo.login.server.LoginModule;
 import org.activityinfo.server.attachment.AttachmentModule;
 import org.activityinfo.server.authentication.AuthenticationModule;
 import org.activityinfo.server.bootstrap.BootstrapModule;
@@ -19,8 +18,10 @@ import org.activityinfo.server.endpoint.content.ContentModule;
 import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.healthcheck.HealthCheckModule;
+import org.activityinfo.server.endpoint.hxl.HxlModule;
 import org.activityinfo.server.endpoint.jsonrpc.JsonRpcModule;
 import org.activityinfo.server.endpoint.kml.KmlModule;
+import org.activityinfo.server.endpoint.refine.RefineModule;
 import org.activityinfo.server.event.EventModule;
 import org.activityinfo.server.geo.GeometryModule;
 import org.activityinfo.server.i18n.LocaleModule;
@@ -81,8 +82,9 @@ public class StartupListener extends GuiceServletContextListener {
                 new JsonRpcModule(),
                 new KmlModule(),
                 new TrackingModule(),
+                new RefineModule(),
                 new LocaleModule(),
-                new LoginModule());
+                new HxlModule());
     }
 
 }

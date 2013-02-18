@@ -20,7 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-
+@SuppressWarnings("rawtypes")
 public class MockHttpServletRequest implements HttpServletRequest {
 
     private HashMap<String, Object> attributes = new HashMap<String, Object>();
@@ -150,7 +150,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
         throw new UnsupportedOperationException();
     }
 
-    public Enumeration getHeaderNames() {
+	public Enumeration getHeaderNames() {
         throw new UnsupportedOperationException();
     }
 
