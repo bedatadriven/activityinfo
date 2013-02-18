@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
 import org.activityinfo.server.report.renderer.image.BubbleLegendRenderer;
@@ -123,7 +125,7 @@ public class ItextMapRenderer extends ImageMapRenderer implements ItextRenderer<
     	table.setTableFitsPage(true);
     	table.setWidths(new int[] {1,3} );
     	
-    	Cell cell = new Cell("Legende");
+    	Cell cell = new Cell(I18N.CONSTANTS.legend());
     	cell.setHeader(true);
     	cell.setColspan(2);
     	table.addCell(cell);
