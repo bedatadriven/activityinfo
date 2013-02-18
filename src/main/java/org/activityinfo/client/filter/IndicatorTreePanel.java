@@ -58,8 +58,8 @@ public class IndicatorTreePanel extends ContentPanel {
 
 	private final Dispatcher dispatcher;
 
-	private TreeStore<ModelData> store;
-	private TreePanel<ModelData> tree;
+	private final TreeStore<ModelData> store;
+	private final TreePanel<ModelData> tree;
 	private ToolBar toolBar;
 	private StoreFilterField filter;
 	private boolean multipleSelection;
@@ -120,6 +120,7 @@ public class IndicatorTreePanel extends ContentPanel {
 			@Override
 			public void storeDataChanged(StoreEvent<ModelData> se) {
 				// apply our internal state to the newly loaded list
+				tree.expandAll();
 				applySelection();	
 			}
 		});
@@ -145,7 +146,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
 			@Override
 			public String getKey(ModelData model) {
-				List<String> keys = new ArrayList<String>();
+				new ArrayList<String>();
 				if (model instanceof ProvidesKey) {
 					return ((ProvidesKey) model).getKey();
 				} else if (model == null) {
@@ -176,6 +177,7 @@ public class IndicatorTreePanel extends ContentPanel {
 		tree.expandAll();
 	}
 	
+	@Override
 	public void setHeading(String heading){
 		super.setHeading(heading);
 	}
