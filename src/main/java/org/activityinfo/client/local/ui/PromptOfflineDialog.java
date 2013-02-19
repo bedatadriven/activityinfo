@@ -4,17 +4,12 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.local.LocalController;
 import org.activityinfo.client.local.LocalStateChangeEvent;
-import org.activityinfo.client.local.capability.ProfileResources;
-import org.activityinfo.client.offline.OfflineController;
-import org.activityinfo.client.offline.OfflineStateChangeEvent;
-import org.activityinfo.client.offline.OfflineStateChangeEvent.State;
-import org.activityinfo.client.offline.capability.ProfileResources;
+import org.activityinfo.client.local.LocalStateChangeEvent.State;
 import org.activityinfo.client.util.state.CrossSessionStateProvider;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

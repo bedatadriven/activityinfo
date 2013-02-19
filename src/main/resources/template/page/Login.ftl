@@ -11,7 +11,7 @@
           <p class="lead">${label.activityInfoIntro}</p>
           
           <div class="row-fluid">
-          	<div class="span3"><a href="http://about.activityinfo.org/<#if lang="fr">fr</#if>" class="btn btn-large btn-success">${label.learnMore} &raquo;</a></div>
+          	<div class="span3"><a href="http://about.activityinfo.org/<#if .lang="fr">fr</#if>" class="btn btn-large btn-success">${label.learnMore} &raquo;</a></div>
           	
           </div>
 		  
@@ -51,7 +51,7 @@
 	
 		enableForm(false);		
 		$.ajax({
-			url: '/login',
+			url: '/login/ajax',
 			type: 'POST', 
 			data: {
 				email: $('#emailInput').val(),

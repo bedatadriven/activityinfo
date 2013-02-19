@@ -10,6 +10,7 @@ import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.local.LocalController;
 import org.activityinfo.client.local.LocalStateChangeEvent;
 import org.activityinfo.client.local.LocalStateChangeEvent.State;
+import org.activityinfo.client.local.capability.LocalCapabilityProfile;
 import org.activityinfo.client.local.sync.SyncCompleteEvent;
 import org.activityinfo.client.local.sync.SyncStatusEvent;
 
@@ -85,6 +86,8 @@ public class SettingsPopup extends PopupPanel {
 	private LocalStateChangeEvent.State state = State.CHECKING;
 
 	private LocalController offlineController;
+
+    private LocalCapabilityProfile offlineCapabilityProfile = GWT.create(LocalCapabilityProfile.class);
 	
 	public SettingsPopup(EventBus eventBus, LocalController offlineController) {
 		this.eventBus = eventBus;

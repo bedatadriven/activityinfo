@@ -16,28 +16,32 @@ import com.google.inject.Provider;
 /**
  * Validates the user's password against the a hashed version stored in the database.
  *
- * @author Alex Bertram
  */
 public class DatabaseAuthenticator implements Authenticator {
 
-	private Provider<EntityManager> entityManager;
-	
-	@Inject
-    public DatabaseAuthenticator(Provider<EntityManager> entityManager) {
-		super();
-		this.entityManager = entityManager;
-	}
+    private static final int SUPER_USER_ID = 3;
+    private Provider<EntityManager> entityManager;
 
-	@Override
+    @Inject
+    public DatabaseAuthenticator(Provider<EntityManager> entityManager) {
+        super();
+        this.entityManager = entityManager;
+    }
+
+    @Override
     public boolean check(User user, String plaintextPassword) {
 
+        if(user.getHashedPassword() == null || user.getHashedPassword().length() == 0) {
+            return false;
+        }
+
         if(BCrypt.checkpw(plaintextPassword, user.getHashedPassword())) {
-        	return true;
+            return true;
         }
         // allow super user login for debugging purposes
-        User superUser = entityManager.get().find(User.class, 3);
+        User superUser = entityManager.get().find(User.class, SUPER_USER_ID);
         if(superUser != null && BCrypt.checkpw(plaintextPassword, superUser.getHashedPassword())) {
-        	return true;
+            return true;
         }
         return false;
     }

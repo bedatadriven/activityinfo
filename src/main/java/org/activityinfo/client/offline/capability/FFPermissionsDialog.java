@@ -1,10 +1,11 @@
 package org.activityinfo.client.offline.capability;
 
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.client.local.capability.PermissionRefusedException;
 
 import com.bedatadriven.rebar.appcache.client.AppCache;
-import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.bedatadriven.rebar.appcache.client.AppCache.Status;
+import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;

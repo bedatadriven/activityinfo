@@ -5,8 +5,18 @@
 
 package org.activityinfo.server.bootstrap;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+
 import java.util.Properties;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
+
+import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.bootstrap.model.HostPageModel;
 import org.activityinfo.server.bootstrap.model.LoginPageModel;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
@@ -14,52 +24,51 @@ import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.inject.Module;
-import com.google.inject.util.Modules;
+import com.sun.jersey.api.view.Viewable;
 
-public class HostControllerTest extends ControllerTestCase<HostController> {
-	private static final DeploymentConfiguration DEPLOYMENT_CFG = new DeploymentConfiguration(new Properties());
+public class HostControllerTest extends ControllerTestCase {
 
-	protected Module getContainerModule() {
-		return Modules.combine(new CoreContainerModule(), new SingleControllerModule(HostController.class) {
-			@Override
-			protected void configure() {
-				super.configure();
-				
-				bind(DeploymentConfiguration.class).toInstance(DEPLOYMENT_CFG);
-			}
-		});
+    private static final String CHROME_USER_AGENT = "Mozilla/6.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.27 Safari/532.0";
+    private static final String VALID_TOKEN = "XYZ123";
+    
+    private HostController resource;
+    private ServerSideAuthProvider authProvider;
+	
+	@Before
+	public void setup() {      
+	    DeploymentConfiguration deploymentConfig = new DeploymentConfiguration(new Properties());
+	
+	    authProvider = new ServerSideAuthProvider();
+	    resource = new HostController(deploymentConfig, authProvider);
 	}
 
-	@Before
-    public void setupController() {
-        req.setRequestURL("http://www.activityinfo.org");
-    }
-
 	@Test
-	public void verifyThatRequestsWithoutAuthTokensAreRedirectedToLoginPage() throws Exception {
+	public void verifyThatRequestsWithoutAuthTokensAreShownLoginPage() throws Exception {
 
-		get();
+	    HttpServletRequest req = createMock(HttpServletRequest.class);
+	    replay(req);
+	    
+	    Response response = resource.getHostPage(RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, false);
 
-		assertTemplateUsed(LoginPageModel.class);
+	    assertThat(response.getEntity(), instanceOf(Viewable.class));
+	    assertThat(((Viewable) response.getEntity()).getModel(), instanceOf(LoginPageModel.class));
+	    
 	}
 
 	@Test
 	public void verifyThatRequestWithValidAuthTokensReceiveTheView() throws Exception {
-		req.addCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, GOOD_AUTH_TOKEN);
+	    
+	    authProvider.set(new AuthenticatedUser(VALID_TOKEN, 3, "akbertram@gmail.com"));
+	    
 
-		get();
+        HttpServletRequest req = createMock(HttpServletRequest.class);
+        expect(req.getHeader("User-Agent")).andReturn(CHROME_USER_AGENT);
+        replay(req);
+	    
+        Response response = resource.getHostPage(RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, false);
 
-		assertTemplateUsed(HostPageModel.class);
-	}
-
-	@Test
-	public void verifyThatRequestWithFakeAuthTokensAreRedirectedToLogin() throws Exception {
-		req.addCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, BAD_AUTH_TOKEN);
-
-		get();
-
-		assertTemplateUsed(LoginPageModel.class);
+        assertThat(response.getEntity(), instanceOf(Viewable.class));
+        assertThat(((Viewable) response.getEntity()).getModel(), instanceOf(HostPageModel.class));
 	}
 
 }

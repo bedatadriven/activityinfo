@@ -5,6 +5,8 @@
 
 package org.activityinfo.server.bootstrap.model;
 
+import com.sun.jersey.api.view.Viewable;
+
 public abstract class PageModel {
 
     private static final String SUFFIX = "PageModel";
@@ -13,10 +15,14 @@ public abstract class PageModel {
         String className = pageModelClass.getSimpleName();
         assert className.endsWith(SUFFIX) : "Page Model classes should end in '" + SUFFIX + "'";
 
-        return "page/" + className.substring(0, className.length() - SUFFIX.length()) + ".ftl";
+        return "/page/" + className.substring(0, className.length() - SUFFIX.length()) + ".ftl";
     }
 
     public String getTemplateName() {
         return getTemplateName(getClass());
+    }
+    
+    public Viewable asViewable() {
+        return new Viewable(getTemplateName(), this);
     }
 }

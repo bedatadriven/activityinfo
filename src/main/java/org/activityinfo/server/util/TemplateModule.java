@@ -32,8 +32,6 @@ public class TemplateModule extends AbstractModule {
         Configuration config = new Configuration();
         config.setClassForTemplateLoading(TemplateModule.class, "/template");
         config.setDefaultEncoding("UTF-8");
-        config.setSharedVariable("label", new freemarker.ext.beans.ResourceBundleModel(ResourceBundle.getBundle("template/page/Labels"), 
-        		new BeansWrapper()));
         return config;
     }
 }

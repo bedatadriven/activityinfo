@@ -1,7 +1,7 @@
 <#-- @ftlvariable name="" type="org.activityinfo.server.bootstrap.model.HostPageModel" -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <#if appCacheEnabled>
-<html manifest="${moduleName}/${moduleName}.appcache">
+<html manifest="ActivityInfo/ActivityInfo.appcache">
 <#else>
 <html>
 </#if>
@@ -59,13 +59,11 @@
         <#include "Application.css">
     </style>
     <script type="text/javascript">
-    	<#if redirectIfNoAuthCookie>
 		if(document.cookie.indexOf('authToken=') == -1 || 
 		   document.cookie.indexOf('userId') == -1 ||
 		   document.cookie.indexOf('email') == -1) {
 			window.location = "/login";
 		}
-		</#if>
 		
         var GoogleMapsAPI = {
             key: "${mapsApiKey}"
@@ -76,8 +74,8 @@
         };
     </script>	
 
-    <script language='javascript' src='${moduleName}/gxt224/flash/swfobject.js'></script>
-    <script type="text/javascript" language="javascript" src="${moduleName}/${moduleName}.nocache.js"></script>
+    <script language='javascript' src='ActivityInfo/gxt224/flash/swfobject.js'></script>
+    <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
 	<script type="text/javascript">
 	
 	  var _gaq = _gaq || [];

@@ -18,6 +18,6 @@ public class PageModelTest {
 
     @Test
     public void testGetTemplateName() throws Exception {
-        assertEquals("page/Login.ftl", PageModel.getTemplateName(LoginPageModel.class));
+        assertEquals("/page/Login.ftl", PageModel.getTemplateName(LoginPageModel.class));
     }
 }

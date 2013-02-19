@@ -25,7 +25,7 @@ public class HostViewTest extends ViewTestCase {
         auth.setId("XYZ12345");
         auth.setUser(user);
 
-        HostPageModel pageModel = new HostPageModel(auth,  "http://www.activityinfo.org");
+        HostPageModel pageModel = new HostPageModel("http://www.activityinfo.org");
         pageModel.setMapsApiKey("XYZ123");
 		assertProcessable(pageModel);
     }

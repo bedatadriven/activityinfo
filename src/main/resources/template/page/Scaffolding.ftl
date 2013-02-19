@@ -4,6 +4,8 @@
 <html>
 <head>
   <title>ActivityInfo - Login</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  
   <!-- CSS Files -->
   <link href="css/bootstrap.css" rel="stylesheet" media="screen">
   <link href="css/bootstrap-responsive.css" rel="stylesheet" media="screen">
@@ -26,8 +28,8 @@
                 </a>
                <div class="pull-right">
 		         <ul class="upper nav">
-		          <li  class="language <#if lang="en">active</#if>"><a href="">en</a></li>
-		          <li  class="language <#if lang="fr">active</#if>"><a href="">fr</a></li> 
+		          <li  class="language <#if .lang="en">active</#if>"><a href="">en</a></li>
+		          <li  class="language <#if .lang="fr">active</#if>"><a href="">fr</a></li> 
 		         </ul>
 		        </div>	
               </nav>

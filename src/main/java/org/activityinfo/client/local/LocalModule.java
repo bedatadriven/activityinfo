@@ -5,16 +5,10 @@
 
 package org.activityinfo.client.local;
 
-<<<<<<< HEAD
+import org.activityinfo.client.Log;
 import org.activityinfo.client.local.command.HandlerRegistry;
 import org.activityinfo.client.local.sync.Synchronizer;
 import org.activityinfo.client.local.sync.SynchronizerImpl;
-=======
-import org.activityinfo.client.Log;
-import org.activityinfo.client.offline.command.HandlerRegistry;
-import org.activityinfo.client.offline.sync.Synchronizer;
-import org.activityinfo.client.offline.sync.SynchronizerImpl;
->>>>>>> firefox-offline
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;

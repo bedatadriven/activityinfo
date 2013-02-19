@@ -3,15 +3,12 @@ package org.activityinfo.client.local.capability;
 
 import org.activityinfo.client.Log;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
-import org.activityinfo.client.util.mozApp.MozApp;
-import org.activityinfo.client.util.mozApp.MozAppsApi;
+import org.activityinfo.client.offline.capability.FFPermissionsDialog;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCache.Status;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
-import com.bedatadriven.rebar.async.NullCallback;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -22,7 +19,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * a add-on to expose the sqlite database service Mozilla provides
  * for extensions.
  */
-public class FFCapabilityProfile extends OfflineCapabilityProfile {
+public class FFCapabilityProfile extends LocalCapabilityProfile {
 
 	
 	private boolean hasPlugin;
@@ -40,7 +37,6 @@ public class FFCapabilityProfile extends OfflineCapabilityProfile {
 
 	@Override
 	public void acquirePermission(final AsyncCallback<Void> callback) {
-		doInstallViaAppsApi(NullCallback.forVoid());
 		
 		final AppCache appCache = AppCacheFactory.get();
 		if(appCache.getStatus() != Status.UNCACHED) {
@@ -49,23 +45,6 @@ public class FFCapabilityProfile extends OfflineCapabilityProfile {
 			FFPermissionsDialog dialog = new FFPermissionsDialog(callback);
 			dialog.show();
 		}
-	}
-
-	private void doInstallViaAppsApi(final AsyncCallback<Void> callback) {
-		MozAppsApi.install(GWT.getHostPageBaseURL() + "ActivityInfo.webapp",
-				createReceipt(),
-				new AsyncCallback<MozApp>() {
-			
-			@Override
-			public void onSuccess(MozApp result) {
-				callback.onSuccess(null);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-		});
 	}
 
 	private String createReceipt() {

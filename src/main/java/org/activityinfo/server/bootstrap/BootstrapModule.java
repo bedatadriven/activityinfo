@@ -8,10 +8,8 @@ package org.activityinfo.server.bootstrap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.activityinfo.server.bootstrap.jaxrs.FreemarkerTemplateProcessor;
-import org.activityinfo.server.bootstrap.jaxrs.LocaleContextProvider;
-import org.activityinfo.server.bootstrap.jaxrs.RedirectMessageBodyWriter;
-import org.activityinfo.server.bootstrap.jaxrs.TemplateDirectiveMessageBodyWriter;
+import org.activityinfo.server.bootstrap.jaxrs.FreemarkerViewProcessor;
+import org.activityinfo.server.i18n.LocaleProvider;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -24,16 +22,15 @@ public class BootstrapModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-    	bind(LocaleContextProvider.class);
-    	bind(RedirectMessageBodyWriter.class);
-    	bind(TemplateDirectiveMessageBodyWriter.class);
-    	bind(FreemarkerTemplateProcessor.class);
+    	bind(FreemarkerViewProcessor.class);
     	
         serve("/ActivityInfo/ActivityInfo.nocache.js").with(SelectionServlet.class);
         serve("/ActivityInfo/ActivityInfo.appcache").with(SelectionServlet.class);
         serve("/ActivityInfo/ActivityInfo.gears.manifest").with(SelectionServlet.class);
         
         Map<String, String> initParams = new TreeMap<String, String>();
+        
+        filter("/login*").through(GuiceContainer.class);
         
         filterContainer(initParams, HostController.class, LoginController.class, ConfirmInviteController.class, LogoutController.class, ResetPasswordController.class, ChangePasswordController.class);
     }

@@ -6,25 +6,15 @@
 package org.activityinfo.server.bootstrap.model;
 
 public class LoginPageModel extends PageModel {
-    private String urlSuffix;
     private boolean loginError;         
 
     public LoginPageModel() {
-        this.urlSuffix = "";
     }
 
-    public LoginPageModel(String urlSuffix) {
-        this.urlSuffix = urlSuffix;
-    }
-
-    public static LoginPageModel unsuccessful(String urlSuffix) {
-        LoginPageModel model = new LoginPageModel(urlSuffix);
+    public static LoginPageModel unsuccessful() {
+        LoginPageModel model = new LoginPageModel();
         model.loginError = true;
         return model;
-    }
-
-    public String getUrlSuffix() {
-        return urlSuffix;
     }
 
     public boolean isLoginError() {

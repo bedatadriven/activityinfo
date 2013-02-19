@@ -5,12 +5,18 @@
 
 package org.activityinfo.server.bootstrap;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Locale;
 
+import org.activityinfo.server.bootstrap.jaxrs.FreemarkerViewProcessor;
 import org.activityinfo.server.bootstrap.model.PageModel;
 import org.activityinfo.server.util.TemplateModule;
+import org.bouncycastle.util.Strings;
 import org.junit.BeforeClass;
+
+import com.google.inject.util.Providers;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -28,15 +34,15 @@ public abstract class ViewTestCase {
     public static void setUpTemplateConfig() throws TemplateModelException  {
         TemplateModule module = new TemplateModule();
         templateCfg = module.provideConfiguration();
-        templateCfg.setSharedVariable("lang", "en");
     }
 
     protected String process(PageModel model) throws IOException, TemplateException {
-        Template template = templateCfg.getTemplate(model.getTemplateName());
-        StringWriter writer = new StringWriter();
-        template.process(model, writer);
+        FreemarkerViewProcessor processor = new FreemarkerViewProcessor(templateCfg, Providers.of(Locale.ENGLISH));
+        Template template = processor.resolve(model.asViewable().getTemplateName());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        processor.writeTo(template, model.asViewable(), baos);
 
-        return writer.toString();
+        return Strings.fromUTF8ByteArray(baos.toByteArray());
     }
 
     protected void assertProcessable(PageModel model) {

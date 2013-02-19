@@ -15,10 +15,6 @@ public class LoginViewTest extends ViewTestCase {
         assertProcessable(new LoginPageModel());
     }
 
-    @Test
-    public void templateWithUrlSuffixProcesses() {
-        assertProcessable(new LoginPageModel("#charts"));
-    }
 
 
 }
