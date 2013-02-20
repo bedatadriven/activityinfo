@@ -56,6 +56,7 @@ public class NewReportPanel extends ContentPanel {
 		view.setItemSelector("dd");
 		view.setOverStyle("over");
 		view.setSelectStyle("over");
+		view.setStyleAttribute("overflow-y", "scroll");
 
 		view.addListener(Events.Select,
 				new Listener<ListViewEvent<ReportTemplate>>() {
