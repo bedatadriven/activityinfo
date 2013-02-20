@@ -1,10 +1,11 @@
 package org.activityinfo.server.authentication;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+
 import javax.persistence.NoResultException;
 
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
+import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.apache.commons.codec.binary.Base64;
@@ -29,6 +30,19 @@ public class BasicAuthentication {
 		this.authenticator = authenticator;
 	}
 
+
+	public Authentication tryAuthenticate(String authorizationHeader) {
+	    User user;
+        try {
+            user = doAuthentication(authorizationHeader);
+        } catch (IOException e) {
+            return null;
+        }
+	    Authentication auth = new Authentication(user);
+	    auth.setId("");
+	    return auth;
+	}
+	
 	public User doAuthentication(String auth) throws IOException{
 		
 		User user = authenticate(auth);
@@ -45,7 +59,7 @@ public class BasicAuthentication {
 	// This method checks the user information sent in the Authorization
     // header against the database of users maintained in the users Hashtable.
 
-    private User authenticate(String auth) throws IOException {
+    public User authenticate(String auth) throws IOException {
         if (auth == null) {
             return null;
         }// no auth

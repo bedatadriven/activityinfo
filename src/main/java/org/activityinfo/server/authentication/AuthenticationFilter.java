@@ -41,6 +41,8 @@ public class AuthenticationFilter implements Filter {
 	private final Provider<HttpServletRequest> request;
 	private final Provider<EntityManager> entityManager;
 	private final ServerSideAuthProvider authProvider;
+	private final BasicAuthentication basicAuthenticator;
+	
 	private final LoadingCache<String, AuthenticatedUser> authTokenCache = CacheBuilder.newBuilder()
 			.maximumSize(10000)	
 			.expireAfterAccess(6, TimeUnit.HOURS)
@@ -52,14 +54,15 @@ public class AuthenticationFilter implements Filter {
 				}
 			});
 	
-	
 	@Inject
 	public AuthenticationFilter(Provider<HttpServletRequest> request, 
 							    Provider<EntityManager> entityManager,
-							    ServerSideAuthProvider authProvider){
+							    ServerSideAuthProvider authProvider,
+							    BasicAuthentication basicAuthenticator){
 		this.entityManager = entityManager;
 		this.request = request;
 		this.authProvider = authProvider;
+		this.basicAuthenticator = basicAuthenticator;
 	}
 
 	@Override
@@ -67,6 +70,8 @@ public class AuthenticationFilter implements Filter {
 			FilterChain filterChain) throws IOException, ServletException {
 
 		authProvider.clear();
+		
+		
 		
 		String authToken = authTokenFromCookie();
 		if(authToken != null) {
@@ -96,6 +101,10 @@ public class AuthenticationFilter implements Filter {
 	private AuthenticatedUser queryAuthToken(String authToken) {
 		Authentication entity = entityManager.get().find(Authentication.class, authToken);
 		if(entity == null) {
+		    // try as basic authentication
+		    entity = basicAuthenticator.tryAuthenticate(authToken);
+		}
+		if(entity == null) {
 			throw new IllegalArgumentException();
 		}
 		AuthenticatedUser authenticatedUser = new AuthenticatedUser(authToken, entity.getUser().getId(), entity.getUser().getEmail());
@@ -115,4 +124,5 @@ public class AuthenticationFilter implements Filter {
 		}
 		return null;
 	}
+	
 }

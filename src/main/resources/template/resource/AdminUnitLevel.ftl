@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>${name}</title>
-</head>
-<body>
+<#include "../page/Scaffolding.ftl">
+<@scaffolding title="${name}">
+
+	<@content>
 	<h1>${name}</h1>
 	
 	<p>Administrative Unit Level in ${country.name}</p>
@@ -27,5 +25,5 @@
 		<li><a href="/resources/adminUnit/${entity.id?c}">${entity.name}</a></li>
 	</#list>
 	</ul>
-</body>
-</html>
+	</@content>
+</@scaffolding>

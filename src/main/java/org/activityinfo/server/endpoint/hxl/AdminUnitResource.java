@@ -25,7 +25,7 @@ public class AdminUnitResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable get() {
-		return new Viewable("/preview/AdminEntity.ftl", new AdminEntityPreview(unit));
+		return new Viewable("/resource/AdminUnit.ftl", new AdminEntityPreview(unit));
 	}
 	
 	

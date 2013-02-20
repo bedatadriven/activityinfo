@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>${name}</title>
-  <meta http-equiv = "Content-Type" content = "text/html; charset=UTF-8">
-</head>
-<body>
+<#include "../page/Scaffolding.ftl">
+<@scaffolding title="${name}">
+
+	
+	<@content>
 	<h1>${name}</h1>
 	
 	<h2>Administrative Unit Levels</h2>
 	<@showLevels children=adminLevels/>
-	
-</body>
-</html>
+	</@content>
+</@scaffolding>
 
 <#macro showLevels children>
 	<ul>

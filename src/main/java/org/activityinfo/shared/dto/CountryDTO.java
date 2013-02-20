@@ -79,17 +79,8 @@ public final class CountryDTO extends BaseModelData implements DTO {
     
     public void setCodeISO(String codeISO) {
         set("codeISO", codeISO);
-        set("completeName", getName() + " (" + codeISO + ")");
     }
     
-    /**
-     * Gets the name of this country with the code appended at the end.
-     * @return The name and the code of this country.
-     */
-    public String getCompleteName() {
-        return getName() + " (" + getCodeISO() + ")";
-    }
-
     /**
      * Finds an AdminEntity by id
      *

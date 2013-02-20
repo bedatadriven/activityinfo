@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>${entity.name}</title>
-</head>
-<body>
+<#include "../page/Scaffolding.ftl">
+<@scaffolding title="${entity.name}">
+
+	<@content>
 	<h1>${entity.name}</h1>
 	
 	<p><a href="/resources/adminUnitLevel/${entity.level.id?c}">${entity.level.name}</a> in <a href="/resources/country/${entity.level.country.codeISO}">${entity.level.country.name}</a></p>
@@ -28,5 +26,5 @@
 		</ul> 
 		</#list>
 	</#if>
-</body>
-</html>
+	</@content>
+</@scaffolding>

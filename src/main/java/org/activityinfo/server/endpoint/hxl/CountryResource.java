@@ -19,7 +19,7 @@ public class CountryResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable get() {
-		return new Viewable("/preview/Country.ftl", country);
+		return new Viewable("/resource/Country.ftl", country);
 	}
 
 }
