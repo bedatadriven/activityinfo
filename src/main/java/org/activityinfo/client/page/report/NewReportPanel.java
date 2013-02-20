@@ -64,7 +64,7 @@ public class NewReportPanel extends ContentPanel {
 			public void handleEvent(ListViewEvent<ReportTemplate> event) {
 				createNew(event.getModel());
 			}
-		});
+		});	
 		add(view);
 	}
 	 

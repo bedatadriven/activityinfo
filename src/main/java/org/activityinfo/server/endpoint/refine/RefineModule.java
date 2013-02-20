@@ -1,8 +1,8 @@
 package org.activityinfo.server.endpoint.refine;
 
-import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -20,7 +20,8 @@ public class RefineModule extends ServletModule {
 
     private ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JsonDtoModule("dto", Version.unknownVersion()));
+        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT,true);
+       // mapper.registerModule(new JsonDtoModule("dto", Version.unknownVersion()));
         return mapper;
     }
 

@@ -18,6 +18,7 @@ import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
+import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -71,9 +72,10 @@ public class AuthenticationFilter implements Filter {
 
 		authProvider.clear();
 		
-		
-		
-		String authToken = authTokenFromCookie();
+		String authToken = ((HttpServletRequest)request).getHeader("Authorization");
+		if(Strings.isNullOrEmpty(authToken)) {
+			authToken = authTokenFromCookie();
+		}
 		if(authToken != null) {
 			try {
 				AuthenticatedUser currentUser = authTokenCache.get(authToken);

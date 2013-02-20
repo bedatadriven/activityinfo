@@ -25,7 +25,7 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
 	public AuthenticatedUser get() {
 		AuthenticatedUser user = currentUser.get();
 		if(user == null) {
-			throw new InvalidAuthTokenException("Request is not authenticated");
+			return AuthenticatedUser.getAnonymous();
 		}
 		return user;
 	}

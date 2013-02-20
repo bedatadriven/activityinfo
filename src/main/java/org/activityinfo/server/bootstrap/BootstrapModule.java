@@ -6,11 +6,10 @@
 package org.activityinfo.server.bootstrap;
 
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.activityinfo.server.bootstrap.jaxrs.FreemarkerViewProcessor;
-import org.activityinfo.server.i18n.LocaleProvider;
 
+import com.google.common.collect.Maps;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
@@ -28,8 +27,9 @@ public class BootstrapModule extends ServletModule {
         serve("/ActivityInfo/ActivityInfo.appcache").with(SelectionServlet.class);
         serve("/ActivityInfo/ActivityInfo.gears.manifest").with(SelectionServlet.class);
         
-        Map<String, String> initParams = new TreeMap<String, String>();
-        
+        Map<String, String> initParams = Maps.newHashMap();
+        initParams.put("swagger.api.basepath", "http://localhost:8888");
+        initParams.put("api.version", "1.0");
         filter("/login*").through(GuiceContainer.class);
         
         filterContainer(initParams, HostController.class, LoginController.class, ConfirmInviteController.class, LogoutController.class, ResetPasswordController.class, ChangePasswordController.class);

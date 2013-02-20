@@ -35,9 +35,5 @@ public class ModelDataSerializer implements JsonSerializer<ModelData> {
 			}
 		}
 		return object;
-		
-		
 	}
-
-	
 }

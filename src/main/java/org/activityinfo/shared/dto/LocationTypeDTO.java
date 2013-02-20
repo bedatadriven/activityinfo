@@ -5,6 +5,9 @@
 
 package org.activityinfo.shared.dto;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
@@ -24,6 +27,8 @@ public final class LocationTypeDTO extends BaseModelData implements DTO {
         setName(name);
     }
 
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public void setId(int id) {
 		set("id", id);
 	}
@@ -36,10 +41,14 @@ public final class LocationTypeDTO extends BaseModelData implements DTO {
 		set("name", value);
 	}
 	
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getName() { 
 		return get("name");
 	}
 	
+    @JsonProperty("adminLevelId")
+	@JsonView(DTOViews.Schema.class)
 	public Integer getBoundAdminLevelId() {
 		return get("boundAdminLevelId");
 	}

@@ -23,7 +23,12 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 @Entity
+@JsonAutoDetect(JsonMethod.NONE)
 @NamedQuery(name="queryAllCountriesAlphabetically",
         query="select c from Country c order by c.name")
 public class Country implements Serializable, SchemaElement {
@@ -47,6 +52,7 @@ public class Country implements Serializable, SchemaElement {
      * @return the country's id
      */
 	@Id
+	@JsonProperty
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "CountryId", unique = true, nullable = false)
 	public int getId() {
@@ -62,6 +68,7 @@ public class Country implements Serializable, SchemaElement {
 		this.id = id;
 	}
 
+	@JsonProperty
 	@Column(name = "Name", nullable = false, length = 50)
 	public String getName() {
 		return this.name;
@@ -76,6 +83,7 @@ public class Country implements Serializable, SchemaElement {
 		this.name = name;
 	}
 	
+	@JsonProperty("code")
 	@Column(name = "ISO2", length = 2)
 	public String getCodeISO() {
 	    return this.codeISO;
@@ -91,6 +99,7 @@ public class Country implements Serializable, SchemaElement {
      * @return tbe geogaphics bounds of this Country
      */
 	@Embedded
+	@JsonProperty
     @AttributeOverrides({
             @AttributeOverride(name="x1", column=@Column(nullable = false)),
             @AttributeOverride(name="y1", column=@Column(nullable = false)),

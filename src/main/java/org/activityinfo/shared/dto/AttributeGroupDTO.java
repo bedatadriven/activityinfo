@@ -8,12 +8,18 @@ package org.activityinfo.shared.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * One-to-one DTO for the {@link org.activityinfo.server.database.hibernate.entity.AttributeGroup} domain object
  *
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class AttributeGroupDTO extends BaseModelData implements EntityDTO {
 
 	public static final int NAME_MAX_LENGTH = 255;
@@ -40,6 +46,8 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
 		this.setId(id);
 	}
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public int getId() {
         return (Integer)get("id");
     }
@@ -52,6 +60,8 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
 		set("name", name);
 	}
 	
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
 	public String getName() {
 		return get("name");
 	}
@@ -63,7 +73,9 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
 	public void setAttributes(List<AttributeDTO> attributes) {
 		this.attributes = attributes;		
 	}
-
+	
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
 	public boolean isMultipleAllowed() {
 		return (Boolean)get("multipleAllowed");
 	}

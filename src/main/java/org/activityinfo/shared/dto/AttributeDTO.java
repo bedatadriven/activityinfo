@@ -5,6 +5,11 @@
 
 package org.activityinfo.shared.dto;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -12,6 +17,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class AttributeDTO extends BaseModelData implements EntityDTO {
 
     public static final String PROPERTY_PREFIX = "ATTRIB";
@@ -31,6 +37,8 @@ public final class AttributeDTO extends BaseModelData implements EntityDTO {
         setName(name);
     }
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public int getId() {
         return (Integer)get("id");
     }
@@ -43,6 +51,8 @@ public final class AttributeDTO extends BaseModelData implements EntityDTO {
 		set("name", value);
 	}
 	
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
 	public String getName()
 	{
 		return get("name");

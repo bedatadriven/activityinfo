@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activityinfo.shared.dto.LockedPeriodDTO.HasLockedPeriod;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Sets;
@@ -22,6 +26,7 @@ import com.google.common.collect.Sets;
  *
  * @author Alex Bertram
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class ActivityDTO 
 	extends 
 		BaseModelData 
@@ -95,6 +100,8 @@ public final class ActivityDTO
      * @return this Activity's id
      */
     @Override
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public int getId() {
         return (Integer)get("id");
     }
@@ -118,6 +125,8 @@ public final class ActivityDTO
      * @return this Activity's name
      */
     @Override
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getName(){
         return get("name");
     }
@@ -136,6 +145,8 @@ public final class ActivityDTO
         this.database = database;
     }
     
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public int getPublished() {
     	return (Integer) get("published");
     }
@@ -147,6 +158,8 @@ public final class ActivityDTO
     /**
      * @return a list of this Activity's indicators
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public List<IndicatorDTO> getIndicators() {
         return indicators;
     }
@@ -170,7 +183,9 @@ public final class ActivityDTO
     public void setIndicators(List<IndicatorDTO> indicators) {
         this.indicators = indicators;
     }
-
+    
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public List<AttributeGroupDTO> getAttributeGroups() {
         return attributeGroups;
     }
@@ -199,6 +214,8 @@ public final class ActivityDTO
      * @return the ReportingFrequency of this Activity, either
      * <code>REPORT_ONCE</code> or <code>REPORT_MONTHLY</code>
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public int getReportingFrequency() {
         return (Integer)get("reportingFrequency");
     }
@@ -215,6 +232,7 @@ public final class ActivityDTO
     /**
      * @return  the id of the LocationType of the Location to which this Site belongs
      */
+    
     public int getLocationTypeId() {
         return (Integer)get("locationTypeId");
     }
@@ -223,6 +241,8 @@ public final class ActivityDTO
      *
      * @return the
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public LocationTypeDTO getLocationType() {
         return getDatabase().getCountry().getLocationTypeById(getLocationTypeId());
     }
@@ -363,6 +383,8 @@ public final class ActivityDTO
 	}
 
 	@Override
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public Set<LockedPeriodDTO> getLockedPeriods() {
 		return lockedPeriods;
 	}

@@ -10,12 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activityinfo.shared.util.mapping.Extents;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * One-to-one DTO for {@link org.activityinfo.server.database.hibernate.entity.Country} domain objects.
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class CountryDTO extends BaseModelData implements DTO {
 
     private static final long serialVersionUID = 3189552164304073119L;
@@ -36,15 +41,21 @@ public final class CountryDTO extends BaseModelData implements DTO {
 		set("id",id);
 	}
 	
+    @JsonProperty
+    @JsonView(DTOViews.List.class)
 	public int getId() {
 		return (Integer)get("id");
 	}
 	
+    @JsonProperty
+    @JsonView(DTOViews.List.class)
 	public String getName()
 	{
 		return get("name");		
 	}
 	
+	@JsonProperty
+	@JsonView(DTOViews.List.class)
 	public void setName(String value) {
 		set("name", value);
 	}
@@ -65,6 +76,8 @@ public final class CountryDTO extends BaseModelData implements DTO {
 		this.locationTypes = types;
 	}
 
+	@JsonProperty
+	@JsonView(DTOViews.Detail.class)
     public Extents getBounds() {
         return bounds;
     }
@@ -73,6 +86,8 @@ public final class CountryDTO extends BaseModelData implements DTO {
         this.bounds = bounds;
     }
     
+    @JsonProperty("code")
+    @JsonView(DTOViews.List.class)
     public String getCodeISO() {
         return get("codeISO");
     }

@@ -5,6 +5,11 @@
 
 package	org.activityinfo.shared.dto;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 
@@ -13,6 +18,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class IndicatorDTO extends BaseModelData implements EntityDTO, ProvidesKey {
 	public final static int AGGREGATE_SUM = 0;
 	public final static int AGGREGATE_AVG = 1;
@@ -52,6 +58,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
      *
      * @return the id of the Indicator
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public int getId() {
         return (Integer)get("id");
     }
@@ -73,6 +81,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * @return the Indicator's name
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getName() {
 		return get("name");		
 	}
@@ -87,6 +97,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * @return the Indicator's units
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getUnits() {
 		return get("units");	
 	}
@@ -94,6 +106,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * @return the short list header used when displaying this Indicator in a grid
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getListHeader() {
 		return get("listHeader");
 	}
@@ -109,6 +123,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * Full description of this Indicator, used to aid users entering data.
      */
+	
 	public void setDescription(String description) {
 		set("description", description);
 	}
@@ -116,6 +131,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * @return this Indicator's description, principally used to aid users entering data
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getDescription() {
 		return get("description");
 	}
@@ -130,6 +147,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * @return the aggregation method for this indicator
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public int getAggregation() {
 		return (Integer)get("aggregation");
 	}
@@ -137,6 +156,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * @return this Indicator's category
      */
+    @JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getCategory() {
 		return get("category");
 	}

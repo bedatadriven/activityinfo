@@ -47,6 +47,5 @@ public class AdminUnitLevelResource {
 		ObjectNode wrapper = JsonNodeFactory.instance.objectNode();
 		wrapper.put("units", array);
 		return wrapper;
-	}
-	
+	}	
 }

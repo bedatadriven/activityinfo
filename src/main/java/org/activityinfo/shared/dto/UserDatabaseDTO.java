@@ -11,8 +11,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.activityinfo.shared.dto.LockedPeriodDTO.HasLockedPeriod;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.codehaus.jackson.annotate.JsonMethod;
 
 
 /**
@@ -20,6 +24,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  *
  * @author Alex Bertram
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class UserDatabaseDTO 
 	extends 
 		BaseModelData 
@@ -48,6 +53,8 @@ public final class UserDatabaseDTO
      * @return  this UserDatabase's id
      */
     @Override
+    @JsonProperty
+    @JsonView(DTOViews.List.class)
 	public int getId() {
         return (Integer)get("id");
     }
@@ -64,6 +71,8 @@ public final class UserDatabaseDTO
      * @return the name of this UserDatabase
      */
     @Override
+    @JsonProperty
+    @JsonView(DTOViews.List.class)
 	public String getName() {
 		return get("name");
 	}
@@ -116,6 +125,8 @@ public final class UserDatabaseDTO
     /**
      * Gets the full, descriptive name of this UserDatabase
      */
+	@JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public String getFullName() {
 		return get("fullName");
 	}
@@ -123,6 +134,8 @@ public final class UserDatabaseDTO
     /**
      * @return this list of ActivityDTOs that belong to this UserDatabase
      */
+	@JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public List<ActivityDTO> getActivities() {
 		return activities;
 	}
@@ -138,6 +151,8 @@ public final class UserDatabaseDTO
      * 
      * @return the Country in which this UserDatabase is set
      */
+	@JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public CountryDTO getCountry() 	{
 		return country;
 	}
@@ -152,6 +167,8 @@ public final class UserDatabaseDTO
     /**
      * @return the list of Partners who belong to this UserDatabase
      */
+	@JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public List<PartnerDTO> getPartners() {
 		return partners;
 	}
@@ -163,6 +180,8 @@ public final class UserDatabaseDTO
 		this.partners = partners;
 	}
 	
+	@JsonProperty
+	@JsonView(DTOViews.Schema.class)
     public List<ProjectDTO> getProjects() {
 		return projects;
 	}
@@ -345,6 +364,8 @@ public final class UserDatabaseDTO
 	}
 
 	@Override
+	@JsonProperty
+	@JsonView(DTOViews.Schema.class)
 	public Set<LockedPeriodDTO> getLockedPeriods() {
 		return lockedPeriods;
 	}
