@@ -14,6 +14,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
 import org.activityinfo.server.i18n.LocaleHelper;
+import org.activityinfo.server.util.logging.LogException;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -32,6 +33,7 @@ public abstract class MailSender {
 
 	public abstract void send(Message message) throws MessagingException;
 
+	@LogException
 	public void send(MailMessage model) {
 		try {
 			MessageBuilder message = createMessage(model);

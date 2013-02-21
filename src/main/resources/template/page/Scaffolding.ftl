@@ -5,9 +5,9 @@
 <head>
   <title>ActivityInfo - Login</title>
   <!-- CSS Files -->
-  <link href="css/bootstrap.css" rel="stylesheet" media="screen">
-  <link href="css/bootstrap-responsive.css" rel="stylesheet" media="screen">
-  <link href="css/style.css" rel="stylesheet" media="screen">
+  <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
+  <link href="/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+  <link href="/css/style.css" rel="stylesheet" media="screen">
 </head>
 <body>
     <header role="banner">
@@ -18,7 +18,7 @@
           <div class="navbar-inner">
             <div class="container-fluid nav-container">
               <nav role="navigation">
-                <a class="brand" href="http://about.activityinfo.org" style=""><img src="img/logo-shadow.png"><span>${label.activityInfo}</span></a>
+                <a class="brand" href="http://about.activityinfo.org" style=""><img src="/img/logo-shadow.png"><span>${label.activityInfo}</span></a>
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
