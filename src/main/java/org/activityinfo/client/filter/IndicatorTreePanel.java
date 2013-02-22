@@ -58,8 +58,8 @@ public class IndicatorTreePanel extends ContentPanel {
 
 	private final Dispatcher dispatcher;
 
-	private TreeStore<ModelData> store;
-	private TreePanel<ModelData> tree;
+	private final TreeStore<ModelData> store;
+	private final TreePanel<ModelData> tree;
 	private ToolBar toolBar;
 	private StoreFilterField filter;
 	private boolean multipleSelection;
@@ -145,7 +145,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
 			@Override
 			public String getKey(ModelData model) {
-				List<String> keys = new ArrayList<String>();
+				new ArrayList<String>();
 				if (model instanceof ProvidesKey) {
 					return ((ProvidesKey) model).getKey();
 				} else if (model == null) {
@@ -176,6 +176,7 @@ public class IndicatorTreePanel extends ContentPanel {
 		tree.expandAll();
 	}
 	
+	@Override
 	public void setHeading(String heading){
 		super.setHeading(heading);
 	}
@@ -385,9 +386,9 @@ public class IndicatorTreePanel extends ContentPanel {
 		for(ModelData model : tree.getStore().getAllItems()){
 			if(model instanceof IndicatorDTO) {
 				IndicatorDTO indicator = (IndicatorDTO)model;
-				if(model instanceof IndicatorDTO) {
-					setChecked(indicator, selection.contains(indicator.getId()));		
-				}
+				boolean selected = selection.contains(indicator.getId());
+				tree.setExpanded(indicator, selected);
+				setChecked(indicator, selected);
 			}
 		}
 	}
