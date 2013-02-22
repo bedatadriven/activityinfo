@@ -438,23 +438,6 @@
 					<driver>com.mysql.jdbc.Driver</driver>
 					<changeLogFile>org/activityinfo/database/changelog/db.changelog-master.xml</changeLogFile>
 				</configuration>
-				<executions>
-					<execution>
-						<id>prep-test-database</id>
-						<goals>
-							<goal>dropAll</goal>
-							<goal>update</goal>
-						</goals>
-					
-						<phase>test-compile</phase> 
-						<configuration>
-							<dropFirst>true</dropFirst>
-							<url>${testDatabaseUrl}</url>
-							<username>${testDatabaseUsername}</username>
-							<password>${testDatabasePassword}</password>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
@@ -860,6 +843,41 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<profile>
+			<id>reset-test-db</id>
+			
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.liquibase</groupId>
+						<artifactId>liquibase-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>prep-test-database</id>
+								<goals>
+									<goal>dropAll</goal>
+									<goal>update</goal>
+								</goals>
+							
+								<phase>test-compile</phase> 
+								<configuration>
+									<dropFirst>true</dropFirst>
+									<url>${testDatabaseUrl}</url>
+									<username>${testDatabaseUsername}</username>
+									<password>${testDatabasePassword}</password>
+								</configuration>
+							</execution>
+						</executions>
+					
+					</plugin>
+				
+				</plugins>
+			
+			</build>
+		
+		
+		</profile>
 		<!-- Build the Application Module with only permutations for FireFox and 
 			logging enabled for testing purposes -->
 		<profile>
@@ -984,26 +1002,6 @@
 							<soyc>true</soyc>
 							<force>true</force>
 							<logLevel>INFO</logLevel>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>schemagen</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.sun.tools.jxc.maven2</groupId>
-						<artifactId>maven-jaxb-schemagen-plugin</artifactId>
-						<version>1.3-SNAPSHOT</version>
-						<configuration>
-							<project>
-								${project}
-							</project>
-							<destdir>${project.build.directory}/schemas</destdir>
-							<srcdir>${project.build.sourceDirectory}/org/sigmah/shared/report/model</srcdir>
-							<verbose>true</verbose>
 						</configuration>
 					</plugin>
 				</plugins>
