@@ -34,27 +34,27 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class DeleteSiteAttachmentHandler implements
-		CommandHandlerAsync<DeleteSiteAttachment, VoidResult> {
+    CommandHandlerAsync<DeleteSiteAttachment, VoidResult> {
 
-	private AttachmentService attachmentService;
-	
-	@Inject
-	public DeleteSiteAttachmentHandler(AttachmentService attachmentService) {
-		super();
-		this.attachmentService = attachmentService;
-	}
+    private AttachmentService attachmentService;
 
-	@Override
-	public void execute(DeleteSiteAttachment command, ExecutionContext context,
-			AsyncCallback<VoidResult> callback) {
+    @Inject
+    public DeleteSiteAttachmentHandler(AttachmentService attachmentService) {
+        super();
+        this.attachmentService = attachmentService;
+    }
 
-		attachmentService.delete(command.getBlobId());
-		
-		SqlUpdate.delete(Tables.SITE_ATTACHMENT)
-				.where("blobid", command.getBlobId())
-				.execute(context.getTransaction());
+    @Override
+    public void execute(DeleteSiteAttachment command, ExecutionContext context,
+        AsyncCallback<VoidResult> callback) {
 
-		callback.onSuccess(new VoidResult());
-	}
+        attachmentService.delete(command.getBlobId());
+
+        SqlUpdate.delete(Tables.SITE_ATTACHMENT)
+            .where("blobid", command.getBlobId())
+            .execute(context.getTransaction());
+
+        callback.onSuccess(new VoidResult());
+    }
 
 }

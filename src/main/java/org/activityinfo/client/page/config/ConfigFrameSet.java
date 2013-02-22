@@ -34,12 +34,13 @@ import com.google.inject.Inject;
 
 public class ConfigFrameSet extends VSplitFrameSet {
 
-	public static final FrameId PAGE_ID = new FrameId("config");
+    public static final FrameId PAGE_ID = new FrameId("config");
 
-	@Inject
-	public ConfigFrameSet(EventBus eventBus, Dispatcher dispatcher) {
-		super(ConfigFrameSet.PAGE_ID, new NavigationPanel(eventBus, 
-				new ConfigNavigator(dispatcher, I18N.CONSTANTS, IconImageBundle.ICONS)));
-	}
+    @Inject
+    public ConfigFrameSet(EventBus eventBus, Dispatcher dispatcher) {
+        super(ConfigFrameSet.PAGE_ID, new NavigationPanel(eventBus,
+            new ConfigNavigator(dispatcher, I18N.CONSTANTS,
+                IconImageBundle.ICONS)));
+    }
 
 }

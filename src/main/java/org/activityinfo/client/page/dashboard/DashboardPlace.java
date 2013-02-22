@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.dashboard;
 
 /*
@@ -34,23 +32,23 @@ import org.activityinfo.client.page.app.Section;
 public class DashboardPlace implements PageState {
 
     @Override
-	public PageId getPageId() {
+    public PageId getPageId() {
         return DashboardPage.PAGE_ID;
     }
 
     @Override
-	public String serializeAsHistoryToken() {
+    public String serializeAsHistoryToken() {
         return null;
     }
 
     @Override
-	public List<PageId> getEnclosingFrames() {
+    public List<PageId> getEnclosingFrames() {
         return Arrays.asList(DashboardPage.PAGE_ID);
     }
 
-	@Override
-	public Section getSection() {
-		return Section.HOME;
-	}
-    
+    @Override
+    public Section getSection() {
+        return Section.HOME;
+    }
+
 }

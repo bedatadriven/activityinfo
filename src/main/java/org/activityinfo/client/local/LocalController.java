@@ -22,7 +22,6 @@ package org.activityinfo.client.local;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -70,412 +69,413 @@ import com.google.inject.Singleton;
 @Singleton
 public class LocalController implements Dispatcher {
 
-	public interface PromptConnectCallback {
-		void onCancel();
+    public interface PromptConnectCallback {
+        void onCancel();
 
-		void onTryToConnect();
-	}
+        void onTryToConnect();
+    }
 
-	private final EventBus eventBus;
-	private final Provider<Synchronizer> synchronizerProvider;
-	private UIConstants uiConstants;
-	private final Dispatcher remoteDispatcher;
-	private final LocalCapabilityProfile capabilityProfile;
-	private final Provider<SyncHistoryTable> historyTable;
-	
-	private Strategy activeStrategy;
-	private Date lastSynced = null;
+    private final EventBus eventBus;
+    private final Provider<Synchronizer> synchronizerProvider;
+    private UIConstants uiConstants;
+    private final Dispatcher remoteDispatcher;
+    private final LocalCapabilityProfile capabilityProfile;
+    private final Provider<SyncHistoryTable> historyTable;
 
-	@Inject
-	public LocalController(EventBus eventBus,
-			@Remote Dispatcher remoteDispatcher,
-			Provider<Synchronizer> gateway,
-			LocalCapabilityProfile capabilityProfile, 
-			UIConstants uiConstants,
-			Provider<SyncHistoryTable> historyTable) {
-		this.eventBus = eventBus;
-		this.remoteDispatcher = remoteDispatcher;
-		this.synchronizerProvider = gateway;
-		this.capabilityProfile = capabilityProfile;
-		this.uiConstants = uiConstants;
-		this.historyTable = historyTable;
-		
-		Log.trace("OfflineManager: starting");
+    private Strategy activeStrategy;
+    private Date lastSynced = null;
 
-		if(capabilityProfile.isOfflineModeSupported()) {
-			activateStrategy(new LoadingLocalStrategy());
-		} else {
-			activateStrategy(new NotInstalledStrategy());
-		}
-		
-		eventBus.addListener(AppEvents.INIT, new Listener<BaseEvent>() {
+    @Inject
+    public LocalController(EventBus eventBus,
+        @Remote Dispatcher remoteDispatcher,
+        Provider<Synchronizer> gateway,
+        LocalCapabilityProfile capabilityProfile,
+        UIConstants uiConstants,
+        Provider<SyncHistoryTable> historyTable) {
+        this.eventBus = eventBus;
+        this.remoteDispatcher = remoteDispatcher;
+        this.synchronizerProvider = gateway;
+        this.capabilityProfile = capabilityProfile;
+        this.uiConstants = uiConstants;
+        this.historyTable = historyTable;
 
-			@Override
-			public void handleEvent(BaseEvent be) {
-				fireStatus();
-			}
-		});
-	}
-	
-	public Date getLastSyncTime() {
-		return lastSynced;
-	}
+        Log.trace("OfflineManager: starting");
 
-	public void install() {
-		if (activeStrategy instanceof NotInstalledStrategy) {
-			((NotInstalledStrategy) activeStrategy).enableOffline();
-		}
-	}
-	
-	public void synchronize() {
-		if(activeStrategy instanceof LocalStrategy) {
-			((LocalStrategy)activeStrategy).synchronize();
-		}
-	}
+        if (capabilityProfile.isOfflineModeSupported()) {
+            activateStrategy(new LoadingLocalStrategy());
+        } else {
+            activateStrategy(new NotInstalledStrategy());
+        }
 
-	public State getState() {
-		return activeStrategy.getState();
-	}
-	
-	@Override
-	public <T extends CommandResult> void execute(Command<T> command,
-			AsyncMonitor monitor, AsyncCallback<T> callback) {
+        eventBus.addListener(AppEvents.INIT, new Listener<BaseEvent>() {
 
-		activeStrategy.dispatch(command, callback);
-	}
+            @Override
+            public void handleEvent(BaseEvent be) {
+                fireStatus();
+            }
+        });
+    }
 
-	@Override
-	public <T extends CommandResult> void execute(Command<T> command,
-			AsyncCallback<T> callback) {
-		execute(command, null, callback);
-	}
+    public Date getLastSyncTime() {
+        return lastSynced;
+    }
 
-	private void activateStrategy(Strategy strategy) {
-		try {
-			this.activeStrategy = strategy;
-			this.activeStrategy.activate();
-			fireStatus();
+    public void install() {
+        if (activeStrategy instanceof NotInstalledStrategy) {
+            ((NotInstalledStrategy) activeStrategy).enableOffline();
+        }
+    }
 
-		} catch (Exception caught) {
-			// errors really ought to be handled by the strategy that is passing
-			// control to us
-			// but we can't afford to let an uncaught exception go as it could
-			// leave the app
-			// in a state of limbo
-			Log.error("Uncaught exception while activatign strategy, defaulting to Not INstalled");
-			activateStrategy(new NotInstalledStrategy());
-		}
-	}
+    public void synchronize() {
+        if (activeStrategy instanceof LocalStrategy) {
+            ((LocalStrategy) activeStrategy).synchronize();
+        }
+    }
 
-	private void fireStatus() {
-		eventBus.fireEvent(new LocalStateChangeEvent(this.activeStrategy.getState()));
-	}
+    public State getState() {
+        return activeStrategy.getState();
+    }
 
-	private void loadSynchronizerImpl(final AsyncCallback<Synchronizer> callback) {
-		Log.trace("loadSynchronizerImpl() starting...");
-		GWT.runAsync(new RunAsyncCallback() {
-			@Override
-			public void onFailure(Throwable throwable) {
-				Log.trace("loadSynchronizerImpl() failed");
-				callback.onFailure(throwable);
-			}
+    @Override
+    public <T extends CommandResult> void execute(Command<T> command,
+        AsyncMonitor monitor, AsyncCallback<T> callback) {
 
-			@Override
-			public void onSuccess() {
-				Log.trace("loadSynchronizerImpl() succeeded");
+        activeStrategy.dispatch(command, callback);
+    }
 
-				Synchronizer impl = null;
-				try {
-					impl = synchronizerProvider.get();
-				} catch (Exception caught) {
-					Log.error(
-							"SynchronizationImpl constructor threw exception",
-							caught);
-					callback.onFailure(caught);
-					return;
-				}
-				callback.onSuccess(impl);
-			}
-		});
-	}
+    @Override
+    public <T extends CommandResult> void execute(Command<T> command,
+        AsyncCallback<T> callback) {
+        execute(command, null, callback);
+    }
 
-	private void reportFailure(Throwable throwable) {
-		Log.error("Exception in offline controller", throwable);
-		
-		if (throwable instanceof InvalidAuthTokenException) {
-			SessionUtil.forceLogin();
+    private void activateStrategy(Strategy strategy) {
+        try {
+            this.activeStrategy = strategy;
+            this.activeStrategy.activate();
+            fireStatus();
 
-		} else if (throwable instanceof AppOutOfDateException
-				|| throwable instanceof IncompatibleRemoteServiceException) {
-			// view.promptToReloadForNewVersion();
+        } catch (Exception caught) {
+            // errors really ought to be handled by the strategy that is passing
+            // control to us
+            // but we can't afford to let an uncaught exception go as it could
+            // leave the app
+            // in a state of limbo
+            Log.error("Uncaught exception while activatign strategy, defaulting to Not INstalled");
+            activateStrategy(new NotInstalledStrategy());
+        }
+    }
 
-		} else if (throwable instanceof SynchronizerConnectionException) {
-			// view.showSynchronizerConnectionProblem();
+    private void fireStatus() {
+        eventBus.fireEvent(new LocalStateChangeEvent(this.activeStrategy
+            .getState()));
+    }
 
-		} else {
-			// view.showError(throwable.getMessage());
-		}
-	}
+    private void loadSynchronizerImpl(final AsyncCallback<Synchronizer> callback) {
+        Log.trace("loadSynchronizerImpl() starting...");
+        GWT.runAsync(new RunAsyncCallback() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                Log.trace("loadSynchronizerImpl() failed");
+                callback.onFailure(throwable);
+            }
 
-	private abstract class Strategy {
-		Strategy activate() {
-			return this;
-		}
+            @Override
+            public void onSuccess() {
+                Log.trace("loadSynchronizerImpl() succeeded");
 
-		void dispatch(Command command, AsyncCallback callback) {
-			// by default, we send to the server
-			remoteDispatcher.execute(command, callback);
-		}
+                Synchronizer impl = null;
+                try {
+                    impl = synchronizerProvider.get();
+                } catch (Exception caught) {
+                    Log.error(
+                        "SynchronizationImpl constructor threw exception",
+                        caught);
+                    callback.onFailure(caught);
+                    return;
+                }
+                callback.onSuccess(impl);
+            }
+        });
+    }
 
-		abstract State getState();
-	}
+    private void reportFailure(Throwable throwable) {
+        Log.error("Exception in offline controller", throwable);
 
-	/**
-	 * Strategy for handling the state in which offline mode is not at all
-	 * available.
-	 * 
-	 * The only thing the user can do from here is start installation.
-	 */
-	private class NotInstalledStrategy extends Strategy {
+        if (throwable instanceof InvalidAuthTokenException) {
+            SessionUtil.forceLogin();
 
-		@Override
-		public NotInstalledStrategy activate() {
-			return this;
-		}
+        } else if (throwable instanceof AppOutOfDateException
+            || throwable instanceof IncompatibleRemoteServiceException) {
+            // view.promptToReloadForNewVersion();
 
-		@Override
-		State getState() {
-			return State.UNINSTALLED;
-		}
+        } else if (throwable instanceof SynchronizerConnectionException) {
+            // view.showSynchronizerConnectionProblem();
 
-		public void enableOffline() {
-			Log.trace("enablingOffline() started");
-			capabilityProfile.acquirePermission(new AsyncCallback<Void>() {
+        } else {
+            // view.showError(throwable.getMessage());
+        }
+    }
 
-				@Override
-				public void onSuccess(Void result) {
-					activateStrategy(new InstallingStrategy());
-				}
+    private abstract class Strategy {
+        Strategy activate() {
+            return this;
+        }
 
-				@Override
-				public void onFailure(Throwable caught) {
-					if (!(caught instanceof PermissionRefusedException)) {
-						reportFailure(caught);
-					}
-				}
-			});
-		}
-	}
+        void dispatch(Command command, AsyncCallback callback) {
+            // by default, we send to the server
+            remoteDispatcher.execute(command, callback);
+        }
 
-	/**
-	 * Strategy for handling the state in which installation is in progress.
-	 * Commands continue to be handled by the remote dispatcher during
-	 * installation
-	 */
-	private class InstallingStrategy extends Strategy {
+        abstract State getState();
+    }
 
-		@Override
-		State getState() {
-			return State.INSTALLING;
-		}
+    /**
+     * Strategy for handling the state in which offline mode is not at all
+     * available.
+     * 
+     * The only thing the user can do from here is start installation.
+     */
+    private class NotInstalledStrategy extends Strategy {
 
-		@Override
-		Strategy activate() {
-			eventBus.fireEvent(new SyncStatusEvent(uiConstants.starting(), 0));
+        @Override
+        public NotInstalledStrategy activate() {
+            return this;
+        }
 
-			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					activateStrategy(new NotInstalledStrategy());
-					reportFailure(caught);
-				}
+        @Override
+        State getState() {
+            return State.UNINSTALLED;
+        }
 
-				@Override
-				public void onSuccess(final Synchronizer gateway) {
-					gateway.install(new AsyncCallback<Void>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							activateStrategy(new NotInstalledStrategy());
-							LocalController.this.reportFailure(caught);
-						}
+        public void enableOffline() {
+            Log.trace("enablingOffline() started");
+            capabilityProfile.acquirePermission(new AsyncCallback<Void>() {
 
-						@Override
-						public void onSuccess(Void result) {
-							activateStrategy(new LocalStrategy(gateway));
-						}
-					});
-				}
-			});
-			return this;
-		}
-	}
+                @Override
+                public void onSuccess(Void result) {
+                    activateStrategy(new InstallingStrategy());
+                }
 
-	/**
-	 * This is a sort of purgatory state that occurs immediately after
-	 * while we're determining whether offline mode has been enabled
-	 * and then if so, while we'ere loading the offline module 
-	 * async fragment.
-	 */
-	private class LoadingLocalStrategy extends Strategy {
+                @Override
+                public void onFailure(Throwable caught) {
+                    if (!(caught instanceof PermissionRefusedException)) {
+                        reportFailure(caught);
+                    }
+                }
+            });
+        }
+    }
 
-		/**
-		 * Commands cannot be executed until everything is loaded...
-		 */
-		private List<CommandRequest> pending;
+    /**
+     * Strategy for handling the state in which installation is in progress.
+     * Commands continue to be handled by the remote dispatcher during
+     * installation
+     */
+    private class InstallingStrategy extends Strategy {
 
-		@Override
-		State getState() {
-			return State.CHECKING;
-		}
+        @Override
+        State getState() {
+            return State.INSTALLING;
+        }
 
-		@Override
-		Strategy activate() {
-			pending = new ArrayList<CommandRequest>();
-			try {
-				historyTable.get().get(new AsyncCallback<Date>() {
-					
-					@Override
-					public void onSuccess(Date result) {
-						loadModule();
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						abandonShip();
-					}
-				});
-			} catch(Exception e) {
-				abandonShip();
-			}
-			return this;
-		}
+        @Override
+        Strategy activate() {
+            eventBus.fireEvent(new SyncStatusEvent(uiConstants.starting(), 0));
 
-		private void loadModule() {
-			loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					abandonShip(caught);
-				}
+            loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    activateStrategy(new NotInstalledStrategy());
+                    reportFailure(caught);
+                }
 
-				@Override
-				public void onSuccess(final Synchronizer gateway) {
+                @Override
+                public void onSuccess(final Synchronizer gateway) {
+                    gateway.install(new AsyncCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            activateStrategy(new NotInstalledStrategy());
+                            LocalController.this.reportFailure(caught);
+                        }
 
-					gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							abandonShip(caught);
-						}
+                        @Override
+                        public void onSuccess(Void result) {
+                            activateStrategy(new LocalStrategy(gateway));
+                        }
+                    });
+                }
+            });
+            return this;
+        }
+    }
 
-						@Override
-						public void onSuccess(Void result) {
-							activateStrategy(new LocalStrategy(gateway));
-							doDispatch(pending);
-						}
-					});
-				}
-			});
-		}
+    /**
+     * This is a sort of purgatory state that occurs immediately after while
+     * we're determining whether offline mode has been enabled and then if so,
+     * while we'ere loading the offline module async fragment.
+     */
+    private class LoadingLocalStrategy extends Strategy {
 
-		@Override
-		void dispatch(Command command, AsyncCallback callback) {
-			pending.add(new CommandRequest(command, callback));
-		}
+        /**
+         * Commands cannot be executed until everything is loaded...
+         */
+        private List<CommandRequest> pending;
 
-		void abandonShip(Throwable caught) {
-			reportFailure(caught);
-			abandonShip();
-		}
+        @Override
+        State getState() {
+            return State.CHECKING;
+        }
 
-		// something went wrong while loading the async fragment or
-		// in the boot up, revert to the uninstalled state. the user
-		// can always reinstall. (not ideal, obviously)
-		void abandonShip() {
-			activateStrategy(new NotInstalledStrategy());
-			doDispatch(pending);
-		}
-	}
+        @Override
+        Strategy activate() {
+            pending = new ArrayList<CommandRequest>();
+            try {
+                historyTable.get().get(new AsyncCallback<Date>() {
 
-	/**
-	 * Strategy for handling the state during which the user is offline. We try
-	 * to handle commands locally if possible. When unsupported commands are
-	 * encountered, we offer the user the chance to connect.
-	 * 
-	 */
-	private final class LocalStrategy extends Strategy {
-		private Synchronizer localManager;
+                    @Override
+                    public void onSuccess(Date result) {
+                        loadModule();
+                    }
 
-		private LocalStrategy(Synchronizer localManager) {
-			this.localManager = localManager;
-		}
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        abandonShip();
+                    }
+                });
+            } catch (Exception e) {
+                abandonShip();
+            }
+            return this;
+        }
 
-		public void synchronize() {
-			localManager.synchronize();
-		}
+        private void loadModule() {
+            loadSynchronizerImpl(new AsyncCallback<Synchronizer>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    abandonShip(caught);
+                }
 
-		@Override
-		State getState() {
-			return State.INSTALLED;
-		}
+                @Override
+                public void onSuccess(final Synchronizer gateway) {
 
-		@Override
-		public LocalStrategy activate() {
-			
-			// ensure that's the user's authentication is persisted across sessions!
-			ClientSideAuthProvider.ensurePersisted();
-			
-			localManager.getLastSyncTime(new AsyncCallback<Date>() {
+                    gateway.validateOfflineInstalled(new AsyncCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            abandonShip(caught);
+                        }
 
-				@Override
-				public void onSuccess(Date result) {
-					lastSynced = result;
-					eventBus.fireEvent(new SyncCompleteEvent(result));
-				
-					// do an initial synchronization attempt
-					localManager.synchronize();
-				}
+                        @Override
+                        public void onSuccess(Void result) {
+                            activateStrategy(new LocalStrategy(gateway));
+                            doDispatch(pending);
+                        }
+                    });
+                }
+            });
+        }
 
-				@Override
-				public void onFailure(Throwable caught) {
-					localManager.synchronize();
-				}
-			});
-			return this;
-		}
+        @Override
+        void dispatch(Command command, AsyncCallback callback) {
+            pending.add(new CommandRequest(command, callback));
+        }
 
-		@Override
-		void dispatch(Command command, AsyncCallback callback) {
+        void abandonShip(Throwable caught) {
+            reportFailure(caught);
+            abandonShip();
+        }
 
-			localManager.execute(command, callback);
-		}
-	}
+        // something went wrong while loading the async fragment or
+        // in the boot up, revert to the uninstalled state. the user
+        // can always reinstall. (not ideal, obviously)
+        void abandonShip() {
+            activateStrategy(new NotInstalledStrategy());
+            doDispatch(pending);
+        }
+    }
 
-	private static class CommandRequest {
-		private final Command command;
-		private final AsyncCallback callback;
+    /**
+     * Strategy for handling the state during which the user is offline. We try
+     * to handle commands locally if possible. When unsupported commands are
+     * encountered, we offer the user the chance to connect.
+     * 
+     */
+    private final class LocalStrategy extends Strategy {
+        private Synchronizer localManager;
 
-		public CommandRequest(Command command, AsyncCallback callback) {
-			super();
-			this.command = command;
-			this.callback = callback;
-		}
+        private LocalStrategy(Synchronizer localManager) {
+            this.localManager = localManager;
+        }
 
-		public void dispatch(Strategy strategy) {
-			strategy.dispatch(command, callback);
-		}
-	}
+        public void synchronize() {
+            localManager.synchronize();
+        }
 
-	private void doDispatch(final Collection<CommandRequest> requests) {
-		if (!requests.isEmpty()) {
-			// wait until everything's been switched around
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+        @Override
+        State getState() {
+            return State.INSTALLED;
+        }
 
-				@Override
-				public void execute() {
-					for (CommandRequest request : requests) {
-						request.dispatch(activeStrategy);
-					}
-				}
-			});
-		}
-	}
+        @Override
+        public LocalStrategy activate() {
+
+            // ensure that's the user's authentication is persisted across
+            // sessions!
+            ClientSideAuthProvider.ensurePersisted();
+
+            localManager.getLastSyncTime(new AsyncCallback<Date>() {
+
+                @Override
+                public void onSuccess(Date result) {
+                    lastSynced = result;
+                    eventBus.fireEvent(new SyncCompleteEvent(result));
+
+                    // do an initial synchronization attempt
+                    localManager.synchronize();
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    localManager.synchronize();
+                }
+            });
+            return this;
+        }
+
+        @Override
+        void dispatch(Command command, AsyncCallback callback) {
+
+            localManager.execute(command, callback);
+        }
+    }
+
+    private static class CommandRequest {
+        private final Command command;
+        private final AsyncCallback callback;
+
+        public CommandRequest(Command command, AsyncCallback callback) {
+            super();
+            this.command = command;
+            this.callback = callback;
+        }
+
+        public void dispatch(Strategy strategy) {
+            strategy.dispatch(command, callback);
+        }
+    }
+
+    private void doDispatch(final Collection<CommandRequest> requests) {
+        if (!requests.isEmpty()) {
+            // wait until everything's been switched around
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                @Override
+                public void execute() {
+                    for (CommandRequest request : requests) {
+                        request.dispatch(activeStrategy);
+                    }
+                }
+            });
+        }
+    }
 }

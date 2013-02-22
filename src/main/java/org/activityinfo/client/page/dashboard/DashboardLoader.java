@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.dashboard;
 
 /*
@@ -39,15 +37,19 @@ public class DashboardLoader implements PageLoader {
     private final Provider<DashboardPage> welcomeProvider;
 
     @Inject
-    public DashboardLoader(NavigationHandler pageManager, PageStateSerializer placeSerializer, Provider<DashboardPage> welcomeProvider) {
+    public DashboardLoader(NavigationHandler pageManager,
+        PageStateSerializer placeSerializer,
+        Provider<DashboardPage> welcomeProvider) {
         this.welcomeProvider = welcomeProvider;
 
         pageManager.registerPageLoader(DashboardPage.PAGE_ID, this);
-        placeSerializer.registerStatelessPlace(DashboardPage.PAGE_ID, new DashboardPlace());
+        placeSerializer.registerStatelessPlace(DashboardPage.PAGE_ID,
+            new DashboardPlace());
     }
 
     @Override
-	public void load(PageId pageId, PageState pageState, AsyncCallback<Page> callback) {
+    public void load(PageId pageId, PageState pageState,
+        AsyncCallback<Page> callback) {
         callback.onSuccess(welcomeProvider.get());
     }
 }

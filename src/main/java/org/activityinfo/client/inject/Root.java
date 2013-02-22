@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.inject;
 
 /*
@@ -32,16 +30,15 @@ import java.lang.annotation.Target;
 import com.google.inject.BindingAnnotation;
 
 /**
- *
- * GIN annotation indicating that the annotated {@link org.activityinfo.client.page.Frame} should
- * be bound to the root frame.
- *
+ * 
+ * GIN annotation indicating that the annotated
+ * {@link org.activityinfo.client.page.Frame} should be bound to the root frame.
+ * 
  * @author Alex Bertram
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @BindingAnnotation
 public @interface Root {
-    
-}
 
+}

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -51,9 +49,11 @@ import com.google.inject.Injector;
  * @author Alex Bertram
  * @see org.activityinfo.shared.command.UpdateEntity
  */
-public class UpdateEntityHandler extends BaseEntityHandler implements CommandHandler<UpdateEntity> {
+public class UpdateEntityHandler extends BaseEntityHandler implements
+    CommandHandler<UpdateEntity> {
 
-    private final static Logger LOG = Logger.getLogger(UpdateEntityHandler.class.getName());
+    private final static Logger LOG = Logger
+        .getLogger(UpdateEntityHandler.class.getName());
 
     private final Injector injector;
 
@@ -64,10 +64,11 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
     }
 
     @Override
-    public CommandResult execute(UpdateEntity cmd, User user) throws CommandException {
+    public CommandResult execute(UpdateEntity cmd, User user)
+        throws CommandException {
 
-        LOG.fine("[execute] Update command for entity: " + cmd.getEntityName() + ".");
-       
+        LOG.fine("[execute] Update command for entity: " + cmd.getEntityName()
+            + ".");
 
         Map<String, Object> changes = cmd.getChanges().getTransientMap();
         PropertyMap changeMap = new PropertyMap(changes);
@@ -87,9 +88,9 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
         } else if ("LockedPeriod".equals(cmd.getEntityName())) {
             updateLockedPeriod(user, cmd, changes);
-            
-        } else if("Target".equals(cmd.getEntityName())){
-        	updateTarget(user, cmd, changes);
+
+        } else if ("Target".equals(cmd.getEntityName())) {
+            updateTarget(user, cmd, changes);
         } else {
             throw new RuntimeException("unknown entity type");
         }
@@ -97,51 +98,70 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
         return null;
     }
 
-    private void updateIndicator(User user, UpdateEntity cmd, Map<String, Object> changes)
-            throws IllegalAccessCommandException {
-        Indicator indicator = entityManager().find(Indicator.class, cmd.getId());
+    private void updateIndicator(User user, UpdateEntity cmd,
+        Map<String, Object> changes)
+        throws IllegalAccessCommandException {
+        Indicator indicator = entityManager()
+            .find(Indicator.class, cmd.getId());
 
         assertDesignPriviledges(user, indicator.getActivity().getDatabase());
 
         updateIndicatorProperties(indicator, changes);
     }
-    
-    private void updateLockedPeriod(User user, UpdateEntity cmd, Map<String, Object> changes) {
-    	LockedPeriod lockedPeriod = entityManager().find(LockedPeriod.class, cmd.getId());
-    	
-    	// TODO: check permissions when updating the LockedPeriod
-    	//assertDesignPriviledges(user, database)
-    	
-    	updateLockedPeriodProperties(lockedPeriod, changes);
+
+    private void updateLockedPeriod(User user, UpdateEntity cmd,
+        Map<String, Object> changes) {
+        LockedPeriod lockedPeriod = entityManager().find(LockedPeriod.class,
+            cmd.getId());
+
+        // TODO: check permissions when updating the LockedPeriod
+        // assertDesignPriviledges(user, database)
+
+        updateLockedPeriodProperties(lockedPeriod, changes);
     }
 
-    private void updateAttribute(User user, UpdateEntity cmd, Map<String, Object> changes) {
-        Attribute attribute = entityManager().find(Attribute.class, cmd.getId());
+    private void updateAttribute(User user, UpdateEntity cmd,
+        Map<String, Object> changes) {
+        Attribute attribute = entityManager()
+            .find(Attribute.class, cmd.getId());
 
         // TODO: decide where attributes belong and how to manage them
         // assertDesignPriviledges(user, attribute.get);
 
         updateAttributeProperties(changes, attribute);
-        AttributeGroup ag = entityManager().find(AttributeGroup.class, attribute.getGroup().getId());
-        Activity activity = ag.getActivities().iterator().next(); // Assume only one activity for the attr group
+        AttributeGroup ag = entityManager().find(AttributeGroup.class,
+            attribute.getGroup().getId());
+        Activity activity = ag.getActivities().iterator().next(); // Assume only
+                                                                  // one
+                                                                  // activity
+                                                                  // for the
+                                                                  // attr group
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
 
-    private void updateAttributeGroup(UpdateEntity cmd, Map<String, Object> changes) {
-        AttributeGroup group = entityManager().find(AttributeGroup.class, cmd.getId());
+    private void updateAttributeGroup(UpdateEntity cmd,
+        Map<String, Object> changes) {
+        AttributeGroup group = entityManager().find(AttributeGroup.class,
+            cmd.getId());
 
         updateAttributeGroupProperties(group, changes);
-        
-        Activity activity = group.getActivities().iterator().next(); // Assume only one activity for the attr group
+
+        Activity activity = group.getActivities().iterator().next(); // Assume
+                                                                     // only one
+                                                                     // activity
+                                                                     // for the
+                                                                     // attr
+                                                                     // group
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
-    
-    private void updateTarget(User user, UpdateEntity cmd, Map<String, Object> changes){
-   		// 	TODO: check permissions when updating the Target
-    	Target target = entityManager().find(Target.class, cmd.getId());
-    	
-    	updateTargetProperties(target, changes);
 
-    	target.getUserDatabase().setLastSchemaUpdate(new Date());
+    private void updateTarget(User user, UpdateEntity cmd,
+        Map<String, Object> changes) {
+        // TODO: check permissions when updating the Target
+        Target target = entityManager().find(Target.class, cmd.getId());
+
+        updateTargetProperties(target, changes);
+
+        target.getUserDatabase().setLastSchemaUpdate(new Date());
     }
 }

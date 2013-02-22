@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -23,7 +22,6 @@ package org.activityinfo.server.report.generator.map;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,21 +41,20 @@ import org.activityinfo.shared.report.model.PointValue;
 import org.activityinfo.shared.report.model.layers.IconMapLayer;
 import org.activityinfo.shared.util.mapping.Extents;
 
-
 public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
 
     private MapIcon icon;
 
     public IconLayerGenerator(IconMapLayer layer) {
-    	super(layer);
+        super(layer);
         this.icon = new MapIcon(layer.getIcon(), 32, 37, 16, 35);
     }
 
     public boolean meetsCriteria(SiteDTO site) {
-        if(layer.getIndicatorIds().size() != 0) {
-            for(Integer indicatorId : layer.getIndicatorIds()) {
+        if (layer.getIndicatorIds().size() != 0) {
+            for (Integer indicatorId : layer.getIndicatorIds()) {
                 Double indicatorValue = site.getIndicatorValue(indicatorId);
-                if(indicatorValue != null && indicatorValue > 0) {
+                if (indicatorValue != null && indicatorValue > 0) {
                     return true;
                 }
             }
@@ -68,10 +65,10 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
     }
 
     @Override
-	public Extents calculateExtents() {
+    public Extents calculateExtents() {
         Extents extents = Extents.emptyExtents();
-        for(SiteDTO site : sites) {
-            if(meetsCriteria(site) && site.hasLatLong()) {
+        for (SiteDTO site : sites) {
+            if (meetsCriteria(site) && site.hasLatLong()) {
                 extents.grow(site.getLatitude(), site.getLongitude());
             }
         }
@@ -79,55 +76,59 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
     }
 
     @Override
-	public Margins calculateMargins() {
+    public Margins calculateMargins() {
         return new Margins(
-                icon.getAnchorX(),
-                icon.getAnchorY(),
-                icon.getHeight() -icon.getAnchorY(),
-                icon.getWidth() - icon.getAnchorX());
+            icon.getAnchorX(),
+            icon.getAnchorY(),
+            icon.getHeight() - icon.getAnchorY(),
+            icon.getWidth() - icon.getAnchorX());
     }
 
     @Override
-	public void generate(TiledMap map, MapContent content) {
+    public void generate(TiledMap map, MapContent content) {
         List<PointValue> points = new ArrayList<PointValue>();
         IconRectCalculator rectCalculator = new IconRectCalculator(icon);
-        
+
         IntersectionCalculator intersectionCalculator = new IntersectionCalculator() {
-			@Override
-			public boolean intersects(Node a, Node b) {
-	        	  return a.getPointValue().getIconRect().intersects(b.getPointValue().getIconRect());
-			}
-		};
-        
-		Clusterer clusterer = ClustererFactory.fromClustering(layer.getClustering(), rectCalculator, intersectionCalculator);
-		
-        for(SiteDTO site : sites) {
-            if(meetsCriteria(site)) {
-                if(clusterer.isMapped(site)) {
+            @Override
+            public boolean intersects(Node a, Node b) {
+                return a.getPointValue().getIconRect()
+                    .intersects(b.getPointValue().getIconRect());
+            }
+        };
+
+        Clusterer clusterer = ClustererFactory.fromClustering(
+            layer.getClustering(), rectCalculator, intersectionCalculator);
+
+        for (SiteDTO site : sites) {
+            if (meetsCriteria(site)) {
+                if (clusterer.isMapped(site)) {
                     Point point = null;
-                    if(site.hasLatLong()) {
-                    	point = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
+                    if (site.hasLatLong()) {
+                        point = map.fromLatLngToPixel(new AiLatLng(site
+                            .getLatitude(), site.getLongitude()));
                     }
-                    points.add(new PointValue(site, point, 
-                    		point == null ? null : rectCalculator.iconRect(point), 
-                    				getValue(site, layer.getIndicatorIds())));
+                    points.add(new PointValue(site, point,
+                        point == null ? null : rectCalculator.iconRect(point),
+                        getValue(site, layer.getIndicatorIds())));
                 } else {
                     content.getUnmappedSites().add(site.getId());
                 }
             }
         }
-        
+
         List<Cluster> clusters = clusterer.cluster(map, points);
         createMarkersFrom(clusters, map, content);
-        
+
         IconLayerLegend legend = new IconLayerLegend();
         legend.setDefinition(layer);
-        
-		content.addLegend(legend);
+
+        content.addLegend(legend);
     }
 
-	private void createMarkersFrom(List<Cluster> clusters, TiledMap map, MapContent content) {
-		for(Cluster cluster : clusters) {
+    private void createMarkersFrom(List<Cluster> clusters, TiledMap map,
+        MapContent content) {
+        for (Cluster cluster : clusters) {
             IconMapMarker marker = new IconMapMarker();
             marker.setX(cluster.getPoint().getX());
             marker.setY(cluster.getPoint().getY());
@@ -137,20 +138,19 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
             marker.setTitle(formatTitle(cluster));
             marker.setIcon(icon);
             marker.setIndicatorId(layer.getIndicatorIds().get(0));
-            
-            for(PointValue pv : cluster.getPointValues()) {
-            	marker.getSiteIds().add(pv.getSite().getId());
+
+            for (PointValue pv : cluster.getPointValues()) {
+                marker.getSiteIds().add(pv.getSite().getId());
             }
             content.getMarkers().add(marker);
         }
-	}
+    }
 
-	protected String formatTitle(Cluster cluster) {
-		if (cluster.getPointValues() != null) {
-			return Double.toString(cluster.sumValues());
-		}
-		return "";
-	}
-	
-	
+    protected String formatTitle(Cluster cluster) {
+        if (cluster.getPointValues() != null) {
+            return Double.toString(cluster.sumValues());
+        }
+        return "";
+    }
+
 }

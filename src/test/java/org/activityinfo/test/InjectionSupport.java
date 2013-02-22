@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.test;
 
 /*
@@ -76,10 +74,13 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
     private void addModulesFromAnnotation(Class<?> klass, Modules moduleClasses) {
         for (Class moduleClass : moduleClasses.value()) {
             try {
-                modules.add((Module) moduleClass.getConstructor().newInstance());
+                modules
+                    .add((Module) moduleClass.getConstructor().newInstance());
             } catch (Exception e) {
-                throw new RuntimeException("Exception thrown while creating modules for test " +
-                        klass.getName() + ":\n   could not instantiate module class " +
+                throw new RuntimeException(
+                    "Exception thrown while creating modules for test " +
+                        klass.getName()
+                        + ":\n   could not instantiate module class " +
                         moduleClass.getName(), e);
             }
         }
@@ -87,7 +88,8 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
 
     @Override
     protected void validateConstructor(List<Throwable> errors) {
-        // We'll just have to wait for Guice to throw errors if there is a problem
+        // We'll just have to wait for Guice to throw errors if there is a
+        // problem
     }
 
     @Override
@@ -99,36 +101,37 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
         return statement;
     }
 
-	@Override
-	protected Statement withAfters(FrameworkMethod method, Object target,
-			Statement statement) {
+    @Override
+    protected Statement withAfters(FrameworkMethod method, Object target,
+        Statement statement) {
 
-		// withAfters() is the last called, so it give us a chance to 
-		// add InjectDependencies as the outermost wrapper and ensure
-		// that class members are injected
-		
-		return new InjectDependencies(super.withAfters(method, target, statement), 
-				injector, scopeModule.getTestScope(), target);
-	}
+        // withAfters() is the last called, so it give us a chance to
+        // add InjectDependencies as the outermost wrapper and ensure
+        // that class members are injected
 
-	@Override
+        return new InjectDependencies(super.withAfters(method, target,
+            statement),
+            injector, scopeModule.getTestScope(), target);
+    }
+
+    @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         Statement statement = super.methodInvoker(method, test);
         statement = withLoadDatasets(method, statement, test);
         return statement;
     }
-		
 
     @Override
-	protected Statement withBefores(FrameworkMethod method, Object target,
-			Statement statement) {
+    protected Statement withBefores(FrameworkMethod method, Object target,
+        Statement statement) {
 
-    	return withLoadDatasets(method, 
-    			super.withBefores(method, target, statement), 
-    			target);
-	}
+        return withLoadDatasets(method,
+            super.withBefores(method, target, statement),
+            target);
+    }
 
-	private Statement withLoadDatasets(FrameworkMethod method, Statement statement, Object target) {
+    private Statement withLoadDatasets(FrameworkMethod method,
+        Statement statement, Object target) {
         OnDataSet ods = method.getAnnotation(OnDataSet.class);
 
         if (ods == null) {
@@ -136,23 +139,28 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
         }
 
         return ods == null ? statement :
-                new LoadDataSet(injector.getProvider(Connection.class), statement, ods.value(), target);
+            new LoadDataSet(injector.getProvider(Connection.class), statement,
+                ods.value(), target);
     }
 
     /**
-     * Returns a {@link Statement}: run all non-overridden {@code @AfterClass} methods on this class
-     * and superclasses before executing {@code statement}; all AfterClass methods are
-     * always executed: exceptions thrown by previous steps are combined, if
-     * necessary, with exceptions from AfterClass methods into a
+     * Returns a {@link Statement}: run all non-overridden {@code @AfterClass}
+     * methods on this class and superclasses before executing {@code statement}
+     * ; all AfterClass methods are always executed: exceptions thrown by
+     * previous steps are combined, if necessary, with exceptions from
+     * AfterClass methods into a
      * {@link org.junit.internal.runners.model.MultipleFailureException}.
      */
-    protected Statement withModuleAfterClasses(Statement statement, Module module) {
-        List<FrameworkMethod> afters = getAnnotatedModuleMethods(module, AfterClass.class);
+    protected Statement withModuleAfterClasses(Statement statement,
+        Module module) {
+        List<FrameworkMethod> afters = getAnnotatedModuleMethods(module,
+            AfterClass.class);
         return afters.isEmpty() ? statement :
-                new RunAfters(statement, afters, module);
+            new RunAfters(statement, afters, module);
     }
 
-    protected List<FrameworkMethod> getAnnotatedModuleMethods(Module module, Class annotationClass) {
+    protected List<FrameworkMethod> getAnnotatedModuleMethods(Module module,
+        Class annotationClass) {
         List<FrameworkMethod> annotated = new ArrayList<FrameworkMethod>();
         for (Method method : module.getClass().getMethods()) {
             if (method.getAnnotation(annotationClass) != null) {
@@ -161,7 +169,6 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
         }
         return annotated;
     }
-
 
     public static class TestScopeModule extends AbstractModule {
 
@@ -179,8 +186,8 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
 
             // make our scope instance injectable
             bind(SimpleScope.class)
-                    .annotatedWith(Names.named("test"))
-                    .toInstance(testScope);
+                .annotatedWith(Names.named("test"))
+                .toInstance(testScope);
         }
 
         public SimpleScope getTestScope() {

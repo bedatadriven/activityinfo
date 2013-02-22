@@ -47,113 +47,117 @@ import com.google.inject.Inject;
 /**
  * Removes inapplicable dimensions from the model after a user change.
  * 
- * <p>For example, if an attribute dimension related to activity X is
- * selected, but all indicators from Activity are removed, then we
- * need to remove the dimension.
+ * <p>
+ * For example, if an attribute dimension related to activity X is selected, but
+ * all indicators from Activity are removed, then we need to remove the
+ * dimension.
  */
-public class DimensionPruner implements HasReportElement<PivotTableReportElement>{
+public class DimensionPruner implements
+    HasReportElement<PivotTableReportElement> {
 
-	private static Logger LOGGER = Logger.getLogger(DimensionPruner.class.getName());
-	
-	private final ReportEventHelper events;
-	private PivotTableReportElement model;
-	private Dispatcher dispatcher;
+    private static final Logger LOGGER = Logger.getLogger(DimensionPruner.class
+        .getName());
 
-	@Inject
-	public DimensionPruner(EventBus eventBus, Dispatcher dispatcher) {
-		super();
-		this.dispatcher = dispatcher;
-		this.events = new ReportEventHelper(eventBus, this);
-		this.events.listen(new ReportChangeHandler() {
-			
-			@Override
-			public void onChanged() {
-				DimensionPruner.this.onChanged();
-			}
-		});
-	}
+    private final ReportEventHelper events;
+    private PivotTableReportElement model;
+    private Dispatcher dispatcher;
 
-	protected void onChanged() {
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    @Inject
+    public DimensionPruner(EventBus eventBus, Dispatcher dispatcher) {
+        super();
+        this.dispatcher = dispatcher;
+        this.events = new ReportEventHelper(eventBus, this);
+        this.events.listen(new ReportChangeHandler() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-			
-			}
+            @Override
+            public void onChanged() {
+                DimensionPruner.this.onChanged();
+            }
+        });
+    }
 
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				pruneModel(result);
-			}
-		});
-	}
+    protected void onChanged() {
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-	private void pruneModel(SchemaDTO schema) {
-		Set<ActivityDTO> activityIds = getSelectedActivities(schema);
-		Set<AttributeGroupDimension> dimensions = getSelectedAttributes(schema);
-		boolean dirty = false;
-		for(AttributeGroupDimension dim : dimensions) {
-			if(!isApplicable(schema, activityIds, dim)) {
-				LOGGER.fine("Removing attribute group " + dim.getAttributeGroupId());
-				model.getRowDimensions().remove(dim);
-				model.getColumnDimensions().remove(dim);
-				dirty = true;
-			}
-		}
-		if(dirty) {
-			events.fireChange();
-		}
-	}
-	
-	private boolean isApplicable(SchemaDTO schema,
-			Set<ActivityDTO> activities, AttributeGroupDimension dim) {
-	
-		for(ActivityDTO activity : activities) {
-			if(activity.getAttributeGroupById(dim.getAttributeGroupId()) != null) {
-				return true;
-			}
-		}
-		return false;
-	}
+            @Override
+            public void onFailure(Throwable caught) {
 
-	private Set<AttributeGroupDimension> getSelectedAttributes(SchemaDTO schema) {
-		Set<AttributeGroupDimension> dimensions = Sets.newHashSet();
-		for(Dimension dim : model.allDimensions()) {
-			if(dim instanceof AttributeGroupDimension) {
-				dimensions.add((AttributeGroupDimension) dim);
-			}
-		}
-		return dimensions;
-	}
+            }
 
-	private Set<ActivityDTO> getSelectedActivities(SchemaDTO schema) {
-		Set<ActivityDTO> activities = Sets.newHashSet();
-		Set<Integer> indicatorIds = Sets.newHashSet(
-				model.getFilter().getRestrictions(DimensionType.Indicator));
-		for(UserDatabaseDTO db : schema.getDatabases()) {
-			for(ActivityDTO activity : db.getActivities()) {
-				for(IndicatorDTO indicator : activity.getIndicators()) {
-					if(indicatorIds.contains(indicator.getId())) {
-						activities.add(activity);
-					}
-				}
-			}
-		}
-		return activities;
-	}
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                pruneModel(result);
+            }
+        });
+    }
 
-	@Override
-	public void bind(PivotTableReportElement model) {
-		this.model = model;
-	}
+    private void pruneModel(SchemaDTO schema) {
+        Set<ActivityDTO> activityIds = getSelectedActivities(schema);
+        Set<AttributeGroupDimension> dimensions = getSelectedAttributes(schema);
+        boolean dirty = false;
+        for (AttributeGroupDimension dim : dimensions) {
+            if (!isApplicable(schema, activityIds, dim)) {
+                LOGGER.fine("Removing attribute group "
+                    + dim.getAttributeGroupId());
+                model.getRowDimensions().remove(dim);
+                model.getColumnDimensions().remove(dim);
+                dirty = true;
+            }
+        }
+        if (dirty) {
+            events.fireChange();
+        }
+    }
 
-	@Override
-	public PivotTableReportElement getModel() {
-		return model;
-	}
+    private boolean isApplicable(SchemaDTO schema,
+        Set<ActivityDTO> activities, AttributeGroupDimension dim) {
 
-	@Override
-	public void disconnect() {
-		events.disconnect();
-	}
+        for (ActivityDTO activity : activities) {
+            if (activity.getAttributeGroupById(dim.getAttributeGroupId()) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<AttributeGroupDimension> getSelectedAttributes(SchemaDTO schema) {
+        Set<AttributeGroupDimension> dimensions = Sets.newHashSet();
+        for (Dimension dim : model.allDimensions()) {
+            if (dim instanceof AttributeGroupDimension) {
+                dimensions.add((AttributeGroupDimension) dim);
+            }
+        }
+        return dimensions;
+    }
+
+    private Set<ActivityDTO> getSelectedActivities(SchemaDTO schema) {
+        Set<ActivityDTO> activities = Sets.newHashSet();
+        Set<Integer> indicatorIds = Sets.newHashSet(
+            model.getFilter().getRestrictions(DimensionType.Indicator));
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            for (ActivityDTO activity : db.getActivities()) {
+                for (IndicatorDTO indicator : activity.getIndicators()) {
+                    if (indicatorIds.contains(indicator.getId())) {
+                        activities.add(activity);
+                    }
+                }
+            }
+        }
+        return activities;
+    }
+
+    @Override
+    public void bind(PivotTableReportElement model) {
+        this.model = model;
+    }
+
+    @Override
+    public PivotTableReportElement getModel() {
+        return model;
+    }
+
+    @Override
+    public void disconnect() {
+        events.disconnect();
+    }
 }

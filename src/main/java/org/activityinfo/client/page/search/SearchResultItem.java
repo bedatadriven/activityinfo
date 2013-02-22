@@ -38,98 +38,94 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 
-public class SearchResultItem  extends LayoutContainer {
-	private LabelField labelDatabaseName;
-	private HorizontalPanel panelTop = new HorizontalPanel();
-	private VerticalPanel panelChilds = new VerticalPanel();
-	private int activityCount = 0;
-	private int indicatorCount = 0;
-	
-	public SearchResultItem() {
-		super();
+public class SearchResultItem extends LayoutContainer {
+    private LabelField labelDatabaseName;
+    private HorizontalPanel panelTop = new HorizontalPanel();
+    private VerticalPanel panelChilds = new VerticalPanel();
+    private int activityCount = 0;
+    private int indicatorCount = 0;
 
-		initializeComponent();
-		SearchResources.INSTANCE.searchStyles().ensureInjected();
+    public SearchResultItem() {
+        super();
 
-		addDatabaseIcon();
-		addDatabaseLabel();
-		
-		add(panelTop);
-		add(panelChilds);
-	}
+        initializeComponent();
+        SearchResources.INSTANCE.searchStyles().ensureInjected();
 
+        addDatabaseIcon();
+        addDatabaseLabel();
 
-	public int getActivityCount() {
-		return activityCount;
-	}
+        add(panelTop);
+        add(panelChilds);
+    }
 
+    public int getActivityCount() {
+        return activityCount;
+    }
 
-	public int getIndicatorCount() {
-		return indicatorCount;
-	}
+    public int getIndicatorCount() {
+        return indicatorCount;
+    }
 
+    private void addDatabaseIcon() {
+        Image imageDatabase = IconImageBundle.ICONS.database().createImage();
+        panelTop.add(imageDatabase);
+    }
 
-	private void addDatabaseIcon() {
-		Image imageDatabase = IconImageBundle.ICONS.database().createImage();
-		panelTop.add(imageDatabase);
-	}
+    private void initializeComponent() {
+    }
 
+    private void addDatabaseLabel() {
+        labelDatabaseName = new LabelField();
+        panelTop.add(labelDatabaseName);
+    }
 
-	private void initializeComponent() {
-	}
+    public void setDabaseName(String databaseName) {
+        labelDatabaseName.setValue(databaseName);
+    }
 
+    public void setChilds(List<Axis> childList) {
+        for (Axis axis : childList) {
+            VerticalPanel panelAll = new VerticalPanel();
+            HorizontalPanel panelChild = new HorizontalPanel();
 
-	private void addDatabaseLabel() {
-		labelDatabaseName = new LabelField();
-		panelTop.add(labelDatabaseName);
-	}
+            HorizontalPanel spacer = new HorizontalPanel();
+            spacer.setWidth(20);
+            panelChild.add(spacer);
+            Image image = IconImageBundle.ICONS.activity().createImage();
+            panelChild.add(image);
+            panelAll.add(panelChild);
 
+            EntityCategory activity = (EntityCategory) axis.getCategory();
+            Hyperlink link = new Hyperlink(axis.getLabel(),
+                PageStateSerializer.serialize(new DataEntryPlace(Filter
+                    .filter().onActivity(activity.getId()))));
+            link.setStylePrimaryName("link");
+            panelChild.add(link);
 
-	public void setDabaseName(String databaseName) {
-		labelDatabaseName.setValue(databaseName);
-	}
+            for (Axis childAxis : axis.getChildren()) {
+                HorizontalPanel panelIndicator = new HorizontalPanel();
 
+                HorizontalPanel spacerIndicator = new HorizontalPanel();
+                spacerIndicator.setWidth(40);
+                panelIndicator.add(spacerIndicator);
+                panelIndicator.add(IconImageBundle.ICONS.indicator()
+                    .createImage());
 
-	public void setChilds(List<Axis> childList) {
-		for (Axis axis : childList) {
-			VerticalPanel panelAll = new VerticalPanel();
-			HorizontalPanel panelChild = new HorizontalPanel();
+                // Hyperlink linkIndicator = new Hyperlink(childAxis.getLabel(),
+                // "site-grid/" +
+                // ((EntityCategory)childAxis.getCategory()).getId());
+                // linkIndicator.setStylePrimaryName("link");
+                // panelIndicator.add(linkIndicator);
 
-			HorizontalPanel spacer = new HorizontalPanel();
-			spacer.setWidth(20);
-			panelChild.add(spacer);
-			Image image = IconImageBundle.ICONS.activity().createImage();
-			panelChild.add(image);
-			panelAll.add(panelChild);
-			
-			EntityCategory activity = (EntityCategory)axis.getCategory();		
-			Hyperlink link = new Hyperlink(axis.getLabel(), 
-					PageStateSerializer.serialize(new DataEntryPlace(Filter.filter().onActivity(activity.getId()))));
-			link.setStylePrimaryName("link");
-			panelChild.add(link);
-			
-			for (Axis childAxis : axis.getChildren()) {
-				HorizontalPanel panelIndicator = new HorizontalPanel();
+                LabelField labelIndicator = new LabelField(childAxis.getLabel());
+                panelIndicator.add(labelIndicator);
 
-				HorizontalPanel spacerIndicator = new HorizontalPanel();
-				spacerIndicator.setWidth(40);
-				panelIndicator.add(spacerIndicator);
-				panelIndicator.add(IconImageBundle.ICONS.indicator().createImage());
-				
-//				Hyperlink linkIndicator = new Hyperlink(childAxis.getLabel(),
-//						"site-grid/" + ((EntityCategory)childAxis.getCategory()).getId());
-//				linkIndicator.setStylePrimaryName("link");
-//				panelIndicator.add(linkIndicator);
-				
-				LabelField labelIndicator = new LabelField(childAxis.getLabel());
-				panelIndicator.add(labelIndicator);
-				
-				panelAll.add(panelIndicator);
-				indicatorCount++;
-			}
-			
-			activityCount++;
-			panelChilds.add(panelAll);
-		}
-	}
+                panelAll.add(panelIndicator);
+                indicatorCount++;
+            }
+
+            activityCount++;
+            panelChilds.add(panelAll);
+        }
+    }
 }

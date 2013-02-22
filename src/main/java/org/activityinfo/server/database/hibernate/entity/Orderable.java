@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -26,7 +24,7 @@ package org.activityinfo.server.database.hibernate.entity;
 
 public interface Orderable {
 
-	public int getSortOrder();
-	
-	public void setSortOrder(int sortOrder);
+    public int getSortOrder();
+
+    public void setSortOrder(int sortOrder);
 }

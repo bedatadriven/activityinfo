@@ -44,135 +44,131 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.inject.Inject;
 
-public class ChartEditor extends LayoutContainer implements ReportElementEditor<PivotChartReportElement>  {
+public class ChartEditor extends LayoutContainer implements
+    ReportElementEditor<PivotChartReportElement> {
 
-	private final EventBus eventBus;
-	private final Dispatcher dispatcher;
-	 
-	private ActionToolBar toolBar;
+    private final EventBus eventBus;
+    private final Dispatcher dispatcher;
 
-	private ChartTypeGroup typeGroup;
-	private ChartPivotBar pivotBar;
-	private PivotFilterPanel filterPane;
-	
-	private ReportViewBinder preview;
-	private ChartOFCView chartView;
-	
-	private ContentPanel center;
-	private PivotGridPanel gridPanel;
+    private ActionToolBar toolBar;
 
-	private PivotChartReportElement model = new PivotChartReportElement();
+    private ChartTypeGroup typeGroup;
+    private ChartPivotBar pivotBar;
+    private PivotFilterPanel filterPane;
 
-	@Inject
-	public ChartEditor(EventBus eventBus, Dispatcher service) {
-		this.eventBus = eventBus;
-		this.dispatcher = service;
+    private ReportViewBinder preview;
+    private ChartOFCView chartView;
 
-		setLayout(new BorderLayout());
+    private ContentPanel center;
+    private PivotGridPanel gridPanel;
 
-		createWest();
-		createCenter();
-		createToolBar();
-		createChartPane();
-		createDimBar();
-		createGridPane();
-	}
+    private PivotChartReportElement model = new PivotChartReportElement();
 
-	
-	private void createWest() {
+    @Inject
+    public ChartEditor(EventBus eventBus, Dispatcher service) {
+        this.eventBus = eventBus;
+        this.dispatcher = service;
 
-		filterPane = new PivotFilterPanel(eventBus, dispatcher);
-		
-		BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST,
-				0.30f);
-		west.setCollapsible(true);
-		west.setSplit(true);
-		west.setMargins(new Margins(0, 5, 0, 0));
+        setLayout(new BorderLayout());
 
-		add(filterPane, west);
-	}
+        createWest();
+        createCenter();
+        createToolBar();
+        createChartPane();
+        createDimBar();
+        createGridPane();
+    }
 
-	private void createCenter() {
+    private void createWest() {
 
-		center = new ContentPanel(new BorderLayout());
-		center.setHeaderVisible(false);
+        filterPane = new PivotFilterPanel(eventBus, dispatcher);
 
-		add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
-	}
+        BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST,
+            0.30f);
+        west.setCollapsible(true);
+        west.setSplit(true);
+        west.setMargins(new Margins(0, 5, 0, 0));
 
-	private void createToolBar() {
-		toolBar = new ActionToolBar();
+        add(filterPane, west);
+    }
 
-		typeGroup = new ChartTypeGroup(eventBus);
+    private void createCenter() {
 
-		toolBar.add(new LabelToolItem(I18N.CONSTANTS.chartType()));
-		toolBar.add(typeGroup.getButtons());
+        center = new ContentPanel(new BorderLayout());
+        center.setHeaderVisible(false);
 
+        add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
+    }
 
-		center.setTopComponent(toolBar);
-	}
+    private void createToolBar() {
+        toolBar = new ActionToolBar();
 
-	private void createChartPane() {
-		chartView  = new ChartOFCView();
-		preview = new ReportViewBinder(eventBus, dispatcher, chartView);
-		center.add(chartView, new BorderLayoutData(Style.LayoutRegion.CENTER));
-	}
+        typeGroup = new ChartTypeGroup(eventBus);
 
-	private void createGridPane() {
-		BorderLayoutData south = new BorderLayoutData(Style.LayoutRegion.SOUTH,
-				0.30f);
-		south.setCollapsible(true);
-		south.setSplit(true);
-		south.setMargins(new Margins(5, 0, 0, 0));
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.chartType()));
+        toolBar.add(typeGroup.getButtons());
 
-		gridPanel = new PivotGridPanel();
-		gridPanel.setHeading("Table");
-		chartView.bindTable(gridPanel);
+        center.setTopComponent(toolBar);
+    }
 
-		center.add(gridPanel, south);
-	}
+    private void createChartPane() {
+        chartView = new ChartOFCView();
+        preview = new ReportViewBinder(eventBus, dispatcher, chartView);
+        center.add(chartView, new BorderLayoutData(Style.LayoutRegion.CENTER));
+    }
 
-	private void createDimBar() {
-		pivotBar = new ChartPivotBar(eventBus, dispatcher);
+    private void createGridPane() {
+        BorderLayoutData south = new BorderLayoutData(Style.LayoutRegion.SOUTH,
+            0.30f);
+        south.setCollapsible(true);
+        south.setSplit(true);
+        south.setMargins(new Margins(5, 0, 0, 0));
 
-		chartView.setBottomComponent(pivotBar);
-	}
+        gridPanel = new PivotGridPanel();
+        gridPanel.setHeading("Table");
+        chartView.bindTable(gridPanel);
 
-	@Override
-	public void bind(PivotChartReportElement model) {
-		this.model = model;
-		typeGroup.bind(model);
-		pivotBar.bind(model);
-		filterPane.bind(model);
-		preview.bind(model);
-	}
-	
-	@Override
-	public void disconnect() {
-		typeGroup.disconnect();
-		pivotBar.disconnect();
-		filterPane.disconnect();
-		preview.disconnect();
-	}
+        center.add(gridPanel, south);
+    }
 
+    private void createDimBar() {
+        pivotBar = new ChartPivotBar(eventBus, dispatcher);
 
-	@Override
-	public PivotChartReportElement getModel() {
-		return model;
-	}
+        chartView.setBottomComponent(pivotBar);
+    }
 
-	@Override
-	public Component getWidget() {
-		return this;
-	}
+    @Override
+    public void bind(PivotChartReportElement model) {
+        this.model = model;
+        typeGroup.bind(model);
+        pivotBar.bind(model);
+        filterPane.bind(model);
+        preview.bind(model);
+    }
 
+    @Override
+    public void disconnect() {
+        typeGroup.disconnect();
+        pivotBar.disconnect();
+        filterPane.disconnect();
+        preview.disconnect();
+    }
 
-	@Override
-	public List<Format> getExportFormats() {
-		return Arrays.asList(Format.PowerPoint, Format.Word, Format.PDF);
-	}
+    @Override
+    public PivotChartReportElement getModel() {
+        return model;
+    }
+
+    @Override
+    public Component getWidget() {
+        return this;
+    }
+
+    @Override
+    public List<Format> getExportFormats() {
+        return Arrays.asList(Format.PowerPoint, Format.Word, Format.PDF);
+    }
 
 }

@@ -41,67 +41,71 @@ import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
-public class PivotFilterPanel extends ContentPanel implements HasReportElement<PivotReportElement> {
-	private final FilterPanelSet panelSet;
-	private final ReportEventHelper events;
-	
-	private PivotReportElement model;
-	
-	public PivotFilterPanel(EventBus eventBus, Dispatcher dispatcher) {
-		this.events = new ReportEventHelper(eventBus, this);
+public class PivotFilterPanel extends ContentPanel implements
+    HasReportElement<PivotReportElement> {
+    private final FilterPanelSet panelSet;
+    private final ReportEventHelper events;
 
-		setLayout(new AccordionLayout());
-		setHeading(I18N.CONSTANTS.filter());
+    private PivotReportElement model;
 
-		IndicatorFilterPanel indicatorPanel = new IndicatorFilterPanel(dispatcher, true);
-		indicatorPanel.setHeaderVisible(true);
-		add(indicatorPanel);
+    public PivotFilterPanel(EventBus eventBus, Dispatcher dispatcher) {
+        this.events = new ReportEventHelper(eventBus, this);
 
-		AdminFilterPanel adminFilterPanel = new AdminFilterPanel(dispatcher);
-		add(adminFilterPanel);
+        setLayout(new AccordionLayout());
+        setHeading(I18N.CONSTANTS.filter());
 
-		DateRangePanel dateFilterPanel = new DateRangePanel();
-		add(dateFilterPanel);
+        IndicatorFilterPanel indicatorPanel = new IndicatorFilterPanel(
+            dispatcher, true);
+        indicatorPanel.setHeaderVisible(true);
+        add(indicatorPanel);
 
-		PartnerFilterPanel partnerFilterPanel = new PartnerFilterPanel(dispatcher);
-		add(partnerFilterPanel);
-		
-		panelSet = new FilterPanelSet(indicatorPanel, adminFilterPanel, dateFilterPanel, partnerFilterPanel);
-		panelSet.addValueChangeHandler(new ValueChangeHandler<Filter>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<Filter> event) {
-				model.setFilter(event.getValue());
-				events.fireChange();
-			}
-		});
-		
-		events.listen(new ReportChangeHandler() {
-			
-			@Override
-			public void onChanged() {
-				panelSet.setValue(model.getFilter());
-			}
-		});
-	}	
-	
-	@Override
-	public void bind(PivotReportElement model) {
-		this.model = model;
-		panelSet.setValue(model.getFilter(), false);
-	}
+        AdminFilterPanel adminFilterPanel = new AdminFilterPanel(dispatcher);
+        add(adminFilterPanel);
 
-	@Override
-	public PivotReportElement getModel() {
-		return model;
-	}
+        DateRangePanel dateFilterPanel = new DateRangePanel();
+        add(dateFilterPanel);
 
-	public void applyBaseFilter(Filter filter) {
-		panelSet.applyBaseFilter(filter);
-	}
+        PartnerFilterPanel partnerFilterPanel = new PartnerFilterPanel(
+            dispatcher);
+        add(partnerFilterPanel);
 
-	@Override
-	public void disconnect() {
-		events.disconnect();
-	}
+        panelSet = new FilterPanelSet(indicatorPanel, adminFilterPanel,
+            dateFilterPanel, partnerFilterPanel);
+        panelSet.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<Filter> event) {
+                model.setFilter(event.getValue());
+                events.fireChange();
+            }
+        });
+
+        events.listen(new ReportChangeHandler() {
+
+            @Override
+            public void onChanged() {
+                panelSet.setValue(model.getFilter());
+            }
+        });
+    }
+
+    @Override
+    public void bind(PivotReportElement model) {
+        this.model = model;
+        panelSet.setValue(model.getFilter(), false);
+    }
+
+    @Override
+    public PivotReportElement getModel() {
+        return model;
+    }
+
+    public void applyBaseFilter(Filter filter) {
+        panelSet.applyBaseFilter(filter);
+    }
+
+    @Override
+    public void disconnect() {
+        events.disconnect();
+    }
 }

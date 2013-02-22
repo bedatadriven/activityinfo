@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -28,22 +26,26 @@ import org.activityinfo.server.report.generator.map.cluster.genetic.GeneticSolve
 
 public class GeneticTracer implements GeneticSolver.Tracer {
 
-
+    @Override
     public void breeding(GeneticSolver solver, int i, int j) {
-        System.out.println(String.format("Breeding phenotypes %d and %d", i, j));
+        System.out
+            .println(String.format("Breeding phenotypes %d and %d", i, j));
     }
 
-    public void evolved(GeneticSolver solver, int generation, int stagnationCount) {
-        System.out.println(String.format("Generation %d evolved, fitness = %f", generation,
-                solver.getFittest().getFitness()));
+    @Override
+    public void evolved(GeneticSolver solver, int generation,
+        int stagnationCount) {
+        System.out.println(String.format("Generation %d evolved, fitness = %f",
+            generation,
+            solver.getFittest().getFitness()));
     }
 
     private String phenotypeToString(int[] p) {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i!=p.length; ++i) {
+        for (int i = 0; i != p.length; ++i) {
             String value = Integer.toString(p[i]);
             int len = value.length();
-            while(len++ < 3) {
+            while (len++ < 3) {
                 sb.append(' ');
             }
             sb.append(value);
@@ -51,10 +53,12 @@ public class GeneticTracer implements GeneticSolver.Tracer {
         return sb.toString();
     }
 
-    public void crossover(GeneticSolver solver, int[] p1, int[] p2, int xoverPoint, int[] c1, int[] c2) {
-//        System.out.println("Parent 1 = " + phenotypeToString(p1));
-//        System.out.println("Parent 2 = " + phenotypeToString(p2));
-//        System.out.println("Child  1 = " + phenotypeToString(c1));
-//        System.out.println("Child  2 = " + phenotypeToString(c2));
+    @Override
+    public void crossover(GeneticSolver solver, int[] p1, int[] p2,
+        int xoverPoint, int[] c1, int[] c2) {
+        // System.out.println("Parent 1 = " + phenotypeToString(p1));
+        // System.out.println("Parent 2 = " + phenotypeToString(p2));
+        // System.out.println("Child  1 = " + phenotypeToString(c1));
+        // System.out.println("Child  2 = " + phenotypeToString(c2));
     }
 }

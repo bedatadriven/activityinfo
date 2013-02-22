@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -24,19 +22,19 @@ package org.activityinfo.server.database.hibernate.dao;
  * #L%
  */
 
-
 import java.lang.reflect.ParameterizedType;
 
 import javax.persistence.EntityManager;
 
-
 /**
- * Generic DAO implementation which provides implementation of boiler-plate methods using
- * generics.
- *
- * @param <T> Entity Type
- * @param <K> Entity Key Type
- *
+ * Generic DAO implementation which provides implementation of boiler-plate
+ * methods using generics.
+ * 
+ * @param <T>
+ *            Entity Type
+ * @param <K>
+ *            Entity Key Type
+ * 
  * @author Alex Bertram
  */
 public abstract class GenericDAO<T, K> implements DAO<T, K> {
@@ -46,20 +44,20 @@ public abstract class GenericDAO<T, K> implements DAO<T, K> {
     protected GenericDAO(EntityManager em) {
         this.em = em;
         this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[0];
+            .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     protected final EntityManager getEntityManager() {
-    	return em;
+        return em;
     }
-    
+
     @Override
-	public void persist(T entity) {
+    public void persist(T entity) {
         this.em.persist(entity);
     }
 
     @Override
-	public T findById(K primaryKey) {
+    public T findById(K primaryKey) {
         return this.em.find(persistentClass, primaryKey);
     }
 }

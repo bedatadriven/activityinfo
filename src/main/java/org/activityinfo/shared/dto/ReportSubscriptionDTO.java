@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -27,13 +25,14 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * Projection DTO for the {@link org.activityinfo.server.database.hibernate.entity.ReportSubscription ReportSubscription}
- * domain class.
+ * Projection DTO for the
+ * {@link org.activityinfo.server.database.hibernate.entity.ReportSubscription
+ * ReportSubscription} domain class.
  * 
- * A row in a list of users who can be invited to view a report.
- * Models a projection of <code>UserPermission</code>, <code>ReportTemplate</code>,
- * and <code>ReportProjection</code>.
- *
+ * A row in a list of users who can be invited to view a report. Models a
+ * projection of <code>UserPermission</code>, <code>ReportTemplate</code>, and
+ * <code>ReportProjection</code>.
+ * 
  * @author Alex Bertram
  */
 public final class ReportSubscriptionDTO extends BaseModelData {
@@ -72,5 +71,5 @@ public final class ReportSubscriptionDTO extends BaseModelData {
     public void setSubscribed(Boolean subscribed) {
         set("subscribed", subscribed);
     }
-    
+
 }

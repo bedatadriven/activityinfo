@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config;
 
 /*
@@ -64,9 +62,9 @@ import com.google.inject.Inject;
 public class DbListPresenter implements ActionListener {
     public static final PageId PAGE_ID = new PageId("dblist");
 
-
-    public interface View  {
+    public interface View {
         void setActionEnabled(String id, boolean enabled);
+
         AsyncMonitor getDeletingMonitor();
     }
 
@@ -94,7 +92,8 @@ public class DbListPresenter implements ActionListener {
     }
 
     private void createLoader() {
-        loader = new BaseListLoader<ListLoadResult<UserDatabaseDTO>>(new Proxy());
+        loader = new BaseListLoader<ListLoadResult<UserDatabaseDTO>>(
+            new Proxy());
         loader.setRemoteSort(false);
     }
 
@@ -108,12 +107,14 @@ public class DbListPresenter implements ActionListener {
     }
 
     private void enableActions() {
-        if(selection == null) {
+        if (selection == null) {
             view.setActionEnabled(UIActions.DELETE, false);
             view.setActionEnabled(UIActions.EDIT, false);
         } else {
-            view.setActionEnabled(UIActions.DELETE, userHasRightToDeleteSelectedDatabase());
-            view.setActionEnabled(UIActions.EDIT, userHasRightToEditSelectedDatabase());
+            view.setActionEnabled(UIActions.DELETE,
+                userHasRightToDeleteSelectedDatabase());
+            view.setActionEnabled(UIActions.EDIT,
+                userHasRightToEditSelectedDatabase());
         }
     }
 
@@ -127,34 +128,35 @@ public class DbListPresenter implements ActionListener {
 
     @Override
     public void onUIAction(String actionId) {
-        if(UIActions.DELETE.equals(actionId)) {
+        if (UIActions.DELETE.equals(actionId)) {
             onDelete();
-        } else if(UIActions.EDIT.equals(actionId)){
+        } else if (UIActions.EDIT.equals(actionId)) {
             onEdit();
-        } else if(UIActions.ADD.equals(actionId)) {
+        } else if (UIActions.ADD.equals(actionId)) {
             onAdd();
         }
     }
 
     private void onDelete() {
         MessageBox.confirm(I18N.CONSTANTS.appTitle(),
-                I18N.MESSAGES.confirmDeleteDb(selection.getName()),
-                new Listener<MessageBoxEvent>() {
-                    @Override
-                    public void handleEvent(MessageBoxEvent be) {
-                        deleteSelection();
-                    }
-                });
+            I18N.MESSAGES.confirmDeleteDb(selection.getName()),
+            new Listener<MessageBoxEvent>() {
+                @Override
+                public void handleEvent(MessageBoxEvent be) {
+                    deleteSelection();
+                }
+            });
     }
 
     private void deleteSelection() {
-        dispatcher.execute(new Delete(selection), view.getDeletingMonitor(), new Deleted() {
-            @Override
-            public void deleted() {
-                store.remove(selection);
-                selection = null;
-            }
-        });
+        dispatcher.execute(new Delete(selection), view.getDeletingMonitor(),
+            new Deleted() {
+                @Override
+                public void deleted() {
+                    store.remove(selection);
+                    selection = null;
+                }
+            });
     }
 
     public void onEdit() {
@@ -187,29 +189,37 @@ public class DbListPresenter implements ActionListener {
         properties.put("fullName", db.getFullName());
         properties.put("countryId", db.getCountry().getId());
 
-        dispatcher.execute(new CreateEntity("UserDatabase", properties), dialog, new Created() {
-            @Override
-            public void created(int newId) {
-                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-                loader.load();
-                dialog.hide();
-            }
-        });
+        dispatcher.execute(new CreateEntity("UserDatabase", properties),
+            dialog, new Created() {
+                @Override
+                public void created(int newId) {
+                    eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                    loader.load();
+                    dialog.hide();
+                }
+            });
     }
 
     private void requestNavigationToDatabaseEditPage() {
-        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
-                new DbPageState(DbConfigPresenter.PAGE_ID, selection.getId())));
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_REQUESTED,
+            new DbPageState(DbConfigPresenter.PAGE_ID, selection.getId())));
     }
 
     protected class Proxy implements DataProxy {
-        public void load(DataReader dataReader, Object loadConfig, final AsyncCallback callback) {
+        @Override
+        public void load(DataReader dataReader, Object loadConfig,
+            final AsyncCallback callback) {
             dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+                @Override
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
                 }
+
+                @Override
                 public void onSuccess(SchemaDTO schema) {
-                    callback.onSuccess(new BaseListLoadResult<UserDatabaseDTO>(schema.getDatabases()));
+                    callback.onSuccess(new BaseListLoadResult<UserDatabaseDTO>(
+                        schema.getDatabases()));
                 }
             });
         }

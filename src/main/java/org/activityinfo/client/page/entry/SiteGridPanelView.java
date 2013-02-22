@@ -29,11 +29,11 @@ import com.extjs.gxt.ui.client.widget.Component;
 
 interface SiteGridPanelView {
 
-	void addSelectionChangeListener(SelectionChangedListener<SiteDTO> listener);
-	
-	void refresh();
-	
-	Component asComponent();
+    void addSelectionChangeListener(SelectionChangedListener<SiteDTO> listener);
 
-	SiteDTO getSelection();
+    void refresh();
+
+    Component asComponent();
+
+    SiteDTO getSelection();
 }

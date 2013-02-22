@@ -30,9 +30,9 @@ import com.extjs.gxt.ui.client.event.EventType;
  */
 public class ServerStateChangeEvent extends BaseEvent {
 
-	public static final EventType TYPE = new EventType();
+    public static final EventType TYPE = new EventType();
 
-	public ServerStateChangeEvent() {
-		super(TYPE);
-	}
+    public ServerStateChangeEvent() {
+        super(TYPE);
+    }
 }

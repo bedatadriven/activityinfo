@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config;
 
 /*
@@ -34,7 +32,7 @@ import org.activityinfo.client.page.app.Section;
 public class DbListPageState implements PageState {
 
     public DbListPageState() {
-        
+
     }
 
     @Override
@@ -42,15 +40,15 @@ public class DbListPageState implements PageState {
         return null;
     }
 
-	@Override
-	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(ConfigFrameSet.PAGE_ID, DbListPresenter.PAGE_ID);
-	}
+    @Override
+    public List<PageId> getEnclosingFrames() {
+        return Arrays.asList(ConfigFrameSet.PAGE_ID, DbListPresenter.PAGE_ID);
+    }
 
-	@Override
-	public PageId getPageId() {
-		return DbListPresenter.PAGE_ID;
-	}
+    @Override
+    public PageId getPageId() {
+        return DbListPresenter.PAGE_ID;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -62,8 +60,8 @@ public class DbListPageState implements PageState {
         return 0;
     }
 
-	@Override
-	public Section getSection() {
-		return Section.DESIGN;
-	}
+    @Override
+    public Section getSection() {
+        return Section.DESIGN;
+    }
 }

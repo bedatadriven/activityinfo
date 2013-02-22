@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database;
 
 /*
@@ -38,50 +36,50 @@ import com.google.inject.Provider;
  */
 public class DatabaseCleaner {
 
-	private final Provider<Connection> connectionProvider;
-	
-	private static final String LIQUIBASE_TABLE_PREFIX = "databasechangelog";
-	
-	
+    private final Provider<Connection> connectionProvider;
+
+    private static final String LIQUIBASE_TABLE_PREFIX = "databasechangelog";
+
     @Inject
     public DatabaseCleaner(Provider<Connection> connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
 
     public void clean() {
-    	Connection connection = connectionProvider.get();
+        Connection connection = connectionProvider.get();
 
-    	try {
-			connection.setAutoCommit(false);
-			Statement statement = connection.createStatement();
-			statement.execute("SET foreign_key_checks = 0");
-			
-			ResultSet tables = connection.getMetaData().getTables(null, null, null, new String[] {"TABLE"});
-			try {
-				while(tables.next()) {
-					String tableName = tables.getString(3);
-					if(!tableName.toLowerCase().startsWith(LIQUIBASE_TABLE_PREFIX)) {
-						statement.execute("TRUNCATE TABLE " + tableName);
-						System.err.println("Dropped all from " + tableName);
-					}
-				}
-			} finally {
-				tables.close();
-			}
-			statement.execute("SET foreign_key_checks = 1");
-			statement.close();
-			connection.commit();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-			
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException ignored) {
-				ignored.printStackTrace();
-			}			
-		}
+        try {
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            statement.execute("SET foreign_key_checks = 0");
+
+            ResultSet tables = connection.getMetaData().getTables(null, null,
+                null, new String[] { "TABLE" });
+            try {
+                while (tables.next()) {
+                    String tableName = tables.getString(3);
+                    if (!tableName.toLowerCase().startsWith(
+                        LIQUIBASE_TABLE_PREFIX)) {
+                        statement.execute("TRUNCATE TABLE " + tableName);
+                        System.err.println("Dropped all from " + tableName);
+                    }
+                }
+            } finally {
+                tables.close();
+            }
+            statement.execute("SET foreign_key_checks = 1");
+            statement.close();
+            connection.commit();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ignored) {
+                ignored.printStackTrace();
+            }
+        }
     }
 }
-

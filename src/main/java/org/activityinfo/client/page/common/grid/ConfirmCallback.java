@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.grid;
 
 /*
@@ -30,5 +28,5 @@ package org.activityinfo.client.page.common.grid;
 public interface ConfirmCallback {
 
     public void confirmed();
-    
+
 }

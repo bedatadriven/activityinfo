@@ -30,19 +30,20 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 final class MonthModel extends BaseModelData {
 
-	private final MonthCategory category;
+    private final MonthCategory category;
 
-	public MonthModel(MonthCategory category) {
-		this.category = category;
-		set("name", category.getLabel());
-	}
+    public MonthModel(MonthCategory category) {
+        this.category = category;
+        set("name", category.getLabel());
+    }
 
-	public DateRange getDateRange() {
-		return DateUtilGWTImpl.INSTANCE.monthRange(category.getYear(), category.getMonth());
-	}
+    public DateRange getDateRange() {
+        return DateUtilGWTImpl.INSTANCE.monthRange(category.getYear(),
+            category.getMonth());
+    }
 
-	public String getKey() {
-		return "Y" + category.getYear() + "M" + category.getMonth();
-	}
-	
+    public String getKey() {
+        return "Y" + category.getYear() + "M" + category.getMonth();
+    }
+
 }

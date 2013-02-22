@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator;
 
 /*
@@ -30,17 +28,15 @@ import org.activityinfo.shared.report.model.ReportElement;
 import com.google.inject.Inject;
 
 /**
- * This is the base class for generators of element that
- * take the essential form of a list of sites. For example,
- * we have the table (grid) of sites, narrative description
- * of sites, or a map of sites.
- *
+ * This is the base class for generators of element that take the essential form
+ * of a list of sites. For example, we have the table (grid) of sites, narrative
+ * description of sites, or a map of sites.
+ * 
  * @author Alex Bertram
  * @param <ElementT>
  */
 public abstract class ListGenerator<ElementT extends ReportElement>
-        extends BaseGenerator<ElementT> {
-
+    extends BaseGenerator<ElementT> {
 
     @Inject
     public ListGenerator(DispatcherSync dispatcher) {

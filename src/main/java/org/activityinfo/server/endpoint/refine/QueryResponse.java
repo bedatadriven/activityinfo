@@ -26,22 +26,17 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-
 public class QueryResponse {
 
-	private List<Match> result = Lists.newArrayList();
+    private List<Match> result = Lists.newArrayList();
 
-	
-	
-	public QueryResponse(List<Match> result) {
-		super();
-		this.result = result;
-	}
+    public QueryResponse(List<Match> result) {
+        super();
+        this.result = result;
+    }
 
+    public List<Match> getResult() {
+        return result;
+    }
 
-	public List<Match> getResult() {
-		return result;
-	}
-
-	
 }

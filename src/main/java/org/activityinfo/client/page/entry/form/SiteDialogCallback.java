@@ -26,6 +26,6 @@ import org.activityinfo.shared.dto.SiteDTO;
 
 public interface SiteDialogCallback {
 
-	void onSaved(SiteDTO site);
-	
+    void onSaved(SiteDTO site);
+
 }

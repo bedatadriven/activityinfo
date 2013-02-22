@@ -29,26 +29,28 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 public abstract class RestModule extends ServletModule {
 
-	@Override
-	protected final void configureServlets() {
-		configureResources();
-	}
+    @Override
+    protected final void configureServlets() {
+        configureResources();
+    }
 
-	protected abstract void configureResources();
-	
-	protected final void bindResource(Class clazz) {
-		bind(clazz);
+    protected abstract void configureResources();
 
-		Path path = (Path) clazz.getAnnotation(Path.class);
-		if(path == null) {
-			throw new IllegalStateException(clazz.getName() + " must have @Path annotation");
-		}
-		filter(path.value() + "*").through(GuiceContainer.class);
-	}
+    protected final void bindResource(Class clazz) {
+        bind(clazz);
 
-	protected final void bindResource(Class clazz, String pattern, String... morePatterns) {
-		bind(clazz);
-		filter(pattern, morePatterns).through(GuiceContainer.class);
-	}
-	
+        Path path = (Path) clazz.getAnnotation(Path.class);
+        if (path == null) {
+            throw new IllegalStateException(clazz.getName()
+                + " must have @Path annotation");
+        }
+        filter(path.value() + "*").through(GuiceContainer.class);
+    }
+
+    protected final void bindResource(Class clazz, String pattern,
+        String... morePatterns) {
+        bind(clazz);
+        filter(pattern, morePatterns).through(GuiceContainer.class);
+    }
+
 }

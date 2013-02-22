@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.kml;
 
 /*
@@ -37,6 +35,5 @@ public class KmlModule extends ServletModule {
         serve("/earth/activities").with(KmlActivityServlet.class);
         serve("/earth/sites").with(KmlDataServlet.class);
     }
-
 
 }

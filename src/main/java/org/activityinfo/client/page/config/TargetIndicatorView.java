@@ -64,150 +64,153 @@ import com.google.inject.Inject;
  */
 
 public class TargetIndicatorView extends
-		AbstractEditorTreeGridView<ModelData, TargetIndicatorPresenter> implements
-		TargetIndicatorPresenter.View {
+    AbstractEditorTreeGridView<ModelData, TargetIndicatorPresenter> implements
+    TargetIndicatorPresenter.View {
 
-	private final Dispatcher service;
+    private final Dispatcher service;
 
-	private EditorTreeGrid<ModelData> tree;
-	private TargetIndicatorPresenter presenter ;
-	private UserDatabaseDTO db;
+    private EditorTreeGrid<ModelData> tree;
+    private TargetIndicatorPresenter presenter;
+    private UserDatabaseDTO db;
 
-	@Inject
-	public TargetIndicatorView(Dispatcher service) {
-		this.service = service;
-	}
+    @Inject
+    public TargetIndicatorView(Dispatcher service) {
+        this.service = service;
+    }
 
-	@Override
-	public void init(TargetIndicatorPresenter presenter, UserDatabaseDTO db,
-			TreeStore store) {
+    @Override
+    public void init(TargetIndicatorPresenter presenter, UserDatabaseDTO db,
+        TreeStore store) {
 
-		this.db = db;
-		this.presenter = presenter;
-		super.init(presenter, store);
-		
-		setBorders(false);
-		setHeaderVisible(false);
-		setFrame(false);
-		setLayout(new FitLayout());
-	}
+        this.db = db;
+        this.presenter = presenter;
+        super.init(presenter, store);
 
-	@Override
-	protected Grid<ModelData> createGridAndAddToContainer(Store store) {
+        setBorders(false);
+        setHeaderVisible(false);
+        setFrame(false);
+        setLayout(new FitLayout());
+    }
 
-		final TreeStore treeStore = (TreeStore) store;
+    @Override
+    protected Grid<ModelData> createGridAndAddToContainer(Store store) {
 
-		tree = new EditorTreeGrid<ModelData>(treeStore, createColumnModel());
-	    tree.setAutoExpandColumn("name");  
-	    tree.setSelectionModel(new ImprovedCellTreeGridSelectionModel<ModelData>());
-		tree.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
-		tree.setLoadMask(true);
-		tree.setStateId("TargetValueGrid" + db.getId());
-		
-		tree.setIconProvider(new ModelIconProvider<ModelData>() {
-			public AbstractImagePrototype getIcon(ModelData model) {
+        final TreeStore treeStore = (TreeStore) store;
 
-			 if (model instanceof ActivityDTO) {
+        tree = new EditorTreeGrid<ModelData>(treeStore, createColumnModel());
+        tree.setAutoExpandColumn("name");
+        tree.setSelectionModel(new ImprovedCellTreeGridSelectionModel<ModelData>());
+        tree.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
+        tree.setLoadMask(true);
+        tree.setStateId("TargetValueGrid" + db.getId());
+
+        tree.setIconProvider(new ModelIconProvider<ModelData>() {
+            @Override
+            public AbstractImagePrototype getIcon(ModelData model) {
+
+                if (model instanceof ActivityDTO) {
                     return IconImageBundle.ICONS.activity();
                 } else if (model instanceof TargetValueDTO) {
                     return IconImageBundle.ICONS.indicator();
-                } else if(model instanceof Link){
-                	return IconImageBundle.ICONS.folder();
-                }else {
+                } else if (model instanceof Link) {
+                    return IconImageBundle.ICONS.folder();
+                } else {
                     return null;
                 }
 
-			}
-		});
-	
-		addBeforeEditListener();
-		addAfterEditListener();
-		
-		add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
+            }
+        });
 
-		return tree;
-	}
-	
-	private void addBeforeEditListener(){
-		tree.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
+        addBeforeEditListener();
+        addAfterEditListener();
 
-			@Override
-			public void handleEvent(GridEvent be) {
-				if(!(be.getModel() instanceof TargetValueDTO)){
-					be.setCancelled(true);
-				}
-			}
-			
-		});
-	}
-	
-	private void addAfterEditListener(){
+        add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
-		tree.addListener(Events.AfterEdit, new Listener<GridEvent>() {
+        return tree;
+    }
 
-			@Override
-			public void handleEvent(GridEvent be) {
-				if(be.getModel() instanceof TargetValueDTO){
-					
-					if(be.getRecord().getChanges().size()>0){
-						presenter.updateTargetValue();	
-					}						
-				}
-			}
-			
-		});
-	}
+    private void addBeforeEditListener() {
+        tree.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
 
-	@Override
-	public void expandAll(){
-		tree.expandAll();
-	}
-	
-	@Override
-	protected void initToolBar() {
+            @Override
+            public void handleEvent(GridEvent be) {
+                if (!(be.getModel() instanceof TargetValueDTO)) {
+                    be.setCancelled(true);
+                }
+            }
 
-	}
+        });
+    }
 
-	private ColumnModel createColumnModel() {
+    private void addAfterEditListener() {
 
-		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+        tree.addListener(Events.AfterEdit, new Listener<GridEvent>() {
 
-		ColumnConfig nameColumn = new ColumnConfig("name",
-				I18N.CONSTANTS.indicator(), 250);
-		nameColumn.setRenderer(new TreeGridCellRenderer());
-		columns.add(nameColumn);
+            @Override
+            public void handleEvent(GridEvent be) {
+                if (be.getModel() instanceof TargetValueDTO) {
 
-		TextField<String> valueField = new TextField<String>();
-		valueField.setAllowBlank(true);
-		
-		ColumnConfig valueColumn = new ColumnConfig("value",
-				I18N.CONSTANTS.targetValue(), 150);
-		valueColumn.setEditor(new CellEditor(valueField));
-		valueColumn.setRenderer(new TargetValueCellRenderer());
-		columns.add(valueColumn);
+                    if (be.getRecord().getChanges().size() > 0) {
+                        presenter.updateTargetValue();
+                    }
+                }
+            }
 
-		return new ColumnModel(columns);
-	}
-	
-	private class TargetValueCellRenderer implements GridCellRenderer<ModelData>{		
-		
-		public TargetValueCellRenderer(){}
+        });
+    }
 
-		@Override
-		public Object render(ModelData model, String property,
-				ColumnData config, int rowIndex, int colIndex, ListStore store,
-				Grid grid) {
-			
-			if(model instanceof TargetValueDTO  && model.get("value")==null){
-				config.style = "color:gray;font-style:italic;";
-				return	I18N.CONSTANTS.noTarget();
-				
-			}else if(model.get("value")!=null){
-				
-				return model.get("value");
-			}
-			
-			return "";
-		}	
-	}
+    @Override
+    public void expandAll() {
+        tree.expandAll();
+    }
+
+    @Override
+    protected void initToolBar() {
+
+    }
+
+    private ColumnModel createColumnModel() {
+
+        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+
+        ColumnConfig nameColumn = new ColumnConfig("name",
+            I18N.CONSTANTS.indicator(), 250);
+        nameColumn.setRenderer(new TreeGridCellRenderer());
+        columns.add(nameColumn);
+
+        TextField<String> valueField = new TextField<String>();
+        valueField.setAllowBlank(true);
+
+        ColumnConfig valueColumn = new ColumnConfig("value",
+            I18N.CONSTANTS.targetValue(), 150);
+        valueColumn.setEditor(new CellEditor(valueField));
+        valueColumn.setRenderer(new TargetValueCellRenderer());
+        columns.add(valueColumn);
+
+        return new ColumnModel(columns);
+    }
+
+    private class TargetValueCellRenderer implements
+        GridCellRenderer<ModelData> {
+
+        public TargetValueCellRenderer() {
+        }
+
+        @Override
+        public Object render(ModelData model, String property,
+            ColumnData config, int rowIndex, int colIndex, ListStore store,
+            Grid grid) {
+
+            if (model instanceof TargetValueDTO && model.get("value") == null) {
+                config.style = "color:gray;font-style:italic;";
+                return I18N.CONSTANTS.noTarget();
+
+            } else if (model.get("value") != null) {
+
+                return model.get("value");
+            }
+
+            return "";
+        }
+    }
 }

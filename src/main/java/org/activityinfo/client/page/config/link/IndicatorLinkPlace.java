@@ -33,20 +33,20 @@ import org.activityinfo.client.page.config.DbListPageState;
 
 public class IndicatorLinkPlace implements PageState {
 
-	@Override
-	public String serializeAsHistoryToken() {
-		return null;
-	}
+    @Override
+    public String serializeAsHistoryToken() {
+        return null;
+    }
 
-	@Override
-	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(ConfigFrameSet.PAGE_ID, IndicatorLinkPage.PAGE_ID);
-	}
+    @Override
+    public List<PageId> getEnclosingFrames() {
+        return Arrays.asList(ConfigFrameSet.PAGE_ID, IndicatorLinkPage.PAGE_ID);
+    }
 
-	@Override
-	public PageId getPageId() {
-		return IndicatorLinkPage.PAGE_ID;
-	}
+    @Override
+    public PageId getPageId() {
+        return IndicatorLinkPage.PAGE_ID;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -58,9 +58,9 @@ public class IndicatorLinkPlace implements PageState {
         return 0;
     }
 
-	@Override
-	public Section getSection() {
-		return Section.DESIGN;
-	}
+    @Override
+    public Section getSection() {
+        return Section.DESIGN;
+    }
 
 }

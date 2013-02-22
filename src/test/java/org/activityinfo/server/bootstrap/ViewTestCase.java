@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap;
 
 /*
@@ -26,7 +24,6 @@ package org.activityinfo.server.bootstrap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Locale;
 
 import org.activityinfo.server.bootstrap.jaxrs.FreemarkerViewProcessor;
@@ -50,14 +47,17 @@ public abstract class ViewTestCase {
     protected static Configuration templateCfg;
 
     @BeforeClass
-    public static void setUpTemplateConfig() throws TemplateModelException  {
+    public static void setUpTemplateConfig() throws TemplateModelException {
         TemplateModule module = new TemplateModule();
         templateCfg = module.provideConfiguration();
     }
 
-    protected String process(PageModel model) throws IOException, TemplateException {
-        FreemarkerViewProcessor processor = new FreemarkerViewProcessor(templateCfg, Providers.of(Locale.ENGLISH));
-        Template template = processor.resolve(model.asViewable().getTemplateName());
+    protected String process(PageModel model) throws IOException,
+        TemplateException {
+        FreemarkerViewProcessor processor = new FreemarkerViewProcessor(
+            templateCfg, Providers.of(Locale.ENGLISH));
+        Template template = processor.resolve(model.asViewable()
+            .getTemplateName());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         processor.writeTo(template, model.asViewable(), baos);
 

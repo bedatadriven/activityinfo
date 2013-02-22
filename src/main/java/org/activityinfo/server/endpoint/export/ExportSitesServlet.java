@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.export;
 
 /*
@@ -49,48 +47,57 @@ import com.google.inject.Singleton;
 
 /**
  * Exports complete data to an Excel file
- *
+ * 
  * @author Alex Bertram
  */
 @Singleton
 public class ExportSitesServlet extends HttpServlet {
     private DispatcherSync dispatcher;
-    
+
     @Inject
     public ExportSitesServlet(DispatcherSync dispatcher) {
         this.dispatcher = dispatcher;
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
         Set<Integer> activities = new HashSet<Integer>();
-        if(req.getParameterValues("a") != null) {
-	        for (String activity : req.getParameterValues("a")) {
-	            activities.add(Integer.parseInt(activity));
-	        }
+        if (req.getParameterValues("a") != null) {
+            for (String activity : req.getParameterValues("a")) {
+                activities.add(Integer.parseInt(activity));
+            }
         }
 
-        Filter filter = FilterUrlSerializer.fromQueryParameter(req.getParameter("filter"));
+        Filter filter = FilterUrlSerializer.fromQueryParameter(req
+            .getParameter("filter"));
 
         SchemaDTO schema = dispatcher.execute(new GetSchema());
 
         SiteExporter export = new SiteExporter(dispatcher);
         for (UserDatabaseDTO db : schema.getDatabases()) {
             for (ActivityDTO activity : db.getActivities()) {
-                if (!filter.isRestricted(DimensionType.Activity) ||
-                		filter.getRestrictions(DimensionType.Activity).contains(activity.getId())) {
-					export.export(activity, filter);
+                if (!filter.isRestricted(DimensionType.Activity)
+                    ||
+                    filter.getRestrictions(DimensionType.Activity).contains(
+                        activity.getId())) {
+                    export.export(activity, filter);
                 }
             }
         }
 
         resp.setContentType("application/vnd.ms-excel");
         if (req.getHeader("User-Agent").indexOf("MSIE") != -1) {
-            resp.addHeader("Content-Disposition", "attachment; filename=ActivityInfo.xls");
+            resp.addHeader("Content-Disposition",
+                "attachment; filename=ActivityInfo.xls");
         } else {
-            resp.addHeader("Content-Disposition", "attachment; filename=" +
-                    ("ActivityInfo Export " + new Date().toString() + ".xls").replace(" ", "_"));
+            resp.addHeader(
+                "Content-Disposition",
+                "attachment; filename="
+                    +
+                    ("ActivityInfo Export " + new Date().toString() + ".xls")
+                        .replace(" ", "_"));
         }
 
         OutputStream os = resp.getOutputStream();

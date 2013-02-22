@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.nav;
 
 /*
@@ -42,12 +40,12 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.inject.Inject;
 
 /**
- * UI component that provides a heirarchial
- * list of navigation links.
- *
- * To use, you must implement {@link org.activityinfo.client.page.common.nav.Navigator},
- * which provides the data for {@link com.extjs.gxt.ui.client.widget.treepanel.TreePanel}
- *
+ * UI component that provides a heirarchial list of navigation links.
+ * 
+ * To use, you must implement
+ * {@link org.activityinfo.client.page.common.nav.Navigator}, which provides the
+ * data for {@link com.extjs.gxt.ui.client.widget.treepanel.TreePanel}
+ * 
  */
 public class NavigationPanel extends ContentPanel {
     private final EventBus eventBus;
@@ -64,58 +62,61 @@ public class NavigationPanel extends ContentPanel {
         this.setHeading(navigator.getHeading());
         this.setScrollMode(Scroll.NONE);
         this.setLayout(new FitLayout());
-        
+
         tree = new LinkTreePanel(navigator, navigator.getStateId());
-        
+
         tree.addListener(Events.OnClick, new Listener<TreePanelEvent<Link>>() {
             @Override
             public void handleEvent(TreePanelEvent<Link> tpe) {
-                if(tpe.getItem().getPageState() != null) {
-                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, tpe.getItem().getPageState()));
+                if (tpe.getItem().getPageState() != null) {
+                    eventBus.fireEvent(new NavigationEvent(
+                        NavigationHandler.NAVIGATION_REQUESTED, tpe.getItem()
+                            .getPageState()));
                 }
             }
         });
 
         navListener = new Listener<NavigationEvent>() {
             @Override
-			public void handleEvent(NavigationEvent be) {
+            public void handleEvent(NavigationEvent be) {
                 onNavigated(be.getPlace());
             }
         };
-        eventBus.addListener(NavigationHandler.NavigationAgreed, navListener);
-
+        eventBus.addListener(NavigationHandler.NAVIGATION_AGREED, navListener);
 
         changeListener = new Listener<BaseEvent>() {
             @Override
-			public void handleEvent(BaseEvent be) {
-            	tree.getStore().getLoader().load();
+            public void handleEvent(BaseEvent be) {
+                tree.getStore().getLoader().load();
             }
         };
         eventBus.addListener(AppEvents.SCHEMA_CHANGED, changeListener);
 
         this.add(tree);
     }
-    
+
     public void shutdown() {
-        eventBus.removeListener(NavigationHandler.NavigationAgreed, navListener);
+        eventBus
+            .removeListener(NavigationHandler.NAVIGATION_AGREED, navListener);
         eventBus.removeListener(AppEvents.SCHEMA_CHANGED, changeListener);
     }
 
     private void onNavigated(PageState place) {
-        for(Link link : tree.getStore().getAllItems()) {
-            if(link.getPageState() != null && link.getPageState().equals(place)) {
+        for (Link link : tree.getStore().getAllItems()) {
+            if (link.getPageState() != null
+                && link.getPageState().equals(place)) {
                 ensureVisible(link);
             }
         }
     }
 
     public void ensureVisible(final Link link) {
-        if(tree.isRendered()) {
+        if (tree.isRendered()) {
             doExpandParents(link);
         } else {
             tree.addListener(Events.Render, new Listener<ComponentEvent>() {
                 @Override
-				public void handleEvent(ComponentEvent be) {
+                public void handleEvent(ComponentEvent be) {
                     doExpandParents(link);
                     tree.removeListener(Events.Render, this);
 
@@ -129,7 +130,7 @@ public class NavigationPanel extends ContentPanel {
 
         tree.getSelectionModel().select(link, false);
 
-        while(parent != null) {
+        while (parent != null) {
             tree.setExpanded(parent, true);
             parent = tree.getStore().getParent(parent);
         }

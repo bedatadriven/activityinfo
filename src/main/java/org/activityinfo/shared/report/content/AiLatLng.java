@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -32,35 +30,36 @@ import java.io.Serializable;
  * This class is immutable
  * 
  * @author Alex Bertram
- *
+ * 
  */
 public class AiLatLng implements Serializable {
-	public AiLatLng() {
-		lat=0;
-		lng=0;
-	}
-	public AiLatLng(double lat, double lon) {
-		super();
-		this.lat = lat;
-		this.lng = lon;
-	}
-	
-	private double lat;
-	private double lng;
-	
-	/**
-	 * 
-	 * @return The latitude of the point (y-axis)
-	 */
-	public double getLat() {
-		return lat;
-	}
-	
-	/**
-	 * 
-	 * @return The longitude of the point (x-axis)
-	 */
-	public double getLng() {
-		return lng;
-	}
+    public AiLatLng() {
+        lat = 0;
+        lng = 0;
+    }
+
+    public AiLatLng(double lat, double lon) {
+        super();
+        this.lat = lat;
+        this.lng = lon;
+    }
+
+    private double lat;
+    private double lng;
+
+    /**
+     * 
+     * @return The latitude of the point (y-axis)
+     */
+    public double getLat() {
+        return lat;
+    }
+
+    /**
+     * 
+     * @return The longitude of the point (x-axis)
+     */
+    public double getLng() {
+        return lng;
+    }
 }

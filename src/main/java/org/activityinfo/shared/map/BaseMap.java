@@ -30,43 +30,40 @@ import org.activityinfo.shared.dto.DTO;
  */
 public abstract class BaseMap implements DTO {
 
-	public static TileBaseMap createNullMap(String baseMapId) {
-		TileBaseMap result = new TileBaseMap();
-		
-		result.setId(baseMapId);
-		result.setMinZoom(0);
-		result.setMaxZoom(16);
-		result.setName("Default map");
-		result.setTileUrlPattern("http://google.com");
-		
-		return result;
-	}
-	
-	public static String getDefaultMapId() {
-		return "admin";
-	}
-	
-	public abstract String getId();
+    public static TileBaseMap createNullMap(String baseMapId) {
+        TileBaseMap result = new TileBaseMap();
 
-	/**
-	 * @return the minimum zoom level for which this base map
-	 * is available
-	 */
-	public abstract int getMinZoom();
+        result.setId(baseMapId);
+        result.setMinZoom(0);
+        result.setMaxZoom(16);
+        result.setName("Default map");
+        result.setTileUrlPattern("http://google.com");
 
-	/**
-	 * @return the maximum zoom level for which this base map
-	 * is available
-	 */
-	public abstract int getMaxZoom();
+        return result;
+    }
 
+    public static String getDefaultMapId() {
+        return "admin";
+    }
 
-	public BaseMap() {
-		super();
-	}
+    public abstract String getId();
 
-	public boolean hasSingleZoomLevel() {
-		return getMinZoom() == getMaxZoom();
-	}
+    /**
+     * @return the minimum zoom level for which this base map is available
+     */
+    public abstract int getMinZoom();
+
+    /**
+     * @return the maximum zoom level for which this base map is available
+     */
+    public abstract int getMaxZoom();
+
+    public BaseMap() {
+        super();
+    }
+
+    public boolean hasSingleZoomLevel() {
+        return getMinZoom() == getMaxZoom();
+    }
 
 }

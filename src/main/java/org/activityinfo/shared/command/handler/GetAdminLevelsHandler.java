@@ -37,44 +37,51 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GetAdminLevelsHandler implements CommandHandlerAsync<GetAdminLevels, AdminLevelResult> {
+public class GetAdminLevelsHandler implements
+    CommandHandlerAsync<GetAdminLevels, AdminLevelResult> {
 
-	@Override
-	public void execute(GetAdminLevels command, ExecutionContext context,
-			final AsyncCallback<AdminLevelResult> callback) {
-		
-		SqlQuery.select()
-			.appendColumn("level.adminlevelId", "id")
-			.appendColumn("level.name", "name")
-			.appendColumn("level.polygons", "polygons")
-			//.from(Tables.INDICATOR_LINK, "il")
-			//.leftJoin(Tables.INDICATOR_VALUE, "iv").on("il.destinationIndicatorId=iv.indicatorid")
-			.from(Tables.INDICATOR_VALUE, "iv")
-			.innerJoin(Tables.REPORTING_PERIOD, "rp").on("rp.reportingperiodid=iv.reportingperiodid")
-			.innerJoin(Tables.SITE, "s").on("s.siteId=rp.siteid")
-			.innerJoin(Tables.LOCATION_ADMIN_LINK, "la").on("s.locationid=la.locationid")
-			.innerJoin(Tables.ADMIN_ENTITY, "e").on("e.adminentityid=la.adminentityid")
-			.innerJoin(Tables.ADMIN_LEVEL, "level").on("e.adminlevelid=level.adminlevelid")
-			.where("iv.indicatorId").in(command.getIndicatorIds())
-			.groupBy("level.adminlevelid")
-			.groupBy("level.name")
-			.execute(context.getTransaction(), new SqlResultCallback() {
-				
-				@Override
-				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-					List<AdminLevelDTO> levels = Lists.newArrayList();
-					for(SqlResultSetRow row : results.getRows()) {
-						AdminLevelDTO level = new AdminLevelDTO();
-						level.setId(row.getInt("id"));
-						level.setName(row.getString("name"));
-						level.setPolygons(row.getBoolean("polygons"));
-						levels.add(level);
-					}
-					
-					callback.onSuccess(new AdminLevelResult(levels));
-				}
-			});
-				
-	}
+    @Override
+    public void execute(GetAdminLevels command, ExecutionContext context,
+        final AsyncCallback<AdminLevelResult> callback) {
+
+        SqlQuery
+            .select()
+            .appendColumn("level.adminlevelId", "id")
+            .appendColumn("level.name", "name")
+            .appendColumn("level.polygons", "polygons")
+            // .from(Tables.INDICATOR_LINK, "il")
+            // .leftJoin(Tables.INDICATOR_VALUE,
+            // "iv").on("il.destinationIndicatorId=iv.indicatorid")
+            .from(Tables.INDICATOR_VALUE, "iv")
+            .innerJoin(Tables.REPORTING_PERIOD, "rp")
+            .on("rp.reportingperiodid=iv.reportingperiodid")
+            .innerJoin(Tables.SITE, "s").on("s.siteId=rp.siteid")
+            .innerJoin(Tables.LOCATION_ADMIN_LINK, "la")
+            .on("s.locationid=la.locationid")
+            .innerJoin(Tables.ADMIN_ENTITY, "e")
+            .on("e.adminentityid=la.adminentityid")
+            .innerJoin(Tables.ADMIN_LEVEL, "level")
+            .on("e.adminlevelid=level.adminlevelid")
+            .where("iv.indicatorId").in(command.getIndicatorIds())
+            .groupBy("level.adminlevelid")
+            .groupBy("level.name")
+            .execute(context.getTransaction(), new SqlResultCallback() {
+
+                @Override
+                public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                    List<AdminLevelDTO> levels = Lists.newArrayList();
+                    for (SqlResultSetRow row : results.getRows()) {
+                        AdminLevelDTO level = new AdminLevelDTO();
+                        level.setId(row.getInt("id"));
+                        level.setName(row.getString("name"));
+                        level.setPolygons(row.getBoolean("polygons"));
+                        levels.add(level);
+                    }
+
+                    callback.onSuccess(new AdminLevelResult(levels));
+                }
+            });
+
+    }
 
 }

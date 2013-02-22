@@ -30,9 +30,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface LogSlow {
-	/**
-	 * 
-	 * @return threshold to log warning, in milliseconds. 
-	 */
-	long threshold();
+    /**
+     * 
+     * @return threshold to log warning, in milliseconds.
+     */
+    long threshold();
 }

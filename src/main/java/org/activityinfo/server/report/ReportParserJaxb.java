@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report;
 
 /*
@@ -36,35 +34,36 @@ import javax.xml.bind.Unmarshaller;
 
 import org.activityinfo.shared.report.model.Report;
 
-
 /**
  * @author Alex Bertram
  */
 public class ReportParserJaxb {
 
-	private static final Logger LOGGER = Logger.getLogger(ReportParserJaxb.class.getName());
-	
-	/**
-	 * n4%icZ9YU$3j
-	 */
-	private static class ContextHolder {
-		private final JAXBContext context;
-		public ContextHolder() {
-			try {
-				LOGGER.info("Initializing JAXB context...");
-				context = JAXBContext.newInstance(Report.class.getPackage().getName());
-				LOGGER.info("JAXB Initialization complete");
-			} catch (JAXBException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		public JAXBContext get() {
-			return context;
-		}
-	}
-	
-	private static ContextHolder CONTEXT = new ContextHolder();
-		
+    private static final Logger LOGGER = Logger
+        .getLogger(ReportParserJaxb.class.getName());
+
+
+    private static class ContextHolder {
+        private final JAXBContext context;
+
+        public ContextHolder() {
+            try {
+                LOGGER.info("Initializing JAXB context...");
+                context = JAXBContext.newInstance(Report.class.getPackage()
+                    .getName());
+                LOGGER.info("JAXB Initialization complete");
+            } catch (JAXBException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public JAXBContext get() {
+            return context;
+        }
+    }
+
+    private static final ContextHolder CONTEXT = new ContextHolder();
+
     public static Report parseXml(String xml) throws JAXBException {
         return parseXML(new StringReader(xml));
     }
@@ -75,14 +74,14 @@ public class ReportParserJaxb {
         um.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
         return (Report) um.unmarshal(reader);
     }
-    
-    public static String createXML(Report report) throws JAXBException{
-    	
-    	Marshaller mr = CONTEXT.get().createMarshaller();
-    	mr.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-    	
-    	StringWriter xml = new StringWriter();
-		mr.marshal(report, xml);
-		return xml.toString();
+
+    public static String createXML(Report report) throws JAXBException {
+
+        Marshaller mr = CONTEXT.get().createMarshaller();
+        mr.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+
+        StringWriter xml = new StringWriter();
+        mr.marshal(report, xml);
+        return xml.toString();
     }
 }

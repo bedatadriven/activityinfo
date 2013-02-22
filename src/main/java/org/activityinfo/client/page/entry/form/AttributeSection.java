@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.entry.form;
 
 /*
@@ -37,45 +35,48 @@ import com.google.common.collect.Lists;
 
 public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
 
-	private List<AttributeField> groups = Lists.newArrayList();
-	
-    public AttributeSection(ActivityDTO activity) {
-    	
-		for(AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
+    private List<AttributeField> groups = Lists.newArrayList();
 
-			if(attributeGroup.isMultipleAllowed()) {
-				
-				AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(attributeGroup);
-				boxGroup.setStyleAttribute("marginBottom", "10px");
-	            boxGroup.setStyleAttribute("width", "100%");  // if the width is specified in px, IE6 flips out 
-	
-	            add(boxGroup);
-	            groups.add(boxGroup);	
-			
-			} else {
-				AttributeCombo combo = new AttributeCombo(attributeGroup);
-				add(combo);
-				groups.add(combo);
-			}
+    public AttributeSection(ActivityDTO activity) {
+
+        for (AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
+
+            if (attributeGroup.isMultipleAllowed()) {
+
+                AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(
+                    attributeGroup);
+                boxGroup.setStyleAttribute("marginBottom", "10px");
+                boxGroup.setStyleAttribute("width", "100%"); // if the width is
+                                                             // specified in px,
+                                                             // IE6 flips out
+
+                add(boxGroup);
+                groups.add(boxGroup);
+
+            } else {
+                AttributeCombo combo = new AttributeCombo(attributeGroup);
+                add(combo);
+                groups.add(combo);
+            }
         }
     }
 
-	@Override
-	public boolean validate() {
-		return true;
-	}
+    @Override
+    public boolean validate() {
+        return true;
+    }
 
-	@Override
-	public void updateModel(SiteDTO site) {
-		for(AttributeField group : groups) {
-			group.updateModel(site);
-		}
-	}
+    @Override
+    public void updateModel(SiteDTO site) {
+        for (AttributeField group : groups) {
+            group.updateModel(site);
+        }
+    }
 
-	@Override
-	public void updateForm(SiteDTO m) {
-		for(AttributeField group : groups) {
-			group.updateForm(m);
-		}
-	}
+    @Override
+    public void updateForm(SiteDTO m) {
+        for (AttributeField group : groups) {
+            group.updateForm(m);
+        }
+    }
 }

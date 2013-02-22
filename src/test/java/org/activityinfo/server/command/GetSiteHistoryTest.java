@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -45,30 +43,30 @@ import org.junit.runner.RunWith;
 public class GetSiteHistoryTest extends CommandTestCase {
     @Test
     public void testGetSiteHistory() {
-    	setUser(1);
-    	
-    	int siteId = 1;
-    	
-        GetSiteHistoryResult result = execute(new GetSiteHistory(siteId));    
+        setUser(1);
+
+        int siteId = 1;
+
+        GetSiteHistoryResult result = execute(new GetSiteHistory(siteId));
         assertNotNull(result);
         assertEquals(2, result.getSiteHistories().size());
-        
+
         SiteHistoryDTO dto1 = result.getSiteHistories().get(0);
         assertEquals(1, dto1.getId());
         assertTrue(dto1.isInitial());
         Map<String, Object> map = dto1.getJsonMap();
-        assertEquals(new Integer(1), (Integer)map.get("id"));
+        assertEquals(new Integer(1), map.get("id"));
         assertEquals("1", String.valueOf(map.get("id")));
         assertEquals("54.0", String.valueOf(map.get("I4925")));
         assertEquals("site 1 my first comment", map.get("comments"));
-        
+
         SiteHistoryDTO dto2 = result.getSiteHistories().get(1);
         assertEquals(2, dto2.getId());
         assertFalse(dto2.isInitial());
         map = dto2.getJsonMap();
         assertNull(map.get("id"));
         assertNull(map.get("I4925"));
-        assertEquals("site 1 changed comment", map.get("comments"));       
+        assertEquals("site 1 changed comment", map.get("comments"));
 
     }
 }

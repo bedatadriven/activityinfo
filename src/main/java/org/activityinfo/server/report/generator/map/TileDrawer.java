@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -28,5 +26,5 @@ import com.google.code.appengine.awt.Image;
 
 public interface TileDrawer {
 
-	public void drawImage(Image image, int x, int y);	
+    public void drawImage(Image image, int x, int y);
 }

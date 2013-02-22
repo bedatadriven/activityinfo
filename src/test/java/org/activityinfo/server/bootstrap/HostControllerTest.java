@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap;
 
 /*
@@ -49,45 +47,54 @@ public class HostControllerTest extends ControllerTestCase {
 
     private static final String CHROME_USER_AGENT = "Mozilla/6.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.27 Safari/532.0";
     private static final String VALID_TOKEN = "XYZ123";
-    
+
     private HostController resource;
     private ServerSideAuthProvider authProvider;
-	
-	@Before
-	public void setup() {      
-	    DeploymentConfiguration deploymentConfig = new DeploymentConfiguration(new Properties());
-	
-	    authProvider = new ServerSideAuthProvider();
-	    resource = new HostController(deploymentConfig, authProvider);
-	}
 
-	@Test
-	public void verifyThatRequestsWithoutAuthTokensAreShownLoginPage() throws Exception {
+    @Before
+    public void setup() {
+        DeploymentConfiguration deploymentConfig = new DeploymentConfiguration(
+            new Properties());
 
-	    HttpServletRequest req = createMock(HttpServletRequest.class);
-	    replay(req);
-	    
-	    Response response = resource.getHostPage(RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, false);
+        authProvider = new ServerSideAuthProvider();
+        resource = new HostController(deploymentConfig, authProvider);
+    }
 
-	    assertThat(response.getEntity(), instanceOf(Viewable.class));
-	    assertThat(((Viewable) response.getEntity()).getModel(), instanceOf(LoginPageModel.class));
-	    
-	}
+    @Test
+    public void verifyThatRequestsWithoutAuthTokensAreShownLoginPage()
+        throws Exception {
 
-	@Test
-	public void verifyThatRequestWithValidAuthTokensReceiveTheView() throws Exception {
-	    
-	    authProvider.set(new AuthenticatedUser(VALID_TOKEN, 3, "akbertram@gmail.com"));
-	    
+        HttpServletRequest req = createMock(HttpServletRequest.class);
+        replay(req);
+
+        Response response = resource.getHostPage(
+            RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req,
+            false);
+
+        assertThat(response.getEntity(), instanceOf(Viewable.class));
+        assertThat(((Viewable) response.getEntity()).getModel(),
+            instanceOf(LoginPageModel.class));
+
+    }
+
+    @Test
+    public void verifyThatRequestWithValidAuthTokensReceiveTheView()
+        throws Exception {
+
+        authProvider.set(new AuthenticatedUser(VALID_TOKEN, 3,
+            "akbertram@gmail.com"));
 
         HttpServletRequest req = createMock(HttpServletRequest.class);
         expect(req.getHeader("User-Agent")).andReturn(CHROME_USER_AGENT);
         replay(req);
-	    
-        Response response = resource.getHostPage(RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, false);
+
+        Response response = resource.getHostPage(
+            RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req,
+            false);
 
         assertThat(response.getEntity(), instanceOf(Viewable.class));
-        assertThat(((Viewable) response.getEntity()).getModel(), instanceOf(HostPageModel.class));
-	}
+        assertThat(((Viewable) response.getEntity()).getModel(),
+            instanceOf(HostPageModel.class));
+    }
 
 }

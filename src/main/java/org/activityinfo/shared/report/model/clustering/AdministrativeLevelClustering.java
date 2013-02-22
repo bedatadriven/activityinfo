@@ -30,43 +30,43 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class AdministrativeLevelClustering implements Clustering {
-	private List<Integer> adminLevels = new ArrayList<Integer>();
-	
-	@XmlElement
-	public List<Integer> getAdminLevels() {
-		return adminLevels;
-	}
-	
-	@Override
-	public boolean isClustered() {
-		return true;
-	}
+    private List<Integer> adminLevels = new ArrayList<Integer>();
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((adminLevels == null) ? 0 : adminLevels.hashCode());
-		return result;
-	}
+    @XmlElement
+    public List<Integer> getAdminLevels() {
+        return adminLevels;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (obj == null) {
-			return false;
-		} else if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AdministrativeLevelClustering other = (AdministrativeLevelClustering) obj;
-		return adminLevels.equals(other.adminLevels);
-	}
+    @Override
+    public boolean isClustered() {
+        return true;
+    }
 
-	@Override
-	public String toString() {
-		return "AdministrativeLevelClustering [adminLevels=" + adminLevels
-				+ "]";
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+            + ((adminLevels == null) ? 0 : adminLevels.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj == null) {
+            return false;
+        } else if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AdministrativeLevelClustering other = (AdministrativeLevelClustering) obj;
+        return adminLevels.equals(other.adminLevels);
+    }
+
+    @Override
+    public String toString() {
+        return "AdministrativeLevelClustering [adminLevels=" + adminLevels
+            + "]";
+    }
 }

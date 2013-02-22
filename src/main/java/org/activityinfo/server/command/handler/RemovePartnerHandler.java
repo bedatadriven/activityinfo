@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -54,7 +52,9 @@ public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
         this.em = em;
     }
 
-    public CommandResult execute(RemovePartner cmd, User user) throws CommandException {
+    @Override
+    public CommandResult execute(RemovePartner cmd, User user)
+        throws CommandException {
 
         // verify the current user has access to this site
         UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
@@ -68,21 +68,26 @@ public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
         // check to see if there are already sites associated with this
         // partner
 
-        int siteCount = ((Number) em.createQuery("select count(s) from Site s where " +
-                "s.activity.id in (select a.id from Activity a where a.database.id = :dbId) and " +
-                "s.partner.id = :partnerId and " +
-                "s.dateDeleted is null")
-                .setParameter("dbId", cmd.getDatabaseId())
-                .setParameter("partnerId", cmd.getPartnerId())
-                .getSingleResult()).intValue();
+        int siteCount = ((Number) em
+            .createQuery(
+                "select count(s) from Site s where "
+                    +
+                    "s.activity.id in (select a.id from Activity a where a.database.id = :dbId) and "
+                    +
+                    "s.partner.id = :partnerId and " +
+                    "s.dateDeleted is null")
+            .setParameter("dbId", cmd.getDatabaseId())
+            .setParameter("partnerId", cmd.getPartnerId())
+            .getSingleResult()).intValue();
 
         if (siteCount > 0) {
             throw new PartnerHasSitesException();
         }
 
-        db.getPartners().remove(em.getReference(Partner.class, cmd.getPartnerId()));
+        db.getPartners().remove(
+            em.getReference(Partner.class, cmd.getPartnerId()));
         db.setLastSchemaUpdate(new Date());
-        
+
         return new VoidResult();
     }
 }

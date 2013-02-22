@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -40,7 +38,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-
 /**
  * @author Alex Bertram
  */
@@ -57,29 +54,29 @@ public class Authentication implements java.io.Serializable {
     }
 
     /**
-     * Creates a new session object for the given user, with
-     * a secure session id and starting at the current time
-     *
+     * Creates a new session object for the given user, with a secure session id
+     * and starting at the current time
+     * 
      * @param user
      */
     public Authentication(User user) {
-        //	setId(SecureTokenGenerator.generate());
+        // setId(SecureTokenGenerator.generate());
         this.user = user;
         this.dateCreated = new Date();
         this.dateLastActive = new Date();
     }
 
     /**
-     * Gets the secure id of this Authentication, which is a 128-bit random number
-     * represented as a 32-character hexadecimal string.
-     *
+     * Gets the secure id of this Authentication, which is a 128-bit random
+     * number represented as a 32-character hexadecimal string.
+     * 
      * @return the id of this authentication
      */
     @Id
     @Column(name = "AuthToken", unique = true, nullable = false, length = 32)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SecureSequenceGenerator")
     @org.hibernate.annotations.GenericGenerator(name = "SecureSequenceGenerator",
-            strategy = "org.activityinfo.server.authentication.SecureSequenceGenerator")
+        strategy = "org.activityinfo.server.authentication.SecureSequenceGenerator")
     public String getId() {
         return this.id;
     }
@@ -125,11 +122,11 @@ public class Authentication implements java.io.Serializable {
     @Transient
     public boolean isExpired() {
         // TODO: when do we invalidate tokens?
-        //	return minutesSinceLastActivity() > 30;
+        // return minutesSinceLastActivity() > 30;
         return false;
     }
 
     public void setDateLastActive() {
         setDateLastActive(new Date());
-	}
+    }
 }

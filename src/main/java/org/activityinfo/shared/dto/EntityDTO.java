@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -27,10 +25,9 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
- *
- * A data transfer object with a one-to-one relationship with
- * a JPA @Entity.
- *
+ * 
+ * A data transfer object with a one-to-one relationship with a JPA @Entity.
+ * 
  * @author Alex Bertram
  */
 public interface EntityDTO extends DTO, ModelData {
@@ -44,6 +41,6 @@ public interface EntityDTO extends DTO, ModelData {
      * @return the entity's JPA name
      */
     public String getEntityName();
-    
+
     public String getName();
 }

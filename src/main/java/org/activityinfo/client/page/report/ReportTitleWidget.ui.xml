@@ -21,28 +21,33 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
-	<ui:style type="org.activityinfo.client.page.report.ReportTitleWidget.MyStyle">
-		.reportTitle {
-			color: #A66F4A;
-			font-size: 16px;
-			font-weight: bold;
-			cursor: text;
-		}
-		
-		.reportTitleEditor {
-			font-size: 16px;
-			font-weight: bold;
-		}
-		
-		.changeTitleText {
-			color: #A66F4A;
-			font-size: 10px;
-			cursor: pointer;
-		}
-	</ui:style>
-	<ui:with field="i18n" type="org.activityinfo.client.i18n.UIConstants"/>
-	<div>
-		<span class="{style.reportTitle}" ui:field="titleSpan" />
-		<span class="{style.changeTitleText}">[<ui:text from='{i18n.changeTitle}'/>]</span>
-	</div>
+  <ui:style
+    type="org.activityinfo.client.page.report.ReportTitleWidget.MyStyle">
+    .reportTitle {
+    color: #A66F4A;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: text;
+    }
+
+    .reportTitleEditor {
+    font-size: 16px;
+    font-weight: bold;
+    }
+
+    .changeTitleText {
+    color: #A66F4A;
+    font-size: 10px;
+    cursor: pointer;
+    }
+  </ui:style>
+  <ui:with field="i18n" type="org.activityinfo.client.i18n.UIConstants" />
+  <div>
+    <span class="{style.reportTitle}" ui:field="titleSpan" />
+    <span class="{style.changeTitleText}">
+      [
+      <ui:text from='{i18n.changeTitle}' />
+      ]
+    </span>
+  </div>
 </ui:UiBinder>

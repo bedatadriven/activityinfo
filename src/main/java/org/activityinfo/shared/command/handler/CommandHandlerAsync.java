@@ -35,16 +35,17 @@ public interface CommandHandlerAsync<C extends Command<R>, R extends CommandResu
      * parameter to CommandHandler
      */
 
+    /**
+     * Execute a Command asynchronously
+     * 
+     * @param <T>
+     *            Result type
+     * @param command
+     *            Command to be executed
+     * @param callback
+     *            Callback to receive the command result or an exception
+     * 
+     */
+    void execute(C command, ExecutionContext context, AsyncCallback<R> callback);
 
-   /**
-    * Execute a Command asynchronously
-    *
-    * @param <T> Result type
-    * @param command Command to be executed
-    * @param callback Callback to receive the command result or an exception
-    *
-    */
-   void execute(C command, ExecutionContext context, AsyncCallback<R> callback);
-
-	
 }

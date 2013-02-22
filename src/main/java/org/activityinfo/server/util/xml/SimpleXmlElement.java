@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.util.xml;
 
 /*
@@ -26,43 +24,43 @@ package org.activityinfo.server.util.xml;
 
 public class SimpleXmlElement {
 
-	private String namespace;
-	private String name;
-	private StringBuilder text;
-	
-	public SimpleXmlElement(String namespace, String name) {
-		this.setNamespace(namespace);
-		this.setName(name);
-		this.setText(new StringBuilder());
-	}
-	
-	public SimpleXmlElement(String namespace, String name, String text) {
-		this.setNamespace(namespace);
-		this.setName(name);
-		this.setText(new StringBuilder(text));
-	}
+    private String namespace;
+    private String name;
+    private StringBuilder text;
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+    public SimpleXmlElement(String namespace, String name) {
+        this.setNamespace(namespace);
+        this.setName(name);
+        this.setText(new StringBuilder());
+    }
 
-	public String getNamespace() {
-		return namespace;
-	}
+    public SimpleXmlElement(String namespace, String name, String text) {
+        this.setNamespace(namespace);
+        this.setName(name);
+        this.setText(new StringBuilder(text));
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getNamespace() {
+        return namespace;
+    }
 
-	public void setText(StringBuilder text) {
-		this.text = text;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public StringBuilder getText() {
-		return text;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setText(StringBuilder text) {
+        this.text = text;
+    }
+
+    public StringBuilder getText() {
+        return text;
+    }
 }

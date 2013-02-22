@@ -25,9 +25,9 @@
 
 <report frequency="Monthly" day="3">
 
-    <title>My Title</title>
-    <sheetTitle>My Sheet Title</sheetTitle>
-    <fileName>My File Name</fileName>
-    
+  <title>My Title</title>
+  <sheetTitle>My Sheet Title</sheetTitle>
+  <fileName>My File Name</fileName>
+
 </report>
 

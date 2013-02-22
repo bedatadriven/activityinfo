@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch;
 
 /*
@@ -28,17 +26,18 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
 /**
- * Provides an interface through which caches can monitor the
- * execution of remote service calls.
- *
- * @param <T> The type of command for which to listen.
+ * Provides an interface through which caches can monitor the execution of
+ * remote service calls.
+ * 
+ * @param <T>
+ *            The type of command for which to listen.
  */
 public interface DispatchListener<T extends Command> {
 
     /**
      * Called just before action is taken to dispatch the given the Command.
-     * Listeners can use this event to invalidate caches that would be affected by
-     * mutating commands.
+     * Listeners can use this event to invalidate caches that would be affected
+     * by mutating commands.
      */
     void beforeDispatched(T command);
 

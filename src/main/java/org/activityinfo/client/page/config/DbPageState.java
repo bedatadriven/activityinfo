@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config;
 
 /*
@@ -24,14 +22,14 @@ package org.activityinfo.client.page.config;
  * #L%
  */
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.PageStateParser;
 import org.activityinfo.client.page.app.Section;
 import org.activityinfo.client.page.common.grid.AbstractPagingGridPageState;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class DbPageState extends AbstractPagingGridPageState {
 
@@ -54,10 +52,12 @@ public class DbPageState extends AbstractPagingGridPageState {
         this.databaseId = databaseId;
     }
 
+    @Override
     public PageId getPageId() {
         return pageId;
     }
 
+    @Override
     public String serializeAsHistoryToken() {
         StringBuilder sb = new StringBuilder();
         sb.append(databaseId);
@@ -65,6 +65,7 @@ public class DbPageState extends AbstractPagingGridPageState {
         return sb.toString();
     }
 
+    @Override
     public List<PageId> getEnclosingFrames() {
         return Arrays.asList(ConfigFrameSet.PAGE_ID, pageId);
     }
@@ -86,7 +87,7 @@ public class DbPageState extends AbstractPagingGridPageState {
         if (pageId != dbPlace.pageId) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -103,15 +104,15 @@ public class DbPageState extends AbstractPagingGridPageState {
             this.pageId = pageId;
         }
 
+        @Override
         public PageState parse(String token) {
             return new DbPageState(pageId, Integer.parseInt(token));
         }
     }
 
-	@Override
-	public Section getSection() {
-		return Section.DESIGN;
-	}
-
+    @Override
+    public Section getSection() {
+        return Section.DESIGN;
+    }
 
 }

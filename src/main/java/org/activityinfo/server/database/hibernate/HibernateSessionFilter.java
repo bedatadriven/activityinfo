@@ -23,6 +23,7 @@ package org.activityinfo.server.database.hibernate;
  */
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.Filter;
@@ -32,45 +33,45 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import java.util.logging.Logger;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public final class HibernateSessionFilter implements Filter {
 
-	private static final Logger LOGGER = Logger.getLogger(HibernateSessionFilter.class.getName());
-	
-	private HibernateSessionScope sessionScope;
-	private EntityManagerFactory entityManagerFactory;
+    private static final Logger LOGGER = Logger
+        .getLogger(HibernateSessionFilter.class.getName());
 
-	@Inject
-	public HibernateSessionFilter(EntityManagerFactory emf, HibernateSessionScope sessionScope) {
-		this.entityManagerFactory = emf;
-		this.sessionScope = sessionScope;
-	}
-	
-	@Override
-	public void init(FilterConfig config) throws ServletException {
-	}
-	
-	@Override
-	public void doFilter(ServletRequest servletRequest,
-			ServletResponse servletResponse, FilterChain filterChain)
-					throws IOException, ServletException {
+    private HibernateSessionScope sessionScope;
+    private EntityManagerFactory entityManagerFactory;
 
-		try {
-			sessionScope.enter();
-			filterChain.doFilter(servletRequest, servletResponse);
-		} finally {
-			sessionScope.exit();
-		}
-	}
+    @Inject
+    public HibernateSessionFilter(EntityManagerFactory emf,
+        HibernateSessionScope sessionScope) {
+        this.entityManagerFactory = emf;
+        this.sessionScope = sessionScope;
+    }
 
-	@Override
-	public void destroy() {
-		LOGGER.info("Shutting down Hibernate EntityManagerFactory...");
-		entityManagerFactory.close();
-	}
+    @Override
+    public void init(FilterConfig config) throws ServletException {
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest,
+        ServletResponse servletResponse, FilterChain filterChain)
+        throws IOException, ServletException {
+
+        try {
+            sessionScope.enter();
+            filterChain.doFilter(servletRequest, servletResponse);
+        } finally {
+            sessionScope.exit();
+        }
+    }
+
+    @Override
+    public void destroy() {
+        LOGGER.info("Shutting down Hibernate EntityManagerFactory...");
+        entityManagerFactory.close();
+    }
 }

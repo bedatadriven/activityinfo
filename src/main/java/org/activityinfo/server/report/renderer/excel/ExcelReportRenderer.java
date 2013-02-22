@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.renderer.excel;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.server.report.renderer.excel;
  * #L%
  */
 
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -41,13 +38,13 @@ import com.google.inject.Inject;
 
 public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
 
-
     private final ExcelPivotTableRenderer pivotTableRenderer;
     private final ExcelTableRenderer tableRenderer;
     private final ExcelChartRenderer chartRenderer;
 
     @Inject
-    public ExcelReportRenderer(ExcelPivotTableRenderer pivotTableRenderer, ExcelTableRenderer tableRenderer, ExcelChartRenderer chartRenderer) {
+    public ExcelReportRenderer(ExcelPivotTableRenderer pivotTableRenderer,
+        ExcelTableRenderer tableRenderer, ExcelChartRenderer chartRenderer) {
         this.pivotTableRenderer = pivotTableRenderer;
         this.tableRenderer = tableRenderer;
         this.chartRenderer = chartRenderer;
@@ -59,21 +56,23 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
         this.tableRenderer = new ExcelTableRenderer();
     }
 
-    public void render(ReportElement element, OutputStream os) throws IOException {
+    @Override
+    public void render(ReportElement element, OutputStream os)
+        throws IOException {
 
-		HSSFWorkbook book = new HSSFWorkbook();
+        HSSFWorkbook book = new HSSFWorkbook();
 
-        if(element instanceof Report) {
+        if (element instanceof Report) {
             render(book, (Report) element);
-        } else if(element instanceof PivotTableReportElement) {
+        } else if (element instanceof PivotTableReportElement) {
             pivotTableRenderer.render(book, (PivotTableReportElement) element);
 
-        } else if(element instanceof TableElement) {
+        } else if (element instanceof TableElement) {
             tableRenderer.render(book, (TableElement) element);
 
-        } else if(element instanceof PivotChartReportElement) {
-            chartRenderer.render(book, (PivotChartReportElement)element);
-        } 
+        } else if (element instanceof PivotChartReportElement) {
+            chartRenderer.render(book, (PivotChartReportElement) element);
+        }
         book.write(os);
 
     }
@@ -89,26 +88,25 @@ public class ExcelReportRenderer implements ExcelRenderer<Report>, Renderer {
     }
 
     @Override
-	public void render(Workbook workbook, Report report) {
-		
-			
-		/* 
-		 * Create a worksheet for each report element
-		 */
-		
-		for(ReportElement element : report.getElements()) {
+    public void render(Workbook workbook, Report report) {
 
-			
-			if(element instanceof PivotTableReportElement) {
-				
-				pivotTableRenderer.render(workbook, (PivotTableReportElement) element);
-							
-          	} else if(element instanceof TableElement) {
-				
-				tableRenderer.render(workbook, (TableElement) element);
-				
-			}
+        /*
+         * Create a worksheet for each report element
+         */
 
-		}
-	}
+        for (ReportElement element : report.getElements()) {
+
+            if (element instanceof PivotTableReportElement) {
+
+                pivotTableRenderer.render(workbook,
+                    (PivotTableReportElement) element);
+
+            } else if (element instanceof TableElement) {
+
+                tableRenderer.render(workbook, (TableElement) element);
+
+            }
+
+        }
+    }
 }

@@ -51,129 +51,139 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * The SiteGridPanel contains the main toolbar for the Site Grid display, and
  * switches between the {@link FlatSiteGridPanel} and the tree grids.
  * 
- * <p>Note that this class is FINAL. It should not be subclassed. The grid
- * can be customized by providing a different {@code columnModelProvider}, and 
- * containers can install their own toolbar by calling {@code setTopComponent() }
+ * <p>
+ * Note that this class is FINAL. It should not be subclassed. The grid can be
+ * customized by providing a different {@code columnModelProvider}, and
+ * containers can install their own toolbar by calling
+ * {@code setTopComponent() }
  * 
  */
-public final class SiteGridPanel extends ContentPanel  {
+public final class SiteGridPanel extends ContentPanel {
 
-	private final Dispatcher dispatcher;
-	private final ColumnModelProvider columnModelProvider;
-	
-	private SiteGridPanelView grid = null;
-			
-	public SiteGridPanel(Dispatcher dispatcher, ColumnModelProvider columnModelProvider) {
-		this.dispatcher = dispatcher;
-		this.columnModelProvider = columnModelProvider;
-		
-		setHeading(I18N.CONSTANTS.sitesHeader());
-		setIcon(IconImageBundle.ICONS.table());
-		setLayout(new FitLayout());
-	}
-	
-	public SiteGridPanel(Dispatcher dispatcher) {
-		this(dispatcher, new DefaultColumnModelProvider(dispatcher));
-	}
+    private final Dispatcher dispatcher;
+    private final ColumnModelProvider columnModelProvider;
 
-    
-	public void load(final GroupingModel grouping, final Filter filter) {
-		
-		removeAll();
-		add(new LoadingPlaceHolder());
-		layout();
-		columnModelProvider.get(filter, grouping, new SuccessCallback<ColumnModel>() {
-			@Override
-			
-			public void onSuccess(ColumnModel columnModel) {
-				createGrid(grouping, filter, columnModel);
-			}
-		});
-		updateHeading(filter);
-	}
-	
-	private void updateHeading(final Filter filter) {
-		setHeading(I18N.CONSTANTS.sitesHeader());
+    private SiteGridPanelView grid = null;
 
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    public SiteGridPanel(Dispatcher dispatcher,
+        ColumnModelProvider columnModelProvider) {
+        this.dispatcher = dispatcher;
+        this.columnModelProvider = columnModelProvider;
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+        setHeading(I18N.CONSTANTS.sitesHeader());
+        setIcon(IconImageBundle.ICONS.table());
+        setLayout(new FitLayout());
+    }
 
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
-					int activityId = filter.getRestrictedCategory(DimensionType.Activity);
-					ActivityDTO activity = result.getActivityById(activityId);
-					setHeading(activity.getDatabase().getName() + " - " + activity.getName());
-				} else if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Database)) {
-					int databaseId = filter.getRestrictedCategory(DimensionType.Database);
-					UserDatabaseDTO db = result.getDatabaseById(databaseId);
-					setHeading(db.getName());
-				}
-			}
-		});
-		
-	}
+    public SiteGridPanel(Dispatcher dispatcher) {
+        this(dispatcher, new DefaultColumnModelProvider(dispatcher));
+    }
 
-	public void refresh() {
-		if(grid != null) {
-			grid.refresh();
-		}
-	}
-		
-	protected void createGrid(GroupingModel grouping, Filter filter,
-			ColumnModel columnModel) {
+    public void load(final GroupingModel grouping, final Filter filter) {
 
-		if(grouping == NullGroupingModel.INSTANCE) {
-			FlatSiteGridPanel panel = new FlatSiteGridPanel(dispatcher);
+        removeAll();
+        add(new LoadingPlaceHolder());
+        layout();
+        columnModelProvider.get(filter, grouping,
+            new SuccessCallback<ColumnModel>() {
+                @Override
+                public void onSuccess(ColumnModel columnModel) {
+                    createGrid(grouping, filter, columnModel);
+                }
+            });
+        updateHeading(filter);
+    }
 
-			panel.initGrid(filter, columnModel);
-			installGrid(panel);
-			
-		} else {
-			SiteTreeGrid treeGrid = new SiteTreeGrid(dispatcher, grouping, filter, columnModel);	
-			treeGrid.addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
+    private void updateHeading(final Filter filter) {
+        setHeading(I18N.CONSTANTS.sitesHeader());
 
-				@Override
-				public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
-					fireEvent(Events.SelectionChange, se);
-				}
-				
-			});
-			installGrid(treeGrid);
-		} 
-	}
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
 
-	public void addSelectionChangedListener(SelectionChangedListener<SiteDTO> listener) {
-		addListener(Events.SelectionChange, listener);
-	}
+            }
 
-	private void installGrid(SiteGridPanelView grid) {
-		this.grid = grid;
-		
-		removeAll();
-		add(grid.asComponent());
-		layout();
-		
-		grid.addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
-				fireEvent(Events.SelectionChange, se);
-			}
-		});
-	}
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                if (filter
+                    .isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
+                    int activityId = filter
+                        .getRestrictedCategory(DimensionType.Activity);
+                    ActivityDTO activity = result.getActivityById(activityId);
+                    setHeading(activity.getDatabase().getName() + " - "
+                        + activity.getName());
+                } else if (filter
+                    .isDimensionRestrictedToSingleCategory(DimensionType.Database)) {
+                    int databaseId = filter
+                        .getRestrictedCategory(DimensionType.Database);
+                    UserDatabaseDTO db = result.getDatabaseById(databaseId);
+                    setHeading(db.getName());
+                }
+            }
+        });
 
-	public SiteDTO getSelection() {
-		if(grid == null) {
-			return null;
-		} else {
-			return grid.getSelection();
-		}
-	}
+    }
+
+    public void refresh() {
+        if (grid != null) {
+            grid.refresh();
+        }
+    }
+
+    protected void createGrid(GroupingModel grouping, Filter filter,
+        ColumnModel columnModel) {
+
+        if (grouping == NullGroupingModel.INSTANCE) {
+            FlatSiteGridPanel panel = new FlatSiteGridPanel(dispatcher);
+
+            panel.initGrid(filter, columnModel);
+            installGrid(panel);
+
+        } else {
+            SiteTreeGrid treeGrid = new SiteTreeGrid(dispatcher, grouping,
+                filter, columnModel);
+            treeGrid
+                .addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
+
+                    @Override
+                    public void selectionChanged(
+                        SelectionChangedEvent<SiteDTO> se) {
+                        fireEvent(Events.SelectionChange, se);
+                    }
+
+                });
+            installGrid(treeGrid);
+        }
+    }
+
+    public void addSelectionChangedListener(
+        SelectionChangedListener<SiteDTO> listener) {
+        addListener(Events.SelectionChange, listener);
+    }
+
+    private void installGrid(SiteGridPanelView grid) {
+        this.grid = grid;
+
+        removeAll();
+        add(grid.asComponent());
+        layout();
+
+        grid.addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
+                fireEvent(Events.SelectionChange, se);
+            }
+        });
+    }
+
+    public SiteDTO getSelection() {
+        if (grid == null) {
+            return null;
+        } else {
+            return grid.getSelection();
+        }
+    }
 }

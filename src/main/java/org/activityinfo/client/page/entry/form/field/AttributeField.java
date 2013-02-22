@@ -26,8 +26,8 @@ import org.activityinfo.shared.dto.SiteDTO;
 
 public interface AttributeField {
 
-	void updateForm(SiteDTO site);
-	
-	void updateModel(SiteDTO site);
-	
+    void updateForm(SiteDTO site);
+
+    void updateModel(SiteDTO site);
+
 }

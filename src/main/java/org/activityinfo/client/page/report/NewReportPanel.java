@@ -51,90 +51,93 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class NewReportPanel extends ContentPanel {
 
-	private ListStore<ReportTemplate> store;
-	private EventBus eventBus;
-	private ReportSerializer reportSerializer;
-	private Dispatcher dispatcher;
+    private ListStore<ReportTemplate> store;
+    private EventBus eventBus;
+    private ReportSerializer reportSerializer;
+    private Dispatcher dispatcher;
 
-	public NewReportPanel(EventBus eventBus, Dispatcher dispatcher, ReportSerializer reportSerializer) {
-		this.eventBus = eventBus;
-		this.reportSerializer = reportSerializer;
-		this.dispatcher = dispatcher;
-		
-		setHeading(I18N.CONSTANTS.createNewReport());
-		setLayout(new FitLayout());
-		
-		store = new ListStore<ReportTemplate>();
-		store.add(new ChartTemplate(dispatcher));
-		store.add(new PivotTableTemplate(dispatcher));
-		store.add(new MapTemplate(dispatcher));
-		store.add(new CompositeTemplate(dispatcher));
-				
-		ListView<ReportTemplate> view = new ListView<ReportTemplate>();
+    public NewReportPanel(EventBus eventBus, Dispatcher dispatcher,
+        ReportSerializer reportSerializer) {
+        this.eventBus = eventBus;
+        this.reportSerializer = reportSerializer;
+        this.dispatcher = dispatcher;
+
+        setHeading(I18N.CONSTANTS.createNewReport());
+        setLayout(new FitLayout());
+
+        store = new ListStore<ReportTemplate>();
+        store.add(new ChartTemplate(dispatcher));
+        store.add(new PivotTableTemplate(dispatcher));
+        store.add(new MapTemplate(dispatcher));
+        store.add(new CompositeTemplate(dispatcher));
+
+        ListView<ReportTemplate> view = new ListView<ReportTemplate>();
         view.setStyleName("gallery");
-		view.setTemplate(getTemplate(GWT.getModuleBaseURL() + "image/"));
-		view.setBorders(false);
-		view.setStore(store);
-		view.setItemSelector("dd");
-		view.setOverStyle("over");
-		view.setSelectStyle("over");
+        view.setTemplate(getTemplate(GWT.getModuleBaseURL() + "image/"));
+        view.setBorders(false);
+        view.setStore(store);
+        view.setItemSelector("dd");
+        view.setOverStyle("over");
+        view.setSelectStyle("over");
 
-		view.addListener(Events.Select,
-				new Listener<ListViewEvent<ReportTemplate>>() {
+        view.addListener(Events.Select,
+            new Listener<ListViewEvent<ReportTemplate>>() {
 
-			@Override
-			public void handleEvent(ListViewEvent<ReportTemplate> event) {
-				createNew(event.getModel());
-			}
-		});	
-		add(view);
-	}
-	 
-	private void createNew(ReportTemplate model) {
-		model.createReport(new AsyncCallback<Report>() {
-			
-			@Override
-			public void onSuccess(Report report) {
-				dispatcher.execute(new CreateReport(report), new AsyncCallback<CreateResult>() {
+                @Override
+                public void handleEvent(ListViewEvent<ReportTemplate> event) {
+                    createNew(event.getModel());
+                }
+            });
+        add(view);
+    }
 
-					@Override
-					public void onFailure(Throwable caught) {
-						
-					}
+    private void createNew(ReportTemplate model) {
+        model.createReport(new AsyncCallback<Report>() {
 
-					@Override
-					public void onSuccess(CreateResult created) {
-						eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, 
-								new ReportDesignPageState(created.getNewId())));
-					}
-				});
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				
-			}
-		});
-		
-	}
+            @Override
+            public void onSuccess(Report report) {
+                dispatcher.execute(new CreateReport(report),
+                    new AsyncCallback<CreateResult>() {
 
-	private ModelData createReportModel(String name, String desc, String image) {
-		ModelData model = new BaseModelData();
-		model.set("name", name);
-		model.set("desc", desc);
-		model.set("path", image);
-		return model;
-	}
-	
-	private native String getTemplate(String base) /*-{
-      return ['<dl><tpl for=".">',
-      '<dd>',
-      '<img src="' + base + 'reports/{path}" title="{name}">',
-      '<div>',
-      '<h4>{name}</h4><p>{description}</p></div>',
-      '</tpl>',
-      '<div style="clear:left;"></div></dl>'].join("");
+                        @Override
+                        public void onFailure(Throwable caught) {
 
-      }-*/;
+                        }
+
+                        @Override
+                        public void onSuccess(CreateResult created) {
+                            eventBus.fireEvent(new NavigationEvent(
+                                NavigationHandler.NAVIGATION_REQUESTED,
+                                new ReportDesignPageState(created.getNewId())));
+                        }
+                    });
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+
+            }
+        });
+
+    }
+
+    private ModelData createReportModel(String name, String desc, String image) {
+        ModelData model = new BaseModelData();
+        model.set("name", name);
+        model.set("desc", desc);
+        model.set("path", image);
+        return model;
+    }
+
+    private native String getTemplate(String base) /*-{
+                                                   return ['<dl><tpl for=".">',
+                                                   '<dd>',
+                                                   '<img src="' + base + 'reports/{path}" title="{name}">',
+                                                   '<div>',
+                                                   '<h4>{name}</h4><p>{description}</p></div>',
+                                                   '</tpl>',
+                                                   '<div style="clear:left;"></div></dl>'].join("");
+
+                                                   }-*/;
 
 }

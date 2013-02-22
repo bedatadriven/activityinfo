@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.util.state;
 
 /*
@@ -28,9 +26,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Clean abstraction around GXT's {@link com.extjs.gxt.ui.client.state.StateManager},
- * to facilitate dependency injection.
- *
+ * Clean abstraction around GXT's
+ * {@link com.extjs.gxt.ui.client.state.StateManager}, to facilitate dependency
+ * injection.
+ * 
  */
 public interface StateProvider {
 

@@ -29,23 +29,24 @@ import org.activityinfo.shared.auth.AuthenticatedUser;
 
 /**
  * Static Locale helper methods.
- *
+ * 
  * @author Alex Bertram
  */
 public final class LocaleHelper {
 
-	private LocaleHelper() {}
-	
+    private LocaleHelper() {
+    }
+
     public static Locale getLocaleObject(User u) {
         return getLocaleObject(u.getLocale());
     }
 
     public static Locale getLocaleObject(AuthenticatedUser user) {
-    	return getLocaleObject(user.getUserLocale());
+        return getLocaleObject(user.getUserLocale());
     }
-    
-	private static Locale getLocaleObject(String locale) {
-		if(locale != null) {
+
+    private static Locale getLocaleObject(String locale) {
+        if (locale != null) {
             Locale[] locales = Locale.getAvailableLocales();
             for (Locale l : locales) {
                 if (locale.startsWith(l.getLanguage())) {
@@ -54,5 +55,5 @@ public final class LocaleHelper {
             }
         }
         return Locale.getDefault();
-	}
+    }
 }

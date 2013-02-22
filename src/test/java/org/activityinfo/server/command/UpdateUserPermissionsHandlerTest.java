@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -58,7 +56,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(InjectionSupport.class)
-@Modules({MailSenderStubModule.class})
+@Modules({ MailSenderStubModule.class })
 public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
     private Partner NRC;
@@ -90,9 +88,9 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         mailer = createMock("InvitationMailer", MailSender.class);
 
         handler = new UpdateUserPermissionsHandler(
-                db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class), db.getDAO(UserDAO.class),
-                db.getDAO(UserPermissionDAO.class), mailer);
-
+            db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class),
+            db.getDAO(UserDAO.class),
+            db.getDAO(UserPermissionDAO.class), mailer);
 
         owner = new User();
         owner.setId(99);
@@ -123,13 +121,13 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         verify(mailer);
     }
 
-
     /**
-     * Asserts that someone with ManageUsersPermission will
-     * be permitted to grant some one edit rights.
+     * Asserts that someone with ManageUsersPermission will be permitted to
+     * grant some one edit rights.
      */
     @Test
-    public void testVerifyAuthorityForViewPermissions() throws IllegalAccessCommandException {
+    public void testVerifyAuthorityForViewPermissions()
+        throws IllegalAccessCommandException {
 
         UserPermission executingUserPermissions = new UserPermission();
         executingUserPermissions.setPartner(NRC);
@@ -141,15 +139,17 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         UpdateUserPermissions cmd = new UpdateUserPermissions(1, dto);
 
-        UpdateUserPermissionsHandler.verifyAuthority(cmd, executingUserPermissions);
+        UpdateUserPermissionsHandler.verifyAuthority(cmd,
+            executingUserPermissions);
     }
 
     /**
-     * Asserts that someone with ManageUsersPermission will
-     * be permitted to grant some one edit rights.
+     * Asserts that someone with ManageUsersPermission will be permitted to
+     * grant some one edit rights.
      */
     @Test
-    public void testVerifyAuthorityForEditPermissions() throws IllegalAccessCommandException {
+    public void testVerifyAuthorityForEditPermissions()
+        throws IllegalAccessCommandException {
 
         UserPermission executingUserPermissions = new UserPermission();
         executingUserPermissions.setPartner(NRC);
@@ -162,11 +162,13 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         UpdateUserPermissions cmd = new UpdateUserPermissions(1, dto);
 
-        UpdateUserPermissionsHandler.verifyAuthority(cmd, executingUserPermissions);
+        UpdateUserPermissionsHandler.verifyAuthority(cmd,
+            executingUserPermissions);
     }
 
     @Test(expected = IllegalAccessCommandException.class)
-    public void testFailingVerifyAuthorityForView() throws IllegalAccessCommandException {
+    public void testFailingVerifyAuthorityForView()
+        throws IllegalAccessCommandException {
 
         UserPermission executingUserPermissions = new UserPermission();
         executingUserPermissions.setPartner(IRC);
@@ -179,11 +181,13 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         UpdateUserPermissions cmd = new UpdateUserPermissions(1, dto);
 
-        UpdateUserPermissionsHandler.verifyAuthority(cmd, executingUserPermissions);
+        UpdateUserPermissionsHandler.verifyAuthority(cmd,
+            executingUserPermissions);
     }
 
     @Test
-    public void testVerifyAuthorityForViewByOtherPartner() throws IllegalAccessCommandException {
+    public void testVerifyAuthorityForViewByOtherPartner()
+        throws IllegalAccessCommandException {
 
         UserPermission executingUserPermissions = new UserPermission();
         executingUserPermissions.setPartner(IRC);
@@ -197,16 +201,14 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         UpdateUserPermissions cmd = new UpdateUserPermissions(1, dto);
 
-        UpdateUserPermissionsHandler.verifyAuthority(cmd, executingUserPermissions);
+        UpdateUserPermissionsHandler.verifyAuthority(cmd,
+            executingUserPermissions);
     }
 
-
-
-
     /**
-     * Verifies that a user with the manageUsers permission can
-     * add another user to the UserDatabase
-     *
+     * Verifies that a user with the manageUsers permission can add another user
+     * to the UserDatabase
+     * 
      * @throws CommandException
      */
     @Test
@@ -227,14 +229,16 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         UserResult result = execute(new GetUsers(1));
         Assert.assertEquals(1, result.getTotalLength());
-        Assert.assertEquals("ralph@lauren.com", result.getData().get(0).getEmail());
-        Assert.assertTrue("edit permissions", result.getData().get(0).getAllowEdit());
+        Assert.assertEquals("ralph@lauren.com", result.getData().get(0)
+            .getEmail());
+        Assert.assertTrue("edit permissions", result.getData().get(0)
+            .getAllowEdit());
     }
 
     /**
      * Verifies that the owner of a database can update an existing users
      * permission
-     *
+     * 
      * @throws CommandException
      */
     @Test

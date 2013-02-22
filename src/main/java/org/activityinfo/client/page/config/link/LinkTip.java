@@ -32,37 +32,35 @@ import com.google.gwt.user.client.Event;
 
 public class LinkTip extends Tip {
 
-	public static final int WIDTH = 75;
-	public static final int HEIGHT = 45;
-	private Html html;
-	
-	public LinkTip() {
-		setWidth(WIDTH);
-		setHeight(HEIGHT);
-		html = new Html("Link");
-		html.addStyleName(IndicatorLinkResources.INSTANCE.style().linkToggle());
-		html.sinkEvents(Event.ONCLICK);
-		html.addListener(Events.BrowserEvent, new Listener<ComponentEvent>() {
+    public static final int WIDTH = 75;
+    public static final int HEIGHT = 45;
+    private Html html;
 
-			@Override
-			public void handleEvent(ComponentEvent be) {
-				if(be.getEventTypeInt() == Event.ONCLICK) {
-					fireEvent(Events.Select, be);
-				}
-			}
-			
-		});
-		add(html);
-	}
+    public LinkTip() {
+        setWidth(WIDTH);
+        setHeight(HEIGHT);
+        html = new Html("Link");
+        html.addStyleName(IndicatorLinkResources.INSTANCE.style().linkToggle());
+        html.sinkEvents(Event.ONCLICK);
+        html.addListener(Events.BrowserEvent, new Listener<ComponentEvent>() {
 
-	public void setLinked(boolean link) {
-		html.setHtml(link ? "Unlink" : "Link");
-	}
-	
-	public void addSelectListener(SelectionListener<ComponentEvent> listener) {
-		addListener(Events.Select, listener);
-	}
-	
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                if (be.getEventTypeInt() == Event.ONCLICK) {
+                    fireEvent(Events.Select, be);
+                }
+            }
+
+        });
+        add(html);
+    }
+
+    public void setLinked(boolean link) {
+        html.setHtml(link ? "Unlink" : "Link");
+    }
+
+    public void addSelectListener(SelectionListener<ComponentEvent> listener) {
+        addListener(Events.Select, listener);
+    }
+
 }
-
-

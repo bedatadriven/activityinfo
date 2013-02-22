@@ -54,101 +54,105 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> implements DbTargetEditor.View {
+public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor>
+    implements DbTargetEditor.View {
 
-	private final UIConstants messages;
-	private final IconImageBundle icons;
+    private final UIConstants messages;
+    private final IconImageBundle icons;
 
-	private Grid<TargetDTO> grid;
-	private ListStore<TargetDTO> store;
-	private ContentPanel targetValueContainer;
-	private final AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this,I18N.CONSTANTS.loading());
-	
-	@Inject
-	public DbTargetGrid(UIConstants messages, IconImageBundle icons) {
-		this.messages = messages;
-		this.icons = icons;		
-	}
+    private Grid<TargetDTO> grid;
+    private ListStore<TargetDTO> store;
+    private ContentPanel targetValueContainer;
+    private final AsyncMonitor loadingMonitor = new MaskingAsyncMonitor(this,
+        I18N.CONSTANTS.loading());
 
-	@Override
-	protected Grid<TargetDTO> createGridAndAddToContainer(Store store) {
-		this.store= (ListStore<TargetDTO>) store;
+    @Inject
+    public DbTargetGrid(UIConstants messages, IconImageBundle icons) {
+        this.messages = messages;
+        this.icons = icons;
+    }
 
-		grid = new Grid<TargetDTO>((ListStore) store, createColumnModel());
-		grid.setAutoExpandColumn("name");
-		grid.setLoadMask(true);
+    @Override
+    protected Grid<TargetDTO> createGridAndAddToContainer(Store store) {
+        this.store = (ListStore<TargetDTO>) store;
 
-		setLayout(new BorderLayout());
-		add(grid, new BorderLayoutData(Style.LayoutRegion.CENTER));
-		
-		return grid;
-	}
+        grid = new Grid<TargetDTO>((ListStore) store, createColumnModel());
+        grid.setAutoExpandColumn("name");
+        grid.setLoadMask(true);
 
-	protected ColumnModel createColumnModel() {
-		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+        setLayout(new BorderLayout());
+        add(grid, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
-		columns.add(new ColumnConfig("name", messages.name(), 150));
-		columns.add(new ColumnConfig("project", messages.project(), 150));
-		columns.add(new ColumnConfig("partner", messages.partner(), 150));
-		columns.add(new TimePeriodColumn("timePeriod", messages.timePeriod(), 300));
-		
-		return new ColumnModel(columns);
-	}
+        return grid;
+    }
 
-	@Override
-	protected void initToolBar() {
-		toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.add(), icons.add());
-		toolBar.addButton(UIActions.DELETE, messages.delete(), icons.delete());
-		toolBar.addButton(UIActions.EDIT, messages.edit(), icons.edit());
-	}
+    protected ColumnModel createColumnModel() {
+        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-	@Override
-	public void init(DbTargetEditor editor, UserDatabaseDTO db,	ListStore<TargetDTO> store) {
-		super.init(editor, store);
-		this.setHeading(I18N.MESSAGES.targetsForDatabase(db.getName()));
-	}
+        columns.add(new ColumnConfig("name", messages.name(), 150));
+        columns.add(new ColumnConfig("project", messages.project(), 150));
+        columns.add(new ColumnConfig("partner", messages.partner(), 150));
+        columns.add(new TimePeriodColumn("timePeriod", messages.timePeriod(),
+            300));
 
-	@Override
-	public FormDialogTether showAddDialog(TargetDTO target,	UserDatabaseDTO db, FormDialogCallback callback) {
+        return new ColumnModel(columns);
+    }
 
-		TargetForm form = new TargetForm(db);
-		form.getBinding().setStore(store);
-		form.getBinding().bind(store.getRecord(target).getModel());		
+    @Override
+    protected void initToolBar() {
+        toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.add(), icons.add());
+        toolBar.addButton(UIActions.DELETE, messages.delete(), icons.delete());
+        toolBar.addButton(UIActions.EDIT, messages.edit(), icons.edit());
+    }
 
-		FormDialogImpl<TargetForm> dlg = new FormDialogImpl<TargetForm>(form);
-		dlg.setWidth(450);
-		dlg.setHeight(300);
-		dlg.setHeading(messages.createTarget());
+    @Override
+    public void init(DbTargetEditor editor, UserDatabaseDTO db,
+        ListStore<TargetDTO> store) {
+        super.init(editor, store);
+        this.setHeading(I18N.MESSAGES.targetsForDatabase(db.getName()));
+    }
 
-		dlg.show(callback);
+    @Override
+    public FormDialogTether showAddDialog(TargetDTO target, UserDatabaseDTO db,
+        FormDialogCallback callback) {
 
-		return dlg;
-	}
+        TargetForm form = new TargetForm(db);
+        form.getBinding().setStore(store);
+        form.getBinding().bind(store.getRecord(target).getModel());
 
-	@Override
-	public void createTargetValueContainer(Widget w) {
-		targetValueContainer = new ContentPanel();
-		targetValueContainer.setHeaderVisible(false);
-		targetValueContainer.setBorders(false);
-		targetValueContainer.setFrame(false);
-		targetValueContainer.setLayout(new FitLayout());
-		
-		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
-		layout.setSplit(true);
-		layout.setCollapsible(true);
-		layout.setSize(250);
-		layout.setMargins(new Margins(5, 0, 0, 0));
-		
-		targetValueContainer.add(w);
-		
-		
-		add(targetValueContainer, layout);
+        FormDialogImpl<TargetForm> dlg = new FormDialogImpl<TargetForm>(form);
+        dlg.setWidth(450);
+        dlg.setHeight(300);
+        dlg.setHeading(messages.createTarget());
 
-	}
-	
-	@Override
-	public AsyncMonitor getLoadingMonitor() {
-		return loadingMonitor;
-	}	
+        dlg.show(callback);
+
+        return dlg;
+    }
+
+    @Override
+    public void createTargetValueContainer(Widget w) {
+        targetValueContainer = new ContentPanel();
+        targetValueContainer.setHeaderVisible(false);
+        targetValueContainer.setBorders(false);
+        targetValueContainer.setFrame(false);
+        targetValueContainer.setLayout(new FitLayout());
+
+        BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
+        layout.setSplit(true);
+        layout.setCollapsible(true);
+        layout.setSize(250);
+        layout.setMargins(new Margins(5, 0, 0, 0));
+
+        targetValueContainer.add(w);
+
+        add(targetValueContainer, layout);
+
+    }
+
+    @Override
+    public AsyncMonitor getLoadingMonitor() {
+        return loadingMonitor;
+    }
 
 }

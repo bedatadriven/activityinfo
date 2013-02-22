@@ -34,62 +34,60 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class TargetValue implements Serializable, ReallyDeleteable{
+public class TargetValue implements Serializable, ReallyDeleteable {
 
-	private TargetValueId id;
-	private Target target;
-	private Indicator indicator;
-	private Double value;
-	
-	
-	public TargetValue() {
-		super();
-	}
-		
-	@EmbeddedId
-	@AttributeOverrides( {
-		@AttributeOverride(name = "targetId", column = @Column(name = "targetId", nullable = false)),
-		@AttributeOverride(name = "IndicatorId", column = @Column(name = "IndicatorId", nullable = false)) })
-	
-	public TargetValueId getId() {
-		return this.id;
-	}
+    private TargetValueId id;
+    private Target target;
+    private Indicator indicator;
+    private Double value;
 
-	public void setId(TargetValueId id) {
-		this.id = id;
-	}
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "targetId", nullable = false, insertable = false, updatable = false)
-	public Target getTarget() {
-		return target;
-	}
+    public TargetValue() {
+        super();
+    }
 
-	public void setTarget(Target target) {
-		this.target = target;
-	}
+    @EmbeddedId
+    @AttributeOverrides({
+        @AttributeOverride(name = "targetId", column = @Column(name = "targetId", nullable = false)),
+        @AttributeOverride(name = "IndicatorId", column = @Column(name = "IndicatorId", nullable = false)) })
+    public TargetValueId getId() {
+        return this.id;
+    }
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "IndicatorId" , nullable = false, insertable = false, updatable = false)
-	public Indicator getIndicator() {
-		return indicator;
-	}
+    public void setId(TargetValueId id) {
+        this.id = id;
+    }
 
-	public void setIndicator(Indicator indicator) {
-		this.indicator = indicator;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "targetId", nullable = false, insertable = false, updatable = false)
+    public Target getTarget() {
+        return target;
+    }
 
-	public Double getValue() {
-		return value;
-	}
+    public void setTarget(Target target) {
+        this.target = target;
+    }
 
-	public void setValue(Double value) {
-		this.value = value;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "IndicatorId", nullable = false, insertable = false, updatable = false)
+    public Indicator getIndicator() {
+        return indicator;
+    }
 
-	@Override
-	public void deleteReferences() {
-		// TODO delete referneces if any		
-	}
+    public void setIndicator(Indicator indicator) {
+        this.indicator = indicator;
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
+    @Override
+    public void deleteReferences() {
+        // TODO delete referneces if any
+    }
 
 }

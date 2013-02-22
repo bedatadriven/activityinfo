@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -45,7 +43,8 @@ public class MapSymbol {
 
         MapSymbol that = (MapSymbol) o;
 
-        if (categories != null ? !categories.equals(that.categories) : that.categories != null) {
+        if (categories != null ? !categories.equals(that.categories)
+            : that.categories != null) {
             return false;
         }
 

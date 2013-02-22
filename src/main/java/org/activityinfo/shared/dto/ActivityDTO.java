@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -42,32 +40,33 @@ import com.google.common.collect.Sets;
 
 /**
  * One-to-one DTO for the Activity table.
- *
+ * 
  * @author Alex Bertram
  */
 @JsonAutoDetect(JsonMethod.NONE)
-public final class ActivityDTO 
-	extends 
-		BaseModelData 
-	implements 
-		EntityDTO,
-		HasLockedPeriod,
-		ProvidesKey {
+public final class ActivityDTO
+    extends
+    BaseModelData
+    implements
+    EntityDTO,
+    HasLockedPeriod,
+    ProvidesKey {
 
     public static final String ENTITY_NAME = "Activity";
 
     public static final int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
 
-	public static final int NAME_MAX_LENGTH = 45;
-	public static final int CATEGORY_MAX_LENGTH = 255;
+    public static final int NAME_MAX_LENGTH = 45;
+    public static final int CATEGORY_MAX_LENGTH = 255;
 
     private UserDatabaseDTO database;
 
     private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>(0);
-    private List<AttributeGroupDTO> attributeGroups = new ArrayList<AttributeGroupDTO>(0);
+    private List<AttributeGroupDTO> attributeGroups = new ArrayList<AttributeGroupDTO>(
+        0);
     private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
-    
+
     // to ensure serializer
     private Published _published;
 
@@ -79,13 +78,13 @@ public final class ActivityDTO
     /**
      * Constructs a DTO with the given properties
      */
-    public ActivityDTO(Map<String,Object> properties) {
-        super(properties);  
+    public ActivityDTO(Map<String, Object> properties) {
+        super(properties);
     }
 
     /**
      * Creates a shallow clone
-     *
+     * 
      * @param model
      */
     public ActivityDTO(ActivityDTO model) {
@@ -96,9 +95,11 @@ public final class ActivityDTO
     }
 
     /**
-     *
-     * @param id the Activity's id
-     * @param name the Activity's name
+     * 
+     * @param id
+     *            the Activity's id
+     * @param name
+     *            the Activity's name
      */
     public ActivityDTO(int id, String name) {
         this();
@@ -107,22 +108,23 @@ public final class ActivityDTO
     }
 
     /**
-     *
-     * @param db the UserDatabaseDTO to which this Activity belongs
+     * 
+     * @param db
+     *            the UserDatabaseDTO to which this Activity belongs
      */
     public ActivityDTO(UserDatabaseDTO db) {
         setDatabase(db);
     }
 
     /**
-     *
+     * 
      * @return this Activity's id
      */
     @Override
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
-	public int getId() {
-        return (Integer)get("id");
+    @JsonView(DTOViews.Schema.class)
+    public int getId() {
+        return (Integer) get("id");
     }
 
     /**
@@ -131,7 +133,6 @@ public final class ActivityDTO
     public void setId(int id) {
         set("id", id);
     }
-
 
     /**
      * Sets this Activity's name
@@ -145,8 +146,8 @@ public final class ActivityDTO
      */
     @Override
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
-	public String getName(){
+    @JsonView(DTOViews.Schema.class)
+    public String getName() {
         return get("name");
     }
 
@@ -163,37 +164,38 @@ public final class ActivityDTO
     public void setDatabase(UserDatabaseDTO database) {
         this.database = database;
     }
-    
+
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
+    @JsonView(DTOViews.Schema.class)
     public int getPublished() {
-    	return (Integer) get("published");
+        return (Integer) get("published");
     }
 
     public void setPublished(int published) {
-    	set("published",published);
+        set("published", published);
     }
-    
+
     /**
      * @return a list of this Activity's indicators
      */
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
+    @JsonView(DTOViews.Schema.class)
     public List<IndicatorDTO> getIndicators() {
         return indicators;
     }
 
     /**
-     * @param indicatorIds the ids of the indicators for which to search
+     * @param indicatorIds
+     *            the ids of the indicators for which to search
      * @return true if this activity contains any of the provided indicators
      */
     public boolean containsAny(Set<Integer> indicatorIds) {
-		for(IndicatorDTO indicator : getIndicators()) {
-			if(indicatorIds.contains(indicator.getId())) {
-				return true;
-			}
-		}
-		return false;
+        for (IndicatorDTO indicator : getIndicators()) {
+            if (indicatorIds.contains(indicator.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -202,9 +204,9 @@ public final class ActivityDTO
     public void setIndicators(List<IndicatorDTO> indicators) {
         this.indicators = indicators;
     }
-    
+
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
+    @JsonView(DTOViews.Schema.class)
     public List<AttributeGroupDTO> getAttributeGroups() {
         return attributeGroups;
     }
@@ -218,7 +220,7 @@ public final class ActivityDTO
     }
 
     public boolean isAssessment() {
-        return (Boolean)get("assessment");
+        return (Boolean) get("assessment");
     }
 
     /**
@@ -231,12 +233,12 @@ public final class ActivityDTO
 
     /**
      * @return the ReportingFrequency of this Activity, either
-     * <code>REPORT_ONCE</code> or <code>REPORT_MONTHLY</code>
+     *         <code>REPORT_ONCE</code> or <code>REPORT_MONTHLY</code>
      */
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
+    @JsonView(DTOViews.Schema.class)
     public int getReportingFrequency() {
-        return (Integer)get("reportingFrequency");
+        return (Integer) get("reportingFrequency");
     }
 
     /**
@@ -249,33 +251,36 @@ public final class ActivityDTO
     }
 
     /**
-     * @return  the id of the LocationType of the Location to which this Site belongs
+     * @return the id of the LocationType of the Location to which this Site
+     *         belongs
      */
-    
+
     public int getLocationTypeId() {
-        return (Integer)get("locationTypeId");
+        return (Integer) get("locationTypeId");
     }
 
     /**
-     *
+     * 
      * @return the
      */
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
+    @JsonView(DTOViews.Schema.class)
     public LocationTypeDTO getLocationType() {
-        return getDatabase().getCountry().getLocationTypeById(getLocationTypeId());
+        return getDatabase().getCountry().getLocationTypeById(
+            getLocationTypeId());
     }
-
 
     /**
      * Searches the list of Attributes for the AttributeDTO with the given id
-     *
-     * @return the AttributeDTO matching the given id, or null if no such AttributeDTO was found.
+     * 
+     * @return the AttributeDTO matching the given id, or null if no such
+     *         AttributeDTO was found.
      */
     public AttributeDTO getAttributeById(int id) {
-        for(AttributeGroupDTO group : attributeGroups) {
-            AttributeDTO attribute = SchemaDTO.getById(group.getAttributes(), id);
-            if(attribute!=null) {
+        for (AttributeGroupDTO group : attributeGroups) {
+            AttributeDTO attribute = SchemaDTO.getById(group.getAttributes(),
+                id);
+            if (attribute != null) {
                 return attribute;
             }
         }
@@ -283,13 +288,14 @@ public final class ActivityDTO
     }
 
     /**
-     * Searches this Activity's list of Indicators for the IndicatorDTO with the given id.
-     *
+     * Searches this Activity's list of Indicators for the IndicatorDTO with the
+     * given id.
+     * 
      * @return the matching IndicatorDTO or null if nothing was found
      */
     public IndicatorDTO getIndicatorById(int indicatorId) {
-        for(IndicatorDTO indicator : indicators) {
-            if(indicator.getId() == indicatorId) {
+        for (IndicatorDTO indicator : indicators) {
+            if (indicator.getId() == indicatorId) {
                 return indicator;
             }
         }
@@ -297,7 +303,7 @@ public final class ActivityDTO
     }
 
     /**
-     *
+     * 
      * @return this Activity's category
      */
     public String getCategory() {
@@ -312,18 +318,19 @@ public final class ActivityDTO
     }
 
     /**
-     * Convenience method that creates a list of IndicatorGroups from this Activity's list
-     * of Indicators, based on the Indicator's category property.
-     *
+     * Convenience method that creates a list of IndicatorGroups from this
+     * Activity's list of Indicators, based on the Indicator's category
+     * property.
+     * 
      */
     public List<IndicatorGroup> groupIndicators() {
         List<IndicatorGroup> groups = new ArrayList<IndicatorGroup>();
         Map<String, IndicatorGroup> map = new HashMap<String, IndicatorGroup>();
 
-        for(IndicatorDTO indicator : indicators) {
+        for (IndicatorDTO indicator : indicators) {
             String category = indicator.getCategory();
             IndicatorGroup group = map.get(category);
-            if(group == null) {
+            if (group == null) {
                 group = new IndicatorGroup(category);
                 group.setActivityId(this.getId());
                 map.put(category, group);
@@ -335,7 +342,7 @@ public final class ActivityDTO
     }
 
     /**
-     *
+     * 
      * @return the id of the MapIcon associated with this Activity
      */
     public String getMapIcon() {
@@ -351,23 +358,22 @@ public final class ActivityDTO
 
     @Override
     public String getEntityName() {
-    	return ENTITY_NAME;
+        return ENTITY_NAME;
     }
 
-    
     /**
-     *
-     * @return The list of admin levels that can be set for this 
-     * Activity's LocationType.
+     * 
+     * @return The list of admin levels that can be set for this Activity's
+     *         LocationType.
      */
     public List<AdminLevelDTO> getAdminLevels() {
-        if(getLocationType().isAdminLevel()) {
+        if (getLocationType().isAdminLevel()) {
 
             // if this activity is bound to an administrative
             // level, then we need only as far down as this goes
 
             return getDatabase().getCountry().getAdminLevelAncestors(
-                    getLocationType().getBoundAdminLevelId());
+                getLocationType().getBoundAdminLevelId());
         } else {
 
             // all admin levels
@@ -376,48 +382,47 @@ public final class ActivityDTO
         }
     }
 
-
     /**
-     * Searches this Activity's list of AttributeGroups for an AttributeGroupDTO with
-     * the given id
-
-     * @return  the matching AttributeGroupDTO or null if there are no matches
+     * Searches this Activity's list of AttributeGroups for an AttributeGroupDTO
+     * with the given id
+     * 
+     * @return the matching AttributeGroupDTO or null if there are no matches
      */
     public AttributeGroupDTO getAttributeGroupById(int id) {
-        for(AttributeGroupDTO group : attributeGroups) {
-            if(group.getId()==id) {
+        for (AttributeGroupDTO group : attributeGroups) {
+            if (group.getId() == id) {
                 return group;
             }
         }
         return null;
     }
 
-	@Override
-	public String getKey() {
-		return "act" + getId();
-	}
+    @Override
+    public String getKey() {
+        return "act" + getId();
+    }
 
-	public void setLockedPeriods(Set<LockedPeriodDTO> lockedPeriods) {
-		this.lockedPeriods = lockedPeriods;
-	}
+    public void setLockedPeriods(Set<LockedPeriodDTO> lockedPeriods) {
+        this.lockedPeriods = lockedPeriods;
+    }
 
-	@Override
+    @Override
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
-	public Set<LockedPeriodDTO> getLockedPeriods() {
-		return lockedPeriods;
-	}
+    @JsonView(DTOViews.Schema.class)
+    public Set<LockedPeriodDTO> getLockedPeriods() {
+        return lockedPeriods;
+    }
 
-	@Override
-	public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
-	    Set<LockedPeriodDTO> enabled = Sets.newHashSet();
+    @Override
+    public Set<LockedPeriodDTO> getEnabledLockedPeriods() {
+        Set<LockedPeriodDTO> enabled = Sets.newHashSet();
 
-	    for (LockedPeriodDTO lockedPeriod : getLockedPeriods()) {
-	    	if (lockedPeriod.isEnabled()) {
-	    		enabled.add(lockedPeriod);
-	    	}
-	    }
-	    
-	    return enabled;
-	}
+        for (LockedPeriodDTO lockedPeriod : getLockedPeriods()) {
+            if (lockedPeriod.isEnabled()) {
+                enabled.add(lockedPeriod);
+            }
+        }
+
+        return enabled;
+    }
 }

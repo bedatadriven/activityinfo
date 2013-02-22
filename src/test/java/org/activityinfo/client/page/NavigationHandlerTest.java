@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page;
 
 /*
@@ -42,14 +40,6 @@ import java.util.Map;
 import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.monitor.NullAsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
-import org.activityinfo.client.page.Frame;
-import org.activityinfo.client.page.FrameId;
-import org.activityinfo.client.page.NavigationCallback;
-import org.activityinfo.client.page.NavigationHandler;
-import org.activityinfo.client.page.Page;
-import org.activityinfo.client.page.PageId;
-import org.activityinfo.client.page.PageLoader;
-import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.app.Section;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
@@ -60,7 +50,6 @@ import org.junit.Test;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class NavigationHandlerTest {
-
 
     private MockEventBus eventBus = new MockEventBus();
 
@@ -77,14 +66,17 @@ public class NavigationHandlerTest {
 
     private PageLoader pageLoader = createMock("pageLoader", PageLoader.class);
 
-    private PageState innerPlaceWithOuterFrame = new MockPageState(firstPageId, Arrays.asList(outerFrameSetId, firstPageId));
-    private PageState secondInnerPlaceWithSameOuterFrame = new MockPageState(secondPageId, Arrays.asList(outerFrameSetId, secondPageId));
+    private PageState innerPlaceWithOuterFrame = new MockPageState(firstPageId,
+        Arrays.asList(outerFrameSetId, firstPageId));
+    private PageState secondInnerPlaceWithSameOuterFrame = new MockPageState(
+        secondPageId, Arrays.asList(outerFrameSetId, secondPageId));
 
-    private PageState firstPlace = new MockPageState(firstPageId, Arrays.asList(firstPageId));
-    private PageState secondPlace = new MockPageState(secondPageId, Arrays.asList(secondPageId));
+    private PageState firstPlace = new MockPageState(firstPageId,
+        Arrays.asList(firstPageId));
+    private PageState secondPlace = new MockPageState(secondPageId,
+        Arrays.asList(secondPageId));
 
     private NavigationHandler pageManager;
-
 
     @Before
     public void setUp() {
@@ -92,7 +84,7 @@ public class NavigationHandlerTest {
         expect(outerFrameSet.getPageId()).andReturn(outerFrameSetId).anyTimes();
         expect(firstPage.getPageId()).andReturn(firstPageId).anyTimes();
 
-        pageManager = new NavigationHandler(eventBus, rootFrameSet );
+        pageManager = new NavigationHandler(eventBus, rootFrameSet);
     }
 
     @Test
@@ -119,7 +111,6 @@ public class NavigationHandlerTest {
         verify(rootFrameSet, outerFrameSet, firstPage, pageLoader);
     }
 
-
     @Test
     public void innerPageCanCancelNavigation() {
         theRootPageIs(outerFrameSet);
@@ -133,7 +124,7 @@ public class NavigationHandlerTest {
 
         verify(outerFrameSet, firstPage);
 
-        eventBus.assertNotFired(NavigationHandler.NavigationAgreed);
+        eventBus.assertNotFired(NavigationHandler.NAVIGATION_AGREED);
     }
 
     @Test
@@ -154,10 +145,11 @@ public class NavigationHandlerTest {
         pageManager.registerPageLoader(secondPageId, pageLoader);
         requestNavigationTo(secondInnerPlaceWithSameOuterFrame);
         pageLoadFinishes(secondPageId, secondPage);
-        
+
         verify(outerFrameSet, firstPage, pageLoader);
 
-        Assert.assertEquals(1, eventBus.getEventCount(NavigationHandler.NavigationAgreed));
+        Assert.assertEquals(1,
+            eventBus.getEventCount(NavigationHandler.NAVIGATION_AGREED));
     }
 
     @Test
@@ -181,7 +173,6 @@ public class NavigationHandlerTest {
         verify(rootFrameSet, pageLoader);
     }
 
-
     private class MockPageState implements PageState {
         private final PageId pageId;
         private final List<PageId> viewPath;
@@ -190,13 +181,26 @@ public class NavigationHandlerTest {
             this.pageId = pageId;
             this.viewPath = viewPath;
         }
-        public PageId getPageId() { return pageId;  }
-        public String serializeAsHistoryToken() { return null; }
-        public List<PageId> getEnclosingFrames() { return viewPath; }
-		@Override
-		public Section getSection() {
-			return Section.HOME;
-		}
+
+        @Override
+        public PageId getPageId() {
+            return pageId;
+        }
+
+        @Override
+        public String serializeAsHistoryToken() {
+            return null;
+        }
+
+        @Override
+        public List<PageId> getEnclosingFrames() {
+            return viewPath;
+        }
+
+        @Override
+        public Section getSection() {
+            return Section.HOME;
+        }
     }
 
     @Test
@@ -216,7 +220,6 @@ public class NavigationHandlerTest {
         verify(rootFrameSet, pageLoader, firstPage);
     }
 
-
     private void theRootPageIs(Page page) {
         expect(rootFrameSet.getActivePage()).andReturn(page).anyTimes();
     }
@@ -226,7 +229,8 @@ public class NavigationHandlerTest {
     }
 
     private void requestNavigationTo(PageState place) {
-        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, place));
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_REQUESTED, place));
     }
 
     private void thereIsNoActivePageIn(Frame rootFrameSet) {
@@ -260,14 +264,18 @@ public class NavigationHandlerTest {
     }
 
     private void expectLoadingPlaceHolderToBeShown(Frame frame) {
-        expect(frame.showLoadingPlaceHolder(isA(PageId.class), isA(PageState.class)))
-                .andReturn(new NullAsyncMonitor());
+        expect(
+            frame.showLoadingPlaceHolder(isA(PageId.class),
+                isA(PageState.class)))
+            .andReturn(new NullAsyncMonitor());
     }
 
     private void expectLoadingPlaceHolderToBeShownTwiceIn(Frame frame) {
-        expect(frame.showLoadingPlaceHolder(isA(PageId.class), isA(PageState.class)))
-                .andReturn(new NullAsyncMonitor())
-                .times(2);
+        expect(
+            frame.showLoadingPlaceHolder(isA(PageId.class),
+                isA(PageState.class)))
+            .andReturn(new NullAsyncMonitor())
+            .times(2);
     }
 
     private void navigationRequestWillBeRefusedBy(Page page) {
@@ -278,12 +286,15 @@ public class NavigationHandlerTest {
         navigationRequestWillBeAnsweredBy(page, true);
     }
 
-    private void navigationRequestWillBeAnsweredBy(Page page, final boolean allowed) {
-        page.requestToNavigateAway(isA(PageState.class), isA(NavigationCallback.class));
+    private void navigationRequestWillBeAnsweredBy(Page page,
+        final boolean allowed) {
+        page.requestToNavigateAway(isA(PageState.class),
+            isA(NavigationCallback.class));
         expectLastCall().andAnswer(new IAnswer<Void>() {
             @Override
             public Void answer() throws Throwable {
-                ((NavigationCallback)(getCurrentArguments()[1])).onDecided(allowed);
+                ((NavigationCallback) (getCurrentArguments()[1]))
+                    .onDecided(allowed);
                 return null;
             }
         });

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch;
 
 /*
@@ -28,25 +26,35 @@ import org.activityinfo.shared.command.Command;
 
 /**
  * Interface to a class that which emits Dispatch-related events.
- *
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public interface DispatchEventSource {
     /**
-     * Registers a DispatchListener with the source. DispatchListeners are called before and
-     * after commands are dispatched.
-     * @param commandClass The class of Command for which to listen
+     * Registers a DispatchListener with the source. DispatchListeners are
+     * called before and after commands are dispatched.
+     * 
+     * @param commandClass
+     *            The class of Command for which to listen
      * @param listener
-     * @param <T> A Command class implementing {@link org.activityinfo.shared.command.Command}
+     * @param <T>
+     *            A Command class implementing
+     *            {@link org.activityinfo.shared.command.Command}
      */
-    <T extends Command> void registerListener(Class<T> commandClass, DispatchListener<T> listener);
+    <T extends Command> void registerListener(Class<T> commandClass,
+        DispatchListener<T> listener);
 
     /**
-     * Registers a CommandProxy with the source. Command proxies are called before commands are sent
-     * to the server.
-     * @param commandClass  The class of Command for which to proxy
+     * Registers a CommandProxy with the source. Command proxies are called
+     * before commands are sent to the server.
+     * 
+     * @param commandClass
+     *            The class of Command for which to proxy
      * @param proxy
-     * @param <T> A Command class implementing {@link org.activityinfo.shared.command.Command}
+     * @param <T>
+     *            A Command class implementing
+     *            {@link org.activityinfo.shared.command.Command}
      */
-    <T extends Command> void registerProxy(Class<T> commandClass, CommandCache<T> proxy);
+    <T extends Command> void registerProxy(Class<T> commandClass,
+        CommandCache<T> proxy);
 }

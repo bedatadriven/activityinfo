@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -31,13 +29,13 @@ import org.activityinfo.shared.dto.SiteDTO;
 
 /**
  * Result from the GetSites command
- *
+ * 
  * @see org.activityinfo.shared.command.GetSites
- *
+ * 
  * @author Alex Bertram
  */
 public class SiteResult extends PagingResult<SiteDTO> {
-    
+
     public SiteResult() {
 
     }

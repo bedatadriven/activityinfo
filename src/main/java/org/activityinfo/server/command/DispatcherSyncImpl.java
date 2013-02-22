@@ -22,7 +22,6 @@ package org.activityinfo.server.command;
  * #L%
  */
 
-
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 import org.activityinfo.shared.auth.AuthenticatedUser;
@@ -36,27 +35,30 @@ import com.google.inject.Provider;
 
 public class DispatcherSyncImpl implements DispatcherSync {
 
-	private final Injector injector;
-	private final Provider<AuthenticatedUser> userProvider;
+    private final Injector injector;
+    private final Provider<AuthenticatedUser> userProvider;
 
-	@Inject
-	public DispatcherSyncImpl(Injector injector, Provider<AuthenticatedUser> userProvider) {
-		this.injector = injector;
-		this.userProvider = userProvider;
-	}
-	
-	@Override
-	public <C extends Command<R>, R extends CommandResult> R execute(C command) throws CommandException {
-		if(RemoteExecutionContext.inProgress()) {
-			return RemoteExecutionContext.current().execute(command);
-		} else {
-			User user = new User();
-			user.setId(userProvider.get().getUserId());
-			user.setEmail(userProvider.get().getEmail());
-			user.setLocale(userProvider.get().getUserLocale());
-			
-			RemoteExecutionContext context = new RemoteExecutionContext(injector);
-			return context.startExecute(command);
-		}
-	}
+    @Inject
+    public DispatcherSyncImpl(Injector injector,
+        Provider<AuthenticatedUser> userProvider) {
+        this.injector = injector;
+        this.userProvider = userProvider;
+    }
+
+    @Override
+    public <C extends Command<R>, R extends CommandResult> R execute(C command)
+        throws CommandException {
+        if (RemoteExecutionContext.inProgress()) {
+            return RemoteExecutionContext.current().execute(command);
+        } else {
+            User user = new User();
+            user.setId(userProvider.get().getUserId());
+            user.setEmail(userProvider.get().getEmail());
+            user.setLocale(userProvider.get().getUserLocale());
+
+            RemoteExecutionContext context = new RemoteExecutionContext(
+                injector);
+            return context.startExecute(command);
+        }
+    }
 }

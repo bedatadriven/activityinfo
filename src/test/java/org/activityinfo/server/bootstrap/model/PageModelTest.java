@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap.model;
 
 /*
@@ -26,8 +24,6 @@ package org.activityinfo.server.bootstrap.model;
 
 import static org.junit.Assert.assertEquals;
 
-import org.activityinfo.server.bootstrap.model.LoginPageModel;
-import org.activityinfo.server.bootstrap.model.PageModel;
 import org.junit.Test;
 
 /**
@@ -37,6 +33,7 @@ public class PageModelTest {
 
     @Test
     public void testGetTemplateName() throws Exception {
-        assertEquals("/page/Login.ftl", PageModel.getTemplateName(LoginPageModel.class));
+        assertEquals("/page/Login.ftl",
+            PageModel.getTemplateName(LoginPageModel.class));
     }
 }

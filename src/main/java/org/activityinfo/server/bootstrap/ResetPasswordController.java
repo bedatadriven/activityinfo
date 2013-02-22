@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap;
 
 /*
@@ -51,48 +49,48 @@ import com.sun.jersey.api.view.Viewable;
 
 @Path(ResetPasswordController.ENDPOINT)
 public class ResetPasswordController {
-	public static final String ENDPOINT = "/loginProblem";
+    public static final String ENDPOINT = "/loginProblem";
 
-	@Inject
-	private MailSender mailer;
+    @Inject
+    private MailSender mailer;
 
-	@Inject
-	private Provider<UserDAO> userDAO;
-	
-	@GET
-	@LogException(emailAlert = true)
-	public Viewable getPage(@Context HttpServletRequest req)
-			throws ServletException, IOException {
-		return new ResetPasswordPageModel().asViewable();
-	}
+    @Inject
+    private Provider<UserDAO> userDAO;
 
-	@POST
+    @GET
+    @LogException(emailAlert = true)
+    public Viewable getPage(@Context HttpServletRequest req)
+        throws ServletException, IOException {
+        return new ResetPasswordPageModel().asViewable();
+    }
+
+    @POST
     @LogException(emailAlert = true)
     @Transactional
-    public Viewable resetPassword(@FormParam("email") String email)  {
+    public Viewable resetPassword(@FormParam("email") String email) {
         try {
             User user = userDAO.get().findUserByEmail(email);
             user.setChangePasswordKey(SecureTokenGenerator.generate());
             user.setDateChangePasswordKeyIssued(new Date());
-            
+
             mailer.send(new ResetPasswordMessage(user));
-                        
-        	ResetPasswordPageModel model = new ResetPasswordPageModel();
-        	model.setEmailSent(true);
-        	
-			return model.asViewable();
-			
+
+            ResetPasswordPageModel model = new ResetPasswordPageModel();
+            model.setEmailSent(true);
+
+            return model.asViewable();
+
         } catch (NoResultException e) {
-        	ResetPasswordPageModel model = new ResetPasswordPageModel();
-        	model.setLoginError(true);
-        	
-			return model.asViewable();
-			
+            ResetPasswordPageModel model = new ResetPasswordPageModel();
+            model.setLoginError(true);
+
+            return model.asViewable();
+
         } catch (Exception e) {
-        	ResetPasswordPageModel model = new ResetPasswordPageModel();
-        	model.setEmailError(true);
-        	
-			return model.asViewable();
-		}
+            ResetPasswordPageModel model = new ResetPasswordPageModel();
+            model.setEmailError(true);
+
+            return model.asViewable();
+        }
     }
 }

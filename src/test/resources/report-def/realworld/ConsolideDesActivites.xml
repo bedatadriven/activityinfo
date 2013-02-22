@@ -101,7 +101,8 @@
           <category>92</category>
         </restriction>
       </filter>
-      <title>Synthese des interventions en Education par Province/territoire</title>
+      <title>Synthese des interventions en Education par
+        Province/territoire</title>
       <sheetTitle>Activites Cluster Education</sheetTitle>
       <rows>
         <dimension type="database"></dimension>
@@ -158,7 +159,8 @@
           <column label="" source="indicator" sourceId="44"></column>
           <column label="" source="indicator" sourceId="56"></column>
         </column>
-        <column label="Latrines Rehab." source="indicator" sourceId="344"></column>
+        <column label="Latrines Rehab." source="indicator"
+          sourceId="344"></column>
         <column label="Points Eau">
           <column label="" source="indicator" sourceId="326"></column>
           <column label="" source="indicator" sourceId="45"></column>
@@ -174,7 +176,7 @@
         <tileBaseMap>zs.gray.cd</tileBaseMap>
         <layers>
           <bubbles>
-            <arabicNumberSequence/>
+            <arabicNumberSequence />
             <minRadius>8</minRadius>
             <maxRadius>14</maxRadius>
             <scaling>Graduated</scaling>
@@ -183,7 +185,8 @@
       </map>
     </table>
     <table>
-      <title>Education: Distribution de materiel et equipements scolaires</title>
+      <title>Education: Distribution de materiel et equipements
+        scolaires</title>
       <filter>
         <restriction dimension="activity">
           <category>27</category>
@@ -242,7 +245,7 @@
         <tileBaseMap>zs.gray.cd</tileBaseMap>
         <layers>
           <bubbles>
-            <arabicNumberSequence/>
+            <arabicNumberSequence />
             <minRadius>8</minRadius>
             <maxRadius>14</maxRadius>
             <scaling>Graduated</scaling>
@@ -268,18 +271,24 @@
         <column label="Territoire" source="admin" sourceId="3" />
         <column label="Site" source="location.name"></column>
         <column label="Formation du personnel Education et des Parents Eleves">
-          <column label="Enseignants" source="indicator" sourceId="296"></column>
+          <column label="Enseignants" source="indicator"
+            sourceId="296"></column>
           <column label="Directeurs" source="indicator" sourceId="303"></column>
-          <column label="Inspecteurs" source="indicator" sourceId="327"></column>
-          <column label="Membres COPA" source="indicator" sourceId="309"></column>
-          <column label="Membres CAPE" source="indicator" sourceId="446"></column>
+          <column label="Inspecteurs" source="indicator"
+            sourceId="327"></column>
+          <column label="Membres COPA" source="indicator"
+            sourceId="309"></column>
+          <column label="Membres CAPE" source="indicator"
+            sourceId="446"></column>
         </column>
         <column label="Formation des Enfants et Adolescents">
           <column label="EP" source="indicator" sourceId="306"></column>
           <column label="ECE" source="indicator" sourceId="449"></column>
           <column label="CRS" source="indicator" sourceId="452"></column>
-          <column label="Membres COPA" source="indicator" sourceId="1040"></column>
-          <column label="Membres CAPE" source="indicator" sourceId="446"></column>
+          <column label="Membres COPA" source="indicator"
+            sourceId="1040"></column>
+          <column label="Membres CAPE" source="indicator"
+            sourceId="446"></column>
         </column>
         <column label="Commentaire" source="site.comments" />
       </columns>
@@ -287,7 +296,7 @@
         <tileBaseMap>zs.gray.cd</tileBaseMap>
         <layers>
           <bubbles>
-            <arabicNumberSequence/>
+            <arabicNumberSequence />
             <minRadius>8</minRadius>
             <maxRadius>14</maxRadius>
             <scaling>Graduated</scaling>

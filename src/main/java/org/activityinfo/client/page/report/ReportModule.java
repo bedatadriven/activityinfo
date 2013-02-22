@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.report;
 
 /*
@@ -31,13 +29,13 @@ import com.google.gwt.inject.client.AbstractGinModule;
 
 /**
  * GIN module that provides bindings for the Reports section
- *
+ * 
  * @author Alex Bertram
  */
 public class ReportModule extends AbstractGinModule {
     @Override
     protected void configure() {
         // bind views to their implementations
-    	bind(ReportSerializer.class).to(ReportJsonFactory.class);
+        bind(ReportSerializer.class).to(ReportJsonFactory.class);
     }
 }

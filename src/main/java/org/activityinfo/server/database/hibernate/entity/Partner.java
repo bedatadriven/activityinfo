@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -24,10 +22,21 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
-import javax.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * 
@@ -48,7 +57,6 @@ public class Partner implements java.io.Serializable, SchemaElement {
 
     public Partner() {
     }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -102,7 +110,7 @@ public class Partner implements java.io.Serializable, SchemaElement {
     public void setTargets(Set<Target> targets) {
         this.targets = targets;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
 

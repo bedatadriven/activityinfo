@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -50,27 +48,28 @@ import org.junit.runner.RunWith;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class ActivityTest extends CommandTestCase {
 
-	@Before
-	public void setUser() {
-		setUser(1);
-	}
+    @Before
+    public void setUser() {
+        setUser(1);
+    }
 
     @Test
     public void testActivity() throws CommandException {
 
         /*
-           * Initial data load
-           */
+         * Initial data load
+         */
 
         SchemaDTO schema = execute(new GetSchema());
 
         UserDatabaseDTO db = schema.getDatabaseById(1);
 
         /*
-           * Create a new activity
-           */
+         * Create a new activity
+         */
 
-        LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
+        LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes()
+            .get(0);
 
         ActivityDTO act = new ActivityDTO();
         act.setName("Warshing the dishes");
@@ -82,17 +81,20 @@ public class ActivityTest extends CommandTestCase {
         int newId = cresult.getNewId();
 
         /*
-           * Reload schema to verify the changes have stuck
-           */
+         * Reload schema to verify the changes have stuck
+         */
 
         schema = execute(new GetSchema());
 
         act = schema.getActivityById(newId);
 
         Assert.assertEquals("name", "Warshing the dishes", act.getName());
-        Assert.assertEquals("locationType", locType.getName(), act.getLocationType().getName());
-        Assert.assertEquals("reportingFrequency", ActivityDTO.REPORT_MONTHLY, act.getReportingFrequency());
-        Assert.assertEquals("public", Published.NOT_PUBLISHED.getIndex(), act.getPublished());
+        Assert.assertEquals("locationType", locType.getName(), act
+            .getLocationType().getName());
+        Assert.assertEquals("reportingFrequency", ActivityDTO.REPORT_MONTHLY,
+            act.getReportingFrequency());
+        Assert.assertEquals("public", Published.NOT_PUBLISHED.getIndex(),
+            act.getPublished());
 
     }
 
@@ -106,15 +108,16 @@ public class ActivityTest extends CommandTestCase {
         changes2.put("sortOrder", 1);
 
         execute(new BatchCommand(
-                new UpdateEntity("Activity", 1, changes1),
-                new UpdateEntity("Activity", 2, changes2)
-        ));
+            new UpdateEntity("Activity", 1, changes1),
+            new UpdateEntity("Activity", 2, changes2)));
 
         /* Confirm the order is changed */
 
         SchemaDTO schema = execute(new GetSchema());
-        Assert.assertEquals(2, schema.getDatabaseById(1).getActivities().get(0).getId());
-        Assert.assertEquals(1, schema.getDatabaseById(1).getActivities().get(1).getId());
+        Assert.assertEquals(2, schema.getDatabaseById(1).getActivities().get(0)
+            .getId());
+        Assert.assertEquals(1, schema.getDatabaseById(1).getActivities().get(1)
+            .getId());
     }
 
     @Test
@@ -123,12 +126,13 @@ public class ActivityTest extends CommandTestCase {
         /* Update Sort Order */
         Map<String, Object> changes = new HashMap<String, Object>();
         changes.put("published", Published.ALL_ARE_PUBLISHED.getIndex());
-    
+
         execute(new UpdateEntity("Activity", 1, changes));
 
         /* Confirm the order is changed */
 
         SchemaDTO schema = execute(new GetSchema());
-        Assert.assertEquals(Published.ALL_ARE_PUBLISHED.getIndex(), schema.getActivityById(1).getPublished());
+        Assert.assertEquals(Published.ALL_ARE_PUBLISHED.getIndex(), schema
+            .getActivityById(1).getPublished());
     }
 }

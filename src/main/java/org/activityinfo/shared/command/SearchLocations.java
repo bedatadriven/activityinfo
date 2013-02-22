@@ -27,39 +27,39 @@ import java.util.Collection;
 import org.activityinfo.shared.command.result.LocationResult;
 
 public class SearchLocations implements Command<LocationResult> {
-	private Collection<Integer> adminEntityIds;
-	private String name;
-	private int threshold = 300;
-	private int locationTypeId = 0;
-	
-	public int getThreshold() {
-		return threshold;
-	}
+    private Collection<Integer> adminEntityIds;
+    private String name;
+    private int threshold = 300;
+    private int locationTypeId = 0;
 
-	public Collection<Integer> getAdminEntityIds() {
-		return adminEntityIds;
-	}
+    public int getThreshold() {
+        return threshold;
+    }
 
-	public SearchLocations setAdminEntityIds(Collection<Integer> adminEntityIds) {
-		this.adminEntityIds = adminEntityIds;
-		return this;
-	}
+    public Collection<Integer> getAdminEntityIds() {
+        return adminEntityIds;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public SearchLocations setAdminEntityIds(Collection<Integer> adminEntityIds) {
+        this.adminEntityIds = adminEntityIds;
+        return this;
+    }
 
-	public SearchLocations setName(String name) {
-		this.name = name;
-		return this;
-	}
-	
-	public int getLocationTypeId() {
-		return locationTypeId;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public SearchLocations setLocationTypeId(int locationTypeId) {
-		this.locationTypeId = locationTypeId;
-		return this;
-	}
+    public SearchLocations setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public int getLocationTypeId() {
+        return locationTypeId;
+    }
+
+    public SearchLocations setLocationTypeId(int locationTypeId) {
+        this.locationTypeId = locationTypeId;
+        return this;
+    }
 }

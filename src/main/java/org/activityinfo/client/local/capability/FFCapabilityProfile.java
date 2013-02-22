@@ -22,7 +22,6 @@ package org.activityinfo.client.local.capability;
  * #L%
  */
 
-
 import org.activityinfo.client.Log;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.offline.capability.FFPermissionsDialog;
@@ -37,56 +36,52 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * FireFox offline capability profile.
  * 
- * <p>Though Mozilla has decided not to implement WebSQL, we use
- * a add-on to expose the sqlite database service Mozilla provides
- * for extensions.
+ * <p>
+ * Though Mozilla has decided not to implement WebSQL, we use a add-on to expose
+ * the sqlite database service Mozilla provides for extensions.
  */
 public class FFCapabilityProfile extends LocalCapabilityProfile {
 
-	
-	private boolean hasPlugin;
-	
-	public FFCapabilityProfile() {
-		Log.debug("FireFox version: " + Window.Navigator.getUserAgent());
-		hasPlugin = hasPlugin();
-	}
+    private boolean hasPlugin;
 
-	@Override
-	public boolean isOfflineModeSupported() {
-		return hasPlugin;
-	}
+    public FFCapabilityProfile() {
+        Log.debug("FireFox version: " + Window.Navigator.getUserAgent());
+        hasPlugin = hasPlugin();
+    }
 
+    @Override
+    public boolean isOfflineModeSupported() {
+        return hasPlugin;
+    }
 
-	@Override
-	public void acquirePermission(final AsyncCallback<Void> callback) {
-		
-		final AppCache appCache = AppCacheFactory.get();
-		if(appCache.getStatus() != Status.UNCACHED) {
-			callback.onSuccess(null);
-		} else {
-			FFPermissionsDialog dialog = new FFPermissionsDialog(callback);
-			dialog.show();
-		}
-	}
+    @Override
+    public void acquirePermission(final AsyncCallback<Void> callback) {
 
-	private String createReceipt() {
-		AuthenticatedUser user = new ClientSideAuthProvider().get();
-		StringBuilder receipt = new StringBuilder();
-		receipt.append(user.getUserId()).append("|")
-			.append(user.getAuthToken()).append("|")
-			.append(user.getEmail());
-		return receipt.toString();
-	}
+        final AppCache appCache = AppCacheFactory.get();
+        if (appCache.getStatus() != Status.UNCACHED) {
+            callback.onSuccess(null);
+        } else {
+            FFPermissionsDialog dialog = new FFPermissionsDialog(callback);
+            dialog.show();
+        }
+    }
 
-	@Override
-	public String getInstallInstructions() {
-		return ProfileResources.INSTANCE.startupMessageFirefox().getText();
-	}
-	
-	private static native boolean hasPlugin() /*-{
-		return !!$wnd.openDatabase;
-	}-*/;
-	
-	
+    private String createReceipt() {
+        AuthenticatedUser user = new ClientSideAuthProvider().get();
+        StringBuilder receipt = new StringBuilder();
+        receipt.append(user.getUserId()).append("|")
+            .append(user.getAuthToken()).append("|")
+            .append(user.getEmail());
+        return receipt.toString();
+    }
+
+    @Override
+    public String getInstallInstructions() {
+        return ProfileResources.INSTANCE.startupMessageFirefox().getText();
+    }
+
+    private static native boolean hasPlugin() /*-{
+                                              return !!$wnd.openDatabase;
+                                              }-*/;
 
 }

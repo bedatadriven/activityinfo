@@ -22,42 +22,48 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-	
-	<changeSet author="alex" id="004-01">
-		<addColumn tableName="location">
-			<column name="timeEdited" type="BIGINT" defaultValueNumeric="0">
-				<constraints nullable="false"/>
-			</column>
-		</addColumn>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet author="alex" id="004-01">
+    <addColumn tableName="location">
+      <column name="timeEdited" type="BIGINT"
+        defaultValueNumeric="0">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
 		<!--  We need to salt the new value a bit because the resolution of the existing column is 
 			second-level or even day-level -->
-		<sql>update location set timeEdited = (UNIX_TIMESTAMP(dateEdited) * 1000) +
-			CEILING(RAND() * 900)</sql>	
-			
-		<rollback>
-			<dropColumn tableName="location" columnName="timeEdited"/>
-		</rollback>		
-	</changeSet>
+    <sql>update location set timeEdited = (UNIX_TIMESTAMP(dateEdited) *
+      1000) +
+      CEILING(RAND() * 900)
+    </sql>
+
+    <rollback>
+      <dropColumn tableName="location" columnName="timeEdited" />
+    </rollback>
+  </changeSet>
 
 
-	<changeSet author="alex" id="004-02">
+  <changeSet author="alex" id="004-02">
 
-		<addColumn tableName="site">
-			<column name="timeEdited" type="BIGINT" defaultValueNumeric="0">
-				<constraints nullable="false"/>
-			</column>	
-		</addColumn>
+    <addColumn tableName="site">
+      <column name="timeEdited" type="BIGINT"
+        defaultValueNumeric="0">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
 		
 		<!-- We need to salt the new value a bit because the resolution of the 
 			existing column is second-level or even day-level -->
-		<sql>update site set timeEdited = (UNIX_TIMESTAMP(dateEdited) * 1000) +
-			CEILING(RAND() * 900)</sql>
-	
-		<rollback>
-			<dropColumn tableName="site" columnName="timeEdited"/>
-		</rollback>
-	</changeSet>
+    <sql>update site set timeEdited = (UNIX_TIMESTAMP(dateEdited) *
+      1000) +
+      CEILING(RAND() * 900)
+    </sql>
+
+    <rollback>
+      <dropColumn tableName="site" columnName="timeEdited" />
+    </rollback>
+  </changeSet>
 
 </databaseChangeLog>

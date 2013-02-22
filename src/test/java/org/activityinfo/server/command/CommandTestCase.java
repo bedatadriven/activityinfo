@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.server.command;
  * #L%
  */
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -48,12 +45,12 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 @Modules({
-        MockHibernateModule.class,
-        TemplateModule.class,
-        BeanMappingModule.class,
-        GwtRpcModule.class,
-        AuthenticationModuleStub.class,
-        LocaleModule.class
+    MockHibernateModule.class,
+    TemplateModule.class,
+    BeanMappingModule.class,
+    GwtRpcModule.class,
+    AuthenticationModuleStub.class,
+    LocaleModule.class
 })
 public abstract class CommandTestCase {
 
@@ -65,30 +62,35 @@ public abstract class CommandTestCase {
     @Inject
     protected Injector injector;
 
-
     protected void setUser(int userId) {
-    	AuthenticationModuleStub.setUserId(userId);
+        AuthenticationModuleStub.setUserId(userId);
     }
 
-    protected <T extends CommandResult> T execute(Command<T> command) throws CommandException {
-        User user = em.find(User.class, AuthenticationModuleStub.getCurrentUser().getUserId());
-        assert user != null : "cannot find user id " + 
-        	AuthenticationModuleStub.getCurrentUser().getUserId() + " in the database, have you " +
-        	" called execute() without a @OnDataset annotation?";
+    protected <T extends CommandResult> T execute(Command<T> command)
+        throws CommandException {
+        User user = em.find(User.class, AuthenticationModuleStub
+            .getCurrentUser().getUserId());
+        assert user != null : "cannot find user id " +
+            AuthenticationModuleStub.getCurrentUser().getUserId()
+            + " in the database, have you " +
+            " called execute() without a @OnDataset annotation?";
         Locale.setDefault(Locale.ENGLISH);
 
-        List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
+        List<CommandResult> results = servlet.handleCommands(Collections
+            .<Command> singletonList(command));
 
         // normally each request and so each handleCommand() gets its own
         // EntityManager, but here successive requests in the same test
-        // will share an EntityManager, which can be bad if there are collections
+        // will share an EntityManager, which can be bad if there are
+        // collections
         // still living in the first-level cache
         //
         // I think these command tests should ultimately become real end-to-end
-        // tests and so would go through the actual servlet process, but for the moment,
-        // we'll just add this work aroudn that clears the cache after each command.
+        // tests and so would go through the actual servlet process, but for the
+        // moment,
+        // we'll just add this work aroudn that clears the cache after each
+        // command.
         em.clear();
-
 
         CommandResult result = results.get(0);
         if (result instanceof CommandException) {

@@ -40,38 +40,38 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class LocationSearcher implements Searcher {
 
-	@Override
-	public void search(List<String> testQuery, SqlTransaction tx,
-			final AsyncCallback<List<Integer>> callback) {
-		final List<Integer> ids = new ArrayList<Integer>();
-		String tableName = "Location";
-		final String primaryKey = "LocationID";
-		
-		SqlQuery
-				.select(primaryKey)
-				.from(tableName.toLowerCase())
-				.whereLikes("Name")
-				.likeMany(testQuery)
-				
-				.execute(tx, new SqlResultCallback() {
-					@Override
-					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-						for (SqlResultSetRow row : results.getRows()) {
-							ids.add(row.getInt(primaryKey));
-						}
-						callback.onSuccess(ids);
-					}
-					
-					@Override
-					public boolean onFailure(SqlException e) {
-						return super.onFailure(e);
-					}
-				});
-	}
+    @Override
+    public void search(List<String> testQuery, SqlTransaction tx,
+        final AsyncCallback<List<Integer>> callback) {
+        final List<Integer> ids = new ArrayList<Integer>();
+        String tableName = "Location";
+        final String primaryKey = "LocationID";
 
-	@Override
-	public DimensionType getDimensionType() {
-		return DimensionType.Location;
-	}
+        SqlQuery
+            .select(primaryKey)
+            .from(tableName.toLowerCase())
+            .whereLikes("Name")
+            .likeMany(testQuery)
+
+            .execute(tx, new SqlResultCallback() {
+                @Override
+                public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                    for (SqlResultSetRow row : results.getRows()) {
+                        ids.add(row.getInt(primaryKey));
+                    }
+                    callback.onSuccess(ids);
+                }
+
+                @Override
+                public boolean onFailure(SqlException e) {
+                    return super.onFailure(e);
+                }
+            });
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.Location;
+    }
 
 }

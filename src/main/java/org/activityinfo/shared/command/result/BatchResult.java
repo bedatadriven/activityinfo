@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -27,7 +25,7 @@ package org.activityinfo.shared.command.result;
 import java.util.List;
 
 /**
- *
+ * 
  * @author Alex Bertram
  */
 public class BatchResult implements CommandResult {
@@ -50,9 +48,10 @@ public class BatchResult implements CommandResult {
     }
 
     public CommandResult getLastResult() {
-        return results.get(results.size()-1);    
+        return results.get(results.size() - 1);
     }
+
     public <X extends CommandResult> X getResult(int index) {
-    	return (X) results.get(index);
+        return (X) results.get(index);
     }
 }

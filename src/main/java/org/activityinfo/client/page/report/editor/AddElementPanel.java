@@ -49,96 +49,103 @@ import com.google.inject.Provider;
 
 public class AddElementPanel extends LayoutContainer {
 
-	private EditorProvider editorProvider;
-	private AddCallback addCallback;
-	private Provider<ElementDialog> dialogProvider;
-	
-	public interface AddCallback {
-		void onAdd(ReportElement element);
-	}
+    private EditorProvider editorProvider;
+    private AddCallback addCallback;
+    private Provider<ElementDialog> dialogProvider;
 
-	@Inject
-	public AddElementPanel(final Dispatcher dispatcher, EditorProvider editorProvider, Provider<ElementDialog> dialogProvider) {
-		this.editorProvider = editorProvider;
-		this.dialogProvider = dialogProvider;
-		
-		HBoxLayout layout = new HBoxLayout();
-		layout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCHMAX);
-		layout.setPack(BoxLayoutPack.CENTER);
-		layout.setPadding(new Padding(15));
-		setLayout(layout);
-		
-		add(createAddButton(I18N.CONSTANTS.addChart(), IconImageBundle.ICONS.barChart(), new SelectionListener<ButtonEvent>() {
+    public interface AddCallback {
+        void onAdd(ReportElement element);
+    }
 
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				addElement(new ChartTemplate(dispatcher));
-			}
-		}));
-		add(createAddButton(I18N.CONSTANTS.addTable(), IconImageBundle.ICONS.table(), new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				addElement(new PivotTableTemplate(dispatcher));
-			}
-		}));
-		add(createAddButton(I18N.CONSTANTS.addMap(), IconImageBundle.ICONS.map(), new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				addElement(new MapTemplate(dispatcher));
-			}
-		}));
-		add(createAddButton(I18N.CONSTANTS.addText(), IconImageBundle.ICONS.text(), new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				addElement(new TextReportElement());
-			}
-		}));
-	}
-	
+    @Inject
+    public AddElementPanel(final Dispatcher dispatcher,
+        EditorProvider editorProvider, Provider<ElementDialog> dialogProvider) {
+        this.editorProvider = editorProvider;
+        this.dialogProvider = dialogProvider;
 
-	public void setCallback(AddCallback callback) {
-		this.addCallback = callback;
-	}
-	
-	private void addElement(ReportElementTemplate template) {
-		template.createElement(new AsyncCallback<ReportElement>() {
-			
-			@Override
-			public void onSuccess(ReportElement result) {
-				addElement(result);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-	}
+        HBoxLayout layout = new HBoxLayout();
+        layout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCHMAX);
+        layout.setPack(BoxLayoutPack.CENTER);
+        layout.setPadding(new Padding(15));
+        setLayout(layout);
 
-	private void addElement(final ReportElement element) {
-		ElementDialog dialog = dialogProvider.get();
-		dialog.show(element, new Callback() {
-			
-			@Override
-			public void onOK(boolean dirty) {
-				addCallback.onAdd(element);
-			}
+        add(createAddButton(I18N.CONSTANTS.addChart(),
+            IconImageBundle.ICONS.barChart(),
+            new SelectionListener<ButtonEvent>() {
 
-			@Override
-			public void onClose(boolean dirty) {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    addElement(new ChartTemplate(dispatcher));
+                }
+            }));
+        add(createAddButton(I18N.CONSTANTS.addTable(),
+            IconImageBundle.ICONS.table(),
+            new SelectionListener<ButtonEvent>() {
 
-			}
-		});
-		
-	}
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    addElement(new PivotTableTemplate(dispatcher));
+                }
+            }));
+        add(createAddButton(I18N.CONSTANTS.addMap(),
+            IconImageBundle.ICONS.map(), new SelectionListener<ButtonEvent>() {
 
-	private Button createAddButton(String text, AbstractImagePrototype icon, SelectionListener<ButtonEvent> listener) {
-		Button button = new Button(text, icon, listener);
-		button.setIconAlign(IconAlign.TOP);
-		return button;
-	}
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    addElement(new MapTemplate(dispatcher));
+                }
+            }));
+        add(createAddButton(I18N.CONSTANTS.addText(),
+            IconImageBundle.ICONS.text(), new SelectionListener<ButtonEvent>() {
+
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    addElement(new TextReportElement());
+                }
+            }));
+    }
+
+    public void setCallback(AddCallback callback) {
+        this.addCallback = callback;
+    }
+
+    private void addElement(ReportElementTemplate template) {
+        template.createElement(new AsyncCallback<ReportElement>() {
+
+            @Override
+            public void onSuccess(ReportElement result) {
+                addElement(result);
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+    }
+
+    private void addElement(final ReportElement element) {
+        ElementDialog dialog = dialogProvider.get();
+        dialog.show(element, new Callback() {
+
+            @Override
+            public void onOK(boolean dirty) {
+                addCallback.onAdd(element);
+            }
+
+            @Override
+            public void onClose(boolean dirty) {
+
+            }
+        });
+
+    }
+
+    private Button createAddButton(String text, AbstractImagePrototype icon,
+        SelectionListener<ButtonEvent> listener) {
+        Button button = new Button(text, icon, listener);
+        button.setIconAlign(IconAlign.TOP);
+        return button;
+    }
 }

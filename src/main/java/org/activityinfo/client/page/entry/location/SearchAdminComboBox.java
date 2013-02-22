@@ -42,77 +42,80 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 
-public class SearchAdminComboBox extends ComboBox<AdminEntityDTO> implements AdminComboBox {
+public class SearchAdminComboBox extends ComboBox<AdminEntityDTO> implements
+    AdminComboBox {
 
-	private El clearSpan;
-	private final AdminLevelDTO level;
-	
-	public SearchAdminComboBox(AdminLevelDTO level, ListStore<AdminEntityDTO> store) {
-		this.level = level;
-		setFieldLabel(level.getName());
-		setStore(store);
-		setTypeAhead(false);
-		setForceSelection(true);
-		setEditable(false);
-		setValueField("id");
-		setUseQueryCache(false);
-		setDisplayField("name");
-		setTriggerAction(TriggerAction.ALL);
-	}
+    private El clearSpan;
+    private final AdminLevelDTO level;
 
-	@Override
-	protected void onRender(Element parent, int index) {
-		super.onRender(parent, index);
-		
-		clearSpan = new El(DOM.createSpan());
-		clearSpan.setInnerHtml("clear");
-		clearSpan.addStyleName(SiteFormResources.INSTANCE.style().adminClearSpan());
-		clearSpan.addEventsSunk(Event.MOUSEEVENTS);
-		clearSpan.setVisibilityMode(VisMode.VISIBILITY);
-		clearSpan.setVisible(false);
-		
-		getElement().appendChild(clearSpan.dom);
-	}
-	
-	public AdminLevelDTO getLevel() {
-		return level;
-	}
+    public SearchAdminComboBox(AdminLevelDTO level,
+        ListStore<AdminEntityDTO> store) {
+        this.level = level;
+        setFieldLabel(level.getName());
+        setStore(store);
+        setTypeAhead(false);
+        setForceSelection(true);
+        setEditable(false);
+        setValueField("id");
+        setUseQueryCache(false);
+        setDisplayField("name");
+        setTriggerAction(TriggerAction.ALL);
+    }
 
-	@Override
-	public void setValue(AdminEntityDTO value) {
-		super.setValue(value);
-		
-		this.clearSpan.setVisible(this.value != null);
-	}
-	
-	@Override
-	protected void onClick(ComponentEvent ce) {
-		if (clearSpan.dom.isOrHasChild(ce.getTarget())){
-			setValue(null);
-		}
-		super.onClick(ce);
-	}
-	
-	@Override
-	protected void onKeyDown(FieldEvent fe) {
-		super.onKeyDown(fe);
-		if (fe.getKeyCode() == KeyCodes.KEY_ESCAPE) {
-			setValue(null);
-		}
-	}
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
 
-	@Override
-	public void addSelectionChangeListener(
-			Listener<SelectionChangedEvent> listener) {
-		addListener(Events.SelectionChange, listener);
-	}
+        clearSpan = new El(DOM.createSpan());
+        clearSpan.setInnerHtml("clear");
+        clearSpan.addStyleName(SiteFormResources.INSTANCE.style()
+            .adminClearSpan());
+        clearSpan.addEventsSunk(Event.MOUSEEVENTS);
+        clearSpan.setVisibilityMode(VisMode.VISIBILITY);
+        clearSpan.setVisible(false);
 
-	public static class Factory implements ComboBoxFactory {
+        getElement().appendChild(clearSpan.dom);
+    }
 
-		@Override
-		public AdminComboBox create(AdminLevelDTO level,
-				ListStore<AdminEntityDTO> store) {
-			return new SearchAdminComboBox(level, store);
-		}
-	}
+    public AdminLevelDTO getLevel() {
+        return level;
+    }
+
+    @Override
+    public void setValue(AdminEntityDTO value) {
+        super.setValue(value);
+
+        this.clearSpan.setVisible(this.value != null);
+    }
+
+    @Override
+    protected void onClick(ComponentEvent ce) {
+        if (clearSpan.dom.isOrHasChild(ce.getTarget())) {
+            setValue(null);
+        }
+        super.onClick(ce);
+    }
+
+    @Override
+    protected void onKeyDown(FieldEvent fe) {
+        super.onKeyDown(fe);
+        if (fe.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+            setValue(null);
+        }
+    }
+
+    @Override
+    public void addSelectionChangeListener(
+        Listener<SelectionChangedEvent> listener) {
+        addListener(Events.SelectionChange, listener);
+    }
+
+    public static class Factory implements ComboBoxFactory {
+
+        @Override
+        public AdminComboBox create(AdminLevelDTO level,
+            ListStore<AdminEntityDTO> store) {
+            return new SearchAdminComboBox(level, store);
+        }
+    }
 }

@@ -30,11 +30,11 @@ import com.google.inject.Inject;
 
 public class InstallPipeline extends AsyncPipeline {
 
-	@Inject
-	public InstallPipeline(
-			AppCacheSynchronizer appCacheSynchronizer, 
-			DropAll dropAll, 
-			DownSynchronizer downSychronizer) {
-		super(appCacheSynchronizer, dropAll, downSychronizer);
-	}
+    @Inject
+    public InstallPipeline(
+        AppCacheSynchronizer appCacheSynchronizer,
+        DropAll dropAll,
+        DownSynchronizer downSychronizer) {
+        super(appCacheSynchronizer, dropAll, downSychronizer);
+    }
 }

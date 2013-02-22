@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.entry;
 
 /*
@@ -40,7 +38,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -48,10 +45,10 @@ import com.google.gwt.user.client.Element;
  */
 class MonthlyGrid extends EditorGrid<IndicatorRowDTO> {
 
-	private static final int MONTHS_TO_SHOW = 7;
+    private static final int MONTHS_TO_SHOW = 7;
 
-	private static final int ROW_HEADER_WIDTH = 150;
-	private static final int MONTH_COLUMN_WIDTH = 75;
+    private static final int ROW_HEADER_WIDTH = 150;
+    private static final int MONTH_COLUMN_WIDTH = 75;
 
     public MonthlyGrid(ListStore<IndicatorRowDTO> store) {
         super(store, createColumnModel());
@@ -72,11 +69,14 @@ class MonthlyGrid extends EditorGrid<IndicatorRowDTO> {
         DateTimeFormat monthFormat = DateTimeFormat.getFormat("MMM yy");
 
         Month month = startMonth;
-        for(int i=0; i!=MONTHS_TO_SHOW; ++i) {
-            DateWrapper date = new DateWrapper(month.getYear(), month.getMonth()-1, 1);
-        
-            getColumnModel().setColumnHeader(i+1, monthFormat.format(date.asDate()));
-            getColumnModel().setDataIndex(i+1, IndicatorRowDTO.propertyName(month));
+        for (int i = 0; i != MONTHS_TO_SHOW; ++i) {
+            DateWrapper date = new DateWrapper(month.getYear(),
+                month.getMonth() - 1, 1);
+
+            getColumnModel().setColumnHeader(i + 1,
+                monthFormat.format(date.asDate()));
+            getColumnModel().setDataIndex(i + 1,
+                IndicatorRowDTO.propertyName(month));
             month = month.next();
         }
     }
@@ -84,17 +84,19 @@ class MonthlyGrid extends EditorGrid<IndicatorRowDTO> {
     private static ColumnModel createColumnModel() {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig indicator = new ColumnConfig("indicatorName", I18N.CONSTANTS.indicators(), ROW_HEADER_WIDTH);
+        ColumnConfig indicator = new ColumnConfig("indicatorName",
+            I18N.CONSTANTS.indicators(), ROW_HEADER_WIDTH);
         indicator.setSortable(false);
         indicator.setMenuDisabled(true);
         columns.add(indicator);
 
-
-        for(int i = 0; i!=MONTHS_TO_SHOW; ++i) {
+        for (int i = 0; i != MONTHS_TO_SHOW; ++i) {
             NumberField indicatorField = new NumberField();
-            indicatorField.getPropertyEditor().setFormat(IndicatorNumberFormat.INSTANCE);
+            indicatorField.getPropertyEditor().setFormat(
+                IndicatorNumberFormat.INSTANCE);
 
-            ColumnConfig valueColumn = new ColumnConfig("month" + i, "", MONTH_COLUMN_WIDTH);
+            ColumnConfig valueColumn = new ColumnConfig("month" + i, "",
+                MONTH_COLUMN_WIDTH);
             valueColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
             valueColumn.setEditor(new CellEditor(indicatorField));
             valueColumn.setSortable(false);

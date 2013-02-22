@@ -20,87 +20,102 @@
   #L%
   -->
 
-
 <module rename-to="ActivityInfo">
 
     <!-- Inherit the core Web Toolkit stuff.                        -->
-    <inherits name='com.google.gwt.user.User' />
-	<stylesheet src="gxt224/css/gxt-all.css"/>
+  <inherits name='com.google.gwt.user.User' />
+  <stylesheet src="gxt224/css/gxt-all.css" />
     <!-- Inherit additional dependencies  -->
-    <inherits name='com.google.gwt.inject.Inject' />
-    <inherits name="com.google.gwt.i18n.I18N" />
-	<inherits name="com.google.gson.Gson"/>
-    <inherits name='com.extjs.gxt.ui.GXT' />
-    <inherits name="com.google.gwt.maps.GoogleMaps" />
-    <inherits name="com.ebessette.maps.core.OverlayManager" />
-    <inherits name="com.google.gwt.gears.Gears" />
-    <inherits name="com.google.gwt.inject.Inject"/>
-    <inherits name="com.extjs.gxt.charts.Chart"/>
-    <inherits name="com.google.code.gaxb.Annotations"/>
-    <inherits name="com.google.common.collect.Collect"/>    
-    
-    <inherits name="com.bedatadriven.rebar.sql.Sql"/>
-   	<inherits name="com.bedatadriven.rebar.appcache.AppCache"/>
-    <inherits name="com.bedatadriven.rebar.Time"/>
-    
-    <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
+  <inherits name='com.google.gwt.inject.Inject' />
+  <inherits name="com.google.gwt.i18n.I18N" />
+  <inherits name="com.google.gson.Gson" />
+  <inherits name='com.extjs.gxt.ui.GXT' />
+  <inherits name="com.google.gwt.maps.GoogleMaps" />
+  <inherits name="com.ebessette.maps.core.OverlayManager" />
+  <inherits name="com.google.gwt.gears.Gears" />
+  <inherits name="com.google.gwt.inject.Inject" />
+  <inherits name="com.extjs.gxt.charts.Chart" />
+  <inherits name="com.google.code.gaxb.Annotations" />
+  <inherits name="com.google.common.collect.Collect" />
 
-    <set-property name="gwt.logging.popupHandler" value="DISABLED" />
+  <inherits name="com.bedatadriven.rebar.sql.Sql" />
+  <inherits name="com.bedatadriven.rebar.appcache.AppCache" />
+  <inherits name="com.bedatadriven.rebar.Time" />
+
+  <inherits name="com.teklabs.gwt.i18n.GwtI18nServer" />
+
+  <set-property name="gwt.logging.popupHandler" value="DISABLED" />
     
 
 	<!-- Configure deferred binding for offline module depending on browser capability -->
-    
-    <replace-with class="org.activityinfo.client.local.capability.IECapabilityProfile">
-        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
-		<any>
-			<when-property-is name="user.agent" value="ie6"/>
-			<when-property-is name="user.agent" value="ie8" />
-	    </any>	
-	</replace-with>
-	
-        <replace-with class="org.activityinfo.client.local.capability.IE9CapabilityProfile">
-        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
-        <any>
-            <when-property-is name="user.agent" value="ie9" />
-        </any>  
-    </replace-with>
-    
-	<replace-with class="org.activityinfo.client.local.capability.FFCapabilityProfile">
-        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
-		<any>
-			<when-property-is name="user.agent" value="gecko1_8"/>
-	    </any>	
-	</replace-with>
 
-    <replace-with class="org.activityinfo.client.local.capability.WebKitCapabilityProfile">
-        <when-type-is class="org.activityinfo.client.local.capability.LocalCapabilityProfile"/>
-        <any>
-            <when-property-is name="user.agent" value="safari"/>
+  <replace-with
+    class="org.activityinfo.client.local.capability.IECapabilityProfile">
+    <when-type-is
+      class="org.activityinfo.client.local.capability.LocalCapabilityProfile" />
+    <any>
+      <when-property-is name="user.agent" value="ie6" />
+      <when-property-is name="user.agent" value="ie8" />
+    </any>
+  </replace-with>
+
+  <replace-with
+    class="org.activityinfo.client.local.capability.IE9CapabilityProfile">
+    <when-type-is
+      class="org.activityinfo.client.local.capability.LocalCapabilityProfile" />
+    <any>
+      <when-property-is name="user.agent" value="ie9" />
+    </any>
+  </replace-with>
+
+  <replace-with
+    class="org.activityinfo.client.local.capability.FFCapabilityProfile">
+    <when-type-is
+      class="org.activityinfo.client.local.capability.LocalCapabilityProfile" />
+    <any>
+      <when-property-is name="user.agent" value="gecko1_8" />
+    </any>
+  </replace-with>
+
+  <replace-with
+    class="org.activityinfo.client.local.capability.WebKitCapabilityProfile">
+    <when-type-is
+      class="org.activityinfo.client.local.capability.LocalCapabilityProfile" />
+    <any>
+      <when-property-is name="user.agent" value="safari" />
             <!-- Have to double check but think opera is pretty consistent with webkit -->
-            <when-property-is name="user.agent" value="opera"/>
-        </any>  
-    </replace-with>
+      <when-property-is name="user.agent" value="opera" />
+    </any>
+  </replace-with>
 
     <!-- Include generated sources -->
-    <source path='client'/>
-    <source path="shared"/>
+  <source path='client' />
+  <source path="shared" />
 
 
     <!-- Enable other locales -->
-    <extend-property name="locale" values="en" />
-    <set-property-fallback name="locale" value="en"/>
-    <super-source path="emul" />
+  <extend-property name="locale" values="en" />
+  <set-property-fallback name="locale" value="en" />
+  <super-source path="emul" />
     
     <!-- Blacklist classes that are never serialized but get pulled in by 
     	 interfaces on RPCable types -->
-	<extend-configuration-property name="rpc.blacklist" value="java.util.LinkedList"/>
-	<extend-configuration-property name="rpc.blacklist" value="java.util.Stack"/>
-	<extend-configuration-property name="rpc.blacklist" value="java.util.TreeMap"/>
-	<extend-configuration-property name="rpc.blacklist" value="java.util.TreeSet"/>
-	<extend-configuration-property name="rpc.blacklist" value="java.util.Vector"/>
-	<extend-configuration-property name="rpc.blacklist" value="com.google.collect.ImmutableMultimap"/>
-	<extend-configuration-property name="rpc.blacklist" value="com.google.collect.ImmutableMultiset"/>
-	<extend-configuration-property name="rpc.blacklist" value="com.google.collect.EmptyImmutableMultiset"/>
+  <extend-configuration-property name="rpc.blacklist"
+    value="java.util.LinkedList" />
+  <extend-configuration-property name="rpc.blacklist"
+    value="java.util.Stack" />
+  <extend-configuration-property name="rpc.blacklist"
+    value="java.util.TreeMap" />
+  <extend-configuration-property name="rpc.blacklist"
+    value="java.util.TreeSet" />
+  <extend-configuration-property name="rpc.blacklist"
+    value="java.util.Vector" />
+  <extend-configuration-property name="rpc.blacklist"
+    value="com.google.collect.ImmutableMultimap" />
+  <extend-configuration-property name="rpc.blacklist"
+    value="com.google.collect.ImmutableMultiset" />
+  <extend-configuration-property name="rpc.blacklist"
+    value="com.google.collect.EmptyImmutableMultiset" />
 
 
 </module>

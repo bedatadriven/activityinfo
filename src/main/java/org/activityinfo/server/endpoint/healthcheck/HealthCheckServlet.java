@@ -38,20 +38,21 @@ import com.google.inject.Singleton;
 @Singleton
 public class HealthCheckServlet extends HttpServlet {
 
-	private final Provider<EntityManager> entityManager;
-	
-	@Inject
-	public HealthCheckServlet(Provider<EntityManager> entityManager) {
-		super();
-		this.entityManager = entityManager;
-	}
-	
-	@Override
-	protected void doGet(HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-	
-		// verify connection with database
-		Query query = entityManager.get().createNativeQuery("select count(*) from UserDatabase");
-		Object count = query.getSingleResult();
-	}
+    private final Provider<EntityManager> entityManager;
+
+    @Inject
+    public HealthCheckServlet(Provider<EntityManager> entityManager) {
+        super();
+        this.entityManager = entityManager;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, final HttpServletResponse resp)
+        throws ServletException, IOException {
+
+        // verify connection with database
+        Query query = entityManager.get().createNativeQuery(
+            "select count(*) from UserDatabase");
+        query.getSingleResult();
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -32,7 +30,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.database.hibernate.dao.AdminDAO;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.AssertUtils;
@@ -44,15 +41,13 @@ import org.junit.runner.RunWith;
 
 import com.google.inject.Inject;
 
-
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/adminEntities.db.xml")
-@Modules({MockHibernateModule.class})
+@Modules({ MockHibernateModule.class })
 public class AdminDAOImplTest {
 
-	@Inject
+    @Inject
     private AdminDAO adminDAO;
-
 
     @Test
     public void queryRoot() throws CommandException {
@@ -71,7 +66,8 @@ public class AdminDAOImplTest {
         assertEquals("count", 3, result.size());
         assertSorted(result);
         assertEquals("level", "Territoire", result.get(0).getLevel().getName());
-        assertEquals("parentId", "Sud Kivu", result.get(0).getParent().getName());
+        assertEquals("parentId", "Sud Kivu", result.get(0).getParent()
+            .getName());
     }
 
     @Test
@@ -79,9 +75,9 @@ public class AdminDAOImplTest {
     public void queryRootEntitiesWithSites() throws Exception {
 
         List<AdminEntity> result = adminDAO.query()
-                .level(1)
-                .withSitesOfActivityId(4)
-                .execute();
+            .level(1)
+            .withSitesOfActivityId(4)
+            .execute();
 
         assertEquals(1, result.size());
     }
@@ -94,6 +90,5 @@ public class AdminDAOImplTest {
             }
         });
     }
-
 
 }

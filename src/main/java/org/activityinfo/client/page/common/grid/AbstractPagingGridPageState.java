@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.grid;
 
 /*
@@ -37,27 +35,30 @@ public abstract class AbstractPagingGridPageState extends AbstractGridPageState 
         this.pageNum = pageNum;
     }
 
+    @Override
     protected void appendGridStateToken(StringBuilder sb) {
-        if(getSortInfo() != null && getSortInfo().getSortDir() != Style.SortDir.NONE &&
-                getSortInfo().getSortField().length() !=0) {
+        if (getSortInfo() != null
+            && getSortInfo().getSortDir() != Style.SortDir.NONE &&
+            getSortInfo().getSortField().length() != 0) {
 
             sb.append("/sort");
-            if(getSortInfo().getSortDir() == Style.SortDir.DESC) {
+            if (getSortInfo().getSortDir() == Style.SortDir.DESC) {
                 sb.append("-desc");
             }
             sb.append(":").append(getSortInfo().getSortField());
-            if(pageNum > 0) {
+            if (pageNum > 0) {
                 sb.append("/p").append(pageNum);
             }
         }
     }
 
+    @Override
     public boolean parseGridStateTokens(String t) {
-        if(super.parseGridStateTokens(t)) {
+        if (super.parseGridStateTokens(t)) {
             return true;
         }
 
-        if(t.startsWith("p")) {
+        if (t.startsWith("p")) {
             pageNum = Integer.parseInt(t.substring(1));
         } else {
             return false;

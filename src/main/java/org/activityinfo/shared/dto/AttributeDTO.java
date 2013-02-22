@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -32,23 +30,24 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * One-to-One DTO for the {@link org.activityinfo.shared.dto.AttributeDTO} domain object
- *
+ * One-to-One DTO for the {@link org.activityinfo.shared.dto.AttributeDTO}
+ * domain object
+ * 
  * @author Alex Bertram
  */
 @JsonAutoDetect(JsonMethod.NONE)
 public final class AttributeDTO extends BaseModelData implements EntityDTO {
 
     public static final String PROPERTY_PREFIX = "ATTRIB";
-	public static final int NAME_MAX_LENGTH = 50;
+    public static final int NAME_MAX_LENGTH = 50;
 
     public AttributeDTO() {
-		
-	}
+
+    }
 
     public AttributeDTO(AttributeDTO model) {
         super(model.getProperties());
-        
+
     }
 
     public AttributeDTO(int id, String name) {
@@ -56,10 +55,11 @@ public final class AttributeDTO extends BaseModelData implements EntityDTO {
         setName(name);
     }
 
+    @Override
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public int getId() {
-        return (Integer)get("id");
+        return (Integer) get("id");
     }
 
     public void setId(int id) {
@@ -67,32 +67,34 @@ public final class AttributeDTO extends BaseModelData implements EntityDTO {
     }
 
     public void setName(String value) {
-		set("name", value);
-	}
-	
+        set("name", value);
+    }
+
+    @Override
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
-	public String getName()
-	{
-		return get("name");
-	}
+    public String getName()
+    {
+        return get("name");
+    }
 
-	public static String getPropertyName(int attributeId) {
-		return PROPERTY_PREFIX + attributeId;
-	}
-	
-	public static String getPropertyName(AttributeDTO attribute) {
-		return getPropertyName(attribute.getId());
-	}
-	
-	public String getPropertyName() {
-		return getPropertyName(getId());
-	}
+    public static String getPropertyName(int attributeId) {
+        return PROPERTY_PREFIX + attributeId;
+    }
+
+    public static String getPropertyName(AttributeDTO attribute) {
+        return getPropertyName(attribute.getId());
+    }
+
+    public String getPropertyName() {
+        return getPropertyName(getId());
+    }
 
     public static int idForPropertyName(String property) {
         return Integer.parseInt(property.substring(PROPERTY_PREFIX.length()));
     }
 
+    @Override
     public String getEntityName() {
         return "Attribute";
     }

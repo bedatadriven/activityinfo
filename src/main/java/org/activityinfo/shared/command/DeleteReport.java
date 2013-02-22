@@ -25,21 +25,21 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.VoidResult;
 
 public class DeleteReport implements MutatingCommand<VoidResult> {
-	private int reportId;
+    private int reportId;
 
-	public DeleteReport() {
-		
-	}
-	
-	public DeleteReport(int id) {
-		this.reportId = id;
-	}
+    public DeleteReport() {
 
-	public int getReportId() {
-		return reportId;
-	}
+    }
 
-	public void setReportId(int reportId) {
-		this.reportId = reportId;
-	}
+    public DeleteReport(int id) {
+        this.reportId = id;
+    }
+
+    public int getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
 }

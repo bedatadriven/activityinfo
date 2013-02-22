@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -42,19 +40,19 @@ import com.google.common.collect.Sets;
 
 /**
  * Describes a document that contains a series of <code>ReportElement</code>s
- *  (e.g. Tables, Charts, etc} and is bound to a time frame.
- *
+ * (e.g. Tables, Charts, etc} and is bound to a time frame.
+ * 
  * @see org.activityinfo.shared.report.model.ReportElement
  */
-@XmlRootElement(name="report")
-public class Report extends ReportElement<ReportContent> implements Serializable, CommandResult {
-
+@XmlRootElement(name = "report")
+public class Report extends ReportElement<ReportContent> implements
+    Serializable, CommandResult {
 
     private List<ReportElement> elements = new ArrayList<ReportElement>();
 
     private int id;
-    
-	private String fileName;
+
+    private String fileName;
     private String description;
 
     private EmailDelivery frequency;
@@ -63,20 +61,18 @@ public class Report extends ReportElement<ReportContent> implements Serializable
     public static final int LAST_DAY_OF_MONTH = 28;
 
     public Report() {
-		
-	}
-    
+
+    }
+
     public int getId() {
-		return id;
-	}
-    
-	public void setId(int id) {
-		this.id = id;
-	}
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
-
-	@XmlElement
+    @XmlElement
     public String getDescription() {
         return description;
     }
@@ -89,69 +85,72 @@ public class Report extends ReportElement<ReportContent> implements Serializable
      * @return The list of report elements included in this report.
      */
     @XmlElements({
-            @XmlElement(name="pivotTable", type=PivotTableReportElement.class),
-            @XmlElement(name="pivotChart", type=PivotChartReportElement.class),
-            @XmlElement(name="table", type=TableElement.class),
-            @XmlElement(name="map", type=MapReportElement.class),
-            @XmlElement(name="text", type=TextReportElement.class),
-            @XmlElement(name="image", type=ImageReportElement.class)
+        @XmlElement(name = "pivotTable", type = PivotTableReportElement.class),
+        @XmlElement(name = "pivotChart", type = PivotChartReportElement.class),
+        @XmlElement(name = "table", type = TableElement.class),
+        @XmlElement(name = "map", type = MapReportElement.class),
+        @XmlElement(name = "text", type = TextReportElement.class),
+        @XmlElement(name = "image", type = ImageReportElement.class)
     })
-    @XmlElementWrapper(name="elements")
-	public List<ReportElement> getElements() {
-		return elements;
-	}
+    @XmlElementWrapper(name = "elements")
+    public List<ReportElement> getElements() {
+        return elements;
+    }
 
     public <T extends ReportElement> T getElement(int index) {
         return (T) elements.get(index);
     }
 
-	public void setElements(List<ReportElement> elements) {
-		this.elements = elements;
-	}
+    public void setElements(List<ReportElement> elements) {
+        this.elements = elements;
+    }
 
     /**
      * Adds a ReportElement to this report's definition.
-     *
-     * @param element A <code>ReportElement</code>
+     * 
+     * @param element
+     *            A <code>ReportElement</code>
      */
-	public void addElement(ReportElement element) {
-		elements.add(element);
-	}
+    public void addElement(ReportElement element) {
+        elements.add(element);
+    }
 
     /**
-     *
-     * @return Suggested filename for tbis report if it is saved to disk/downloaded. Does not contain
-     * the file extension.
+     * 
+     * @return Suggested filename for tbis report if it is saved to
+     *         disk/downloaded. Does not contain the file extension.
      */
     @XmlElement
-	public String getFileName() {
-		return fileName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
     /**
-     * Sets the suggested filename for this report in the event it is saved to disk/downloaded.
-     * Should not
-     * contain the extension
-     *
-     * @param fileName The suggested filename, without extension
+     * Sets the suggested filename for this report in the event it is saved to
+     * disk/downloaded. Should not contain the extension
+     * 
+     * @param fileName
+     *            The suggested filename, without extension
      */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	@Override
-	@XmlTransient
-	public Set<Integer> getIndicators() {
-		Set<Integer> ids = Sets.newHashSet();
-		for(ReportElement element : getElements()) {
-			ids.addAll(element.getIndicators());
-		}
-		return ids;
-	}
+    @Override
+    @XmlTransient
+    public Set<Integer> getIndicators() {
+        Set<Integer> ids = Sets.newHashSet();
+        for (ReportElement element : getElements()) {
+            ids.addAll(element.getIndicators());
+        }
+        return ids;
+    }
 
-	@Override
-	public String toString() {
-		return "Report [elements=" +  com.google.common.base.Joiner.on('\n').join(elements) +  elements + "]";
-	}
+    @Override
+    public String toString() {
+        return "Report [elements="
+            + com.google.common.base.Joiner.on('\n').join(elements) + elements
+            + "]";
+    }
 
 }

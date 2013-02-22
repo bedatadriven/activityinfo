@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.authentication;
 
 /*
@@ -27,8 +25,7 @@ package org.activityinfo.server.authentication;
 import java.security.SecureRandom;
 
 /**
- * Generates a 128-bit random token that can be safely used as a
- * security token.
+ * Generates a 128-bit random token that can be safely used as a security token.
  */
 public class SecureTokenGenerator {
 
@@ -37,9 +34,9 @@ public class SecureTokenGenerator {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     /**
-     * Generates a 128-bit random token and returns it formatted as a
-     * 32-digit hexadecimal string
-     *
+     * Generates a 128-bit random token and returns it formatted as a 32-digit
+     * hexadecimal string
+     * 
      * @return a 32-digit hexadecimal string
      */
     public static String generate() {
@@ -72,5 +69,5 @@ public class SecureTokenGenerator {
             return (char) ('0' + nibble);
         }
         return (char) ('a' + nibble - 10);
-	}
+    }
 }

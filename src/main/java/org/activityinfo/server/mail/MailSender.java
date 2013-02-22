@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.mail;
 
 /*
@@ -23,7 +22,6 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ResourceBundle;
@@ -38,65 +36,66 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-
-
 public abstract class MailSender {
 
-	private final Configuration templateCfg;
-	
-	public MailSender(Configuration templateCfg) {
-		super();
-		this.templateCfg = templateCfg;
-	}
+    private final Configuration templateCfg;
 
-	public abstract void send(Message message) throws MessagingException;
+    public MailSender(Configuration templateCfg) {
+        super();
+        this.templateCfg = templateCfg;
+    }
 
-	public void send(MailMessage model) {
-		try {
-			MessageBuilder message = createMessage(model);
-			send(message.build());
-			
-		} catch(MessagingException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (TemplateException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public abstract void send(Message message) throws MessagingException;
 
-	public MessageBuilder createMessage(MailMessage model)
-			throws MessagingException, AddressException, IOException,
-			TemplateException {
-		MessageBuilder message = new MessageBuilder();
-		message.to(model.getRecipient().getEmail(), model.getRecipient().getName());
-		message.bcc("akbertram@gmail.com");
-		message.subject(getSubject(model));
-		message.body(composeMessage(model));
-		return message;
-	}
+    public void send(MailMessage model) {
+        try {
+            MessageBuilder message = createMessage(model);
+            send(message.build());
 
-	private String composeMessage(MailMessage model)
-			throws IOException, TemplateException {
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-		StringWriter writer = new StringWriter();
-		Template template = templateCfg.getTemplate(model.getTemplateName(), 
-				LocaleHelper.getLocaleObject(model.getRecipient()));
-		template.process(model, writer);
-		return writer.toString();
-	}
+    public MessageBuilder createMessage(MailMessage model)
+        throws MessagingException, AddressException, IOException,
+        TemplateException {
+        MessageBuilder message = new MessageBuilder();
+        message.to(model.getRecipient().getEmail(), model.getRecipient()
+            .getName());
+        message.bcc("akbertram@gmail.com");
+        message.subject(getSubject(model));
+        message.body(composeMessage(model));
+        return message;
+    }
 
-	private String getSubject(MailMessage message) {
-		String subject = getResourceBundle(message).getString(message.getSubjectKey());
-		if(subject == null) {
-			throw new RuntimeException("Missing subject key '" + message.getSubjectKey() + "' in MailMessages");
-		}
-		return subject;
-	}
+    private String composeMessage(MailMessage model)
+        throws IOException, TemplateException {
 
-	private ResourceBundle getResourceBundle(MailMessage message) {
-		return ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages", 
-				LocaleHelper.getLocaleObject(message.getRecipient()));
-	}
+        StringWriter writer = new StringWriter();
+        Template template = templateCfg.getTemplate(model.getTemplateName(),
+            LocaleHelper.getLocaleObject(model.getRecipient()));
+        template.process(model, writer);
+        return writer.toString();
+    }
+
+    private String getSubject(MailMessage message) {
+        String subject = getResourceBundle(message).getString(
+            message.getSubjectKey());
+        if (subject == null) {
+            throw new RuntimeException("Missing subject key '"
+                + message.getSubjectKey() + "' in MailMessages");
+        }
+        return subject;
+    }
+
+    private ResourceBundle getResourceBundle(MailMessage message) {
+        return ResourceBundle.getBundle(
+            "org.activityinfo.server.mail.MailMessages",
+            LocaleHelper.getLocaleObject(message.getRecipient()));
+    }
 }
-

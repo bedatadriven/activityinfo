@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -24,8 +22,6 @@ package org.activityinfo.shared.command.result;
  * #L%
  */
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
 /**
  * Result of commands which create a new entity.
  * 
@@ -48,7 +44,6 @@ public class CreateResult implements CommandResult {
         this.newId = newId;
     }
 
-
     /**
      * Gets the primary key of the new entity.
      * 
@@ -62,6 +57,5 @@ public class CreateResult implements CommandResult {
     public void setNewId(int newId) {
         this.newId = newId;
     }
-
 
 }

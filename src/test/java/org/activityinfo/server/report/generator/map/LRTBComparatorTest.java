@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -65,7 +63,7 @@ public class LRTBComparatorTest {
 
         Collections.sort(list, new MapMarker.LRTBComparator());
 
-        for(MapMarker marker : list) {
+        for (MapMarker marker : list) {
             System.out.println(marker.toString());
         }
 
@@ -73,7 +71,6 @@ public class LRTBComparatorTest {
         Assert.assertEquals(ul2, list.get(1));
         Assert.assertEquals(c, list.get(2));
         Assert.assertEquals(ll, list.get(3));
-
 
     }
 }

@@ -24,121 +24,124 @@ package org.activityinfo.shared.dto;
 
 import java.util.Date;
 import java.util.List;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class TargetDTO extends BaseModelData implements EntityDTO{
+public class TargetDTO extends BaseModelData implements EntityDTO {
 
-	private UserDatabaseDTO userDatabase;
-	private List<TargetValueDTO> targetValues ;
+    private UserDatabaseDTO userDatabase;
+    private List<TargetValueDTO> targetValues;
 
-	public static final String entityName = "Target";
+    public static final String entityName = "Target";
 
-	public TargetDTO() {
-		super();
-	}
+    public TargetDTO() {
+        super();
+    }
 
-	public TargetDTO(int id, String name) {
-		super();
+    public TargetDTO(int id, String name) {
+        super();
 
-		set("id", id);
-		set("name", name);
-	}
+        set("id", id);
+        set("name", name);
+    }
 
-	public int getId() {
-		return (Integer) get("id");
-	}
+    @Override
+    public int getId() {
+        return (Integer) get("id");
+    }
 
-	public void setId(int id) {
-		set("id", id);
-	}
+    public void setId(int id) {
+        set("id", id);
+    }
 
-	public String getName() {
-		return (String) get("name");
-	}
+    @Override
+    public String getName() {
+        return (String) get("name");
+    }
 
-	public void setName(String name) {
-		set("name", name);
-	}
+    public void setName(String name) {
+        set("name", name);
+    }
 
-	public void setDescription(String description) {
-		set("description", description);
-	}
+    public void setDescription(String description) {
+        set("description", description);
+    }
 
-	public String getDescription() {
-		return (String) get("description");
-	}
+    public String getDescription() {
+        return (String) get("description");
+    }
 
-	public void setUserDatabase(UserDatabaseDTO database) {
-		this.userDatabase = database;
-	}
+    public void setUserDatabase(UserDatabaseDTO database) {
+        this.userDatabase = database;
+    }
 
-	public UserDatabaseDTO getUserDatabase() {
-		return userDatabase;
-	}
+    public UserDatabaseDTO getUserDatabase() {
+        return userDatabase;
+    }
 
-	public ProjectDTO getProject() {
-		return get("project");
-	}
+    public ProjectDTO getProject() {
+        return get("project");
+    }
 
-	public void setProject(ProjectDTO value) {
-		set("project", value);
-	}
+    public void setProject(ProjectDTO value) {
+        set("project", value);
+    }
 
-	public PartnerDTO getPartner() {
-		return get("partner");
-	}
+    public PartnerDTO getPartner() {
+        return get("partner");
+    }
 
-	public void setPartner(PartnerDTO value) {
-		set("partner", value);
-	}
+    public void setPartner(PartnerDTO value) {
+        set("partner", value);
+    }
 
-	public AdminEntityDTO getAdminEntity() {
-		return get("adminEntity");
-	}
+    public AdminEntityDTO getAdminEntity() {
+        return get("adminEntity");
+    }
 
-	public void setAdminEntity(AdminEntityDTO value) {
-		set("adminEntity", value);
-	}
+    public void setAdminEntity(AdminEntityDTO value) {
+        set("adminEntity", value);
+    }
 
-	public void setDate1(Date date1) {
-		set("date1", date1);
-	}
+    public void setDate1(Date date1) {
+        set("date1", date1);
+    }
 
-	public Date getDate1() {
-		return (Date) get("date1");
-	}
+    public Date getDate1() {
+        return (Date) get("date1");
+    }
 
-	public void setDate2(Date date2) {
-		set("date2", date2);
-	}
+    public void setDate2(Date date2) {
+        set("date2", date2);
+    }
 
-	public Date getDate2() {
-		return (Date) get("date2");
-	}
-	
-	public void setArea(String area){
-		set("area", area);
-	}
-	
-	public String getArea(){
-		return get("area");
-	}
+    public Date getDate2() {
+        return (Date) get("date2");
+    }
 
-	public List<TargetValueDTO> getTargetValues() {
-		return targetValues;
-	}
+    public void setArea(String area) {
+        set("area", area);
+    }
 
-	public void setTargetValues(List<TargetValueDTO> targetValues) {
-		this.targetValues = targetValues;
-	}
+    public String getArea() {
+        return get("area");
+    }
 
-	@Override
-	public String toString() {
-		return getName();
-	}
+    public List<TargetValueDTO> getTargetValues() {
+        return targetValues;
+    }
 
-	@Override
-	public String getEntityName() {
-		return entityName;
-	}
+    public void setTargetValues(List<TargetValueDTO> targetValues) {
+        this.targetValues = targetValues;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
+    public String getEntityName() {
+        return entityName;
+    }
 }

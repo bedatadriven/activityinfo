@@ -25,37 +25,36 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.VoidResult;
 
 public class LinkIndicators implements Command<VoidResult> {
-	private boolean link;
-	private int sourceIndicatorId;
-	private int destIndicatorId;
-	
-	public LinkIndicators() {
-		super();
-	}
+    private boolean link;
+    private int sourceIndicatorId;
+    private int destIndicatorId;
 
-	public boolean isLink() {
-		return link;
-	}
+    public LinkIndicators() {
+        super();
+    }
 
-	public void setLink(boolean link) {
-		this.link = link;
-	}
+    public boolean isLink() {
+        return link;
+    }
 
-	public int getSourceIndicatorId() {
-		return sourceIndicatorId;
-	}
+    public void setLink(boolean link) {
+        this.link = link;
+    }
 
-	public void setSourceIndicatorId(int sourceIndicatorId) {
-		this.sourceIndicatorId = sourceIndicatorId;
-	}
+    public int getSourceIndicatorId() {
+        return sourceIndicatorId;
+    }
 
-	public int getDestIndicatorId() {
-		return destIndicatorId;
-	}
+    public void setSourceIndicatorId(int sourceIndicatorId) {
+        this.sourceIndicatorId = sourceIndicatorId;
+    }
 
-	public void setDestIndicatorId(int destIndicatorId) {
-		this.destIndicatorId = destIndicatorId;
-	}
-	
-	
+    public int getDestIndicatorId() {
+        return destIndicatorId;
+    }
+
+    public void setDestIndicatorId(int destIndicatorId) {
+        this.destIndicatorId = destIndicatorId;
+    }
+
 }

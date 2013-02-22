@@ -22,7 +22,6 @@ package org.activityinfo.client.page.app;
  * #L%
  */
 
-
 import java.util.Date;
 
 import org.activityinfo.client.EventBus;
@@ -58,222 +57,232 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class SettingsPopup extends PopupPanel {
 
-	public static final int WIDTH = 250;
-	
-	private static SettingsPopupUiBinder uiBinder = GWT
-			.create(SettingsPopupUiBinder.class);
+    public static final int WIDTH = 250;
 
-	interface SettingsPopupUiBinder extends UiBinder<Widget, SettingsPopup> {
-	}
-	
-	@UiField
-	SpanElement versionLabel;
-	
-	@UiField
-	SpanElement emailLabel;
-	
-	
-	@UiField
-	SpanElement versionStatus;
-	
-	@UiField
-	SpanElement appCacheStatus;
-	
-	@UiField
-	Label refreshLink;
-	
-	@UiField
-	Label logoutLink;
-	
-	@UiField
-	Label offlineInstallLabel;
-	
-	@UiField
-	Label offlineStatusLabel;
-	
-	@UiField
-	Label lastSyncedLabel;
-	
-	Date lastSyncTime = null;
-	
-	@UiField
-	DivElement syncRow;
-	
-	@UiField
-	Label syncNowLabel;
-	
-	private boolean syncing = false;
-	
-	private EventBus eventBus;
-	
-	private LocalStateChangeEvent.State state = State.CHECKING;
+    private static SettingsPopupUiBinder uiBinder = GWT
+        .create(SettingsPopupUiBinder.class);
 
-	private LocalController offlineController;
+    interface SettingsPopupUiBinder extends UiBinder<Widget, SettingsPopup> {
+    }
 
-    private LocalCapabilityProfile offlineCapabilityProfile = GWT.create(LocalCapabilityProfile.class);
-	
-	public SettingsPopup(EventBus eventBus, LocalController offlineController) {
-		this.eventBus = eventBus;
-		this.offlineController = offlineController;
-		
-		setWidget(uiBinder.createAndBindUi(this));
-		setAutoHideEnabled(true);
-		setAutoHideOnHistoryEventsEnabled(true);
-		setWidth(WIDTH + "px");
-		
-		versionLabel.setInnerText(VersionInfo.getDisplayName());
-		emailLabel.setInnerText(new ClientSideAuthProvider().get().getEmail());
-		
-		syncRow.getStyle().setDisplay(Display.NONE);
-		
-		eventBus.addListener(SyncStatusEvent.TYPE, new Listener<SyncStatusEvent>() {
+    @UiField
+    SpanElement versionLabel;
 
-			@Override
-			public void handleEvent(SyncStatusEvent be) {
-				offlineStatusLabel.setText(be.getTask() + " " + ((int)(be.getPercentComplete())) + "%");
-				syncing = true;
-			}
-		});	
-		eventBus.addListener(SyncCompleteEvent.TYPE, new Listener<SyncCompleteEvent>() {
+    @UiField
+    SpanElement emailLabel;
 
-			@Override
-			public void handleEvent(SyncCompleteEvent event) {
-				syncing = false;
-				syncRow.getStyle().setDisplay(Display.BLOCK);
-				lastSyncTime = event.getTime();
-				updateLastSyncLabel();
-			}
+    @UiField
+    SpanElement versionStatus;
 
-		});
-		eventBus.addListener(LocalStateChangeEvent.TYPE, new Listener<LocalStateChangeEvent>() {
+    @UiField
+    SpanElement appCacheStatus;
 
-			@Override
-			public void handleEvent(LocalStateChangeEvent be) {
-				onOfflineStatusChange(be.getState());
-			}
-		});
-		onOfflineStatusChange(offlineController.getState());
-	}
+    @UiField
+    Label refreshLink;
 
-	@Override
-	public void show() {
-		checkForUpdates();
-		updateLastSyncLabel();
-		if(!syncing) {
-			offlineStatusLabel.setText("");
-		}
-		super.show();
-	}
-	
-	/**
-	 * Queries the server for the latest deployed version.
-	 */
-	private void checkForUpdates() {
-		versionStatus.setInnerText(I18N.CONSTANTS.versionChecking());
-		appCacheStatus.setInnerText("");
-		refreshLink.setVisible(false);
-		RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/commit.id");
-		request.setCallback(new RequestCallback() {
-			
-			@Override
-			public void onResponseReceived(Request request, Response response) {
-				if(response.getStatusCode() != 200) {
-					versionStatus.setInnerText(I18N.CONSTANTS.versionConnectionProblem());
-				
-				} else if(response.getText().startsWith(VersionInfo.getCommitId())) {
-					versionStatus.setInnerText(I18N.CONSTANTS.versionLatest());
-					
-				} else {
-					versionStatus.setInnerText(I18N.CONSTANTS.versionUpdateAvailable());
-					refreshLink.setVisible(true);
-				}
-			}
-			
-			@Override
-			public void onError(Request request, Throwable exception) {
-				versionStatus.setInnerText(I18N.CONSTANTS.versionConnectionProblem());
-			}
-		});
-		try {
-			request.send();
-		} catch (RequestException e) {
-			versionStatus.setInnerText(I18N.CONSTANTS.versionConnectionProblem());
-			Log.debug("Problem fetching latest version", e);
-		}
-	}
+    @UiField
+    Label logoutLink;
 
-	
-	@UiHandler("refreshLink")
-	public void onRefreshLink(ClickEvent e) {
+    @UiField
+    Label offlineInstallLabel;
 
-	}
+    @UiField
+    Label offlineStatusLabel;
 
-	@UiHandler("logoutLink")
-	public void onLogoutClicked(ClickEvent e) {
-		SessionUtil.logout();
-	}
-	
-	@UiHandler("offlineInstallLabel") 
-	public void onOfflineInstallClicked(ClickEvent e) {
-		switch(state) {
-		case UNINSTALLED:
-			if(offlineCapabilityProfile.isOfflineModeSupported()) {
-				offlineController.install();
-			} else {
-				MessageBox.info("Offline Mode not supported", offlineCapabilityProfile.getInstallInstructions(), null);
-			}
-		}
-	}
-	
-	@UiHandler("syncNowLabel")
-	public void onSyncNowClicked(ClickEvent e) {
-		offlineController.synchronize();
-	}
+    @UiField
+    Label lastSyncedLabel;
 
-	private void onOfflineStatusChange(State state) {
-		this.state = state;
-		offlineStatusLabel.setText("");
-		switch(state) {
-		case UNINSTALLED:
-			offlineInstallLabel.setText(I18N.CONSTANTS.installOffline());
-			syncRow.getStyle().setDisplay(Display.NONE);
-			break;
-		case INSTALLING:
-			offlineInstallLabel.setText("");
-			syncRow.getStyle().setDisplay(Display.NONE);
-			break;
-		case INSTALLED:
-			offlineInstallLabel.setText(I18N.CONSTANTS.reinstallOfflineMode());
-			syncRow.getStyle().setDisplay(Display.BLOCK);
-			lastSyncTime = offlineController.getLastSyncTime();
-			updateLastSyncLabel();
-		}
-	}
-	
+    Date lastSyncTime = null;
 
-	private void updateLastSyncLabel() {
-		if(lastSyncTime != null) {
-			lastSyncedLabel.setText(I18N.MESSAGES.lastSynced(formatLastSyncTime(lastSyncTime)));
-		}
-	}
-	
-	private String formatLastSyncTime(Date time) {
-		long now = new Date().getTime();
-		long last = time.getTime();
-		
-		long secondsAgo = (now-last)/1000;
-		if(secondsAgo <= 60) {
-			return I18N.CONSTANTS.relativeTimeMinAgo();
-		}
-		long minutesAgo = secondsAgo / 60;
-		if(minutesAgo <= 60) {
-			return I18N.MESSAGES.minutesAgo((int)minutesAgo);
-		}
-		long hoursAgo = minutesAgo / 60;
-		if(hoursAgo <= 48) {
-			return I18N.MESSAGES.hoursAgo((int)hoursAgo);
-		}
-		long daysAgo = hoursAgo / 24;
-		return I18N.MESSAGES.daysAgo((int)daysAgo);
-	}
+    @UiField
+    DivElement syncRow;
+
+    @UiField
+    Label syncNowLabel;
+
+    private boolean syncing = false;
+
+    private EventBus eventBus;
+
+    private LocalStateChangeEvent.State state = State.CHECKING;
+
+    private LocalController offlineController;
+
+    private LocalCapabilityProfile offlineCapabilityProfile = GWT
+        .create(LocalCapabilityProfile.class);
+
+    public SettingsPopup(EventBus eventBus, LocalController offlineController) {
+        this.eventBus = eventBus;
+        this.offlineController = offlineController;
+
+        setWidget(uiBinder.createAndBindUi(this));
+        setAutoHideEnabled(true);
+        setAutoHideOnHistoryEventsEnabled(true);
+        setWidth(WIDTH + "px");
+
+        versionLabel.setInnerText(VersionInfo.getDisplayName());
+        emailLabel.setInnerText(new ClientSideAuthProvider().get().getEmail());
+
+        syncRow.getStyle().setDisplay(Display.NONE);
+
+        eventBus.addListener(SyncStatusEvent.TYPE,
+            new Listener<SyncStatusEvent>() {
+
+                @Override
+                public void handleEvent(SyncStatusEvent be) {
+                    offlineStatusLabel.setText(be.getTask() + " "
+                        + ((int) (be.getPercentComplete())) + "%");
+                    syncing = true;
+                }
+            });
+        eventBus.addListener(SyncCompleteEvent.TYPE,
+            new Listener<SyncCompleteEvent>() {
+
+                @Override
+                public void handleEvent(SyncCompleteEvent event) {
+                    syncing = false;
+                    syncRow.getStyle().setDisplay(Display.BLOCK);
+                    lastSyncTime = event.getTime();
+                    updateLastSyncLabel();
+                }
+
+            });
+        eventBus.addListener(LocalStateChangeEvent.TYPE,
+            new Listener<LocalStateChangeEvent>() {
+
+                @Override
+                public void handleEvent(LocalStateChangeEvent be) {
+                    onOfflineStatusChange(be.getState());
+                }
+            });
+        onOfflineStatusChange(offlineController.getState());
+    }
+
+    @Override
+    public void show() {
+        checkForUpdates();
+        updateLastSyncLabel();
+        if (!syncing) {
+            offlineStatusLabel.setText("");
+        }
+        super.show();
+    }
+
+    /**
+     * Queries the server for the latest deployed version.
+     */
+    private void checkForUpdates() {
+        versionStatus.setInnerText(I18N.CONSTANTS.versionChecking());
+        appCacheStatus.setInnerText("");
+        refreshLink.setVisible(false);
+        RequestBuilder request = new RequestBuilder(RequestBuilder.GET,
+            "/commit.id");
+        request.setCallback(new RequestCallback() {
+
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                if (response.getStatusCode() != 200) {
+                    versionStatus.setInnerText(I18N.CONSTANTS
+                        .versionConnectionProblem());
+
+                } else if (response.getText().startsWith(
+                    VersionInfo.getCommitId())) {
+                    versionStatus.setInnerText(I18N.CONSTANTS.versionLatest());
+
+                } else {
+                    versionStatus.setInnerText(I18N.CONSTANTS
+                        .versionUpdateAvailable());
+                    refreshLink.setVisible(true);
+                }
+            }
+
+            @Override
+            public void onError(Request request, Throwable exception) {
+                versionStatus.setInnerText(I18N.CONSTANTS
+                    .versionConnectionProblem());
+            }
+        });
+        try {
+            request.send();
+        } catch (RequestException e) {
+            versionStatus.setInnerText(I18N.CONSTANTS
+                .versionConnectionProblem());
+            Log.debug("Problem fetching latest version", e);
+        }
+    }
+
+    @UiHandler("refreshLink")
+    public void onRefreshLink(ClickEvent e) {
+
+    }
+
+    @UiHandler("logoutLink")
+    public void onLogoutClicked(ClickEvent e) {
+        SessionUtil.logout();
+    }
+
+    @UiHandler("offlineInstallLabel")
+    public void onOfflineInstallClicked(ClickEvent e) {
+        switch (state) {
+        case UNINSTALLED:
+            if (offlineCapabilityProfile.isOfflineModeSupported()) {
+                offlineController.install();
+            } else {
+                MessageBox.info("Offline Mode not supported",
+                    offlineCapabilityProfile.getInstallInstructions(), null);
+            }
+        }
+    }
+
+    @UiHandler("syncNowLabel")
+    public void onSyncNowClicked(ClickEvent e) {
+        offlineController.synchronize();
+    }
+
+    private void onOfflineStatusChange(State state) {
+        this.state = state;
+        offlineStatusLabel.setText("");
+        switch (state) {
+        case UNINSTALLED:
+            offlineInstallLabel.setText(I18N.CONSTANTS.installOffline());
+            syncRow.getStyle().setDisplay(Display.NONE);
+            break;
+        case INSTALLING:
+            offlineInstallLabel.setText("");
+            syncRow.getStyle().setDisplay(Display.NONE);
+            break;
+        case INSTALLED:
+            offlineInstallLabel.setText(I18N.CONSTANTS.reinstallOfflineMode());
+            syncRow.getStyle().setDisplay(Display.BLOCK);
+            lastSyncTime = offlineController.getLastSyncTime();
+            updateLastSyncLabel();
+        }
+    }
+
+    private void updateLastSyncLabel() {
+        if (lastSyncTime != null) {
+            lastSyncedLabel.setText(I18N.MESSAGES
+                .lastSynced(formatLastSyncTime(lastSyncTime)));
+        }
+    }
+
+    private String formatLastSyncTime(Date time) {
+        long now = new Date().getTime();
+        long last = time.getTime();
+
+        long secondsAgo = (now - last) / 1000;
+        if (secondsAgo <= 60) {
+            return I18N.CONSTANTS.relativeTimeMinAgo();
+        }
+        long minutesAgo = secondsAgo / 60;
+        if (minutesAgo <= 60) {
+            return I18N.MESSAGES.minutesAgo((int) minutesAgo);
+        }
+        long hoursAgo = minutesAgo / 60;
+        if (hoursAgo <= 48) {
+            return I18N.MESSAGES.hoursAgo((int) hoursAgo);
+        }
+        long daysAgo = hoursAgo / 24;
+        return I18N.MESSAGES.daysAgo((int) daysAgo);
+    }
 }

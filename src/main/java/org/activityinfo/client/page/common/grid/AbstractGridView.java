@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.grid;
 
 /*
@@ -43,17 +41,19 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 
 public abstract class AbstractGridView<M extends ModelData, P extends GridPresenter<M>>
-        extends 
-        	ContentPanel
-        implements 
-        	GridView<P, M> {
+    extends
+    ContentPanel
+    implements
+    GridView<P, M> {
 
     protected ActionToolBar toolBar;
     protected P presenter;
     protected PagingToolBar pagingBar;
     private Grid<M> grid;
-    
-    protected abstract <D extends ModelData> Grid<D> createGridAndAddToContainer(Store store);
+
+    protected abstract <D extends ModelData> Grid<D> createGridAndAddToContainer(
+        Store store);
+
     protected abstract void initToolBar();
 
     public void init(final P presenter, Store store) {
@@ -74,20 +74,23 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
             }
         }
 
-        /**  In some cases, there is async call before the user inerface can be
-         * loaded. So we have to make sure our new components are rendered */
+        /**
+         * In some cases, there is async call before the user inerface can be
+         * loaded. So we have to make sure our new components are rendered
+         */
         if (this.isRendered()) {
             this.layout();
         }
     }
 
     protected void initGridListeners(Grid<M> grid) {
-        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<M>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<M> se) {
-                presenter.onSelectionChanged(se.getSelectedItem());
-            }
-        });
+        grid.getSelectionModel().addSelectionChangedListener(
+            new SelectionChangedListener<M>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<M> se) {
+                    presenter.onSelectionChanged(se.getSelectedItem());
+                }
+            });
     }
 
     protected void createToolBar() {
@@ -99,28 +102,34 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
         toolBar.setDirty(false);
     }
 
+    @Override
     public void setActionEnabled(String actionId, boolean enabled) {
         toolBar.setActionEnabled(actionId, enabled);
     }
 
+    @Override
     public void confirmDeleteSelected(ConfirmCallback callback) {
         callback.confirmed();
     }
 
+    @Override
     public M getSelection() {
         GridSelectionModel<M> sm = grid.getSelectionModel();
         if (sm instanceof CellSelectionModel) {
-            CellSelectionModel<M>.CellSelection cell = ((CellSelectionModel<M>) sm).getSelectCell();
+            CellSelectionModel<M>.CellSelection cell = ((CellSelectionModel<M>) sm)
+                .getSelectCell();
             return cell == null ? null : cell.model;
         } else {
             return sm.getSelectedItem();
         }
     }
 
+    @Override
     public AsyncMonitor getDeletingMonitor() {
         return new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting());
     }
 
+    @Override
     public AsyncMonitor getSavingMonitor() {
         return new MaskingAsyncMonitor(this, I18N.CONSTANTS.saving());
     }

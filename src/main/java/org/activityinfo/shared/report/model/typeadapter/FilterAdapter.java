@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model.typeadapter;
 
 /*
@@ -39,19 +37,19 @@ import org.activityinfo.shared.report.model.DimensionType;
  * @author Alex Bertram
  */
 public class FilterAdapter extends XmlAdapter<
-        FilterAdapter.FilterElement,
-        Filter> {
+    FilterAdapter.FilterElement,
+    Filter> {
 
     public static class Restriction {
         @XmlAttribute
         private String dimension;
-        
-        @XmlElement(name="category")
+
+        @XmlElement(name = "category")
         private List<String> categories = new ArrayList<String>(0);
     }
 
     public static class FilterElement {
-        @XmlElement(name="restriction")
+        @XmlElement(name = "restriction")
         private List<Restriction> restrictions = new ArrayList<Restriction>(0);
 
         @XmlElement
@@ -63,9 +61,10 @@ public class FilterAdapter extends XmlAdapter<
         Filter filter = new Filter();
         filter.setDateRange(element.dateRange);
 
-        for(Restriction r : element.restrictions) {
-            for(String s : r.categories) {
-                filter.addRestriction(findDimType(r.dimension), Integer.parseInt(s));
+        for (Restriction r : element.restrictions) {
+            for (String s : r.categories) {
+                filter.addRestriction(findDimType(r.dimension),
+                    Integer.parseInt(s));
             }
         }
         return filter;
@@ -73,22 +72,23 @@ public class FilterAdapter extends XmlAdapter<
 
     private DimensionType findDimType(String name) {
         String nameLowered = name.toLowerCase();
-        for(DimensionType type : DimensionType.values()) {
-            if(type.toString().toLowerCase().equals(nameLowered)) {
+        for (DimensionType type : DimensionType.values()) {
+            if (type.toString().toLowerCase().equals(nameLowered)) {
                 return type;
             }
         }
-        throw new RuntimeException("No DimensionType could be find to match '" + name + "'");
+        throw new RuntimeException("No DimensionType could be find to match '"
+            + name + "'");
     }
 
     @Override
     public FilterElement marshal(Filter filter) throws Exception {
         FilterElement element = new FilterElement();
         element.dateRange = filter.getDateRange();
-        for(DimensionType t : filter.getRestrictedDimensions()) {
+        for (DimensionType t : filter.getRestrictedDimensions()) {
             Restriction r = new Restriction();
             r.dimension = t.toString().toLowerCase();
-            for(Integer id : filter.getRestrictions(t) ) {
+            for (Integer id : filter.getRestrictions(t)) {
                 r.categories.add(id.toString());
             }
             element.restrictions.add(r);

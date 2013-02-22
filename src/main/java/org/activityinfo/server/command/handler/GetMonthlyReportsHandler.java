@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -44,11 +42,11 @@ import com.google.inject.Inject;
 
 /**
  * See GetMonthlyReports
- *
+ * 
  * @author Alex Bertram
  */
-public class GetMonthlyReportsHandler implements CommandHandler<GetMonthlyReports> {
-
+public class GetMonthlyReportsHandler implements
+    CommandHandler<GetMonthlyReports> {
 
     private final EntityManager em;
 
@@ -57,18 +55,20 @@ public class GetMonthlyReportsHandler implements CommandHandler<GetMonthlyReport
         this.em = em;
     }
 
-    public CommandResult execute(GetMonthlyReports cmd, User user) throws CommandException {
+    @Override
+    public CommandResult execute(GetMonthlyReports cmd, User user)
+        throws CommandException {
 
+        List<ReportingPeriod> periods = em
+            .createQuery("select p from ReportingPeriod p where p.site.id = ?1")
+            .setParameter(1, cmd.getSiteId())
+            .getResultList();
 
-        List<ReportingPeriod> periods = em.createQuery("select p from ReportingPeriod p where p.site.id = ?1")
-                .setParameter(1, cmd.getSiteId())
-                .getResultList();
-
-        List<Indicator> indicators = em.createQuery("select i from Indicator i where i.activity.id =" +
+        List<Indicator> indicators = em
+            .createQuery("select i from Indicator i where i.activity.id =" +
                 "(select s.activity.id from Site s where s.id = ?1)")
-                .setParameter(1, cmd.getSiteId())
-                .getResultList();
-
+            .setParameter(1, cmd.getSiteId())
+            .getResultList();
 
         List<IndicatorRowDTO> list = new ArrayList<IndicatorRowDTO>();
 
@@ -81,10 +81,11 @@ public class GetMonthlyReportsHandler implements CommandHandler<GetMonthlyReport
 
             for (ReportingPeriod period : periods) {
 
-                Month month = HandlerUtil.monthFromRange(period.getDate1(), period.getDate2());
+                Month month = HandlerUtil.monthFromRange(period.getDate1(),
+                    period.getDate2());
                 if (month != null &&
-                        month.compareTo(cmd.getStartMonth()) >= 0 &&
-                        month.compareTo(cmd.getEndMonth()) <= 0) {
+                    month.compareTo(cmd.getStartMonth()) >= 0 &&
+                    month.compareTo(cmd.getEndMonth()) <= 0) {
 
                     for (IndicatorValue value : period.getIndicatorValues()) {
                         if (value.getIndicator().getId() == indicator.getId()) {

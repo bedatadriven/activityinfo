@@ -22,15 +22,14 @@ package org.activityinfo.embed.client;
  * #L%
  */
 
-
 import org.activityinfo.client.dispatch.Dispatcher;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 
-@GinModules({EmbedModule.class})
+@GinModules({ EmbedModule.class })
 public interface EmbedInjector extends Ginjector {
 
-	Dispatcher getDispatcher();
-	
+    Dispatcher getDispatcher();
+
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch;
 
 /*
@@ -52,8 +50,9 @@ public class DispatcherStub extends AbstractDispatcher {
     }
 
     @Override
-	public <T extends CommandResult> void execute(Command<T> command, AsyncCallback<T> callback) {
-		if (command instanceof BatchCommand) {
+    public <T extends CommandResult> void execute(Command<T> command,
+        AsyncCallback<T> callback) {
+        if (command instanceof BatchCommand) {
             BatchCommand batch = (BatchCommand) command;
             List<CommandResult> results = new ArrayList<CommandResult>();
             for (Command batchCmd : batch.getCommands()) {
@@ -63,7 +62,7 @@ public class DispatcherStub extends AbstractDispatcher {
         } else {
             callback.onSuccess((T) findResult(command));
         }
-	}
+    }
 
     private CommandResult findResult(Command command) {
         CommandResult result = results.get(command);
@@ -71,7 +70,8 @@ public class DispatcherStub extends AbstractDispatcher {
 
             result = resultByClass.get(command.getClass());
             if (result == null) {
-                throw new AssertionError("Unexpected command: " + command.toString());
+                throw new AssertionError("Unexpected command: "
+                    + command.toString());
             }
         }
         log.add(command);
@@ -82,7 +82,8 @@ public class DispatcherStub extends AbstractDispatcher {
         results.put(command, result);
     }
 
-    public void setResult(Class<? extends Command> commandClass, CommandResult result) {
+    public void setResult(Class<? extends Command> commandClass,
+        CommandResult result) {
         resultByClass.put(commandClass, result);
     }
 
@@ -94,8 +95,9 @@ public class DispatcherStub extends AbstractDispatcher {
             }
         }
         if (count != expectedCount) {
-            throw new AssertionError("Execution count for " + commandClass.getName() + ": expected : " + expectedCount
-                    + " actual count: " + count);
+            throw new AssertionError("Execution count for "
+                + commandClass.getName() + ": expected : " + expectedCount
+                + " actual count: " + count);
 
         }
     }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -31,5 +29,4 @@ import org.activityinfo.shared.command.result.CommandResult;
  */
 public interface Content extends CommandResult {
 
-    
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.authentication;
 
 /*
@@ -34,39 +32,41 @@ import com.google.gwt.user.client.Cookies;
 import com.google.inject.Provider;
 
 /**
- * Supplies user <code>Authentication</code> information from
- * the <code>authToken</code> and <code>email</code> cookies, or
- * failing that, from the <code>UserInfo</code> dictionary.
- *
+ * Supplies user <code>Authentication</code> information from the
+ * <code>authToken</code> and <code>email</code> cookies, or failing that, from
+ * the <code>UserInfo</code> dictionary.
+ * 
  * @author Alex Bertram
  */
 public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
 
-    private static final long ONE_YEAR = 365l * 24l * 60l * 60l * 1000l;
-	
+    private static final long ONE_YEAR = 365L * 24L * 60L * 60L * 1000L;
+
+    @Override
     public AuthenticatedUser get() {
 
-    	String authToken = Cookies.getCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE);
-    	String userId = Cookies.getCookie(AuthenticatedUser.USER_ID_COOKIE) ;
-    	String email = Cookies.getCookie(AuthenticatedUser.EMAIL_COOKIE);
-    	
+        String authToken = Cookies
+            .getCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE);
+        String userId = Cookies.getCookie(AuthenticatedUser.USER_ID_COOKIE);
+        String email = Cookies.getCookie(AuthenticatedUser.EMAIL_COOKIE);
+
         if (authToken != null && userId != null && email != null) {
 
             return new AuthenticatedUser(
-            		authToken,
-            		Integer.parseInt(userId),
-            		email.replaceAll("\"", ""),
-                    currentLocale());
+                authToken,
+                Integer.parseInt(userId),
+                email.replaceAll("\"", ""),
+                currentLocale());
 
         }
 
-       	throw new InvalidAuthTokenException("Request is not authenticated");
+        throw new InvalidAuthTokenException("Request is not authenticated");
     }
-    
+
     private String currentLocale() {
-    	return LocaleInfo.getCurrentLocale().getLocaleName();
+        return LocaleInfo.getCurrentLocale().getLocaleName();
     }
-    
+
     public static void ensurePersisted() {
         // unless the user requests to stay logged in, the authToken is
         // set to expire at the end of the user's session, which
@@ -75,14 +75,17 @@ public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
         // Since BootstrapScriptServlet relies on the token to select the
         // appropriate locale, without the cookie set, trying to retrieve
         // the latest manifest will fail
-    	
-    	AuthenticatedUser user = new ClientSideAuthProvider().get();
 
-    	Cookies.setCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE, user.getAuthToken(), oneYearLater());
-    	Cookies.setCookie(AuthenticatedUser.USER_ID_COOKIE, Integer.toString(user.getUserId()), oneYearLater());
-    	Cookies.setCookie(AuthenticatedUser.EMAIL_COOKIE, user.getEmail(), oneYearLater());
+        AuthenticatedUser user = new ClientSideAuthProvider().get();
+
+        Cookies.setCookie(AuthenticatedUser.AUTH_TOKEN_COOKIE,
+            user.getAuthToken(), oneYearLater());
+        Cookies.setCookie(AuthenticatedUser.USER_ID_COOKIE,
+            Integer.toString(user.getUserId()), oneYearLater());
+        Cookies.setCookie(AuthenticatedUser.EMAIL_COOKIE, user.getEmail(),
+            oneYearLater());
     }
-    
+
     private static Date oneYearLater() {
         long time = new Date().getTime();
         return new Date(time + ONE_YEAR);

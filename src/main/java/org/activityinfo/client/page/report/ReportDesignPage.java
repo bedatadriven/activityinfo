@@ -72,403 +72,427 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class ReportDesignPage extends ContentPanel implements Page, ExportCallback {
+public class ReportDesignPage extends ContentPanel implements Page,
+    ExportCallback {
 
-	private class SaveCallback implements AsyncCallback<VoidResult> {
-		@Override
-		public void onSuccess(final VoidResult result) {
-			Info.display(I18N.CONSTANTS.saved(), I18N.MESSAGES.reportSaved(currentModel.getTitle()));
-			onSaved();
-		}
+    private class SaveCallback implements AsyncCallback<VoidResult> {
+        @Override
+        public void onSuccess(final VoidResult result) {
+            Info.display(I18N.CONSTANTS.saved(),
+                I18N.MESSAGES.reportSaved(currentModel.getTitle()));
+            onSaved();
+        }
 
-		@Override
-		public final void onFailure(final Throwable caught) {
-			MessageBox.alert(I18N.CONSTANTS.serverError(), caught.getMessage(), null);
-		}
-		
-		public void onSaved() {
-		}
-	}
+        @Override
+        public final void onFailure(final Throwable caught) {
+            MessageBox.alert(I18N.CONSTANTS.serverError(), caught.getMessage(),
+                null);
+        }
 
+        public void onSaved() {
+        }
+    }
 
-	public static final PageId PAGE_ID = new PageId("report");
+    public static final PageId PAGE_ID = new PageId("report");
 
-	private final EventBus eventBus;
-	private final Dispatcher dispatcher;
-	private final EditorProvider editorProvider;
-	
-	private boolean reportEdited;
-	private ReportBar reportBar;
-	
-	private boolean dirty = false;
-	
-	/**
-	 * The model being edited on this page
-	 */
-	private Report currentModel;
-	private ReportMetadataDTO currentMetadata;
-	 
+    private final EventBus eventBus;
+    private final Dispatcher dispatcher;
+    private final EditorProvider editorProvider;
 
-	/**
-	 * The editor for the model
-	 */
-	private ReportElementEditor currentEditor;
+    private boolean reportEdited;
+    private ReportBar reportBar;
 
+    private boolean dirty = false;
 
-	
-	@Inject
-	public ReportDesignPage(final EventBus eventBus, final Dispatcher service, final EditorProvider editorProvider) {
-		this.eventBus = eventBus;
-		this.dispatcher = service;
-		this.editorProvider = editorProvider;
-		
-		
-		ReportResources.INSTANCE.style().ensureInjected();
+    /**
+     * The model being edited on this page
+     */
+    private Report currentModel;
+    private ReportMetadataDTO currentMetadata;
 
-		setLayout(new BorderLayout());
-		setHeaderVisible(false);
+    /**
+     * The editor for the model
+     */
+    private ReportElementEditor currentEditor;
 
-		createToolbar();
-		
-		eventBus.addListener(ReportChangeEvent.TYPE, new Listener<ReportChangeEvent>() {
+    @Inject
+    public ReportDesignPage(final EventBus eventBus, final Dispatcher service,
+        final EditorProvider editorProvider) {
+        this.eventBus = eventBus;
+        this.dispatcher = service;
+        this.editorProvider = editorProvider;
 
-			@Override
-			public void handleEvent(final ReportChangeEvent event) {
-				if(event.getModel() == currentModel || 
-						currentModel.getElements().contains(event.getModel())) {
-					Log.debug("marking report as dirty");
-					dirty = true;
-				}
-			}
-		});
-	}
+        ReportResources.INSTANCE.style().ensureInjected();
 
-	public void createToolbar() {
-		reportBar = new ReportBar();
-		BorderLayoutData reportBarLayout = new BorderLayoutData(LayoutRegion.NORTH);
-		reportBarLayout.setSize(35);
-		add(reportBar, reportBarLayout);
+        setLayout(new BorderLayout());
+        setHeaderVisible(false);
 
-		reportBar.getExportButton().setCallback(this);
+        createToolbar();
 
-		
-		reportBar.addTitleEditCompleteListener(new Listener<EditorEvent>() {
-			@Override
-			public void handleEvent(final EditorEvent be) {
-				String newTitle = (String)be.getValue();
-				if(newTitle != null && !newTitle.equals(currentModel.getTitle())) {
-					currentModel.setTitle(newTitle);
-					reportBar.setReportTitle(newTitle);
-					save(new SaveCallback());
-				}
-			}
-		});
+        eventBus.addListener(ReportChangeEvent.TYPE,
+            new Listener<ReportChangeEvent>() {
 
-		reportBar.getSaveButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void handleEvent(final ReportChangeEvent event) {
+                    if (event.getModel() == currentModel ||
+                        currentModel.getElements().contains(event.getModel())) {
+                        Log.debug("marking report as dirty");
+                        dirty = true;
+                    }
+                }
+            });
+    }
 
-			@Override
-			public void componentSelected(final ButtonEvent ce) {
-				ensureTitledThenSave(null, new SaveCallback());
-			}
-		});
-		
-		reportBar.getShareButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+    public void createToolbar() {
+        reportBar = new ReportBar();
+        BorderLayoutData reportBarLayout = new BorderLayoutData(
+            LayoutRegion.NORTH);
+        reportBarLayout.setSize(35);
+        add(reportBar, reportBarLayout);
 
-			@Override
-			public void componentSelected(final ButtonEvent ce) {
-				showShareForm();
-			}
-			
-		});
-		
-		reportBar.getDashboardButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(final ButtonEvent ce) {
-				pinToDashboard(reportBar.getDashboardButton().isPressed());
-			}
-		});
-		
-		reportBar.getSwitchViewButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(final ButtonEvent ce) {
-				switchView();
-			}
-		});
-	}
+        reportBar.getExportButton().setCallback(this);
 
+        reportBar.addTitleEditCompleteListener(new Listener<EditorEvent>() {
+            @Override
+            public void handleEvent(final EditorEvent be) {
+                String newTitle = (String) be.getValue();
+                if (newTitle != null
+                    && !newTitle.equals(currentModel.getTitle())) {
+                    currentModel.setTitle(newTitle);
+                    reportBar.setReportTitle(newTitle);
+                    save(new SaveCallback());
+                }
+            }
+        });
 
-	@Override
-	public boolean navigate(final PageState place) {
-		if(place instanceof ReportDesignPageState) {
-			go(((ReportDesignPageState) place).getReportId());
-			return true;
-		}
-		return false;
-	}
+        reportBar.getSaveButton().addSelectionListener(
+            new SelectionListener<ButtonEvent>() {
 
-	public void go(final int reportId) {
-		loadReport(reportId);
-	}
+                @Override
+                public void componentSelected(final ButtonEvent ce) {
+                    ensureTitledThenSave(null, new SaveCallback());
+                }
+            });
 
-	private void loadReport(final int reportId) {
-		dispatcher.execute(new GetReportModel(reportId, true), new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
-				new AsyncCallback<ReportDTO>() {
-			@Override
-			public void onFailure(final Throwable caught) {
-			}
+        reportBar.getShareButton().addSelectionListener(
+            new SelectionListener<ButtonEvent>() {
 
-			@Override
-			public void onSuccess(final ReportDTO result) {
-					onModelLoaded(result);
-			}
-		});
-	}
+                @Override
+                public void componentSelected(final ButtonEvent ce) {
+                    showShareForm();
+                }
 
-	private void onModelLoaded(final ReportDTO result) {
-		this.currentModel = result.getReport();
-		this.currentMetadata = result.getReportMetadataDTO();
-		
-		reportBar.setReportTitle(currentModel.getTitle());
-		reportBar.getDashboardButton().toggle(currentMetadata.isDashboard());
-		
-		if (currentModel.getElements().size() == 1) {
-			ReportElementEditor editor = editorProvider.create(currentModel.getElement(0));
-			editor.bind(currentModel.getElement(0));
-			installEditor( editor );
-			reportBar.getSwitchViewButton().setVisible(true);
-		} else {
-			installCompositeEditor();
-		}		
-	}
+            });
 
-	private void installCompositeEditor() {
-		CompositeEditor2 editor = (CompositeEditor2)editorProvider.create(currentModel);
-		editor.bind(currentModel);
-		installEditor( editor );
-		
-		reportBar.getSwitchViewButton().setVisible(false);
-	}
-	
+        reportBar.getDashboardButton().addSelectionListener(
+            new SelectionListener<ButtonEvent>() {
 
-	protected void switchView() {
-		installCompositeEditor();
-	}
+                @Override
+                public void componentSelected(final ButtonEvent ce) {
+                    pinToDashboard(reportBar.getDashboardButton().isPressed());
+                }
+            });
 
-	private void installEditor(final ReportElementEditor editor) {
-		if(currentEditor != null) {
-			remove(currentEditor.getWidget());
-		}
-		
-		reportBar.getExportButton().setFormats(editor.getExportFormats());
-		
-		add(editor.getWidget(), new BorderLayoutData(LayoutRegion.CENTER));
-		this.currentEditor = editor;
-		layout();
-	}
+        reportBar.getSwitchViewButton().addSelectionListener(
+            new SelectionListener<ButtonEvent>() {
 
-	private void pinToDashboard(final boolean pressed) {
-		ensureTitled(new SaveCallback() {
-			@Override
-			public void onSaved() {
-				final UpdateReportSubscription update = new UpdateReportSubscription();
-				update.setReportId(currentModel.getId());
-				update.setPinnedToDashboard(pressed);
-				
-				dispatcher.execute(update, new SaveCallback() {
-					@Override
-					public void onSuccess(final VoidResult result) {
-						if(update.getPinnedToDashboard()) {
-							Info.display(I18N.CONSTANTS.saved(), 
-									I18N.MESSAGES.addedToDashboard(currentModel.getTitle()));
-						} else {
-							Info.display(I18N.CONSTANTS.saved(), 
-									I18N.MESSAGES.removedFromDashboard(currentModel.getTitle()));
-						}
-					}
-					
-				});
-			}
-		});
-	}
+                @Override
+                public void componentSelected(final ButtonEvent ce) {
+                    switchView();
+                }
+            });
+    }
 
-	private void ensureTitledThenSave(final AsyncMonitor monitor, final SaveCallback callback) {
-		if (untitled()) {
-			promptForTitle(callback);
-		} else {
-			save(monitor, callback);
-		}
-	}
+    @Override
+    public boolean navigate(final PageState place) {
+        if (place instanceof ReportDesignPageState) {
+            go(((ReportDesignPageState) place).getReportId());
+            return true;
+        }
+        return false;
+    }
 
-	private void ensureTitled(final SaveCallback callback) {
-		if (untitled()) {
-			promptForTitle(callback);
-		} else {
-			callback.onSaved();
-		}
-	}
-	
-	private void promptForTitle(final AsyncCallback<VoidResult> callback) {
-		MessageBox.prompt(I18N.CONSTANTS.save(), I18N.CONSTANTS.chooseReportTitle(), new Listener<MessageBoxEvent>() {
-			
-			@Override
-			public void handleEvent(final MessageBoxEvent be) {
-				String newTitle = be.getMessageBox().getTextBox().getValue();
-				if(!Strings.isNullOrEmpty(newTitle)) {
-					currentModel.setTitle(newTitle);
-					reportBar.setReportTitle(newTitle);
-					save(callback);
-				}
-			}
-		});
-	}
-	
-	private void save(final AsyncCallback<VoidResult> callback) {
-		save(null, callback);
-	}
-	
-	private void save(final AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
-		if (currentMetadata.isEditAllowed()) {
-			performUpdate(monitor, callback);
-		} else {
-			confirmCreate(monitor, callback);
-		}
-	}
-	
-	private void performUpdate(final AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
-		UpdateReportModel updateReport = new UpdateReportModel();
-		updateReport.setModel(currentModel);
-		
-		dispatcher.execute(updateReport, monitor, new AsyncCallback<VoidResult>() {
-			@Override
-			public void onFailure(final Throwable caught) {
-				callback.onFailure(caught);
-			}
-			@Override
-			public void onSuccess(final VoidResult result) {
-				dirty = false;
-				callback.onSuccess(result);
-			}
-		});
-	}
-	
-	private void confirmCreate(final AsyncMonitor monitor, final AsyncCallback<VoidResult> callback) {
-		MessageBox.confirm(I18N.CONSTANTS.save(), I18N.MESSAGES.confirmSaveCopy(), new Listener<MessageBoxEvent>() {
-			@Override
-			public void handleEvent(final MessageBoxEvent be) {
-				Button btn = be.getButtonClicked();
-				if (Dialog.YES.equalsIgnoreCase(btn.getItemId())) {
-					performCreate();
-				}
-			}
-		});
-	}
+    public void go(final int reportId) {
+        loadReport(reportId);
+    }
 
-	private void performCreate() {
-		currentModel.setTitle(currentModel.getTitle() + " (" + I18N.CONSTANTS.copy() + ")");
-		
-		dispatcher.execute(new CreateReport(currentModel), new AsyncCallback<CreateResult>() {
-			@Override
-			public void onFailure(final Throwable caught) {
-			}
+    private void loadReport(final int reportId) {
+        dispatcher.execute(new GetReportModel(reportId, true),
+            new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
+            new AsyncCallback<ReportDTO>() {
+                @Override
+                public void onFailure(final Throwable caught) {
+                }
 
-			@Override
-			public void onSuccess(final CreateResult created) {
-				eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, 
-						new ReportDesignPageState(created.getNewId())));
-			}
-		});
-	}
-	
-	public void setReportEdited(final boolean edited){
-		reportEdited = edited;
-	}
+                @Override
+                public void onSuccess(final ReportDTO result) {
+                    onModelLoaded(result);
+                }
+            });
+    }
 
-	public boolean reportEdited(){
-		return reportEdited;
-	}
+    private void onModelLoaded(final ReportDTO result) {
+        this.currentModel = result.getReport();
+        this.currentMetadata = result.getReportMetadataDTO();
 
-	@Override
-	public void shutdown() {
-		// TODO Auto-generated method stub
+        reportBar.setReportTitle(currentModel.getTitle());
+        reportBar.getDashboardButton().toggle(currentMetadata.isDashboard());
 
-	}
+        if (currentModel.getElements().size() == 1) {
+            ReportElementEditor editor = editorProvider.create(currentModel
+                .getElement(0));
+            editor.bind(currentModel.getElement(0));
+            installEditor(editor);
+            reportBar.getSwitchViewButton().setVisible(true);
+        } else {
+            installCompositeEditor();
+        }
+    }
 
-	@Override
-	public PageId getPageId() {
-		return PAGE_ID;
-	}
+    private void installCompositeEditor() {
+        CompositeEditor2 editor = (CompositeEditor2) editorProvider
+            .create(currentModel);
+        editor.bind(currentModel);
+        installEditor(editor);
 
-	@Override
-	public Object getWidget() {
-		return this;
-	}
+        reportBar.getSwitchViewButton().setVisible(false);
+    }
 
-	@Override
-	public void requestToNavigateAway(final PageState place,
-			final NavigationCallback callback) {
-		if(!dirty) {
-			callback.onDecided(true);
-		} else {
-			SavePromptMessageBox box = new SavePromptMessageBox();
-			box.show(new SaveChangesCallback() {
-				
-				@Override
-				public void save(final AsyncMonitor monitor) {
-					ensureTitledThenSave(monitor, new SaveCallback() {
+    protected void switchView() {
+        installCompositeEditor();
+    }
 
-						@Override
-						public void onSaved() {
-							callback.onDecided(true);
-						}
-					});
-				}
-				
-				@Override
-				public void discard() {
-					callback.onDecided(true);
-				}
-				
-				@Override
-				public void cancel() {
-					callback.onDecided(false);
-				}
-			});
-			
-		}
-	}
+    private void installEditor(final ReportElementEditor editor) {
+        if (currentEditor != null) {
+            remove(currentEditor.getWidget());
+        }
 
-	@Override
-	public String beforeWindowCloses() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public void showShareForm() {
-		ensureTitled(new SaveCallback() {
+        reportBar.getExportButton().setFormats(editor.getExportFormats());
 
-			@Override
-			public void onSaved() {
-				final ShareReportDialog dialog = new ShareReportDialog(dispatcher);
-				//form.updateForm(currentReportId);
-				dialog.show(currentModel);
-			}
-		});
-	}
+        add(editor.getWidget(), new BorderLayoutData(LayoutRegion.CENTER));
+        this.currentEditor = editor;
+        layout();
+    }
 
-	@Override
-	public void export(final Format format) {
-		StringBuilder fileName = new StringBuilder();
-		fileName.append(untitled() ? I18N.CONSTANTS.untitledReport() : currentModel.getTitle());
-		fileName.append(" ");
-		fileName.append(DateTimeFormat.getFormat("yyyyMMdd_HHmm").format(new Date()));
-		
-		ExportDialog dialog = new ExportDialog(dispatcher);
-		dialog.export(fileName.toString(), currentEditor.getModel(), format);
-	}
+    private void pinToDashboard(final boolean pressed) {
+        ensureTitled(new SaveCallback() {
+            @Override
+            public void onSaved() {
+                final UpdateReportSubscription update = new UpdateReportSubscription();
+                update.setReportId(currentModel.getId());
+                update.setPinnedToDashboard(pressed);
 
-	private boolean untitled() {
-		return currentModel.getTitle()==null;
-	}
+                dispatcher.execute(update, new SaveCallback() {
+                    @Override
+                    public void onSuccess(final VoidResult result) {
+                        if (update.getPinnedToDashboard()) {
+                            Info.display(I18N.CONSTANTS.saved(),
+                                I18N.MESSAGES.addedToDashboard(currentModel
+                                    .getTitle()));
+                        } else {
+                            Info.display(I18N.CONSTANTS.saved(),
+                                I18N.MESSAGES.removedFromDashboard(currentModel
+                                    .getTitle()));
+                        }
+                    }
+
+                });
+            }
+        });
+    }
+
+    private void ensureTitledThenSave(final AsyncMonitor monitor,
+        final SaveCallback callback) {
+        if (untitled()) {
+            promptForTitle(callback);
+        } else {
+            save(monitor, callback);
+        }
+    }
+
+    private void ensureTitled(final SaveCallback callback) {
+        if (untitled()) {
+            promptForTitle(callback);
+        } else {
+            callback.onSaved();
+        }
+    }
+
+    private void promptForTitle(final AsyncCallback<VoidResult> callback) {
+        MessageBox.prompt(I18N.CONSTANTS.save(),
+            I18N.CONSTANTS.chooseReportTitle(),
+            new Listener<MessageBoxEvent>() {
+
+                @Override
+                public void handleEvent(final MessageBoxEvent be) {
+                    String newTitle = be.getMessageBox().getTextBox()
+                        .getValue();
+                    if (!Strings.isNullOrEmpty(newTitle)) {
+                        currentModel.setTitle(newTitle);
+                        reportBar.setReportTitle(newTitle);
+                        save(callback);
+                    }
+                }
+            });
+    }
+
+    private void save(final AsyncCallback<VoidResult> callback) {
+        save(null, callback);
+    }
+
+    private void save(final AsyncMonitor monitor,
+        final AsyncCallback<VoidResult> callback) {
+        if (currentMetadata.isEditAllowed()) {
+            performUpdate(monitor, callback);
+        } else {
+            confirmCreate(monitor, callback);
+        }
+    }
+
+    private void performUpdate(final AsyncMonitor monitor,
+        final AsyncCallback<VoidResult> callback) {
+        UpdateReportModel updateReport = new UpdateReportModel();
+        updateReport.setModel(currentModel);
+
+        dispatcher.execute(updateReport, monitor,
+            new AsyncCallback<VoidResult>() {
+                @Override
+                public void onFailure(final Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(final VoidResult result) {
+                    dirty = false;
+                    callback.onSuccess(result);
+                }
+            });
+    }
+
+    private void confirmCreate(final AsyncMonitor monitor,
+        final AsyncCallback<VoidResult> callback) {
+        MessageBox.confirm(I18N.CONSTANTS.save(),
+            I18N.MESSAGES.confirmSaveCopy(), new Listener<MessageBoxEvent>() {
+                @Override
+                public void handleEvent(final MessageBoxEvent be) {
+                    Button btn = be.getButtonClicked();
+                    if (Dialog.YES.equalsIgnoreCase(btn.getItemId())) {
+                        performCreate();
+                    }
+                }
+            });
+    }
+
+    private void performCreate() {
+        currentModel.setTitle(currentModel.getTitle() + " ("
+            + I18N.CONSTANTS.copy() + ")");
+
+        dispatcher.execute(new CreateReport(currentModel),
+            new AsyncCallback<CreateResult>() {
+                @Override
+                public void onFailure(final Throwable caught) {
+                }
+
+                @Override
+                public void onSuccess(final CreateResult created) {
+                    eventBus.fireEvent(new NavigationEvent(
+                        NavigationHandler.NAVIGATION_REQUESTED,
+                        new ReportDesignPageState(created.getNewId())));
+                }
+            });
+    }
+
+    public void setReportEdited(final boolean edited) {
+        reportEdited = edited;
+    }
+
+    public boolean reportEdited() {
+        return reportEdited;
+    }
+
+    @Override
+    public void shutdown() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public PageId getPageId() {
+        return PAGE_ID;
+    }
+
+    @Override
+    public Object getWidget() {
+        return this;
+    }
+
+    @Override
+    public void requestToNavigateAway(final PageState place,
+        final NavigationCallback callback) {
+        if (!dirty) {
+            callback.onDecided(true);
+        } else {
+            SavePromptMessageBox box = new SavePromptMessageBox();
+            box.show(new SaveChangesCallback() {
+
+                @Override
+                public void save(final AsyncMonitor monitor) {
+                    ensureTitledThenSave(monitor, new SaveCallback() {
+
+                        @Override
+                        public void onSaved() {
+                            callback.onDecided(true);
+                        }
+                    });
+                }
+
+                @Override
+                public void discard() {
+                    callback.onDecided(true);
+                }
+
+                @Override
+                public void cancel() {
+                    callback.onDecided(false);
+                }
+            });
+
+        }
+    }
+
+    @Override
+    public String beforeWindowCloses() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void showShareForm() {
+        ensureTitled(new SaveCallback() {
+
+            @Override
+            public void onSaved() {
+                final ShareReportDialog dialog = new ShareReportDialog(
+                    dispatcher);
+                // form.updateForm(currentReportId);
+                dialog.show(currentModel);
+            }
+        });
+    }
+
+    @Override
+    public void export(final Format format) {
+        StringBuilder fileName = new StringBuilder();
+        fileName.append(untitled() ? I18N.CONSTANTS.untitledReport()
+            : currentModel.getTitle());
+        fileName.append(" ");
+        fileName.append(DateTimeFormat.getFormat("yyyyMMdd_HHmm").format(
+            new Date()));
+
+        ExportDialog dialog = new ExportDialog(dispatcher);
+        dialog.export(fileName.toString(), currentEditor.getModel(), format);
+    }
+
+    private boolean untitled() {
+        return currentModel.getTitle() == null;
+    }
 }

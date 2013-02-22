@@ -79,352 +79,367 @@ import com.google.inject.Inject;
 
 /**
  * This is the container for the DataEntry page.
- *
+ * 
  */
-public class DataEntryPage extends LayoutContainer implements Page, ActionListener {
+public class DataEntryPage extends LayoutContainer implements Page,
+    ActionListener {
 
-	public static final PageId PAGE_ID = new PageId("data-entry");
+    public static final PageId PAGE_ID = new PageId("data-entry");
 
-	private final Dispatcher dispatcher;
-	private final EventBus eventBus;
-	
-	private GroupingComboBox groupingComboBox;
-		
-	private FilterPane filterPane;
+    private final Dispatcher dispatcher;
+    private final EventBus eventBus;
 
-	private SiteGridPanel gridPanel;
-	private CollapsibleTabPanel tabPanel;
-	
-	private DetailTab detailTab;
-		
-	private MonthlyReportsPanel monthlyPanel;
-	private TabItem monthlyTab;
-	
-	private DataEntryPlace currentPlace = new DataEntryPlace();
+    private GroupingComboBox groupingComboBox;
 
-	private AttachmentsTab attachmentsTab;
+    private FilterPane filterPane;
 
-	private SiteHistoryTab siteHistoryTab;
+    private SiteGridPanel gridPanel;
+    private CollapsibleTabPanel tabPanel;
 
-	private ActionToolBar toolBar;
+    private DetailTab detailTab;
 
-	
-	@Inject
-	public DataEntryPage(final EventBus eventBus, Dispatcher dispatcher) {
-		this.eventBus = eventBus;
-		this.dispatcher = dispatcher;
-		
-		setLayout(new BorderLayout());
-		
-		addFilterPane();
-		addCenter();
-	}
+    private MonthlyReportsPanel monthlyPanel;
+    private TabItem monthlyTab;
 
-	private void addFilterPane() {
-		filterPane = new FilterPane(dispatcher);
-		BorderLayoutData filterLayout = new BorderLayoutData(LayoutRegion.WEST);
-		filterLayout.setCollapsible(true);
-		filterLayout.setMargins(new Margins(0,5,0,0));
-		filterLayout.setSplit(true);
-		add(filterPane, filterLayout);
-		
-		filterPane.getSet().addValueChangeHandler(new ValueChangeHandler<Filter>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<Filter> event) {
-				eventBus.fireEvent( new NavigationEvent(NavigationHandler.NavigationRequested, 
-						currentPlace.copy()
-							.setFilter(event.getValue())) );
-			}
-		});
-	}
+    private DataEntryPlace currentPlace = new DataEntryPlace();
 
-	private void addCenter() {
-		gridPanel = new SiteGridPanel(dispatcher, new DefaultColumnModelProvider(dispatcher));
-		gridPanel.setTopComponent(createToolBar());
-		
-		LayoutContainer center = new LayoutContainer();
-		center.setLayout(new BorderLayout());
-				
-		center.add(gridPanel, new BorderLayoutData(LayoutRegion.CENTER));
-		
-		gridPanel.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
-				onSiteSelected(se);
-			}
-		});
-		
-		detailTab = new DetailTab(dispatcher);
-		
-		monthlyPanel = new MonthlyReportsPanel(dispatcher);
-		monthlyTab = new TabItem(I18N.CONSTANTS.monthlyReports());
-		monthlyTab.setLayout(new FitLayout());
-		monthlyTab.add(monthlyPanel);
-		
-		attachmentsTab = new AttachmentsTab(dispatcher, eventBus);
-						
-		siteHistoryTab = new SiteHistoryTab(dispatcher);
-		
-		tabPanel = new CollapsibleTabPanel();
-		tabPanel.add(detailTab);
-		tabPanel.add(monthlyTab);
-		tabPanel.add(attachmentsTab);
-		tabPanel.add(siteHistoryTab);
-		tabPanel.setSelection(detailTab);
-		center.add(tabPanel, tabPanel.getBorderLayoutData());
-		
-		add(center, new BorderLayoutData(LayoutRegion.CENTER));
-	}
-		
-	private ActionToolBar createToolBar() {
-		toolBar = new ActionToolBar(this);
-		
-		groupingComboBox = new GroupingComboBox(dispatcher);
-    	groupingComboBox.withSelectionListener(new Listener<FieldEvent>() {
-			
-			@Override
-			public void handleEvent(FieldEvent be) {
-				eventBus.fireEvent( new NavigationEvent(NavigationHandler.NavigationRequested, 
-						currentPlace.copy()
-							.setGrouping(groupingComboBox.getGroupingModel())) );
-			}
-		});
-    	
-    	toolBar.add(new Label(I18N.CONSTANTS.grouping()));
-    	toolBar.add(groupingComboBox);
-    	
-        toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.newSite(), IconImageBundle.ICONS.add());
-        toolBar.addButton(UIActions.EDIT, I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit());
+    private AttachmentsTab attachmentsTab;
+
+    private SiteHistoryTab siteHistoryTab;
+
+    private ActionToolBar toolBar;
+
+    @Inject
+    public DataEntryPage(final EventBus eventBus, Dispatcher dispatcher) {
+        this.eventBus = eventBus;
+        this.dispatcher = dispatcher;
+
+        setLayout(new BorderLayout());
+
+        addFilterPane();
+        addCenter();
+    }
+
+    private void addFilterPane() {
+        filterPane = new FilterPane(dispatcher);
+        BorderLayoutData filterLayout = new BorderLayoutData(LayoutRegion.WEST);
+        filterLayout.setCollapsible(true);
+        filterLayout.setMargins(new Margins(0, 5, 0, 0));
+        filterLayout.setSplit(true);
+        add(filterPane, filterLayout);
+
+        filterPane.getSet().addValueChangeHandler(
+            new ValueChangeHandler<Filter>() {
+
+                @Override
+                public void onValueChange(ValueChangeEvent<Filter> event) {
+                    eventBus.fireEvent(new NavigationEvent(
+                        NavigationHandler.NAVIGATION_REQUESTED,
+                        currentPlace.copy()
+                            .setFilter(event.getValue())));
+                }
+            });
+    }
+
+    private void addCenter() {
+        gridPanel = new SiteGridPanel(dispatcher,
+            new DefaultColumnModelProvider(dispatcher));
+        gridPanel.setTopComponent(createToolBar());
+
+        LayoutContainer center = new LayoutContainer();
+        center.setLayout(new BorderLayout());
+
+        center.add(gridPanel, new BorderLayoutData(LayoutRegion.CENTER));
+
+        gridPanel
+            .addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
+
+                @Override
+                public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
+                    onSiteSelected(se);
+                }
+            });
+
+        detailTab = new DetailTab(dispatcher);
+
+        monthlyPanel = new MonthlyReportsPanel(dispatcher);
+        monthlyTab = new TabItem(I18N.CONSTANTS.monthlyReports());
+        monthlyTab.setLayout(new FitLayout());
+        monthlyTab.add(monthlyPanel);
+
+        attachmentsTab = new AttachmentsTab(dispatcher, eventBus);
+
+        siteHistoryTab = new SiteHistoryTab(dispatcher);
+
+        tabPanel = new CollapsibleTabPanel();
+        tabPanel.add(detailTab);
+        tabPanel.add(monthlyTab);
+        tabPanel.add(attachmentsTab);
+        tabPanel.add(siteHistoryTab);
+        tabPanel.setSelection(detailTab);
+        center.add(tabPanel, tabPanel.getBorderLayoutData());
+
+        add(center, new BorderLayoutData(LayoutRegion.CENTER));
+    }
+
+    private ActionToolBar createToolBar() {
+        toolBar = new ActionToolBar(this);
+
+        groupingComboBox = new GroupingComboBox(dispatcher);
+        groupingComboBox.withSelectionListener(new Listener<FieldEvent>() {
+
+            @Override
+            public void handleEvent(FieldEvent be) {
+                eventBus.fireEvent(new NavigationEvent(
+                    NavigationHandler.NAVIGATION_REQUESTED,
+                    currentPlace.copy()
+                        .setGrouping(groupingComboBox.getGroupingModel())));
+            }
+        });
+
+        toolBar.add(new Label(I18N.CONSTANTS.grouping()));
+        toolBar.add(groupingComboBox);
+
+        toolBar.addButton(UIActions.ADD, I18N.CONSTANTS.newSite(),
+            IconImageBundle.ICONS.add());
+        toolBar.addButton(UIActions.EDIT, I18N.CONSTANTS.edit(),
+            IconImageBundle.ICONS.edit());
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
         toolBar.add(new SeparatorToolItem());
 
         toolBar.addExcelExportButton();
         toolBar.addPrintButton();
-        toolBar.addButton("EMBED", I18N.CONSTANTS.embed(), IconImageBundle.ICONS.embed());
-        
+        toolBar.addButton("EMBED", I18N.CONSTANTS.embed(),
+            IconImageBundle.ICONS.embed());
+
         return toolBar;
-	}
-	
+    }
 
-	private void onSiteSelected(final SelectionChangedEvent<SiteDTO> se) {
-		if(se.getSelection().isEmpty()) {
-			onNoSelection();
-		} else {
-			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-	
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-	
-				@Override
-				public void onSuccess(SchemaDTO schema) {
-					SiteDTO site = se.getSelectedItem();
-					ActivityDTO activity = schema.getActivityById(site.getActivityId());
-					updateSelection(activity, site);
-				}
-			});
-		}
-	}
-	
-	private void updateSelection(ActivityDTO activity, SiteDTO site) {
-		
-		boolean permissionToEdit = activity.getDatabase().isAllowedToEdit(site);
-		toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit && !site.isLinked());
-		toolBar.setActionEnabled(UIActions.DELETE, permissionToEdit && !site.isLinked());
-		
-		detailTab.setSite(site);
-		attachmentsTab.setSite(site);
-		if(activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
-			monthlyPanel.load(site);
-			monthlyTab.setEnabled(true);
-		} else {
-			monthlyTab.setEnabled(false);
-			if(tabPanel.getSelectedItem() == monthlyTab) {
-				tabPanel.setSelection(detailTab);
-			}
-		}
-		siteHistoryTab.setSite(site);
-	}
-	
-	private void onNoSelection() {
-		toolBar.setActionEnabled(UIActions.EDIT, false);
-		toolBar.setActionEnabled(UIActions.DELETE, false); 
-	}
+    private void onSiteSelected(final SelectionChangedEvent<SiteDTO> se) {
+        if (se.getSelection().isEmpty()) {
+            onNoSelection();
+        } else {
+            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-	@Override
-	public void shutdown() {
-		// TODO Auto-generated method stub
-		
-	}
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
 
-	@Override
-	public PageId getPageId() {
-		return PAGE_ID;
-	}
+                }
 
-	@Override
-	public Object getWidget() {
-		return this;
-	}
+                @Override
+                public void onSuccess(SchemaDTO schema) {
+                    SiteDTO site = se.getSelectedItem();
+                    ActivityDTO activity = schema.getActivityById(site
+                        .getActivityId());
+                    updateSelection(activity, site);
+                }
+            });
+        }
+    }
 
-	@Override
-	public void requestToNavigateAway(PageState place,
-			NavigationCallback callback) {
-		callback.onDecided(true);
-	}
+    private void updateSelection(ActivityDTO activity, SiteDTO site) {
 
-	@Override
-	public String beforeWindowCloses() {
-		return null;
-	}
+        boolean permissionToEdit = activity.getDatabase().isAllowedToEdit(site);
+        toolBar.setActionEnabled(UIActions.EDIT,
+            permissionToEdit && !site.isLinked());
+        toolBar.setActionEnabled(UIActions.DELETE,
+            permissionToEdit && !site.isLinked());
 
-	@Override
-	public boolean navigate(PageState place) {
-		currentPlace = (DataEntryPlace) place;
-		if(!currentPlace.getFilter().isRestricted(DimensionType.Activity) &&
-		   !currentPlace.getFilter().isRestricted(DimensionType.Database)) {
-			
-			redirectToFirstActivity();
-		} else {
-			doNavigate();
-		}
-		return true;
-	}
+        detailTab.setSite(site);
+        attachmentsTab.setSite(site);
+        if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
+            monthlyPanel.load(site);
+            monthlyTab.setEnabled(true);
+        } else {
+            monthlyTab.setEnabled(false);
+            if (tabPanel.getSelectedItem() == monthlyTab) {
+                tabPanel.setSelection(detailTab);
+            }
+        }
+        siteHistoryTab.setSite(site);
+    }
 
-	private void redirectToFirstActivity() {
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    private void onNoSelection() {
+        toolBar.setActionEnabled(UIActions.EDIT, false);
+        toolBar.setActionEnabled(UIActions.DELETE, false);
+    }
 
-			@Override
-			public void onFailure(Throwable caught) {
-			}
+    @Override
+    public void shutdown() {
+        // TODO Auto-generated method stub
 
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				for(UserDatabaseDTO db : result.getDatabases()) {
-					if(!db.getActivities().isEmpty()) {
-						currentPlace.getFilter().addRestriction(DimensionType.Activity, db.getActivities().get(0).getId());
-						doNavigate();
-						return;
-					}
-				}
-			}
-		});
-	}
+    }
 
-	private void doNavigate() {
-		Filter filter = currentPlace.getFilter();
-		
-		gridPanel.load(currentPlace.getGrouping(), filter);
-		groupingComboBox.setFilter(filter);
-		filterPane.getSet().applyBaseFilter(filter);
-		
-		// currently the print form only does one activity
-		Set<Integer> activities = filter.getRestrictions(DimensionType.Activity);			
-		toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
-		toolBar.setActionEnabled(UIActions.EXPORT, activities.size() == 1);
-		
-		// also embedding is only implemented for one activity
-		toolBar.setActionEnabled("EMBED", activities.size() == 1);
-	
-		// adding is also only enabled for one activity, but we have to
-		// lookup to see whether it possible for this activity
-		toolBar.setActionEnabled(UIActions.ADD, false);
-		if(activities.size() == 1) {
-			checkWhetherEditingIsAllowed(activities.iterator().next());
-		}
-		
-	}
+    @Override
+    public PageId getPageId() {
+        return PAGE_ID;
+    }
 
-	private void checkWhetherEditingIsAllowed(final int activityId) {
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    @Override
+    public Object getWidget() {
+        return this;
+    }
 
-			@Override
-			public void onFailure(Throwable caught) {
-			
-			}
+    @Override
+    public void requestToNavigateAway(PageState place,
+        NavigationCallback callback) {
+        callback.onDecided(true);
+    }
 
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				toolBar.setActionEnabled(UIActions.ADD, 
-						result.getActivityById(activityId).getDatabase().isEditAllowed());
-			}
-		});
-	}
+    @Override
+    public String beforeWindowCloses() {
+        return null;
+    }
 
-	@Override
-	public void onUIAction(String actionId) {
-		if(UIActions.ADD.equals(actionId)) {
-			SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
-			formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
-				
-				@Override
-				public void onSaved(SiteDTO site) {
-					gridPanel.refresh();
-				}
-			});
-		} else if(UIActions.EDIT.equals(actionId)) {
-			SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
-			launcher.editSite(gridPanel.getSelection(), new SiteDialogCallback() {
-				
-				@Override
-				public void onSaved(SiteDTO site) {
-					gridPanel.refresh();
-				}
-			});
-		
-			
-		} else if(UIActions.DELETE.equals(actionId)) {
-			
-			delete();
-		
-		} else if(UIActions.PRINT.equals(actionId)) {
-			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    @Override
+    public boolean navigate(PageState place) {
+        currentPlace = (DataEntryPlace) place;
+        if (!currentPlace.getFilter().isRestricted(DimensionType.Activity) &&
+            !currentPlace.getFilter().isRestricted(DimensionType.Database)) {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
+            redirectToFirstActivity();
+        } else {
+            doNavigate();
+        }
+        return true;
+    }
 
-				@Override
-				public void onSuccess(SchemaDTO result) {
-					ActivityDTO activity = result.getActivityById(
-							currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity));
-					
-					new PrintDataEntryForm(activity).print();
-				}
-			});
-			
-		} else if(UIActions.EXPORT.equals(actionId)) {
-			Window.Location.assign(GWT.getModuleBaseURL() + "export?filter=" +
-					FilterUrlSerializer.toUrlFragment(currentPlace.getFilter()));
-		
-		} else if("EMBED".equals(actionId)) {
-			EmbedDialog dialog = new EmbedDialog(dispatcher);
-			dialog.show(currentPlace);
-		}
-	}
+    private void redirectToFirstActivity() {
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
+            @Override
+            public void onFailure(Throwable caught) {
+            }
 
-	private void delete() {
-		dispatcher.execute(new DeleteSite(gridPanel.getSelection().getId()), 
-				new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
-				new AsyncCallback<VoidResult>() {
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                for (UserDatabaseDTO db : result.getDatabases()) {
+                    if (!db.getActivities().isEmpty()) {
+                        currentPlace.getFilter().addRestriction(
+                            DimensionType.Activity,
+                            db.getActivities().get(0).getId());
+                        doNavigate();
+                        return;
+                    }
+                }
+            }
+        });
+    }
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// handled by monitor
-			}
+    private void doNavigate() {
+        Filter filter = currentPlace.getFilter();
 
-			@Override
-			public void onSuccess(VoidResult result) {
-				gridPanel.refresh();
-			}
-		});
-	}
+        gridPanel.load(currentPlace.getGrouping(), filter);
+        groupingComboBox.setFilter(filter);
+        filterPane.getSet().applyBaseFilter(filter);
+
+        // currently the print form only does one activity
+        Set<Integer> activities = filter
+            .getRestrictions(DimensionType.Activity);
+        toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
+        toolBar.setActionEnabled(UIActions.EXPORT, activities.size() == 1);
+
+        // also embedding is only implemented for one activity
+        toolBar.setActionEnabled("EMBED", activities.size() == 1);
+
+        // adding is also only enabled for one activity, but we have to
+        // lookup to see whether it possible for this activity
+        toolBar.setActionEnabled(UIActions.ADD, false);
+        if (activities.size() == 1) {
+            checkWhetherEditingIsAllowed(activities.iterator().next());
+        }
+
+    }
+
+    private void checkWhetherEditingIsAllowed(final int activityId) {
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+
+            }
+
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                toolBar.setActionEnabled(UIActions.ADD,
+                    result.getActivityById(activityId).getDatabase()
+                        .isEditAllowed());
+            }
+        });
+    }
+
+    @Override
+    public void onUIAction(String actionId) {
+        if (UIActions.ADD.equals(actionId)) {
+            SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
+            formHelper.addSite(currentPlace.getFilter(),
+                new SiteDialogCallback() {
+
+                    @Override
+                    public void onSaved(SiteDTO site) {
+                        gridPanel.refresh();
+                    }
+                });
+        } else if (UIActions.EDIT.equals(actionId)) {
+            SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
+            launcher.editSite(gridPanel.getSelection(),
+                new SiteDialogCallback() {
+
+                    @Override
+                    public void onSaved(SiteDTO site) {
+                        gridPanel.refresh();
+                    }
+                });
+
+        } else if (UIActions.DELETE.equals(actionId)) {
+
+            delete();
+
+        } else if (UIActions.PRINT.equals(actionId)) {
+            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onSuccess(SchemaDTO result) {
+                    ActivityDTO activity = result.getActivityById(
+                        currentPlace.getFilter().getRestrictedCategory(
+                            DimensionType.Activity));
+
+                    new PrintDataEntryForm(activity).print();
+                }
+            });
+
+        } else if (UIActions.EXPORT.equals(actionId)) {
+            Window.Location.assign(GWT.getModuleBaseURL() + "export?filter=" +
+                FilterUrlSerializer.toUrlFragment(currentPlace.getFilter()));
+
+        } else if ("EMBED".equals(actionId)) {
+            EmbedDialog dialog = new EmbedDialog(dispatcher);
+            dialog.show(currentPlace);
+        }
+    }
+
+    private void delete() {
+        dispatcher.execute(new DeleteSite(gridPanel.getSelection().getId()),
+            new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
+            new AsyncCallback<VoidResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // handled by monitor
+                }
+
+                @Override
+                public void onSuccess(VoidResult result) {
+                    gridPanel.refresh();
+                }
+            });
+    }
 }

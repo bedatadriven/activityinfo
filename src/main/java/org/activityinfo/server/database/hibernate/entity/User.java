@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -35,9 +33,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.mindrot.bcrypt.BCrypt;
-
 
 /**
  * Describes a user
@@ -50,8 +46,8 @@ import org.mindrot.bcrypt.BCrypt;
 // dialects
 // of SQL
 @NamedQueries({
-        @NamedQuery(name = "findUserByEmail", query = "select u from User u where u.email = :email"),
-        @NamedQuery(name = "findUserByChangePasswordKey", query = "select u from User u where u.changePasswordKey = :key") })
+    @NamedQuery(name = "findUserByEmail", query = "select u from User u where u.email = :email"),
+    @NamedQuery(name = "findUserByChangePasswordKey", query = "select u from User u where u.changePasswordKey = :key") })
 public class User implements java.io.Serializable {
 
     private static final long serialVersionUID = 6486007767204653799L;
@@ -66,11 +62,11 @@ public class User implements java.io.Serializable {
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
     private boolean emailNotification;
-    
-    public User() {
-    }	
 
-	@Id
+    public User() {
+    }
+
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "UserId", unique = true, nullable = false)
     public int getId() {
@@ -104,7 +100,7 @@ public class User implements java.io.Serializable {
     public String getFirstName() {
         return firstName;
     }
-    
+
     @Deprecated
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -273,7 +269,8 @@ public class User implements java.io.Serializable {
      * @return The complete name.
      */
     @Deprecated
-    public static String getUserCompleteName(final String firstName, final String lastName) {
+    public static String getUserCompleteName(final String firstName,
+        final String lastName) {
 
         final StringBuilder sb = new StringBuilder();
         if (firstName != null) {
@@ -335,7 +332,8 @@ public class User implements java.io.Serializable {
      * @return The short name.
      */
     @Deprecated
-    public static String getUserShortName(final String firstName, final String lastName) {
+    public static String getUserShortName(final String firstName,
+        final String lastName) {
 
         final StringBuilder sb = new StringBuilder();
         if (firstName != null) {
@@ -348,8 +346,9 @@ public class User implements java.io.Serializable {
 
         return sb.toString();
     }
-    
+
     public void changePassword(String newPlaintextPassword) {
-    	this.hashedPassword = BCrypt.hashpw(newPlaintextPassword, BCrypt.gensalt());
+        this.hashedPassword = BCrypt.hashpw(newPlaintextPassword,
+            BCrypt.gensalt());
     }
 }

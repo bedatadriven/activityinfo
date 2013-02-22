@@ -21,17 +21,18 @@
   #L%
   -->
 
-<mappings xmlns="http://dozer.sourceforge.net"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://dozer.sourceforge.net
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
   <configuration>
     <custom-converters> <!-- these are always bi-directional -->
-      <converter type="org.activityinfo.server.util.beanMapping.LocalDateConverter" >
-        <class-a>com.bedatadriven.rebar.time.calendar.LocalDate</class-a>
+      <converter
+        type="org.activityinfo.server.util.beanMapping.LocalDateConverter">
+        <class-a>com.bedatadriven.rebar.time.calendar.LocalDate
+        </class-a>
         <class-b>java.util.Date</class-b>
       </converter>
-    </custom-converters>     
+    </custom-converters>
   </configuration>
-  
+
 </mappings>

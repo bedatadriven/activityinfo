@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.design;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.client.page.config.design;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
@@ -87,33 +84,40 @@ class ActivityForm extends AbstractDesignForm {
         locationTypeCombo.setAllowBlank(false);
         locationTypeCombo.setFieldLabel(I18N.CONSTANTS.locationType());
         this.add(locationTypeCombo);
-        
-        binding.addFieldBinding(new MappingComboBoxBinding(locationTypeCombo, "locationTypeId"));
-        
+
+        binding.addFieldBinding(new MappingComboBoxBinding(locationTypeCombo,
+            "locationTypeId"));
+
         final MappingComboBox frequencyCombo = new MappingComboBox();
         frequencyCombo.setAllowBlank(false);
         frequencyCombo.setFieldLabel(I18N.CONSTANTS.reportingFrequency());
-        frequencyCombo.add(ActivityDTO.REPORT_ONCE, I18N.CONSTANTS.reportOnce());
-        frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
-        binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
+        frequencyCombo
+            .add(ActivityDTO.REPORT_ONCE, I18N.CONSTANTS.reportOnce());
+        frequencyCombo
+            .add(ActivityDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
+        binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo,
+            "reportingFrequency"));
         this.add(frequencyCombo);
-        
+
         MappingComboBox publishedCombo = new MappingComboBox();
         publishedCombo.setAllowBlank(false);
         publishedCombo.setFieldLabel(I18N.CONSTANTS.published());
-        publishedCombo.add(Published.NOT_PUBLISHED.getIndex(), I18N.CONSTANTS.notPublished());
-        publishedCombo.add(Published.ALL_ARE_PUBLISHED.getIndex(), I18N.CONSTANTS.allArePublished());
-        binding.addFieldBinding(new MappingComboBoxBinding(publishedCombo, "published"));
+        publishedCombo.add(Published.NOT_PUBLISHED.getIndex(),
+            I18N.CONSTANTS.notPublished());
+        publishedCombo.add(Published.ALL_ARE_PUBLISHED.getIndex(),
+            I18N.CONSTANTS.allArePublished());
+        binding.addFieldBinding(new MappingComboBoxBinding(publishedCombo,
+            "published"));
 
         binding.addListener(Events.Bind, new Listener<BindingEvent>() {
 
-			@Override
-			public void handleEvent(BindingEvent be) {
-				locationTypeCombo.setEnabled( !isSaved(be.getModel()));
-				frequencyCombo.setEnabled( !isSaved(be.getModel()) );
-			}	
-		});
-        
+            @Override
+            public void handleEvent(BindingEvent be) {
+                locationTypeCombo.setEnabled(!isSaved(be.getModel()));
+                frequencyCombo.setEnabled(!isSaved(be.getModel()));
+            }
+        });
+
         this.add(publishedCombo);
     }
 
@@ -122,8 +126,7 @@ class ActivityForm extends AbstractDesignForm {
         return binding;
     }
 
-
-	private boolean isSaved(ModelData model) {
-		return model.get("id") != null;
-	}
+    private boolean isSaved(ModelData model) {
+        return model.get("id") != null;
+    }
 }

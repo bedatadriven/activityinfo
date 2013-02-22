@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -33,18 +31,18 @@ import org.activityinfo.shared.report.model.TableColumn;
 public class TableData implements Serializable {
 
     private final TableColumn rootColumn;
-	private final List<TableColumn> leaves;
-	private final List<SiteDTO> rows;
+    private final List<TableColumn> leaves;
+    private final List<SiteDTO> rows;
 
-	public TableData(TableColumn rootColumn, List<SiteDTO> rows) {
-		this.rootColumn = rootColumn;
+    public TableData(TableColumn rootColumn, List<SiteDTO> rows) {
+        this.rootColumn = rootColumn;
         this.leaves = rootColumn.getLeaves();
-		this.rows = rows;
-	}
+        this.rows = rows;
+    }
 
     public String getColumnIndex(String source) {
-        for(TableColumn column : leaves) {
-            if(column.getProperty().equals(source)) {
+        for (TableColumn column : leaves) {
+            if (column.getProperty().equals(source)) {
                 return column.getSitePropertyName();
             }
         }
@@ -60,10 +58,10 @@ public class TableData implements Serializable {
     }
 
     public List<SiteDTO> getRows() {
-		return rows;
-	}
+        return rows;
+    }
 
-	public boolean isEmpty() {
-		return rows == null || rows.size() == 0;
-	}
+    public boolean isEmpty() {
+        return rows == null || rows.size() == 0;
+    }
 }

@@ -38,65 +38,67 @@ import com.google.inject.Provider;
 
 public class BasicAuthentication {
 
-	private final ServerSideAuthProvider authProvider;
-	private final Provider<UserDAO> userDAO;
-	private final Provider<Authenticator> authenticator;
-	
-	@Inject
-	public BasicAuthentication(
-			 ServerSideAuthProvider authProvider,
-			 Provider<UserDAO> userDAO,
-			 Provider<Authenticator> authenticator) {
-		this.authProvider = authProvider;
-		this.userDAO = userDAO;
-		this.authenticator = authenticator;
-	}
+    private final ServerSideAuthProvider authProvider;
+    private final Provider<UserDAO> userDAO;
+    private final Provider<Authenticator> authenticator;
 
+    @Inject
+    public BasicAuthentication(
+        ServerSideAuthProvider authProvider,
+        Provider<UserDAO> userDAO,
+        Provider<Authenticator> authenticator) {
+        this.authProvider = authProvider;
+        this.userDAO = userDAO;
+        this.authenticator = authenticator;
+    }
 
-	public Authentication tryAuthenticate(String authorizationHeader) {
-	    User user;
+    public Authentication tryAuthenticate(String authorizationHeader) {
+        User user;
         try {
             user = doAuthentication(authorizationHeader);
         } catch (IOException e) {
             return null;
         }
-	    Authentication auth = new Authentication(user);
-	    auth.setId("");
-	    return auth;
-	}
-	
-	public User doAuthentication(String auth) throws IOException{
-		
-		User user = authenticate(auth);
-		
-		if(user == null){
-			return null;
-		}
-		
-		authProvider.set(new AuthenticatedUser("", user.getId(), user.getEmail()));
-		
-		return user;
-	}
-	
-	// This method checks the user information sent in the Authorization
+        Authentication auth = new Authentication(user);
+        auth.setId("");
+        return auth;
+    }
+
+    public User doAuthentication(String auth) throws IOException {
+
+        User user = authenticate(auth);
+
+        if (user == null) {
+            return null;
+        }
+
+        authProvider.set(new AuthenticatedUser("", user.getId(), user
+            .getEmail()));
+
+        return user;
+    }
+
+    // This method checks the user information sent in the Authorization
     // header against the database of users maintained in the users Hashtable.
 
     public User authenticate(String auth) throws IOException {
         if (auth == null) {
+            // no auth
             return null;
-        }// no auth
-
+        }
         if (!auth.toUpperCase().startsWith("BASIC ")) {
+            // we only do BASIC
             return null;
-        }// we only do BASIC
-
+        }
         // Get encoded user and password, comes after "BASIC "
         String emailpassEncoded = auth.substring(6);
 
         // Decode it, using any base 64 decoder
 
-        byte[] emailpassDecodedBytes = Base64.decodeBase64(emailpassEncoded.getBytes());
-        String emailpassDecoded = new String(emailpassDecodedBytes, Charsets.UTF_8);
+        byte[] emailpassDecodedBytes = Base64.decodeBase64(emailpassEncoded
+            .getBytes());
+        String emailpassDecoded = new String(emailpassDecodedBytes,
+            Charsets.UTF_8);
         String[] emailPass = emailpassDecoded.split(":");
 
         if (emailPass.length != 2) {
@@ -104,13 +106,13 @@ public class BasicAuthentication {
         }
 
         // look up the user in the database
-        User user = null; 
+        User user = null;
         try {
-        	user = userDAO.get().findUserByEmail(emailPass[0]);
+            user = userDAO.get().findUserByEmail(emailPass[0]);
         } catch (NoResultException e) {
-        	return null;
+            return null;
         }
-      
+
         if (!authenticator.get().check(user, emailPass[1])) {
             return null;
         }

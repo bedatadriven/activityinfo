@@ -29,16 +29,17 @@ import com.extjs.gxt.ui.client.event.EventType;
 
 public class CommandQueueEvent extends BaseEvent {
 
-	public static final EventType TYPE = new EventBus.NamedEventType("CommandQueueEvent");
+    public static final EventType TYPE = new EventBus.NamedEventType(
+        "CommandQueueEvent");
 
-	private int enqueuedItemCount;
-	
-	public CommandQueueEvent(int enqueuedItemCount) {
-		super(TYPE);
-		this.enqueuedItemCount = enqueuedItemCount;
-	}
+    private int enqueuedItemCount;
 
-	public int getEnqueuedItemCount() {
-		return enqueuedItemCount;
-	}
+    public CommandQueueEvent(int enqueuedItemCount) {
+        super(TYPE);
+        this.enqueuedItemCount = enqueuedItemCount;
+    }
+
+    public int getEnqueuedItemCount() {
+        return enqueuedItemCount;
+    }
 }

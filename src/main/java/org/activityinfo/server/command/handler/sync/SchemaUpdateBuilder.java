@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler.sync;
 
 /*
@@ -28,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -51,7 +50,6 @@ import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
-import java.util.logging.Logger;
 import org.json.JSONException;
 
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
@@ -73,90 +71,97 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
     private final List<Activity> activities = new ArrayList<Activity>();
     private final List<Indicator> indicators = new ArrayList<Indicator>();
-    
+
     private final Set<Integer> attributeGroupIds = new HashSet<Integer>();
-    private final List<AttributeGroup> attributeGroups = new ArrayList<AttributeGroup> ();
+    private final List<AttributeGroup> attributeGroups = new ArrayList<AttributeGroup>();
     private final List<Attribute> attributes = new ArrayList<Attribute>();
-    
+
     private final Set<Integer> userIds = new HashSet<Integer>();
     private final List<User> users = new ArrayList<User>();
-    private final List<LocationType> locationTypes  = new ArrayList<LocationType>();
+    private final List<LocationType> locationTypes = new ArrayList<LocationType>();
     private List<UserPermission> userPermissions;
 
-    private static Logger LOGGER = Logger.getLogger(SchemaUpdateBuilder.class.getName());
-    
+    private static final Logger LOGGER = Logger
+        .getLogger(SchemaUpdateBuilder.class
+            .getName());
+
     private final Class[] schemaClasses = new Class[] {
-            Country.class,
-            AdminLevel.class,
-            LocationType.class,
-            UserDatabase.class,
-            Partner.class,
-            Activity.class,
-            Indicator.class,
-            AttributeGroup.class,
-            Attribute.class,
-            User.class,
-            UserPermission.class,
-            LockedPeriod.class,
-            Project.class
+        Country.class,
+        AdminLevel.class,
+        LocationType.class,
+        UserDatabase.class,
+        Partner.class,
+        Activity.class,
+        Indicator.class,
+        AttributeGroup.class,
+        Attribute.class,
+        User.class,
+        UserPermission.class,
+        LockedPeriod.class,
+        Project.class
     };
-	private final List<LockedPeriod> allLockedPeriods = new ArrayList<LockedPeriod>();
-	private final List<Project> projects = new ArrayList<Project>();
+    private final List<LockedPeriod> allLockedPeriods = new ArrayList<LockedPeriod>();
+    private final List<Project> projects = new ArrayList<Project>();
 
     @Inject
     public SchemaUpdateBuilder(EntityManagerFactory entityManagerFactory) {
         // create a new, unfiltered entity manager so we can see deleted records
         this.entityManager = entityManagerFactory.createEntityManager();
-        this.userDatabaseDAO = HibernateDAOProvider.makeImplementation(UserDatabaseDAO.class, UserDatabase.class, 
-        		entityManager);
+        this.userDatabaseDAO = HibernateDAOProvider.makeImplementation(
+            UserDatabaseDAO.class, UserDatabase.class,
+            entityManager);
     }
 
     @SuppressWarnings("unchecked")
-	@Override
-    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
-        
-    	try {
-	    	// get the permissions before we apply the filter
-	    	// otherwise they will be excluded
-	    	userPermissions = entityManager.createQuery("select p from UserPermission p where p.user.id = ?1")
-	                .setParameter(1, user.getId())
-	                .getResultList();
-	
-	        DomainFilters.applyUserFilter(user, entityManager);
-	        
-	    	databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
-	    	
-	    	
-	        long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
-	        long serverVersion = getCurrentSchemaVersion(user);
-	
-	        LOGGER.info("Schema versions: local = " + localVersion + ", server = " + serverVersion);
-	        
-	        SyncRegionUpdate update = new SyncRegionUpdate();
-	        update.setVersion(Long.toString(serverVersion));
-	        update.setComplete(true);
-	
-	        if(localVersion < serverVersion) {
-	            makeEntityLists();
-	            update.setSql(buildSql());
-	        }
-	        return update;
-    	} finally {
-    		entityManager.close();
-    	}
+    @Override
+    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request)
+        throws JSONException {
+
+        try {
+            // get the permissions before we apply the filter
+            // otherwise they will be excluded
+            userPermissions = entityManager
+                .createQuery(
+                    "select p from UserPermission p where p.user.id = ?1")
+                .setParameter(1, user.getId())
+                .getResultList();
+
+            DomainFilters.applyUserFilter(user, entityManager);
+
+            databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
+
+            long localVersion = request.getLocalVersion() == null ? 0 : Long
+                .parseLong(request.getLocalVersion());
+            long serverVersion = getCurrentSchemaVersion(user);
+
+            LOGGER.info("Schema versions: local = " + localVersion
+                + ", server = " + serverVersion);
+
+            SyncRegionUpdate update = new SyncRegionUpdate();
+            update.setVersion(Long.toString(serverVersion));
+            update.setComplete(true);
+
+            if (localVersion < serverVersion) {
+                makeEntityLists();
+                update.setSql(buildSql());
+            }
+            return update;
+        } finally {
+            entityManager.close();
+        }
     }
 
     private String buildSql() throws JSONException {
         JpaUpdateBuilder builder = new JpaUpdateBuilder();
-        
-        for(Class schemaClass : schemaClasses) {
+
+        for (Class schemaClass : schemaClasses) {
             builder.createTableIfNotExists(schemaClass);
-   
+
             // special case: we never delete partners, only add them.
             // this way we always have a label for Partners
             // See : LocalSiteCreateTest.siteRemovePartnerConflict
-            if(!schemaClass.equals(Partner.class)) {
-            	builder.deleteAll(schemaClass);
+            if (!schemaClass.equals(Partner.class)) {
+                builder.deleteAll(schemaClass);
             }
         }
 
@@ -175,115 +180,124 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(LockedPeriod.class, allLockedPeriods);
 
         // TODO: this needs to be actually synchronized
-        builder.executeStatement("CREATE TABLE IF NOT EXISTS  target (targetId int, name text, date1 text, date2 text, projectId int, partnerId int, adminEntityId int, databaseId int)"); 
-        builder.executeStatement("CREATE TABLE IF NOT EXISTS  targetvalue (targetId int, IndicatorId int, value real)"); 
-        
-        builder.executeStatement("CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int) ");
+        builder
+            .executeStatement("CREATE TABLE IF NOT EXISTS  target (targetId int, name text, date1 text, date2 text, projectId int, partnerId int, adminEntityId int, databaseId int)");
+        builder
+            .executeStatement("CREATE TABLE IF NOT EXISTS  targetvalue (targetId int, IndicatorId int, value real)");
 
-        builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
+        builder
+            .executeStatement("CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int) ");
+
+        builder
+            .executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
         builder.executeStatement("delete from PartnerInDatabase");
 
-        builder.createTableIfNotExists(Location.class);		
+        builder.createTableIfNotExists(Location.class);
 
-        builder.executeStatement("create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
+        builder
+            .executeStatement("create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
 
-        
-        if(anyPartners()) {
-	        builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
-	        for(UserDatabase db : databases) {
-	            for(Partner partner : db.getPartners()) {
-	                builder.addExecution(db.getId(), partner.getId());
-	            }
-	        }
-	        builder.finishPreparedStatement();
+        if (anyPartners()) {
+            builder
+                .beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
+            for (UserDatabase db : databases) {
+                for (Partner partner : db.getPartners()) {
+                    builder.addExecution(db.getId(), partner.getId());
+                }
+            }
+            builder.finishPreparedStatement();
         }
 
-        builder.executeStatement("create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
+        builder
+            .executeStatement("create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
         builder.executeStatement("delete from AttributeGroupInActivity");
-        
-        if(anyAttributes()) {
-	        builder.beginPreparedStatement("insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
-	        for(UserDatabase db : databases) {
-	            for(Activity activity : db.getActivities()) {
-	                for(AttributeGroup group : activity.getAttributeGroups()) {
-	                    builder.addExecution(activity.getId(), group.getId());
-	                }
-	            }
-	        }
-	        builder.finishPreparedStatement();
+
+        if (anyAttributes()) {
+            builder
+                .beginPreparedStatement("insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
+            for (UserDatabase db : databases) {
+                for (Activity activity : db.getActivities()) {
+                    for (AttributeGroup group : activity.getAttributeGroups()) {
+                        builder.addExecution(activity.getId(), group.getId());
+                    }
+                }
+            }
+            builder.finishPreparedStatement();
         }
 
         return builder.asJson();
     }
 
     private boolean anyPartners() {
-    	for(UserDatabase db : databases) {
-    		if(!db.getPartners().isEmpty()) {
-    			return true;
-    		}
-    	}		
-    	return false;
-	}
-
-	private boolean anyAttributes() {
-    	for(UserDatabase db : databases) {
-    		for(Activity activity : db.getActivities()) {
-    			if(!activity.getAttributeGroups().isEmpty()) {
-    				return true;
-    			}
-    		}	
-    	}		
-    	return false;
+        for (UserDatabase db : databases) {
+            if (!db.getPartners().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
-	private void makeEntityLists() {
-        for(UserDatabase database : databases) {
-        	if(!userIds.contains(database.getOwner().getId())) {
-        		User u = database.getOwner();
-        		// don't send hashed password to client
-// EEK i think hibernate will persist this to the database automatically if we change it here!!
-//        		u.setHashedPassword("");
-        		users.add(u);
-        		userIds.add(u.getId());
-        	}
-            
-            if(!countryIds.contains(database.getCountry().getId())) {
+    private boolean anyAttributes() {
+        for (UserDatabase db : databases) {
+            for (Activity activity : db.getActivities()) {
+                if (!activity.getAttributeGroups().isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void makeEntityLists() {
+        for (UserDatabase database : databases) {
+            if (!userIds.contains(database.getOwner().getId())) {
+                User u = database.getOwner();
+                // don't send hashed password to client
+                // EEK i think hibernate will persist this to the database
+                // automatically if we change it here!!
+                // u.setHashedPassword("");
+                users.add(u);
+                userIds.add(u.getId());
+            }
+
+            if (!countryIds.contains(database.getCountry().getId())) {
                 countries.add(database.getCountry());
                 adminLevels.addAll(database.getCountry().getAdminLevels());
                 countryIds.add(database.getCountry().getId());
-                for (org.activityinfo.server.database.hibernate.entity.LocationType l: database.getCountry().getLocationTypes()) {
-                	locationTypes.add(l);
+                for (org.activityinfo.server.database.hibernate.entity.LocationType l : database
+                    .getCountry().getLocationTypes()) {
+                    locationTypes.add(l);
                 }
             }
-            for(Partner partner : database.getPartners()) {
-                if(!partnerIds.contains(partner.getId())) {
+            for (Partner partner : database.getPartners()) {
+                if (!partnerIds.contains(partner.getId())) {
                     partners.add(partner);
                     partnerIds.add(partner.getId());
                 }
             }
 
             projects.addAll(new ArrayList<Project>(database.getProjects()));
-            
-           	allLockedPeriods.addAll(database.getLockedPeriods());
-           	for (Project project : database.getProjects()) {
-           		allLockedPeriods.addAll(project.getLockedPeriods());
-           	}
-            
-            for(Activity activity : database.getActivities()) {
+
+            allLockedPeriods.addAll(database.getLockedPeriods());
+            for (Project project : database.getProjects()) {
+                allLockedPeriods.addAll(project.getLockedPeriods());
+            }
+
+            for (Activity activity : database.getActivities()) {
                 allLockedPeriods.addAll(activity.getLockedPeriods());
-                
+
                 activities.add(activity);
-                for(Indicator indicator : activity.getIndicators()) {
+                for (Indicator indicator : activity.getIndicators()) {
                     indicators.add(indicator);
                 }
-                for(AttributeGroup g: activity.getAttributeGroups()) {
-                	if (!attributeGroupIds.contains(g.getId())) {
-                		attributeGroups.add(g);
+                for (AttributeGroup g : activity.getAttributeGroups()) {
+                    if (!attributeGroupIds.contains(g.getId())) {
+                        attributeGroups.add(g);
                         attributeGroupIds.add(g.getId());
-                		for (Attribute a: g.getAttributes()) {
-                			attributes.add(a);
-                		}
-                	}
+                        for (Attribute a : g.getAttributes()) {
+                            attributes.add(a);
+                        }
+                    }
                 }
             }
         }
@@ -291,14 +305,14 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
     public long getCurrentSchemaVersion(User user) {
         long currentVersion = 1;
-        for(UserDatabase db : databases) {
-            if(db.getVersion() > currentVersion) {
+        for (UserDatabase db : databases) {
+            if (db.getVersion() > currentVersion) {
                 currentVersion = db.getVersion();
             }
 
-            if(db.getOwner().getId() != user.getId()) {
+            if (db.getOwner().getId() != user.getId()) {
                 UserPermission permission = db.getPermissionByUser(user);
-                if(permission.getVersion() > currentVersion) {
+                if (permission.getVersion() > currentVersion) {
                     currentVersion = permission.getVersion();
                 }
             }

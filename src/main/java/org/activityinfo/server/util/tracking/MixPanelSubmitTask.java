@@ -39,27 +39,29 @@ import com.mixpanel.mixpanelapi.MixpanelAPI;
 @Singleton
 public class MixPanelSubmitTask extends HttpServlet {
 
-	public static String END_POINT = "/tasks/mixpanel/submit";
-	
-	private final MixpanelAPI mixpanel = new MixpanelAPI();
-	
-	private static final Logger LOGGER = Logger.getLogger(MixPanelSubmitTask.class.getName());
-	
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		doPost(req, resp);
-	}
+    public static final String END_POINT = "/tasks/mixpanel/submit";
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-	
-		try {
-			mixpanel.sendMessage(new JSONObject(req.getParameter("message")));
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Failed to submit MixPanel message:\n" + req.getParameter("message"), e);
-		}
-	}
+    private final MixpanelAPI mixpanel = new MixpanelAPI();
+
+    private static final Logger LOGGER = Logger
+        .getLogger(MixPanelSubmitTask.class.getName());
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+        doPost(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+
+        try {
+            mixpanel.sendMessage(new JSONObject(req.getParameter("message")));
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to submit MixPanel message:\n"
+                + req.getParameter("message"), e);
+        }
+    }
 
 }

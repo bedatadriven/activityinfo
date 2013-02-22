@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.server.report.generator;
  * #L%
  */
 
-
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
@@ -36,7 +33,8 @@ import org.activityinfo.shared.report.model.PivotTableReportElement;
 
 import com.google.inject.Inject;
 
-public class PivotTableGenerator extends PivotGenerator<PivotTableReportElement> {
+public class PivotTableGenerator extends
+    PivotGenerator<PivotTableReportElement> {
 
     @Inject
     public PivotTableGenerator(DispatcherSync dispatcher) {
@@ -44,22 +42,24 @@ public class PivotTableGenerator extends PivotGenerator<PivotTableReportElement>
     }
 
     @Override
-    public void generate(User user, PivotTableReportElement element, Filter inheritedFilter,
-                         DateRange dateRange) {
+    public void generate(User user, PivotTableReportElement element,
+        Filter inheritedFilter,
+        DateRange dateRange) {
 
         Filter filter = GeneratorUtils.resolveElementFilter(element, dateRange);
-        Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
+        Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(
+            inheritedFilter, filter);
 
-        PivotTableData data = generateData(user.getId(), LocaleHelper.getLocaleObject(user), element, effectiveFilter,
-                element.getRowDimensions(), element.getColumnDimensions());
-        
-        
+        PivotTableData data = generateData(user.getId(),
+            LocaleHelper.getLocaleObject(user), element, effectiveFilter,
+            element.getRowDimensions(), element.getColumnDimensions());
+
         PivotContent content = new PivotContent();
         content.setEffectiveFilter(effectiveFilter);
         content.setFilterDescriptions(
-                generateFilterDescriptions(
-                        filter, element.allDimensionTypes(), user));
-		content.setData(data);
+            generateFilterDescriptions(
+                filter, element.allDimensionTypes(), user));
+        content.setData(data);
         element.setContent(content);
     }
 }

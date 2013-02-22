@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -27,12 +25,12 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * One-to-One DTO for the {@link org.activityinfo.shared.report.model.MapIcon} report class
- *
+ * One-to-One DTO for the {@link org.activityinfo.shared.report.model.MapIcon}
+ * report class
+ * 
  * @author Alex Bertram
  */
 public class MapIconDTO extends BaseModelData {
-
 
     public MapIconDTO() {
     }

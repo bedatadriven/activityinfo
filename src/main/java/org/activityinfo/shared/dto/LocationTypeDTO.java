@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -29,17 +27,17 @@ import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-
 /**
- * One-to-one DTO of the {@link org.activityinfo.server.database.hibernate.entity.LocationType LocationType}
- * domain object.
- *
+ * One-to-one DTO of the
+ * {@link org.activityinfo.server.database.hibernate.entity.LocationType
+ * LocationType} domain object.
+ * 
  * @author Alex Bertram
  */
 public final class LocationTypeDTO extends BaseModelData implements DTO {
 
-	public LocationTypeDTO() {
-	}
+    public LocationTypeDTO() {
+    }
 
     public LocationTypeDTO(int id, String name) {
         setId(id);
@@ -47,37 +45,37 @@ public final class LocationTypeDTO extends BaseModelData implements DTO {
     }
 
     @JsonProperty
-	@JsonView(DTOViews.Schema.class)
+    @JsonView(DTOViews.Schema.class)
     public void setId(int id) {
-		set("id", id);
-	}
-	
-	public int getId() {
-		return (Integer)get("id");
-	}
-	
-	public void setName(String value) {
-		set("name", value);
-	}
-	
-    @JsonProperty
-	@JsonView(DTOViews.Schema.class)
-	public String getName() { 
-		return get("name");
-	}
-	
-    @JsonProperty("adminLevelId")
-	@JsonView(DTOViews.Schema.class)
-	public Integer getBoundAdminLevelId() {
-		return get("boundAdminLevelId");
-	}
-	
-	public void setBoundAdminLevelId(Integer id) {
-		set("boundAdminLevelId", id);
-	}
+        set("id", id);
+    }
 
-	public boolean isAdminLevel() {
-		return getBoundAdminLevelId() != null;
-	}
+    public int getId() {
+        return (Integer) get("id");
+    }
+
+    public void setName(String value) {
+        set("name", value);
+    }
+
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
+    public String getName() {
+        return get("name");
+    }
+
+    @JsonProperty("adminLevelId")
+    @JsonView(DTOViews.Schema.class)
+    public Integer getBoundAdminLevelId() {
+        return get("boundAdminLevelId");
+    }
+
+    public void setBoundAdminLevelId(Integer id) {
+        set("boundAdminLevelId", id);
+    }
+
+    public boolean isAdminLevel() {
+        return getBoundAdminLevelId() != null;
+    }
 
 }

@@ -64,196 +64,216 @@ import com.google.inject.Provider;
 /**
  * Displays a grid where users can add, remove and change Targets
  */
-public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> implements DbPage {
+public class DbTargetEditor extends AbstractGridPresenter<TargetDTO> implements
+    DbPage {
 
-	public static final PageId PAGE_ID = new PageId("targets");
+    public static final PageId PAGE_ID = new PageId("targets");
 
-	@ImplementedBy(DbTargetGrid.class)
-	public interface View extends GridView<DbTargetEditor, TargetDTO> {
-		void init(DbTargetEditor editor, UserDatabaseDTO db,	ListStore<TargetDTO> store);
-		void createTargetValueContainer(Widget w);
-		FormDialogTether showAddDialog(TargetDTO target, UserDatabaseDTO db, FormDialogCallback callback);
-		AsyncMonitor getLoadingMonitor();
-	}
+    @ImplementedBy(DbTargetGrid.class)
+    public interface View extends GridView<DbTargetEditor, TargetDTO> {
+        void init(DbTargetEditor editor, UserDatabaseDTO db,
+            ListStore<TargetDTO> store);
 
-	private final Dispatcher service;
-	private final EventBus eventBus;
-	private final View view;
-	
-	private UserDatabaseDTO db;
-	private ListStore<TargetDTO> store;
-	private final TargetIndicatorPresenter targetIndicatorPresenter ;
-	
-	@Inject
-	public DbTargetEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view, 
-			Provider<TargetIndicatorPresenter> targetIndicatorPresenterProvider) {
+        void createTargetValueContainer(Widget w);
 
-		super(eventBus, stateMgr, view);
-		this.service = service;
-		this.eventBus = eventBus;
-		this.view = view;
-		targetIndicatorPresenter = targetIndicatorPresenterProvider.get();
-	}
+        FormDialogTether showAddDialog(TargetDTO target, UserDatabaseDTO db,
+            FormDialogCallback callback);
 
-	@Override
-	public void go(UserDatabaseDTO db) {
-		this.db = db;
+        AsyncMonitor getLoadingMonitor();
+    }
 
-		store = new ListStore<TargetDTO>();
-		store.setSortField("name");
-		store.setSortDir(Style.SortDir.ASC);
+    private final Dispatcher service;
+    private final EventBus eventBus;
+    private final View view;
 
-		fillStore();
+    private UserDatabaseDTO db;
+    private ListStore<TargetDTO> store;
+    private final TargetIndicatorPresenter targetIndicatorPresenter;
 
-		view.init(this, db, store);
-		view.setActionEnabled(UIActions.DELETE, false);
-		view.setActionEnabled(UIActions.EDIT, false);
+    @Inject
+    public DbTargetEditor(EventBus eventBus, Dispatcher service,
+        StateProvider stateMgr, View view,
+        Provider<TargetIndicatorPresenter> targetIndicatorPresenterProvider) {
 
-		view.createTargetValueContainer((Widget)targetIndicatorPresenter.getWidget());
-		targetIndicatorPresenter.go(db);	
-	}
+        super(eventBus, stateMgr, view);
+        this.service = service;
+        this.eventBus = eventBus;
+        this.view = view;
+        targetIndicatorPresenter = targetIndicatorPresenterProvider.get();
+    }
 
+    @Override
+    public void go(UserDatabaseDTO db) {
+        this.db = db;
 
-	private void fillStore(){
+        store = new ListStore<TargetDTO>();
+        store.setSortField("name");
+        store.setSortDir(Style.SortDir.ASC);
 
-		service.execute(new GetTargets(db.getId()), view.getLoadingMonitor(), new AsyncCallback<TargetResult>() {
+        fillStore();
 
-			@Override
-			public void onFailure(Throwable caught) {
+        view.init(this, db, store);
+        view.setActionEnabled(UIActions.DELETE, false);
+        view.setActionEnabled(UIActions.EDIT, false);
 
-			}
+        view.createTargetValueContainer((Widget) targetIndicatorPresenter
+            .getWidget());
+        targetIndicatorPresenter.go(db);
+    }
 
-			@Override
-			public void onSuccess(TargetResult result) {
-				store.add(result.getData());
-			}
+    private void fillStore() {
 
-		});
-	}
+        service.execute(new GetTargets(db.getId()), view.getLoadingMonitor(),
+            new AsyncCallback<TargetResult>() {
 
-	 
-	@Override
-	protected void onDeleteConfirmed(final TargetDTO model) {
-		service.execute(new Delete(model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
+                @Override
+                public void onFailure(Throwable caught) {
 
-			}
+                }
 
-			@Override
-			public void onSuccess(VoidResult result) {
-				store.remove(model);
-				store.commitChanges();
-				eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-			}
-		});
-	}
+                @Override
+                public void onSuccess(TargetResult result) {
+                    store.add(result.getData());
+                }
 
-	@Override
-	protected void onAdd() {
-		final TargetDTO newTarget = new TargetDTO();
-		this.view.showAddDialog(newTarget, db, new FormDialogCallback() {
+            });
+    }
 
-			@Override
-			public void onValidated(final FormDialogTether dlg) {
+    @Override
+    protected void onDeleteConfirmed(final TargetDTO model) {
+        service.execute(new Delete(model), view.getDeletingMonitor(),
+            new AsyncCallback<VoidResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
 
-				service.execute(new AddTarget(db.getId(), newTarget), dlg, new AsyncCallback<CreateResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
-					}
+                }
 
-					@Override
-					public void onSuccess(CreateResult result) {
-						newTarget.setId(result.getNewId());
+                @Override
+                public void onSuccess(VoidResult result) {
+                    store.remove(model);
+                    store.commitChanges();
+                    eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                }
+            });
+    }
 
-						PartnerDTO partner = db.getPartnerById((Integer) newTarget.get("partnerId"));
-						newTarget.setPartner(partner);
+    @Override
+    protected void onAdd() {
+        final TargetDTO newTarget = new TargetDTO();
+        this.view.showAddDialog(newTarget, db, new FormDialogCallback() {
 
-						ProjectDTO project = db.getProjectById((Integer) newTarget.get("projectId"));
-						newTarget.setProject(project);
+            @Override
+            public void onValidated(final FormDialogTether dlg) {
 
-						store.add(newTarget);
-						store.commitChanges();
+                service.execute(new AddTarget(db.getId(), newTarget), dlg,
+                    new AsyncCallback<CreateResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert(I18N.CONSTANTS.error(),
+                                I18N.CONSTANTS.errorOnServer(), null);
+                        }
 
-						eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-						dlg.hide();
-					}
-				});
-			}
-		});
-	}
+                        @Override
+                        public void onSuccess(CreateResult result) {
+                            newTarget.setId(result.getNewId());
 
-	@Override
-	protected void onEdit(final TargetDTO dto) {
-		
-		this.view.showAddDialog(dto, db, new FormDialogCallback() {
-	        @Override
-	        public void onValidated(final FormDialogTether dlg) {
+                            PartnerDTO partner = db
+                                .getPartnerById((Integer) newTarget
+                                    .get("partnerId"));
+                            newTarget.setPartner(partner);
 
-	        	final Record record =store.getRecord(dto);
-	            service.execute(new UpdateEntity(dto, getChangedProperties(record) ), dlg, new AsyncCallback<VoidResult>() {
-	                @Override
-					public void onFailure(Throwable caught) {
+                            ProjectDTO project = db
+                                .getProjectById((Integer) newTarget
+                                    .get("projectId"));
+                            newTarget.setProject(project);
 
-	                }
-	
-	                @Override
-					public void onSuccess(VoidResult result) {
-	                	
-	                	PartnerDTO partner =db.getPartnerById((Integer)record.get("partnerId"));
-	                	dto.setPartner(partner);
-	                	
-	                	ProjectDTO project = db.getProjectById((Integer)record.get("projectId"));
-	                	dto.setProject(project);
-	                	
-	                	store.commitChanges();
-	                	eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-	                    dlg.hide();
-	                }
-	            });
-	        }
-		});
-	}
-		 
-	protected Map<String, Object> getChangedProperties(Record record) {
+                            store.add(newTarget);
+                            store.commitChanges();
+
+                            eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                            dlg.hide();
+                        }
+                    });
+            }
+        });
+    }
+
+    @Override
+    protected void onEdit(final TargetDTO dto) {
+
+        this.view.showAddDialog(dto, db, new FormDialogCallback() {
+            @Override
+            public void onValidated(final FormDialogTether dlg) {
+
+                final Record record = store.getRecord(dto);
+                service.execute(new UpdateEntity(dto,
+                    getChangedProperties(record)), dlg,
+                    new AsyncCallback<VoidResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(VoidResult result) {
+
+                            PartnerDTO partner = db
+                                .getPartnerById((Integer) record
+                                    .get("partnerId"));
+                            dto.setPartner(partner);
+
+                            ProjectDTO project = db
+                                .getProjectById((Integer) record
+                                    .get("projectId"));
+                            dto.setProject(project);
+
+                            store.commitChanges();
+                            eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                            dlg.hide();
+                        }
+                    });
+            }
+        });
+    }
+
+    protected Map<String, Object> getChangedProperties(Record record) {
         Map<String, Object> changes = new HashMap<String, Object>();
 
         for (String property : record.getChanges().keySet()) {
-          	changes.put(property, record.get(property));
+            changes.put(property, record.get(property));
         }
         return changes;
     }
-	
-	@Override
-	public PageId getPageId() {
-		return PAGE_ID;
-	}
 
-	@Override
-	public Object getWidget() {
-		return view;
-	}
+    @Override
+    public PageId getPageId() {
+        return PAGE_ID;
+    }
 
-	@Override
-	public boolean navigate(PageState place) {
-		return false;
-	}
+    @Override
+    public Object getWidget() {
+        return view;
+    }
 
-	@Override
-	public void shutdown() {
-		
-	}
+    @Override
+    public boolean navigate(PageState place) {
+        return false;
+    }
 
-	@Override
-	protected String getStateId() {
-		return "TargetGrid";
-	}
+    @Override
+    public void shutdown() {
 
-	@Override
-	public void onSelectionChanged(ModelData selectedItem) {
-		view.setActionEnabled(UIActions.DELETE, true);
-		view.setActionEnabled(UIActions.EDIT, true);
-		targetIndicatorPresenter.load(view.getSelection());
-	}
+    }
+
+    @Override
+    protected String getStateId() {
+        return "TargetGrid";
+    }
+
+    @Override
+    public void onSelectionChanged(ModelData selectedItem) {
+        view.setActionEnabled(UIActions.DELETE, true);
+        view.setActionEnabled(UIActions.EDIT, true);
+        targetIndicatorPresenter.load(view.getSelection());
+    }
 }

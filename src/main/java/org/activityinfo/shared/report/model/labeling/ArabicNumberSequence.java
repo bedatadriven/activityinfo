@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model.labeling;
 
 /*
@@ -27,9 +25,9 @@ package org.activityinfo.shared.report.model.labeling;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * 
  * Provides a sequence of arabic numbers: 1, 2, 3...
- *
+ * 
  * @author Alex Bertram
  */
 @XmlRootElement

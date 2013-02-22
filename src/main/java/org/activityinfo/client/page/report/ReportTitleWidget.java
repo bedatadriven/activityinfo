@@ -42,67 +42,71 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReportTitleWidget extends Widget implements HasText {
 
-	private static ReportTitleWidgetUiBinder uiBinder = GWT
-			.create(ReportTitleWidgetUiBinder.class);
+    private static ReportTitleWidgetUiBinder uiBinder = GWT
+        .create(ReportTitleWidgetUiBinder.class);
 
-	interface ReportTitleWidgetUiBinder extends
-			UiBinder<Element, ReportTitleWidget> {
-	}
-	
-	interface MyStyle extends CssResource {
-		String reportTitle();
-		String reportTitleEditor();
-		String changeTitleText();
-	}
+    interface ReportTitleWidgetUiBinder extends
+        UiBinder<Element, ReportTitleWidget> {
+    }
 
-	@UiField
-	SpanElement titleSpan;
-	
-	@UiField
-	MyStyle style;
+    interface MyStyle extends CssResource {
+        String reportTitle();
 
-	private Editor titleEditor;
-	
-	private String text;
+        String reportTitleEditor();
 
-	public ReportTitleWidget() {
-		setElement(uiBinder.createAndBindUi(this));
+        String changeTitleText();
+    }
 
-		TextField<String> titleField = new TextField<String>();
-		titleField.addInputStyleName(style.reportTitleEditor());
-		
-		titleEditor = new Editor(titleField);
-		titleEditor.setAutoSizeMode(AutoSizeMode.HEIGHT);
-		titleEditor.setConstrain(true);
-		titleEditor.setAlignment("cl");
-		titleEditor.setWidth(400);
-		titleEditor.setHeight(16);
-		titleEditor.setCompleteOnEnter(true);
-		
-		sinkEvents(Event.ONCLICK);
-	}
+    @UiField
+    SpanElement titleSpan;
 
-	@Override
-	public String getText() {
-		return text;
-	}
+    @UiField
+    MyStyle style;
 
-	@Override
-	public void setText(String text) {
-		this.text = text;
-		titleSpan.setInnerText(text == null ? I18N.CONSTANTS.untitledReport() : text);
-	}
+    private Editor titleEditor;
 
-	@Override
-	public void onBrowserEvent(Event event) {
-		Element clicked = event.getEventTarget().cast();
-		if(clicked.getClassName().equals(style.reportTitle()) ||
-		   clicked.getClassName().equals(style.changeTitleText())) {
-			titleEditor.startEdit(  (com.google.gwt.user.client.Element) titleSpan.cast(), text);
-		}
-	}
+    private String text;
 
-	public void addEditCompleteListener(Listener<EditorEvent> listener) {
-		titleEditor.addListener(Events.Complete, listener);
-	}
+    public ReportTitleWidget() {
+        setElement(uiBinder.createAndBindUi(this));
+
+        TextField<String> titleField = new TextField<String>();
+        titleField.addInputStyleName(style.reportTitleEditor());
+
+        titleEditor = new Editor(titleField);
+        titleEditor.setAutoSizeMode(AutoSizeMode.HEIGHT);
+        titleEditor.setConstrain(true);
+        titleEditor.setAlignment("cl");
+        titleEditor.setWidth(400);
+        titleEditor.setHeight(16);
+        titleEditor.setCompleteOnEnter(true);
+
+        sinkEvents(Event.ONCLICK);
+    }
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setText(String text) {
+        this.text = text;
+        titleSpan.setInnerText(text == null ? I18N.CONSTANTS.untitledReport()
+            : text);
+    }
+
+    @Override
+    public void onBrowserEvent(Event event) {
+        Element clicked = event.getEventTarget().cast();
+        if (clicked.getClassName().equals(style.reportTitle()) ||
+            clicked.getClassName().equals(style.changeTitleText())) {
+            titleEditor.startEdit(
+                (com.google.gwt.user.client.Element) titleSpan.cast(), text);
+        }
+    }
+
+    public void addEditCompleteListener(Listener<EditorEvent> listener) {
+        titleEditor.addListener(Events.Complete, listener);
+    }
 }

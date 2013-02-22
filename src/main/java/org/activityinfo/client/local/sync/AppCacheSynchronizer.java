@@ -39,44 +39,48 @@ import com.google.inject.Inject;
 
 public class AppCacheSynchronizer implements ProgressEventHandler, AsyncCommand {
 
-	private final EventBus eventBus;
-	private final AppCache appCache = AppCacheFactory.get();
-	
-	private static final Logger LOGGER = Logger.getLogger(AppCacheSynchronizer.class.getName());
-	
-	@Inject
-	public AppCacheSynchronizer(EventBus eventBus) {
-		this.eventBus = eventBus;
-	}
-	
-	@Override
-	public void execute(final AsyncCallback<Void> callback) {
-		
-		final HandlerRegistration progressRegistration = appCache.addProgressHandler(this);
-		appCache.ensureUpToDate(new AsyncCallback<Void>() {
-			
-			@Override
-			public void onSuccess(Void result) {
-				if(appCache.getStatus() == Status.UPDATE_READY) {
-					callback.onFailure(new AppOutOfDateException());
-				} else {
-					progressRegistration.removeHandler();
-					callback.onSuccess(result);
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				LOGGER.log(Level.SEVERE, "Exception in AppCache Synchronizer", caught);
-				progressRegistration.removeHandler();
-				callback.onFailure(new SynchronizerConnectionException(caught));
-			}
-		});
-	}
+    private final EventBus eventBus;
+    private final AppCache appCache = AppCacheFactory.get();
 
-	@Override
-	public void onProgress(int filesComplete, int filesTotal) {
-		eventBus.fireEvent(new SyncStatusEvent(I18N.CONSTANTS.appCacheProgress(),
-				(double)filesComplete / (double)filesTotal * 100d));
-	}
+    private static final Logger LOGGER = Logger
+        .getLogger(AppCacheSynchronizer.class.getName());
+
+    @Inject
+    public AppCacheSynchronizer(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    @Override
+    public void execute(final AsyncCallback<Void> callback) {
+
+        final HandlerRegistration progressRegistration = appCache
+            .addProgressHandler(this);
+        appCache.ensureUpToDate(new AsyncCallback<Void>() {
+
+            @Override
+            public void onSuccess(Void result) {
+                if (appCache.getStatus() == Status.UPDATE_READY) {
+                    callback.onFailure(new AppOutOfDateException());
+                } else {
+                    progressRegistration.removeHandler();
+                    callback.onSuccess(result);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                LOGGER.log(Level.SEVERE, "Exception in AppCache Synchronizer",
+                    caught);
+                progressRegistration.removeHandler();
+                callback.onFailure(new SynchronizerConnectionException(caught));
+            }
+        });
+    }
+
+    @Override
+    public void onProgress(int filesComplete, int filesTotal) {
+        eventBus.fireEvent(new SyncStatusEvent(I18N.CONSTANTS
+            .appCacheProgress(),
+            (double) filesComplete / (double) filesTotal * 100d));
+    }
 }

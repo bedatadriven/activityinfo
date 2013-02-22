@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap;
 
 /*
@@ -33,7 +31,5 @@ public class LoginViewTest extends ViewTestCase {
     public void templateProcesses() {
         assertProcessable(new LoginPageModel());
     }
-
-
 
 }

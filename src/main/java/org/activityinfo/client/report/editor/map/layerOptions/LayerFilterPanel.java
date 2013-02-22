@@ -34,90 +34,91 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
- 
+
 public class LayerFilterPanel extends ContentPanel implements HasValue<Filter> {
-		
-	private FilterPanelSet filterPanelSet;
-	private Filter filter;
-	private DateFilterWidget dateWidget;
-	private PartnerFilterWidget partnerFilterWidget;
-	
-	public LayerFilterPanel(Dispatcher dispatcher) {
-		FilterResources.INSTANCE.style().ensureInjected();
-		
-		initializeComponent();
-		
-		
-		dateWidget = new DateFilterWidget();
-		partnerFilterWidget = new PartnerFilterWidget(dispatcher);
-		
-		add(dateWidget);
-		add(partnerFilterWidget);
-		
-		dateWidget.addValueChangeHandler(new ValueChangeHandler<Filter>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Filter> event) {
-				createNewFilterAndFireEvent();
-			}
-		});
-		
-		partnerFilterWidget.addValueChangeHandler(new ValueChangeHandler<Filter>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Filter> event) {
-				createNewFilterAndFireEvent();
-			}
-		});
-		
-		filterPanelSet = new FilterPanelSet(dateWidget, partnerFilterWidget);
-	}
 
-	private void createNewFilterAndFireEvent() {
-		Filter filter = new Filter();
-		Filter partnerFilter = partnerFilterWidget.getValue();
-		if (partnerFilter.hasRestrictions()) {
-			filter.addRestriction(DimensionType.Partner, partnerFilter.getRestrictions(DimensionType.Partner));
-		}
-		filter.setDateRange(dateWidget.getValue().getDateRange());
-		setValue(filter);
-	}
+    private FilterPanelSet filterPanelSet;
+    private Filter filter;
+    private DateFilterWidget dateWidget;
+    private PartnerFilterWidget partnerFilterWidget;
 
-	private void initializeComponent() {
-		setHeading(I18N.CONSTANTS.filter());
-		setIcon(IconImageBundle.ICONS.filter());
-	}
-	
-	public FilterPanelSet getFilterPanelSet() {
-		return filterPanelSet;
-	}
+    public LayerFilterPanel(Dispatcher dispatcher) {
+        FilterResources.INSTANCE.style().ensureInjected();
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<Filter> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());	
-	}
+        initializeComponent();
 
-	@Override
-	public Filter getValue() {
-		return filter;
-	}
+        dateWidget = new DateFilterWidget();
+        partnerFilterWidget = new PartnerFilterWidget(dispatcher);
 
-	@Override
-	public void setValue(Filter value) {
-		setValue(value, true);
-	}
+        add(dateWidget);
+        add(partnerFilterWidget);
 
-	@Override
-	public void setValue(Filter value, boolean fireEvents) {
-		if(value == null) {
-			value = new Filter();
-		} else {
-			this.filter = value;
-			dateWidget.setValue(value, false);
-			partnerFilterWidget.setValue(value, false);
-		}
-		if(fireEvents) {
-			ValueChangeEvent.fire(this, value);
-		}
-	}
+        dateWidget.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Filter> event) {
+                createNewFilterAndFireEvent();
+            }
+        });
+
+        partnerFilterWidget
+            .addValueChangeHandler(new ValueChangeHandler<Filter>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<Filter> event) {
+                    createNewFilterAndFireEvent();
+                }
+            });
+
+        filterPanelSet = new FilterPanelSet(dateWidget, partnerFilterWidget);
+    }
+
+    private void createNewFilterAndFireEvent() {
+        Filter filter = new Filter();
+        Filter partnerFilter = partnerFilterWidget.getValue();
+        if (partnerFilter.hasRestrictions()) {
+            filter.addRestriction(DimensionType.Partner,
+                partnerFilter.getRestrictions(DimensionType.Partner));
+        }
+        filter.setDateRange(dateWidget.getValue().getDateRange());
+        setValue(filter);
+    }
+
+    private void initializeComponent() {
+        setHeading(I18N.CONSTANTS.filter());
+        setIcon(IconImageBundle.ICONS.filter());
+    }
+
+    public FilterPanelSet getFilterPanelSet() {
+        return filterPanelSet;
+    }
+
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<Filter> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    @Override
+    public Filter getValue() {
+        return filter;
+    }
+
+    @Override
+    public void setValue(Filter value) {
+        setValue(value, true);
+    }
+
+    @Override
+    public void setValue(Filter value, boolean fireEvents) {
+        if (value == null) {
+            value = new Filter();
+        } else {
+            this.filter = value;
+            dateWidget.setValue(value, false);
+            partnerFilterWidget.setValue(value, false);
+        }
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, value);
+        }
+    }
 
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.shared.command;
  * #L%
  */
 
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -32,13 +29,11 @@ import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.logging.LoggingModule;
-import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.util.Collector;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
@@ -47,20 +42,19 @@ import org.junit.runner.RunWith;
 
 @RunWith(InjectionSupport.class)
 @Modules({
-        MockHibernateModule.class,
-        BeanMappingModule.class,
-        GwtRpcModule.class,
-        LoggingModule.class
+    MockHibernateModule.class,
+    BeanMappingModule.class,
+    GwtRpcModule.class,
+    LoggingModule.class
 })
 public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
-
 
     @Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void forDatabaseOwner() throws CommandException {
 
         synchronizeFirstTime();
- 
+
         SchemaDTO schema = executeLocally(new GetSchema());
         assertThat(schema.getDatabases().size(), equalTo(3));
         assertThat(schema.getDatabaseById(1).isDesignAllowed(), equalTo(true));
@@ -75,7 +69,6 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
 
         setUser(4); // only has view access to databse 1
         synchronizeFirstTime();
-
 
         SchemaDTO schema = executeLocally(new GetSchema());
 

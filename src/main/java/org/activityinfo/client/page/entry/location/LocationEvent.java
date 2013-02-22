@@ -29,15 +29,15 @@ import com.extjs.gxt.ui.client.event.EventType;
 
 public class LocationEvent extends BaseEvent {
 
-	private LocationDTO location;
-	
-	public LocationEvent(EventType type, Object source, LocationDTO location) {
-		super(type);
-		setSource(source);
-		this.location = location;
-	}
+    private LocationDTO location;
 
-	public LocationDTO getLocation() {
-		return location;
-	}
+    public LocationEvent(EventType type, Object source, LocationDTO location) {
+        super(type);
+        setSource(source);
+        this.location = location;
+    }
+
+    public LocationDTO getLocation() {
+        return location;
+    }
 }

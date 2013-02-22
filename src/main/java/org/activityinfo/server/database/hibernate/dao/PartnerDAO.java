@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -27,9 +25,12 @@ package org.activityinfo.server.database.hibernate.dao;
 import org.activityinfo.server.database.hibernate.entity.Partner;
 
 /**
- * Data Access Object for the {@link org.activityinfo.server.database.hibernate.entity.Partner} domain object. Implemented automatically by
- * {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler proxy}
- *
+ * Data Access Object for the
+ * {@link org.activityinfo.server.database.hibernate.entity.Partner} domain
+ * object. Implemented automatically by
+ * {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler
+ * proxy}
+ * 
  * @author Alex Bertram
  */
 public interface PartnerDAO extends DAO<Partner, Integer> {

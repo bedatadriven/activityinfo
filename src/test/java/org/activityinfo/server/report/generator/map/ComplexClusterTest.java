@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -29,8 +27,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activityinfo.server.report.generator.map.FixedRadiiCalculator;
-import org.activityinfo.server.report.generator.map.GsLogCalculator;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.genetic.BubbleFitnessFunctor;
 import org.activityinfo.server.report.generator.map.cluster.genetic.FitnessFunctor;
@@ -54,11 +50,11 @@ public class ComplexClusterTest extends GraphTest {
 
         ComplexPoints data = new ComplexPoints();
 
-
         FitnessFunctor fitFtor = new BubbleFitnessFunctor();
         GsLogCalculator rCtor = new GsLogCalculator(5, 30);
 
-        BufferedWriter csv = new BufferedWriter(new FileWriter("target/report-tests/brute.csv"));
+        BufferedWriter csv = new BufferedWriter(new FileWriter(
+            "target/report-tests/brute.csv"));
 
         List<List<MarkerGraph.Node>> subgraphs = data.getLargestN(2);
 
@@ -93,18 +89,22 @@ public class ComplexClusterTest extends GraphTest {
     public void testUpperBounds() throws Exception {
 
         ComplexPoints data = new ComplexPoints();
-        List<Integer> ub = UpperBoundsCalculator.calculate(data.graph, new FixedRadiiCalculator(5),
-                new UpperBoundsCalculator.Tracer() {
-                    public void onSubgraph(int nodeCount) {
-                        System.out.println("Calculating upperbounds for subgraph with " + nodeCount + " node(s)");
-                    }
+        UpperBoundsCalculator.calculate(data.graph,
+            new FixedRadiiCalculator(5),
+            new UpperBoundsCalculator.Tracer() {
+                @Override
+                public void onSubgraph(int nodeCount) {
+                    System.out
+                        .println("Calculating upperbounds for subgraph with "
+                            + nodeCount + " node(s)");
+                }
 
-                    public void incremented(int count, List<Cluster> clusters, double fitness) {
-                        System.out.println(count + " cluster(s) = " + fitness);
-                    }
-                });
-//        Assert.assertEquals(23, ub.get(0));
-//        Assert.assertEquals(9, ub.get(1));
+                @Override
+                public void incremented(int count, List<Cluster> clusters,
+                    double fitness) {
+                    System.out.println(count + " cluster(s) = " + fitness);
+                }
+            });
 
     }
 
@@ -121,8 +121,8 @@ public class ComplexClusterTest extends GraphTest {
         for (MarkerGraph.Node node : data.graph.getNodes()) {
             sumAfterMerging += node.getPointValue().getValue();
         }
-        Assert.assertEquals("originalSum==sumAfterMerging", data.originalSum, sumAfterMerging, DELTA);
-
+        Assert.assertEquals("originalSum==sumAfterMerging", data.originalSum,
+            sumAfterMerging, DELTA);
 
         // becuase the algorithm is stochiastic, we want need to make sure
         // it works consistently
@@ -132,29 +132,38 @@ public class ComplexClusterTest extends GraphTest {
 
             GeneticSolver solver = new GeneticSolver();
             solver.setTracer(new GeneticTracer());
-            List<Cluster> clusters = solver.solve(data.graph, radiiCalc, new BubbleFitnessFunctor(),
-                    UpperBoundsCalculator.calculate(data.graph, new FixedRadiiCalculator(5)));
-
+            List<Cluster> clusters = solver.solve(data.graph, radiiCalc,
+                new BubbleFitnessFunctor(),
+                UpperBoundsCalculator.calculate(data.graph,
+                    new FixedRadiiCalculator(5)));
 
             double sumAfterClustering = 0;
             for (Cluster cluster : clusters) {
                 sumAfterClustering += cluster.sumValues();
             }
-            Assert.assertEquals("originalSum==sumAfterClustering", data.originalSum, sumAfterClustering, DELTA);
+            Assert.assertEquals("originalSum==sumAfterClustering",
+                data.originalSum, sumAfterClustering, DELTA);
 
             if (count == 0) {
-                saveClusters(data.graph, "ComplexClusterTest-solution", clusters);
+                saveClusters(data.graph, "ComplexClusterTest-solution",
+                    clusters);
             }
 
-            System.out.println(String.format("pop size = %d", solver.getPopulation().size()));
-            System.out.println(String.format("subgraph count = %d", data.graph.getSubgraphs().size()));
-            System.out.println(String.format("cluster count = %d", clusters.size()));
+            System.out.println(String.format("pop size = %d", solver
+                .getPopulation().size()));
+            System.out.println(String.format("subgraph count = %d", data.graph
+                .getSubgraphs().size()));
+            System.out.println(String.format("cluster count = %d",
+                clusters.size()));
 
-            System.out.println(String.format("fitness = %f", solver.getSolutionFitness()));
+            System.out.println(String.format("fitness = %f",
+                solver.getSolutionFitness()));
 
-            // TODO: this seems to be successful about 75% of the time. We need to move that to 100%
+            // TODO: this seems to be successful about 75% of the time. We need
+            // to move that to 100%
             // and reduce variation
-            //Assert.assertTrue("Did not meet success criteria at run "+ count, solver.getSolutionFitness() > 5000);
+            // Assert.assertTrue("Did not meet success criteria at run "+ count,
+            // solver.getSolutionFitness() > 5000);
         }
     }
 

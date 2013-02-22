@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -44,7 +42,7 @@ public class GetUsersTest extends CommandTestCase {
         setUser(DATABASE_OWNER);
 
         GetUsers cmd = new GetUsers(1);
-        UserResult result = (UserResult) execute(cmd);
+        UserResult result = execute(cmd);
 
         Assert.assertEquals(3, result.getData().size());
     }
@@ -60,13 +58,14 @@ public class GetUsersTest extends CommandTestCase {
         setUser(3); // Lisa from Solidarites
 
         // execute
-        UserResult result = (UserResult) execute(new GetUsers(1));
+        UserResult result = execute(new GetUsers(1));
 
         // VERIFY that we have 1 result:
         // - the one other solidarites user
 
         Assert.assertEquals("number of results", 1, result.getTotalLength());
-        Assert.assertEquals("user name", "Marlene", result.getData().get(0).getName());
+        Assert.assertEquals("user name", "Marlene", result.getData().get(0)
+            .getName());
     }
 
     @Test
@@ -75,7 +74,7 @@ public class GetUsersTest extends CommandTestCase {
         setUser(2); // Bavon from NRC(with manageAllUsers) permission
 
         // execute
-        UserResult result = (UserResult) execute(new GetUsers(1));
+        UserResult result = execute(new GetUsers(1));
 
         // VERIFY that we can get can see the two other users from NRC
         Assert.assertEquals("number of results", 2, result.getTotalLength());

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.design;
 
 /*
@@ -86,39 +84,40 @@ import com.google.inject.Inject;
 /**
  * @author Alex Bertram
  */
-public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPresenter>
-        implements DesignPresenter.View {
+public class DesignView extends
+    AbstractEditorTreeGridView<ModelData, DesignPresenter>
+    implements DesignPresenter.View {
 
     private final class DragDropListener extends DNDListener {
-		private final TreeStore treeStore;
+        private final TreeStore treeStore;
 
-		private DragDropListener(TreeStore treeStore) {
-			this.treeStore = treeStore;
-		}
+        private DragDropListener(TreeStore treeStore) {
+            this.treeStore = treeStore;
+        }
 
-		@Override
-		public void dragMove(DNDEvent e) {
-		    List<TreeModel> sourceData = e.getData();
-		    ModelData source = sourceData.get(0).get("model");
-		    TreeGrid.TreeNode target = tree.findNode(e.getTarget());
+        @Override
+        public void dragMove(DNDEvent e) {
+            List<TreeModel> sourceData = e.getData();
+            ModelData source = sourceData.get(0).get("model");
+            TreeGrid.TreeNode target = tree.findNode(e.getTarget());
 
-		    if (treeStore.getParent(target.getModel()) !=
-		            treeStore.getParent(source)) {
+            if (treeStore.getParent(target.getModel()) != treeStore
+                .getParent(source)) {
 
-		        e.setCancelled(true);
-		        e.getStatus().setStatus(false);
-		    }
-		}
+                e.setCancelled(true);
+                e.getStatus().setStatus(false);
+            }
+        }
 
-		@Override
-		public void dragDrop(DNDEvent e) {
-		    List<TreeModel> sourceData = e.getData();
-		    ModelData source = sourceData.get(0).get("model");
-		    presenter.onNodeDropped(source);
-		}
-	}
+        @Override
+        public void dragDrop(DNDEvent e) {
+            List<TreeModel> sourceData = e.getData();
+            ModelData source = sourceData.get(0).get("model");
+            presenter.onNodeDropped(source);
+        }
+    }
 
-	private final Dispatcher service;
+    private final Dispatcher service;
 
     private EditorTreeGrid<ModelData> tree;
     private ContentPanel formContainer;
@@ -131,7 +130,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
     }
 
     @Override
-    public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store) {
+    public void init(DesignPresenter presenter, UserDatabaseDTO db,
+        TreeStore store) {
 
         this.db = db;
 
@@ -144,10 +144,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         createFormContainer();
     }
 
-
     @Override
     protected Grid<ModelData> createGridAndAddToContainer(Store store) {
-
 
         final TreeStore treeStore = (TreeStore) store;
 
@@ -157,11 +155,11 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         tree.setAutoExpandColumn("name");
         tree.setHideHeaders(true);
         tree.setLoadMask(true);
-        //   tree.setContextMenu(createContextMenu());
+        // tree.setContextMenu(createContextMenu());
 
         tree.setIconProvider(new ModelIconProvider<ModelData>() {
             @Override
-			public AbstractImagePrototype getIcon(ModelData model) {
+            public AbstractImagePrototype getIcon(ModelData model) {
                 if (model instanceof ActivityDTO) {
                     return IconImageBundle.ICONS.activity();
                 } else if (model instanceof Folder) {
@@ -179,7 +177,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         });
         tree.addListener(Events.CellClick, new Listener<GridEvent>() {
             @Override
-			public void handleEvent(GridEvent ge) {
+            public void handleEvent(GridEvent ge) {
                 showForm(tree.getStore().getAt(ge.getRowIndex()));
             }
         });
@@ -191,8 +189,10 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             @Override
             public void dragStart(DNDEvent e) {
 
-                ModelData sel = ((CellTreeGridSelectionModel) tree.getSelectionModel()).getSelectCell().model;
-                if (!db.isDesignAllowed() || sel == null || sel instanceof Folder) {
+                ModelData sel = ((CellTreeGridSelectionModel) tree
+                    .getSelectionModel()).getSelectCell().model;
+                if (!db.isDesignAllowed() || sel == null
+                    || sel instanceof Folder) {
                     e.setCancelled(true);
                     e.getStatus().setStatus(false);
                     return;
@@ -208,7 +208,6 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         target.addDNDListener(new DragDropListener(treeStore));
         return tree;
     }
-
 
     @Override
     protected void initToolBar() {
@@ -226,50 +225,58 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         Menu newMenu = new Menu();
         initNewMenu(newMenu, listener);
 
-        Button newButtonMenu = new Button(I18N.CONSTANTS.newText(), IconImageBundle.ICONS.add());
+        Button newButtonMenu = new Button(I18N.CONSTANTS.newText(),
+            IconImageBundle.ICONS.add());
         newButtonMenu.setMenu(newMenu);
         newButtonMenu.setEnabled(db.isDesignAllowed());
         toolBar.add(newButtonMenu);
 
         toolBar.addDeleteButton();
 
-
     }
 
     protected void initNewMenu(Menu menu, SelectionListener<MenuEvent> listener) {
 
-        MenuItem newActivity = new MenuItem(I18N.CONSTANTS.newActivity(), IconImageBundle.ICONS.activity(), listener);
+        MenuItem newActivity = new MenuItem(I18N.CONSTANTS.newActivity(),
+            IconImageBundle.ICONS.activity(), listener);
         newActivity.setItemId("Activity");
         menu.add(newActivity);
 
-        final MenuItem newAttributeGroup = new MenuItem(I18N.CONSTANTS.newAttributeGroup(), IconImageBundle.ICONS.attributeGroup(), listener);
+        final MenuItem newAttributeGroup = new MenuItem(
+            I18N.CONSTANTS.newAttributeGroup(),
+            IconImageBundle.ICONS.attributeGroup(), listener);
         newAttributeGroup.setItemId("AttributeGroup");
         menu.add(newAttributeGroup);
 
-        final MenuItem newAttribute = new MenuItem(I18N.CONSTANTS.newAttribute(), IconImageBundle.ICONS.attribute(), listener);
+        final MenuItem newAttribute = new MenuItem(
+            I18N.CONSTANTS.newAttribute(), IconImageBundle.ICONS.attribute(),
+            listener);
         newAttribute.setItemId("Attribute");
         menu.add(newAttribute);
 
-        final MenuItem newIndicator = new MenuItem(I18N.CONSTANTS.newIndicator(), IconImageBundle.ICONS.indicator(), listener);
+        final MenuItem newIndicator = new MenuItem(
+            I18N.CONSTANTS.newIndicator(), IconImageBundle.ICONS.indicator(),
+            listener);
         newIndicator.setItemId("Indicator");
         menu.add(newIndicator);
 
-
         menu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
             @Override
-			public void handleEvent(BaseEvent be) {
+            public void handleEvent(BaseEvent be) {
 
                 ModelData sel = getSelection();
 
                 newAttributeGroup.setEnabled(sel != null);
-                newAttribute.setEnabled(sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO);
+                newAttribute.setEnabled(sel instanceof AttributeGroupDTO
+                    || sel instanceof AttributeDTO);
                 newIndicator.setEnabled(sel != null);
             }
         });
     }
 
     protected void initRemoveMenu(Menu menu) {
-        final MenuItem removeItem = new MenuItem(I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
+        final MenuItem removeItem = new MenuItem(I18N.CONSTANTS.delete(),
+            IconImageBundle.ICONS.delete());
         removeItem.setItemId(UIActions.DELETE);
         menu.add(removeItem);
 
@@ -284,7 +291,6 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
         return menu;
     }
-
 
     private void createFormContainer() {
         formContainer = new ContentPanel();
@@ -308,7 +314,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         TextField<String> nameField = new TextField<String>();
         nameField.setAllowBlank(false);
 
-        ColumnConfig nameColumn = new ColumnConfig("name", I18N.CONSTANTS.name(), 150);
+        ColumnConfig nameColumn = new ColumnConfig("name",
+            I18N.CONSTANTS.name(), 150);
         nameColumn.setEditor(new CellEditor(nameField));
         nameColumn.setRenderer(new TreeGridCellRenderer());
 
@@ -329,7 +336,6 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             return AttributeForm.class;
         }
 
-
         return null;
 
     }
@@ -347,7 +353,6 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
         return null;
     }
-
 
     public void showForm(ModelData model) {
 
@@ -367,8 +372,10 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             return;
         } else {
 
-            if (currentForm == null ||
-                    (currentForm != null && !formClass.equals(currentForm.getClass()))) {
+            if (currentForm == null
+                ||
+                (currentForm != null && !formClass.equals(currentForm
+                    .getClass()))) {
 
                 if (currentForm != null) {
                     formContainer.removeAll();
@@ -389,7 +396,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
     }
 
     @Override
-	public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback) {
+    public FormDialogTether showNewForm(EntityDTO entity,
+        FormDialogCallback callback) {
 
         AbstractDesignForm form = createForm(entity);
         form.getBinding().bind(entity);

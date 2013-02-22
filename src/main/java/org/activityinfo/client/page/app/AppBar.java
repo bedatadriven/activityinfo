@@ -39,61 +39,63 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppBar extends Composite  {
+public class AppBar extends Composite {
 
-	private static AppBarUiBinder uiBinder = GWT.create(AppBarUiBinder.class);
+    private static AppBarUiBinder uiBinder = GWT.create(AppBarUiBinder.class);
 
-	@UiField
-	SectionTabStrip sectionTabStrip;
+    @UiField
+    SectionTabStrip sectionTabStrip;
 
-	@UiField
-	Label logo;
-	
-	@UiField
-	Label settingsButton;
-	
-	@UiField
-	Label searchButton;
-	
-	private SettingsPopup settingsPopup;
+    @UiField
+    Label logo;
 
-	private EventBus eventBus;
+    @UiField
+    Label settingsButton;
 
-	private LocalController offlineController;
-	
-	public static int HEIGHT = 50;
+    @UiField
+    Label searchButton;
 
-	interface AppBarUiBinder extends UiBinder<Widget, AppBar> {
-	}
-	
-	@Inject
-	public AppBar(EventBus eventBus, LocalController offlineController) {
-		this.eventBus = eventBus;
-		this.offlineController = offlineController;
-		
-		initWidget(uiBinder.createAndBindUi(this));
-	}
+    private SettingsPopup settingsPopup;
 
-	public SectionTabStrip getSectionTabStrip() {
-		return sectionTabStrip;
-	}
+    private EventBus eventBus;
 
-	@UiHandler("logo")
-	void handleLogoClick(ClickEvent e) {
-		Window.open("http://about.activityinfo.org/", "_blank", null);
-	}
-	
-	@UiHandler("settingsButton")
-	void handleSettingsClick(ClickEvent e) {
-		if(settingsPopup == null) {
-			settingsPopup = new SettingsPopup(eventBus, offlineController);
-		}
-		settingsPopup.setPopupPosition(Window.getClientWidth() - SettingsPopup.WIDTH, HEIGHT-3);
-		settingsPopup.show();
-	}
-	
-	@UiHandler("searchButton")
-	void handleSearchClick(ClickEvent e) {
-		eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SearchPageState()));
-	}
+    private LocalController offlineController;
+
+    public static final int HEIGHT = 50;
+
+    interface AppBarUiBinder extends UiBinder<Widget, AppBar> {
+    }
+
+    @Inject
+    public AppBar(EventBus eventBus, LocalController offlineController) {
+        this.eventBus = eventBus;
+        this.offlineController = offlineController;
+
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public SectionTabStrip getSectionTabStrip() {
+        return sectionTabStrip;
+    }
+
+    @UiHandler("logo")
+    void handleLogoClick(ClickEvent e) {
+        Window.open("http://about.activityinfo.org/", "_blank", null);
+    }
+
+    @UiHandler("settingsButton")
+    void handleSettingsClick(ClickEvent e) {
+        if (settingsPopup == null) {
+            settingsPopup = new SettingsPopup(eventBus, offlineController);
+        }
+        settingsPopup.setPopupPosition(Window.getClientWidth()
+            - SettingsPopup.WIDTH, HEIGHT - 3);
+        settingsPopup.show();
+    }
+
+    @UiHandler("searchButton")
+    void handleSearchClick(ClickEvent e) {
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_REQUESTED, new SearchPageState()));
+    }
 }

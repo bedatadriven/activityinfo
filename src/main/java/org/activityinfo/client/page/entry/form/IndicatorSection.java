@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.entry.form;
 
 /*
@@ -43,13 +41,13 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.common.collect.Lists;
-import com.google.gwt.i18n.client.NumberFormat;
 
-public class IndicatorSection extends LayoutContainer implements FormSection<SiteDTO>{
+public class IndicatorSection extends LayoutContainer implements
+    FormSection<SiteDTO> {
 
-	private List<NumberField> indicatorFields = Lists.newArrayList();
-	
-	public IndicatorSection(ActivityDTO activity) {
+    private List<NumberField> indicatorFields = Lists.newArrayList();
+
+    public IndicatorSection(ActivityDTO activity) {
 
         TableLayout layout = new TableLayout(3);
         layout.setCellPadding(5);
@@ -59,13 +57,13 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         setStyleAttribute("fontSize", "8pt");
         setScrollMode(Scroll.AUTOY);
 
-        for(IndicatorGroup group : activity.groupIndicators()) {
+        for (IndicatorGroup group : activity.groupIndicators()) {
 
-            if(group.getName() != null) {
+            if (group.getName() != null) {
                 addGroupHeader(group.getName());
             }
 
-            for(IndicatorDTO indicator : group.getIndicators()) {
+            for (IndicatorDTO indicator : group.getIndicators()) {
                 addIndicator(indicator);
             }
         }
@@ -90,14 +88,15 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         indicatorLabel.setStyleAttribute("fontSize", "9pt");
 
         add(indicatorLabel);
-        
+
         NumberField indicatorField = new NumberField();
-        indicatorField.setName( indicator.getPropertyName() );
+        indicatorField.setName(indicator.getPropertyName());
         indicatorField.setWidth(50);
         indicatorField.setFormat(IndicatorNumberFormat.INSTANCE);
         indicatorField.setStyleAttribute("textAlign", "right");
-        
-        if(indicator.getDescription() != null && !indicator.getDescription().isEmpty()) {
+
+        if (indicator.getDescription() != null
+            && !indicator.getDescription().isEmpty()) {
             ToolTipConfig tip = new ToolTipConfig();
             tip.setDismissDelay(0);
             tip.setShowDelay(100);
@@ -112,35 +111,35 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         unitLabel.setStyleAttribute("fontSize", "9pt");
 
         add(unitLabel);
-        
+
         indicatorFields.add(indicatorField);
     }
 
-	@Override
-	public boolean validate() {
-		boolean valid = true;
-		for(NumberField field : indicatorFields) {
-			valid &= field.validate();
-		}
-		return valid;
-	}
+    @Override
+    public boolean validate() {
+        boolean valid = true;
+        for (NumberField field : indicatorFields) {
+            valid &= field.validate();
+        }
+        return valid;
+    }
 
-	@Override
-	public void updateModel(SiteDTO m) {
-		for(NumberField field : indicatorFields) {
-			m.set(field.getName(), field.getValue());
-		}
-	}
+    @Override
+    public void updateModel(SiteDTO m) {
+        for (NumberField field : indicatorFields) {
+            m.set(field.getName(), field.getValue());
+        }
+    }
 
-	@Override
-	public void updateForm(SiteDTO m) {
-		for(NumberField field : indicatorFields) {
-			field.setValue((Number)m.get(field.getName()));
-		}
-	}
+    @Override
+    public void updateForm(SiteDTO m) {
+        for (NumberField field : indicatorFields) {
+            field.setValue((Number) m.get(field.getName()));
+        }
+    }
 
-	@Override
-	public Component asComponent() {
-		return this;
-	}
+    @Override
+    public Component asComponent() {
+        return this;
+    }
 }

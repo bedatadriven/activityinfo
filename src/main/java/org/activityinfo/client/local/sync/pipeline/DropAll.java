@@ -34,22 +34,22 @@ import com.google.inject.Inject;
 
 public class DropAll implements AsyncCommand {
 
-	private final SqlDatabase conn;
+    private final SqlDatabase conn;
 
-	@Inject
-	public DropAll(SqlDatabase conn) {
-		super();
-		this.conn = conn;
-	}
+    @Inject
+    public DropAll(SqlDatabase conn) {
+        super();
+        this.conn = conn;
+    }
 
-	@Override
-	public void execute(final AsyncCallback<Void> callback) {
-		
-		conn.execute(AsyncSql.sequence(
-				AsyncSql.dropAllTables(),
-				new SyncRegionTable(conn).createTableIfNotExists(),
-				new SyncHistoryTable(conn).createTableIfNotExists(),
-				CommandQueue.createTableIfNotExists()),
-				callback);		
-	}
+    @Override
+    public void execute(final AsyncCallback<Void> callback) {
+
+        conn.execute(AsyncSql.sequence(
+            AsyncSql.dropAllTables(),
+            new SyncRegionTable(conn).createTableIfNotExists(),
+            new SyncHistoryTable(conn).createTableIfNotExists(),
+            CommandQueue.createTableIfNotExists()),
+            callback);
+    }
 }

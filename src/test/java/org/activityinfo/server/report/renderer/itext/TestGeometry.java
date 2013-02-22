@@ -28,7 +28,7 @@ import org.activityinfo.server.geo.WkbGeometryProvider;
 
 public abstract class TestGeometry {
 
-	public static AdminGeometryProvider get() {
-		return new WkbGeometryProvider(new ClasspathGeometryProvider());
-	}
+    public static AdminGeometryProvider get() {
+        return new WkbGeometryProvider(new ClasspathGeometryProvider());
+    }
 }

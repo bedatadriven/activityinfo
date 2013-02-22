@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -46,39 +44,42 @@ import com.google.inject.Inject;
  * @author Alex Bertram
  * @see org.activityinfo.shared.command.RenderReportHtml
  */
-public class RenderReportHtmlHandler implements CommandHandler<RenderReportHtml> {
+public class RenderReportHtmlHandler implements
+    CommandHandler<RenderReportHtml> {
 
     private final ReportGenerator generator;
     private final HtmlReportRenderer renderer;
-    
-    private static final Logger LOGGER = Logger.getLogger(RenderReportHtmlHandler.class.getName());
-   
+
+    private static final Logger LOGGER = Logger
+        .getLogger(RenderReportHtmlHandler.class.getName());
 
     @Inject
-    public RenderReportHtmlHandler(ReportGenerator generator,  HtmlReportRenderer renderer) {
+    public RenderReportHtmlHandler(ReportGenerator generator,
+        HtmlReportRenderer renderer) {
         this.generator = generator;
         this.renderer = renderer;
     }
 
     @Override
-	@LogException
-    public CommandResult execute(RenderReportHtml cmd, User user) throws CommandException {
-    	ReportElement model = cmd.getModel();
+    @LogException
+    public CommandResult execute(RenderReportHtml cmd, User user)
+        throws CommandException {
+        ReportElement model = cmd.getModel();
 
-    	LOGGER.fine("Model: " + model);
-    	
-    	//  don't show the title: it will be rendered by the container
-    	model.setTitle(null);
-    	
-		generator.generateElement(user, model, new Filter(), new DateRange());
+        LOGGER.fine("Model: " + model);
+
+        // don't show the title: it will be rendered by the container
+        model.setTitle(null);
+
+        generator.generateElement(user, model, new Filter(), new DateRange());
         StringWriter writer = new StringWriter();
         try {
-			renderer.render(model, writer);
-		} catch (IOException e) {
-			throw new CommandException(e);
-		}
+            renderer.render(model, writer);
+        } catch (IOException e) {
+            throw new CommandException(e);
+        }
         return new HtmlResult(writer.toString());
-        
+
     }
 
 }

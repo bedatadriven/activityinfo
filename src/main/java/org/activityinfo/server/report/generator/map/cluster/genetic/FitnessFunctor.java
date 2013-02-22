@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map.cluster.genetic;
 
 /*

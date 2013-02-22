@@ -40,55 +40,58 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 
 public class RecentSitesView extends ContentPanel {
-	private ListStore<RecentSiteModel> storeSites;
-	
-	public RecentSitesView() {
-		super();
-		
-		initializeComponent();
-		
-		createSitesPanel();
-		createMapWidget();
-	}
-	
-	public void setSites(List<RecentSiteModel> sites) {
-		
-		storeSites.removeAll();
-		storeSites.add(sites);
-	}
-	
-	private void initializeComponent() {
-		setHeading(I18N.MESSAGES.recentlyEditedSites("10"));
-		VBoxLayout vboxLayout = new VBoxLayout();
-		vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-		vboxLayout.setPadding(new Padding(5));
-		
-		setLayout(vboxLayout);
+    private ListStore<RecentSiteModel> storeSites;
 
-		storeSites = new ListStore<RecentSiteModel>();
-	}
-	
-	public void setSitePoins(SitePointList sitePoints) {
-//		map.setSites(sitePoints);
-	}
+    public RecentSitesView() {
+        super();
 
-	private void createSitesPanel() {
-		ListView<RecentSiteModel> listviewSites = new ListView<RecentSiteModel>(storeSites);
-		
-		listviewSites.setTemplate(SearchResources.INSTANCE.sitesTemplate().getText());
-		listviewSites.setItemSelector(".site");
-		listviewSites.addListener(Events.Select, new Listener<ListViewEvent<RecentSiteModel>>() {
-			@Override
-			public void handleEvent(ListViewEvent<RecentSiteModel> be) {
-//				mapWidget.selectSite(be.getModel().getSiteId());
-			}
-		});
-		
-	    VBoxLayoutData vbld = new VBoxLayoutData();
-	    vbld.setFlex(3);
-		add(listviewSites, vbld);
-	}
+        initializeComponent();
 
-	private void createMapWidget() {
-	}
+        createSitesPanel();
+        createMapWidget();
+    }
+
+    public void setSites(List<RecentSiteModel> sites) {
+
+        storeSites.removeAll();
+        storeSites.add(sites);
+    }
+
+    private void initializeComponent() {
+        setHeading(I18N.MESSAGES.recentlyEditedSites("10"));
+        VBoxLayout vboxLayout = new VBoxLayout();
+        vboxLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+        vboxLayout.setPadding(new Padding(5));
+
+        setLayout(vboxLayout);
+
+        storeSites = new ListStore<RecentSiteModel>();
+    }
+
+    public void setSitePoins(SitePointList sitePoints) {
+        // map.setSites(sitePoints);
+    }
+
+    private void createSitesPanel() {
+        ListView<RecentSiteModel> listviewSites = new ListView<RecentSiteModel>(
+            storeSites);
+
+        listviewSites.setTemplate(SearchResources.INSTANCE.sitesTemplate()
+            .getText());
+        listviewSites.setItemSelector(".site");
+        listviewSites.addListener(Events.Select,
+            new Listener<ListViewEvent<RecentSiteModel>>() {
+                @Override
+                public void handleEvent(ListViewEvent<RecentSiteModel> be) {
+                    // mapWidget.selectSite(be.getModel().getSiteId());
+                }
+            });
+
+        VBoxLayoutData vbld = new VBoxLayoutData();
+        vbld.setFlex(3);
+        add(listviewSites, vbld);
+    }
+
+    private void createMapWidget() {
+    }
 }

@@ -47,77 +47,82 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DimensionProxy extends RpcProxy<ListLoadResult<DimensionModel>> {
 
-	private PivotChartReportElement model = new PivotChartReportElement();
-	private Dispatcher dispatcher;
-	
-	public DimensionProxy(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-	}
+    private PivotChartReportElement model = new PivotChartReportElement();
+    private Dispatcher dispatcher;
 
-	public void setModel(PivotChartReportElement model) {
-		this.model = model;
-	}
+    public DimensionProxy(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
 
-	@Override
-	protected void load(Object loadConfig,
-			final AsyncCallback<ListLoadResult<DimensionModel>> callback) {
-		
-		final List<DimensionModel> list = Lists.newArrayList();
-		list.add(new DimensionModel(DimensionType.Indicator, I18N.CONSTANTS.indicator()));
-		list.add(new DimensionModel(DimensionType.Partner, I18N.CONSTANTS.partner()));
-		list.add(new DimensionModel(DimensionType.Project, I18N.CONSTANTS.project()));
-		list.add(new DimensionModel(DimensionType.Target, I18N.CONSTANTS.realizedOrTargeted()));
+    public void setModel(PivotChartReportElement model) {
+        this.model = model;
+    }
 
-		list.add(new DimensionModel(DateUnit.YEAR));
-		list.add(new DimensionModel(DateUnit.QUARTER));
-		list.add(new DimensionModel(DateUnit.MONTH));
-		list.add(new DimensionModel(DateUnit.WEEK_MON));
-		
-		if(model.getIndicators().isEmpty()) {
-			callback.onSuccess(new BaseListLoadResult<DimensionModel>(list));
-		} else {
-			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    @Override
+    protected void load(Object loadConfig,
+        final AsyncCallback<ListLoadResult<DimensionModel>> callback) {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+        final List<DimensionModel> list = Lists.newArrayList();
+        list.add(new DimensionModel(DimensionType.Indicator, I18N.CONSTANTS
+            .indicator()));
+        list.add(new DimensionModel(DimensionType.Partner, I18N.CONSTANTS
+            .partner()));
+        list.add(new DimensionModel(DimensionType.Project, I18N.CONSTANTS
+            .project()));
+        list.add(new DimensionModel(DimensionType.Target, I18N.CONSTANTS
+            .realizedOrTargeted()));
 
-				@Override
-				public void onSuccess(SchemaDTO schema) {
-					addGeographicDimensions(list, schema);
-					addAttributeDimensions(list, schema);
-					callback.onSuccess(new BaseListLoadResult<DimensionModel>(list));
-				}
-			});
-		}
-	}
-	
+        list.add(new DimensionModel(DateUnit.YEAR));
+        list.add(new DimensionModel(DateUnit.QUARTER));
+        list.add(new DimensionModel(DateUnit.MONTH));
+        list.add(new DimensionModel(DateUnit.WEEK_MON));
 
-	private void addGeographicDimensions(
-			final List<DimensionModel> list, SchemaDTO schema) {
-		Set<CountryDTO> countries = schema.getCountriesForIndicators(model.getIndicators());
+        if (model.getIndicators().isEmpty()) {
+            callback.onSuccess(new BaseListLoadResult<DimensionModel>(list));
+        } else {
+            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-		if(countries.size() == 1) {
-			CountryDTO country = countries.iterator().next();
-			for(AdminLevelDTO level : country.getAdminLevels()) {
-				list.add(new DimensionModel(level));
-			}
-		}
-	}
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
 
+                @Override
+                public void onSuccess(SchemaDTO schema) {
+                    addGeographicDimensions(list, schema);
+                    addAttributeDimensions(list, schema);
+                    callback.onSuccess(new BaseListLoadResult<DimensionModel>(
+                        list));
+                }
+            });
+        }
+    }
 
-	private void addAttributeDimensions(List<DimensionModel> list,
-			SchemaDTO schema) {
-		for(UserDatabaseDTO db : schema.getDatabases()) {
-			for(ActivityDTO activity : db.getActivities()) {
-				if(activity.containsAny(model.getIndicators())) {
-					for(AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
-						list.add(new DimensionModel(attributeGroup));
-					}
-				}
-			}
-		}
-	}
+    private void addGeographicDimensions(
+        final List<DimensionModel> list, SchemaDTO schema) {
+        Set<CountryDTO> countries = schema.getCountriesForIndicators(model
+            .getIndicators());
+
+        if (countries.size() == 1) {
+            CountryDTO country = countries.iterator().next();
+            for (AdminLevelDTO level : country.getAdminLevels()) {
+                list.add(new DimensionModel(level));
+            }
+        }
+    }
+
+    private void addAttributeDimensions(List<DimensionModel> list,
+        SchemaDTO schema) {
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            for (ActivityDTO activity : db.getActivities()) {
+                if (activity.containsAny(model.getIndicators())) {
+                    for (AttributeGroupDTO attributeGroup : activity
+                        .getAttributeGroups()) {
+                        list.add(new DimensionModel(attributeGroup));
+                    }
+                }
+            }
+        }
+    }
 
 }

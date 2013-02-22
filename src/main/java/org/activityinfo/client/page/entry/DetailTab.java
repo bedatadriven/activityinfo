@@ -35,39 +35,40 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DetailTab extends TabItem {
 
-	private final Html content;
-	private final Dispatcher dispatcher;
-	
-	public DetailTab(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-		setText(I18N.CONSTANTS.details());
-		
-		content = new Html();
+    private final Html content;
+    private final Dispatcher dispatcher;
+
+    public DetailTab(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+        setText(I18N.CONSTANTS.details());
+
+        content = new Html();
         content.setStyleName("details");
-		add(content);
-	
-	}
-	
-	public void setSite(final SiteDTO site) {
-		content.setHtml(I18N.CONSTANTS.loading());
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+        add(content);
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+    }
 
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				render(result, site);
-				
-			}
-		});
-	}
+    public void setSite(final SiteDTO site) {
+        content.setHtml(I18N.CONSTANTS.loading());
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-	private void render(SchemaDTO schema, SiteDTO site) {	
-		SiteRenderer renderer = new SiteRenderer();
-		content.setHtml(renderer.renderSite(site, schema.getActivityById(site.getActivityId()), false, true));		
-	}
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                render(result, site);
+
+            }
+        });
+    }
+
+    private void render(SchemaDTO schema, SiteDTO site) {
+        SiteRenderer renderer = new SiteRenderer();
+        content.setHtml(renderer.renderSite(site,
+            schema.getActivityById(site.getActivityId()), false, true));
+    }
 }

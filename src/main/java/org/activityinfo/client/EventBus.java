@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client;
 
 /*
@@ -29,8 +27,8 @@ import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Observable;
 
 /**
- * The EventBus is a publish/subscribe API that allows
- * objects to communicate with each other without having to refer to each other.
+ * The EventBus is a publish/subscribe API that allows objects to communicate
+ * with each other without having to refer to each other.
  */
 public interface EventBus extends Observable {
 
@@ -48,6 +46,6 @@ public interface EventBus extends Observable {
     }
 
     public boolean fireEvent(EventType type);
-    
+
     public boolean fireEvent(BaseEvent event);
 }

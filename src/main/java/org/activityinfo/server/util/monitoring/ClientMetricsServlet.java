@@ -23,13 +23,12 @@ package org.activityinfo.server.util.monitoring;
  */
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.util.logging.Logger;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Singleton;
@@ -37,21 +36,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class ClientMetricsServlet extends HttpServlet {
 
-	private static Logger LOGGER = Logger.getLogger(ClientMetricsServlet.class.getName());
-	
-	
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+    private static final Logger LOGGER = Logger.getLogger(ClientMetricsServlet.class
+        .getName());
 
-		String body = new String(ByteStreams.toByteArray(req.getInputStream()));
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
-//		LOGGER.info("UA: " + req.getHeader("User-agent") + "\n" +
-//					"Country: " + req.getHeader("CF-IPCountry") + "\n" + 
-//					body.replace(' ', '\n'));
-//		
+        new String(ByteStreams.toByteArray(req.getInputStream()));
 
-	}
-	
-	
+        // LOGGER.info("UA: " + req.getHeader("User-agent") + "\n" +
+        // "Country: " + req.getHeader("CF-IPCountry") + "\n" +
+        // body.replace(' ', '\n'));
+        //
+
+    }
+
 }

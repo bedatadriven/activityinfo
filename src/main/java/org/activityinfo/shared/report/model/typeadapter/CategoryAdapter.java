@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model.typeadapter;
 
 /*
@@ -33,7 +31,8 @@ import org.activityinfo.shared.report.content.EntityCategory;
 /**
  * @author Alex Bertram
  */
-public class CategoryAdapter extends XmlAdapter<CategoryAdapter.Category, DimensionCategory> {
+public class CategoryAdapter extends
+    XmlAdapter<CategoryAdapter.Category, DimensionCategory> {
 
     public static class Category {
 
@@ -43,7 +42,7 @@ public class CategoryAdapter extends XmlAdapter<CategoryAdapter.Category, Dimens
 
     @Override
     public DimensionCategory unmarshal(Category category) throws Exception {
-        if(category.id != null) {
+        if (category.id != null) {
             return new EntityCategory(category.id);
         }
         return null;

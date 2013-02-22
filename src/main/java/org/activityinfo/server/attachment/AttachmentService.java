@@ -31,11 +31,12 @@ import org.apache.commons.fileupload.FileItemFactory;
 
 public interface AttachmentService {
 
-	void serveAttachment(String blobId, HttpServletResponse response) throws IOException;
-	
-	void upload(String key, FileItem fileItem, InputStream uploadingStream);
-	
-	FileItemFactory createFileItemFactory();
-	
-	void delete(String key);
+    void serveAttachment(String blobId, HttpServletResponse response)
+        throws IOException;
+
+    void upload(String key, FileItem fileItem, InputStream uploadingStream);
+
+    FileItemFactory createFileItemFactory();
+
+    void delete(String key);
 }

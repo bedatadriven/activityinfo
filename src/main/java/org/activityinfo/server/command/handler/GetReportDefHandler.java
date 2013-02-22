@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -48,7 +46,7 @@ public class GetReportDefHandler implements CommandHandler<GetReportDef> {
 
     @Override
     public CommandResult execute(GetReportDef cmd, User user)
-            throws CommandException {
+        throws CommandException {
         return new XmlResult(reportDAO.findById(cmd.getId()).getXml());
     }
 

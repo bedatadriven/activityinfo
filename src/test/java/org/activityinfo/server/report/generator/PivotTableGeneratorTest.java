@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator;
 
 /*
@@ -34,7 +32,6 @@ import java.util.List;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.report.generator.PivotTableGenerator;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.result.Bucket;
 import org.activityinfo.shared.report.content.DimensionCategory;
@@ -52,7 +49,6 @@ import org.junit.Test;
  */
 public class PivotTableGeneratorTest {
 
-
     @Test
     public void test2x2() {
 
@@ -60,7 +56,6 @@ public class PivotTableGeneratorTest {
 
         User user = new User();
         user.setLocale("fr");
-
 
         // test input data: PivotTableElement
 
@@ -73,16 +68,20 @@ public class PivotTableGeneratorTest {
         // test input data: aggregated results
         List<Bucket> buckets = new ArrayList<Bucket>();
 
-        buckets.add(newBucket(433, category(provinceDim, 2, "Sud Kivu"), category(partnerDim, 1, "IRC")));
-        buckets.add(newBucket(1032, category(provinceDim, 1, "Nord Kivu"), category(partnerDim, 2, "Solidarites")));
-        buckets.add(newBucket(310, category(provinceDim, 1, "Nord Kivu"), category(partnerDim, 1, "IRC")));
-        buckets.add(newBucket(926, category(provinceDim, 1, "Nord Kivu"), category(partnerDim, 3, "AVSI")));
+        buckets.add(newBucket(433, category(provinceDim, 2, "Sud Kivu"),
+            category(partnerDim, 1, "IRC")));
+        buckets.add(newBucket(1032, category(provinceDim, 1, "Nord Kivu"),
+            category(partnerDim, 2, "Solidarites")));
+        buckets.add(newBucket(310, category(provinceDim, 1, "Nord Kivu"),
+            category(partnerDim, 1, "IRC")));
+        buckets.add(newBucket(926, category(provinceDim, 1, "Nord Kivu"),
+            category(partnerDim, 3, "AVSI")));
 
         // collaborator : PivotDAO
 
         DispatcherSync dispatcher = createMock(DispatcherSync.class);
         expect(dispatcher.execute(isA(PivotSites.class)))
-        	.andReturn(new PivotSites.PivotResult(buckets));
+            .andReturn(new PivotSites.PivotResult(buckets));
         replay(dispatcher);
 
         // CLASS UNDER TEST!!
@@ -95,7 +94,8 @@ public class PivotTableGeneratorTest {
 
         PivotTableData data = element.getContent().getData();
         Assert.assertEquals("rows", 2, data.getRootRow().getChildCount());
-        Assert.assertEquals("rows sorted", "Nord Kivu", data.getRootRow().getChildren().get(0).getLabel());
+        Assert.assertEquals("rows sorted", "Nord Kivu", data.getRootRow()
+            .getChildren().get(0).getLabel());
         Assert.assertEquals("cols", 3, data.getRootColumn().getChildCount());
     }
 
@@ -114,16 +114,19 @@ public class PivotTableGeneratorTest {
         // test input data: aggregated results
         List<Bucket> buckets = new ArrayList<Bucket>();
 
-        buckets.add(newBucket(300, category(indicatorDim, 1, "Nb. menages", 3)));
-        buckets.add(newBucket(400, category(indicatorDim, 2, "Nb. personnes", 1)));
-        buckets.add(newBucket(600, category(indicatorDim, 3, "Nb. deplaces", 2)));
+        buckets
+            .add(newBucket(300, category(indicatorDim, 1, "Nb. menages", 3)));
+        buckets.add(newBucket(400,
+            category(indicatorDim, 2, "Nb. personnes", 1)));
+        buckets
+            .add(newBucket(600, category(indicatorDim, 3, "Nb. deplaces", 2)));
 
         // collaborator : PivotDAO
         DispatcherSync dispatcher = createMock(DispatcherSync.class);
         expect(dispatcher.execute(isA(PivotSites.class)))
-        	.andReturn(new PivotSites.PivotResult(buckets));
+            .andReturn(new PivotSites.PivotResult(buckets));
         replay(dispatcher);
-        
+
         // CLASS UNDER TEST!!
 
         PivotTableGenerator generator = new PivotTableGenerator(dispatcher);
@@ -132,13 +135,15 @@ public class PivotTableGeneratorTest {
 
         Assert.assertNotNull("element content", element.getContent());
 
-        List<PivotTableData.Axis> rows = element.getContent().getData().getRootRow().getChildren();
-        Assert.assertEquals(2, ((EntityCategory) rows.get(0).getCategory()).getId());
-        Assert.assertEquals(3, ((EntityCategory) rows.get(1).getCategory()).getId());
-        Assert.assertEquals(1, ((EntityCategory) rows.get(2).getCategory()).getId());
+        List<PivotTableData.Axis> rows = element.getContent().getData()
+            .getRootRow().getChildren();
+        Assert.assertEquals(2,
+            ((EntityCategory) rows.get(0).getCategory()).getId());
+        Assert.assertEquals(3,
+            ((EntityCategory) rows.get(1).getCategory()).getId());
+        Assert.assertEquals(1,
+            ((EntityCategory) rows.get(2).getCategory()).getId());
     }
-
-
 
     public class AndCategory {
         private Dimension dimension;
@@ -158,13 +163,12 @@ public class PivotTableGeneratorTest {
         }
     }
 
-
-
     public AndCategory category(Dimension dim, int id, String label) {
         return new AndCategory(dim, new EntityCategory(id, label));
     }
 
-    public AndCategory category(Dimension dim, int id, String label, int sortOrder) {
+    public AndCategory category(Dimension dim, int id, String label,
+        int sortOrder) {
         return new AndCategory(dim, new EntityCategory(id, label, sortOrder));
     }
 

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -27,7 +25,7 @@ package org.activityinfo.shared.report.content;
 import java.util.List;
 
 /**
- * @author Alex Bertram 
+ * @author Alex Bertram
  */
 public class TableContent implements Content {
 

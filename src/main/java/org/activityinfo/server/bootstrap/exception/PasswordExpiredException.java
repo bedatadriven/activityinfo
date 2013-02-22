@@ -22,8 +22,6 @@ package org.activityinfo.server.bootstrap.exception;
  * #L%
  */
 
-
-
 public class PasswordExpiredException extends LoginException {
 
 }

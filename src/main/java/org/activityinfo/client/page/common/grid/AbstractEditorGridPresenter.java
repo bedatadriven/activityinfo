@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.grid;
 
 /*
@@ -48,13 +46,14 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class AbstractEditorGridPresenter<M extends ModelData>
-        extends AbstractGridPresenter<M> {
+    extends AbstractGridPresenter<M> {
 
     private GridView view;
     private Dispatcher service;
     private boolean isDirty = false;
 
-    protected AbstractEditorGridPresenter(EventBus eventBus, Dispatcher service, StateProvider stateMgr, GridView view) {
+    protected AbstractEditorGridPresenter(EventBus eventBus,
+        Dispatcher service, StateProvider stateMgr, GridView view) {
         super(eventBus, stateMgr, view);
         this.view = view;
         this.service = service;
@@ -66,7 +65,7 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
 
         store.addListener(Store.Update, new Listener<StoreEvent>() {
             @Override
-			public void handleEvent(StoreEvent be) {
+            public void handleEvent(StoreEvent be) {
                 boolean isDirtyNow = be.getStore().getModifiedRecords().size() != 0;
                 if (isDirty != isDirtyNow) {
                     isDirty = isDirtyNow;
@@ -93,11 +92,11 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
     public abstract Store getStore();
 
     /**
-     * Returns the list of modified records. The default implementation
-     * simply calls <code>getStore().getModifiedRecords()</code> but should
-     * be overriden for EditorTree which doesn't appear to track which
-     * records have been modified.
-     *
+     * Returns the list of modified records. The default implementation simply
+     * calls <code>getStore().getModifiedRecords()</code> but should be
+     * overriden for EditorTree which doesn't appear to track which records have
+     * been modified.
+     * 
      * @return The list of modified records
      */
     public List<Record> getModifiedRecords() {
@@ -109,27 +108,29 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
      */
     protected void onSave() {
 
-        service.execute(createSaveCommand(), view.getSavingMonitor(), new AsyncCallback() {
-            @Override
-			public void onFailure(Throwable caught) {
-                // let the monitor handle failure, we're not
-                // expecting any exceptions
-            }
+        service.execute(createSaveCommand(), view.getSavingMonitor(),
+            new AsyncCallback() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    // let the monitor handle failure, we're not
+                    // expecting any exceptions
+                }
 
-            @Override
-			public void onSuccess(Object result) {
-                getStore().commitChanges();
+                @Override
+                public void onSuccess(Object result) {
+                    getStore().commitChanges();
 
-                onSaved();
-            }
-        });
+                    onSaved();
+                }
+            });
     }
 
     /**
-     * The grid is about to be refreshed, if there are modifications
-     * then the save command needs to be included in the call to the server
-     *
-     * @param le Load Event
+     * The grid is about to be refreshed, if there are modifications then the
+     * save command needs to be included in the call to the server
+     * 
+     * @param le
+     *            Load Event
      */
     @Override
     protected void onBeforeLoad(CommandLoadEvent le) {
@@ -139,36 +140,37 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData>
     }
 
     /*
-     * The user has chosen to navigate away from this page
-     * We will automatically try to save any unsaved changes, but
-     * if it fails, we give the user a choice between retrying and
-     * and discarding changes
+     * The user has chosen to navigate away from this page We will automatically
+     * try to save any unsaved changes, but if it fails, we give the user a
+     * choice between retrying and and discarding changes
      */
 
     @Override
-	public void requestToNavigateAway(PageState place, final NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place,
+        final NavigationCallback callback) {
 
         if (getModifiedRecords().size() == 0) {
             callback.onDecided(true);
         } else {
-            service.execute(createSaveCommand(), view.getSavingMonitor(), new AsyncCallback<BatchResult>() {
+            service.execute(createSaveCommand(), view.getSavingMonitor(),
+                new AsyncCallback<BatchResult>() {
 
-                @Override
-				public void onSuccess(BatchResult result) {
-                    getStore().commitChanges();
-                    callback.onDecided(true);
-                }
+                    @Override
+                    public void onSuccess(BatchResult result) {
+                        getStore().commitChanges();
+                        callback.onDecided(true);
+                    }
 
-                @Override
-				public void onFailure(Throwable caught) {
-                    // TODO
-                }
-            });
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // TODO
+                    }
+                });
         }
     }
 
     @Override
-	public String beforeWindowCloses() {
+    public String beforeWindowCloses() {
         if (getModifiedRecords().size() == 0) {
             return null;
         } else {

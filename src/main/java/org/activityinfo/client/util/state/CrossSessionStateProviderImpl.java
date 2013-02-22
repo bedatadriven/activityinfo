@@ -34,43 +34,43 @@ import com.google.inject.Singleton;
 @Singleton
 public class CrossSessionStateProviderImpl implements CrossSessionStateProvider {
 
-	private Provider provider;
-	
-	public CrossSessionStateProviderImpl() {
-		if(Storage.isLocalStorageSupported()) {
-			provider = new SafeStateProvider();
-		} else {
-			provider = new CookieProvider("/", null, null, GXT.isSecure);
-		}
-	}
-	
-	@Override
-	public Object get(String name) {
-		return provider.get(name);
-	}
+    private Provider provider;
 
-	@Override
-	public Date getDate(String name) {
-		return provider.getDate(name);
-	}
+    public CrossSessionStateProviderImpl() {
+        if (Storage.isLocalStorageSupported()) {
+            provider = new SafeStateProvider();
+        } else {
+            provider = new CookieProvider("/", null, null, GXT.isSecure);
+        }
+    }
 
-	@Override
-	public Integer getInteger(String name) {
-		return provider.getInteger(name);
-	}
+    @Override
+    public Object get(String name) {
+        return provider.get(name);
+    }
 
-	@Override
-	public Map<String, Object> getMap(String name) {
-		return provider.getMap(name);
-	}
+    @Override
+    public Date getDate(String name) {
+        return provider.getDate(name);
+    }
 
-	@Override
-	public String getString(String name) {
-		return provider.getString(name);
-	}
+    @Override
+    public Integer getInteger(String name) {
+        return provider.getInteger(name);
+    }
 
-	@Override
-	public void set(String name, Object value) {
-		provider.set(name, value);
-	}
+    @Override
+    public Map<String, Object> getMap(String name) {
+        return provider.getMap(name);
+    }
+
+    @Override
+    public String getString(String name) {
+        return provider.getString(name);
+    }
+
+    @Override
+    public void set(String name, Object value) {
+        provider.set(name, value);
+    }
 }

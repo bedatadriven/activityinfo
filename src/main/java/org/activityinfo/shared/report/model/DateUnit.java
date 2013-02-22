@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -25,10 +23,10 @@ package org.activityinfo.shared.report.model;
  */
 
 public enum DateUnit {
-	
-	YEAR,
-	QUARTER,
-	MONTH,
-	WEEK_MON;
+
+    YEAR,
+    QUARTER,
+    MONTH,
+    WEEK_MON;
 
 }

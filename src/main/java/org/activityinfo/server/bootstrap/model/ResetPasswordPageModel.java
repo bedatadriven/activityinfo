@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap.model;
 
 /*
@@ -24,43 +22,40 @@ package org.activityinfo.server.bootstrap.model;
  * #L%
  */
 
-
 /**
  * @author Alex Bertram
  */
 public class ResetPasswordPageModel extends PageModel {
 
-    private boolean loginError;     
+    private boolean loginError;
     private boolean emailSent;
     private boolean emailError;
 
     public ResetPasswordPageModel() {
     }
 
-	public boolean isLoginError() {
-		return loginError;
-	}
+    public boolean isLoginError() {
+        return loginError;
+    }
 
-	public void setLoginError(boolean loginError) {
-		this.loginError = loginError;
-	}
+    public void setLoginError(boolean loginError) {
+        this.loginError = loginError;
+    }
 
-	public boolean isEmailSent() {
-		return emailSent;
-	}
+    public boolean isEmailSent() {
+        return emailSent;
+    }
 
-	public void setEmailSent(boolean emailSent) {
-		this.emailSent = emailSent;
-	}
+    public void setEmailSent(boolean emailSent) {
+        this.emailSent = emailSent;
+    }
 
-	public boolean isEmailError() {
-		return emailError;
-	}
+    public boolean isEmailError() {
+        return emailError;
+    }
 
-	public void setEmailError(boolean emailError) {
-		this.emailError = emailError;
-	}
+    public void setEmailError(boolean emailError) {
+        this.emailError = emailError;
+    }
 
-    
-    
 }

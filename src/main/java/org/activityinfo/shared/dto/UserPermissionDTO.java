@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -27,9 +25,10 @@ package org.activityinfo.shared.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * Projection DTO of the {@link org.activityinfo.server.database.hibernate.entity.UserPermission UserPermission}
- * domain object
- *
+ * Projection DTO of the
+ * {@link org.activityinfo.server.database.hibernate.entity.UserPermission
+ * UserPermission} domain object
+ * 
  * @author Alex Bertram
  */
 public final class UserPermissionDTO extends BaseModelData implements DTO {
@@ -50,13 +49,13 @@ public final class UserPermissionDTO extends BaseModelData implements DTO {
 
     /**
      * Returns the User's name.
-     *
+     * 
      * @return the user's name
      */
     public String getName() {
         return get("name");
     }
-    
+
     public String getFirstName() {
         return get("firstName");
     }
@@ -71,7 +70,7 @@ public final class UserPermissionDTO extends BaseModelData implements DTO {
 
     /**
      * Returns the User's email
-     *
+     * 
      * @return the User's email
      */
     public String getEmail() {

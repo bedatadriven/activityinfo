@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.mock;
 
 /*
@@ -30,9 +28,7 @@ import java.util.Map;
 
 import org.activityinfo.client.util.state.CrossSessionStateProvider;
 
-
 public class StateManagerStub implements CrossSessionStateProvider {
-
 
     Map<String, Object> state = new HashMap<String, Object>();
 
@@ -43,22 +39,22 @@ public class StateManagerStub implements CrossSessionStateProvider {
 
     @Override
     public Date getDate(String name) {
-        return (Date)get(name);
+        return (Date) get(name);
     }
 
     @Override
     public Integer getInteger(String name) {
-        return (Integer)get(name);
+        return (Integer) get(name);
     }
 
     @Override
     public Map<String, Object> getMap(String name) {
-        return (Map<String,Object>)get(name);
+        return (Map<String, Object>) get(name);
     }
 
     @Override
     public String getString(String name) {
-        return (String)get(name);
+        return (String) get(name);
     }
 
     @Override

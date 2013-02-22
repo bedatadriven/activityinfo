@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler.sync;
 
 /*
@@ -40,29 +38,30 @@ public class LocationUpdateBuilder implements UpdateBuilder {
     private static final String REGION_PREFIX = "location/";
 
     private final EntityManager em;
-	private LocalState localState;
-	private SqliteBatchBuilder batch;
+    private LocalState localState;
+    private SqliteBatchBuilder batch;
 
-	private int typeId;
-    
+    private int typeId;
+
     @Inject
     public LocationUpdateBuilder(EntityManager em) {
         this.em = em;
     }
 
     @Override
-    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws Exception {
+    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request)
+        throws Exception {
 
-    	typeId = parseTypeId(request);
+        typeId = parseTypeId(request);
         localState = new LocalState(request.getLocalVersion());
         batch = new SqliteBatchBuilder();
 
         long latestVersion = queryLatestVersion();
-        if(latestVersion > localState.lastDate) {
-	        queryChanged();
-	        linkAdminEntities();
+        if (latestVersion > localState.lastDate) {
+            queryChanged();
+            linkAdminEntities();
         }
-                
+
         SyncRegionUpdate update = new SyncRegionUpdate();
         update.setVersion(Long.toString(latestVersion));
         update.setSql(batch.build());
@@ -70,60 +69,61 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         return update;
     }
 
-	private int parseTypeId(GetSyncRegionUpdates request) {
-		if(!request.getRegionId().startsWith(REGION_PREFIX)) {
-			throw new AssertionError("Expected region prefixed by '" + REGION_PREFIX + 
-					"', got '" + request.getRegionId() + "'");
-		}
-		return Integer.parseInt(request.getRegionId().substring(REGION_PREFIX.length()));
-	}
+    private int parseTypeId(GetSyncRegionUpdates request) {
+        if (!request.getRegionId().startsWith(REGION_PREFIX)) {
+            throw new AssertionError("Expected region prefixed by '"
+                + REGION_PREFIX +
+                "', got '" + request.getRegionId() + "'");
+        }
+        return Integer.parseInt(request.getRegionId().substring(
+            REGION_PREFIX.length()));
+    }
 
-	private void queryChanged() {
-		
-		SqlQuery query = SqlQuery.select()
-				.appendColumn("LocationId")
-				.appendColumn("Name")
-				.appendColumn("Axe")
-				.appendColumn("X")
-				.appendColumn("Y")
-				.appendColumn("LocationTypeId")
-				.from(Tables.LOCATION)
-				.where("locationTypeId").equalTo(typeId)
-				.where("timeEdited").greaterThan(localState.lastDate);
-		
-		batch.insert()
-			.into(Tables.LOCATION)
-			.from(query)
-			.execute(em);
-	}
+    private void queryChanged() {
 
-	
-	private void linkAdminEntities() throws JSONException { 
+        SqlQuery query = SqlQuery.select()
+            .appendColumn("LocationId")
+            .appendColumn("Name")
+            .appendColumn("Axe")
+            .appendColumn("X")
+            .appendColumn("Y")
+            .appendColumn("LocationTypeId")
+            .from(Tables.LOCATION)
+            .where("locationTypeId").equalTo(typeId)
+            .where("timeEdited").greaterThan(localState.lastDate);
 
-		SqlQuery query = SqlQuery.select()
-				.appendColumn("K.AdminEntityId")
-				.appendColumn("K.LocationId")
-				.from(Tables.LOCATION, "L")
-				.innerJoin(Tables.LOCATION_ADMIN_LINK, "K").on("L.LocationId=K.LocationId")
-				.where("L.locationTypeId").equalTo(typeId)
-				.where("L.timeEdited").greaterThan(localState.lastDate);
-		
-		batch.insert()
-			.into(Tables.LOCATION_ADMIN_LINK)
-			.from(query)
-			.execute(em);
-	}
-	
+        batch.insert()
+            .into(Tables.LOCATION)
+            .from(query)
+            .execute(em);
+    }
 
-	private long queryLatestVersion() throws JSONException { 
-		SqlQuery query = SqlQuery.select()
-				.appendColumn("MAX(timeEdited)", "latest")
-				.from(Tables.LOCATION)
-				.where("locationTypeId").equalTo(typeId)
-				.where("timeEdited").greaterThan(localState.lastDate);
-		
-		return SqlQueryUtil.queryLong(em, query);
-	}
+    private void linkAdminEntities() throws JSONException {
+
+        SqlQuery query = SqlQuery.select()
+            .appendColumn("K.AdminEntityId")
+            .appendColumn("K.LocationId")
+            .from(Tables.LOCATION, "L")
+            .innerJoin(Tables.LOCATION_ADMIN_LINK, "K")
+            .on("L.LocationId=K.LocationId")
+            .where("L.locationTypeId").equalTo(typeId)
+            .where("L.timeEdited").greaterThan(localState.lastDate);
+
+        batch.insert()
+            .into(Tables.LOCATION_ADMIN_LINK)
+            .from(query)
+            .execute(em);
+    }
+
+    private long queryLatestVersion() throws JSONException {
+        SqlQuery query = SqlQuery.select()
+            .appendColumn("MAX(timeEdited)", "latest")
+            .from(Tables.LOCATION)
+            .where("locationTypeId").equalTo(typeId)
+            .where("timeEdited").greaterThan(localState.lastDate);
+
+        return SqlQueryUtil.queryLong(em, query);
+    }
 
     private class LocalState {
         private long lastDate;
@@ -133,7 +133,7 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         }
 
         public LocalState(String cookie) {
-            if(cookie == null) {
+            if (cookie == null) {
                 lastDate = 0;
             } else {
                 lastDate = TimestampHelper.fromString(cookie);

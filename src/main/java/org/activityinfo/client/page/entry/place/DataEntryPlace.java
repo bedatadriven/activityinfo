@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.entry.place;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.client.page.entry.place;
  * #L%
  */
 
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,122 +36,120 @@ import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
-
 public class DataEntryPlace extends AbstractPagingGridPageState {
 
-	private Filter filter;
-	private GroupingModel grouping = NullGroupingModel.INSTANCE;
-	
+    private Filter filter;
+    private GroupingModel grouping = NullGroupingModel.INSTANCE;
+
     public DataEntryPlace() {
-    	filter = new Filter();
+        filter = new Filter();
     }
 
     public DataEntryPlace(Filter filter) {
         this.filter = filter;
     }
-   
-    public DataEntryPlace(GroupingModel grouping, Filter filter) {
-		super();
-		this.filter = filter;
-		this.grouping = grouping;
-	}
 
-	public DataEntryPlace(ActivityDTO activity) {
-    	filter = new Filter();
-    	filter.addRestriction(DimensionType.Activity, activity.getId());
+    public DataEntryPlace(GroupingModel grouping, Filter filter) {
+        super();
+        this.filter = filter;
+        this.grouping = grouping;
+    }
+
+    public DataEntryPlace(ActivityDTO activity) {
+        filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, activity.getId());
     }
 
     public DataEntryPlace(UserDatabaseDTO database) {
-    	filter = new Filter();
-    	filter.addRestriction(DimensionType.Database, database.getId());        
+        filter = new Filter();
+        filter.addRestriction(DimensionType.Database, database.getId());
     }
-    
+
     @Deprecated
     public DataEntryPlace(int activityId) {
-    	filter = new Filter();
-    	filter.addRestriction(DimensionType.Activity, activityId);
+        filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, activityId);
     }
 
     public Filter getFilter() {
-    	return filter;
+        return filter;
     }
-    
+
     public GroupingModel getGrouping() {
-    	return grouping;
+        return grouping;
     }
-    
-	public DataEntryPlace setGrouping(GroupingModel grouping) {
-		this.grouping = grouping;
-		return this;
-	}
-    
+
+    public DataEntryPlace setGrouping(GroupingModel grouping) {
+        this.grouping = grouping;
+        return this;
+    }
+
     @Override
-	public PageId getPageId() {
-		return DataEntryPage.PAGE_ID;
-	}
+    public PageId getPageId() {
+        return DataEntryPage.PAGE_ID;
+    }
 
     @Override
     public String serializeAsHistoryToken() {
-    	return DataEntryPlaceParser.serialize(this);
+        return DataEntryPlaceParser.serialize(this);
     }
 
-	@Override
-	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(DataEntryPage.PAGE_ID);
-	}
+    @Override
+    public List<PageId> getEnclosingFrames() {
+        return Arrays.asList(DataEntryPage.PAGE_ID);
+    }
 
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
-		result = prime * result
-				+ ((grouping == null) ? 0 : grouping.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((filter == null) ? 0 : filter.hashCode());
+        result = prime * result
+            + ((grouping == null) ? 0 : grouping.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		DataEntryPlace other = (DataEntryPlace) obj;
-		if (filter == null) {
-			if (other.filter != null) {
-				return false;
-			}
-		} else if (!filter.equals(other.filter)) {
-			return false;
-		}
-		if (grouping == null) {
-			if (other.grouping != null) {
-				return false;
-			}
-		} else if (!grouping.equals(other.grouping)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        DataEntryPlace other = (DataEntryPlace) obj;
+        if (filter == null) {
+            if (other.filter != null) {
+                return false;
+            }
+        } else if (!filter.equals(other.filter)) {
+            return false;
+        }
+        if (grouping == null) {
+            if (other.grouping != null) {
+                return false;
+            }
+        } else if (!grouping.equals(other.grouping)) {
+            return false;
+        }
+        return true;
+    }
 
-	public DataEntryPlace copy() {
-		return new DataEntryPlace(grouping, new Filter(filter));
-	}
+    public DataEntryPlace copy() {
+        return new DataEntryPlace(grouping, new Filter(filter));
+    }
 
-	public DataEntryPlace setFilter(Filter filter) {
-		this.filter = filter;
-		return this;
-	}
+    public DataEntryPlace setFilter(Filter filter) {
+        this.filter = filter;
+        return this;
+    }
 
-	@Override
-	public Section getSection() {
-		return Section.DATA_ENTRY;
-	}
+    @Override
+    public Section getSection() {
+        return Section.DATA_ENTRY;
+    }
 
 }

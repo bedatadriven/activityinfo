@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.test;
 
 /*
@@ -36,7 +34,10 @@ import com.google.inject.Scope;
 
 /**
  * Scopes a single execution of a block of code. Apply this scope with a
- * try/finally block: <pre>   {@code
+ * try/finally block:
+ * 
+ * <pre>
+ * {@code
  * <p/>
  *   scope.enter();
  *   try {
@@ -46,42 +47,51 @@ import com.google.inject.Scope;
  *   } finally {
  *     scope.exit();
  *   }
- * }</pre>
+ * }
+ * </pre>
  * <p/>
  * The scope can be initialized with one or more seed values by calling
  * <code>seed(key, value)</code> before the injector will be called upon to
  * provide for this key. A typical use is for a servlet filter to enter/exit the
  * scope, representing a Request Scope, and seed HttpServletRequest and
- * HttpServletResponse.  For each key inserted with seed(), it's good practice
+ * HttpServletResponse. For each key inserted with seed(), it's good practice
  * (since you have to provide <i>some</i> binding anyhow) to include a
  * corresponding binding that will throw an exception if Guice is asked to
- * provide for that key if it was not yet seeded: <pre>   {@code
+ * provide for that key if it was not yet seeded:
+ * 
+ * <pre>
+ * {@code
  * <p/>
  *   bind(key)
  *       .toProvider(SimpleScope.<KeyClass>seededKeyProvider())
  *       .in(ScopeAnnotation.class);
- * }</pre>
- *
+ * }
+ * </pre>
+ * 
  * @author Jesse Wilson
  * @author Fedor Karpelevitch
  */
 public class SimpleScope implements Scope {
 
     private static final Provider<Object> SEEDED_KEY_PROVIDER =
-            new Provider<Object>() {
-                public Object get() {
-                    throw new IllegalStateException("If you got here then it means that" +
-                            " your code asked for scoped object which should have been" +
-                            " explicitly seeded in this scope by calling" +
-                            " SimpleScope.seed(), but was not.");
-                }
-            };
-    private final ThreadLocal<Map<Key<?>, Object>> values
-            = new ThreadLocal<Map<Key<?>, Object>>();
+        new Provider<Object>() {
+            @Override
+            public Object get() {
+                throw new IllegalStateException(
+                    "If you got here then it means that"
+                        +
+                        " your code asked for scoped object which should have been"
+                        +
+                        " explicitly seeded in this scope by calling" +
+                        " SimpleScope.seed(), but was not.");
+            }
+        };
+    private final ThreadLocal<Map<Key<?>, Object>> values = new ThreadLocal<Map<Key<?>, Object>>();
 
     public void enter() {
-        checkState(values.get() == null, "A scoping block is already in progress");
-        values.set(Maps.<Key<?>, Object>newHashMap());
+        checkState(values.get() == null,
+            "A scoping block is already in progress");
+        values.set(Maps.<Key<?>, Object> newHashMap());
     }
 
     public void exit() {
@@ -91,9 +101,11 @@ public class SimpleScope implements Scope {
 
     public <T> void seed(Key<T> key, T value) {
         Map<Key<?>, Object> scopedObjects = getScopedObjectMap(key);
-        checkState(!scopedObjects.containsKey(key), "A value for the key %s was " +
-                "already seeded in this scope. Old value: %s New value: %s", key,
-                scopedObjects.get(key), value);
+        checkState(!scopedObjects.containsKey(key),
+            "A value for the key %s was " +
+                "already seeded in this scope. Old value: %s New value: %s",
+            key,
+            scopedObjects.get(key), value);
         scopedObjects.put(key, value);
     }
 
@@ -101,8 +113,10 @@ public class SimpleScope implements Scope {
         seed(Key.get(clazz), value);
     }
 
+    @Override
     public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
         return new Provider<T>() {
+            @Override
             public T get() {
                 Map<Key<?>, Object> scopedObjects = getScopedObjectMap(key);
 
@@ -121,20 +135,19 @@ public class SimpleScope implements Scope {
         Map<Key<?>, Object> scopedObjects = values.get();
         if (scopedObjects == null) {
             throw new OutOfScopeException("Cannot access " + key
-                    + " outside of a scoping block");
+                + " outside of a scoping block");
         }
         return scopedObjects;
     }
 
     /**
-     * Returns a provider that always throws exception complaining that the object
-     * in question must be seeded before it can be injected.
-     *
+     * Returns a provider that always throws exception complaining that the
+     * object in question must be seeded before it can be injected.
+     * 
      * @return typed provider
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     public static <T> Provider<T> seededKeyProvider() {
         return (Provider<T>) SEEDED_KEY_PROVIDER;
     }
 }
-

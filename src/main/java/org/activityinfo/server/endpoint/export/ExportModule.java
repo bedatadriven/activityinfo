@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.export;
 
 /*
@@ -30,7 +28,7 @@ public class ExportModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-    	serve("/ActivityInfo/export/users*").with(ExportUsersServlet.class);
+        serve("/ActivityInfo/export/users*").with(ExportUsersServlet.class);
         serve("/ActivityInfo/export*").with(ExportSitesServlet.class);
         serve("/report").with(ReportServlet.class);
     }

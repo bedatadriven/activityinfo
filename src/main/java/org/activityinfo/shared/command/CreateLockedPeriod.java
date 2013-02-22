@@ -26,47 +26,47 @@ import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.LockedPeriodDTO;
 
 public class CreateLockedPeriod implements MutatingCommand<CreateResult> {
-	private int activityId=0;
-	private int userDatabseId=0;
-	private int projectId=0;
-	private LockedPeriodDTO lockedPeriod;
-	
-	public CreateLockedPeriod() {
-	}
+    private int activityId = 0;
+    private int userDatabseId = 0;
+    private int projectId = 0;
+    private LockedPeriodDTO lockedPeriod;
 
-	public CreateLockedPeriod(LockedPeriodDTO lockedPeriod) {
-		this.setLockedPeriod(lockedPeriod);
-	}
+    public CreateLockedPeriod() {
+    }
 
-	public int getActivityId() {
-		return activityId;
-	}
+    public CreateLockedPeriod(LockedPeriodDTO lockedPeriod) {
+        this.setLockedPeriod(lockedPeriod);
+    }
 
-	public void setActivityId(int activityId) {
-		this.activityId = activityId;
-	}
+    public int getActivityId() {
+        return activityId;
+    }
 
-	public int getUserDatabseId() {
-		return userDatabseId;
-	}
+    public void setActivityId(int activityId) {
+        this.activityId = activityId;
+    }
 
-	public void setUserDatabaseId(int userDatabseId) {
-		this.userDatabseId = userDatabseId;
-	}
+    public int getUserDatabseId() {
+        return userDatabseId;
+    }
 
-	public int getProjectId() {
-		return projectId;
-	}
+    public void setUserDatabaseId(int userDatabseId) {
+        this.userDatabseId = userDatabseId;
+    }
 
-	public void setProjectId(int projectId) {
-		this.projectId = projectId;
-	}
+    public int getProjectId() {
+        return projectId;
+    }
 
-	public void setLockedPeriod(LockedPeriodDTO lockedPeriod) {
-		this.lockedPeriod = lockedPeriod;
-	}
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
 
-	public LockedPeriodDTO getLockedPeriod() {
-		return lockedPeriod;
-	}
+    public void setLockedPeriod(LockedPeriodDTO lockedPeriod) {
+        this.lockedPeriod = lockedPeriod;
+    }
+
+    public LockedPeriodDTO getLockedPeriod() {
+        return lockedPeriod;
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.server.command;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -58,25 +55,26 @@ public class CreateSiteTest extends CommandTestCase2 {
 
     @Test
     public void test() throws CommandException {
-    	LocationDTO location = LocationDTOs.newLocation();
-    	execute(new CreateLocation(location));
-    	
+        LocationDTO location = LocationDTOs.newLocation();
+        execute(new CreateLocation(location));
+
         SiteDTO newSite = SiteDTOs.newSite();
         newSite.setLocation(location);
-        
+
         CreateSite cmd = new CreateSite(newSite);
         setUser(1);
-        
+
         CreateResult result = execute(cmd);
         newSite.setId(result.getNewId());
         assertThat(result.getNewId(), not(equalTo(0)));
-        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
+            .getId()));
         Assert.assertEquals(1, loadResult.getData().size());
         SiteDTO secondRead = loadResult.getData().get(0);
         SiteDTOs.validateNewSite(secondRead);
     }
-    
-    @Test(expected=NotAuthorizedException.class)
+
+    @Test(expected = NotAuthorizedException.class)
     public void unauthorized() throws CommandException {
         // create a new detached, client model
         SiteDTO newSite = SiteDTOs.newSite();
@@ -90,9 +88,9 @@ public class CreateSiteTest extends CommandTestCase2 {
         execute(cmd);
     }
 
-	@Test
-	@Ignore("WIP")
-	public void testAdminBoundCreate() throws CommandException {
+    @Test
+    @Ignore("WIP")
+    public void testAdminBoundCreate() throws CommandException {
         // create a new detached, client model
         SiteDTO newSite = new SiteDTO();
 
@@ -106,7 +104,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         newSite.setX(27.432);
         newSite.setY(1.23);
         newSite.setComments("huba huba");
-        newSite.setProject(new ProjectDTO(1,"SomeProject"));
+        newSite.setProject(new ProjectDTO(1, "SomeProject"));
 
         // create command
 
@@ -114,27 +112,25 @@ public class CreateSiteTest extends CommandTestCase2 {
 
         // execute the command
 
-        setUser(1);        
-        newSite.setProject(new ProjectDTO(1,"SomeProject"));
-
+        setUser(1);
+        newSite.setProject(new ProjectDTO(1, "SomeProject"));
 
         CreateResult result = execute(cmd);
         newSite.setId(result.getNewId());
 
-
         // try to retrieve what we've created
 
-        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
+            .getId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 
         SiteDTO secondRead = loadResult.getData().get(0);
 
-
         // confirm that the changes are there
-        Assert.assertEquals("site.location.name", "Walungu", secondRead.getLocationName());
+        Assert.assertEquals("site.location.name", "Walungu",
+            secondRead.getLocationName());
     }
-
 
     @Test
     public void testAllAttribsFalse() throws CommandException {
@@ -149,12 +145,12 @@ public class CreateSiteTest extends CommandTestCase2 {
         newSite.setLocationName("Virunga");
         newSite.setAttributeValue(1, false);
         newSite.setAttributeValue(2, false);
-        newSite.setProject(new ProjectDTO(1,"SomeProject"));
+        newSite.setProject(new ProjectDTO(1, "SomeProject"));
 
         // create command
 
         CreateSite cmd = new CreateSite(newSite);
-        assertThat((Integer)cmd.getProperties().get("locationId"), equalTo(1));
+        assertThat((Integer) cmd.getProperties().get("locationId"), equalTo(1));
 
         // execute the command
 
@@ -162,25 +158,24 @@ public class CreateSiteTest extends CommandTestCase2 {
 
         CreateResult result = execute(cmd);
 
-
         // let the client know the command has succeeded
         newSite.setId(result.getNewId());
-        //cmd.onCompleted(result);
-
+        // cmd.onCompleted(result);
 
         // try to retrieve what we've created
 
-        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getId()));
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
+            .getId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 
         SiteDTO secondRead = loadResult.getData().get(0);
 
-
         // confirm that the changes are there
-        Assert.assertEquals("site.attribute[2]", false, secondRead.getAttributeValue(1));
-        Assert.assertEquals("site.attribute[2]", false, secondRead.getAttributeValue(2));
+        Assert.assertEquals("site.attribute[2]", false,
+            secondRead.getAttributeValue(1));
+        Assert.assertEquals("site.attribute[2]", false,
+            secondRead.getAttributeValue(2));
     }
-
 
 }

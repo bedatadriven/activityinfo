@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -40,7 +38,7 @@ public class MapMarker implements Serializable {
     private double lng;
     private List<Integer> siteIds = new ArrayList<Integer>();
     private String title;
-    
+
     public MapMarker() {
 
     }
@@ -88,18 +86,16 @@ public class MapMarker implements Serializable {
     public int getSize() {
         return 0;
     }
-    
+
     public String getTitle() {
-		return title;
-	}
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-
-
-	/**
+    /**
      * Sorts markers left to right, top to bottom.
      */
     public static class LRTBComparator implements Comparator<MapMarker> {
@@ -108,14 +104,14 @@ public class MapMarker implements Serializable {
             int y1 = m1.getY() / 5;
             int y2 = m2.getY() / 5;
 
-            if(y1 < y2) {
+            if (y1 < y2) {
                 return -1;
-            } else if(y1 > y2) {
+            } else if (y1 > y2) {
                 return 1;
             } else {
-                if(m1.getX() < m2.getX()) {
+                if (m1.getX() < m2.getX()) {
                     return -1;
-                } else if(m1.getX() > m2.getX()) {
+                } else if (m1.getX() > m2.getX()) {
                     return 1;
                 } else {
                     return 0;
@@ -127,8 +123,8 @@ public class MapMarker implements Serializable {
     @Override
     public String toString() {
         return "MapMarker{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+            "x=" + x +
+            ", y=" + y +
+            '}';
     }
 }

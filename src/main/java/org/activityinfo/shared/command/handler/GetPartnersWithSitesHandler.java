@@ -42,51 +42,54 @@ import org.activityinfo.shared.report.model.DimensionType;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GetPartnersWithSitesHandler implements CommandHandlerAsync<GetPartnersWithSites, PartnerResult> {
+public class GetPartnersWithSitesHandler implements
+    CommandHandlerAsync<GetPartnersWithSites, PartnerResult> {
 
-	@Override
-	public void execute(GetPartnersWithSites cmd, ExecutionContext context, final AsyncCallback<PartnerResult> callback) {
+    @Override
+    public void execute(GetPartnersWithSites cmd, ExecutionContext context,
+        final AsyncCallback<PartnerResult> callback) {
 
-		final Dimension dimension = new Dimension(DimensionType.Partner);
+        final Dimension dimension = new Dimension(DimensionType.Partner);
 
-		PivotSites query = new PivotSites();
-		query.setFilter(cmd.getFilter());
-		query.setDimensions(dimension);
-		query.setValueType(ValueType.TOTAL_SITES);
-		context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
+        PivotSites query = new PivotSites();
+        query.setFilter(cmd.getFilter());
+        query.setDimensions(dimension);
+        query.setValueType(ValueType.TOTAL_SITES);
+        context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
 
-			@Override
-			public void onSuccess(PivotSites.PivotResult result) {
+            @Override
+            public void onSuccess(PivotSites.PivotResult result) {
 
-				Set<PartnerDTO> partners = new HashSet<PartnerDTO>();
+                Set<PartnerDTO> partners = new HashSet<PartnerDTO>();
 
-				for(Bucket bucket : result.getBuckets()) {
-					EntityCategory category = (EntityCategory)bucket.getCategory(dimension);
-					if(category == null) {
-						Log.debug("Partner is null: " + bucket.toString());
-					} else {
-						PartnerDTO partner = new PartnerDTO();
-						partner.setId(category.getId());
-						partner.setName(category.getLabel());
-						partners.add(partner);
-					}
-				}
+                for (Bucket bucket : result.getBuckets()) {
+                    EntityCategory category = (EntityCategory) bucket
+                        .getCategory(dimension);
+                    if (category == null) {
+                        Log.debug("Partner is null: " + bucket.toString());
+                    } else {
+                        PartnerDTO partner = new PartnerDTO();
+                        partner.setId(category.getId());
+                        partner.setName(category.getLabel());
+                        partners.add(partner);
+                    }
+                }
 
-				List<PartnerDTO> list = new ArrayList<PartnerDTO>(partners);
-				Collections.sort(list, new Comparator<PartnerDTO>() {
+                List<PartnerDTO> list = new ArrayList<PartnerDTO>(partners);
+                Collections.sort(list, new Comparator<PartnerDTO>() {
 
-					@Override
-					public int compare(PartnerDTO p1, PartnerDTO p2) {
-						return p1.getName().compareToIgnoreCase(p2.getName());
-					}
-				});
-				callback.onSuccess(new PartnerResult(list));
-			}
+                    @Override
+                    public int compare(PartnerDTO p1, PartnerDTO p2) {
+                        return p1.getName().compareToIgnoreCase(p2.getName());
+                    }
+                });
+                callback.onSuccess(new PartnerResult(list));
+            }
 
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-		});
-	}
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+        });
+    }
 }

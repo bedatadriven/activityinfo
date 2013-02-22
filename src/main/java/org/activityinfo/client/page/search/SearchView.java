@@ -39,43 +39,48 @@ import com.google.inject.ImplementedBy;
 
 @ImplementedBy(SearchResultsPage.class)
 public interface SearchView extends ListView<SearchHitDTO, SearchResult> {
-	HandlerRegistration addSearchHandler(SearchHandler handler);
-	void setSearchResults(PivotContent pivotTabelData);
-	void setSearchQuery(String query);
-	void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities);
+    HandlerRegistration addSearchHandler(SearchHandler handler);
 
-	void setSitePoints(SitePointList sitePoints);
-	void setSites(List<RecentSiteModel> sites);
-	
-	// Since View<T> extends TakesValue<T>, the value does not need to be encapsulated
-	public class SearchEvent extends GwtEvent<SearchHandler> {
-		public static final Type<SearchHandler> TYPE = new Type<SearchHandler>(); 
-		private String query;
-		
-		public SearchEvent(String query) {
-			this.query = query;
-		}
+    void setSearchResults(PivotContent pivotTabelData);
 
-		public String getQuery() {
-			return query;
-		}
+    void setSearchQuery(String query);
 
-		public void setQuery(String query) {
-			this.query = query;
-		}
+    void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities);
 
-		@Override
-		public Type<SearchHandler> getAssociatedType() {
-			return TYPE;
-		}
+    void setSitePoints(SitePointList sitePoints);
 
-		@Override
-		protected void dispatch(SearchHandler handler) {
-			handler.onSearch(this);
-		}
-	}
-	
-	interface SearchHandler extends com.google.gwt.event.shared.EventHandler {
-		void onSearch(SearchEvent searchEvent);
-	}
+    void setSites(List<RecentSiteModel> sites);
+
+    // Since View<T> extends TakesValue<T>, the value does not need to be
+    // encapsulated
+    public class SearchEvent extends GwtEvent<SearchHandler> {
+        public static final Type<SearchHandler> TYPE = new Type<SearchHandler>();
+        private String query;
+
+        public SearchEvent(String query) {
+            this.query = query;
+        }
+
+        public String getQuery() {
+            return query;
+        }
+
+        public void setQuery(String query) {
+            this.query = query;
+        }
+
+        @Override
+        public Type<SearchHandler> getAssociatedType() {
+            return TYPE;
+        }
+
+        @Override
+        protected void dispatch(SearchHandler handler) {
+            handler.onSearch(this);
+        }
+    }
+
+    interface SearchHandler extends com.google.gwt.event.shared.EventHandler {
+        void onSearch(SearchEvent searchEvent);
+    }
 }

@@ -25,13 +25,13 @@
 
 <report frequency="adhoc">
 
-   <elements>
-       <pivotTable>
-           <rows>
-                <dimension type="indicator"/>
-                <dimension type="admin" levelId="91"/>
-           </rows>
-       </pivotTable>
-   </elements>
+  <elements>
+    <pivotTable>
+      <rows>
+        <dimension type="indicator" />
+        <dimension type="admin" levelId="91" />
+      </rows>
+    </pivotTable>
+  </elements>
 </report>
 

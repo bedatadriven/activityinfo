@@ -22,6 +22,7 @@ package org.activityinfo.client.page.entry.form;
  * #L%
  */
 
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.local.command.handler.KeyGenerator;
@@ -35,97 +36,101 @@ import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
-import org.activityinfo.client.Log;
-
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SiteDialogLauncher {
 
-	private final Dispatcher dispatcher;
-	
-	public SiteDialogLauncher(Dispatcher dispatcher) {
-		super();
-		this.dispatcher = dispatcher;
-	}
+    private final Dispatcher dispatcher;
 
+    public SiteDialogLauncher(Dispatcher dispatcher) {
+        super();
+        this.dispatcher = dispatcher;
+    }
 
-	public void addSite(final Filter filter, final SiteDialogCallback callback) {
-		if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
-			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    public void addSite(final Filter filter, final SiteDialogCallback callback) {
+        if (filter
+            .isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
+            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-				@Override
-				public void onFailure(Throwable arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+                @Override
+                public void onFailure(Throwable arg0) {
+                    // TODO Auto-generated method stub
 
-				@Override
-				public void onSuccess(SchemaDTO schema) {
-					final ActivityDTO activity = schema.getActivityById(
-							filter.getRestrictedCategory(DimensionType.Activity));
-					Log.trace("adding site for activity " + activity + ", locationType = " + activity.getLocationType());
-					 
-					if(activity.getLocationType().isAdminLevel()) {
-						addNewSiteWithBoundLocation(activity, callback);
-					} else {
-						chooseLocationThenAddSite(activity, callback);
-					}
-				}
-			});
-		}
-	}
-	
-	public void editSite(final SiteDTO site, final SiteDialogCallback callback) {
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+                }
 
-			@Override
-			public void onFailure(Throwable caught) { }
+                @Override
+                public void onSuccess(SchemaDTO schema) {
+                    final ActivityDTO activity = schema.getActivityById(
+                        filter.getRestrictedCategory(DimensionType.Activity));
+                    Log.trace("adding site for activity " + activity
+                        + ", locationType = " + activity.getLocationType());
 
-			@Override
-			public void onSuccess(SchemaDTO schema) {
-				// check whether the site has been locked
-				LockedPeriodSet locks = new LockedPeriodSet(schema);
-				if(locks.isLocked(site)) {
-					MessageBox.alert(I18N.CONSTANTS.lockedSiteTitle(), I18N.CONSTANTS.siteIsLocked(), null);
-					return;
-				} 
-				
-				ActivityDTO activity = schema.getActivityById(site.getActivityId());
-				SiteDialog dialog = new SiteDialog(dispatcher, activity);
-				dialog.showExisting(site, callback);
-			}
-		});
-	}
+                    if (activity.getLocationType().isAdminLevel()) {
+                        addNewSiteWithBoundLocation(activity, callback);
+                    } else {
+                        chooseLocationThenAddSite(activity, callback);
+                    }
+                }
+            });
+        }
+    }
 
+    public void editSite(final SiteDTO site, final SiteDialogCallback callback) {
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-	private void chooseLocationThenAddSite(final ActivityDTO activity, final SiteDialogCallback callback) {
-		LocationDialog dialog = new LocationDialog(dispatcher, activity.getDatabase().getCountry(),
-				activity.getLocationType());
-		
-		dialog.show(new LocationDialog.Callback() {
-			
-			@Override
-			public void onSelected(LocationDTO location, boolean isNew) {
-				SiteDTO newSite = new SiteDTO();
-				newSite.setActivityId(activity.getId());
-				newSite.setLocation(location);
-				
-				SiteDialog dialog = new SiteDialog(dispatcher, activity);
-				dialog.showNew(newSite, location, isNew, callback);
-			}
-		});		
-	}
-	
-	private void addNewSiteWithBoundLocation(ActivityDTO activity, SiteDialogCallback callback) {
-		SiteDTO newSite = new SiteDTO();
-		newSite.setActivityId(activity.getId());
+            @Override
+            public void onFailure(Throwable caught) {
+            }
 
-		LocationDTO location = new LocationDTO();
-		location.setId(new KeyGenerator().generateInt());
-		location.setLocationTypeId(activity.getLocationTypeId());
-		
-		SiteDialog dialog = new SiteDialog(dispatcher, activity);
-		dialog.showNew(newSite, location, true, callback);
-	}
+            @Override
+            public void onSuccess(SchemaDTO schema) {
+                // check whether the site has been locked
+                LockedPeriodSet locks = new LockedPeriodSet(schema);
+                if (locks.isLocked(site)) {
+                    MessageBox.alert(I18N.CONSTANTS.lockedSiteTitle(),
+                        I18N.CONSTANTS.siteIsLocked(), null);
+                    return;
+                }
+
+                ActivityDTO activity = schema.getActivityById(site
+                    .getActivityId());
+                SiteDialog dialog = new SiteDialog(dispatcher, activity);
+                dialog.showExisting(site, callback);
+            }
+        });
+    }
+
+    private void chooseLocationThenAddSite(final ActivityDTO activity,
+        final SiteDialogCallback callback) {
+        LocationDialog dialog = new LocationDialog(dispatcher, activity
+            .getDatabase().getCountry(),
+            activity.getLocationType());
+
+        dialog.show(new LocationDialog.Callback() {
+
+            @Override
+            public void onSelected(LocationDTO location, boolean isNew) {
+                SiteDTO newSite = new SiteDTO();
+                newSite.setActivityId(activity.getId());
+                newSite.setLocation(location);
+
+                SiteDialog dialog = new SiteDialog(dispatcher, activity);
+                dialog.showNew(newSite, location, isNew, callback);
+            }
+        });
+    }
+
+    private void addNewSiteWithBoundLocation(ActivityDTO activity,
+        SiteDialogCallback callback) {
+        SiteDTO newSite = new SiteDTO();
+        newSite.setActivityId(activity.getId());
+
+        LocationDTO location = new LocationDTO();
+        location.setId(new KeyGenerator().generateInt());
+        location.setLocationTypeId(activity.getLocationTypeId());
+
+        SiteDialog dialog = new SiteDialog(dispatcher, activity);
+        dialog.showNew(newSite, location, true, callback);
+    }
 }

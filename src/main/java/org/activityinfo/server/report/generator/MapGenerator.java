@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator;
 
 /*
@@ -74,10 +72,11 @@ import com.google.inject.Inject;
  */
 public class MapGenerator extends ListGenerator<MapReportElement> {
 
-	private final IndicatorDAO indicatorDAO;
+    private final IndicatorDAO indicatorDAO;
 
-    private static final Logger logger = Logger.getLogger(MapGenerator.class.getName());
-        
+    private static final Logger LOGGER = Logger.getLogger(MapGenerator.class
+        .getName());
+
     @Inject
     public MapGenerator(DispatcherSync dispatcher, IndicatorDAO indicatorDAO) {
         super(dispatcher);
@@ -85,23 +84,25 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
     }
 
     @Override
-	public void generate(User user, MapReportElement element, Filter inheritedFilter, DateRange dateRange) {
+    public void generate(User user, MapReportElement element,
+        Filter inheritedFilter, DateRange dateRange) {
 
         Filter filter = GeneratorUtils.resolveElementFilter(element, dateRange);
-        Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(inheritedFilter, filter);
-
+        Filter effectiveFilter = inheritedFilter == null ? filter : new Filter(
+            inheritedFilter, filter);
 
         MapContent content = new MapContent();
-        content.setFilterDescriptions(generateFilterDescriptions(filter, Collections.<DimensionType>emptySet(), user));
+        content.setFilterDescriptions(generateFilterDescriptions(filter,
+            Collections.<DimensionType>emptySet(), user));
 
         // Set up layer generators
         List<LayerGenerator> layerGenerators = new ArrayList<LayerGenerator>();
         for (MapLayer layer : element.getLayers()) {
-        	if (layer.isVisible()) {
-        		LayerGenerator layerGtor = createGenerator(layer);
-	            layerGtor.query(getDispatcher(), effectiveFilter);
-	            layerGenerators.add(layerGtor);
-        	}
+            if (layer.isVisible()) {
+                LayerGenerator layerGtor = createGenerator(layer);
+                layerGtor.query(getDispatcher(), effectiveFilter);
+                layerGenerators.add(layerGtor);
+            }
         }
 
         // FIRST PASS: calculate extents and margins
@@ -109,7 +110,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         int height = element.getHeight();
         AiLatLng center;
         int zoom;
-        
+
         Extents extents = Extents.emptyExtents();
         Margins margins = new Margins(0);
         for (LayerGenerator layerGtor : layerGenerators) {
@@ -117,27 +118,26 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             margins.grow(layerGtor.calculateMargins());
         }
         content.setExtents(extents);
-        
-        if(element.getCenter() == null) {
 
-	        // Now we're ready to calculate the zoom level
-	        // and the projection
-	        zoom = TileMath.zoomLevelForExtents(extents, width, height);
-	        center = extents.center();
-	        
+        if (element.getCenter() == null) {
+
+            // Now we're ready to calculate the zoom level
+            // and the projection
+            zoom = TileMath.zoomLevelForExtents(extents, width, height);
+            center = extents.center();
+
         } else {
-        	center = element.getCenter();
-        	zoom = element.getZoomLevel();  	
+            center = element.getCenter();
+            zoom = element.getZoomLevel();
         }
-        
+
         content.setCenter(center);
 
         List<Indicator> indicators = queryIndicators(element);
-        
-        
+
         // Retrieve the basemap and clamp zoom level
-        BaseMap baseMap = findBaseMap(element, indicators); 
-                
+        BaseMap baseMap = findBaseMap(element, indicators);
+
         if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();
         }
@@ -149,104 +149,106 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         content.setBaseMap(baseMap);
         content.setZoomLevel(zoom);
         if (baseMap == null) {
-        	baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
-			logger.log(Level.SEVERE, "Could not find base map id=" + element.getBaseMapId());
+            baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
+            LOGGER.log(Level.SEVERE,
+                "Could not find base map id=" + element.getBaseMapId());
         }
 
         // Generate the actual content
         for (LayerGenerator layerGtor : layerGenerators) {
             layerGtor.generate(map, content);
         }
-                
+
         content.setIndicators(toDTOs(indicators));
         element.setContent(content);
 
     }
 
-	private LayerGenerator createGenerator(MapLayer layer) {
-		if (layer instanceof BubbleMapLayer) {
-			return new BubbleLayerGenerator((BubbleMapLayer) layer);
-		} else if (layer instanceof IconMapLayer) {
-			return new IconLayerGenerator((IconMapLayer) layer);
-		} else if (layer instanceof PiechartMapLayer) {
-			return new PiechartLayerGenerator((PiechartMapLayer) layer);
-		} else if( layer instanceof PolygonMapLayer) {
-			return new PolygonLayerGenerator((PolygonMapLayer) layer);
-		} else {
-			throw new UnsupportedOperationException();
-		}
-	}
-
-
-	private List<Indicator> queryIndicators(MapReportElement element) {
-		
-        // Get relevant indicators for the map markers
-        Set<Integer> indicatorIds = new HashSet<Integer>(); 
-        for (MapLayer maplayer : element.getLayers()) {
-        	indicatorIds.addAll(maplayer.getIndicatorIds());
-        }
-        
-		List<Indicator> indicators = Lists.newArrayList();
-        for (Integer indicatorId : indicatorIds) {
-        	indicators.add(indicatorDAO.findById(indicatorId));
-        }
-		return indicators;
-	}
-
-	private Set<IndicatorDTO> toDTOs(List<Indicator> indicators) {
-		Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();        
-        for(Indicator indicator : indicators) {
-        	IndicatorDTO indicatorDTO = new IndicatorDTO();
-        	indicatorDTO.setId(indicator.getId());
-        	indicatorDTO.setName(indicator.getName());
-        	
-        	indicatorDTOs.add(indicatorDTO);
-        }
-		return indicatorDTOs;
-	}
-
-	private BaseMap findBaseMap(MapReportElement element, List<Indicator> indicators) {
-		BaseMap baseMap = null;
-        String baseMapId = element.getBaseMapId();
-		if (element.getBaseMapId() == null || element.getBaseMapId().equals(MapReportElement.AUTO_BASEMAP)) {
-        	baseMapId = defaultBaseMap(indicators);
-        }
-        if(PredefinedBaseMaps.isPredefinedMap(baseMapId)) {
-        	baseMap = PredefinedBaseMaps.forId(baseMapId);
+    private LayerGenerator createGenerator(MapLayer layer) {
+        if (layer instanceof BubbleMapLayer) {
+            return new BubbleLayerGenerator((BubbleMapLayer) layer);
+        } else if (layer instanceof IconMapLayer) {
+            return new IconLayerGenerator((IconMapLayer) layer);
+        } else if (layer instanceof PiechartMapLayer) {
+            return new PiechartLayerGenerator((PiechartMapLayer) layer);
+        } else if (layer instanceof PolygonMapLayer) {
+            return new PolygonLayerGenerator((PolygonMapLayer) layer);
         } else {
-        	baseMap = getBaseMap(baseMapId);
+            throw new UnsupportedOperationException();
         }
-		return baseMap;
-	}
+    }
 
-	private String defaultBaseMap(List<Indicator> indicators) {
-		Set<Country> countries = queryCountries(indicators);
-		if(countries.size() == 1) {
-			Country country = countries.iterator().next();
-			if("CD".equals(country.getCodeISO())) {
-				return "admin";
-			}
-		}
-		return GoogleBaseMap.ROADMAP.getId();			
-	}
+    private List<Indicator> queryIndicators(MapReportElement element) {
 
-	private Set<Country> queryCountries(List<Indicator> indicators) {
-		Set<Country> country = Sets.newHashSet();
-		for(Indicator indicator : indicators) {
-			country.add(indicator.getActivity().getDatabase().getCountry());
-		}
-		return country;
-	}
+        // Get relevant indicators for the map markers
+        Set<Integer> indicatorIds = new HashSet<Integer>();
+        for (MapLayer maplayer : element.getLayers()) {
+            indicatorIds.addAll(maplayer.getIndicatorIds());
+        }
 
-	private BaseMap getBaseMap(String baseMapId) {
-		BaseMapResult maps = dispatcher.execute(new GetBaseMaps());
-		for(TileBaseMap map : maps.getBaseMaps()) {
-			if(map.getId().equals(baseMapId)) {
-				return map;
-			}
-		}
-		logger.log(Level.SEVERE, "Could not find base map id=" +  baseMapId);
-		
-    	return TileBaseMap.createNullMap(baseMapId);
-	}
+        List<Indicator> indicators = Lists.newArrayList();
+        for (Integer indicatorId : indicatorIds) {
+            indicators.add(indicatorDAO.findById(indicatorId));
+        }
+        return indicators;
+    }
+
+    private Set<IndicatorDTO> toDTOs(List<Indicator> indicators) {
+        Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();
+        for (Indicator indicator : indicators) {
+            IndicatorDTO indicatorDTO = new IndicatorDTO();
+            indicatorDTO.setId(indicator.getId());
+            indicatorDTO.setName(indicator.getName());
+
+            indicatorDTOs.add(indicatorDTO);
+        }
+        return indicatorDTOs;
+    }
+
+    private BaseMap findBaseMap(MapReportElement element,
+        List<Indicator> indicators) {
+        BaseMap baseMap = null;
+        String baseMapId = element.getBaseMapId();
+        if (element.getBaseMapId() == null
+            || element.getBaseMapId().equals(MapReportElement.AUTO_BASEMAP)) {
+            baseMapId = defaultBaseMap(indicators);
+        }
+        if (PredefinedBaseMaps.isPredefinedMap(baseMapId)) {
+            baseMap = PredefinedBaseMaps.forId(baseMapId);
+        } else {
+            baseMap = getBaseMap(baseMapId);
+        }
+        return baseMap;
+    }
+
+    private String defaultBaseMap(List<Indicator> indicators) {
+        Set<Country> countries = queryCountries(indicators);
+        if (countries.size() == 1) {
+            Country country = countries.iterator().next();
+            if ("CD".equals(country.getCodeISO())) {
+                return "admin";
+            }
+        }
+        return GoogleBaseMap.ROADMAP.getId();
+    }
+
+    private Set<Country> queryCountries(List<Indicator> indicators) {
+        Set<Country> country = Sets.newHashSet();
+        for (Indicator indicator : indicators) {
+            country.add(indicator.getActivity().getDatabase().getCountry());
+        }
+        return country;
+    }
+
+    private BaseMap getBaseMap(String baseMapId) {
+        BaseMapResult maps = dispatcher.execute(new GetBaseMaps());
+        for (TileBaseMap map : maps.getBaseMaps()) {
+            if (map.getId().equals(baseMapId)) {
+                return map;
+            }
+        }
+        LOGGER.log(Level.SEVERE, "Could not find base map id=" + baseMapId);
+
+        return TileBaseMap.createNullMap(baseMapId);
+    }
 }

@@ -28,17 +28,18 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface IndicatorLinkResources extends ClientBundle {
 
-	static IndicatorLinkResources INSTANCE = GWT.create(IndicatorLinkResources.class);
-	
-	@Source("IndicatorLink.css")
-	Style style();
-	
-	interface Style extends CssResource {
-		
-		String highlight();
+    static IndicatorLinkResources INSTANCE = GWT
+        .create(IndicatorLinkResources.class);
 
-		String linkToggle();
-		
-	}
-	
+    @Source("IndicatorLink.css")
+    Style style();
+
+    interface Style extends CssResource {
+
+        String highlight();
+
+        String linkToggle();
+
+    }
+
 }

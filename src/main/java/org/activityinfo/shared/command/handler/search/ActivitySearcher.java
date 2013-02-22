@@ -36,32 +36,32 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ActivitySearcher implements Searcher {
 
+    @Override
+    public void search(List<String> searchTerms, SqlTransaction tx,
+        final AsyncCallback<List<Integer>> callback) {
+        SqlQuery.select("ActivityId")
+            .from("activity")
+            .whereLikes("Name")
+            .likeMany(searchTerms)
+            .or()
+            .whereLikes("Category")
+            .likeMany(searchTerms)
 
-	@Override
-	public void search(List<String> searchTerms, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
-		SqlQuery.select("ActivityId")
-				.from("activity")
-				.whereLikes("Name")
-				.likeMany(searchTerms)
-				.or()
-				.whereLikes("Category")
-				.likeMany(searchTerms)
-				
-				.execute(tx, new SqlResultCallback() {
-					
-					@Override
-					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-						final List<Integer> activityIds = new ArrayList<Integer>();
-						for (SqlResultSetRow result : results.getRows()) {
-							activityIds.add(result.getInt("ActivityId"));
-						}
-						callback.onSuccess(activityIds);
-					}
-				});
-	}
+            .execute(tx, new SqlResultCallback() {
 
-	@Override
-	public DimensionType getDimensionType() {
-		return DimensionType.Activity;
-	}
+                @Override
+                public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                    final List<Integer> activityIds = new ArrayList<Integer>();
+                    for (SqlResultSetRow result : results.getRows()) {
+                        activityIds.add(result.getInt("ActivityId"));
+                    }
+                    callback.onSuccess(activityIds);
+                }
+            });
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.Activity;
+    }
 }

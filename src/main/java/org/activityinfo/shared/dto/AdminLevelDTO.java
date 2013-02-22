@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -26,22 +24,25 @@ package org.activityinfo.shared.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-
 /**
- * One-to-one DTO for the {@link org.activityinfo.server.database.hibernate.entity.AdminLevel} domain object.
- *
+ * One-to-one DTO for the
+ * {@link org.activityinfo.server.database.hibernate.entity.AdminLevel} domain
+ * object.
+ * 
  * @author Alex Bertram
  */
 public final class AdminLevelDTO extends BaseModelData implements DTO {
-	public static final String PROPERTY_PREFIX = "E";
+    public static final String PROPERTY_PREFIX = "E";
 
-	public AdminLevelDTO(){
-	}
+    public AdminLevelDTO() {
+    }
 
     /**
-     *
-     * @param id  this AdminLevel's id
-     * @param name this AdminLevel's name
+     * 
+     * @param id
+     *            this AdminLevel's id
+     * @param name
+     *            this AdminLevel's name
      */
     public AdminLevelDTO(int id, String name) {
         super();
@@ -55,7 +56,7 @@ public final class AdminLevelDTO extends BaseModelData implements DTO {
         setParentLevelId(parentId);
         setName(name);
     }
-    
+
     public AdminLevelDTO(int id, AdminLevelDTO parent, String name) {
         super();
         setId(id);
@@ -67,99 +68,103 @@ public final class AdminLevelDTO extends BaseModelData implements DTO {
      * Sets the id of this AdminLevel
      */
     public void setId(int id) {
-		 set("id", id);
-	}
+        set("id", id);
+    }
 
     /**
      * @return the id of this AdminLevel
      */
-	public int getId() {
-		return (Integer)get("id");
-	}
+    public int getId() {
+        return (Integer) get("id");
+    }
 
     /**
      * Sets the name of this AdminLevel
      */
-	public void setName(String name) {
-		set("name", name);
-	}
+    public void setName(String name) {
+        set("name", name);
+    }
 
     /**
      * @return the name of this AdminLevel
      */
-	public String getName() {
-		return get("name");		
-	}
+    public String getName() {
+        return get("name");
+    }
 
     /**
-     *
+     * 
      * @return the id of this AdminLevel's parent AdminLevel
      */
-	public Integer getParentLevelId() {
-		return get("parentLevelId");
-	}
+    public Integer getParentLevelId() {
+        return get("parentLevelId");
+    }
 
     /**
      * Sets the id of this AdminLevel's parent AdminLevel
      */
-	public void setParentLevelId(Integer value) {
-		set("parentLevelId", value);
-	}
+    public void setParentLevelId(Integer value) {
+        set("parentLevelId", value);
+    }
 
     /**
-     *
+     * 
      * @return true if this AdminLevel is s root AdminLevel within it's Country
      */
-	public boolean isRoot() {
-		return get("parentLevelId") == null;
-	}
+    public boolean isRoot() {
+        return get("parentLevelId") == null;
+    }
 
     /**
-	 * Gets the propertyName for the given AdminLevel when stored in pivoted form.
-     *
-	 * @param levelId
-	 * @return The name of the property for this AdminLevel when stored in pivoted form
-	 */
-	public static String getPropertyName(int levelId) { 
-		return PROPERTY_PREFIX + levelId;
-	}
-
-    /**
-     * @return the propertyName to be used for this AdminLevel when stored in pivoted form
+     * Gets the propertyName for the given AdminLevel when stored in pivoted
+     * form.
+     * 
+     * @param levelId
+     * @return The name of the property for this AdminLevel when stored in
+     *         pivoted form
      */
-	public String getPropertyName() {
-		return getPropertyName(this.getId());
-	}
+    public static String getPropertyName(int levelId) {
+        return PROPERTY_PREFIX + levelId;
+    }
+
+    /**
+     * @return the propertyName to be used for this AdminLevel when stored in
+     *         pivoted form
+     */
+    public String getPropertyName() {
+        return getPropertyName(this.getId());
+    }
 
     /**
      * Parses an admin propertyName for the referenced AdminLevel
-     *
+     * 
      * @param propertyName
      * @return
      */
-	public static int levelIdForPropertyName(String propertyName) {
-		return Integer.parseInt(propertyName.substring(AdminLevelDTO.PROPERTY_PREFIX.length()));
-	}
+    public static int levelIdForPropertyName(String propertyName) {
+        return Integer.parseInt(propertyName
+            .substring(AdminLevelDTO.PROPERTY_PREFIX.length()));
+    }
 
-	public void setCountryId(int countryId) {
-		set("countryId", countryId);
-	}
+    public void setCountryId(int countryId) {
+        set("countryId", countryId);
+    }
 
-	public int getCountryId() {
-		return (Integer)get("countryId");
-	}
-	
-	public boolean getPolygons() {
-		return (Boolean)get("polygons", false);
-	}
-	
-	public void setPolygons(boolean polygons) {
-		set("polygons", polygons);
-	}
-	
-	@Override
-	public String toString() {
-		return getName();
-	}
+    public int getCountryId() {
+        return (Integer) get("countryId");
+    }
+
+    public boolean getPolygons() {
+        return get("polygons", false);
+    }
+
+    public void setPolygons(boolean polygons) {
+        set("polygons", polygons);
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -35,58 +33,59 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.activityinfo.shared.report.content.PivotContent;
 
-public class PivotTableReportElement extends PivotReportElement<PivotContent> implements Serializable  {
+public class PivotTableReportElement extends PivotReportElement<PivotContent>
+    implements Serializable {
 
-	private List<Dimension> columnDimensions = new ArrayList<Dimension>();
+    private List<Dimension> columnDimensions = new ArrayList<Dimension>();
     private List<Dimension> rowDimensions = new ArrayList<Dimension>();
 
-	public PivotTableReportElement() {
-		
-	}
+    public PivotTableReportElement() {
 
-    @XmlElement(name="dimension")
-    @XmlElementWrapper(name="columns")
-	public List<Dimension> getColumnDimensions() {
-		return columnDimensions;
-	}
+    }
 
-	public void setColumnDimensions(List<Dimension> columnDimensions) {
-		this.columnDimensions = columnDimensions;
-	}
-	
-	public void addColDimension(Dimension dim) {
-		this.columnDimensions.add(dim);
-		
-	}
+    @XmlElement(name = "dimension")
+    @XmlElementWrapper(name = "columns")
+    public List<Dimension> getColumnDimensions() {
+        return columnDimensions;
+    }
 
-    @XmlElement(name="dimension")
-    @XmlElementWrapper(name="rows")
-	public List<Dimension> getRowDimensions() {
-		return rowDimensions;
-	}
+    public void setColumnDimensions(List<Dimension> columnDimensions) {
+        this.columnDimensions = columnDimensions;
+    }
 
-	public void setRowDimensions(List<Dimension> rowDimensions) {
-		this.rowDimensions = rowDimensions;
-	}
-	
-	public void addRowDimension(Dimension dim) {
-		this.rowDimensions.add(dim);
-	}
-	
-	@Override
-	public Set<Dimension> allDimensions() {
-		Set<Dimension> set = new HashSet<Dimension>();
-		set.addAll(columnDimensions);
-		set.addAll(rowDimensions);
-		
-		return set;
-	}
+    public void addColDimension(Dimension dim) {
+        this.columnDimensions.add(dim);
 
-	@Override
-	public String toString() {
-		return "PivotTableReportElement [columnDimensions=" + columnDimensions
-				+ ", rowDimensions=" + rowDimensions + ", getFilter()="
-				+ getFilter() + "]";
-	}
+    }
+
+    @XmlElement(name = "dimension")
+    @XmlElementWrapper(name = "rows")
+    public List<Dimension> getRowDimensions() {
+        return rowDimensions;
+    }
+
+    public void setRowDimensions(List<Dimension> rowDimensions) {
+        this.rowDimensions = rowDimensions;
+    }
+
+    public void addRowDimension(Dimension dim) {
+        this.rowDimensions.add(dim);
+    }
+
+    @Override
+    public Set<Dimension> allDimensions() {
+        Set<Dimension> set = new HashSet<Dimension>();
+        set.addAll(columnDimensions);
+        set.addAll(rowDimensions);
+
+        return set;
+    }
+
+    @Override
+    public String toString() {
+        return "PivotTableReportElement [columnDimensions=" + columnDimensions
+            + ", rowDimensions=" + rowDimensions + ", getFilter()="
+            + getFilter() + "]";
+    }
 
 }

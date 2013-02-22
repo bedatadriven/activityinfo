@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.map;
 
 /*
@@ -38,12 +36,13 @@ import com.google.gwt.maps.client.overlay.Icon;
 /**
  * Factory for GoogleMap Icons originating from the
  * {@link org.activityinfo.server.endpoint.gwtrpc.MapIconServlet}
- *
+ * 
  * @author Alex Bertram
  */
 public final class IconFactory {
 
-    private IconFactory() {}
+    private IconFactory() {
+    }
 
     public static Icon createIcon(MapMarker marker) {
         if (marker instanceof IconMapMarker) {
@@ -59,7 +58,7 @@ public final class IconFactory {
 
     /**
      * Creates a Google Maps icon based on an ActivityInfo MapIcon
-     *
+     * 
      * @author Alex Bertram
      */
     public static Icon createIconMapMarker(IconMapMarker marker) {
@@ -69,9 +68,11 @@ public final class IconFactory {
 
         Icon icon = Icon.newInstance(Icon.DEFAULT_ICON);
         icon.setImageURL(iconUrl);
-        icon.setIconSize(Size.newInstance(mapIcon.getWidth(), mapIcon.getHeight()));
+        icon.setIconSize(Size.newInstance(mapIcon.getWidth(),
+            mapIcon.getHeight()));
         icon.setShadowSize(Size.newInstance(0, 0));
-        Point anchor = Point.newInstance(mapIcon.getAnchorX(), mapIcon.getAnchorY());
+        Point anchor = Point.newInstance(mapIcon.getAnchorX(),
+            mapIcon.getAnchorY());
         icon.setIconAnchor(anchor);
         icon.setInfoWindowAnchor(anchor);
         icon.setPrintImageURL(iconUrl + "&chof=gif");
@@ -81,7 +82,8 @@ public final class IconFactory {
 
     public static Icon createBubbleMapMarker(BubbleMapMarker marker) {
         StringBuilder sb = new StringBuilder();
-        sb.append("icon?t=bubble&r=").append(marker.getRadius()).append("&c=").append(marker.getColor());
+        sb.append("icon?t=bubble&r=").append(marker.getRadius()).append("&c=")
+            .append(marker.getColor());
         String iconUrl = sb.toString();
         int size = marker.getRadius() * 2;
 
@@ -89,21 +91,23 @@ public final class IconFactory {
         icon.setImageURL(iconUrl);
         icon.setIconSize(Size.newInstance(size, size));
         icon.setShadowSize(Size.newInstance(0, 0));
-        Point anchor = Point.newInstance(marker.getRadius(), marker.getRadius());
+        Point anchor = Point
+            .newInstance(marker.getRadius(), marker.getRadius());
         icon.setIconAnchor(anchor);
         icon.setInfoWindowAnchor(anchor);
         icon.setPrintImageURL(iconUrl);
         icon.setMozPrintImageURL(iconUrl);
-        icon.setImageMap(GoogleChartsIconBuilder.createCircleImageMap(size, size, 10));
+        icon.setImageMap(GoogleChartsIconBuilder.createCircleImageMap(size,
+            size, 10));
         return icon;
     }
-    
+
     public static Icon createPieMapMarker(PieMapMarker marker) {
         StringBuilder sb = new StringBuilder();
         sb.append("icon?t=piechart&r=").append(marker.getRadius());
         for (SliceValue slice : marker.getSlices()) {
-        	sb.append("&value=").append(slice.getValue());
-        	sb.append("&color=").append(slice.getColor());
+            sb.append("&value=").append(slice.getValue());
+            sb.append("&color=").append(slice.getColor());
         }
         String iconUrl = sb.toString();
         int size = marker.getRadius() * 2;
@@ -112,13 +116,15 @@ public final class IconFactory {
         icon.setImageURL(iconUrl);
         icon.setIconSize(Size.newInstance(size, size));
         icon.setShadowSize(Size.newInstance(0, 0));
-        Point anchor = Point.newInstance(marker.getRadius(), marker.getRadius());
+        Point anchor = Point
+            .newInstance(marker.getRadius(), marker.getRadius());
         icon.setIconAnchor(anchor);
         icon.setInfoWindowAnchor(anchor);
         icon.setPrintImageURL(iconUrl);
         icon.setMozPrintImageURL(iconUrl);
-        icon.setImageMap(GoogleChartsIconBuilder.createCircleImageMap(size, size, 10));
-        
+        icon.setImageMap(GoogleChartsIconBuilder.createCircleImageMap(size,
+            size, 10));
+
         return icon;
     }
 }

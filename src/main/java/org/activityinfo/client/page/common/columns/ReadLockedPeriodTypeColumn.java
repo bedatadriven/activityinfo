@@ -41,32 +41,33 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
  */
 public class ReadLockedPeriodTypeColumn extends ColumnConfig {
 
-	public ReadLockedPeriodTypeColumn() {
-		super();
-		
-	    GridCellRenderer<LockedPeriodDTO> iconRenderer = new GridCellRenderer<LockedPeriodDTO>() {
-			@Override
-			public Object render(LockedPeriodDTO model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<LockedPeriodDTO> store, Grid<LockedPeriodDTO> grid) {
-				
-				if (model.getParent() instanceof ActivityDTO) {
-					return IconImageBundle.ICONS.activity().getHTML();
-				}
-				
-				if (model.getParent() instanceof UserDatabaseDTO) {
-					return IconImageBundle.ICONS.database().getHTML();
-				}
-				
-				if (model.getParent() instanceof ProjectDTO) {
-					return IconImageBundle.ICONS.project().getHTML();
-				}
-				
-				return null;
-			}
-		}; 
-		setHeader(I18N.CONSTANTS.type());  
-	    setWidth(48);
-	    setRowHeader(true);
-	    setRenderer(iconRenderer);	}
+    public ReadLockedPeriodTypeColumn() {
+        super();
+
+        GridCellRenderer<LockedPeriodDTO> iconRenderer = new GridCellRenderer<LockedPeriodDTO>() {
+            @Override
+            public Object render(LockedPeriodDTO model, String property,
+                ColumnData config, int rowIndex, int colIndex,
+                ListStore<LockedPeriodDTO> store, Grid<LockedPeriodDTO> grid) {
+
+                if (model.getParent() instanceof ActivityDTO) {
+                    return IconImageBundle.ICONS.activity().getHTML();
+                }
+
+                if (model.getParent() instanceof UserDatabaseDTO) {
+                    return IconImageBundle.ICONS.database().getHTML();
+                }
+
+                if (model.getParent() instanceof ProjectDTO) {
+                    return IconImageBundle.ICONS.project().getHTML();
+                }
+
+                return null;
+            }
+        };
+        setHeader(I18N.CONSTANTS.type());
+        setWidth(48);
+        setRowHeader(true);
+        setRenderer(iconRenderer);
+    }
 }

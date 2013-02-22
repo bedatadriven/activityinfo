@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.renderer.ppt;
 
 /*
@@ -45,29 +43,32 @@ public class PPTRenderer implements Renderer {
     private final PPTChartRenderer chartRenderer;
 
     @Inject
-    public PPTRenderer(PPTMapRenderer mapRenderer, PPTChartRenderer chartRenderer) {
+    public PPTRenderer(PPTMapRenderer mapRenderer,
+        PPTChartRenderer chartRenderer) {
         this.mapRenderer = mapRenderer;
         this.chartRenderer = chartRenderer;
     }
 
-    public void render(ReportElement element, OutputStream os) throws IOException {
+    @Override
+    public void render(ReportElement element, OutputStream os)
+        throws IOException {
 
-        if(element instanceof Report) {
+        if (element instanceof Report) {
             SlideShow ppt = new SlideShow();
             Report report = (Report) element;
-            for(ReportElement child : report.getElements()) {
-                if(child instanceof MapReportElement) {
+            for (ReportElement child : report.getElements()) {
+                if (child instanceof MapReportElement) {
                     mapRenderer.render((MapReportElement) child, ppt);
-                } else if(child instanceof PivotChartReportElement) {
+                } else if (child instanceof PivotChartReportElement) {
                     chartRenderer.render((PivotChartReportElement) child, ppt);
                 }
             }
             ppt.write(os);
 
-        } else if(element instanceof MapReportElement) {
+        } else if (element instanceof MapReportElement) {
             mapRenderer.render((MapReportElement) element, os);
-        } else if(element instanceof PivotChartReportElement) {
-        	chartRenderer.render((PivotChartReportElement)element, os);
+        } else if (element instanceof PivotChartReportElement) {
+            chartRenderer.render((PivotChartReportElement) element, os);
         }
     }
 

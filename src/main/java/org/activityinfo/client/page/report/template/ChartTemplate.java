@@ -33,21 +33,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ChartTemplate extends ReportElementTemplate {
 
-	
-	public ChartTemplate(Dispatcher dispatcher) {
-		super(dispatcher);
-		
-		setName(I18N.CONSTANTS.charts());
-		setDescription(I18N.CONSTANTS.chartsDescription());
-		setImagePath("time.png");
-	}
-	
-	@Override
-	public void createElement(final AsyncCallback<ReportElement> callback) {
+    public ChartTemplate(Dispatcher dispatcher) {
+        super(dispatcher);
 
-		PivotChartReportElement chart = new PivotChartReportElement();
-		chart.setCategoryDimension(new DateDimension(DateUnit.YEAR));
-		
-		callback.onSuccess(chart);
-	}
+        setName(I18N.CONSTANTS.charts());
+        setDescription(I18N.CONSTANTS.chartsDescription());
+        setImagePath("time.png");
+    }
+
+    @Override
+    public void createElement(final AsyncCallback<ReportElement> callback) {
+
+        PivotChartReportElement chart = new PivotChartReportElement();
+        chart.setCategoryDimension(new DateDimension(DateUnit.YEAR));
+
+        callback.onSuccess(chart);
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -29,8 +27,10 @@ import java.util.List;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 
 /**
- * Data Access Object for {@link UserDatabase} domain classes. Implemented automatically
- * by {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler proxy}.
+ * Data Access Object for {@link UserDatabase} domain classes. Implemented
+ * automatically by
+ * {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler
+ * proxy}.
  */
 public interface UserDatabaseDAO extends DAO<UserDatabase, Integer> {
 

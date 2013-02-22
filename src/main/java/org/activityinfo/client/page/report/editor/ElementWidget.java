@@ -59,197 +59,208 @@ import com.google.inject.Provider;
 
 public class ElementWidget extends Composite {
 
-	private static ElementWidgetUiBinder uiBinder = GWT
-			.create(ElementWidgetUiBinder.class);
-		
-	interface ElementWidgetUiBinder extends UiBinder<Widget, ElementWidget> {
-	}
+    private static ElementWidgetUiBinder uiBinder = GWT
+        .create(ElementWidgetUiBinder.class);
 
-	
-	interface EventHandler {
-		void onElementRemoveClicked(ElementWidget widget);
-		void onElementChanged(ElementWidget widget);
-	}
-	
-	interface MyStyle extends CssResource {
-		String title();
-		String container();
-		String editButton();
-		String removeButton();
-		String blockHover();
-	}
-	@UiField
-	HTMLPanel htmlPanel;
-	
-	@UiField
-	MyStyle style;
+    interface ElementWidgetUiBinder extends UiBinder<Widget, ElementWidget> {
+    }
 
-	@UiField SpanElement titleElement;
-	@UiField SpanElement titleChangeElement;
-	@UiField DivElement buttonElement;
-	@UiField DivElement contentElement;
-	@UiField DivElement contentContainerElement;
-	@UiField DivElement loadingElement;
-	
-	private ReportElement model;
+    interface EventHandler {
+        void onElementRemoveClicked(ElementWidget widget);
 
-	private Dispatcher dispatcher;
-	private Provider<ElementDialog> dialogProvider;
+        void onElementChanged(ElementWidget widget);
+    }
 
-	private EventHandler parent;
-	
-	@Inject
-	public ElementWidget(Dispatcher dispatcher, Provider<ElementDialog> dialogProvider) {
-		this.dispatcher = dispatcher;
-		this.dialogProvider = dialogProvider;
-		
-		initWidget(uiBinder.createAndBindUi(this));
-						
-		sinkEvents(Event.MOUSEEVENTS |  Event.ONCLICK);		
-	}
-	
-	public void bindHandler(EventHandler handler) {
-		this.parent = handler;
-	}
+    interface MyStyle extends CssResource {
+        String title();
 
-	public void bind(ReportElement model) {
-		this.model = model;
-		titleElement.setInnerText(ElementTitles.format(model));
-		// for now, preview html is rendered server side, 
-		// except for charts which we can't due to appthengine
-		// limitations with text rendering. Thats' fine because we
-		// want to do everything client side eventually anyway
-		if(model instanceof PivotChartReportElement) {
-			loadView();
-		} else {
-			loadHtml();
-		}
-	}
-	
-	private void loadView() {
-		dispatcher.execute(new GenerateElement<Content>(model), new AsyncCallback<Content>() {
+        String container();
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO
-			}
+        String editButton();
 
-			@Override
-			public void onSuccess(Content result) {
-				model.setContent(result);
-				ChartOFCView view = new ChartOFCView();
-				view.setHeight(256);
-				view.setBorders(false);
-				view.show((PivotChartReportElement) model);
-				loadingElement.getStyle().setDisplay(Display.NONE);
-				htmlPanel.add(view, contentElement);
-			}
-		});
-	}
+        String removeButton();
 
-	public ReportElement getModel() {
-		return model;
-	}
-	
-	private void loadHtml() {
-		
-		contentElement.setInnerHTML("");
-		loadingElement.getStyle().setDisplay(Display.BLOCK);
-		if(model instanceof TextReportElement) {
-			renderStaticHtml();
-		} else {
-			dispatcher.execute(new RenderReportHtml(model), new AsyncCallback<HtmlResult>() {
-	
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					
-				}
-	
-				@Override
-				public void onSuccess(HtmlResult result) {
-					updateHtml(result.getHtml());
-				}
-			});
-		}
-	}
+        String blockHover();
+    }
 
-	private void renderStaticHtml() {
-		String text = ((TextReportElement) model).getText();
-		updateHtml(SafeHtmlUtils.htmlEscape(text));
-	}
-	
+    @UiField
+    HTMLPanel htmlPanel;
 
-	private void updateHtml(String html) {
-		loadingElement.getStyle().setDisplay(Display.NONE);
-		contentElement.setInnerHTML(html);
-	}
+    @UiField
+    MyStyle style;
 
-	@Override
-	public void onBrowserEvent(Event event) {
-		Element clicked = event.getEventTarget().cast();
-		if(event.getTypeInt() == Event.ONCLICK) {
-			if(titleChangeElement.isOrHasChild(clicked)) {
-				editTitle();
-			} else if(clicked.getClassName().contains(style.editButton())) {
-				edit();
-			} else if(clicked.getClassName().contains(style.removeButton())) {
-				parent.onElementRemoveClicked(this);
-			} else if(contentElement.isOrHasChild(clicked)) {
-				edit();
-			}
-			
-		} else if(event.getTypeInt() == Event.ONMOUSEOVER) {
-			buttonElement.getStyle().setVisibility(Visibility.VISIBLE);
-			titleChangeElement.getStyle().setVisibility(Visibility.VISIBLE);
-			contentContainerElement.addClassName(style.blockHover());
-		} else if(event.getTypeInt() == Event.ONMOUSEOUT) {
-			buttonElement.getStyle().setVisibility(Visibility.HIDDEN);
-			titleChangeElement.getStyle().setVisibility(Visibility.HIDDEN);
-			contentContainerElement.removeClassName(style.blockHover());
-		}	
-	}
+    @UiField
+    SpanElement titleElement;
+    @UiField
+    SpanElement titleChangeElement;
+    @UiField
+    DivElement buttonElement;
+    @UiField
+    DivElement contentElement;
+    @UiField
+    DivElement contentContainerElement;
+    @UiField
+    DivElement loadingElement;
 
-	private void editTitle() {
-		final MessageBox box = new MessageBox();
-	    box.setTitle(I18N.CONSTANTS.changeTitleDialogTitle());
-	    box.setType(MessageBoxType.PROMPT);
-	    box.setButtons(Dialog.OKCANCEL);
-	    box.show();
-	    box.getTextBox().setValue(model.getTitle());
-	    box.addCallback(new Listener<MessageBoxEvent>() {
+    private ReportElement model;
 
-			@Override
-			public void handleEvent(MessageBoxEvent be) {
-				if(be.getButtonClicked().getItemId().equals(Dialog.OK)) {
-					model.setTitle(box.getTextBox().getValue());
-					titleElement.setInnerText(ElementTitles.format(model));
-				}
-			}
-	    });
-	}
+    private Dispatcher dispatcher;
+    private Provider<ElementDialog> dialogProvider;
 
+    private EventHandler parent;
 
-	private void edit() {
-		ElementDialog dialog = dialogProvider.get();
-		dialog.hideCancel();
-		dialog.show(model, new Callback() {
-			
-			@Override
-			public void onOK(boolean dirty) {
-				onElementUpdated();
-			}
+    @Inject
+    public ElementWidget(Dispatcher dispatcher,
+        Provider<ElementDialog> dialogProvider) {
+        this.dispatcher = dispatcher;
+        this.dialogProvider = dialogProvider;
 
-			@Override
-			public void onClose(boolean dirty) {
-				onElementUpdated();
-			}
-		});
-	}
+        initWidget(uiBinder.createAndBindUi(this));
 
+        sinkEvents(Event.MOUSEEVENTS | Event.ONCLICK);
+    }
 
-	private void onElementUpdated() {
-		loadHtml();
-		parent.onElementChanged(ElementWidget.this);
-	}
+    public void bindHandler(EventHandler handler) {
+        this.parent = handler;
+    }
+
+    public void bind(ReportElement model) {
+        this.model = model;
+        titleElement.setInnerText(ElementTitles.format(model));
+        // for now, preview html is rendered server side,
+        // except for charts which we can't due to appthengine
+        // limitations with text rendering. Thats' fine because we
+        // want to do everything client side eventually anyway
+        if (model instanceof PivotChartReportElement) {
+            loadView();
+        } else {
+            loadHtml();
+        }
+    }
+
+    private void loadView() {
+        dispatcher.execute(new GenerateElement<Content>(model),
+            new AsyncCallback<Content>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO
+                }
+
+                @Override
+                public void onSuccess(Content result) {
+                    model.setContent(result);
+                    ChartOFCView view = new ChartOFCView();
+                    view.setHeight(256);
+                    view.setBorders(false);
+                    view.show((PivotChartReportElement) model);
+                    loadingElement.getStyle().setDisplay(Display.NONE);
+                    htmlPanel.add(view, contentElement);
+                }
+            });
+    }
+
+    public ReportElement getModel() {
+        return model;
+    }
+
+    private void loadHtml() {
+
+        contentElement.setInnerHTML("");
+        loadingElement.getStyle().setDisplay(Display.BLOCK);
+        if (model instanceof TextReportElement) {
+            renderStaticHtml();
+        } else {
+            dispatcher.execute(new RenderReportHtml(model),
+                new AsyncCallback<HtmlResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void onSuccess(HtmlResult result) {
+                        updateHtml(result.getHtml());
+                    }
+                });
+        }
+    }
+
+    private void renderStaticHtml() {
+        String text = ((TextReportElement) model).getText();
+        updateHtml(SafeHtmlUtils.htmlEscape(text));
+    }
+
+    private void updateHtml(String html) {
+        loadingElement.getStyle().setDisplay(Display.NONE);
+        contentElement.setInnerHTML(html);
+    }
+
+    @Override
+    public void onBrowserEvent(Event event) {
+        Element clicked = event.getEventTarget().cast();
+        if (event.getTypeInt() == Event.ONCLICK) {
+            if (titleChangeElement.isOrHasChild(clicked)) {
+                editTitle();
+            } else if (clicked.getClassName().contains(style.editButton())) {
+                edit();
+            } else if (clicked.getClassName().contains(style.removeButton())) {
+                parent.onElementRemoveClicked(this);
+            } else if (contentElement.isOrHasChild(clicked)) {
+                edit();
+            }
+
+        } else if (event.getTypeInt() == Event.ONMOUSEOVER) {
+            buttonElement.getStyle().setVisibility(Visibility.VISIBLE);
+            titleChangeElement.getStyle().setVisibility(Visibility.VISIBLE);
+            contentContainerElement.addClassName(style.blockHover());
+        } else if (event.getTypeInt() == Event.ONMOUSEOUT) {
+            buttonElement.getStyle().setVisibility(Visibility.HIDDEN);
+            titleChangeElement.getStyle().setVisibility(Visibility.HIDDEN);
+            contentContainerElement.removeClassName(style.blockHover());
+        }
+    }
+
+    private void editTitle() {
+        final MessageBox box = new MessageBox();
+        box.setTitle(I18N.CONSTANTS.changeTitleDialogTitle());
+        box.setType(MessageBoxType.PROMPT);
+        box.setButtons(Dialog.OKCANCEL);
+        box.show();
+        box.getTextBox().setValue(model.getTitle());
+        box.addCallback(new Listener<MessageBoxEvent>() {
+
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                if (be.getButtonClicked().getItemId().equals(Dialog.OK)) {
+                    model.setTitle(box.getTextBox().getValue());
+                    titleElement.setInnerText(ElementTitles.format(model));
+                }
+            }
+        });
+    }
+
+    private void edit() {
+        ElementDialog dialog = dialogProvider.get();
+        dialog.hideCancel();
+        dialog.show(model, new Callback() {
+
+            @Override
+            public void onOK(boolean dirty) {
+                onElementUpdated();
+            }
+
+            @Override
+            public void onClose(boolean dirty) {
+                onElementUpdated();
+            }
+        });
+    }
+
+    private void onElementUpdated() {
+        loadHtml();
+        parent.onElementChanged(ElementWidget.this);
+    }
 }

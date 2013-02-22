@@ -37,7 +37,8 @@ public class RestMockUtils {
     static UriInfo mockUriInfo(String uri) throws URISyntaxException {
         UriInfo uriInfo = createMock(UriInfo.class);
         expect(uriInfo.getRequestUri()).andReturn(new URI(uri)).anyTimes();
-        expect(uriInfo.getAbsolutePathBuilder()).andReturn(UriBuilder.fromUri(uri));
+        expect(uriInfo.getAbsolutePathBuilder()).andReturn(
+            UriBuilder.fromUri(uri));
         replay(uriInfo);
         return uriInfo;
     }

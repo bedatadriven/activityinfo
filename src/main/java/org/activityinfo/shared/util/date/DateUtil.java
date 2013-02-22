@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.util.date;
 
 /*
@@ -34,16 +32,16 @@ import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.DateUnit;
 
 /**
- * Abstract class providing functions for manipulating dates. There are concrete implementations
- * based on the <code>Calendar</code> class, and another for client-side usage.
- *
+ * Abstract class providing functions for manipulating dates. There are concrete
+ * implementations based on the <code>Calendar</code> class, and another for
+ * client-side usage.
+ * 
  * @see org.activityinfo.client.util.date.DateUtilGWTImpl
  * @see org.activityinfo.server.util.date.DateUtilCalendarImpl
- *
+ * 
  * @author Alex Bertram
  */
 public abstract class DateUtil {
-
 
     public abstract Month getCurrentMonth();
 
@@ -57,16 +55,15 @@ public abstract class DateUtil {
 
     public DateRange rangeFromCategory(DimensionCategory category) {
 
-        if(category instanceof YearCategory) {
-            return yearRange(((YearCategory)category).getYear());
-        } else if(category instanceof MonthCategory) {
-            MonthCategory monthCategory = (MonthCategory)category;
+        if (category instanceof YearCategory) {
+            return yearRange(((YearCategory) category).getYear());
+        } else if (category instanceof MonthCategory) {
+            MonthCategory monthCategory = (MonthCategory) category;
             return monthRange(monthCategory.getYear(), monthCategory.getMonth());
         } else {
             return new DateRange();
         }
     }
-
 
     public abstract int getYear(Date date);
 
@@ -82,13 +79,12 @@ public abstract class DateUtil {
 
     public abstract boolean isLastDayOfMonth(Date date);
 
-
     public Date startDateOfLastCompleteMonth(Date today) {
         // set this to the beginning of the last complete month
         Date start = floor(today, DateUnit.MONTH);
-        if(!isLastDayOfMonth(today)) {
+        if (!isLastDayOfMonth(today)) {
             start = add(start, DateUnit.MONTH, -1);
-            
+
         }
         return start;
     }
@@ -96,14 +92,14 @@ public abstract class DateUtil {
     public Date endDateOfLastCompleteMonth(Date today) {
         // set this to the beginning of the last complete month
         Date end = ceil(today, DateUnit.MONTH);
-        if(! isLastDayOfMonth(today)) {
+        if (!isLastDayOfMonth(today)) {
             end = add(end, DateUnit.MONTH, -1);
         }
         return end;
     }
 
     public DateRange lastCompleteMonthRange(Date today) {
-       return new DateRange(startDateOfLastCompleteMonth(today),
-                            endDateOfLastCompleteMonth(today));
+        return new DateRange(startDateOfLastCompleteMonth(today),
+            endDateOfLastCompleteMonth(today));
     }
 }

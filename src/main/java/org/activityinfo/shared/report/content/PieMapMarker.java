@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -69,13 +67,13 @@ public class PieMapMarker extends BubbleMapMarker {
             this.color = color;
         }
 
-		public int getIndicatorId() {
-			return indicatorId;
-		}
+        public int getIndicatorId() {
+            return indicatorId;
+        }
 
-		public void setIndicatorId(int indicatorId) {
-			this.indicatorId = indicatorId;
-		}
+        public void setIndicatorId(int indicatorId) {
+            this.indicatorId = indicatorId;
+        }
     }
 
     public PieMapMarker() {

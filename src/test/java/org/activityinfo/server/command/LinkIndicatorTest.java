@@ -34,27 +34,27 @@ import org.junit.runner.RunWith;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")
-public class LinkIndicatorTest  extends CommandTestCase {
+public class LinkIndicatorTest extends CommandTestCase {
 
-	private static final int DATABASE_OWNER = 1;
-	private static UserDatabaseDTO db;
-	
-	@Before
-	public void setUser() {
-		 setUser(DATABASE_OWNER);
-		 	/*
-			 * Initial data load
-			 */
+    private static final int DATABASE_OWNER = 1;
+    private static UserDatabaseDTO db;
 
-			SchemaDTO schema = execute(new GetSchema());
-			db = schema.getDatabaseById(1);
-	}
+    @Before
+    public void setUser() {
+        setUser(DATABASE_OWNER);
+        /*
+         * Initial data load
+         */
 
-	@Test
-	public void testLinkIndicators() throws CommandException {
-		
-//		TODO test this action
-//		UpdateIndicatorLink
-	}
+        SchemaDTO schema = execute(new GetSchema());
+        db = schema.getDatabaseById(1);
+    }
+
+    @Test
+    public void testLinkIndicators() throws CommandException {
+
+        // TODO test this action
+        // UpdateIndicatorLink
+    }
 
 }

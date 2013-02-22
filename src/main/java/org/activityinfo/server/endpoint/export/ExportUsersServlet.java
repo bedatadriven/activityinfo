@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.endpoint.export;
 
 /*
@@ -47,41 +46,44 @@ import com.google.inject.Singleton;
 @Singleton
 public class ExportUsersServlet extends HttpServlet {
 
-	   private DispatcherSync dispatcher;
-	    
-	    @Inject
-	    public ExportUsersServlet(DispatcherSync dispatcher) {
-	        this.dispatcher = dispatcher;
-	    }
+    private DispatcherSync dispatcher;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @Inject
+    public ExportUsersServlet(DispatcherSync dispatcher) {
+        this.dispatcher = dispatcher;
+    }
 
-		int dbId = Integer.valueOf(req.getParameter("dbUsers"));
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
-		try {
+        int dbId = Integer.valueOf(req.getParameter("dbUsers"));
 
-			UserResult userResult  = dispatcher.execute(new GetUsers(dbId));
-		
-			DbUserExport export = new DbUserExport(userResult.getData());
-			export.createSheet();
-			
-			resp.setContentType("application/vnd.ms-excel");
-			if (req.getHeader("User-Agent").indexOf("MSIE") != -1) {
-				resp.addHeader("Content-Disposition", "attachment; filename=ActivityInfo.xls");
-			} else {
-				resp.addHeader(
-						"Content-Disposition",
-						"attachment; filename="
-								+ ("ActivityInfo Export " + new Date().toString() + ".xls").replace(" ", "_"));
-			}
+        try {
 
-			OutputStream os = resp.getOutputStream();
-			export.getBook().write(os);
+            UserResult userResult = dispatcher.execute(new GetUsers(dbId));
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			resp.setStatus(500);
-		}
-	}
+            DbUserExport export = new DbUserExport(userResult.getData());
+            export.createSheet();
+
+            resp.setContentType("application/vnd.ms-excel");
+            if (req.getHeader("User-Agent").indexOf("MSIE") != -1) {
+                resp.addHeader("Content-Disposition",
+                    "attachment; filename=ActivityInfo.xls");
+            } else {
+                resp.addHeader(
+                    "Content-Disposition",
+                    "attachment; filename="
+                        + ("ActivityInfo Export " + new Date().toString() + ".xls")
+                            .replace(" ", "_"));
+            }
+
+            OutputStream os = resp.getOutputStream();
+            export.getBook().write(os);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(500);
+        }
+    }
 }

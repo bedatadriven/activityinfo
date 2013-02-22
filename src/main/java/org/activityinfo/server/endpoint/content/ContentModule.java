@@ -29,8 +29,8 @@ import com.google.inject.servlet.ServletModule;
  */
 public class ContentModule extends ServletModule {
 
-	@Override
-	protected void configureServlets() {
-		serve("/content*").with(ContentServlet.class);
-	}
+    @Override
+    protected void configureServlets() {
+        serve("/content*").with(ContentServlet.class);
+    }
 }

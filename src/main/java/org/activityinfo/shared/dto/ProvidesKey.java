@@ -32,5 +32,5 @@ package org.activityinfo.shared.dto;
  *  this interface depreciated. 
  */
 public interface ProvidesKey {
-	public String getKey();
+    public String getKey();
 }

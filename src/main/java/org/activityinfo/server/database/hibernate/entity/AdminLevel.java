@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,91 +36,90 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-
 @Entity
 public class AdminLevel implements java.io.Serializable {
 
-	private int id;
-	private Country country;
-	private AdminLevel parent;
-	private String name;
-	private boolean polygons;
-	private Set<AdminEntity> entities = new HashSet<AdminEntity>(0);
-	private Set<AdminLevel> childLevels = new HashSet<AdminLevel>(0);
+    private int id;
+    private Country country;
+    private AdminLevel parent;
+    private String name;
+    private boolean polygons;
+    private Set<AdminEntity> entities = new HashSet<AdminEntity>(0);
+    private Set<AdminLevel> childLevels = new HashSet<AdminLevel>(0);
 
-	public AdminLevel() {
-	}
+    public AdminLevel() {
+    }
 
-	public AdminLevel(int adminLevelId, Country country, String name) {
-		this.id = adminLevelId;
-		this.country = country;
-		this.name = name;
-	}
+    public AdminLevel(int adminLevelId, Country country, String name) {
+        this.id = adminLevelId;
+        this.country = country;
+        this.name = name;
+    }
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name = "AdminLevelId", unique = true, nullable = false)
-	public int getId() {
-		return this.id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "AdminLevelId", unique = true, nullable = false)
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int ID) {
-		this.id = ID;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CountryId", nullable = false)
-	public Country getCountry() {
-		return this.country;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CountryId", nullable = false)
+    public Country getCountry() {
+        return this.country;
+    }
 
-	public void setCountry(Country country) {
-		this.country = country;
-	}
+    public void setCountry(Country country) {
+        this.country = country;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ParentId")
-	public AdminLevel getParent() {
-		return this.parent;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ParentId")
+    public AdminLevel getParent() {
+        return this.parent;
+    }
 
-	public void setParent(AdminLevel adminLevel) {
-		this.parent = adminLevel;
-	}
+    public void setParent(AdminLevel adminLevel) {
+        this.parent = adminLevel;
+    }
 
-	@Column(name = "Name", nullable = false, length = 30)
-	public String getName() {
-		return this.name;
-	}
+    @Column(name = "Name", nullable = false, length = 30)
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	@Column(nullable = false)
-	public boolean isPolygons() {
-		return polygons;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPolygons(boolean polygons) {
-		this.polygons = polygons;
-	}
+    @Column(nullable = false)
+    public boolean isPolygons() {
+        return polygons;
+    }
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "level")
-	public Set<AdminEntity> getEntities() {
-		return this.entities;
-	}
+    public void setPolygons(boolean polygons) {
+        this.polygons = polygons;
+    }
 
-	public void setEntities(Set<AdminEntity> entities) {
-		this.entities = entities;
-	}
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "level")
+    public Set<AdminEntity> getEntities() {
+        return this.entities;
+    }
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
-	public Set<AdminLevel> getChildLevels() {
-		return this.childLevels;
-	}
+    public void setEntities(Set<AdminEntity> entities) {
+        this.entities = entities;
+    }
 
-	public void setChildLevels(Set<AdminLevel> childLevels) {
-		this.childLevels = childLevels;
-	}
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
+    public Set<AdminLevel> getChildLevels() {
+        return this.childLevels;
+    }
+
+    public void setChildLevels(Set<AdminLevel> childLevels) {
+        this.childLevels = childLevels;
+    }
 }

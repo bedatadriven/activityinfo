@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.test;
 
 /*
@@ -38,7 +36,6 @@ public class TestScopeTest {
 
     @Inject
     private EntityManager em1;
-
 
     @Inject
     private EntityManager em2;

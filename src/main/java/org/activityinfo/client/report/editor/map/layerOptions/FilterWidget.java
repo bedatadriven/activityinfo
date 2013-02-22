@@ -38,78 +38,81 @@ import com.google.gwt.user.client.ui.Widget;
 
 public abstract class FilterWidget extends Widget implements FilterPanel {
 
-	private static FilterWidgetUiBinder uiBinder = GWT
-			.create(FilterWidgetUiBinder.class);
+    private static FilterWidgetUiBinder uiBinder = GWT
+        .create(FilterWidgetUiBinder.class);
 
-	interface FilterWidgetUiBinder extends UiBinder<Element, FilterWidget> {
-	}
+    interface FilterWidgetUiBinder extends UiBinder<Element, FilterWidget> {
+    }
 
-	@UiField SpanElement dimensionSpan;
-	@UiField SpanElement stateSpan;
-//	@UiField Element removeIcon;
-	
-	private Filter value = new Filter();
-	private Filter baseFilter = new Filter();
+    @UiField
+    SpanElement dimensionSpan;
+    @UiField
+    SpanElement stateSpan;
+    // @UiField Element removeIcon;
 
-	public FilterWidget() {
-		setElement(uiBinder.createAndBindUi(this));
-		sinkEvents(Event.ONCLICK);
-	}
+    private Filter value = new Filter();
+    private Filter baseFilter = new Filter();
 
-	@Override
-	public final void onBrowserEvent(Event event) {
-		if(event.getTypeInt() == Event.ONCLICK) {
-			choose(event);
-		}
-	}
-	
-	protected final void setState(String html) {
-		stateSpan.setInnerHTML(html);
-	}
-	
-	protected abstract void choose(Event event);
+    public FilterWidget() {
+        setElement(uiBinder.createAndBindUi(this));
+        sinkEvents(Event.ONCLICK);
+    }
 
-	@Override
-	public final Filter getValue() {
-		return value;
-	}
+    @Override
+    public final void onBrowserEvent(Event event) {
+        if (event.getTypeInt() == Event.ONCLICK) {
+            choose(event);
+        }
+    }
 
-	@Override
-	public final void setValue(Filter value) {
-		setValue(value, true);
-	}
+    protected final void setState(String html) {
+        stateSpan.setInnerHTML(html);
+    }
 
-	@Override
-	public final void setValue(Filter value, boolean fireEvents) {
-		if(value == null) {
-			value = new Filter();
-		}
-		this.value = value;
-		if(fireEvents) {
-			ValueChangeEvent.fire(this, this.value);
-		}
-		updateView();
-	}
+    protected abstract void choose(Event event);
 
-	protected void updateView() {
-	
-	}
-	
-	@Override
-	public final HandlerRegistration addValueChangeHandler(ValueChangeHandler<Filter> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
+    @Override
+    public final Filter getValue() {
+        return value;
+    }
 
-	@Override
-	public void applyBaseFilter(Filter filter) {
-		this.baseFilter = filter;
-	}
+    @Override
+    public final void setValue(Filter value) {
+        setValue(value, true);
+    }
 
-	protected void setBaseFilter(Filter baseFilter) {
-		this.baseFilter = baseFilter;
-	}
+    @Override
+    public final void setValue(Filter value, boolean fireEvents) {
+        if (value == null) {
+            value = new Filter();
+        }
+        this.value = value;
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, this.value);
+        }
+        updateView();
+    }
 
-	protected Filter getBaseFilter() {
-		return baseFilter;
-	}
+    protected void updateView() {
+
+    }
+
+    @Override
+    public final HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<Filter> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    @Override
+    public void applyBaseFilter(Filter filter) {
+        this.baseFilter = filter;
+    }
+
+    protected void setBaseFilter(Filter baseFilter) {
+        this.baseFilter = baseFilter;
+    }
+
+    protected Filter getBaseFilter() {
+        return baseFilter;
+    }
 }

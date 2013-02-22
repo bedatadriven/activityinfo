@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -40,8 +38,9 @@ import com.google.inject.Inject;
  */
 public class GenerateElementHandler implements CommandHandler<GenerateElement> {
 
-	private static final Logger LOGGER = Logger.getLogger(GenerateElementHandler.class.getName());
-	
+    private static final Logger LOGGER = Logger
+        .getLogger(GenerateElementHandler.class.getName());
+
     private final ReportGenerator generator;
 
     @Inject
@@ -49,11 +48,14 @@ public class GenerateElementHandler implements CommandHandler<GenerateElement> {
         this.generator = generator;
     }
 
-    public CommandResult execute(GenerateElement cmd, User user) throws CommandException {
+    @Override
+    public CommandResult execute(GenerateElement cmd, User user)
+        throws CommandException {
 
-    	LOGGER.info("GenerateElement.element = " + cmd.getElement());
-    	
-        return generator.generateElement(user, cmd.getElement(), null, new DateRange());
+        LOGGER.info("GenerateElement.element = " + cmd.getElement());
+
+        return generator.generateElement(user, cmd.getElement(), null,
+            new DateRange());
 
     }
 }

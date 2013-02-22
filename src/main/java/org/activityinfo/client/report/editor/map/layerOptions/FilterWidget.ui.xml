@@ -21,41 +21,45 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
-	
-	<ui:image field="crossCircle" src="CrossCircle.png"/> 
-	<ui:style>
 
-		@sprite .remove {
-			gwt-image: "crossCircle";
-			position: absolute;
-			top: 12px;
-			right: 3px;
-			opacity: 0.3;
-			cursor: pointer;
-		}
-		
-		.container {
-			border: 1px solid white;
-			padding: 10px 5px;
-			font-size: 12px;
-			position: relative;
-		}
-		
-		.dimension {
-		}
-		
-		.state {
-			color: gray;
-			cursor: pointer;
-		}
-		
-		.state:hover {
-			text-decoration: underline;
-		}
-	</ui:style>
-	<div class="{style.container}">
-		<div><span ui:field="dimensionSpan" class="{style.dimension}"/>: <span ui:field="stateSpan" class="{style.state}"/></div>
+  <ui:image field="crossCircle" src="CrossCircle.png" />
+  <ui:style>
+
+    @sprite .remove {
+    gwt-image: "crossCircle";
+    position: absolute;
+    top: 12px;
+    right: 3px;
+    opacity: 0.3;
+    cursor: pointer;
+    }
+
+    .container {
+    border: 1px solid white;
+    padding: 10px 5px;
+    font-size: 12px;
+    position: relative;
+    }
+
+    .dimension {
+    }
+
+    .state {
+    color: gray;
+    cursor: pointer;
+    }
+
+    .state:hover {
+    text-decoration: underline;
+    }
+  </ui:style>
+  <div class="{style.container}">
+    <div>
+      <span ui:field="dimensionSpan" class="{style.dimension}" />
+      :
+      <span ui:field="stateSpan" class="{style.state}" />
+    </div>
 		<!-- <div ui:field="removeIcon" class="{style.remove}"></div> -->
-	</div>
+  </div>
 
 </ui:UiBinder>

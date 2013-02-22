@@ -63,174 +63,185 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ReportPortlet extends Portlet {
 
-	private final Dispatcher dispatcher;
-	private final ReportMetadataDTO metadata;
-	private final EventBus eventBus;
+    private final Dispatcher dispatcher;
+    private final ReportMetadataDTO metadata;
+    private final EventBus eventBus;
 
-	public ReportPortlet(Dispatcher dispatcher, EventBus eventBus, ReportMetadataDTO report) {
-		this.dispatcher = dispatcher;
-		this.eventBus = eventBus;
-		this.metadata = report;
-		
-		setHeading(report.getTitle());
-		setHeight(275);
-		setLayout(new FitLayout());
-		
-		addOptionsMenu();  
-		addCloseButton();  
-  
-	
-		add(new Label(I18N.CONSTANTS.loading()));
-		
-		loadModel();
-	}
+    public ReportPortlet(Dispatcher dispatcher, EventBus eventBus,
+        ReportMetadataDTO report) {
+        this.dispatcher = dispatcher;
+        this.eventBus = eventBus;
+        this.metadata = report;
 
-	private void addOptionsMenu() {
-		final Menu optionsMenu = new Menu();
-		
-		optionsMenu.add(new MenuItem(I18N.CONSTANTS.edit(), IconImageBundle.ICONS.edit(), new SelectionListener<MenuEvent>() {
+        setHeading(report.getTitle());
+        setHeight(275);
+        setLayout(new FitLayout());
 
-			@Override
-			public void componentSelected(MenuEvent ce) {
-				edit();
-			}
-		}));
-		
-		optionsMenu.add(new MenuItem(I18N.CONSTANTS.removeFromDashboard(), IconImageBundle.ICONS.remove(), new SelectionListener<MenuEvent>() {
+        addOptionsMenu();
+        addCloseButton();
 
-			@Override
-			public void componentSelected(MenuEvent ce) {
-				removeFromDashboard();
-			}
-		}));
-		
-		final ToolButton gear = new ToolButton("x-tool-gear", new SelectionListener<IconButtonEvent>() {
+        add(new Label(I18N.CONSTANTS.loading()));
 
-			@Override
-			public void componentSelected(IconButtonEvent ce) {
-				optionsMenu.show(ce.getComponent());
-			}
-		});
-		getHeader().addTool(gear);
-	}
-	
-	private void addCloseButton() {
-		getHeader().addTool(new ToolButton("x-tool-close", new SelectionListener<IconButtonEvent>() {  
-			  
-			@Override  
-			public void componentSelected(IconButtonEvent ce) {  
-				removeFromDashboard();
-			}  
-        }));
-		
-		getHeader().addTool(new ToolButton("x-tool-maximize", new SelectionListener<IconButtonEvent>() {
-			
-			@Override
-			public void componentSelected(IconButtonEvent ce) {
-				edit();
-			}
-		}));
-	}
+        loadModel();
+    }
 
+    private void addOptionsMenu() {
+        final Menu optionsMenu = new Menu();
 
-	private void loadModel() {
-		dispatcher.execute(new GetReportModel(metadata.getId()), new AsyncCallback<ReportDTO>() {
+        optionsMenu.add(new MenuItem(I18N.CONSTANTS.edit(),
+            IconImageBundle.ICONS.edit(), new SelectionListener<MenuEvent>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+                @Override
+                public void componentSelected(MenuEvent ce) {
+                    edit();
+                }
+            }));
 
-			@Override
-			public void onSuccess(ReportDTO dto) {
-				onModelLoad(dto);
-			}
-		});
-	}
+        optionsMenu.add(new MenuItem(I18N.CONSTANTS.removeFromDashboard(),
+            IconImageBundle.ICONS.remove(), new SelectionListener<MenuEvent>() {
 
-	private void onModelLoad(ReportDTO dto) {
-		Report report = dto.getReport();
-		if (report.getElements().isEmpty()) {
-			removeAll();
-			add(new Label("The report is empty"));
-			return;
-		}
-		final ReportElement element = report.getElement(0);
-		final ReportView view = createView(element);
-		
-		if(view == null) {
-			removeAll();
-			add(new Label("Unsupport report type"));
-			layout();
-			return;
-		} 
-		
-		dispatcher.execute(new GenerateElement<Content>(element), new AsyncCallback<Content>() {
+                @Override
+                public void componentSelected(MenuEvent ce) {
+                    removeFromDashboard();
+                }
+            }));
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+        final ToolButton gear = new ToolButton("x-tool-gear",
+            new SelectionListener<IconButtonEvent>() {
 
-			@Override
-			public void onSuccess(Content result) {
-				element.setContent(result);
-				view.show(element);
-				removeAll();
-				add(view.asComponent());
-				layout();
-			}
-		});
-	}
+                @Override
+                public void componentSelected(IconButtonEvent ce) {
+                    optionsMenu.show(ce.getComponent());
+                }
+            });
+        getHeader().addTool(gear);
+    }
 
-	private ReportView createView(ReportElement element) {
-		if(element instanceof PivotChartReportElement) {
-			return new ChartOFCView();
-		} else if(element instanceof PivotTableReportElement) {
-			PivotGridPanel gridPanel = new PivotGridPanel();
-			gridPanel.setHeaderVisible(false);
-			return gridPanel;
-		} else if(element instanceof MapReportElement) {
-			MapReportView mapView = new MapReportView();
-			return mapView;
-		} else {
-			return null;
-		}
-	}
-	
+    private void addCloseButton() {
+        getHeader().addTool(
+            new ToolButton("x-tool-close",
+                new SelectionListener<IconButtonEvent>() {
 
-	private void edit() {
-		eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
-				new ReportDesignPageState(metadata.getId())));
-	}
-	
-	private void removeFromDashboard() {
-		MessageBox.confirm(metadata.getTitle(), I18N.CONSTANTS.confirmRemoveFromDashboard(), new Listener<MessageBoxEvent>() {
-			
-			@Override
-			public void handleEvent(MessageBoxEvent be) {
-				if(be.getButtonClicked().getItemId().equals(Dialog.YES)) {
-					UpdateReportSubscription update = new UpdateReportSubscription();
-					update.setReportId(metadata.getId());
-					update.setPinnedToDashboard(false);
-					
-					dispatcher.execute(update, new AsyncCallback<VoidResult>() {
+                    @Override
+                    public void componentSelected(IconButtonEvent ce) {
+                        removeFromDashboard();
+                    }
+                }));
 
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
+        getHeader().addTool(
+            new ToolButton("x-tool-maximize",
+                new SelectionListener<IconButtonEvent>() {
 
-						@Override
-						public void onSuccess(VoidResult result) {
-							removeFromParent();
-						}
-					});
-				}
-			}
-		});
-	}
+                    @Override
+                    public void componentSelected(IconButtonEvent ce) {
+                        edit();
+                    }
+                }));
+    }
+
+    private void loadModel() {
+        dispatcher.execute(new GetReportModel(metadata.getId()),
+            new AsyncCallback<ReportDTO>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onSuccess(ReportDTO dto) {
+                    onModelLoad(dto);
+                }
+            });
+    }
+
+    private void onModelLoad(ReportDTO dto) {
+        Report report = dto.getReport();
+        if (report.getElements().isEmpty()) {
+            removeAll();
+            add(new Label("The report is empty"));
+            return;
+        }
+        final ReportElement element = report.getElement(0);
+        final ReportView view = createView(element);
+
+        if (view == null) {
+            removeAll();
+            add(new Label("Unsupport report type"));
+            layout();
+            return;
+        }
+
+        dispatcher.execute(new GenerateElement<Content>(element),
+            new AsyncCallback<Content>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onSuccess(Content result) {
+                    element.setContent(result);
+                    view.show(element);
+                    removeAll();
+                    add(view.asComponent());
+                    layout();
+                }
+            });
+    }
+
+    private ReportView createView(ReportElement element) {
+        if (element instanceof PivotChartReportElement) {
+            return new ChartOFCView();
+        } else if (element instanceof PivotTableReportElement) {
+            PivotGridPanel gridPanel = new PivotGridPanel();
+            gridPanel.setHeaderVisible(false);
+            return gridPanel;
+        } else if (element instanceof MapReportElement) {
+            MapReportView mapView = new MapReportView();
+            return mapView;
+        } else {
+            return null;
+        }
+    }
+
+    private void edit() {
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_REQUESTED,
+            new ReportDesignPageState(metadata.getId())));
+    }
+
+    private void removeFromDashboard() {
+        MessageBox.confirm(metadata.getTitle(),
+            I18N.CONSTANTS.confirmRemoveFromDashboard(),
+            new Listener<MessageBoxEvent>() {
+
+                @Override
+                public void handleEvent(MessageBoxEvent be) {
+                    if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                        UpdateReportSubscription update = new UpdateReportSubscription();
+                        update.setReportId(metadata.getId());
+                        update.setPinnedToDashboard(false);
+
+                        dispatcher.execute(update,
+                            new AsyncCallback<VoidResult>() {
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                                @Override
+                                public void onSuccess(VoidResult result) {
+                                    removeFromParent();
+                                }
+                            });
+                    }
+                }
+            });
+    }
 }

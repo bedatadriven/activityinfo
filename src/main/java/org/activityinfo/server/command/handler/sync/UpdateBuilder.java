@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler.sync;
 
 /*
@@ -30,6 +28,7 @@ import org.activityinfo.shared.command.result.SyncRegionUpdate;
 
 public interface UpdateBuilder {
 
-    SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws Exception;
+    SyncRegionUpdate build(User user, GetSyncRegionUpdates request)
+        throws Exception;
 
 }

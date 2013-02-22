@@ -39,64 +39,68 @@ import org.activityinfo.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
-public class CreateLockedPeriodHandler implements CommandHandler<CreateLockedPeriod> {
+public class CreateLockedPeriodHandler implements
+    CommandHandler<CreateLockedPeriod> {
     private EntityManager em;
 
-	@Inject
-	public CreateLockedPeriodHandler(EntityManager em) {
-		this.em = em;
-	}
-	
-	@Override
-	public CommandResult execute(CreateLockedPeriod cmd, User user)
-			throws CommandException {
-		
-		Activity activity = null;
-		UserDatabase database = null;
-		Project project = null;
-		
-		LockedPeriod  lockedPeriod = new LockedPeriod();
-		LockedPeriodDTO lockedPeriodDTO = cmd.getLockedPeriod();
-		lockedPeriod.setFromDate(lockedPeriodDTO.getFromDate().atMidnightInMyTimezone());
-		lockedPeriod.setToDate(lockedPeriodDTO.getToDate().atMidnightInMyTimezone());
-		lockedPeriod.setName(lockedPeriodDTO.getName());
-		lockedPeriod.setEnabled(lockedPeriodDTO.isEnabled());
+    @Inject
+    public CreateLockedPeriodHandler(EntityManager em) {
+        this.em = em;
+    }
 
-		int databaseId;
-		if (cmd.getUserDatabseId() != 0) {
-	        database = em.find(UserDatabase.class, cmd.getUserDatabseId());
-	        lockedPeriod.setUserDatabase(database);
-	        databaseId = database.getId();
-		} else if (cmd.getProjectId() != 0) {
-			project = em.find(Project.class, cmd.getProjectId());
-			lockedPeriod.setProject(project);
-			databaseId = project.getUserDatabase().getId();
-		} else if (cmd.getActivityId() != 0) {
-			activity = em.find(Activity.class, cmd.getActivityId());
-			lockedPeriod.setActivity(activity);
-			databaseId = activity.getDatabase().getId();
-		} else {
-			throw new CommandException("One of the following must be provdied: userDatabaseId, projectId, activityId");
-		}
-		
+    @Override
+    public CommandResult execute(CreateLockedPeriod cmd, User user)
+        throws CommandException {
+
+        Activity activity = null;
+        UserDatabase database = null;
+        Project project = null;
+
+        LockedPeriod lockedPeriod = new LockedPeriod();
+        LockedPeriodDTO lockedPeriodDTO = cmd.getLockedPeriod();
+        lockedPeriod.setFromDate(lockedPeriodDTO.getFromDate()
+            .atMidnightInMyTimezone());
+        lockedPeriod.setToDate(lockedPeriodDTO.getToDate()
+            .atMidnightInMyTimezone());
+        lockedPeriod.setName(lockedPeriodDTO.getName());
+        lockedPeriod.setEnabled(lockedPeriodDTO.isEnabled());
+
+        int databaseId;
+        if (cmd.getUserDatabseId() != 0) {
+            database = em.find(UserDatabase.class, cmd.getUserDatabseId());
+            lockedPeriod.setUserDatabase(database);
+            databaseId = database.getId();
+        } else if (cmd.getProjectId() != 0) {
+            project = em.find(Project.class, cmd.getProjectId());
+            lockedPeriod.setProject(project);
+            databaseId = project.getUserDatabase().getId();
+        } else if (cmd.getActivityId() != 0) {
+            activity = em.find(Activity.class, cmd.getActivityId());
+            lockedPeriod.setActivity(activity);
+            databaseId = activity.getDatabase().getId();
+        } else {
+            throw new CommandException(
+                "One of the following must be provdied: userDatabaseId, projectId, activityId");
+        }
+
         UserDatabase db = em.find(UserDatabase.class, databaseId);
 
-		em.persist(lockedPeriod);
-		
+        em.persist(lockedPeriod);
+
         db.setLastSchemaUpdate(new Date());
         em.persist(db);
-		
-		if (database != null) {
-			database.getLockedPeriods().add(lockedPeriod);
-		}
-		if (project != null) {
-			project.getLockedPeriods().add(lockedPeriod);
-		}
-		if (activity != null) {
-			activity.getLockedPeriods().add(lockedPeriod);
-		}
+
+        if (database != null) {
+            database.getLockedPeriods().add(lockedPeriod);
+        }
+        if (project != null) {
+            project.getLockedPeriods().add(lockedPeriod);
+        }
+        if (activity != null) {
+            activity.getLockedPeriods().add(lockedPeriod);
+        }
 
         return new CreateResult(lockedPeriod.getId());
-	}
+    }
 
 }

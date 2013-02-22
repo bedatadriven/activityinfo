@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -32,7 +30,7 @@ public class PivotChartContent extends PivotContent {
     private String yAxisTitle;
     private String xAxisTitle;
     private double yMin;
-    private double yStep =  1.0;
+    private double yStep = 1.0;
 
     public PivotChartContent() {
     }
@@ -55,7 +53,7 @@ public class PivotChartContent extends PivotContent {
 
     /**
      * Gets the minimum value for the y-Axis
-     *
+     * 
      * @return the minimum value for the y-Axis
      */
     public double getYMin() {
@@ -68,16 +66,16 @@ public class PivotChartContent extends PivotContent {
 
     /**
      * Gets the step value for the y-Axis (major unit)
-     *
-     * @return  the step value for the y-Axis
+     * 
+     * @return the step value for the y-Axis
      */
     public double getYStep() {
         return yStep;
     }
 
     public void setYStep(double yStep) {
-    	if (yStep > 0.0) {
-    		this.yStep = yStep;
-    	}
+        if (yStep > 0.0) {
+            this.yStep = yStep;
+        }
     }
 }

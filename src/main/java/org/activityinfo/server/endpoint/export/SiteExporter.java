@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.export;
 
 /*
@@ -63,25 +61,25 @@ import com.extjs.gxt.ui.client.data.SortInfo;
  */
 public class SiteExporter {
 
+    private static final short FONT_SIZE = 8;
 
-	private static final short FONT_SIZE = 8;
-
-	/** 
-     * sheet names can only be 31 characters long, plus we need about 4-6 chars for disambiguation
+    /**
+     * sheet names can only be 31 characters long, plus we need about 4-6 chars
+     * for disambiguation
      */
     private static final int MAX_SHEET_NAME_LENGTH = 25;
 
-	private static final short DIAGONAL = 45;
+    private static final short DIAGONAL = 45;
 
     private static final int COORD_COLUMN_WIDTH = 12;
-	private static final int ATTRIBUTE_COLUMN_WIDTH = 5;
-	private static final int INDICATOR_COLUMN_WIDTH = 16;
-	private static final int LOCATION_COLUMN_WIDTH = 20;
-	private static final int PARTNER_COLUMN_WIDTH = 16;
-	private static final int HEADER_CELL_HEIGHT = 75;
-	private static final int CHARACTERS_PER_WIDTH_UNIT = 255;
-	
-	private final DispatcherSync dispatcher;
+    private static final int ATTRIBUTE_COLUMN_WIDTH = 5;
+    private static final int INDICATOR_COLUMN_WIDTH = 16;
+    private static final int LOCATION_COLUMN_WIDTH = 20;
+    private static final int PARTNER_COLUMN_WIDTH = 16;
+    private static final int HEADER_CELL_HEIGHT = 75;
+    private static final int CHARACTERS_PER_WIDTH_UNIT = 255;
+
+    private final DispatcherSync dispatcher;
 
     private final HSSFWorkbook book;
     private final CreationHelper creationHelper;
@@ -101,9 +99,8 @@ public class SiteExporter {
 
     private CellStyle attribValueStyle;
 
-//    private HSSFConditionalFormattingRule attribFalseRule;
-//    private HSSFConditionalFormattingRule attribTrueRule;
-
+    // private HSSFConditionalFormattingRule attribFalseRule;
+    // private HSSFConditionalFormattingRule attribTrueRule;
 
     private List<Integer> indicators;
     private List<Integer> attributes;
@@ -122,13 +119,16 @@ public class SiteExporter {
 
     private void declareStyles() {
         dateStyle = book.createCellStyle();
-        dateStyle.setDataFormat(creationHelper.createDataFormat().getFormat("m/d/yy"));
+        dateStyle.setDataFormat(creationHelper.createDataFormat().getFormat(
+            "m/d/yy"));
 
         coordStyle = book.createCellStyle();
-        coordStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0.000000"));
+        coordStyle.setDataFormat(creationHelper.createDataFormat().getFormat(
+            "0.000000"));
 
         indicatorValueStyle = book.createCellStyle();
-        indicatorValueStyle.setDataFormat(creationHelper.createDataFormat().getFormat("#,##0"));
+        indicatorValueStyle.setDataFormat(creationHelper.createDataFormat()
+            .getFormat("#,##0"));
 
         Font headerFont = book.createFont();
         headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -172,28 +172,37 @@ public class SiteExporter {
         createDataRows(activity, filter, sheet);
 
     }
-//
-//    private void initConditionalFormatting(HSSFSheet sheet) {
-//        HSSFSheetConditionalFormatting cf = sheet.getSheetConditionalFormatting();
-//
-//        attribFalseRule = cf.createConditionalFormattingRule(CFRuleRecord.ComparisonOperator.EQUAL, "FALSE", null);
-//        HSSFFontFormatting grayFont = attribFalseRule.createFontFormatting();
-//        grayFont.setFontColorIndex(HSSFColor.GREY_25_PERCENT.index);
-//
-//        attribTrueRule = cf.createConditionalFormattingRule(CFRuleRecord.ComparisonOperator.EQUAL, "TRUE", null);
-//        HSSFPatternFormatting grayFill = attribTrueRule.createPatternFormatting();
-//        grayFill.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
-//        HSSFFontFormatting boldFont = attribTrueRule.createFontFormatting();
-//        boldFont.setFontStyle(false,true);
-//
-//    }
+
+    //
+    // private void initConditionalFormatting(HSSFSheet sheet) {
+    // HSSFSheetConditionalFormatting cf =
+    // sheet.getSheetConditionalFormatting();
+    //
+    // attribFalseRule =
+    // cf.createConditionalFormattingRule(CFRuleRecord.ComparisonOperator.EQUAL,
+    // "FALSE", null);
+    // HSSFFontFormatting grayFont = attribFalseRule.createFontFormatting();
+    // grayFont.setFontColorIndex(HSSFColor.GREY_25_PERCENT.index);
+    //
+    // attribTrueRule =
+    // cf.createConditionalFormattingRule(CFRuleRecord.ComparisonOperator.EQUAL,
+    // "TRUE", null);
+    // HSSFPatternFormatting grayFill =
+    // attribTrueRule.createPatternFormatting();
+    // grayFill.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
+    // HSSFFontFormatting boldFont = attribTrueRule.createFontFormatting();
+    // boldFont.setFontStyle(false,true);
+    //
+    // }
 
     private String composeUniqueSheetName(ActivityDTO activity) {
-        String sheetName = activity.getDatabase().getName() + " - " + activity.getName();
+        String sheetName = activity.getDatabase().getName() + " - "
+            + activity.getName();
         // replace invalid chars: / \ [ ] * ?
         sheetName = sheetName.replaceAll("[\\Q/\\*?[]\\E]", " ");
 
-        String shortenedName = sheetName.substring(0, Math.min(MAX_SHEET_NAME_LENGTH, sheetName.length()));
+        String shortenedName = sheetName.substring(0,
+            Math.min(MAX_SHEET_NAME_LENGTH, sheetName.length()));
 
         // assure that the sheet name is unique
         if (!sheetNames.containsKey(shortenedName)) {
@@ -209,7 +218,7 @@ public class SiteExporter {
 
     private void createHeaders(ActivityDTO activity, HSSFSheet sheet) {
 
-        /// The HEADER rows
+        // / The HEADER rows
 
         Row headerRow1 = sheet.createRow(0);
         Row headerRow2 = sheet.createRow(1);
@@ -223,25 +232,29 @@ public class SiteExporter {
         sheet.setColumnWidth(column, characters(PARTNER_COLUMN_WIDTH));
         column++;
 
-        createHeaderCell(headerRow2, column, activity.getLocationType().getName());
+        createHeaderCell(headerRow2, column, activity.getLocationType()
+            .getName());
         sheet.setColumnWidth(column, characters(LOCATION_COLUMN_WIDTH));
         column++;
 
         createHeaderCell(headerRow2, column++, "Axe");
 
-
         indicators = new ArrayList<Integer>(activity.getIndicators().size());
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
             for (IndicatorGroup group : activity.groupIndicators()) {
                 if (group.getName() != null) {
-                    // create a merged cell on the top row spanning all members of the group
+                    // create a merged cell on the top row spanning all members
+                    // of the group
                     createHeaderCell(headerRow1, column, group.getName());
-                    sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column + group.getIndicators().size() - 1));
+                    sheet.addMergedRegion(new CellRangeAddress(0, 0, column,
+                        column + group.getIndicators().size() - 1));
                 }
                 for (IndicatorDTO indicator : group.getIndicators()) {
                     indicators.add(indicator.getId());
-                    createHeaderCell(headerRow2, column, indicator.getName(), indicatorHeaderStyle);
-                    sheet.setColumnWidth(column, characters(INDICATOR_COLUMN_WIDTH));
+                    createHeaderCell(headerRow2, column, indicator.getName(),
+                        indicatorHeaderStyle);
+                    sheet.setColumnWidth(column,
+                        characters(INDICATOR_COLUMN_WIDTH));
                     column++;
                 }
             }
@@ -249,13 +262,17 @@ public class SiteExporter {
         attributes = new ArrayList<Integer>();
         for (AttributeGroupDTO group : activity.getAttributeGroups()) {
             if (group.getAttributes().size() != 0) {
-                createHeaderCell(headerRow1, column, group.getName(), CellStyle.ALIGN_CENTER);
-                sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column + group.getAttributes().size() - 1));
+                createHeaderCell(headerRow1, column, group.getName(),
+                    CellStyle.ALIGN_CENTER);
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, column, column
+                    + group.getAttributes().size() - 1));
 
                 for (AttributeDTO attrib : group.getAttributes()) {
                     attributes.add(attrib.getId());
-                    createHeaderCell(headerRow2, column, attrib.getName(), attribHeaderStyle);
-                    sheet.setColumnWidth(column, characters(ATTRIBUTE_COLUMN_WIDTH));
+                    createHeaderCell(headerRow2, column, attrib.getName(),
+                        attribHeaderStyle);
+                    sheet.setColumnWidth(column,
+                        characters(ATTRIBUTE_COLUMN_WIDTH));
                     column++;
                 }
             }
@@ -268,7 +285,8 @@ public class SiteExporter {
             levels.add(level.getId());
         }
         createHeaderCell(headerRow2, column, "Longitude", CellStyle.ALIGN_RIGHT);
-        createHeaderCell(headerRow2, column + 1, "Latitude", CellStyle.ALIGN_RIGHT);
+        createHeaderCell(headerRow2, column + 1, "Latitude",
+            CellStyle.ALIGN_RIGHT);
         sheet.setColumnWidth(column, characters(COORD_COLUMN_WIDTH));
         sheet.setColumnWidth(column + 1, characters(COORD_COLUMN_WIDTH));
 
@@ -277,18 +295,20 @@ public class SiteExporter {
     private List<SiteDTO> querySites(ActivityDTO activity, Filter filter) {
 
         Filter effectiveFilter = new Filter(filter);
-        effectiveFilter.addRestriction(DimensionType.Activity, activity.getId());
+        effectiveFilter
+            .addRestriction(DimensionType.Activity, activity.getId());
 
         GetSites query = new GetSites();
         query.setFilter(effectiveFilter);
         query.setSortInfo(new SortInfo("date2", SortDir.DESC));
-        
+
         return dispatcher.execute(query).getData();
     }
 
     private void createDataRows(ActivityDTO activity, Filter filter, Sheet sheet) {
 
-        // Create the drawing patriarch. This is the top level container for all shapes including
+        // Create the drawing patriarch. This is the top level container for all
+        // shapes including
         // cell comments.
         HSSFPatriarch patr = ((HSSFSheet) sheet).createDrawingPatriarch();
 
@@ -302,10 +322,13 @@ public class SiteExporter {
             createCell(row, column++, site.getDate2());
             createCell(row, column++, site.getPartnerName());
 
-            Cell locationCell = createCell(row, column++, site.getLocationName());
+            Cell locationCell = createCell(row, column++,
+                site.getLocationName());
             if (site.getComments() != null) {
-                Comment comment = patr.createComment(new HSSFClientAnchor(0, 0, 0, 0, (short) 4, 2, (short) 8, 10));
-                comment.setString(creationHelper.createRichTextString(site.getComments()));
+                Comment comment = patr.createComment(new HSSFClientAnchor(0, 0,
+                    0, 0, (short) 4, 2, (short) 8, 10));
+                comment.setString(creationHelper.createRichTextString(site
+                    .getComments()));
 
                 locationCell.setCellComment(comment);
             }
@@ -313,7 +336,8 @@ public class SiteExporter {
             createCell(row, column++, site.getLocationAxe());
 
             for (Integer indicatorId : indicators) {
-                createIndicatorValueCell(row, column++, site.getIndicatorValue(indicatorId));
+                createIndicatorValueCell(row, column++,
+                    site.getIndicatorValue(indicatorId));
             }
 
             for (Integer attribId : attributes) {
@@ -342,7 +366,8 @@ public class SiteExporter {
         }
     }
 
-    private Cell createHeaderCell(Row headerRow, int columnIndex, String text, CellStyle style) {
+    private Cell createHeaderCell(Row headerRow, int columnIndex, String text,
+        CellStyle style) {
         Cell cell = headerRow.createCell(columnIndex);
         cell.setCellValue(creationHelper.createRichTextString(text));
         cell.setCellStyle(style);
@@ -351,23 +376,25 @@ public class SiteExporter {
     }
 
     private Cell createHeaderCell(Row headerRow, int columnIndex, String text) {
-        return createHeaderCell(headerRow, columnIndex, text, CellStyle.ALIGN_LEFT);
+        return createHeaderCell(headerRow, columnIndex, text,
+            CellStyle.ALIGN_LEFT);
     }
 
-    private Cell createHeaderCell(Row headerRow, int columnIndex, String text, int align) {
+    private Cell createHeaderCell(Row headerRow, int columnIndex, String text,
+        int align) {
         Cell cell = headerRow.createCell(columnIndex);
         cell.setCellValue(creationHelper.createRichTextString(text));
 
         switch (align) {
-            case CellStyle.ALIGN_LEFT:
-                cell.setCellStyle(headerStyle);
-                break;
-            case CellStyle.ALIGN_CENTER:
-                cell.setCellStyle(headerStyleCenter);
-                break;
-            case CellStyle.ALIGN_RIGHT:
-                cell.setCellStyle(headerStyleRight);
-                break;
+        case CellStyle.ALIGN_LEFT:
+            cell.setCellStyle(headerStyle);
+            break;
+        case CellStyle.ALIGN_CENTER:
+            cell.setCellStyle(headerStyleCenter);
+            break;
+        case CellStyle.ALIGN_RIGHT:
+            cell.setCellStyle(headerStyleRight);
+            break;
         }
 
         return cell;
@@ -381,8 +408,8 @@ public class SiteExporter {
 
     private void createCell(Row row, int columnIndex, LocalDate date) {
         Cell cell = row.createCell(columnIndex);
-        if(date != null) {
-        	cell.setCellValue(date.atMidnightInMyTimezone());
+        if (date != null) {
+            cell.setCellValue(date.atMidnightInMyTimezone());
         }
         cell.setCellStyle(dateStyle);
     }
@@ -412,8 +439,8 @@ public class SiteExporter {
     public HSSFWorkbook getBook() {
         return book;
     }
-    
+
     private int characters(int numberOfCharacters) {
-    	return numberOfCharacters * CHARACTERS_PER_WIDTH_UNIT;
+        return numberOfCharacters * CHARACTERS_PER_WIDTH_UNIT;
     }
 }

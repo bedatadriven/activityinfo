@@ -44,95 +44,99 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-final class SiteTreeGrid extends EditorTreeGrid<ModelData> implements SiteGridPanelView {
+final class SiteTreeGrid extends EditorTreeGrid<ModelData> implements
+    SiteGridPanelView {
 
-	public static final String ADMIN_STATE_ID = "sitetreegrid.admin";
-	
-	public SiteTreeGrid(Dispatcher dispatcher, GroupingModel groupingModel, Filter filter, ColumnModel columnModel) {
-		super(createStore(dispatcher, groupingModel), columnModel);
-		setLoadMask(true); 
-		setStateful(true);
-		setStateId(ADMIN_STATE_ID);
-		setClicksToEdit(ClicksToEdit.TWO);
+    public static final String ADMIN_STATE_ID = "sitetreegrid.admin";
 
-		setIconProvider(new ModelIconProvider<ModelData>() {
-			@Override
-			public AbstractImagePrototype getIcon(ModelData model) {
-				if (model instanceof SiteDTO) {
-					SiteDTO site = (SiteDTO)model;
-					if(site.hasCoords()) {
-						return IconImageBundle.ICONS.mapped();
-					} else {
-						return IconImageBundle.ICONS.unmapped();
-					}
-				} else {
-					return IconImageBundle.ICONS.folder();
-				}
-			}
-		});
-		
-		GridSelectionModel<ModelData> sm = new GridSelectionModel<ModelData>();
-		sm.setSelectionMode(SelectionMode.SINGLE);
-		sm.addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent<ModelData> se) {
-				if(se.getSelectedItem() instanceof SiteDTO) {
-					fireEvent(Events.SelectionChange, se);
-				}
-			}
-		});
-		setSelectionModel(sm);
-		
-		getLoader().setFilter(filter);
-	}
+    public SiteTreeGrid(Dispatcher dispatcher, GroupingModel groupingModel,
+        Filter filter, ColumnModel columnModel) {
+        super(createStore(dispatcher, groupingModel), columnModel);
+        setLoadMask(true);
+        setStateful(true);
+        setStateId(ADMIN_STATE_ID);
+        setClicksToEdit(ClicksToEdit.TWO);
 
-	private static TreeStore<ModelData> createStore(Dispatcher dispatcher, GroupingModel groupingModel) {
-		
-		SiteTreeLoader loader;
-		
-		if(groupingModel instanceof AdminGroupingModel) {
-			loader = new SiteAdminTreeLoader(dispatcher, (AdminGroupingModel) groupingModel);
-		} else if(groupingModel instanceof TimeGroupingModel) {
-			loader = new SiteTimeTreeLoader(dispatcher);
-		} else {
-			throw new IllegalArgumentException("Invalid grouping model " + groupingModel);
-		}
-		
-		TreeStore<ModelData> treeStore = new TreeStore<ModelData>(loader);
-		treeStore.setKeyProvider(loader);
-		return treeStore;
-	}
-	
+        setIconProvider(new ModelIconProvider<ModelData>() {
+            @Override
+            public AbstractImagePrototype getIcon(ModelData model) {
+                if (model instanceof SiteDTO) {
+                    SiteDTO site = (SiteDTO) model;
+                    if (site.hasCoords()) {
+                        return IconImageBundle.ICONS.mapped();
+                    } else {
+                        return IconImageBundle.ICONS.unmapped();
+                    }
+                } else {
+                    return IconImageBundle.ICONS.folder();
+                }
+            }
+        });
 
-	private SiteTreeLoader getLoader() {
-		return (SiteTreeLoader) getTreeStore().getLoader();
-	}
+        GridSelectionModel<ModelData> sm = new GridSelectionModel<ModelData>();
+        sm.setSelectionMode(SelectionMode.SINGLE);
+        sm.addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
-	@Override
-	public void addSelectionChangeListener(
-			SelectionChangedListener<SiteDTO> selectionChangedListener) {
-		addListener(Events.SelectionChange, selectionChangedListener);
-	}
+            @Override
+            public void selectionChanged(SelectionChangedEvent<ModelData> se) {
+                if (se.getSelectedItem() instanceof SiteDTO) {
+                    fireEvent(Events.SelectionChange, se);
+                }
+            }
+        });
+        setSelectionModel(sm);
 
-	@Override
-	public void refresh() {
-		getTreeStore().removeAll();
-		getLoader().load();
-	}
+        getLoader().setFilter(filter);
+    }
 
-	@Override
-	public Component asComponent() {
-		return this;
-	}
+    private static TreeStore<ModelData> createStore(Dispatcher dispatcher,
+        GroupingModel groupingModel) {
 
-	@Override
-	public SiteDTO getSelection() {
-		ModelData selection = getSelectionModel().getSelectedItem();
-		if(selection instanceof SiteDTO) {
-			return (SiteDTO)selection;
-		} else {
-			return null;
-		}
-	}
+        SiteTreeLoader loader;
+
+        if (groupingModel instanceof AdminGroupingModel) {
+            loader = new SiteAdminTreeLoader(dispatcher,
+                (AdminGroupingModel) groupingModel);
+        } else if (groupingModel instanceof TimeGroupingModel) {
+            loader = new SiteTimeTreeLoader(dispatcher);
+        } else {
+            throw new IllegalArgumentException("Invalid grouping model "
+                + groupingModel);
+        }
+
+        TreeStore<ModelData> treeStore = new TreeStore<ModelData>(loader);
+        treeStore.setKeyProvider(loader);
+        return treeStore;
+    }
+
+    private SiteTreeLoader getLoader() {
+        return (SiteTreeLoader) getTreeStore().getLoader();
+    }
+
+    @Override
+    public void addSelectionChangeListener(
+        SelectionChangedListener<SiteDTO> selectionChangedListener) {
+        addListener(Events.SelectionChange, selectionChangedListener);
+    }
+
+    @Override
+    public void refresh() {
+        getTreeStore().removeAll();
+        getLoader().load();
+    }
+
+    @Override
+    public Component asComponent() {
+        return this;
+    }
+
+    @Override
+    public SiteDTO getSelection() {
+        ModelData selection = getSelectionModel().getSelectedItem();
+        if (selection instanceof SiteDTO) {
+            return (SiteDTO) selection;
+        } else {
+            return null;
+        }
+    }
 }

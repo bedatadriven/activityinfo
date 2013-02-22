@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator;
 
 /*
@@ -39,8 +37,6 @@ import junit.framework.Assert;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.report.generator.MapGenerator;
-import org.activityinfo.server.report.generator.TableGenerator;
 import org.activityinfo.shared.command.GetBaseMaps;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.BaseMapResult;
@@ -63,91 +59,94 @@ import org.junit.Test;
  * @author Alex Bertram
  */
 public class TableGeneratorTest {
-	private static final int INDICATOR_ID = 99;
-	private User user;
+    private static final int INDICATOR_ID = 99;
+    private User user;
 
-	@Before
-	public void setUp() {
-		user = new User();
-		user.setName("Alex");
-		user.setEmail("akbertra@mgail.com");
-		user.setLocale("fr");
-	}
+    @Before
+    public void setUp() {
+        user = new User();
+        user.setName("Alex");
+        user.setEmail("akbertra@mgail.com");
+        user.setLocale("fr");
+    }
 
-	@Test
-	public void simpleTable() {
+    @Test
+    public void simpleTable() {
 
-		TableElement table = new TableElement();
-		TableColumn column = new TableColumn("Location", "location.name");
-		table.addColumn(column);
+        TableElement table = new TableElement();
+        TableColumn column = new TableColumn("Location", "location.name");
+        table.addColumn(column);
 
-		TableGenerator gtor = new TableGenerator(createDispatcher(), null);
-		gtor.generate(user, table, null, null);
+        TableGenerator gtor = new TableGenerator(createDispatcher(), null);
+        gtor.generate(user, table, null, null);
 
-		Assert.assertNotNull("content is set", table.getContent());
+        Assert.assertNotNull("content is set", table.getContent());
 
-		TableData data = table.getContent().getData();
-		List<SiteDTO> rows = data.getRows();
-		Assert.assertEquals("row count", 1, rows.size());
+        TableData data = table.getContent().getData();
+        List<SiteDTO> rows = data.getRows();
+        Assert.assertEquals("row count", 1, rows.size());
 
-		SiteDTO row = rows.get(0);
-		assertThat((String)row.get(column.getSitePropertyName()), equalTo("tampa bay"));
-	}
-//
-//	@Test
-//	public void tableWithMap() {
-//		
-//		MapReportElement map = new MapReportElement();
-//		map.setBaseMapId(GoogleBaseMap.ROADMAP.getId());
-//		
-//		BubbleMapLayer layer = new BubbleMapLayer();
-//		layer.addIndicator(INDICATOR_ID);
-//		map.addLayer(layer);
-//		
-//		TableElement table = new TableElement();
-//		table.setMap(map);
-//	
-//		TableColumn column = new TableColumn("Location", "location.name");
-//		table.addColumn(column);
-//		
-//		TableColumn mapColumn = new TableColumn("Map", "map");
-//		table.addColumn(mapColumn);
-//		
-//		DispatcherSync dispatcher = createDispatcher();
-//		TableGenerator gtor = new TableGenerator(dispatcher, new MapGenerator(dispatcher, null, null));
-//		gtor.generate(user, table, null, null);
-//
-//		Assert.assertNotNull("content is set", table.getContent());
-//
-//		TableData data = table.getContent().getData();
-//		List<SiteDTO> rows = data.getRows();
-//		Assert.assertEquals("row count", 1, rows.size());
-//
-//		SiteDTO row = rows.get(0);
-//		assertThat((String)row.get(column.getSitePropertyName()), equalTo("tampa bay"));
-//		assertThat((String)row.get("map"), equalTo("1"));
-//	}
+        SiteDTO row = rows.get(0);
+        assertThat((String) row.get(column.getSitePropertyName()),
+            equalTo("tampa bay"));
+    }
 
+    //
+    // @Test
+    // public void tableWithMap() {
+    //
+    // MapReportElement map = new MapReportElement();
+    // map.setBaseMapId(GoogleBaseMap.ROADMAP.getId());
+    //
+    // BubbleMapLayer layer = new BubbleMapLayer();
+    // layer.addIndicator(INDICATOR_ID);
+    // map.addLayer(layer);
+    //
+    // TableElement table = new TableElement();
+    // table.setMap(map);
+    //
+    // TableColumn column = new TableColumn("Location", "location.name");
+    // table.addColumn(column);
+    //
+    // TableColumn mapColumn = new TableColumn("Map", "map");
+    // table.addColumn(mapColumn);
+    //
+    // DispatcherSync dispatcher = createDispatcher();
+    // TableGenerator gtor = new TableGenerator(dispatcher, new
+    // MapGenerator(dispatcher, null, null));
+    // gtor.generate(user, table, null, null);
+    //
+    // Assert.assertNotNull("content is set", table.getContent());
+    //
+    // TableData data = table.getContent().getData();
+    // List<SiteDTO> rows = data.getRows();
+    // Assert.assertEquals("row count", 1, rows.size());
+    //
+    // SiteDTO row = rows.get(0);
+    // assertThat((String)row.get(column.getSitePropertyName()),
+    // equalTo("tampa bay"));
+    // assertThat((String)row.get("map"), equalTo("1"));
+    // }
 
-	@Test
-	public void testMap() {
+    @Test
+    public void testMap() {
 
-		TableElement table = new TableElement();
-		table.addColumn(new TableColumn("Index", "map"));
-		table.addColumn(new TableColumn("Site", "location.name"));
+        TableElement table = new TableElement();
+        table.addColumn(new TableColumn("Index", "map"));
+        table.addColumn(new TableColumn("Site", "location.name"));
 
-		MapReportElement map = new MapReportElement();
-		map.setBaseMapId("map1");
-		CircledMapLayer layer = new BubbleMapLayer();
-		layer.setLabelSequence(new ArabicNumberSequence());
-		map.addLayer(layer);
-		table.setMap(map);
+        MapReportElement map = new MapReportElement();
+        map.setBaseMapId("map1");
+        CircledMapLayer layer = new BubbleMapLayer();
+        layer.setLabelSequence(new ArabicNumberSequence());
+        map.addLayer(layer);
+        table.setMap(map);
 
-		DispatcherSync dispatcher = createMock(DispatcherSync.class);
-		expect(dispatcher.execute(isA(GetSites.class)))
-		.andReturn(new SiteResult(dummySite()))
-		.anyTimes();
-	
+        DispatcherSync dispatcher = createMock(DispatcherSync.class);
+        expect(dispatcher.execute(isA(GetSites.class)))
+            .andReturn(new SiteResult(dummySite()))
+            .anyTimes();
+
         TileBaseMap baseMap1 = new TileBaseMap();
         baseMap1.setId("map1");
         baseMap1.setMinZoom(0);
@@ -155,41 +154,44 @@ public class TableGeneratorTest {
         baseMap1.setCopyright("(C)");
         baseMap1.setName("Grand Canyon");
         baseMap1.setTileUrlPattern("http://s/test.png");
-		
-		expect(dispatcher.execute(isA(GetBaseMaps.class)))
-			.andReturn(new BaseMapResult(Collections.singletonList(baseMap1)));
 
-		replay(dispatcher);
+        expect(dispatcher.execute(isA(GetBaseMaps.class)))
+            .andReturn(new BaseMapResult(Collections.singletonList(baseMap1)));
 
-		TableGenerator gtor = new TableGenerator(dispatcher, new MapGenerator(dispatcher,  new MockIndicatorDAO()));
-		gtor.generate(user, table, null, null);
+        replay(dispatcher);
 
-		MapContent mapContent = map.getContent();
-		Assert.assertNotNull("map content", mapContent);
-		Assert.assertEquals("marker count", 1, mapContent.getMarkers().size());
-		Assert.assertEquals("label on marker", "1", ((BubbleMapMarker) mapContent.getMarkers().get(0)).getLabel());
+        TableGenerator gtor = new TableGenerator(dispatcher, new MapGenerator(
+            dispatcher, new MockIndicatorDAO()));
+        gtor.generate(user, table, null, null);
 
-		Map<Integer, String> siteLabels = mapContent.siteLabelMap();
-		Assert.assertEquals("site id in map", "1", siteLabels.get(1));
+        MapContent mapContent = map.getContent();
+        Assert.assertNotNull("map content", mapContent);
+        Assert.assertEquals("marker count", 1, mapContent.getMarkers().size());
+        Assert.assertEquals("label on marker", "1",
+            ((BubbleMapMarker) mapContent.getMarkers().get(0)).getLabel());
 
-		SiteDTO row = table.getContent().getData().getRows().get(0);
-		Assert.assertEquals("label on row", "1", row.get("map"));
-	}
+        Map<Integer, String> siteLabels = mapContent.siteLabelMap();
+        Assert.assertEquals("site id in map", "1", siteLabels.get(1));
 
-	private DispatcherSync createDispatcher() {
-		DispatcherSync dispatcher = createMock(DispatcherSync.class);
-		expect(dispatcher.execute(isA(GetSites.class))).andReturn(new SiteResult(dummySite())).anyTimes();
-		replay(dispatcher);
-		return dispatcher;
-	}
+        SiteDTO row = table.getContent().getData().getRows().get(0);
+        Assert.assertEquals("label on row", "1", row.get("map"));
+    }
 
-	public SiteDTO dummySite() {
-		SiteDTO site = new SiteDTO();
-		site.setId(1);
-		site.setLocationName("tampa bay");
-		site.setIndicatorValue(INDICATOR_ID, 1500d);
-		site.setX(28.4);
-		site.setY(1.2);
-		return site;
-	}
+    private DispatcherSync createDispatcher() {
+        DispatcherSync dispatcher = createMock(DispatcherSync.class);
+        expect(dispatcher.execute(isA(GetSites.class))).andReturn(
+            new SiteResult(dummySite())).anyTimes();
+        replay(dispatcher);
+        return dispatcher;
+    }
+
+    public SiteDTO dummySite() {
+        SiteDTO site = new SiteDTO();
+        site.setId(1);
+        site.setLocationName("tampa bay");
+        site.setIndicatorValue(INDICATOR_ID, 1500d);
+        site.setX(28.4);
+        site.setY(1.2);
+        return site;
+    }
 }

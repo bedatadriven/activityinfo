@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.inject;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.client.inject;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.LoggingEventBus;
@@ -59,9 +56,12 @@ public class AppModule extends AbstractGinModule {
     @Override
     protected void configure() {
         bind(AuthenticatedUser.class).toProvider(ClientSideAuthProvider.class);
-        bind(RemoteCommandServiceAsync.class).toProvider(RemoteServiceProvider.class).in(Singleton.class);
-        bind(IncompatibleRemoteHandler.class).to(IncompatibleRemoteDialog.class);
-        bind(Dispatcher.class).annotatedWith(Remote.class).to(RemoteDispatcher.class).in(Singleton.class);
+        bind(RemoteCommandServiceAsync.class).toProvider(
+            RemoteServiceProvider.class).in(Singleton.class);
+        bind(IncompatibleRemoteHandler.class)
+            .to(IncompatibleRemoteDialog.class);
+        bind(Dispatcher.class).annotatedWith(Remote.class)
+            .to(RemoteDispatcher.class).in(Singleton.class);
         bind(DispatchEventSource.class).to(CacheManager.class);
         bind(PageStateSerializer.class).in(Singleton.class);
         bind(EventBus.class).to(LoggingEventBus.class).in(Singleton.class);
@@ -70,10 +70,11 @@ public class AppModule extends AbstractGinModule {
         bind(Frame.class).annotatedWith(Root.class).to(AppFrameSet.class);
         bind(GalleryView.class).to(GalleryPage.class);
     }
-    
+
     @Provides
-    public Dispatcher provideDispatcher(CacheManager proxyManager, LocalController controller) {
-    	return new CachingDispatcher(proxyManager, 
-    			new MergingDispatcher(controller, Scheduler.get()));
+    public Dispatcher provideDispatcher(CacheManager proxyManager,
+        LocalController controller) {
+        return new CachingDispatcher(proxyManager,
+            new MergingDispatcher(controller, Scheduler.get()));
     }
 }

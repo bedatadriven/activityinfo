@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -25,8 +23,8 @@ package org.activityinfo.shared.report.model;
  */
 
 public enum SortType {
-	DEFINED,
-	NATURAL_VALUE,
-	NATURAL_LABEL,
-	CUSTOM
+    DEFINED,
+    NATURAL_VALUE,
+    NATURAL_LABEL,
+    CUSTOM
 }

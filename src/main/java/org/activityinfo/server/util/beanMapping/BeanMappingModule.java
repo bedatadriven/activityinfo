@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.util.beanMapping;
 
 /*

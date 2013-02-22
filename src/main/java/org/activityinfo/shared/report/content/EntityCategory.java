@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -25,9 +23,8 @@ package org.activityinfo.shared.report.content;
  */
 
 /**
- * DimensionCategory class for all categories of Dimensions 
- * that are defined by database entities, like partner, activity,
- * indicator, etc.
+ * DimensionCategory class for all categories of Dimensions that are defined by
+ * database entities, like partner, activity, indicator, etc.
  */
 public class EntityCategory implements DimensionCategory {
 
@@ -106,7 +103,6 @@ public class EntityCategory implements DimensionCategory {
 
     @Override
     public String toString() {
-        return "EntityCategory{" + id +  " '" + label + "'}";
+        return "EntityCategory{" + id + " '" + label + "'}";
     }
 }
-

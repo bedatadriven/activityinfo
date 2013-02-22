@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -26,7 +24,7 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.SyncRegionUpdate;
 
-public class GetSyncRegionUpdates implements Command<SyncRegionUpdate>  {
+public class GetSyncRegionUpdates implements Command<SyncRegionUpdate> {
     private String regionId;
     private String localVersion;
 

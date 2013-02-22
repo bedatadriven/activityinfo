@@ -22,8 +22,6 @@ package org.activityinfo.client.page.entry.grouping;
  * #L%
  */
 
-
 public abstract class GroupingModel {
 
-		
 }

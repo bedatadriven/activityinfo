@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.kml;
 
 /*
@@ -42,7 +40,7 @@ public class KMLNamespace {
     public KMLNamespace(XmlBuilder builder) {
         this.builder = builder;
 
-        xmlDateFormat = (SimpleDateFormat)SimpleDateFormat.getInstance();
+        xmlDateFormat = (SimpleDateFormat) SimpleDateFormat.getInstance();
         xmlDateFormat.applyPattern("yyyy-MM-dd");
     }
 
@@ -63,13 +61,12 @@ public class KMLNamespace {
         return e("Folder");
     }
 
-
     public KMLNamespace name(String value) throws SAXException {
-       return  s("name", value);
+        return s("name", value);
     }
 
     public KMLNamespace open(boolean value) throws SAXException {
-       return s("open", value ? "1" : "0");
+        return s("open", value ? "1" : "0");
     }
 
     public XmlElement startDocument() throws SAXException {
@@ -80,15 +77,15 @@ public class KMLNamespace {
     public XmlElement startStyle() throws SAXException {
         return e("Style");
     }
-    
+
     public XmlElement startBalloonStyle() throws SAXException {
         return e("BalloonStyle");
     }
-    
+
     public KMLNamespace text(String value) throws SAXException {
         return s("text", value);
     }
-    
+
     public XmlElement startPlaceMark() throws SAXException {
         return e("Placemark");
     }
@@ -110,7 +107,8 @@ public class KMLNamespace {
     }
 
     public KMLNamespace coordinates(double lng, double lat) throws SAXException {
-        return s("coordinates", Double.toString(lng) + "," + Double.toString(lat));
+        return s("coordinates",
+            Double.toString(lng) + "," + Double.toString(lat));
     }
 
     public XmlElement startNetworkLink() throws SAXException {
@@ -133,8 +131,8 @@ public class KMLNamespace {
         return e("Link");
     }
 
-    public KMLNamespace  href(String url) throws SAXException {
-       return s("href", url);
+    public KMLNamespace href(String url) throws SAXException {
+        return s("href", url);
     }
 
     public XmlElement startTimeSpan() throws SAXException {
@@ -146,7 +144,7 @@ public class KMLNamespace {
     }
 
     public KMLNamespace begin(Date value) throws SAXException {
-    	return s("begin", xmlDateFormat.format(value));
+        return s("begin", xmlDateFormat.format(value));
     }
 
     public KMLNamespace end(Date value) throws SAXException {

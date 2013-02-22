@@ -22,49 +22,77 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-	
-	<changeSet author="alex" id="008-01-changed">
-		<comment>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet author="alex" id="008-01-changed">
+    <comment>
 			Shortens string keys because MySQL reserves 4-bytes for each character
 			when using utfmb4 and imposes a maximum key length of 1000.
 		</comment>
-		<modifyDataType tableName="basemap" columnName="id" newDataType="varchar(50)"/>
-		<modifyDataType tableName="siteattachment" columnName="blobid" newDataType="varchar(50)"/>
-				
-		<sql>
-			ALTER TABLE activity CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE adminentity CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE adminlevel CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE attribute CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE attributegroup CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE attributegroupinactivity CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE attributevalue CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE authentication CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE basemap CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE country CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE indicator CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE indicatorlink CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE indicatorvalue CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE location CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE locationadminlink CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE locationtype CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE lockedperiod CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE partner CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE partnerindatabase CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE project CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE reportingperiod CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE reportsubscription CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE reporttemplate CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE reportvisibility CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE site CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE siteattachment CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE target CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE targetvalue CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE userdatabase CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE userlogin CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-			ALTER TABLE userpermission CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
-		</sql>
-	</changeSet>
+    <modifyDataType tableName="basemap" columnName="id"
+      newDataType="varchar(50)" />
+    <modifyDataType tableName="siteattachment"
+      columnName="blobid" newDataType="varchar(50)" />
+
+    <sql>
+      ALTER TABLE activity CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE adminentity CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE adminlevel CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE attribute CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE attributegroup CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE attributegroupinactivity CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE attributevalue CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE authentication CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE basemap CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+      ALTER TABLE country CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE indicator CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE indicatorlink CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE indicatorvalue CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE location CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE locationadminlink CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE locationtype CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE lockedperiod CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE partner CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+      ALTER TABLE partnerindatabase CONVERT TO CHARACTER SET utf8
+      COLLATE utf8_general_ci;
+      ALTER TABLE project CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+      ALTER TABLE reportingperiod CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE reportsubscription CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE reporttemplate CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE reportvisibility CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE site CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+      ALTER TABLE siteattachment CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE target CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+      ALTER TABLE targetvalue CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE userdatabase CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE userlogin CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+      ALTER TABLE userpermission CONVERT TO CHARACTER SET utf8 COLLATE
+      utf8_general_ci;
+    </sql>
+  </changeSet>
 </databaseChangeLog>

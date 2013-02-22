@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.server.database.hibernate.entity;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -71,7 +68,6 @@ public class AdminEntity implements java.io.Serializable {
         this.name = name;
     }
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AdminEntityId", unique = true, nullable = false)
@@ -95,12 +91,12 @@ public class AdminEntity implements java.io.Serializable {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "LocationAdminLink",
-            joinColumns = {
-                    @JoinColumn(name = "AdminEntityId", nullable = false, updatable = false)},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "LocationId", nullable = false, updatable = false)}
-    )
-    public Set<Location> getLocations() {
+        joinColumns = {
+            @JoinColumn(name = "AdminEntityId", nullable = false, updatable = false) },
+        inverseJoinColumns = {
+            @JoinColumn(name = "LocationId", nullable = false, updatable = false) }
+        )
+        public Set<Location> getLocations() {
         return this.locations;
     }
 
@@ -154,15 +150,15 @@ public class AdminEntity implements java.io.Serializable {
         this.bounds = bounds;
     }
 
-
-//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "adminEntities")
-//	public Set<Location> getLocations() {
-//		return this.locations;
-//	}
-//
-//	public void setLocations(Set<Location> locations) {
-//		this.locations = locations;
-//	}
+    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy =
+    // "adminEntities")
+    // public Set<Location> getLocations() {
+    // return this.locations;
+    // }
+    //
+    // public void setLocations(Set<Location> locations) {
+    // this.locations = locations;
+    // }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
     public Set<AdminEntity> getChildren() {
@@ -181,7 +177,7 @@ public class AdminEntity implements java.io.Serializable {
     public void setTargets(Set<Target> targets) {
         this.targets = targets;
     }
-    
+
     @Override
     public String toString() {
         return getName() + "[id=" + getId() + "]";

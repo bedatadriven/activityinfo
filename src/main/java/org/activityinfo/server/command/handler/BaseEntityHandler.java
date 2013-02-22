@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -47,9 +45,8 @@ import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 
 /**
- * Provides functionality common to CreateEntityHandler and
- * UpdateEntityHandler
- *
+ * Provides functionality common to CreateEntityHandler and UpdateEntityHandler
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class BaseEntityHandler {
@@ -60,7 +57,8 @@ public class BaseEntityHandler {
         this.em = em;
     }
 
-    protected void updateIndicatorProperties(Indicator indicator, Map<String, Object> changes) {
+    protected void updateIndicatorProperties(Indicator indicator,
+        Map<String, Object> changes) {
         if (changes.containsKey("name")) {
             indicator.setName((String) changes.get("name"));
         }
@@ -92,7 +90,8 @@ public class BaseEntityHandler {
         indicator.getActivity().getDatabase().setLastSchemaUpdate(new Date());
     }
 
-    protected void updateAttributeProperties(Map<String, Object> changes, Attribute attribute) {
+    protected void updateAttributeProperties(Map<String, Object> changes,
+        Attribute attribute) {
         if (changes.containsKey("name")) {
             attribute.setName((String) changes.get("name"));
         }
@@ -102,7 +101,8 @@ public class BaseEntityHandler {
         // TODO: update lastSchemaUpdate
     }
 
-    protected void updateAttributeGroupProperties(AttributeGroup group, Map<String, Object> changes) {
+    protected void updateAttributeGroupProperties(AttributeGroup group,
+        Map<String, Object> changes) {
         if (changes.containsKey("name")) {
             group.setName((String) changes.get("name"));
         }
@@ -114,34 +114,36 @@ public class BaseEntityHandler {
             group.setSortOrder((Integer) changes.get("sortOrder"));
         }
     }
-    
-    protected void updateLockedPeriodProperties(LockedPeriod lockedPeriod, Map<String, Object> changes) {
+
+    protected void updateLockedPeriodProperties(LockedPeriod lockedPeriod,
+        Map<String, Object> changes) {
         if (changes.containsKey("name")) {
-        	lockedPeriod.setName((String) changes.get("name"));
+            lockedPeriod.setName((String) changes.get("name"));
         }
         if (changes.containsKey("toDate")) {
-        	lockedPeriod.setToDate((LocalDate) changes.get("toDate"));
+            lockedPeriod.setToDate((LocalDate) changes.get("toDate"));
         }
         if (changes.containsKey("fromDate")) {
-        	lockedPeriod.setFromDate((LocalDate) changes.get("fromDate"));
+            lockedPeriod.setFromDate((LocalDate) changes.get("fromDate"));
         }
         if (changes.containsKey("enabled")) {
-        	lockedPeriod.setEnabled((Boolean) changes.get("enabled"));
+            lockedPeriod.setEnabled((Boolean) changes.get("enabled"));
         }
-        
+
         lockedPeriod.getParentDatabase().setLastSchemaUpdate(new Date());
         entityManager().merge(lockedPeriod);
     }
 
-    protected void updateActivityProperties(Activity activity, Map<String, Object> changes) {
+    protected void updateActivityProperties(Activity activity,
+        Map<String, Object> changes) {
         if (changes.containsKey("name")) {
             activity.setName((String) changes.get("name"));
         }
 
         if (changes.containsKey("locationType")) {
             activity.setLocationType(
-                    entityManager().getReference(LocationType.class,
-                            ((LocationTypeDTO) changes.get("locationType")).getId()));
+                entityManager().getReference(LocationType.class,
+                    ((LocationTypeDTO) changes.get("locationType")).getId()));
         }
 
         if (changes.containsKey("category")) {
@@ -153,7 +155,8 @@ public class BaseEntityHandler {
         }
 
         if (changes.containsKey("reportingFrequency")) {
-            activity.setReportingFrequency((Integer) changes.get("reportingFrequency"));
+            activity.setReportingFrequency((Integer) changes
+                .get("reportingFrequency"));
         }
 
         if (changes.containsKey("sortOrder")) {
@@ -162,49 +165,54 @@ public class BaseEntityHandler {
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
-    
-    protected void updateTargetProperties(Target target, Map<String, Object> changes) {
+
+    protected void updateTargetProperties(Target target,
+        Map<String, Object> changes) {
         if (changes.containsKey("name")) {
-        	target.setName((String) changes.get("name"));
+            target.setName((String) changes.get("name"));
         }
 
         if (changes.containsKey("date1")) {
-        	target.setDate1((Date) changes.get("date1"));
+            target.setDate1((Date) changes.get("date1"));
         }
-        
+
         if (changes.containsKey("date2")) {
-        	target.setDate2((Date) changes.get("date2"));
+            target.setDate2((Date) changes.get("date2"));
         }
-        
+
         if (changes.containsKey("projectId")) {
             target.setProject(
-                    entityManager().getReference(Project.class,
-                            changes.get("projectId")));
+                entityManager().getReference(Project.class,
+                    changes.get("projectId")));
         }
-       
+
         if (changes.containsKey("partnerId")) {
             target.setPartner(
-                    entityManager().getReference(Partner.class,
-                             changes.get("partnerId")));
+                entityManager().getReference(Partner.class,
+                    changes.get("partnerId")));
         }
-        
+
         if (changes.containsKey("AdminEntityId")) {
             target.setAdminEntity(
-                    entityManager().getReference(AdminEntity.class,
-                             changes.get("AdminEntityId")));
+                entityManager().getReference(AdminEntity.class,
+                    changes.get("AdminEntityId")));
         }
-        
+
     }
-    
 
     /**
-     * Asserts that the user has permission to modify the structure of the given database.
-     *
-     * @param user     THe user for whom to check permissions
-     * @param database The database the user is trying to modify
-     * @throws IllegalAccessCommandException If the user does not have permission
+     * Asserts that the user has permission to modify the structure of the given
+     * database.
+     * 
+     * @param user
+     *            THe user for whom to check permissions
+     * @param database
+     *            The database the user is trying to modify
+     * @throws IllegalAccessCommandException
+     *             If the user does not have permission
      */
-    protected void assertDesignPriviledges(User user, UserDatabase database) throws IllegalAccessCommandException {
+    protected void assertDesignPriviledges(User user, UserDatabase database)
+        throws IllegalAccessCommandException {
 
         if (!database.isAllowedDesign(user)) {
             throw new IllegalAccessCommandException();
@@ -212,8 +220,8 @@ public class BaseEntityHandler {
 
     }
 
-	public EntityManager entityManager() {
-		return em;
-	}
+    public EntityManager entityManager() {
+        return em;
+    }
 
 }

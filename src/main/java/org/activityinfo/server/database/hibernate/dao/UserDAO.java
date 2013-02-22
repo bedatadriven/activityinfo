@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -26,10 +24,10 @@ package org.activityinfo.server.database.hibernate.dao;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 
-
 /**
- * Data Access Object for the {@link org.activityinfo.server.database.hibernate.entity.User} domain class.
- *
+ * Data Access Object for the
+ * {@link org.activityinfo.server.database.hibernate.entity.User} domain class.
+ * 
  * @author Alex Bertram
  */
 public interface UserDAO extends DAO<User, Integer> {
@@ -40,5 +38,4 @@ public interface UserDAO extends DAO<User, Integer> {
 
     User findUserByChangePasswordKey(String key);
 
-   
 }

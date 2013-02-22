@@ -26,19 +26,18 @@ import org.activityinfo.shared.command.result.VoidResult;
 
 public class DeleteSiteAttachment implements MutatingCommand<VoidResult> {
 
-	
-	private String blobId;
-	
-	public DeleteSiteAttachment(){
-		
-	}
+    private String blobId;
 
-	public String getBlobId() {
-		return blobId;
-	}
+    public DeleteSiteAttachment() {
 
-	public void setBlobId(String blobId) {
-		this.blobId = blobId;
-	}
-	
+    }
+
+    public String getBlobId() {
+        return blobId;
+    }
+
+    public void setBlobId(String blobId) {
+        this.blobId = blobId;
+    }
+
 }

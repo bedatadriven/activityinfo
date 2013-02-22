@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -31,7 +29,6 @@ public class GetReports extends GetListCommand<ReportsResult> {
 
     public GetReports() {
     }
-
 
     public Integer getTemplateId() {
         return templateId;

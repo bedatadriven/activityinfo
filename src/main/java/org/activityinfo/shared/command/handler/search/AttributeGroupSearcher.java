@@ -37,35 +37,36 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AttributeGroupSearcher implements Searcher {
 
-	@Override
-	public void search(List<String> testQuery, SqlTransaction tx, final AsyncCallback<List<Integer>> callback) {
-		final List<Integer> attributeGroupIds = new ArrayList<Integer>();
+    @Override
+    public void search(List<String> testQuery, SqlTransaction tx,
+        final AsyncCallback<List<Integer>> callback) {
+        final List<Integer> attributeGroupIds = new ArrayList<Integer>();
 
-		SqlQuery
-				.select("AttributeGroupId")
-				.from("attributegroup")
-				.whereLikes("Name")
-				.likeMany(testQuery)
-				
-				.execute(tx, new SqlResultCallback() {
-					@Override
-					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-						for (SqlResultSetRow row : results.getRows()) {
-							attributeGroupIds.add(row.getInt("AttributeGroupId"));
-						}
-						callback.onSuccess(attributeGroupIds);
-					}
-					
-					@Override
-					public boolean onFailure(SqlException e) {
-						return super.onFailure(e);
-					}
-				});
-	}
+        SqlQuery
+            .select("AttributeGroupId")
+            .from("attributegroup")
+            .whereLikes("Name")
+            .likeMany(testQuery)
 
-	@Override
-	public DimensionType getDimensionType() {
-		return DimensionType.AttributeGroup;
-	}
+            .execute(tx, new SqlResultCallback() {
+                @Override
+                public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                    for (SqlResultSetRow row : results.getRows()) {
+                        attributeGroupIds.add(row.getInt("AttributeGroupId"));
+                    }
+                    callback.onSuccess(attributeGroupIds);
+                }
+
+                @Override
+                public boolean onFailure(SqlException e) {
+                    return super.onFailure(e);
+                }
+            });
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.AttributeGroup;
+    }
 
 }

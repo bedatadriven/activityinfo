@@ -44,141 +44,154 @@ import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Handles a search locally or remotely. Searchers being used utilize SQL LIKE queries, beware
- * of any OR left joins.
+ * Handles a search locally or remotely. Searchers being used utilize SQL LIKE
+ * queries, beware of any OR left joins.
  * 
- * 1. Get a filter from the query
- * 2. Get list of DB/Activities/Indicators based on filter
- * 3. Get list of recent sites
- * 4. Return result
+ * 1. Get a filter from the query 2. Get list of DB/Activities/Indicators based
+ * on filter 3. Get list of recent sites 4. Return result
  */
 public class SearchHandler implements CommandHandlerAsync<Search, SearchResult> {
-	
-	public class SearchParserException extends Throwable {
-		private String failReason;
 
-		public SearchParserException(String failReason) {
-			super();
-			this.failReason = failReason;
-		}
+    public class SearchParserException extends Throwable {
+        private String failReason;
 
-		public String getFailReason() {
-			return failReason;
-		}
-	}
+        public SearchParserException(String failReason) {
+            super();
+            this.failReason = failReason;
+        }
 
+        public String getFailReason() {
+            return failReason;
+        }
+    }
 
-	@Override
-	public void execute(final Search command, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
-		QueryParser parser = new QueryParser();
-		parser.parse(command.getSearchQuery().trim());
-		if (parser.hasFailed()) {
-			callback.onFailure(new SearchParserException(parser.getFailReason()));
-		// FIXME temporary removed the dimension search
-		// } else if (parser.hasDimensions()) { // assume more refined search using "location:kivu"-like queries
-		//	searchDimensions(parser, context, callback);
-		} else { // assume first time search
-			searchAll(parser.getSimpleSearchTerms(), context, callback);
-		}
-	}
+    @Override
+    public void execute(final Search command, final ExecutionContext context,
+        final AsyncCallback<SearchResult> callback) {
+        QueryParser parser = new QueryParser();
+        parser.parse(command.getSearchQuery().trim());
+        if (parser.hasFailed()) {
+            callback
+                .onFailure(new SearchParserException(parser.getFailReason()));
+            // FIXME temporary removed the dimension search
+            // } else if (parser.hasDimensions()) { // assume more refined
+            // search using "location:kivu"-like queries
+            // searchDimensions(parser, context, callback);
+        } else { // assume first time search
+            searchAll(parser.getSimpleSearchTerms(), context, callback);
+        }
+    }
 
-	private void checkParserResult(QueryParser parser, AsyncCallback<SearchResult> callback) {
+    private void checkParserResult(QueryParser parser,
+        AsyncCallback<SearchResult> callback) {
 
-	}
+    }
 
-	/** Assumes the user typed a generic search term without specifying a dimension. Search
-	 * using all possible searchers, and return a list of matched dimensions */
-	private void searchAll(final List<String> q, final ExecutionContext context,
-			final AsyncCallback<SearchResult> callback) {
-		
-		AllSearcher allSearcher = new AllSearcher(context.getTransaction());
-		allSearcher.searchAll(q, new AsyncCallback<Filter>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-			@Override
-			public void onSuccess(final Filter resultFilter) {
-				processFilter(context, callback, resultFilter);
-			}
+    /**
+     * Assumes the user typed a generic search term without specifying a
+     * dimension. Search using all possible searchers, and return a list of
+     * matched dimensions
+     */
+    private void searchAll(final List<String> q,
+        final ExecutionContext context,
+        final AsyncCallback<SearchResult> callback) {
 
-		});
-	}
+        AllSearcher allSearcher = new AllSearcher(context.getTransaction());
+        allSearcher.searchAll(q, new AsyncCallback<Filter>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-	private void searchDimensions(QueryParser parser, final ExecutionContext context, final AsyncCallback<SearchResult> callback) {
-		AllSearcher allSearcher = new AllSearcher(context.getTransaction());
-		allSearcher.searchDimensions(parser.getUniqueDimensions(), new AsyncCallback<Filter>() {
-			@Override
-			public void onSuccess(Filter result) {
-				processFilter(context, callback, result);
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-		});
-	}
+            @Override
+            public void onSuccess(final Filter resultFilter) {
+                processFilter(context, callback, resultFilter);
+            }
 
-	private PivotTableReportElement createSearchPivotTableElement() {
-		final PivotTableReportElement pivotTable = new PivotTableReportElement();
-		
-		pivotTable.addRowDimension(new Dimension(DimensionType.Database));
-		pivotTable.addRowDimension(new Dimension(DimensionType.Activity));
-		pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
-		
-		return pivotTable;
-	}
+        });
+    }
 
-	private void processFilter(final ExecutionContext context,
-			final AsyncCallback<SearchResult> callback,
-			final Filter resultFilter) {
-		
-		final SearchResult searchResult = new SearchResult();
-		
-		if (resultFilter.getRestrictedDimensions().size() > 0) {
+    private void searchDimensions(QueryParser parser,
+        final ExecutionContext context,
+        final AsyncCallback<SearchResult> callback) {
+        AllSearcher allSearcher = new AllSearcher(context.getTransaction());
+        allSearcher.searchDimensions(parser.getUniqueDimensions(),
+            new AsyncCallback<Filter>() {
+                @Override
+                public void onSuccess(Filter result) {
+                    processFilter(context, callback, result);
+                }
 
-			// pivot data query
-			final PivotTableReportElement pivotTable = createSearchPivotTableElement();
-			pivotTable.setFilter(resultFilter);
-			GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(pivotTable);
-			context.execute(zmd, new AsyncCallback<PivotContent>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+            });
+    }
 
-				@Override
-				public void onSuccess(PivotContent content) {
-					content.setEffectiveFilter(resultFilter);
-					searchResult.setPivotTabelData(content);
-					
-					// recent sites query
-					GetSites getSites = createGetSitesCommand(resultFilter);
-					context.execute(getSites, new AsyncCallback<SiteResult>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							callback.onFailure(caught);
-						}
-						@Override
-						public void onSuccess(SiteResult resultSites) {
-							searchResult.setRecentAdditions(resultSites.getData());
-							callback.onSuccess(searchResult);
-						}
-					});
+    private PivotTableReportElement createSearchPivotTableElement() {
+        final PivotTableReportElement pivotTable = new PivotTableReportElement();
 
-				}
-			});
-		} else {
-			// Return empty searchresult when no filtered entities found
-			callback.onSuccess(searchResult); 
-		}
-	}
-	
-	private GetSites createGetSitesCommand(final Filter resultFilter) {
-		GetSites getSites = new GetSites();
-		getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
-		getSites.setLimit(10);
-		getSites.setFilter(resultFilter);
-		return getSites;
-	}
+        pivotTable.addRowDimension(new Dimension(DimensionType.Database));
+        pivotTable.addRowDimension(new Dimension(DimensionType.Activity));
+        pivotTable.addRowDimension(new Dimension(DimensionType.Indicator));
+
+        return pivotTable;
+    }
+
+    private void processFilter(final ExecutionContext context,
+        final AsyncCallback<SearchResult> callback,
+        final Filter resultFilter) {
+
+        final SearchResult searchResult = new SearchResult();
+
+        if (resultFilter.getRestrictedDimensions().size() > 0) {
+
+            // pivot data query
+            final PivotTableReportElement pivotTable = createSearchPivotTableElement();
+            pivotTable.setFilter(resultFilter);
+            GenerateElement<PivotContent> zmd = new GenerateElement<PivotContent>(
+                pivotTable);
+            context.execute(zmd, new AsyncCallback<PivotContent>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(PivotContent content) {
+                    content.setEffectiveFilter(resultFilter);
+                    searchResult.setPivotTabelData(content);
+
+                    // recent sites query
+                    GetSites getSites = createGetSitesCommand(resultFilter);
+                    context.execute(getSites, new AsyncCallback<SiteResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            callback.onFailure(caught);
+                        }
+
+                        @Override
+                        public void onSuccess(SiteResult resultSites) {
+                            searchResult.setRecentAdditions(resultSites
+                                .getData());
+                            callback.onSuccess(searchResult);
+                        }
+                    });
+
+                }
+            });
+        } else {
+            // Return empty searchresult when no filtered entities found
+            callback.onSuccess(searchResult);
+        }
+    }
+
+    private GetSites createGetSitesCommand(final Filter resultFilter) {
+        GetSites getSites = new GetSites();
+        getSites.setSortInfo(new SortInfo("DateEdited", SortDir.DESC));
+        getSites.setLimit(10);
+        getSites.setFilter(resultFilter);
+        return getSites;
+    }
 }

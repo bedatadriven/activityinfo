@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.widget;
 
 /*
@@ -29,8 +27,8 @@ import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
- * Extension of FieldBinding to bind 
- *
+ * Extension of FieldBinding to bind
+ * 
  * @author Alex Bertram
  */
 public class MappingComboBoxBinding extends FieldBinding {
@@ -45,7 +43,7 @@ public class MappingComboBoxBinding extends FieldBinding {
 
             @Override
             public Object convertFieldValue(Object value) {
-                return ((ModelData)value).get("value");
+                return ((ModelData) value).get("value");
             }
         });
     }

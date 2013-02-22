@@ -25,32 +25,32 @@
 
 <report frequency="adhoc">
 
-    <title>My Title</title>
-    <sheetTitle>My Sheet Title</sheetTitle>
-    <fileName>My File Name</fileName>
+  <title>My Title</title>
+  <sheetTitle>My Sheet Title</sheetTitle>
+  <fileName>My File Name</fileName>
 
-    <elements>
-        <pivotTable>
-            <title>A Pivot Table</title>
-        </pivotTable>
-        <pivotChart>
-            <title>A Pivot Chart</title>
-        </pivotChart>
-        <table>
-            <title>A Table</title>
-        </table>
-        <map>
-            <title>A Map</title>
-        </map>
-        <text>
-       	 	<p>This is static text and image.</p>
-       	 </text>
-       	 <text>
-       	 	<p>This is text only</p>
-       	 </text>
-       	<image>
-       	 	<url>http://www.google.nl/logos/2010/oz10-hp.gif</url>
-       	 </image>
-    </elements>
+  <elements>
+    <pivotTable>
+      <title>A Pivot Table</title>
+    </pivotTable>
+    <pivotChart>
+      <title>A Pivot Chart</title>
+    </pivotChart>
+    <table>
+      <title>A Table</title>
+    </table>
+    <map>
+      <title>A Map</title>
+    </map>
+    <text>
+      <p>This is static text and image.</p>
+    </text>
+    <text>
+      <p>This is text only</p>
+    </text>
+    <image>
+      <url>http://www.google.nl/logos/2010/oz10-hp.gif</url>
+    </image>
+  </elements>
 
 </report>

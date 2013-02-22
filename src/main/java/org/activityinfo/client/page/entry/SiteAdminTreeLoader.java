@@ -50,173 +50,179 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Loads sites grouped by a set of AdminLevels
  */
-class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> implements SiteTreeLoader {
+class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> implements
+    SiteTreeLoader {
 
-	private TreeProxy treeProxy;
-	
-	public SiteAdminTreeLoader(Dispatcher dispatcher, AdminGroupingModel groupingModel) {
-		super(new TreeProxy(dispatcher));
-		treeProxy = (TreeProxy)proxy;
-		setAdminLeafLevelId(groupingModel.getAdminLevelId());
-	}
-	
-	public void setAdminLeafLevelId(int leafLevelId) {
-		treeProxy.setAdminLeafLevelId(leafLevelId);
-	}
-	
-	@Override
-	public void setFilter(Filter filter) {
-		treeProxy.setFilter(filter);
-	}
-	
-	@Override
-	public boolean hasChildren(ModelData parent) {
-		return parent instanceof AdminEntityDTO;
-	}
-	
+    private TreeProxy treeProxy;
 
-	@Override
-	public String getKey(ModelData model) {
-		if(model instanceof AdminEntityDTO) {
-			return "A" + ((AdminEntityDTO) model).getId();
-		} else if(model instanceof SiteDTO) {
-			return "S" + ((SiteDTO) model).getId();
-		} else {
-			return "X" + model.hashCode();
-		}
-	}
-		
-	private static class TreeProxy extends RpcProxy<List<ModelData>> {
+    public SiteAdminTreeLoader(Dispatcher dispatcher,
+        AdminGroupingModel groupingModel) {
+        super(new TreeProxy(dispatcher));
+        treeProxy = (TreeProxy) proxy;
+        setAdminLeafLevelId(groupingModel.getAdminLevelId());
+    }
 
-		private final Dispatcher dispatcher;
-		private List<Integer> adminLevelIds = null;
-		private int leafLevelId;
-		private Filter filter;
-		
-		public TreeProxy(Dispatcher dispatcher) {
-			super();
-			this.dispatcher = dispatcher;
-		}
+    public void setAdminLeafLevelId(int leafLevelId) {
+        treeProxy.setAdminLeafLevelId(leafLevelId);
+    }
 
-		public void setFilter(Filter filter) {
-			this.filter = filter;
-		}
+    @Override
+    public void setFilter(Filter filter) {
+        treeProxy.setFilter(filter);
+    }
 
-		public void setAdminLeafLevelId(int leafLevelId) {
-			this.leafLevelId = leafLevelId;
-			this.adminLevelIds = null;
-		}
-		
-		@Override
-		protected void load(Object parentNode,
-				AsyncCallback<List<ModelData>> callback) {
-		
-			if(adminLevelIds == null) {
-				loadAdminLevels(parentNode, callback);
-			} else {
-				loadNodes(parentNode, callback);
-			}
-		}
+    @Override
+    public boolean hasChildren(ModelData parent) {
+        return parent instanceof AdminEntityDTO;
+    }
 
-		private void loadAdminLevels(final Object parentNode,
-				final AsyncCallback<List<ModelData>> callback) {
+    @Override
+    public String getKey(ModelData model) {
+        if (model instanceof AdminEntityDTO) {
+            return "A" + ((AdminEntityDTO) model).getId();
+        } else if (model instanceof SiteDTO) {
+            return "S" + ((SiteDTO) model).getId();
+        } else {
+            return "X" + model.hashCode();
+        }
+    }
 
-			dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+    private static class TreeProxy extends RpcProxy<List<ModelData>> {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+        private final Dispatcher dispatcher;
+        private List<Integer> adminLevelIds = null;
+        private int leafLevelId;
+        private Filter filter;
 
-				@Override
-				public void onSuccess(SchemaDTO result) {
-					try {
-						initLevels(result);
-						loadNodes(parentNode, callback);
-					} catch(Exception e) {
-						callback.onFailure(e);
-					}
-				}
-			});
-		}
+        public TreeProxy(Dispatcher dispatcher) {
+            super();
+            this.dispatcher = dispatcher;
+        }
 
-		private void initLevels(SchemaDTO result) {
-			CountryDTO country = result.getCountryByAdminLevelId(leafLevelId);
-			adminLevelIds = Lists.newArrayList();
-			for(AdminLevelDTO level : country.getAdminLevelAncestors(leafLevelId)) {
-				adminLevelIds.add(level.getId());
-			}
-		}	
+        public void setFilter(Filter filter) {
+            this.filter = filter;
+        }
 
-		private void loadNodes(Object parentNode,
-				AsyncCallback<List<ModelData>> callback) {
-			if(parentNode == null) {
-				GetAdminEntities query = new GetAdminEntities(adminLevelIds.get(0));
-				query.setFilter(filter);
-				
-				loadAdminEntities(query, callback);
-				
-			} else if(parentNode instanceof AdminEntityDTO) {
-				AdminEntityDTO parentEntity = (AdminEntityDTO) parentNode;
-				int depth = adminLevelIds.indexOf(parentEntity.getLevelId());
-				if(depth+1 < adminLevelIds.size()) {
-					loadChildAdminLevels(parentEntity, adminLevelIds.get(depth+1), callback);
-				} else {
-					loadSites(parentEntity, callback);
-				}
-			}
-		}
-		
-		private void loadChildAdminLevels(AdminEntityDTO parentEntity,
-				int adminLevelId,
-				AsyncCallback<List<ModelData>> callback) {
-			
-			GetAdminEntities query = new GetAdminEntities();
-			query.setLevelId(adminLevelId);
-			query.setParentId(parentEntity.getId());
-			query.setFilter(filter);
-			
-			loadAdminEntities(query, callback);
-		}
-		
-		private void loadAdminEntities(GetAdminEntities query, final AsyncCallback<List<ModelData>> callback) {
-			dispatcher.execute(query, new AsyncCallback<AdminEntityResult>() {
+        public void setAdminLeafLevelId(int leafLevelId) {
+            this.leafLevelId = leafLevelId;
+            this.adminLevelIds = null;
+        }
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+        @Override
+        protected void load(Object parentNode,
+            AsyncCallback<List<ModelData>> callback) {
 
-				@Override
-				public void onSuccess(AdminEntityResult result) {
-					callback.onSuccess((List)result.getData());
-				}
-			});
-		}
+            if (adminLevelIds == null) {
+                loadAdminLevels(parentNode, callback);
+            } else {
+                loadNodes(parentNode, callback);
+            }
+        }
 
-		private void loadSites(AdminEntityDTO parentEntity,
-				final AsyncCallback<List<ModelData>> callback) {
+        private void loadAdminLevels(final Object parentNode,
+            final AsyncCallback<List<ModelData>> callback) {
 
-			Filter childFilter = new Filter(filter);
-			childFilter.addRestriction(DimensionType.AdminLevel, parentEntity.getId());
-			
-			GetSites siteQuery = new GetSites();
-			siteQuery.setFilter(childFilter);
-			siteQuery.setSortInfo(new SortInfo("locationName", SortDir.ASC));
-			
-			dispatcher.execute(siteQuery, new AsyncCallback<SiteResult>() {
+            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
 
-				@Override
-				public void onSuccess(SiteResult result) {
-					callback.onSuccess((List)result.getData());
-				}
-			});
-		}
-	}
+                @Override
+                public void onSuccess(SchemaDTO result) {
+                    try {
+                        initLevels(result);
+                        loadNodes(parentNode, callback);
+                    } catch (Exception e) {
+                        callback.onFailure(e);
+                    }
+                }
+            });
+        }
+
+        private void initLevels(SchemaDTO result) {
+            CountryDTO country = result.getCountryByAdminLevelId(leafLevelId);
+            adminLevelIds = Lists.newArrayList();
+            for (AdminLevelDTO level : country
+                .getAdminLevelAncestors(leafLevelId)) {
+                adminLevelIds.add(level.getId());
+            }
+        }
+
+        private void loadNodes(Object parentNode,
+            AsyncCallback<List<ModelData>> callback) {
+            if (parentNode == null) {
+                GetAdminEntities query = new GetAdminEntities(
+                    adminLevelIds.get(0));
+                query.setFilter(filter);
+
+                loadAdminEntities(query, callback);
+
+            } else if (parentNode instanceof AdminEntityDTO) {
+                AdminEntityDTO parentEntity = (AdminEntityDTO) parentNode;
+                int depth = adminLevelIds.indexOf(parentEntity.getLevelId());
+                if (depth + 1 < adminLevelIds.size()) {
+                    loadChildAdminLevels(parentEntity,
+                        adminLevelIds.get(depth + 1), callback);
+                } else {
+                    loadSites(parentEntity, callback);
+                }
+            }
+        }
+
+        private void loadChildAdminLevels(AdminEntityDTO parentEntity,
+            int adminLevelId,
+            AsyncCallback<List<ModelData>> callback) {
+
+            GetAdminEntities query = new GetAdminEntities();
+            query.setLevelId(adminLevelId);
+            query.setParentId(parentEntity.getId());
+            query.setFilter(filter);
+
+            loadAdminEntities(query, callback);
+        }
+
+        private void loadAdminEntities(GetAdminEntities query,
+            final AsyncCallback<List<ModelData>> callback) {
+            dispatcher.execute(query, new AsyncCallback<AdminEntityResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(AdminEntityResult result) {
+                    callback.onSuccess((List) result.getData());
+                }
+            });
+        }
+
+        private void loadSites(AdminEntityDTO parentEntity,
+            final AsyncCallback<List<ModelData>> callback) {
+
+            Filter childFilter = new Filter(filter);
+            childFilter.addRestriction(DimensionType.AdminLevel,
+                parentEntity.getId());
+
+            GetSites siteQuery = new GetSites();
+            siteQuery.setFilter(childFilter);
+            siteQuery.setSortInfo(new SortInfo("locationName", SortDir.ASC));
+
+            dispatcher.execute(siteQuery, new AsyncCallback<SiteResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(SiteResult result) {
+                    callback.onSuccess((List) result.getData());
+                }
+            });
+        }
+    }
 
 }

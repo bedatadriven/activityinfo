@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.kml;
 
 /*
@@ -60,9 +58,10 @@ import com.google.inject.Singleton;
  * Serves a KML (Google Earth) file containing the locations of all activities
  * that are visible to the user.
  * <p/>
- * Users are authenticated using Basic HTTP authentication, and will see a prompt
- * for their username (email) and password when they access from Google Earth.
- *
+ * Users are authenticated using Basic HTTP authentication, and will see a
+ * prompt for their username (email) and password when they access from Google
+ * Earth.
+ * 
  * @author Alex Bertram
  */
 @Singleton
@@ -70,39 +69,41 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     private final DispatcherSync dispatcher;
     private final BasicAuthentication authenticator;
-    
+
     private final Provider<EntityManager> entityManager;
+
     @Inject
     public KmlDataServlet(
-    		Provider<EntityManager> entityManager,
-    		BasicAuthentication authenticator,
-			DispatcherSync dispatcher){
-    	
-    	this.entityManager = entityManager;
-    	this.authenticator = authenticator;
-		this.dispatcher = dispatcher;
-    }
-    
-    public void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
-        PrintWriter out = res.getWriter();
+        Provider<EntityManager> entityManager,
+        BasicAuthentication authenticator,
+        DispatcherSync dispatcher) {
 
-        int activityId =Integer.valueOf(req.getParameter("activityId"));
-        
+        this.entityManager = entityManager;
+        this.authenticator = authenticator;
+        this.dispatcher = dispatcher;
+    }
+
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, IOException {
+        res.getWriter();
+
+        int activityId = Integer.valueOf(req.getParameter("activityId"));
+
         // Get Authorization header
         String auth = req.getHeader("Authorization");
 
         // Do we allow that user?
         User user = authenticator.doAuthentication(auth);
-        
+
         if (user == null) {
             // Not allowed, or no password provided so report unauthorized
-            res.setHeader("WWW-Authenticate", "BASIC realm=\"Utilisateurs authorises\"");
+            res.setHeader("WWW-Authenticate",
+                "BASIC realm=\"Utilisateurs authorises\"");
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        
         res.setContentType("application/vnd.google-earth.kml+xml");
 
         try {
@@ -118,9 +119,9 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-    
-
-    protected void writeDocument(User user, PrintWriter out, int actvityId) throws TransformerConfigurationException, SAXException, CommandException {
+    protected void writeDocument(User user, PrintWriter out, int actvityId)
+        throws TransformerConfigurationException, SAXException,
+        CommandException {
 
         // TODO: rewrite using FreeMarker
 
@@ -129,7 +130,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         XmlBuilder xml = new XmlBuilder(new StreamResult(out));
 
         SchemaDTO schema = dispatcher.execute(new GetSchema());
-        		
+
         List<SiteDTO> sites = querySites(user, schema, actvityId);
 
         xml.startDocument();
@@ -138,15 +139,15 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         kml.startKml();
 
-        ActivityDTO activity = schema.getActivityById(actvityId); 
+        ActivityDTO activity = schema.getActivityById(actvityId);
         kml.startDocument();
-        
+
         kml.startStyle().at("id", "noDirectionsStyle");
         kml.startBalloonStyle();
         kml.text("$[description]");
         xml.close();
         xml.close();
-        
+
         for (SiteDTO pm : sites) {
 
             if (pm.hasLatLong()) {
@@ -161,38 +162,37 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
                 kml.startDescription();
                 xml.cdata(renderDescription(activity, pm));
-                xml.close();  // Description
+                xml.close(); // Description
 
                 kml.startTimeSpan();
-                if(pm.getDate1() != null){
-                	kml.begin(pm.getDate1().atMidnightInMyTimezone());
+                if (pm.getDate1() != null) {
+                    kml.begin(pm.getDate1().atMidnightInMyTimezone());
                     kml.end(pm.getDate2().atMidnightInMyTimezone());
                     xml.close(); // Timespan
                 }
-                
 
                 kml.startPoint();
                 kml.coordinates(pm.getLongitude(), pm.getLatitude());
-                xml.close();  // Point
+                xml.close(); // Point
 
-                xml.close();  // Placemark
+                xml.close(); // Placemark
             }
         }
         xml.close(); // Document
         xml.close(); // kml
         xml.endDocument();
 
-
     }
 
     private String renderSnippet(ActivityDTO activity, SiteDTO pm) {
-        return activity.getName() + " à " + pm.getLocationName() + " (" + pm.getPartnerName() + ")";
+        return activity.getName() + " à " + pm.getLocationName() + " ("
+            + pm.getPartnerName() + ")";
     }
 
     private List<SiteDTO> querySites(User user, SchemaDTO schema, int activityId) {
 
-    	Filter  filter = new Filter();
-    	filter.addRestriction(DimensionType.Activity, activityId);
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, activityId);
 
         return dispatcher.execute(new GetSites(filter)).getData();
     }
@@ -207,7 +207,8 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
                 html.startTableRow();
 
                 html.tableCell(indicator.getName());
-                html.tableCell(Double.toString(data.getIndicatorValue(indicator.getId())));
+                html.tableCell(Double.toString(data.getIndicatorValue(indicator
+                    .getId())));
                 html.tableCell(indicator.getUnits());
 
                 html.endTableRow();

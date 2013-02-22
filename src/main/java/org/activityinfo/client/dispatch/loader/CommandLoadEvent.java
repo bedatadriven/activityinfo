@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.loader;
 
 /*
@@ -31,10 +29,11 @@ import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.Loader;
 
 /**
- * Subclass of GXT LoadEvent that allows listeners to piggy-back on a load command.
- * For instance, listeners could call addCommandToBatch() to add a save command. Since
- * the save command and the load command would be part of the same batch, this would assure
- * that if the save fails, the load command fails as well.
+ * Subclass of GXT LoadEvent that allows listeners to piggy-back on a load
+ * command. For instance, listeners could call addCommandToBatch() to add a save
+ * command. Since the save command and the load command would be part of the
+ * same batch, this would assure that if the save fails, the load command fails
+ * as well.
  */
 public class CommandLoadEvent extends LoadEvent {
 

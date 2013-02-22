@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.form;
 
 /*
@@ -31,20 +29,19 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 
 public class DateRangeForm extends FormPanel {
 
-	private DateField fromDate;
-	private DateField toDate;
-	
-	public DateRangeForm() {
+    private DateField fromDate;
+    private DateField toDate;
 
-		fromDate = new DateField();
-		fromDate.setFieldLabel(I18N.CONSTANTS.fromDate());
-		add(fromDate);
-		                              
-		toDate = new DateField();
-		toDate.setFieldLabel(I18N.CONSTANTS.toDate());
-		add(toDate);
-		
-	}
-	
+    public DateRangeForm() {
+
+        fromDate = new DateField();
+        fromDate.setFieldLabel(I18N.CONSTANTS.fromDate());
+        add(fromDate);
+
+        toDate = new DateField();
+        toDate.setFieldLabel(I18N.CONSTANTS.toDate());
+        add(toDate);
+
+    }
 
 }

@@ -32,77 +32,79 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 
 public class CoordinateFields {
-	private CoordinateField latitudeField;
-	private CoordinateField longitudeField;
-	
-	public CoordinateFields() {
-		longitudeField = new CoordinateField(Axis.LONGITUDE);
-		longitudeField.setFieldLabel(I18N.CONSTANTS.longitude());
-		
-		latitudeField = new CoordinateField(Axis.LATITUDE);
-		latitudeField.setFieldLabel(I18N.CONSTANTS.latitude());
-	}
-	
-	public void setToolTip(String toolTip) {
-		longitudeField.setToolTip(toolTip);
-		latitudeField.setToolTip(toolTip);
-	}
-	
-	public void setBounds(String name, Extents bounds) {
-		longitudeField.setBounds(name, bounds.getMinLon(), bounds.getMaxLon());
-		latitudeField.setBounds(name, bounds.getMinLat(), bounds.getMaxLat());
-	}
+    private CoordinateField latitudeField;
+    private CoordinateField longitudeField;
 
-	public CoordinateField getLatitudeField() {
-		return latitudeField;
-	}
+    public CoordinateFields() {
+        longitudeField = new CoordinateField(Axis.LONGITUDE);
+        longitudeField.setFieldLabel(I18N.CONSTANTS.longitude());
 
-	public CoordinateField getLongitudeField() {
-		return longitudeField;
-	}
+        latitudeField = new CoordinateField(Axis.LATITUDE);
+        latitudeField.setFieldLabel(I18N.CONSTANTS.latitude());
+    }
 
-	public void setValue(AiLatLng latLng) {
-		if(latLng  == null) {
-			latitudeField.setValue(null);
-			longitudeField.setValue(null);
-		} else {
-			latitudeField.setValue(latLng.getLat());
-			longitudeField.setValue(latLng.getLng());
-		}
-	}
-	
-	public AiLatLng getValue() {
-		if(latitudeField.getValue() == null || longitudeField.getValue() == null) {
-			return null;
-		} else {
-			return new AiLatLng(latitudeField.getValue(), longitudeField.getValue());
-		}
-	}
-	
-	public void addChangeListener(final Listener<FieldEvent> listener) {
-		Listener<FieldEvent> fieldListener = new Listener<FieldEvent>() {
+    public void setToolTip(String toolTip) {
+        longitudeField.setToolTip(toolTip);
+        latitudeField.setToolTip(toolTip);
+    }
 
-			@Override
-			public void handleEvent(FieldEvent be) {
-				listener.handleEvent(be);
-			}
-		};
-		latitudeField.addListener(Events.Change, fieldListener);
-		longitudeField.addListener(Events.Change, fieldListener);
-	}
+    public void setBounds(String name, Extents bounds) {
+        longitudeField.setBounds(name, bounds.getMinLon(), bounds.getMaxLon());
+        latitudeField.setBounds(name, bounds.getMinLat(), bounds.getMaxLat());
+    }
 
-	public boolean validate() {
-		return latitudeField.validate() && longitudeField.validate();
-	}
+    public CoordinateField getLatitudeField() {
+        return latitudeField;
+    }
 
-	public void setVisible(boolean visible) {
-		latitudeField.setVisible(visible);
-		longitudeField.setVisible(visible);
-	}
+    public CoordinateField getLongitudeField() {
+        return longitudeField;
+    }
 
-	public void setReadOnly(boolean readOnly) {
-		latitudeField.setReadOnly(readOnly);
-		longitudeField.setReadOnly(readOnly);
-	}
-	
+    public void setValue(AiLatLng latLng) {
+        if (latLng == null) {
+            latitudeField.setValue(null);
+            longitudeField.setValue(null);
+        } else {
+            latitudeField.setValue(latLng.getLat());
+            longitudeField.setValue(latLng.getLng());
+        }
+    }
+
+    public AiLatLng getValue() {
+        if (latitudeField.getValue() == null
+            || longitudeField.getValue() == null) {
+            return null;
+        } else {
+            return new AiLatLng(latitudeField.getValue(),
+                longitudeField.getValue());
+        }
+    }
+
+    public void addChangeListener(final Listener<FieldEvent> listener) {
+        Listener<FieldEvent> fieldListener = new Listener<FieldEvent>() {
+
+            @Override
+            public void handleEvent(FieldEvent be) {
+                listener.handleEvent(be);
+            }
+        };
+        latitudeField.addListener(Events.Change, fieldListener);
+        longitudeField.addListener(Events.Change, fieldListener);
+    }
+
+    public boolean validate() {
+        return latitudeField.validate() && longitudeField.validate();
+    }
+
+    public void setVisible(boolean visible) {
+        latitudeField.setVisible(visible);
+        longitudeField.setVisible(visible);
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        latitudeField.setReadOnly(readOnly);
+        longitudeField.setReadOnly(readOnly);
+    }
+
 }

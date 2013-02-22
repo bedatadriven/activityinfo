@@ -26,32 +26,33 @@ import org.activityinfo.shared.command.UploadAttachment.UploadAttachmentResult;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.AttachmentDTO;
 
-public class UploadAttachment implements MutatingCommand<UploadAttachmentResult> {
-	private AttachmentDTO attachment;
-	
-	public UploadAttachment(AttachmentDTO attachment) {
-		this.attachment = attachment;
-	}
+public class UploadAttachment implements
+    MutatingCommand<UploadAttachmentResult> {
+    private AttachmentDTO attachment;
 
-	public UploadAttachment() {
-	}
+    public UploadAttachment(AttachmentDTO attachment) {
+        this.attachment = attachment;
+    }
 
-	public AttachmentDTO getAttachment() {
-		return attachment;
-	}
+    public UploadAttachment() {
+    }
 
-	public static class UploadAttachmentResult implements CommandResult {
-		private int id;
+    public AttachmentDTO getAttachment() {
+        return attachment;
+    }
 
-		public UploadAttachmentResult() {
-		}
+    public static class UploadAttachmentResult implements CommandResult {
+        private int id;
 
-		public UploadAttachmentResult(int id) {
-			this.id = id;
-		}
+        public UploadAttachmentResult() {
+        }
 
-		public int getId() {
-			return id;
-		}
-	}
+        public UploadAttachmentResult(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
 }

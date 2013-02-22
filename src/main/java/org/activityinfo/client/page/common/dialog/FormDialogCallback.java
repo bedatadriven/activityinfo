@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.dialog;
 
 /*
@@ -26,11 +24,10 @@ package org.activityinfo.client.page.common.dialog;
 
 public abstract class FormDialogCallback {
 
-	/**
-	 * Called after the user has clicked save and the form has been 
-	 * validated
-	 */
-	public void onValidated() {
+    /**
+     * Called after the user has clicked save and the form has been validated
+     */
+    public void onValidated() {
 
     }
 
@@ -38,7 +35,7 @@ public abstract class FormDialogCallback {
         onValidated();
     }
 
-	public void onCancelled() {
-		
-	}
+    public void onCancelled() {
+
+    }
 }

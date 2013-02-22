@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -29,9 +27,9 @@ import org.activityinfo.shared.report.model.ReportElement;
 
 /**
  * Generates and returns to the client the content of an element.
- *
+ * 
  * Returns: {@link org.activityinfo.shared.report.content.Content}
- *
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class GenerateElement<T extends Content> implements Command<T> {
@@ -53,8 +51,8 @@ public class GenerateElement<T extends Content> implements Command<T> {
         this.element = element;
     }
 
-	@Override
-	public String toString() {
-		return "GenerateElement [element=" + element + "]";
-	}   
+    @Override
+    public String toString() {
+        return "GenerateElement [element=" + element + "]";
+    }
 }

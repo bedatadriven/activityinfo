@@ -31,31 +31,31 @@ import org.activityinfo.shared.dto.AttachmentDTO;
 import com.google.common.collect.Lists;
 
 public class GetAttachments implements Command<GetAttachmentsResult> {
-	private int siteId;
-	
-	public int getSiteId() {
-		return siteId;
-	}
+    private int siteId;
 
-	public GetAttachments(int siteId) {
-		this.siteId = siteId;
-	}
+    public int getSiteId() {
+        return siteId;
+    }
 
-	public GetAttachments() {
-	}
+    public GetAttachments(int siteId) {
+        this.siteId = siteId;
+    }
 
-	public static class GetAttachmentsResult implements CommandResult {
-		private List<AttachmentDTO> attachments = Lists.newArrayList();
+    public GetAttachments() {
+    }
 
-		public GetAttachmentsResult() {
-		}
+    public static class GetAttachmentsResult implements CommandResult {
+        private List<AttachmentDTO> attachments = Lists.newArrayList();
 
-		public GetAttachmentsResult(List<AttachmentDTO> attachments) {
-			this.attachments = attachments;
-		}
+        public GetAttachmentsResult() {
+        }
 
-		public List<AttachmentDTO> getAttachments() {
-			return attachments;
-		}
-	}
+        public GetAttachmentsResult(List<AttachmentDTO> attachments) {
+            this.attachments = attachments;
+        }
+
+        public List<AttachmentDTO> getAttachments() {
+            return attachments;
+        }
+    }
 }

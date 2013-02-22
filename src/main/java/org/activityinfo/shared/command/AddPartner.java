@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -28,11 +26,12 @@ import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.PartnerDTO;
 
 /**
- * Adds a {@link org.activityinfo.server.database.hibernate.entity.Partner} to the
- * the given {@link org.activityinfo.server.database.hibernate.entity.UserDatabase}
- *
+ * Adds a {@link org.activityinfo.server.database.hibernate.entity.Partner} to
+ * the the given
+ * {@link org.activityinfo.server.database.hibernate.entity.UserDatabase}
+ * 
  * Returns {@link org.activityinfo.shared.command.result.VoidResult}
- *
+ * 
  * @author Alex Bertram
  */
 public class AddPartner implements MutatingCommand<CreateResult> {

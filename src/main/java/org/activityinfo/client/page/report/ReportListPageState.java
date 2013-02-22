@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.report;
 
 /*
@@ -24,35 +22,38 @@ package org.activityinfo.client.page.report;
  * #L%
  */
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.app.Section;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Page State object
- *
+ * 
  * @author Alex Bertram
  */
 public class ReportListPageState implements PageState {
 
+    @Override
     public PageId getPageId() {
         return ReportsPage.PAGE_ID;
     }
 
+    @Override
     public String serializeAsHistoryToken() {
         return null;
     }
 
+    @Override
     public List<PageId> getEnclosingFrames() {
         return Arrays.asList(ReportsPage.PAGE_ID);
     }
 
-	@Override
-	public Section getSection() {
-		return Section.ANALYSIS;
-	}
+    @Override
+    public Section getSection() {
+        return Section.ANALYSIS;
+    }
 
 }

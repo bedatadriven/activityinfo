@@ -29,10 +29,10 @@ import org.junit.Test;
 
 public class AppEngineStorageServletTest {
 
-	@Test
-	public void parseKey() {
-		String uri = "/generated/XYZ123/My+FileName.png";
-		assertThat(AppEngineStorageServlet.parseBlobKey(uri), equalTo("XYZ123"));
-	}
-	
+    @Test
+    public void parseKey() {
+        String uri = "/generated/XYZ123/My+FileName.png";
+        assertThat(AppEngineStorageServlet.parseBlobKey(uri), equalTo("XYZ123"));
+    }
+
 }

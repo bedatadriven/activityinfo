@@ -67,251 +67,268 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ReportGridPanel extends ContentPanel implements ActionListener {
-	private Dispatcher dispatcher;
-	private ListStore<ReportMetadataDTO> store;
-	private EventBus eventBus;
-	private EditorGrid<ReportMetadataDTO> grid;
-	private ActionToolBar toolBar;
+    private Dispatcher dispatcher;
+    private ListStore<ReportMetadataDTO> store;
+    private EventBus eventBus;
+    private EditorGrid<ReportMetadataDTO> grid;
+    private ActionToolBar toolBar;
 
-	public ReportGridPanel(final EventBus eventBus, Dispatcher dispatcher) {
-		this.eventBus = eventBus;
-		this.dispatcher = dispatcher;
-		
-		setHeading("Saved Reports");
-		
-		toolBar = new ActionToolBar(this);
-		toolBar.addButton(UIActions.PRINT, I18N.CONSTANTS.open(), IconImageBundle.ICONS.pdf());
-		toolBar.addDeleteButton();
-		toolBar.addButton("share", I18N.CONSTANTS.sharingOptions(), IconImageBundle.ICONS.group());
-		toolBar.addButton("email", I18N.CONSTANTS.emailOptions(), IconImageBundle.ICONS.email());
-	
-		setTopComponent(toolBar);
-		
-		ListLoader<ReportsResult> loader = new BaseListLoader<ReportsResult>(new ReportsProxy(dispatcher));
-		store = new ListStore<ReportMetadataDTO>(loader);
-		
-		grid = new EditorGrid<ReportMetadataDTO>(store, createColumnModel());
-		grid.setStripeRows(true);
-		grid.setAutoExpandColumn("title");
-		grid.setSelectionModel(new GridSelectionModel<ReportMetadataDTO>());
-		grid.setClicksToEdit(ClicksToEdit.ONE);
-		grid.setLoadMask(true);
-		grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<ReportMetadataDTO>>() {
+    public ReportGridPanel(final EventBus eventBus, Dispatcher dispatcher) {
+        this.eventBus = eventBus;
+        this.dispatcher = dispatcher;
 
-			@Override
-			public void handleEvent(GridEvent<ReportMetadataDTO> be) {
-				open(be.getModel());
-			}
-		});
-		grid.addListener(Events.CellClick, new Listener<GridEvent<ReportMetadataDTO>>() {
+        setHeading("Saved Reports");
 
-			@Override
-			public void handleEvent(GridEvent<ReportMetadataDTO> event) {
-				if(event.getColIndex() == 0) {
-					onDashboardClicked(event.getModel());
-				}
-			}
-		});
-		grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ReportMetadataDTO>() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent<ReportMetadataDTO> se) {
-				onSelectionChanged(se.getSelectedItem());
-			}
-		});
-		
-		setLayout(new FitLayout());
-		add(grid);
-		
-		updateToolbarState(null);
-		
-		loader.load();
-	}
+        toolBar = new ActionToolBar(this);
+        toolBar.addButton(UIActions.PRINT, I18N.CONSTANTS.open(),
+            IconImageBundle.ICONS.pdf());
+        toolBar.addDeleteButton();
+        toolBar.addButton("share", I18N.CONSTANTS.sharingOptions(),
+            IconImageBundle.ICONS.group());
+        toolBar.addButton("email", I18N.CONSTANTS.emailOptions(),
+            IconImageBundle.ICONS.email());
 
+        setTopComponent(toolBar);
 
-	private void onSelectionChanged(ReportMetadataDTO selectedItem) {
-		updateToolbarState(selectedItem);
-	}
+        ListLoader<ReportsResult> loader = new BaseListLoader<ReportsResult>(
+            new ReportsProxy(dispatcher));
+        store = new ListStore<ReportMetadataDTO>(loader);
 
+        grid = new EditorGrid<ReportMetadataDTO>(store, createColumnModel());
+        grid.setStripeRows(true);
+        grid.setAutoExpandColumn("title");
+        grid.setSelectionModel(new GridSelectionModel<ReportMetadataDTO>());
+        grid.setClicksToEdit(ClicksToEdit.ONE);
+        grid.setLoadMask(true);
+        grid.addListener(Events.CellDoubleClick,
+            new Listener<GridEvent<ReportMetadataDTO>>() {
 
-	private void updateToolbarState(ReportMetadataDTO selectedItem) {
-		toolBar.setActionEnabled(UIActions.DELETE, selectedItem != null &&
-				selectedItem.getAmOwner());
-		toolBar.setActionEnabled(UIActions.PRINT, selectedItem != null);
-		toolBar.setActionEnabled("email", selectedItem != null);
-	}
+                @Override
+                public void handleEvent(GridEvent<ReportMetadataDTO> be) {
+                    open(be.getModel());
+                }
+            });
+        grid.addListener(Events.CellClick,
+            new Listener<GridEvent<ReportMetadataDTO>>() {
 
+                @Override
+                public void handleEvent(GridEvent<ReportMetadataDTO> event) {
+                    if (event.getColIndex() == 0) {
+                        onDashboardClicked(event.getModel());
+                    }
+                }
+            });
+        grid.getSelectionModel().addSelectionChangedListener(
+            new SelectionChangedListener<ReportMetadataDTO>() {
 
-	private ColumnModel createColumnModel() {
-		ColumnConfig dashboard = new ColumnConfig("dashboard", "", 28);
-		dashboard.setHeader(IconImageBundle.ICONS.star().getHTML());
-		dashboard.setResizable(false);
-		dashboard.setMenuDisabled(true);
-		dashboard.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
+                @Override
+                public void selectionChanged(
+                    SelectionChangedEvent<ReportMetadataDTO> se) {
+                    onSelectionChanged(se.getSelectedItem());
+                }
+            });
 
-			@Override
-			public Object render(ReportMetadataDTO model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ReportMetadataDTO> store, Grid<ReportMetadataDTO> grid) {
+        setLayout(new FitLayout());
+        add(grid);
 
-				return "<div style='cursor:pointer'>" + (model.isDashboard() ? IconImageBundle.ICONS.star().getHTML() :
-					IconImageBundle.ICONS.starWhite().getHTML()) + "</div>";
-				
-			}
-		});
+        updateToolbarState(null);
 
-		ColumnConfig title = new ColumnConfig("title", I18N.CONSTANTS.title(), 150);
-		ColumnConfig owner = new ColumnConfig("ownerName", I18N.CONSTANTS.ownerName(), 100);
-		owner.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
+        loader.load();
+    }
 
-			@Override
-			public Object render(ReportMetadataDTO model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ReportMetadataDTO> store,
-					Grid<ReportMetadataDTO> grid) {
-				
-				if(model.getAmOwner()) {
-					return "Me";
-				} else {
-					return model.getOwnerName();
-				}
-			}
-		});
-		
-		
-		ColumnConfig email = new ColumnConfig("email", I18N.CONSTANTS.emailSubscription(), 100);
-		email.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
+    private void onSelectionChanged(ReportMetadataDTO selectedItem) {
+        updateToolbarState(selectedItem);
+    }
 
-			@Override
-			public Object render(ReportMetadataDTO model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ReportMetadataDTO> store, Grid<ReportMetadataDTO> grid) {
+    private void updateToolbarState(ReportMetadataDTO selectedItem) {
+        toolBar.setActionEnabled(UIActions.DELETE, selectedItem != null &&
+            selectedItem.getAmOwner());
+        toolBar.setActionEnabled(UIActions.PRINT, selectedItem != null);
+        toolBar.setActionEnabled("email", selectedItem != null);
+    }
 
-				switch(model.getEmailDelivery()) {
-				case NONE:
-					return "<i>" + I18N.CONSTANTS.none() + "</i>";
-				case MONTHLY:
-					return I18N.CONSTANTS.monthly();
-				case WEEKLY:
-				default:
-					return I18N.CONSTANTS.weekly();
-				}
-			}
-		});
-		
-		
-		return new ColumnModel(Arrays.asList(dashboard, title, owner, email));
-	}
+    private ColumnModel createColumnModel() {
+        ColumnConfig dashboard = new ColumnConfig("dashboard", "", 28);
+        dashboard.setHeader(IconImageBundle.ICONS.star().getHTML());
+        dashboard.setResizable(false);
+        dashboard.setMenuDisabled(true);
+        dashboard.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
 
-	private class ReportsProxy extends RpcProxy<ReportsResult> {
+            @Override
+            public Object render(ReportMetadataDTO model, String property,
+                ColumnData config, int rowIndex, int colIndex,
+                ListStore<ReportMetadataDTO> store, Grid<ReportMetadataDTO> grid) {
 
-		private final Dispatcher dispatcher;
-		
-		public ReportsProxy(Dispatcher dispatcher) {
-			super();
-			this.dispatcher = dispatcher;
-		}
+                return "<div style='cursor:pointer'>"
+                    + (model.isDashboard() ? IconImageBundle.ICONS.star()
+                        .getHTML() :
+                        IconImageBundle.ICONS.starWhite().getHTML()) + "</div>";
 
-		@Override
-		protected void load(Object loadConfig,
-				final AsyncCallback<ReportsResult> callback) {
-			
-			dispatcher.execute(new GetReports(), new AsyncCallback<ReportsResult>() {
+            }
+        });
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+        ColumnConfig title = new ColumnConfig("title", I18N.CONSTANTS.title(),
+            150);
+        ColumnConfig owner = new ColumnConfig("ownerName",
+            I18N.CONSTANTS.ownerName(), 100);
+        owner.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
 
-				@Override
-				public void onSuccess(ReportsResult result) {
-					callback.onSuccess(result);
-				}
-			});
-		}
-	}
+            @Override
+            public Object render(ReportMetadataDTO model, String property,
+                ColumnData config, int rowIndex, int colIndex,
+                ListStore<ReportMetadataDTO> store,
+                Grid<ReportMetadataDTO> grid) {
 
-	private void onDashboardClicked(final ReportMetadataDTO model) {
-		model.setDashboard( ! model.isDashboard() );
-		store.update(model);
-		
-		UpdateReportSubscription update = new UpdateReportSubscription();
-		update.setReportId(model.getId());
-		update.setPinnedToDashboard(model.isDashboard());
-		
-		dispatcher.execute(update, new AsyncCallback<VoidResult>() {
+                if (model.getAmOwner()) {
+                    return "Me";
+                } else {
+                    return model.getOwnerName();
+                }
+            }
+        });
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+        ColumnConfig email = new ColumnConfig("email",
+            I18N.CONSTANTS.emailSubscription(), 100);
+        email.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
 
-			@Override
-			public void onSuccess(VoidResult result) {
-				Info.display(I18N.CONSTANTS.saved(), 
-					model.isDashboard() ? I18N.MESSAGES.addedToDashboard(model.getTitle()) :
-						I18N.MESSAGES.removedFromDashboard(model.getTitle()));
-			}
-		});
-		
-	}
+            @Override
+            public Object render(ReportMetadataDTO model, String property,
+                ColumnData config, int rowIndex, int colIndex,
+                ListStore<ReportMetadataDTO> store, Grid<ReportMetadataDTO> grid) {
 
-	@Override
-	public void onUIAction(String actionId) {
-		if(UIActions.PRINT.equals(actionId)) {
-			open(grid.getSelectionModel().getSelectedItem());
-		} else if("email".equals(actionId)) {
-			showEmailDialog();
-		} else if("share".equals(actionId)) {
-			ShareReportDialog dialog = new ShareReportDialog(dispatcher);
-			dialog.show(grid.getSelectionModel().getSelectedItem());
-		} else if(UIActions.DELETE.equals(actionId)) {
-			delete();
-		}
-	}
+                switch (model.getEmailDelivery()) {
+                case NONE:
+                    return "<i>" + I18N.CONSTANTS.none() + "</i>";
+                case MONTHLY:
+                    return I18N.CONSTANTS.monthly();
+                case WEEKLY:
+                default:
+                    return I18N.CONSTANTS.weekly();
+                }
+            }
+        });
 
-	private void showEmailDialog() {
-		EmailDialog dialog = new EmailDialog(dispatcher);
-		final ReportMetadataDTO selected = grid.getSelectionModel().getSelectedItem();
-		dialog.show(selected, new EmailDialog.Callback() {
-			
-			@Override
-			public void onUpdated() {
-				store.update(selected);
-			}
-		});
-	}
+        return new ColumnModel(Arrays.asList(dashboard, title, owner, email));
+    }
 
-	private void open(ReportMetadataDTO model) {
-		eventBus.fireEvent(new NavigationEvent(
-				NavigationHandler.NavigationRequested,
-				new ReportDesignPageState(model.getId())));
-	}
+    private class ReportsProxy extends RpcProxy<ReportsResult> {
 
-	private void delete() {
-		final ReportMetadataDTO report = grid.getSelectionModel().getSelectedItem();
-		MessageBox.confirm(I18N.CONSTANTS.delete(), I18N.MESSAGES.confirmDeleteReport(report.getTitle()), new Listener<MessageBoxEvent>() {
-			
-			@Override
-			public void handleEvent(MessageBoxEvent be) {
-				if(be.getButtonClicked().getItemId().equals(Dialog.YES)) {
-					dispatcher.execute(new DeleteReport(report.getId()), 
-							new MaskingAsyncMonitor(ReportGridPanel.this, I18N.CONSTANTS.delete()), new AsyncCallback<VoidResult>() {
+        private final Dispatcher dispatcher;
 
-						@Override
-						public void onFailure(Throwable caught) {
-							// handled by monitor
-						}
+        public ReportsProxy(Dispatcher dispatcher) {
+            super();
+            this.dispatcher = dispatcher;
+        }
 
-						@Override
-						public void onSuccess(VoidResult result) {
-							grid.getStore().remove(report);
-						}
-					});
-				}
-			}
-		});
-			
-	}
+        @Override
+        protected void load(Object loadConfig,
+            final AsyncCallback<ReportsResult> callback) {
+
+            dispatcher.execute(new GetReports(),
+                new AsyncCallback<ReportsResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(ReportsResult result) {
+                        callback.onSuccess(result);
+                    }
+                });
+        }
+    }
+
+    private void onDashboardClicked(final ReportMetadataDTO model) {
+        model.setDashboard(!model.isDashboard());
+        store.update(model);
+
+        UpdateReportSubscription update = new UpdateReportSubscription();
+        update.setReportId(model.getId());
+        update.setPinnedToDashboard(model.isDashboard());
+
+        dispatcher.execute(update, new AsyncCallback<VoidResult>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onSuccess(VoidResult result) {
+                Info.display(
+                    I18N.CONSTANTS.saved(),
+                    model.isDashboard() ? I18N.MESSAGES.addedToDashboard(model
+                        .getTitle()) :
+                        I18N.MESSAGES.removedFromDashboard(model.getTitle()));
+            }
+        });
+
+    }
+
+    @Override
+    public void onUIAction(String actionId) {
+        if (UIActions.PRINT.equals(actionId)) {
+            open(grid.getSelectionModel().getSelectedItem());
+        } else if ("email".equals(actionId)) {
+            showEmailDialog();
+        } else if ("share".equals(actionId)) {
+            ShareReportDialog dialog = new ShareReportDialog(dispatcher);
+            dialog.show(grid.getSelectionModel().getSelectedItem());
+        } else if (UIActions.DELETE.equals(actionId)) {
+            delete();
+        }
+    }
+
+    private void showEmailDialog() {
+        EmailDialog dialog = new EmailDialog(dispatcher);
+        final ReportMetadataDTO selected = grid.getSelectionModel()
+            .getSelectedItem();
+        dialog.show(selected, new EmailDialog.Callback() {
+
+            @Override
+            public void onUpdated() {
+                store.update(selected);
+            }
+        });
+    }
+
+    private void open(ReportMetadataDTO model) {
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_REQUESTED,
+            new ReportDesignPageState(model.getId())));
+    }
+
+    private void delete() {
+        final ReportMetadataDTO report = grid.getSelectionModel()
+            .getSelectedItem();
+        MessageBox.confirm(I18N.CONSTANTS.delete(),
+            I18N.MESSAGES.confirmDeleteReport(report.getTitle()),
+            new Listener<MessageBoxEvent>() {
+
+                @Override
+                public void handleEvent(MessageBoxEvent be) {
+                    if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                        dispatcher.execute(new DeleteReport(report.getId()),
+                            new MaskingAsyncMonitor(ReportGridPanel.this,
+                                I18N.CONSTANTS.delete()),
+                            new AsyncCallback<VoidResult>() {
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    // handled by monitor
+                                }
+
+                                @Override
+                                public void onSuccess(VoidResult result) {
+                                    grid.getStore().remove(report);
+                                }
+                            });
+                    }
+                }
+            });
+
+    }
 }

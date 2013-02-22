@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.grid;
 
 /*
@@ -41,14 +39,16 @@ public abstract class AbstractGridPageState implements PageState {
     }
 
     protected void appendGridStateToken(StringBuilder sb) {
-        
+
     }
 
     public boolean parseGridStateTokens(String t) {
-        if(t.startsWith("sort-desc:")) {
-            setSortInfo(new SortInfo(t.substring("sort-desc:".length()), Style.SortDir.DESC));
-        } else if(t.startsWith("sort:")) {
-            setSortInfo(new SortInfo(t.substring("sort:".length()), Style.SortDir.DESC));
+        if (t.startsWith("sort-desc:")) {
+            setSortInfo(new SortInfo(t.substring("sort-desc:".length()),
+                Style.SortDir.DESC));
+        } else if (t.startsWith("sort:")) {
+            setSortInfo(new SortInfo(t.substring("sort:".length()),
+                Style.SortDir.DESC));
         } else {
             return false;
         }

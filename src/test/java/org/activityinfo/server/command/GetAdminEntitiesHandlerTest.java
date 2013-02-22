@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -45,7 +43,6 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase2 {
 
     private static final int PROVINCE = 1;
 
-
     @Test
     public void testRootLevelQuery() throws Exception {
 
@@ -56,7 +53,6 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase2 {
         assertThat(result.getData().size(), equalTo(4));
     }
 
-
     @Test
     public void testChildQuery() throws Exception {
 
@@ -65,7 +61,7 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase2 {
         AdminEntityResult result = execute(cmd);
 
         assertThat(result.getData().size(), equalTo(3));
-        
+
         AdminEntityDTO kalehe = result.getData().get(0);
         assertThat(kalehe.getName(), equalTo("Kalehe"));
         assertThat(kalehe.getBounds(), is(not(nullValue())));

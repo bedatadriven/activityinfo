@@ -44,93 +44,93 @@ import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AdminLevelPanel extends LayoutContainer {
-	
-	private final Dispatcher dispatcher;
-	private RadioGroup radioGroup = new RadioGroup();
-	
-	public AdminLevelPanel(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-	}
-	
-	public void setIndicators(Collection<Integer> indicatorIds) {
-		
-		showLoading();
-		
-		GetAdminLevels query = new GetAdminLevels();
-		query.setIndicatorIds(Sets.newHashSet(indicatorIds));
-		
-		dispatcher.execute(query, new AsyncCallback<AdminLevelResult>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				showLoadingFailed();
-			}
+    private final Dispatcher dispatcher;
+    private RadioGroup radioGroup = new RadioGroup();
 
+    public AdminLevelPanel(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
 
-			@Override
-			public void onSuccess(AdminLevelResult result) {
-				showOptions(result.getData());
-			}
-		});
-	}
+    public void setIndicators(Collection<Integer> indicatorIds) {
 
-	protected void showOptions(List<AdminLevelDTO> levels) {
-		removeAll();
-		if(radioGroup != null) {
-			radioGroup.removeAllListeners();
-		}
-		radioGroup = new RadioGroup();
-		boolean missingPolygons = false;
-		for(AdminLevelDTO level : levels) {
-			Radio radio = new Radio();
-			radio.setBoxLabel(level.getName());
-			radio.setEnabled(level.getPolygons());
-			radio.setData("adminLevelId", level.getId());
-			radioGroup.add(radio);
-			add(radio);
-			
-			if(!level.getPolygons()) {
-				missingPolygons = true;
-			}
-		}
-		
-		if(missingPolygons) {
-			addMissingPolygonMessage();
-		}
-		
-		radioGroup.addListener(Events.Change, new Listener<BaseEvent>() {
+        showLoading();
 
-			@Override
-			public void handleEvent(BaseEvent be) {
-				AdminLevelPanel.this.fireEvent(Events.Change, new BaseEvent(Events.Change));
-			}
-		});
-		layout();
-	}
+        GetAdminLevels query = new GetAdminLevels();
+        query.setIndicatorIds(Sets.newHashSet(indicatorIds));
 
-	private void addMissingPolygonMessage() {
-		Text text = new Text(I18N.CONSTANTS.noPolygonsWarning());
-		Margins margin = new Margins(15, 15, 0, 0);
-		add(text, new FlowData(margin));
-	}
+        dispatcher.execute(query, new AsyncCallback<AdminLevelResult>() {
 
-	private void showLoading() {
-		removeAll();
-		add(new Text(I18N.CONSTANTS.loading()));
-		layout();
-	}
-	
-	private void showLoadingFailed() {
-		removeAll();
-		add(new Text(I18N.CONSTANTS.connectionProblem()));	
-		layout();
-	}
+            @Override
+            public void onFailure(Throwable caught) {
+                showLoadingFailed();
+            }
 
-	public Integer getSelectedLevelId() {
-		if(radioGroup.getValue() == null) {
-			return null;
-		}
-		return (Integer)radioGroup.getValue().getData("adminLevelId");
-	}
-	
+            @Override
+            public void onSuccess(AdminLevelResult result) {
+                showOptions(result.getData());
+            }
+        });
+    }
+
+    protected void showOptions(List<AdminLevelDTO> levels) {
+        removeAll();
+        if (radioGroup != null) {
+            radioGroup.removeAllListeners();
+        }
+        radioGroup = new RadioGroup();
+        boolean missingPolygons = false;
+        for (AdminLevelDTO level : levels) {
+            Radio radio = new Radio();
+            radio.setBoxLabel(level.getName());
+            radio.setEnabled(level.getPolygons());
+            radio.setData("adminLevelId", level.getId());
+            radioGroup.add(radio);
+            add(radio);
+
+            if (!level.getPolygons()) {
+                missingPolygons = true;
+            }
+        }
+
+        if (missingPolygons) {
+            addMissingPolygonMessage();
+        }
+
+        radioGroup.addListener(Events.Change, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                AdminLevelPanel.this.fireEvent(Events.Change, new BaseEvent(
+                    Events.Change));
+            }
+        });
+        layout();
+    }
+
+    private void addMissingPolygonMessage() {
+        Text text = new Text(I18N.CONSTANTS.noPolygonsWarning());
+        Margins margin = new Margins(15, 15, 0, 0);
+        add(text, new FlowData(margin));
+    }
+
+    private void showLoading() {
+        removeAll();
+        add(new Text(I18N.CONSTANTS.loading()));
+        layout();
+    }
+
+    private void showLoadingFailed() {
+        removeAll();
+        add(new Text(I18N.CONSTANTS.connectionProblem()));
+        layout();
+    }
+
+    public Integer getSelectedLevelId() {
+        if (radioGroup.getValue() == null) {
+            return null;
+        }
+        return (Integer) radioGroup.getValue().getData("adminLevelId");
+    }
+
 }

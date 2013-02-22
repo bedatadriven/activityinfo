@@ -26,20 +26,18 @@ import org.activityinfo.shared.command.result.SiteAttachmentResult;
 
 public class GetSiteAttachments implements Command<SiteAttachmentResult> {
 
-	private int siteId;
+    private int siteId;
 
-	public GetSiteAttachments() {
+    public GetSiteAttachments() {
 
-	}
+    }
 
-	public int getSiteId() {
-		return siteId;
-	}
+    public int getSiteId() {
+        return siteId;
+    }
 
-	public void setSiteId(int siteId) {
-		this.siteId = siteId;
-	}
+    public void setSiteId(int siteId) {
+        this.siteId = siteId;
+    }
 
-	
-	
 }

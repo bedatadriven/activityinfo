@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -27,45 +25,43 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.report.model.Report;
 
-
 /**
- *
+ * 
  * Creates a new Report Definition
- *
+ * 
  * Returns {@link org.activityinfo.shared.command.result.CreateResult}
- *
+ * 
  * @author Alex Bertram
  */
-public class CreateReport implements MutatingCommand<CreateResult>{
-	
-	private Integer databaseId;
-	private Report report;
+public class CreateReport implements MutatingCommand<CreateResult> {
 
-	protected CreateReport() {
-		
-	}
-	
-	public CreateReport(Report report){
-		super();
-		this.databaseId = null;
-		this.report = report;
-	}
+    private Integer databaseId;
+    private Report report;
 
+    protected CreateReport() {
 
-	public Integer getDatabaseId() {
-		return databaseId;
-	}
+    }
 
-	public void setDatabaseId(Integer databaseId) {
-		this.databaseId = databaseId;
-	}
+    public CreateReport(Report report) {
+        super();
+        this.databaseId = null;
+        this.report = report;
+    }
 
-	public Report getReport() {
-		return report;
-	}
+    public Integer getDatabaseId() {
+        return databaseId;
+    }
 
-	public void setReport(Report report) {
-		this.report = report;
-	}
+    public void setDatabaseId(Integer databaseId) {
+        this.databaseId = databaseId;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
 
 }

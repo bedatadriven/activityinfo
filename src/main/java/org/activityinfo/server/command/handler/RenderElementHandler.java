@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -22,7 +21,6 @@ package org.activityinfo.server.command.handler;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,45 +46,52 @@ import com.google.inject.Inject;
  */
 public class RenderElementHandler implements CommandHandler<RenderElement> {
 
-	private static final Logger LOGGER = Logger.getLogger(RenderElementHandler.class.getName());
-	
+    private static final Logger LOGGER = Logger
+        .getLogger(RenderElementHandler.class.getName());
+
     private final RendererFactory rendererFactory;
     private final ReportGenerator generator;
-	private StorageProvider storageProvider;
-
+    private StorageProvider storageProvider;
 
     @Inject
-    public RenderElementHandler(RendererFactory rendererFactory, ReportGenerator generator, StorageProvider storageProvider) {
+    public RenderElementHandler(RendererFactory rendererFactory,
+        ReportGenerator generator, StorageProvider storageProvider) {
         this.rendererFactory = rendererFactory;
         this.generator = generator;
         this.storageProvider = storageProvider;
     }
 
-    public CommandResult execute(RenderElement cmd, User user) throws CommandException {
-    	   	
-		try {
-			Renderer renderer = rendererFactory.get(cmd.getFormat());
-			TempStorage storage = storageProvider.allocateTemporaryFile(
-					renderer.getMimeType(), 
-					cmd.getFilename() + renderer.getFileSuffix());
-			
-	    	LOGGER.fine("Rendering element: " + cmd + "\nURL: " + storage.getUrl());
+    @Override
+    public CommandResult execute(RenderElement cmd, User user)
+        throws CommandException {
 
-			try {
-		        generator.generateElement(user, cmd.getElement(), new Filter(), new DateRange());
-				renderer.render(cmd.getElement(), storage.getOutputStream());      
-			} finally {
-				try {
-					storage.getOutputStream().close();
-				} catch(Exception e) {
-					LOGGER.log(Level.WARNING, "Exception while closing storage: " + e.getMessage(), e);
-				}
-			}
-				
-	        return new UrlResult(storage.getUrl());
-		} catch(Exception e) {
-			throw new RuntimeException("Exception generating export", e);
-		}
+        try {
+            Renderer renderer = rendererFactory.get(cmd.getFormat());
+            TempStorage storage = storageProvider.allocateTemporaryFile(
+                renderer.getMimeType(),
+                cmd.getFilename() + renderer.getFileSuffix());
+
+            LOGGER.fine("Rendering element: " + cmd + "\nURL: "
+                + storage.getUrl());
+
+            try {
+                generator.generateElement(user, cmd.getElement(), new Filter(),
+                    new DateRange());
+                renderer.render(cmd.getElement(), storage.getOutputStream());
+            } finally {
+                try {
+                    storage.getOutputStream().close();
+                } catch (Exception e) {
+                    LOGGER
+                        .log(Level.WARNING, "Exception while closing storage: "
+                            + e.getMessage(), e);
+                }
+            }
+
+            return new UrlResult(storage.getUrl());
+        } catch (Exception e) {
+            throw new RuntimeException("Exception generating export", e);
+        }
     }
 
 }

@@ -38,102 +38,105 @@ import org.activityinfo.shared.dto.SiteDTO;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Presents a form dialog for a Site for an Activity that 
- * has a LocationType that is bound to an AdminLevel
+ * Presents a form dialog for a Site for an Activity that has a LocationType
+ * that is bound to an AdminLevel
  */
-public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO> implements LocationFormSection {
+public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO>
+    implements LocationFormSection {
 
-	private final Dispatcher dispatcher;
-	
-	private AdminFieldSetPresenter adminFieldSet;
-	private AdminComboBoxSet comboBoxes;
-	private BoundAdminComboBox leafComboBox;
-	
-	private LocationDTO location;
-	
-	public BoundLocationSection(Dispatcher dispatcher, ActivityDTO activity) {
-	
-		this.dispatcher = dispatcher; 
-		
-		adminFieldSet = new AdminFieldSetPresenter(dispatcher, activity
-				.getDatabase().getCountry(), activity.getAdminLevels());
-			
-		comboBoxes = new AdminComboBoxSet(adminFieldSet, new BoundAdminComboBox.Factory());
-		
-		for (AdminComboBox comboBox : comboBoxes) {
-			add(comboBox.asWidget());
-			leafComboBox = (BoundAdminComboBox)comboBox;
-		}
-		
-	}
-	
-	@Override
-	public void updateForm(LocationDTO location, boolean isNew) {
-		this.location = location;
-		adminFieldSet.setSelection(location);
-	}
-	
+    private final Dispatcher dispatcher;
 
-	@Override
-	public void save(final AsyncCallback<Void> callback) {
-		if(isDirty()) {
-			newLocation();
-			dispatcher.execute(new CreateLocation(location), new AsyncCallback<VoidResult>() {
+    private AdminFieldSetPresenter adminFieldSet;
+    private AdminComboBoxSet comboBoxes;
+    private BoundAdminComboBox leafComboBox;
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+    private LocationDTO location;
 
-				@Override
-				public void onSuccess(VoidResult result) {
-					callback.onSuccess(null);
-				}
-			});
-		} else {
-			callback.onSuccess(null);
-		}
-	}
-	
-	private void newLocation() {
-		location = new LocationDTO(location);
-		location.setId(new KeyGenerator().generateInt());
-		location.setName(leafComboBox.getValue().getName());
-		for(AdminLevelDTO level : adminFieldSet.getAdminLevels()) {
-			location.setAdminEntity(level.getId(), adminFieldSet.getAdminEntity(level));
-		}
-	}
-	
-	private boolean isDirty() {
-		for(AdminLevelDTO level : adminFieldSet.getAdminLevels()) {
-			AdminEntityDTO original = location.getAdminEntity(level.getId());
-			AdminEntityDTO current = adminFieldSet.getAdminEntity(level);
-			
-			if(current == null && original != null) {
-				return true;
-			}
-			if(current != null && original == null) {
-				return true;
-			}
-			if(current.getId() != original.getId()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public BoundLocationSection(Dispatcher dispatcher, ActivityDTO activity) {
 
-	@Override
-	public boolean validate() {
-		return comboBoxes.validate();
-	}
+        this.dispatcher = dispatcher;
 
-	@Override
-	public void updateModel(SiteDTO m) {
-		m.setLocation(location);
-	}
+        adminFieldSet = new AdminFieldSetPresenter(dispatcher, activity
+            .getDatabase().getCountry(), activity.getAdminLevels());
 
-	@Override
-	public void updateForm(SiteDTO m) {
-		
-	}
+        comboBoxes = new AdminComboBoxSet(adminFieldSet,
+            new BoundAdminComboBox.Factory());
+
+        for (AdminComboBox comboBox : comboBoxes) {
+            add(comboBox.asWidget());
+            leafComboBox = (BoundAdminComboBox) comboBox;
+        }
+
+    }
+
+    @Override
+    public void updateForm(LocationDTO location, boolean isNew) {
+        this.location = location;
+        adminFieldSet.setSelection(location);
+    }
+
+    @Override
+    public void save(final AsyncCallback<Void> callback) {
+        if (isDirty()) {
+            newLocation();
+            dispatcher.execute(new CreateLocation(location),
+                new AsyncCallback<VoidResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(VoidResult result) {
+                        callback.onSuccess(null);
+                    }
+                });
+        } else {
+            callback.onSuccess(null);
+        }
+    }
+
+    private void newLocation() {
+        location = new LocationDTO(location);
+        location.setId(new KeyGenerator().generateInt());
+        location.setName(leafComboBox.getValue().getName());
+        for (AdminLevelDTO level : adminFieldSet.getAdminLevels()) {
+            location.setAdminEntity(level.getId(),
+                adminFieldSet.getAdminEntity(level));
+        }
+    }
+
+    private boolean isDirty() {
+        for (AdminLevelDTO level : adminFieldSet.getAdminLevels()) {
+            AdminEntityDTO original = location.getAdminEntity(level.getId());
+            AdminEntityDTO current = adminFieldSet.getAdminEntity(level);
+
+            if (current == null && original != null) {
+                return true;
+            }
+            if (current != null && original == null) {
+                return true;
+            }
+            if (current.getId() != original.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean validate() {
+        return comboBoxes.validate();
+    }
+
+    @Override
+    public void updateModel(SiteDTO m) {
+        m.setLocation(location);
+    }
+
+    @Override
+    public void updateForm(SiteDTO m) {
+
+    }
 }

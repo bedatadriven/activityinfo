@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -45,7 +43,6 @@ import org.junit.runner.RunWith;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class AttributeGroupTest extends CommandTestCase {
 
-
     @Before
     public void setUp() {
         setUser(1);
@@ -70,13 +67,15 @@ public class AttributeGroupTest extends CommandTestCase {
         SchemaDTO schema = execute(new GetSchema());
 
         ActivityDTO activity = schema.getActivityById(1);
-        AttributeGroupDTO group = activity.getAttributeGroupById(result.getNewId());
+        AttributeGroupDTO group = activity.getAttributeGroupById(result
+            .getNewId());
 
         Assert.assertNotNull("attribute group is created", group);
-        Assert.assertEquals("name is correct", group.getName(), "Type de Conflit");
-        Assert.assertTrue("multiple allowed is set to true", group.isMultipleAllowed());
+        Assert.assertEquals("name is correct", group.getName(),
+            "Type de Conflit");
+        Assert.assertTrue("multiple allowed is set to true",
+            group.isMultipleAllowed());
     }
-
 
     @Test
     public void testUpdate() throws Exception {
@@ -99,7 +98,8 @@ public class AttributeGroupTest extends CommandTestCase {
         schema = execute(new GetSchema());
 
         // verify the property has been duly changed
-        Assert.assertEquals(group.getName(), schema.getActivityById(1).getAttributeGroups().get(0).getName());
+        Assert.assertEquals(group.getName(), schema.getActivityById(1)
+            .getAttributeGroups().get(0).getName());
 
     }
 }

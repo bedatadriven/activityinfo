@@ -22,16 +22,16 @@
 
 
 <module rename-to="ActivityInfo">
-    <inherits name="org.activityinfo.ActivityInfo"/>
+  <inherits name="org.activityinfo.ActivityInfo" />
 	
 	<!-- work-around to eliminate "default locale" permutations -->
 	<!-- http://www.google.com/url?sa=D&q=http://code.google.com/p/google-web-toolkit/issues/detail%3Fid%3D5769%23c1 -->
 
-    <extend-property name="locale" values="en,fr"/>
-    <set-property-fallback name="locale" value="en"/>
-    <set-property name="locale" value="en,fr"/>
+  <extend-property name="locale" values="en,fr" />
+  <set-property-fallback name="locale" value="en" />
+  <set-property name="locale" value="en,fr" />
 
-      <set-property name="gwt.logging.logLevel" value="SEVERE"/>    
+  <set-property name="gwt.logging.logLevel" value="SEVERE" />    
    <!--    
     <set-property name="gwt.logging.logLevel" value="FINEST"/>    
  	<set-property name="compiler.stackMode" value="emulated" /> 
@@ -39,8 +39,8 @@
  		value="true" /> 
  	<set-configuration-property name="compiler.emulatedStack.recordFileNames" 
  		value="true" />  
- 	-->	
- 		
-    <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint"/> 
-    
+ 	-->
+
+  <entry-point class="org.activityinfo.client.ActivityInfoEntryPoint" />
+
 </module>

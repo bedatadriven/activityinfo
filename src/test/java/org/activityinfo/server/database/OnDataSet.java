@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database;
 
 /*
@@ -29,5 +27,5 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OnDataSet {
-	String value();
+    String value();
 }

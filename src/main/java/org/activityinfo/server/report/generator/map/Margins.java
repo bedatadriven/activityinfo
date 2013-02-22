@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -49,50 +47,50 @@ public final class Margins {
     }
 
     public void grow(Margins other) {
-        if(other.getLeft() > this.getLeft()) {
+        if (other.getLeft() > this.getLeft()) {
             this.setLeft(other.getLeft());
         }
-        if(other.getRight() > this.getRight()) {
+        if (other.getRight() > this.getRight()) {
             this.setRight(other.getRight());
         }
-        if(other.getTop() > this.getTop()) {
+        if (other.getTop() > this.getTop()) {
             this.setTop(other.getTop());
         }
-        if(other.getBottom() > this.getBottom()) {
+        if (other.getBottom() > this.getBottom()) {
             this.setBottom(other.getBottom());
         }
     }
 
-	public void setLeft(int left) {
-		this.left = left;
-	}
+    public void setLeft(int left) {
+        this.left = left;
+    }
 
-	public int getLeft() {
-		return left;
-	}
+    public int getLeft() {
+        return left;
+    }
 
-	public void setTop(int top) {
-		this.top = top;
-	}
+    public void setTop(int top) {
+        this.top = top;
+    }
 
-	public int getTop() {
-		return top;
-	}
+    public int getTop() {
+        return top;
+    }
 
-	public void setBottom(int bottom) {
-		this.bottom = bottom;
-	}
+    public void setBottom(int bottom) {
+        this.bottom = bottom;
+    }
 
-	public int getBottom() {
-		return bottom;
-	}
+    public int getBottom() {
+        return bottom;
+    }
 
-	public void setRight(int right) {
-		this.right = right;
-	}
+    public void setRight(int right) {
+        this.right = right;
+    }
 
-	public int getRight() {
-		return right;
-	}
+    public int getRight() {
+        return right;
+    }
 
 }

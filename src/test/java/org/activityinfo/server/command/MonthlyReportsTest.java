@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -41,11 +39,10 @@ import org.junit.runner.RunWith;
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class MonthlyReportsTest extends CommandTestCase {
 
-	
-	@Before
-	public void setUser() {
-		setUser(1);
-	}
+    @Before
+    public void setUser() {
+        setUser(1);
+    }
 
     @Test
     public void testMonthCompare() throws Exception {
@@ -67,8 +64,10 @@ public class MonthlyReportsTest extends CommandTestCase {
         MonthlyReportResult result = execute(cmd);
 
         Assert.assertEquals(1, result.getData().size());
-        Assert.assertEquals(35, result.getData().get(0).getValue(2009, 1).intValue());
-        Assert.assertEquals(70, result.getData().get(0).getValue(2009, 2).intValue());
+        Assert.assertEquals(35, result.getData().get(0).getValue(2009, 1)
+            .intValue());
+        Assert.assertEquals(70, result.getData().get(0).getValue(2009, 2)
+            .intValue());
     }
 
     @Test
@@ -86,9 +85,10 @@ public class MonthlyReportsTest extends CommandTestCase {
     @Test
     public void testUpdate() throws Exception {
         ArrayList<UpdateMonthlyReports.Change> changes = new ArrayList<UpdateMonthlyReports.Change>();
-        changes.add(new UpdateMonthlyReports.Change(6, new Month(2009, 1), 45.0));
-        changes.add(new UpdateMonthlyReports.Change(6, new Month(2009, 3), 22.0));
-
+        changes
+            .add(new UpdateMonthlyReports.Change(6, new Month(2009, 1), 45.0));
+        changes
+            .add(new UpdateMonthlyReports.Change(6, new Month(2009, 3), 22.0));
 
         execute(new UpdateMonthlyReports(6, changes));
 
@@ -100,10 +100,12 @@ public class MonthlyReportsTest extends CommandTestCase {
         MonthlyReportResult result = execute(cmd);
 
         Assert.assertEquals(1, result.getData().size());
-        Assert.assertEquals(45, result.getData().get(0).getValue(2009, 1).intValue());
-        Assert.assertEquals(70, result.getData().get(0).getValue(2009, 2).intValue());
-        Assert.assertEquals(22, result.getData().get(0).getValue(2009, 3).intValue());
+        Assert.assertEquals(45, result.getData().get(0).getValue(2009, 1)
+            .intValue());
+        Assert.assertEquals(70, result.getData().get(0).getValue(2009, 2)
+            .intValue());
+        Assert.assertEquals(22, result.getData().get(0).getValue(2009, 3)
+            .intValue());
     }
-
 
 }

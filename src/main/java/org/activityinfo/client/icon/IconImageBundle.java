@@ -1,5 +1,3 @@
-
-
 /**
  * Application icons
  */
@@ -38,7 +36,7 @@ import com.google.gwt.user.client.ui.ImageBundle;
 @SuppressWarnings("deprecation")
 public interface IconImageBundle extends ImageBundle {
     IconImageBundle ICONS = (IconImageBundle) GWT.create(IconImageBundle.class);
-    
+
     public static FromEntities fromEntities = new FromEntities();
 
     AbstractImagePrototype add();
@@ -142,7 +140,7 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype onlineSynced();
 
     AbstractImagePrototype sync();
-    
+
     AbstractImagePrototype syncing();
 
     AbstractImagePrototype up();
@@ -198,7 +196,7 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "points1.png")
     AbstractImagePrototype closedPoint();
-    
+
     @Resource(value = "rappels2.png")
     AbstractImagePrototype openedReminder();
 
@@ -210,18 +208,18 @@ public interface IconImageBundle extends ImageBundle {
 
     @Resource(value = "project.png")
     AbstractImagePrototype project();
-    
-	@Resource(value = "LockedPeriod.png")
-	AbstractImagePrototype lockedPeriod();	
-	
-	@Resource(value = "adminlevel1.png")
-	AbstractImagePrototype adminlevel1();	
-    
-	@Resource(value = "partner.png")
-	AbstractImagePrototype partner();	
-    
-	@Resource(value = "empty.png")
-	AbstractImagePrototype empty();	
+
+    @Resource(value = "LockedPeriod.png")
+    AbstractImagePrototype lockedPeriod();
+
+    @Resource(value = "adminlevel1.png")
+    AbstractImagePrototype adminlevel1();
+
+    @Resource(value = "partner.png")
+    AbstractImagePrototype partner();
+
+    @Resource(value = "empty.png")
+    AbstractImagePrototype empty();
 
     @Resource(value = "applyFilter.png")
     AbstractImagePrototype applyFilter();
@@ -236,40 +234,62 @@ public interface IconImageBundle extends ImageBundle {
     AbstractImagePrototype indicators();
 
     AbstractImagePrototype location();
-    
+
     AbstractImagePrototype logo48();
+
     AbstractImagePrototype edit();
+
     AbstractImagePrototype edit32();
+
     AbstractImagePrototype add32();
+
     AbstractImagePrototype time();
+
     AbstractImagePrototype note();
+
     AbstractImagePrototype favorite();
+
     AbstractImagePrototype emptyFavorite();
+
     AbstractImagePrototype csv();
+
     AbstractImagePrototype dashboard();
+
     AbstractImagePrototype marker();
+
     AbstractImagePrototype selectedMarker();
-    @Resource(value="useLocation16.png")
+
+    @Resource(value = "useLocation16.png")
     AbstractImagePrototype useLocation();
-    @Resource(value="editLocation16.png")
+
+    @Resource(value = "editLocation16.png")
     AbstractImagePrototype editLocation();
+
     AbstractImagePrototype treeviewAdmin();
+
     AbstractImagePrototype treeviewTime();
+
     AbstractImagePrototype list();
+
     AbstractImagePrototype drilldown();
+
     AbstractImagePrototype folder();
+
     AbstractImagePrototype printer();
+
     AbstractImagePrototype email();
 
     AbstractImagePrototype star();
+
     AbstractImagePrototype starWhite();
+
     AbstractImagePrototype link();
-    
+
     AbstractImagePrototype page();
-    
-    @Resource(value="html_add.png")
+
+    @Resource(value = "html_add.png")
     AbstractImagePrototype embed();
-    
+
     AbstractImagePrototype text();
 
 }

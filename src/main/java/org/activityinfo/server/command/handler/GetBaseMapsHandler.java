@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -44,40 +42,40 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Alex Bertram
  * @see org.activityinfo.shared.command.GetBaseMaps
  */
-public class GetBaseMapsHandler implements CommandHandlerAsync<GetBaseMaps, BaseMapResult> {
+public class GetBaseMapsHandler implements
+    CommandHandlerAsync<GetBaseMaps, BaseMapResult> {
 
+    @Override
+    public void execute(GetBaseMaps command, ExecutionContext context,
+        final AsyncCallback<BaseMapResult> callback) {
 
-	@Override
-	public void execute(GetBaseMaps command, ExecutionContext context,
-			final AsyncCallback<BaseMapResult> callback) {
-		
-		SqlQuery.select()
-			.appendColumn("id")
-			.appendColumn("copyright")
-			.appendColumn("maxZoom")
-			.appendColumn("minZoom")
-			.appendColumn("name")
-			.appendColumn("tileUrlPattern")
-			.appendColumn("thumbnailUrl")
-			.from("basemap")
-			.execute(context.getTransaction(), new SqlResultCallback() {
-				
-				@Override
-				public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-					List<TileBaseMap> maps = Lists.newArrayList();
-					for(SqlResultSetRow row : results.getRows()) {
-						TileBaseMap map = new TileBaseMap();
-						map.setId(row.getString("id"));
-						map.setCopyright(row.getString("copyright"));
-						map.setMaxZoom(row.getInt("maxZoom"));
-						map.setMinZoom(row.getInt("minZoom"));
-						map.setName(row.getString("name"));
-						map.setTileUrlPattern(row.getString("tileUrlPattern"));
-						map.setThumbnailUrl(row.getString("thumbnailUrl"));
-						maps.add(map);
-					}
-					callback.onSuccess(new BaseMapResult(maps));
-				}
-			});
-	}
+        SqlQuery.select()
+            .appendColumn("id")
+            .appendColumn("copyright")
+            .appendColumn("maxZoom")
+            .appendColumn("minZoom")
+            .appendColumn("name")
+            .appendColumn("tileUrlPattern")
+            .appendColumn("thumbnailUrl")
+            .from("basemap")
+            .execute(context.getTransaction(), new SqlResultCallback() {
+
+                @Override
+                public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                    List<TileBaseMap> maps = Lists.newArrayList();
+                    for (SqlResultSetRow row : results.getRows()) {
+                        TileBaseMap map = new TileBaseMap();
+                        map.setId(row.getString("id"));
+                        map.setCopyright(row.getString("copyright"));
+                        map.setMaxZoom(row.getInt("maxZoom"));
+                        map.setMinZoom(row.getInt("minZoom"));
+                        map.setName(row.getString("name"));
+                        map.setTileUrlPattern(row.getString("tileUrlPattern"));
+                        map.setThumbnailUrl(row.getString("thumbnailUrl"));
+                        maps.add(map);
+                    }
+                    callback.onSuccess(new BaseMapResult(maps));
+                }
+            });
+    }
 }

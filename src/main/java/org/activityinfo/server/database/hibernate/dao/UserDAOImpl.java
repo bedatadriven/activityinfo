@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -44,28 +42,28 @@ public class UserDAOImpl extends GenericDAO<User, Integer> implements UserDAO {
     @Override
     public boolean doesUserExist(String email) {
         return getEntityManager().createNamedQuery("findUserByEmail")
-                .setParameter("email", email)
-                .getResultList().size() == 1;
+            .setParameter("email", email)
+            .getResultList().size() == 1;
     }
 
     @Override
-    public User findUserByEmail(String email)  {
+    public User findUserByEmail(String email) {
 
         return (User) getEntityManager().createNamedQuery("findUserByEmail")
-                .setParameter("email", email)
-                .getSingleResult();
+            .setParameter("email", email)
+            .getSingleResult();
     }
 
     @Override
     public User findUserByChangePasswordKey(String key) {
-        return (User) getEntityManager().createNamedQuery("findUserByChangePasswordKey")
-                .setParameter("key", key)
-                .getSingleResult();
+        return (User) getEntityManager()
+            .createNamedQuery("findUserByChangePasswordKey")
+            .setParameter("key", key)
+            .getSingleResult();
     }
-    
+
     /**
-     * Initializes this User as a new User with a secure
-     * changePasswordKey
+     * Initializes this User as a new User with a secure changePasswordKey
      */
     public static User createNewUser(String email, String name, String locale) {
         User user = new User();

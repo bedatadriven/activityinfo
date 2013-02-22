@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler.sync;
 
 /*
@@ -36,23 +34,27 @@ import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
 public class SiteTableUpdateBuilder implements UpdateBuilder {
 
     public static final String CURRENT_VERSION = "2";
-	private final JpaUpdateBuilder builder = new JpaUpdateBuilder();
+    private final JpaUpdateBuilder builder = new JpaUpdateBuilder();
 
     @Override
-    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
+    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request)
+        throws JSONException {
         SyncRegionUpdate update = new SyncRegionUpdate();
         update.setComplete(true);
         update.setVersion(CURRENT_VERSION);
 
-        if(! CURRENT_VERSION.equals(request.getLocalVersion()) ) {
+        if (!CURRENT_VERSION.equals(request.getLocalVersion())) {
 
             builder.createTableIfNotExists(Site.class);
             builder.createTableIfNotExists(ReportingPeriod.class);
-            builder.executeStatement("create index if not exists site_activity on site (ActivityId)");
+            builder
+                .executeStatement("create index if not exists site_activity on site (ActivityId)");
 
             // TODO: fix rebar to handle these types of classes correctly
-            builder.executeStatement("create table if not exists AttributeValue (SiteId integer, AttributeId integer, Value integer)");
-            builder.executeStatement("create table if not exists IndicatorValue (ReportingPeriodId integer, IndicatorId integer, Value real)");
+            builder
+                .executeStatement("create table if not exists AttributeValue (SiteId integer, AttributeId integer, Value integer)");
+            builder
+                .executeStatement("create table if not exists IndicatorValue (ReportingPeriodId integer, IndicatorId integer, Value real)");
             update.setSql(builder.asJson());
         }
 

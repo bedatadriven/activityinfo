@@ -22,7 +22,6 @@ package org.activityinfo.client.dispatch.remote.cache;
  * #L%
  */
 
-
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.AbstractDispatcher;
 import org.activityinfo.shared.command.Command;
@@ -32,38 +31,38 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CachingDispatcher extends AbstractDispatcher {
 
-	private final CacheManager cacheManager;
-	private final Dispatcher dispatcher;
-	
-	public CachingDispatcher(CacheManager proxyManager, Dispatcher dispatcher) {
-		super();
-		this.cacheManager = proxyManager;
-		this.dispatcher = dispatcher;
-	}
+    private final CacheManager cacheManager;
+    private final Dispatcher dispatcher;
 
-	@Override
-	public <T extends CommandResult> void execute(final Command<T> command,
-			final AsyncCallback<T> callback) {
+    public CachingDispatcher(CacheManager proxyManager, Dispatcher dispatcher) {
+        super();
+        this.cacheManager = proxyManager;
+        this.dispatcher = dispatcher;
+    }
 
-		cacheManager.notifyListenersBefore(command);
+    @Override
+    public <T extends CommandResult> void execute(final Command<T> command,
+        final AsyncCallback<T> callback) {
 
-		CacheResult proxyResult = cacheManager.execute(command);
-		if (proxyResult.isCouldExecute()) {
-			callback.onSuccess((T) proxyResult.getResult());
-		} else {
-			dispatcher.execute(command, new AsyncCallback<T>() {
+        cacheManager.notifyListenersBefore(command);
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+        CacheResult proxyResult = cacheManager.execute(command);
+        if (proxyResult.isCouldExecute()) {
+            callback.onSuccess((T) proxyResult.getResult());
+        } else {
+            dispatcher.execute(command, new AsyncCallback<T>() {
 
-				@Override
-				public void onSuccess(T result) {
-		            cacheManager.notifyListenersOfSuccess(command, result);
-		            callback.onSuccess(result);
-				}
-			});
-		}
-	}
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(T result) {
+                    cacheManager.notifyListenersOfSuccess(command, result);
+                    callback.onSuccess(result);
+                }
+            });
+        }
+    }
 }

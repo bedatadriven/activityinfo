@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database;
 
 /*
@@ -37,7 +35,6 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.LowerCaseDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mysql.MySqlConnection;
@@ -54,7 +51,8 @@ public class LoadDataSet extends Statement {
     private final Provider<Connection> connectionProvider;
     private final String name;
 
-    public LoadDataSet(Provider<Connection> connectionProvider, Statement next, String name, Object target) {
+    public LoadDataSet(Provider<Connection> connectionProvider, Statement next,
+        String name, Object target) {
         this.next = next;
         this.target = target;
         this.connectionProvider = connectionProvider;
@@ -63,9 +61,9 @@ public class LoadDataSet extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
-    	
-    	JdbcScheduler.get().forceCleanup();
-    	
+
+        JdbcScheduler.get().forceCleanup();
+
         System.err.println("DBUnit: removing all rows");
         removeAllRows();
 
@@ -88,14 +86,15 @@ public class LoadDataSet extends Statement {
         if (in == null) {
             throw new Error("Could not find resource '" + name + "'");
         }
-        
+
         return new LowerCaseDataSet(new FlatXmlDataSetBuilder()
-        	.setDtdMetadata(true)
-        	.setColumnSensing(true)
-        	.build(new InputStreamReader(in)));
+            .setDtdMetadata(true)
+            .setColumnSensing(true)
+            .build(new InputStreamReader(in)));
     }
 
-    private void populate(final IDataSet dataSet) throws DatabaseUnitException, SQLException {
+    private void populate(final IDataSet dataSet) throws DatabaseUnitException,
+        SQLException {
         executeOperation(InsertIdentityOperation.INSERT, dataSet);
     }
 
@@ -104,14 +103,16 @@ public class LoadDataSet extends Statement {
         cleaner.clean();
     }
 
-    private void executeOperation(final DatabaseOperation op, final IDataSet dataSet) throws DatabaseUnitException, SQLException {
-    	Connection connection = connectionProvider.get();
-    	try {
-    		  IDatabaseConnection dbUnitConnection = new MySqlConnection(connection, null);
-              op.execute(dbUnitConnection, dataSet);
-    	} finally {
-    		connection.close();
-    	}
+    private void executeOperation(final DatabaseOperation op,
+        final IDataSet dataSet) throws DatabaseUnitException, SQLException {
+        Connection connection = connectionProvider.get();
+        try {
+            IDatabaseConnection dbUnitConnection = new MySqlConnection(
+                connection, null);
+            op.execute(dbUnitConnection, dataSet);
+        } finally {
+            connection.close();
+        }
     }
 
 }

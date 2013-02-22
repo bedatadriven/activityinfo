@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.design;
 
 /*
@@ -29,7 +27,7 @@ import java.util.List;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.page.Page;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
@@ -53,7 +51,6 @@ import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.EntityDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.client.i18n.UIConstants;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
@@ -64,21 +61,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 
-
 /**
- * Presenter for the Design Page, which enables the user to define UserDatabases and their
- * Activities, Attributes, and Indicators.
- *
+ * Presenter for the Design Page, which enables the user to define UserDatabases
+ * and their Activities, Attributes, and Indicators.
+ * 
  * @author Alex Bertram
  */
-public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> implements DbPage {
+public class DesignPresenter extends AbstractEditorGridPresenter<ModelData>
+    implements DbPage {
     public static final PageId PAGE_ID = new PageId("design");
 
     @ImplementedBy(DesignView.class)
     public interface View extends TreeGridView<DesignPresenter, ModelData> {
-        public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store);
+        public void init(DesignPresenter presenter, UserDatabaseDTO db,
+            TreeStore store);
 
-        public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback);
+        public FormDialogTether showNewForm(EntityDTO entity,
+            FormDialogCallback callback);
     }
 
     private final EventBus eventBus;
@@ -89,10 +88,10 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     private UserDatabaseDTO db;
     private TreeStore<ModelData> treeStore;
 
-
     @Inject
-    public DesignPresenter(EventBus eventBus, Dispatcher service, StateProvider stateMgr,
-                    View view, UIConstants messages) {
+    public DesignPresenter(EventBus eventBus, Dispatcher service,
+        StateProvider stateMgr,
+        View view, UIConstants messages) {
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
@@ -114,6 +113,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         this.view.setActionEnabled(UIActions.DELETE, false);
     }
 
+    @Override
     public void shutdown() {
 
     }
@@ -124,22 +124,24 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             ActivityDTO activityNode = new ActivityDTO(activity);
             treeStore.add(activityNode, false);
 
-            AttributeGroupFolder attributeFolder = new AttributeGroupFolder(messages.attributes());
+            AttributeGroupFolder attributeFolder = new AttributeGroupFolder(
+                messages.attributes());
             treeStore.add(activityNode, attributeFolder, false);
 
             for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-            	if (group != null) {
-	                AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
-	                treeStore.add(attributeFolder, groupNode, false);
-	
-	                for (AttributeDTO attribute : group.getAttributes()) {
-	                    AttributeDTO attributeNode = new AttributeDTO(attribute);
-	                    treeStore.add(groupNode, attributeNode, false);
-	                }
-            	}
+                if (group != null) {
+                    AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
+                    treeStore.add(attributeFolder, groupNode, false);
+
+                    for (AttributeDTO attribute : group.getAttributes()) {
+                        AttributeDTO attributeNode = new AttributeDTO(attribute);
+                        treeStore.add(groupNode, attributeNode, false);
+                    }
+                }
             }
 
-            IndicatorFolder indicatorFolder = new IndicatorFolder(messages.indicators());
+            IndicatorFolder indicatorFolder = new IndicatorFolder(
+                messages.indicators());
             treeStore.add(activityNode, indicatorFolder, false);
 
             for (IndicatorDTO indicator : activity.getIndicators()) {
@@ -158,10 +160,11 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         return treeStore;
     }
 
+    @Override
     public boolean navigate(PageState place) {
-    	return place instanceof DbPageState &&
-                place.getPageId().equals(PAGE_ID) &&
-                ((DbPageState) place).getDatabaseId() == db.getId();
+        return place instanceof DbPageState &&
+            place.getPageId().equals(PAGE_ID) &&
+            ((DbPageState) place).getDatabaseId() == db.getId();
     }
 
     public void onNodeDropped(ModelData source) {
@@ -169,7 +172,8 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         // update sortOrder
 
         ModelData parent = treeStore.getParent(source);
-        List<ModelData> children = parent == null ? treeStore.getRootItems() : treeStore.getChildren(parent);
+        List<ModelData> children = parent == null ? treeStore.getRootItems()
+            : treeStore.getChildren(parent);
 
         for (int i = 0; i != children.size(); ++i) {
             Record record = treeStore.getRecord(children.get(i));
@@ -228,30 +232,40 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             @Override
             public void onValidated(final FormDialogTether tether) {
 
-                service.execute(new CreateEntity(newEntity), tether, new AsyncCallback<CreateResult>() {
-                    public void onFailure(Throwable caught) {
-                    	GWT.log(caught.getMessage());
-                    }
-
-                    public void onSuccess(CreateResult result) {
-                        newEntity.set("id", result.getNewId()); // todo add setId to EntityDTO interface
-
-                        if (parent == null) {
-                            treeStore.add(newEntity, false);
-                        } else {
-                            treeStore.add(parent, newEntity, false);
+                service.execute(new CreateEntity(newEntity), tether,
+                    new AsyncCallback<CreateResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            GWT.log(caught.getMessage());
                         }
 
-                        if (newEntity instanceof ActivityDTO) {
-                            treeStore.add(newEntity, new AttributeGroupFolder(messages.attributes()), false);
-                            treeStore.add(newEntity, new IndicatorFolder(messages.indicators()), false);
+                        @Override
+                        public void onSuccess(CreateResult result) {
+                            newEntity.set("id", result.getNewId()); // todo add
+                                                                    // setId to
+                                                                    // EntityDTO
+                                                                    // interface
+
+                            if (parent == null) {
+                                treeStore.add(newEntity, false);
+                            } else {
+                                treeStore.add(parent, newEntity, false);
+                            }
+
+                            if (newEntity instanceof ActivityDTO) {
+                                treeStore.add(
+                                    newEntity,
+                                    new AttributeGroupFolder(messages
+                                        .attributes()), false);
+                                treeStore.add(newEntity, new IndicatorFolder(
+                                    messages.indicators()), false);
+                            }
+
+                            tether.hide();
+
+                            eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
                         }
-
-                        tether.hide();
-
-                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-                    }
-                });
+                    });
 
             }
         });
@@ -279,16 +293,19 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
     @Override
     protected void onDeleteConfirmed(final ModelData model) {
-        service.execute(new Delete((EntityDTO) model), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
+        service.execute(new Delete((EntityDTO) model),
+            view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
 
-            }
+                }
 
-            public void onSuccess(VoidResult result) {
-                treeStore.remove(model);
-                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-            }
-        });
+                @Override
+                public void onSuccess(VoidResult result) {
+                    treeStore.remove(model);
+                    eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                }
+            });
     }
 
     @Override
@@ -310,7 +327,8 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         if (model instanceof EntityDTO) {
             Record record = treeStore.getRecord(model);
             if (record.isDirty()) {
-                batch.add(new UpdateEntity((EntityDTO) model, this.getChangedProperties(record)));
+                batch.add(new UpdateEntity((EntityDTO) model, this
+                    .getChangedProperties(record)));
             }
         }
 
@@ -319,15 +337,18 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         }
     }
 
+    @Override
     public void onSelectionChanged(ModelData selectedItem) {
         view.setActionEnabled(UIActions.DELETE, this.db.isDesignAllowed() &&
-                selectedItem instanceof EntityDTO);
+            selectedItem instanceof EntityDTO);
     }
 
+    @Override
     public PageId getPageId() {
         return PAGE_ID;
     }
 
+    @Override
     public Object getWidget() {
         return view;
     }

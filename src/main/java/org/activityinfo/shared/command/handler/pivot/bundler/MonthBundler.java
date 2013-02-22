@@ -33,22 +33,22 @@ public class MonthBundler implements Bundler {
     private final String yearAlias;
     private final String monthAlias;
 
-
     public MonthBundler(Dimension dimension, String yearAlias, String monthAlias) {
         this.dimension = dimension;
         this.yearAlias = yearAlias;
         this.monthAlias = monthAlias;
-	}
+    }
 
-	@Override
-    public void bundle(SqlResultSetRow rs, Bucket bucket)  {
-        
-    	// the year can be null in cases where a site does not yet have a reporting period
-		if(!rs.isNull(yearAlias)) {
-			int year = rs.getInt(yearAlias);
-	        int month = rs.getInt(monthAlias);
-	
-	        bucket.setCategory(dimension, new MonthCategory(year, month));
-		}
+    @Override
+    public void bundle(SqlResultSetRow rs, Bucket bucket) {
+
+        // the year can be null in cases where a site does not yet have a
+        // reporting period
+        if (!rs.isNull(yearAlias)) {
+            int year = rs.getInt(yearAlias);
+            int month = rs.getInt(monthAlias);
+
+            bucket.setCategory(dimension, new MonthCategory(year, month));
+        }
     }
 }

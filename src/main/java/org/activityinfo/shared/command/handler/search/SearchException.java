@@ -26,12 +26,12 @@ import org.activityinfo.shared.exception.CommandException;
 
 public class SearchException extends CommandException {
 
-	public SearchException(String message) {
-		super(message);
-	}
+    public SearchException(String message) {
+        super(message);
+    }
 
-	public SearchException(Throwable e) {
-		super(e);
-	}
-	
+    public SearchException(Throwable e) {
+        super(e);
+    }
+
 }

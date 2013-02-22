@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -29,9 +27,9 @@ import java.util.List;
 import org.activityinfo.shared.dto.MapIconDTO;
 
 /**
- *
+ * 
  * @see org.activityinfo.shared.command.GetMapIcons
- *
+ * 
  * @author Alex Bertram
  */
 public class MapIconResult extends ListResult<MapIconDTO> {

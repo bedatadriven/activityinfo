@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -25,7 +23,6 @@ package org.activityinfo.shared.report.content;
  */
 
 import org.activityinfo.client.i18n.I18N;
-
 
 public class QuarterCategory implements DimensionCategory {
 
@@ -56,6 +53,7 @@ public class QuarterCategory implements DimensionCategory {
         this.quarter = quarter;
     }
 
+    @Override
     public Comparable getSortKey() {
         return year * 10 + quarter;
     }
@@ -93,8 +91,8 @@ public class QuarterCategory implements DimensionCategory {
         return "QuarterCategory{" + year + "Q" + quarter + "}";
     }
 
-	@Override
-	public String getLabel() {
-		return I18N.MESSAGES.quarter(year, quarter);
-	}
+    @Override
+    public String getLabel() {
+        return I18N.MESSAGES.quarter(year, quarter);
+    }
 }

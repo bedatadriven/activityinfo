@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -31,8 +29,7 @@ import org.activityinfo.shared.command.result.VoidResult;
 
 public class UpdateMonthlyReports implements Command<VoidResult> {
 
-
-    public  static class Change implements Serializable {
+    public static class Change implements Serializable {
         private Month month;
         private int indicatorId;
         private Double value;
@@ -47,36 +44,34 @@ public class UpdateMonthlyReports implements Command<VoidResult> {
             this.setValue(value);
         }
 
-		public void setMonth(Month month) {
-			this.month = month;
-		}
+        public void setMonth(Month month) {
+            this.month = month;
+        }
 
-		public Month getMonth() {
-			return month;
-		}
+        public Month getMonth() {
+            return month;
+        }
 
-		public void setIndicatorId(int indicatorId) {
-			this.indicatorId = indicatorId;
-		}
+        public void setIndicatorId(int indicatorId) {
+            this.indicatorId = indicatorId;
+        }
 
-		public int getIndicatorId() {
-			return indicatorId;
-		}
+        public int getIndicatorId() {
+            return indicatorId;
+        }
 
-		public void setValue(Double value) {
-			this.value = value;
-		}
+        public void setValue(Double value) {
+            this.value = value;
+        }
 
-		public Double getValue() {
-			return value;
-		}
-
+        public Double getValue() {
+            return value;
+        }
 
     }
 
     private int siteId;
     private ArrayList<Change> changes;
-
 
     public UpdateMonthlyReports() {
     }

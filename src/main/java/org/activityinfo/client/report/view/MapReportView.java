@@ -28,38 +28,39 @@ import org.activityinfo.shared.report.model.MapReportElement;
 
 import com.extjs.gxt.ui.client.widget.Component;
 
-public class MapReportView extends GoogleMapsPanel implements ReportView<MapReportElement> {
+public class MapReportView extends GoogleMapsPanel implements
+    ReportView<MapReportElement> {
 
-	private GoogleMapsReportOverlays overlays;
-	private MapReportElement element; 
-	
-	public MapReportView() {
-		setHeaderVisible(false);
-	}
-	
-	@Override
-	protected void onMapInitialized() {
-		overlays = new GoogleMapsReportOverlays(getMapWidget());
-		if(element != null) {
-			addContent();
-		}
-	}
+    private GoogleMapsReportOverlays overlays;
+    private MapReportElement element;
 
-	@Override
-	public void show(MapReportElement element) {
-		this.element = element;
-		if(isMapLoaded()) {
-			addContent();
-		}
-	}
+    public MapReportView() {
+        setHeaderVisible(false);
+    }
 
-	private void addContent() {
-		overlays.syncWith(element);
-	}
+    @Override
+    protected void onMapInitialized() {
+        overlays = new GoogleMapsReportOverlays(getMapWidget());
+        if (element != null) {
+            addContent();
+        }
+    }
 
-	@Override
-	public Component asComponent() {
-		return this;
-	}
+    @Override
+    public void show(MapReportElement element) {
+        this.element = element;
+        if (isMapLoaded()) {
+            addContent();
+        }
+    }
+
+    private void addContent() {
+        overlays.syncWith(element);
+    }
+
+    @Override
+    public Component asComponent() {
+        return this;
+    }
 
 }

@@ -27,13 +27,14 @@ import com.google.inject.matcher.Matchers;
 
 public class TransactionModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
+    @Override
+    protected void configure() {
         TransactionalInterceptor interceptor = new TransactionalInterceptor();
         requestInjection(interceptor);
 
-        bindInterceptor(Matchers.any(), Matchers.annotatedWith(Transactional.class),
-                interceptor);
-	}
+        bindInterceptor(Matchers.any(),
+            Matchers.annotatedWith(Transactional.class),
+            interceptor);
+    }
 
 }

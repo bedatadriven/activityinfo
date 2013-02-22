@@ -47,14 +47,16 @@ import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotSites.PivotResult> {
+public class PivotSitesHandler implements
+    CommandHandlerAsync<PivotSites, PivotSites.PivotResult> {
 
     private final SqlDialect dialect;
-    
-    private static final Logger LOGGER = Logger.getLogger(PivotSitesHandler.class.getName());
+
+    private static final Logger LOGGER = Logger
+        .getLogger(PivotSitesHandler.class.getName());
 
     private List<BaseTable> baseTables = Lists.newArrayList();
-    
+
     @Inject
     public PivotSitesHandler(SqlDialect dialect) {
         this.dialect = dialect;
@@ -66,59 +68,62 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
 
     }
 
-	@Override
-	public void execute(PivotSites command, ExecutionContext context, final AsyncCallback<PivotResult> callback) {
+    @Override
+    public void execute(PivotSites command, ExecutionContext context,
+        final AsyncCallback<PivotResult> callback) {
 
-		LOGGER.fine("Pivoting: " + command);
+        LOGGER.fine("Pivoting: " + command);
 
-        
-		if (command.getValueType() == ValueType.INDICATOR) {
-			if (command.getFilter() == null || 
-					command.getFilter().getRestrictions(DimensionType.Indicator).isEmpty()) {
-				Log.error("No indicator filter provided to pivot query");
-			}
-		}
-		
-		final PivotQueryContext queryContext = new PivotQueryContext(command, context, dialect);
+        if (command.getValueType() == ValueType.INDICATOR) {
+            if (command.getFilter() == null
+                ||
+                command.getFilter().getRestrictions(DimensionType.Indicator)
+                    .isEmpty()) {
+                Log.error("No indicator filter provided to pivot query");
+            }
+        }
+
+        final PivotQueryContext queryContext = new PivotQueryContext(command,
+            context, dialect);
         final List<PivotQuery> queries = Lists.newArrayList();
-		
-		for(BaseTable baseTable : baseTables) {
-			if(baseTable.accept(command)) {
-				queries.add(new PivotQuery(queryContext, baseTable));
-			}
-		}
 
-		final List<Bucket> buckets = Lists.newArrayList();
-		if(queries.isEmpty()) {
-			callback.onSuccess(new PivotResult(buckets));
-		}
-	
-		final Set<PivotQuery> remaining = Sets.newHashSet(queries);
-		final List<Throwable> errors = Lists.newArrayList();
-		
-		for(final PivotQuery query : queries) {
-			query.execute(new AsyncCallback<Void>() {
-				
-				@Override
-				public void onSuccess(Void voidResult) {
-					if(errors.isEmpty()) {
-						remaining.remove(query);
-						if(remaining.isEmpty()) {
-							callback.onSuccess(new PivotResult(queryContext.getBuckets()));
-						}
-					}
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					if(errors.isEmpty()) {
-						callback.onFailure(caught);
-					}
-					errors.add(caught);
-				}
-			});
-		}
-	}
-	
-	
+        for (BaseTable baseTable : baseTables) {
+            if (baseTable.accept(command)) {
+                queries.add(new PivotQuery(queryContext, baseTable));
+            }
+        }
+
+        final List<Bucket> buckets = Lists.newArrayList();
+        if (queries.isEmpty()) {
+            callback.onSuccess(new PivotResult(buckets));
+        }
+
+        final Set<PivotQuery> remaining = Sets.newHashSet(queries);
+        final List<Throwable> errors = Lists.newArrayList();
+
+        for (final PivotQuery query : queries) {
+            query.execute(new AsyncCallback<Void>() {
+
+                @Override
+                public void onSuccess(Void voidResult) {
+                    if (errors.isEmpty()) {
+                        remaining.remove(query);
+                        if (remaining.isEmpty()) {
+                            callback.onSuccess(new PivotResult(queryContext
+                                .getBuckets()));
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    if (errors.isEmpty()) {
+                        callback.onFailure(caught);
+                    }
+                    errors.add(caught);
+                }
+            });
+        }
+    }
+
 }

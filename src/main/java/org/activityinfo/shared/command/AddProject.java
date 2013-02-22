@@ -29,32 +29,32 @@ import org.activityinfo.shared.dto.ProjectDTO;
  * The user wants to add a project to a UserDatabase
  */
 public class AddProject implements Command<CreateResult> {
-	private int databaseId;
-	private ProjectDTO projectDTO;
-	
-	public AddProject() {
-		super();
-	}
+    private int databaseId;
+    private ProjectDTO projectDTO;
 
-	public AddProject(int databaseId, ProjectDTO project2dto) {
-		super();
-		this.databaseId = databaseId;
-		this.projectDTO = project2dto;
-	}
+    public AddProject() {
+        super();
+    }
 
-	public int getDatabaseId() {
-		return databaseId;
-	}
+    public AddProject(int databaseId, ProjectDTO project2dto) {
+        super();
+        this.databaseId = databaseId;
+        this.projectDTO = project2dto;
+    }
 
-	public void setDatabaseId(int databaseId) {
-		this.databaseId = databaseId;
-	}
+    public int getDatabaseId() {
+        return databaseId;
+    }
 
-	public ProjectDTO getProjectDTO() {
-		return projectDTO;
-	}
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
+    }
 
-	public void setProject2DTO(ProjectDTO project2dto) {
-		projectDTO = project2dto;
-	}
+    public ProjectDTO getProjectDTO() {
+        return projectDTO;
+    }
+
+    public void setProject2DTO(ProjectDTO project2dto) {
+        projectDTO = project2dto;
+    }
 }

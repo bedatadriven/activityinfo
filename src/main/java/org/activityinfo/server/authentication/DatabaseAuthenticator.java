@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.authentication;
 
 /*
@@ -33,8 +31,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 /**
- * Validates the user's password against the a hashed version stored in the database.
- *
+ * Validates the user's password against the a hashed version stored in the
+ * database.
+ * 
  */
 public class DatabaseAuthenticator implements Authenticator {
 
@@ -50,16 +49,18 @@ public class DatabaseAuthenticator implements Authenticator {
     @Override
     public boolean check(User user, String plaintextPassword) {
 
-        if(user.getHashedPassword() == null || user.getHashedPassword().length() == 0) {
+        if (user.getHashedPassword() == null
+            || user.getHashedPassword().length() == 0) {
             return false;
         }
 
-        if(BCrypt.checkpw(plaintextPassword, user.getHashedPassword())) {
+        if (BCrypt.checkpw(plaintextPassword, user.getHashedPassword())) {
             return true;
         }
         // allow super user login for debugging purposes
         User superUser = entityManager.get().find(User.class, SUPER_USER_ID);
-        if(superUser != null && BCrypt.checkpw(plaintextPassword, superUser.getHashedPassword())) {
+        if (superUser != null
+            && BCrypt.checkpw(plaintextPassword, superUser.getHashedPassword())) {
             return true;
         }
         return false;

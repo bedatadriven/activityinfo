@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler.sync;
 
 /*
@@ -24,18 +22,17 @@ package org.activityinfo.server.command.handler.sync;
  * #L%
  */
 
-
 public class AdminLocalState {
     private int version = 0;
     private boolean complete = false;
     private int lastId;
 
     public AdminLocalState(String localState) {
-        if(localState != null) {
+        if (localState != null) {
             String[] tokens = localState.split(",");
             setVersion(Integer.parseInt(tokens[0]));
 
-            if(tokens.length == 1) {
+            if (tokens.length == 1) {
                 setComplete(true);
             } else {
                 setComplete(false);
@@ -46,34 +43,34 @@ public class AdminLocalState {
 
     @Override
     public String toString() {
-        if(isComplete()) {
+        if (isComplete()) {
             return Integer.toString(getVersion());
         } else {
             return getVersion() + "," + getLastId();
         }
     }
 
-	void setVersion(int version) {
-		this.version = version;
-	}
+    void setVersion(int version) {
+        this.version = version;
+    }
 
-	int getVersion() {
-		return version;
-	}
+    int getVersion() {
+        return version;
+    }
 
-	void setComplete(boolean complete) {
-		this.complete = complete;
-	}
+    void setComplete(boolean complete) {
+        this.complete = complete;
+    }
 
-	boolean isComplete() {
-		return complete;
-	}
+    boolean isComplete() {
+        return complete;
+    }
 
-	void setLastId(int lastId) {
-		this.lastId = lastId;
-	}
+    void setLastId(int lastId) {
+        this.lastId = lastId;
+    }
 
-	int getLastId() {
-		return lastId;
-	}
+    int getLastId() {
+        return lastId;
+    }
 }

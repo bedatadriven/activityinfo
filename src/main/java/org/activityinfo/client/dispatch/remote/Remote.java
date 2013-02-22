@@ -36,7 +36,7 @@ import com.google.inject.BindingAnnotation;
  * Wires a {@code Dispatcher} to the Remote dispatcher
  */
 @BindingAnnotation
-@Target({ FIELD, PARAMETER, METHOD})
+@Target({ FIELD, PARAMETER, METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Remote {
 

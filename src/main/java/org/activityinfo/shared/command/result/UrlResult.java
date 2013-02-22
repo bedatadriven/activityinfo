@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -25,7 +23,7 @@ package org.activityinfo.shared.command.result;
  */
 
 /**
- *
+ * 
  * The result containing a URL to be subsequently downloaded
  */
 public class UrlResult implements CommandResult {

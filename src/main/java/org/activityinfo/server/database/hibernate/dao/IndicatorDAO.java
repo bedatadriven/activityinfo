@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -27,9 +25,12 @@ package org.activityinfo.server.database.hibernate.dao;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 
 /**
- * Data Access Object for {@link org.activityinfo.server.database.hibernate.entity.Indicator} domain objects. Implemented
- * by {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler proxy}.
- *
+ * Data Access Object for
+ * {@link org.activityinfo.server.database.hibernate.entity.Indicator} domain
+ * objects. Implemented by
+ * {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler
+ * proxy}.
+ * 
  * @author Alex Bertram
  */
 public interface IndicatorDAO extends DAO<Indicator, Integer> {

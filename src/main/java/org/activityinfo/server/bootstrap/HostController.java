@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap;
 
 /*
@@ -42,12 +40,12 @@ import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;
 
 @Path(HostController.ENDPOINT)
-public class HostController  {
+public class HostController {
     public static final String ENDPOINT = "/";
 
     private final DeploymentConfiguration deployConfig;
     private final ServerSideAuthProvider authProvider;
-    
+
     @Inject
     public HostController(DeploymentConfiguration deployConfig,
         ServerSideAuthProvider authProvider) {
@@ -58,31 +56,37 @@ public class HostController  {
 
     @GET
     @LogException(emailAlert = true)
-    public Response getHostPage(@Context UriInfo uri, @Context HttpServletRequest req, @QueryParam("redirect") boolean redirect) throws Exception {
-        if(!authProvider.isAuthenticated()) {
+    public Response getHostPage(@Context UriInfo uri,
+        @Context HttpServletRequest req,
+        @QueryParam("redirect") boolean redirect) throws Exception {
+        if (!authProvider.isAuthenticated()) {
             return Response.ok(new LoginPageModel().asViewable()).build();
         }
-        
-        if(redirect) {
-            return Response.seeOther(uri.getAbsolutePathBuilder().replacePath(ENDPOINT).build())
+
+        if (redirect) {
+            return Response.seeOther(
+                uri.getAbsolutePathBuilder().replacePath(ENDPOINT).build())
                 .build();
         }
-        
-        String appUri = uri.getAbsolutePathBuilder().replaceQuery("").build().toString();
-        
+
+        String appUri = uri.getAbsolutePathBuilder().replaceQuery("").build()
+            .toString();
+
         HostPageModel model = new HostPageModel(appUri);
         model.setAppCacheEnabled(checkAppCacheEnabled(req));
         model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
-		return Response.ok(model.asViewable()).build();
+        return Response.ok(model.asViewable()).build();
     }
 
-	private boolean checkAppCacheEnabled(HttpServletRequest req) {
-    	// for browsers that only support database synchronisation via gears at this point,
-    	// we would rather use gears managed resources stores than HTML5 appcache 
-    	// so that we only have to display one permission
-    	// (this really only applies to FF <= 3.6 right now)
-    	UserAgentProvider userAgentProvider = new UserAgentProvider();
-    	return !userAgentProvider.canSupportGears(req);
-	}
+    private boolean checkAppCacheEnabled(HttpServletRequest req) {
+        // for browsers that only support database synchronisation via gears at
+        // this point,
+        // we would rather use gears managed resources stores than HTML5
+        // appcache
+        // so that we only have to display one permission
+        // (this really only applies to FF <= 3.6 right now)
+        UserAgentProvider userAgentProvider = new UserAgentProvider();
+        return !userAgentProvider.canSupportGears(req);
+    }
 
 }

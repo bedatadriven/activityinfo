@@ -53,122 +53,123 @@ import com.google.gwt.user.client.ui.Image;
  * 
  */
 public class BaseMapPanel extends ContentPanel implements HasValue<String> {
-	
-	private final Dispatcher dispatcher;
-	private String value;
-	private Label label;
-	
-	
-	public BaseMapPanel(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-		
-		setCollapsible(false);
-		setFrame(true);
-		setHeading(I18N.CONSTANTS.basemap());
-		setBodyBorder(false);
-		setIcon(AbstractImagePrototype.create(MapResources.INSTANCE.layers()));
-		
-		HBoxLayout layout = new HBoxLayout();
-		layout.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
 
-		setLayout(layout);
+    private final Dispatcher dispatcher;
+    private String value;
+    private Label label;
 
-		Image icon = new Image(MapResources.INSTANCE.globe());
-		label = new Label();
-		Button button = new Button("Change", new SelectionListener<ButtonEvent>() {
+    public BaseMapPanel(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
 
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				chooseBaseMap();
-			}
-		});
-		
-		HBoxLayoutData iconLayout = new HBoxLayoutData(0, 5, 0, 2);
-		add(icon, iconLayout);
-		
-		HBoxLayoutData labelLayout = new HBoxLayoutData(0, 0, 0, 5);
-		labelLayout.setFlex(1);
-		add(label, labelLayout);
-		
-		add(button);
-		
-		label.setText(I18N.CONSTANTS.loading());
-	}
+        setCollapsible(false);
+        setFrame(true);
+        setHeading(I18N.CONSTANTS.basemap());
+        setBodyBorder(false);
+        setIcon(AbstractImagePrototype.create(MapResources.INSTANCE.layers()));
 
-	private void chooseBaseMap() {
-		BaseMapDialog dialog = new BaseMapDialog(dispatcher);
-		dialog.show(value, new Callback() {
-			
-			@Override
-			public void onSelect(String baseMapId, String label) {
-				BaseMapPanel.this.value = baseMapId;
-				BaseMapPanel.this.label.setText(label);
-				
-				ValueChangeEvent.fire(BaseMapPanel.this, value);
-			}
-		});
-	}
+        HBoxLayout layout = new HBoxLayout();
+        layout.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<String> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
+        setLayout(layout);
 
-	/**
-	 * Gets the BaseMap id
-	 */
-	@Override
-	public String getValue() {
-		return value;
-	}
+        Image icon = new Image(MapResources.INSTANCE.globe());
+        label = new Label();
+        Button button = new Button("Change",
+            new SelectionListener<ButtonEvent>() {
 
-	/**
-	 * Sets the BaseMap id
-	 */
-	@Override
-	public void setValue(String value) {
-		setValue(value, false);
-	}
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    chooseBaseMap();
+                }
+            });
 
-	@Override
-	public void setValue(String value, boolean fireEvents) {
-		this.value = value;
-		if(MapReportElement.AUTO_BASEMAP.equals(value) || value == null) {
-			label.setText("Default");
-		} else if(GoogleBaseMap.HYBRID.getId().equals(value)) {
-			label.setText(I18N.CONSTANTS.googleHybrid());
-		} else if(GoogleBaseMap.ROADMAP.getId().equals(value)) {
-			label.setText(I18N.CONSTANTS.googleRoadmap());
-		} else if(GoogleBaseMap.SATELLITE.getId().equals(value)) {
-			label.setText(I18N.CONSTANTS.googleSatelliteMap());
-		} else if(GoogleBaseMap.TERRAIN.getId().equals(value)) {
-			label.setText(I18N.CONSTANTS.googleTerrainMap());
-		} else {
-			loadTileMapLabel();
-		}
-	}
+        HBoxLayoutData iconLayout = new HBoxLayoutData(0, 5, 0, 2);
+        add(icon, iconLayout);
 
-	private void loadTileMapLabel() {
+        HBoxLayoutData labelLayout = new HBoxLayoutData(0, 0, 0, 5);
+        labelLayout.setFlex(1);
+        add(label, labelLayout);
 
-		label.setText(I18N.CONSTANTS.loading());
-		dispatcher.execute(new GetBaseMaps(), new AsyncCallback<BaseMapResult>() {
+        add(button);
 
-			@Override
-			public void onFailure(Throwable caught) {
-				label.setText(value);
-			}
+        label.setText(I18N.CONSTANTS.loading());
+    }
 
-			@Override
-			public void onSuccess(BaseMapResult result) {
-				for(TileBaseMap baseMap : result.getBaseMaps()) {
-					if(baseMap.getId().equals(value)) {
-						label.setText(baseMap.getName());
-						return;
-					}
-				}
-				label.setText(value);
-			}
-		});
-	}
+    private void chooseBaseMap() {
+        BaseMapDialog dialog = new BaseMapDialog(dispatcher);
+        dialog.show(value, new Callback() {
+
+            @Override
+            public void onSelect(String baseMapId, String label) {
+                BaseMapPanel.this.value = baseMapId;
+                BaseMapPanel.this.label.setText(label);
+
+                ValueChangeEvent.fire(BaseMapPanel.this, value);
+            }
+        });
+    }
+
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<String> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Gets the BaseMap id
+     */
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the BaseMap id
+     */
+    @Override
+    public void setValue(String value) {
+        setValue(value, false);
+    }
+
+    @Override
+    public void setValue(String value, boolean fireEvents) {
+        this.value = value;
+        if (MapReportElement.AUTO_BASEMAP.equals(value) || value == null) {
+            label.setText("Default");
+        } else if (GoogleBaseMap.HYBRID.getId().equals(value)) {
+            label.setText(I18N.CONSTANTS.googleHybrid());
+        } else if (GoogleBaseMap.ROADMAP.getId().equals(value)) {
+            label.setText(I18N.CONSTANTS.googleRoadmap());
+        } else if (GoogleBaseMap.SATELLITE.getId().equals(value)) {
+            label.setText(I18N.CONSTANTS.googleSatelliteMap());
+        } else if (GoogleBaseMap.TERRAIN.getId().equals(value)) {
+            label.setText(I18N.CONSTANTS.googleTerrainMap());
+        } else {
+            loadTileMapLabel();
+        }
+    }
+
+    private void loadTileMapLabel() {
+
+        label.setText(I18N.CONSTANTS.loading());
+        dispatcher.execute(new GetBaseMaps(),
+            new AsyncCallback<BaseMapResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    label.setText(value);
+                }
+
+                @Override
+                public void onSuccess(BaseMapResult result) {
+                    for (TileBaseMap baseMap : result.getBaseMaps()) {
+                        if (baseMap.getId().equals(value)) {
+                            label.setText(baseMap.getName());
+                            return;
+                        }
+                    }
+                    label.setText(value);
+                }
+            });
+    }
 }

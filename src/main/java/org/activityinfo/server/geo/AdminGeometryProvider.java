@@ -24,7 +24,6 @@ package org.activityinfo.server.geo;
 
 import java.util.List;
 
-
 /**
  * Provides a set of geometry for the {@code AdminEntities} in a given
  * {@code AdminLevel}, used for server-side rendering. All geometry is provided
@@ -32,6 +31,6 @@ import java.util.List;
  */
 public interface AdminGeometryProvider {
 
-	List<AdminGeo> getGeometry(int adminLevelId);
+    List<AdminGeo> getGeometry(int adminLevelId);
 
 }

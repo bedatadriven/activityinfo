@@ -25,16 +25,16 @@
 
 <report frequency="adhoc">
 
-    <title>My Title</title>
-    <sheetTitle>My Sheet Title</sheetTitle>
-    <fileName>My File Name</fileName>
+  <title>My Title</title>
+  <sheetTitle>My Sheet Title</sheetTitle>
+  <fileName>My File Name</fileName>
 
-    <elements>
-       	 <text>
-       	 	<p>This is static text and image.</p>
-       	 </text>
-       	 <image>
-       	 	<url>http://www.google.nl/logos/2010/oz10-hp.gif</url>
-       	 </image> 
-    </elements>
+  <elements>
+    <text>
+      <p>This is static text and image.</p>
+    </text>
+    <image>
+      <url>http://www.google.nl/logos/2010/oz10-hp.gif</url>
+    </image>
+  </elements>
 </report>

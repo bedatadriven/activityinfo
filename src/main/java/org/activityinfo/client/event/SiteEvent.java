@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.event;
 
 /*
@@ -30,8 +28,10 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
 
 /**
- * Encapsulates details for {@link org.activityinfo.server.database.hibernate.entity.Site} related events.
- *
+ * Encapsulates details for
+ * {@link org.activityinfo.server.database.hibernate.entity.Site} related
+ * events.
+ * 
  * @author Alex Bertram
  */
 public class SiteEvent extends BaseEvent {
@@ -39,9 +39,10 @@ public class SiteEvent extends BaseEvent {
     private SiteDTO site;
 
     /**
-     *
+     * 
      * @param type
-     * @param source the component which fired the event
+     * @param source
+     *            the component which fired the event
      * @param site
      */
     public SiteEvent(EventType type, Object source, SiteDTO site) {

@@ -22,7 +22,6 @@ package org.activityinfo.shared.dto;
  * #L%
  */
 
-
 public interface HasAdminEntityValues {
     public AdminEntityDTO getAdminEntity(int levelId);
 }

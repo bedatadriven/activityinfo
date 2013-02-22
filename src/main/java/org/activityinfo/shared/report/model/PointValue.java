@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -41,7 +39,7 @@ public final class PointValue {
     private Point px;
     private Rectangle iconRect;
     private List<PieMapMarker.SliceValue> slices;
-	private Map<Integer, Integer> adminMembership = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> adminMembership = new HashMap<Integer, Integer>();
 
     public PointValue() {
     }
@@ -52,95 +50,94 @@ public final class PointValue {
         this.setValue(value);
         this.setPx(px);
     }
-    
+
     public PointValue(SiteDTO site, Point px, Rectangle iconRect) {
         this.site = site;
         this.setPx(px);
         this.setIconRect(iconRect);
         this.setValue(1);
     }
-    
+
     public PointValue(SiteDTO site, Point px, Rectangle iconRect, double value) {
-    	this(site, px, iconRect);
-    	
+        this(site, px, iconRect);
+
         this.setValue(value);
     }
 
-	public void setAdminMembership(Map<Integer, Integer> adminMembership) {
-		this.adminMembership = adminMembership;
-	}
+    public void setAdminMembership(Map<Integer, Integer> adminMembership) {
+        this.adminMembership = adminMembership;
+    }
 
-	public Map<Integer, Integer> getAdminMembership() {
-		return adminMembership;
-	}
+    public Map<Integer, Integer> getAdminMembership() {
+        return adminMembership;
+    }
 
+    public AiLatLng getLatLng() {
+        if (site.hasLatLong()) {
+            return new AiLatLng(site.getLatitude(), site.getLongitude());
+        } else {
+            return null;
+        }
+    }
 
-	public AiLatLng getLatLng() {
-		if(site.hasLatLong()) {
-			return new AiLatLng(site.getLatitude(), site.getLongitude());
-		} else {
-			return null;
-		}
-	}
+    public boolean hasLatLng() {
+        return getLatLng() != null;
+    }
 
-	public boolean hasLatLng() {
-		return getLatLng() != null;
-	}
+    public boolean hasPoint() {
+        return getPx() != null;
+    }
 
-	public boolean hasPoint() {
-		return getPx() != null;
-	}
+    public Point getPoint() {
+        return getPx();
+    }
 
-	public Point getPoint() {
-		return getPx();
-	}
+    public SiteDTO getSite() {
+        return site;
+    }
 
-	public SiteDTO getSite() {
-		return site;
-	}
+    public void setSite(SiteDTO site) {
+        this.site = site;
+    }
 
-	public void setSite(SiteDTO site) {
-		this.site = site;
-	}
+    public MapSymbol getSymbol() {
+        return symbol;
+    }
 
-	public MapSymbol getSymbol() {
-		return symbol;
-	}
+    public void setSymbol(MapSymbol symbol) {
+        this.symbol = symbol;
+    }
 
-	public void setSymbol(MapSymbol symbol) {
-		this.symbol = symbol;
-	}
+    public double getValue() {
+        return value;
+    }
 
-	public double getValue() {
-		return value;
-	}
+    public void setValue(double value) {
+        this.value = value;
+    }
 
-	public void setValue(double value) {
-		this.value = value;
-	}
+    public Point getPx() {
+        return px;
+    }
 
-	public Point getPx() {
-		return px;
-	}
+    public void setPx(Point px) {
+        this.px = px;
+    }
 
-	public void setPx(Point px) {
-		this.px = px;
-	}
+    public Rectangle getIconRect() {
+        return iconRect;
+    }
 
-	public Rectangle getIconRect() {
-		return iconRect;
-	}
+    public void setIconRect(Rectangle iconRect) {
+        this.iconRect = iconRect;
+    }
 
-	public void setIconRect(Rectangle iconRect) {
-		this.iconRect = iconRect;
-	}
+    public List<PieMapMarker.SliceValue> getSlices() {
+        return slices;
+    }
 
-	public List<PieMapMarker.SliceValue> getSlices() {
-		return slices;
-	}
-
-	public void setSlices(List<PieMapMarker.SliceValue> slices) {
-		this.slices = slices;
-	}
+    public void setSlices(List<PieMapMarker.SliceValue> slices) {
+        this.slices = slices;
+    }
 
 }

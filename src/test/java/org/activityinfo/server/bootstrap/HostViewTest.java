@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap;
 
 /*
@@ -31,7 +29,6 @@ import org.junit.Test;
 
 public class HostViewTest extends ViewTestCase {
 
-
     @Test
     public void templateProcesses() {
 
@@ -44,8 +41,9 @@ public class HostViewTest extends ViewTestCase {
         auth.setId("XYZ12345");
         auth.setUser(user);
 
-        HostPageModel pageModel = new HostPageModel("http://www.activityinfo.org");
+        HostPageModel pageModel = new HostPageModel(
+            "http://www.activityinfo.org");
         pageModel.setMapsApiKey("XYZ123");
-		assertProcessable(pageModel);
+        assertProcessable(pageModel);
     }
 }

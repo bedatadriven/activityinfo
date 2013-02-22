@@ -32,44 +32,44 @@ import org.activityinfo.client.page.app.Section;
 
 public class ReportDesignPageState implements PageState {
 
-	private int reportId;
+    private int reportId;
 
-	public ReportDesignPageState() {
+    public ReportDesignPageState() {
 
-	}
+    }
 
-	public ReportDesignPageState(int reportId) {
-		this.reportId = reportId;
-	}
+    public ReportDesignPageState(int reportId) {
+        this.reportId = reportId;
+    }
 
-	@Override
-	public PageId getPageId() {
-		return ReportDesignPage.PAGE_ID;
-	}
+    @Override
+    public PageId getPageId() {
+        return ReportDesignPage.PAGE_ID;
+    }
 
-	@Override
-	public String serializeAsHistoryToken() {
-		return Integer.toString(reportId);
-	}
+    @Override
+    public String serializeAsHistoryToken() {
+        return Integer.toString(reportId);
+    }
 
-	@Override
-	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(ReportDesignPage.PAGE_ID);
-	}
+    @Override
+    public List<PageId> getEnclosingFrames() {
+        return Arrays.asList(ReportDesignPage.PAGE_ID);
+    }
 
-	public int getReportId() {
-		return reportId;
-	}
+    public int getReportId() {
+        return reportId;
+    }
 
-	public static class Parser implements PageStateParser {
-		@Override
-		public PageState parse(String token) {
-			return new ReportDesignPageState(Integer.parseInt(token));
-		}
-	}
+    public static class Parser implements PageStateParser {
+        @Override
+        public PageState parse(String token) {
+            return new ReportDesignPageState(Integer.parseInt(token));
+        }
+    }
 
-	@Override
-	public Section getSection() {
-		return Section.ANALYSIS;
-	}
+    @Override
+    public Section getSection() {
+        return Section.ANALYSIS;
+    }
 }

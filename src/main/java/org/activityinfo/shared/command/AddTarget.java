@@ -30,32 +30,32 @@ import org.activityinfo.shared.dto.TargetDTO;
  */
 
 public class AddTarget implements MutatingCommand<CreateResult> {
-	private int databaseId;
-	private TargetDTO targetDTO;
+    private int databaseId;
+    private TargetDTO targetDTO;
 
-	public AddTarget() {
-		super();
-	}
+    public AddTarget() {
+        super();
+    }
 
-	public AddTarget(int databaseId, TargetDTO targetDTO) {
-		super();
-		this.databaseId = databaseId;
-		this.targetDTO = targetDTO;
-	}
+    public AddTarget(int databaseId, TargetDTO targetDTO) {
+        super();
+        this.databaseId = databaseId;
+        this.targetDTO = targetDTO;
+    }
 
-	public int getDatabaseId() {
-		return databaseId;
-	}
+    public int getDatabaseId() {
+        return databaseId;
+    }
 
-	public void setDatabaseId(int databaseId) {
-		this.databaseId = databaseId;
-	}
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
+    }
 
-	public TargetDTO getTargetDTO() {
-		return targetDTO;
-	}
+    public TargetDTO getTargetDTO() {
+        return targetDTO;
+    }
 
-	public void setTargetDTO(TargetDTO targetDTO) {
-		this.targetDTO = targetDTO;
-	}
+    public void setTargetDTO(TargetDTO targetDTO) {
+        this.targetDTO = targetDTO;
+    }
 }

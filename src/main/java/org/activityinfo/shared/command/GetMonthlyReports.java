@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -27,9 +25,9 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.MonthlyReportResult;
 
 /**
- * Returns {@link org.activityinfo.shared.dto.IndicatorRowDTO} for a given site and for a given
- * range of months.
- *
+ * Returns {@link org.activityinfo.shared.dto.IndicatorRowDTO} for a given site
+ * and for a given range of months.
+ * 
  * @author Alex Bertram
  */
 public class GetMonthlyReports extends GetListCommand<MonthlyReportResult> {
@@ -37,8 +35,6 @@ public class GetMonthlyReports extends GetListCommand<MonthlyReportResult> {
     private int siteId;
     private Month startMonth;
     private Month endMonth;
-
-
 
     public GetMonthlyReports() {
     }
@@ -50,7 +46,8 @@ public class GetMonthlyReports extends GetListCommand<MonthlyReportResult> {
     public GetMonthlyReports(int siteId, Month startMonth, int monthCount) {
         this.siteId = siteId;
         this.startMonth = startMonth;
-        this.endMonth = new Month(startMonth.getYear(), startMonth.getMonth()+monthCount-1);
+        this.endMonth = new Month(startMonth.getYear(), startMonth.getMonth()
+            + monthCount - 1);
     }
 
     public GetMonthlyReports(int siteId, Month startMonth, Month endMonth) {
@@ -83,4 +80,3 @@ public class GetMonthlyReports extends GetListCommand<MonthlyReportResult> {
         this.endMonth = endMonth;
     }
 }
-

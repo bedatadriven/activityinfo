@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -25,55 +23,55 @@ package org.activityinfo.shared.report.content;
  */
 
 /**
- *  Point represents a point on the map by its pixel coordinates, that is to say in 
- *  the projected coordinate system.  
- *  
- *  In the projected coordinate system,  the x coordinate increases to the right, and the 
- *  y coordinate increases downwards.
- *  
+ * Point represents a point on the map by its pixel coordinates, that is to say
+ * in the projected coordinate system.
+ * 
+ * In the projected coordinate system, the x coordinate increases to the right,
+ * and the y coordinate increases downwards.
+ * 
  * @author Alex Bertram
- *
+ * 
  */
 public class Point {
 
-	private final double x;
-	private final double y;
-	
-	public Point(int x, int y) {
-		super();
-		this.x = x;
-		this.y = y;
-	}
+    private final double x;
+    private final double y;
 
-	public Point(double x, double y) {
-		super();
-		this.x = x;
-		this.y = y;
-	}
+    public Point(int x, int y) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
+
+    public Point(double x, double y) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
 
     public int getX() {
-		return (int)Math.round(x);
-	}
-	
-    public double getDoubleX() {
-    	return x;
+        return (int) Math.round(x);
     }
-    
-	public int getY() {
-		return (int)Math.round(y);
-	}
-	
-	public double getDoubleY() {
-		return y;
-	}
-	
-	public double distance(Point p) {
-		return Math.sqrt( (p.x-x)*(p.x-x) + (p.y-y)*(p.y-y) );	
-	}
-	
-	public Point translate(double tx, double ty) {
-		return new Point(x + tx, y + ty);
-	}
+
+    public double getDoubleX() {
+        return x;
+    }
+
+    public int getY() {
+        return (int) Math.round(y);
+    }
+
+    public double getDoubleY() {
+        return y;
+    }
+
+    public double distance(Point p) {
+        return Math.sqrt((p.x - x) * (p.x - x) + (p.y - y) * (p.y - y));
+    }
+
+    public Point translate(double tx, double ty) {
+        return new Point(x + tx, y + ty);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -88,7 +86,7 @@ public class Point {
 
         // compare integers, ignore the extra precision
         // of the doubles
-        
+
         if (getX() != point.getX()) {
             return false;
         }
@@ -106,8 +104,8 @@ public class Point {
         return result;
     }
 
-	@Override
-	public String toString() {
-        return "(" + x + ", " + y + ")";                
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 }

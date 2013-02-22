@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -42,7 +40,6 @@ public class PartnerTest extends CommandTestCase {
     public static final int PEAR_PLUS_DB_ID = 2;
     public static final int SOL_ID = 2;
 
-
     @Test
     public void testAddPartner() throws Exception {
         PartnerDTO newPartner = new PartnerDTO();
@@ -53,7 +50,8 @@ public class PartnerTest extends CommandTestCase {
         Assert.assertEquals(SOL_ID, cr.getNewId());
 
         SchemaDTO schema = execute(new GetSchema());
-        PartnerDTO partner = schema.getDatabaseById(PEAR_PLUS_DB_ID).getPartnerById(SOL_ID);
+        PartnerDTO partner = schema.getDatabaseById(PEAR_PLUS_DB_ID)
+            .getPartnerById(SOL_ID);
 
         Assert.assertNotNull(partner);
         Assert.assertEquals(newPartner.getName(), partner.getName());
@@ -67,9 +65,9 @@ public class PartnerTest extends CommandTestCase {
 
         CreateResult cr = execute(new AddPartner(1, newPartner));
 
-
         SchemaDTO schema = execute(new GetSchema());
-        PartnerDTO partner = schema.getDatabaseById(1).getPartnerById(cr.getNewId());
+        PartnerDTO partner = schema.getDatabaseById(1).getPartnerById(
+            cr.getNewId());
 
         Assert.assertNotNull(partner);
         Assert.assertEquals("VDE", partner.getName());
@@ -77,13 +75,12 @@ public class PartnerTest extends CommandTestCase {
 
     }
 
-
     @Test(expected = DuplicatePartnerException.class)
     public void testAddDuplicatePartner() throws Exception {
         PartnerDTO newPartner = new PartnerDTO();
         newPartner.setName("NRC");
         newPartner.setFullName("Norweigen Refugee Committe");
 
-        CreateResult cr = execute(new AddPartner(1, newPartner));
+        execute(new AddPartner(1, newPartner));
     }
 }

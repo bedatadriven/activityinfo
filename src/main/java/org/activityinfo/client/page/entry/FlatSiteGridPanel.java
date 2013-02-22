@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.entry;
 
 /*
@@ -24,13 +22,13 @@ package org.activityinfo.client.page.entry;
  * #L%
  */
 
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.dto.SiteDTO;
 
-import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -58,126 +56,128 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-/** 
- * Displays of sites in a "flat" projection with a paging toolbar. 
- * Note: do not use this component directly. Use the SiteGridPanel component. 
- *
+/**
+ * Displays of sites in a "flat" projection with a paging toolbar. Note: do not
+ * use this component directly. Use the SiteGridPanel component.
+ * 
  */
 final class FlatSiteGridPanel extends ContentPanel implements SiteGridPanelView {
     private final Dispatcher dispatcher;
-	
-	private EditorGrid<SiteDTO> editorGrid;
+
+    private EditorGrid<SiteDTO> editorGrid;
     private ListStore<SiteDTO> listStore;
     private PagingToolBar pagingToolBar;
 
     private Filter currentFilter = new Filter();
-       
-    	
+
     @Inject
     public FlatSiteGridPanel(Dispatcher dispatcher) {
-    	this.dispatcher = dispatcher;
-    	
-    	setHeaderVisible(false);
-    	setLayout(new FitLayout());
-    	
-    	pagingToolBar = new PagingToolBar(50);
-    	setBottomComponent(pagingToolBar);
+        this.dispatcher = dispatcher;
+
+        setHeaderVisible(false);
+        setLayout(new FitLayout());
+
+        pagingToolBar = new PagingToolBar(50);
+        setBottomComponent(pagingToolBar);
     }
-	    
-	public void initGrid(Filter filter, ColumnModel columnModel) {
-		
-		PagingLoader<PagingLoadResult<SiteDTO>> loader = new BasePagingLoader<PagingLoadResult<SiteDTO>>(new SiteProxy());
-		loader.addLoadListener(new LoadListener() {
 
-			@Override
-			public void loaderLoadException(LoadEvent le) {
-				Log.debug("Exception thrown during load of FlatSiteGrid: ", le.exception);
-			}
-			
-		});
-		loader.setRemoteSort(true);
-		loader.setSortField("date2");
-		loader.setSortDir(SortDir.DESC);
-		pagingToolBar.bind(loader);
-		
-		listStore = new ListStore<SiteDTO>(loader);
-    	
-    	if(editorGrid == null) {
-    		editorGrid = new EditorGrid<SiteDTO>(listStore, columnModel);
-	    	editorGrid.setLoadMask(true);
-	    	//editorGrid.setStateful(true);
-			editorGrid.setClicksToEdit(ClicksToEdit.TWO);
-			editorGrid.setStripeRows(true);
-			
-	    	GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
-	        sm.setSelectionMode(SelectionMode.SINGLE);
-	        sm.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
-				
-				@Override
-				public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
-					fireEvent(Events.SelectionChange, se);
-				}
-			});
-	        editorGrid.setSelectionModel(sm);
-	        	        
-	        QuickTip quickTip = new QuickTip(editorGrid);
-	        
-	        add(editorGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
-	        layout();
+    public void initGrid(Filter filter, ColumnModel columnModel) {
 
-    	} else {
-    		editorGrid.reconfigure(listStore, columnModel);
-    	}
-    	
-    	this.currentFilter = filter;
-    	
-    	loader.load();
-	}
-	
-	@Override
-	public void addSelectionChangeListener(SelectionChangedListener<SiteDTO> listener) {
-		addListener(Events.SelectionChange, listener);
-	}
-	
-	private class SiteProxy extends RpcProxy<PagingLoadResult<SiteDTO>> {
+        PagingLoader<PagingLoadResult<SiteDTO>> loader = new BasePagingLoader<PagingLoadResult<SiteDTO>>(
+            new SiteProxy());
+        loader.addLoadListener(new LoadListener() {
 
-		@Override
-		protected void load(Object loadConfig,
-				final AsyncCallback<PagingLoadResult<SiteDTO>> callback) {
+            @Override
+            public void loaderLoadException(LoadEvent le) {
+                Log.debug("Exception thrown during load of FlatSiteGrid: ",
+                    le.exception);
+            }
 
-			PagingLoadConfig config = (PagingLoadConfig)loadConfig;
-			GetSites command = new GetSites();
-			command.setOffset(config.getOffset());
-			command.setLimit(config.getLimit());
-			command.setFilter(currentFilter);
-			command.setSortInfo(config.getSortInfo());
-			dispatcher.execute(command, new AsyncCallback<SiteResult>() {
+        });
+        loader.setRemoteSort(true);
+        loader.setSortField("date2");
+        loader.setSortDir(SortDir.DESC);
+        pagingToolBar.bind(loader);
 
-				@Override
-				public void onFailure(Throwable caught) {
-					callback.onFailure(caught);
-				}
+        listStore = new ListStore<SiteDTO>(loader);
 
-				@Override
-				public void onSuccess(SiteResult result) {
-					callback.onSuccess(result);
-				}
-			});
-		}
-	}
+        if (editorGrid == null) {
+            editorGrid = new EditorGrid<SiteDTO>(listStore, columnModel);
+            editorGrid.setLoadMask(true);
+            // editorGrid.setStateful(true);
+            editorGrid.setClicksToEdit(ClicksToEdit.TWO);
+            editorGrid.setStripeRows(true);
 
-	@Override
-	public void refresh() {
-		listStore.getLoader().load();
-	}
+            GridSelectionModel<SiteDTO> sm = new GridSelectionModel<SiteDTO>();
+            sm.setSelectionMode(SelectionMode.SINGLE);
+            sm.addSelectionChangedListener(new SelectionChangedListener<SiteDTO>() {
 
-	@Override
-	public Component asComponent() {
-		return this;
-	}
+                @Override
+                public void selectionChanged(SelectionChangedEvent<SiteDTO> se) {
+                    fireEvent(Events.SelectionChange, se);
+                }
+            });
+            editorGrid.setSelectionModel(sm);
 
-	@Override
-	public SiteDTO getSelection() {
-		return editorGrid.getSelectionModel().getSelectedItem();
-	}
+            new QuickTip(editorGrid);
+
+            add(editorGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
+            layout();
+
+        } else {
+            editorGrid.reconfigure(listStore, columnModel);
+        }
+
+        this.currentFilter = filter;
+
+        loader.load();
+    }
+
+    @Override
+    public void addSelectionChangeListener(
+        SelectionChangedListener<SiteDTO> listener) {
+        addListener(Events.SelectionChange, listener);
+    }
+
+    private class SiteProxy extends RpcProxy<PagingLoadResult<SiteDTO>> {
+
+        @Override
+        protected void load(Object loadConfig,
+            final AsyncCallback<PagingLoadResult<SiteDTO>> callback) {
+
+            PagingLoadConfig config = (PagingLoadConfig) loadConfig;
+            GetSites command = new GetSites();
+            command.setOffset(config.getOffset());
+            command.setLimit(config.getLimit());
+            command.setFilter(currentFilter);
+            command.setSortInfo(config.getSortInfo());
+            dispatcher.execute(command, new AsyncCallback<SiteResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(SiteResult result) {
+                    callback.onSuccess(result);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void refresh() {
+        listStore.getLoader().load();
+    }
+
+    @Override
+    public Component asComponent() {
+        return this;
+    }
+
+    @Override
+    public SiteDTO getSelection() {
+        return editorGrid.getSelectionModel().getSelectedItem();
+    }
 }

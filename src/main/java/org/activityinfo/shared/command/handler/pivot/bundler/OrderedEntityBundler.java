@@ -34,7 +34,8 @@ public class OrderedEntityBundler implements Bundler {
     private final String labelAlias;
     private final String sortOrderAlias;
 
-    public OrderedEntityBundler(Dimension dimension, String id, String label, String sortOrder) {
+    public OrderedEntityBundler(Dimension dimension, String id, String label,
+        String sortOrder) {
         this.dimension = dimension;
         this.idAlias = id;
         this.labelAlias = label;
@@ -42,10 +43,10 @@ public class OrderedEntityBundler implements Bundler {
     }
 
     @Override
-	public void bundle(SqlResultSetRow row, Bucket bucket) {
+    public void bundle(SqlResultSetRow row, Bucket bucket) {
         bucket.setCategory(dimension, new EntityCategory(
-                row.getInt(idAlias),
-                row.getString(labelAlias),
-                row.getInt(sortOrderAlias)));
+            row.getInt(idAlias),
+            row.getString(labelAlias),
+            row.getInt(sortOrderAlias)));
     }
 }

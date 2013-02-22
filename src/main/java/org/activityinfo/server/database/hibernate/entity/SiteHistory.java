@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -37,38 +35,38 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class SiteHistory implements java.io.Serializable {
-	private static final long serialVersionUID = 4677949631016278657L;
-	
-	private int id;
-	private Site site;
-	private User user;
-	private String json;
-	private long timeCreated;
-	private boolean initial;
+    private static final long serialVersionUID = 4677949631016278657L;
+
+    private int id;
+    private Site site;
+    private User user;
+    private String json;
+    private long timeCreated;
+    private boolean initial;
 
     public SiteHistory() {
-	}
+    }
 
-	@Id
-	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	public int getId() {
-		return this.id;
-	}
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int siteId) {
-		this.id = siteId;
-	}
+    public void setId(int siteId) {
+        this.id = siteId;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "siteId", nullable = false)
-	public Site getSite() {
-		return this.site;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "siteId", nullable = false)
+    public Site getSite() {
+        return this.site;
+    }
 
-	public void setSite(Site site) {
-		this.site = site;
-	}
+    public void setSite(Site site) {
+        this.site = site;
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId", nullable = false)
@@ -80,29 +78,30 @@ public class SiteHistory implements java.io.Serializable {
         this.user = user;
     }
 
-	@Lob
-	public String getJson() {
-		return this.json;
-	}
+    @Lob
+    public String getJson() {
+        return this.json;
+    }
 
-	public void setJson(String json) {
-		this.json = json;
-	}
+    public void setJson(String json) {
+        this.json = json;
+    }
 
-	@Basic
-	public long getTimeCreated() {
-		return timeCreated;
-	}
-	
-	public void setTimeCreated(long timeCreated) {
-		this.timeCreated = timeCreated;
-	}
+    @Basic
+    public long getTimeCreated() {
+        return timeCreated;
+    }
 
-	/**
-	 * @return true if this sitehistory entry was created when the site itself was created.
-	 * False if the entry is an update, or baseline 'repair' record.
-	 */
-	@Basic
+    public void setTimeCreated(long timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    /**
+     * @return true if this sitehistory entry was created when the site itself
+     *         was created. False if the entry is an update, or baseline
+     *         'repair' record.
+     */
+    @Basic
     public boolean isInitial() {
         return this.initial;
     }

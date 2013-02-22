@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -37,12 +35,13 @@ public class PivotContent implements Content {
     public PivotContent() {
 
     }
-    
+
     private Filter effectiveFilter;
     private List<FilterDescription> filterDescriptions;
     private PivotTableData data;
 
-    public PivotContent(PivotTableData data, ArrayList<FilterDescription> filterDescriptions) {
+    public PivotContent(PivotTableData data,
+        ArrayList<FilterDescription> filterDescriptions) {
         this.data = data;
         this.filterDescriptions = filterDescriptions;
     }

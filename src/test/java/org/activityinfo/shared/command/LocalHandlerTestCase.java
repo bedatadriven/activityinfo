@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.shared.command;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
@@ -64,7 +61,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-@Modules({AuthenticationModuleStub.class})
+@Modules({ AuthenticationModuleStub.class })
 public abstract class LocalHandlerTestCase {
     @Inject
     private CommandServlet servlet;
@@ -72,8 +69,7 @@ public abstract class LocalHandlerTestCase {
     protected EntityManagerFactory serverEntityManagerFactory;
 
     /**
-     * this is scoped to Tests as the analog of being
-     * scoped to a request.
+     * this is scoped to Tests as the analog of being scoped to a request.
      */
     @Inject
     protected EntityManager serverEm;
@@ -82,29 +78,29 @@ public abstract class LocalHandlerTestCase {
 
     protected LocalDispatcher localDispatcher;
     protected JdbcDatabase localDatabase;
-    
+
     protected CommandQueue commandQueue;
-        
+
     private UIConstants uiConstants;
     private UIMessages uiMessages;
-	protected Connection localConnection;
-		
-	
-	private String databaseName = "target/localdbtest" + new java.util.Date().getTime();
+    protected Connection localConnection;
 
-	protected AsyncPipeline installer;
-	protected AsyncPipeline synchronizer;
-	protected SyncHistoryTable syncHistoryTable;
-	
+    private String databaseName = "target/localdbtest"
+        + new java.util.Date().getTime();
+
+    protected AsyncPipeline installer;
+    protected AsyncPipeline synchronizer;
+    protected SyncHistoryTable syncHistoryTable;
+
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
-        
-    	System.err.println("Sqlite database = " + databaseName);
-    	
-    	localDatabase = new JdbcDatabase(databaseName);
-        
+
+        System.err.println("Sqlite database = " + databaseName);
+
+        localDatabase = new JdbcDatabase(databaseName);
+
         setUser(1); // default is db owner
-                        
+
         uiConstants = createNiceMock(UIConstants.class);
         uiMessages = createNiceMock(UIMessages.class);
         replay(uiConstants, uiMessages);
@@ -112,99 +108,100 @@ public abstract class LocalHandlerTestCase {
     }
 
     protected void setUser(int userId) {
-    	AuthenticationModuleStub.setUserId(userId);
+        AuthenticationModuleStub.setUserId(userId);
         remoteDispatcher = new RemoteDispatcherStub();
 
         Injector clientSideInjector = Guice.createInjector(
-        		new LocalModuleStub(AuthenticationModuleStub.getCurrentUser(), 
-        				localDatabase,
-        				remoteDispatcher));
+            new LocalModuleStub(AuthenticationModuleStub.getCurrentUser(),
+                localDatabase,
+                remoteDispatcher));
         localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
         synchronizer = clientSideInjector.getInstance(SyncPipeline.class);
         installer = clientSideInjector.getInstance(InstallPipeline.class);
-        syncHistoryTable = clientSideInjector.getInstance(SyncHistoryTable.class);
+        syncHistoryTable = clientSideInjector
+            .getInstance(SyncHistoryTable.class);
     }
 
-    
     protected void synchronizeFirstTime() {
-    	newRequest();   
-    	installer.start(this.<Void>throwOnFailure());
-    	localDatabase.processEventQueue();
+        newRequest();
+        installer.start(this.<Void> throwOnFailure());
+        localDatabase.processEventQueue();
     }
-    
+
     protected void synchronize() {
-    	newRequest();    	
-    	synchronizer.start();
-    	localDatabase.processEventQueue();
-        
+        newRequest();
+        synchronizer.start();
+        localDatabase.processEventQueue();
+
     }
-    
-    protected <C extends Command<R>, R extends CommandResult> R executeLocally(C command) {
-    	Collector<R> collector = Collector.newCollector();
-    	localDispatcher.execute(command, collector);
-    	return collector.getResult();
+
+    protected <C extends Command<R>, R extends CommandResult> R executeLocally(
+        C command) {
+        Collector<R> collector = Collector.newCollector();
+        localDispatcher.execute(command, collector);
+        return collector.getResult();
     }
-    
-    protected <C extends Command<R>, R extends CommandResult> R executeRemotely(C command) {
-    	Collector<R> collector = Collector.newCollector();
-    	remoteDispatcher.execute(command, collector);
-    	return collector.getResult();
+
+    protected <C extends Command<R>, R extends CommandResult> R executeRemotely(
+        C command) {
+        Collector<R> collector = Collector.newCollector();
+        remoteDispatcher.execute(command, collector);
+        return collector.getResult();
     }
-    
-        
-    
+
     @After
     public void tearDown() {
-    	JdbcScheduler.get().forceCleanup();
+        JdbcScheduler.get().forceCleanup();
     }
 
     protected void newRequest() {
-    	serverEm.clear();
+        serverEm.clear();
     }
 
     private class RemoteDispatcherStub extends AbstractDispatcher {
 
-    	@Override
-    	public <T extends CommandResult> void execute(final Command<T> command,
-    			final AsyncCallback<T> callback) {
-    		
-    		JdbcScheduler.get().scheduleDeferred(new ScheduledCommand() {
-				
-				@Override
-				public void execute() {
+        @Override
+        public <T extends CommandResult> void execute(final Command<T> command,
+            final AsyncCallback<T> callback) {
 
-		    		List<CommandResult> results = servlet.handleCommands(Collections.<Command>singletonList(command));
-		    		CommandResult result = results.get(0);
+            JdbcScheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-		    		if(result instanceof SyncRegionUpdate) {
-		    			System.out.println(((SyncRegionUpdate) result).getSql());
-		    		}
+                @Override
+                public void execute() {
 
-		    		if(result instanceof Exception) {
-		    			throw new Error((Throwable) result);
-		    		} else {
-		    			callback.onSuccess((T) result);
-		    		}
-		
-				}
-			});
-    		JdbcScheduler.get().process();
-    		
-    		
-    	}
+                    List<CommandResult> results = servlet
+                        .handleCommands(Collections
+                            .<Command> singletonList(command));
+                    CommandResult result = results.get(0);
+
+                    if (result instanceof SyncRegionUpdate) {
+                        System.out.println(((SyncRegionUpdate) result).getSql());
+                    }
+
+                    if (result instanceof Exception) {
+                        throw new Error((Throwable) result);
+                    } else {
+                        callback.onSuccess((T) result);
+                    }
+
+                }
+            });
+            JdbcScheduler.get().process();
+
+        }
     }
-    
+
     private <T> AsyncCallback<T> throwOnFailure() {
-    	return new AsyncCallback<T>() {
+        return new AsyncCallback<T>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				throw new RuntimeException(caught);
-			}
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new RuntimeException(caught);
+            }
 
-			@Override
-			public void onSuccess(T result) {				
-			}
-		};
+            @Override
+            public void onSuccess(T result) {
+            }
+        };
     }
 }

@@ -49,59 +49,59 @@ import com.google.inject.Singleton;
 @Singleton
 public class SchemaServlet extends HttpServlet {
 
-	public static final String ENDPOINT = "/tasks/migrateSchema";
+    public static final String ENDPOINT = "/tasks/migrateSchema";
 
-	private static final Logger LOGGER = Logger.getLogger(SchemaServlet.class.getName());
-	
-	private final Provider<EntityManager> entityManager;
-	
-	@Inject
-	public SchemaServlet(Provider<EntityManager> entityManager) {
-		super();
-		this.entityManager = entityManager;
-	}
+    private static final Logger LOGGER = Logger.getLogger(SchemaServlet.class
+        .getName());
 
+    private final Provider<EntityManager> entityManager;
 
+    @Inject
+    public SchemaServlet(Provider<EntityManager> entityManager) {
+        super();
+        this.entityManager = entityManager;
+    }
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		
-		performMigration((HibernateEntityManager) this.entityManager.get());
-		
-	}
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
+        performMigration((HibernateEntityManager) this.entityManager.get());
 
+    }
 
-	public static void performMigration(HibernateEntityManager entityManager) {
-		entityManager.getSession().doWork(new Work() {
-			
-			@Override
-			public void execute(Connection connection) throws SQLException {
+    public static void performMigration(HibernateEntityManager entityManager) {
+        entityManager.getSession().doWork(new Work() {
 
-				Liquibase liquibase;
-				try {
-					liquibase = new Liquibase("org/activityinfo/database/changelog/db.changelog-master.xml",
-							new ClassLoaderResourceAccessor(), new CloudSqlConnection(connection));
-					liquibase.update(null);
-				} catch (Exception e) {
-					LOGGER.log(Level.SEVERE, "Exception whilst migrating schema", e);
-				}
-			}
-		});
-	}
-	
-	private static class CloudSqlConnection extends JdbcConnection {
+            @Override
+            public void execute(Connection connection) throws SQLException {
 
-		public CloudSqlConnection(Connection connection) {
-			super(connection);
-		}
+                Liquibase liquibase;
+                try {
+                    liquibase = new Liquibase(
+                        "org/activityinfo/database/changelog/db.changelog-master.xml",
+                        new ClassLoaderResourceAccessor(),
+                        new CloudSqlConnection(connection));
+                    liquibase.update(null);
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE,
+                        "Exception whilst migrating schema", e);
+                }
+            }
+        });
+    }
 
-		@Override
-		public String getDatabaseProductName() throws DatabaseException {
-			return "MySQL";
-		}
-		
-	}
-	
+    private static class CloudSqlConnection extends JdbcConnection {
+
+        public CloudSqlConnection(Connection connection) {
+            super(connection);
+        }
+
+        @Override
+        public String getDatabaseProductName() throws DatabaseException {
+            return "MySQL";
+        }
+
+    }
+
 }

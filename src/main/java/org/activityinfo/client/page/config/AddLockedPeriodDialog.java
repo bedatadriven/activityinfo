@@ -23,7 +23,6 @@ package org.activityinfo.client.page.config;
  */
 
 import org.activityinfo.client.dispatch.AsyncMonitor;
-import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.config.LockedPeriodsPresenter.AddLockedPeriodView;
 import org.activityinfo.shared.dto.ActivityDTO;
@@ -31,7 +30,6 @@ import org.activityinfo.shared.dto.LockedPeriodDTO;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
-import com.extjs.gxt.ui.client.data.DataField;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -53,323 +51,326 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AddLockedPeriodDialog extends FormPanel implements
-		AddLockedPeriodView {
+    AddLockedPeriodView {
 
-	private FieldSet fieldsetParentType;
-	private RadioGroup radiogroupParentType;
-	private Radio radioDatabase;
-	private Radio radioActivity;
-	private Radio radioProject;
-	private LabelField labelDatabase;
-	private LabelField labelDatabaseName;
-	private LabelField labelProject;
-	private LabelField labelActivity;
-	
-	private HorizontalPanel panelDatabase;
-	private HorizontalPanel panelActivity;
-	private HorizontalPanel panelProject;
-	
-	private UserDatabaseDTO userDatabase;
-	
-	private ComboBox<ProjectDTO> comboboxProjects;
-	private ListStore<ProjectDTO> storeProjects;
-	private ComboBox<ActivityDTO> comboboxactivities;
-	private ListStore<ActivityDTO> storeActivities;
-	
-	private TextField<String> textfieldName;
-	private DateField datefieldFromDate;
-	private DateField datefieldToDate;
-	private CheckBox checkboxEnabled;
-	
-	private EventBus eventBus = new SimpleEventBus();
-	
-	public AddLockedPeriodDialog() {
-		super();
-		
-		initializeComponent();
-		
-		setStartState();
-	}
-	
-	@Override
-	public void setUserDatabase(UserDatabaseDTO userDatabase) {
-		this.userDatabase=userDatabase;
-		
-		labelDatabaseName.setText(userDatabase.getName());
-		
-		storeProjects.removeAll();
-		storeProjects.add(userDatabase.getProjects());
-		
-		storeActivities.removeAll();
-		storeActivities.add(userDatabase.getActivities());
-	}
+    private FieldSet fieldsetParentType;
+    private RadioGroup radiogroupParentType;
+    private Radio radioDatabase;
+    private Radio radioActivity;
+    private Radio radioProject;
+    private LabelField labelDatabase;
+    private LabelField labelDatabaseName;
+    private LabelField labelProject;
+    private LabelField labelActivity;
 
-	private void initializeComponent() {
-		setWidth(400);
-		setHeight(280);
-		
-		setHeaderVisible(false);
-		
-		fieldsetParentType = new FieldSet();
-		fieldsetParentType.setHeading(I18N.CONSTANTS.type());
-		
-		comboboxProjects = new ComboBox<ProjectDTO>();		
-		storeProjects = new ListStore<ProjectDTO>();
-		comboboxProjects.setStore(storeProjects);
-		comboboxProjects.setDisplayField("name");
-		comboboxProjects.setForceSelection(true);
-		comboboxProjects.setTriggerAction(TriggerAction.ALL);
-		comboboxProjects.setEditable(false);
-		
-		comboboxactivities = new ComboBox<ActivityDTO>();
-		storeActivities = new ListStore<ActivityDTO>();
-		comboboxactivities.setStore(storeActivities);
-		comboboxactivities.setDisplayField("name");
-		comboboxactivities.setForceSelection(true);
-		comboboxactivities.setTriggerAction(TriggerAction.ALL);
-		comboboxactivities.setEditable(false);
-		
-		radiogroupParentType = new RadioGroup();
-		radiogroupParentType.setFieldLabel(I18N.CONSTANTS.type());
-		
-		labelDatabase = new LabelField(I18N.CONSTANTS.database());
-		labelDatabase.setWidth(100);
-		
-		labelDatabaseName = new LabelField();
-		
-		radioDatabase = new Radio();
-		radioDatabase.setFieldLabel(I18N.CONSTANTS.database());
-		radioDatabase.addListener(Events.Change, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				
-			}
-		});
-		radiogroupParentType.add(radioDatabase);
-		panelDatabase = new HorizontalPanel();
-		panelDatabase.add(labelDatabase);
-		panelDatabase.add(radioDatabase);
-		panelDatabase.add(labelDatabaseName);
-		fieldsetParentType.add(panelDatabase);
-		
-		radioActivity = new Radio();
-		radioActivity.setFieldLabel(I18N.CONSTANTS.activity());
-		
-		labelActivity = new LabelField(I18N.CONSTANTS.activity());
-		labelActivity.setWidth(100);
-		
-		panelActivity = new HorizontalPanel();
-		panelActivity.add(labelActivity);
-		panelActivity.add(radioActivity);
-		panelActivity.add(comboboxactivities);
-		fieldsetParentType.add(panelActivity);
-		radiogroupParentType.add(radioActivity);
-		
-		radioProject = new Radio();
-		radioProject.setFieldLabel(I18N.CONSTANTS.project());
-		radioProject.addListener(Events.Change, new Listener<FieldEvent>() {
-			@Override
-			public void handleEvent(FieldEvent be) {
-				comboboxProjects.setEnabled(radioProject.getValue());
-			}
-		});
-		
-		labelProject = new LabelField(I18N.CONSTANTS.project());
-		labelProject.setWidth(100);
-		
-		panelProject = new HorizontalPanel();
-		panelProject.add(labelProject);
-		panelProject.add(radioProject);
-		panelProject.add(comboboxProjects);
-		fieldsetParentType.add(panelProject);
-		radiogroupParentType.add(radioProject);
-		
-		add(fieldsetParentType);
-		
-		textfieldName = new TextField<String>();
-		textfieldName.setFieldLabel(I18N.CONSTANTS.name());
-		textfieldName.setAllowBlank(false);
-		add(textfieldName);
+    private HorizontalPanel panelDatabase;
+    private HorizontalPanel panelActivity;
+    private HorizontalPanel panelProject;
 
-		checkboxEnabled = new CheckBox();
-		checkboxEnabled.setFieldLabel(I18N.CONSTANTS.enabledColumn());
-		add(checkboxEnabled);
+    private UserDatabaseDTO userDatabase;
 
-		datefieldFromDate = new DateField();
-		datefieldFromDate.setFieldLabel(I18N.CONSTANTS.fromDate());
-		datefieldFromDate.setAllowBlank(false);
-		add(datefieldFromDate);
+    private ComboBox<ProjectDTO> comboboxProjects;
+    private ListStore<ProjectDTO> storeProjects;
+    private ComboBox<ActivityDTO> comboboxactivities;
+    private ListStore<ActivityDTO> storeActivities;
 
-		datefieldToDate = new DateField();
-		datefieldToDate.setFieldLabel(I18N.CONSTANTS.toDate());
-		datefieldFromDate.setAllowBlank(false);
-		add(datefieldToDate);
-		
-		radiogroupParentType.addListener(Events.Change, new Listener<FieldEvent>() {
+    private TextField<String> textfieldName;
+    private DateField datefieldFromDate;
+    private DateField datefieldToDate;
+    private CheckBox checkboxEnabled;
 
-			@Override
-			public void handleEvent(FieldEvent be) {
-				comboboxactivities.setAllowBlank( !radioActivity.getValue() );
-				comboboxProjects.setAllowBlank( !radioProject.getValue() );
-				comboboxactivities.clearInvalid();
-				comboboxProjects.clearInvalid();
-			}
-		});
-	}
+    private EventBus eventBus = new SimpleEventBus();
 
-	@Override
-	public void initialize() {
+    public AddLockedPeriodDialog() {
+        super();
 
-	}
+        initializeComponent();
 
-	@Override
-	public AsyncMonitor getLoadingMonitor() {
-		return null;
-	}
+        setStartState();
+    }
 
-	@Override
-	public void setValue(LockedPeriodDTO value) {
-		if (value != null) {
-			textfieldName.setValue(value.getName());
-			checkboxEnabled.setValue(value.isEnabled());
-			datefieldFromDate.setValue(value.getFromDate().atMidnightInMyTimezone());
-			datefieldToDate.setValue(value.getToDate().atMidnightInMyTimezone());
-		}
-	}
+    @Override
+    public void setUserDatabase(UserDatabaseDTO userDatabase) {
+        this.userDatabase = userDatabase;
 
-	@Override
-	public LockedPeriodDTO getValue() {
-		LockedPeriodDTO newLockedPeriod =  new LockedPeriodDTO();
-		newLockedPeriod.setName(textfieldName.getValue());
-		newLockedPeriod.setEnabled(checkboxEnabled.getValue());
-		newLockedPeriod.setFromDate(datefieldFromDate.getValue());
-		newLockedPeriod.setToDate(datefieldToDate.getValue());
-		if (radioActivity.getValue() && comboboxactivities.getValue() != null) {
-			newLockedPeriod.setParent(comboboxactivities.getValue());
-		}
-		if (radioProject.getValue() && comboboxProjects.getValue() != null) {
-			newLockedPeriod.setParent(comboboxProjects.getValue());
-		}
-		if (radioDatabase.getValue()) {
-			newLockedPeriod.setParent(userDatabase);
-		}
-		
-		return newLockedPeriod;
-	}
+        labelDatabaseName.setText(userDatabase.getName());
 
-	@Override
-	public Widget asWidget() {
-		return this;
-	}
+        storeProjects.removeAll();
+        storeProjects.add(userDatabase.getProjects());
 
-	@Override
-	public HandlerRegistration addCreateHandler(
-			org.activityinfo.client.mvp.CanCreate.CreateHandler handler) {
-		return eventBus.addHandler(CreateEvent.TYPE, handler);
-	}
+        storeActivities.removeAll();
+        storeActivities.add(userDatabase.getActivities());
+    }
 
-	@Override
-	public void create(LockedPeriodDTO item) {
-	}
+    private void initializeComponent() {
+        setWidth(400);
+        setHeight(280);
 
-	@Override
-	public void setCreateEnabled(boolean createEnabled) {
-	}
+        setHeaderVisible(false);
 
-	@Override
-	public HandlerRegistration addCancelCreateHandler(
-			org.activityinfo.client.mvp.CanCreate.CancelCreateHandler handler) {
-		return eventBus.addHandler(CancelCreateEvent.TYPE, handler);
-	}
+        fieldsetParentType = new FieldSet();
+        fieldsetParentType.setHeading(I18N.CONSTANTS.type());
 
-	@Override
-	public HandlerRegistration addStartCreateHandler(
-			org.activityinfo.client.mvp.CanCreate.StartCreateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        comboboxProjects = new ComboBox<ProjectDTO>();
+        storeProjects = new ListStore<ProjectDTO>();
+        comboboxProjects.setStore(storeProjects);
+        comboboxProjects.setDisplayField("name");
+        comboboxProjects.setForceSelection(true);
+        comboboxProjects.setTriggerAction(TriggerAction.ALL);
+        comboboxProjects.setEditable(false);
 
-	@Override
-	public void startCreate() {
-		this.show();
-	}
+        comboboxactivities = new ComboBox<ActivityDTO>();
+        storeActivities = new ListStore<ActivityDTO>();
+        comboboxactivities.setStore(storeActivities);
+        comboboxactivities.setDisplayField("name");
+        comboboxactivities.setForceSelection(true);
+        comboboxactivities.setTriggerAction(TriggerAction.ALL);
+        comboboxactivities.setEditable(false);
 
-	private void setStartState() {
-		textfieldName.setValue(null);
-		datefieldFromDate.setValue(null);
-		datefieldToDate.setValue(null);
-		checkboxEnabled.setValue(true);
-		radioActivity.setValue(false);
-		radioProject.setValue(false);
-		radioDatabase.setValue(true);
-	}
+        radiogroupParentType = new RadioGroup();
+        radiogroupParentType.setFieldLabel(I18N.CONSTANTS.type());
 
-	@Override
-	public void cancelCreate() {
-		setStartState();
-		this.hide();
-	}
+        labelDatabase = new LabelField(I18N.CONSTANTS.database());
+        labelDatabase.setWidth(100);
 
-	@Override
-	public void update(LockedPeriodDTO item) {
-		// TODO Auto-generated method stub
-		
-	}
+        labelDatabaseName = new LabelField();
 
-	@Override
-	public void cancelUpdate(LockedPeriodDTO item) {
-		// TODO Auto-generated method stub
-		
-	}
+        radioDatabase = new Radio();
+        radioDatabase.setFieldLabel(I18N.CONSTANTS.database());
+        radioDatabase.addListener(Events.Change, new Listener<FieldEvent>() {
+            @Override
+            public void handleEvent(FieldEvent be) {
 
-	@Override
-	public void cancelUpdateAll() {
-		// TODO Auto-generated method stub
-		
-	}
+            }
+        });
+        radiogroupParentType.add(radioDatabase);
+        panelDatabase = new HorizontalPanel();
+        panelDatabase.add(labelDatabase);
+        panelDatabase.add(radioDatabase);
+        panelDatabase.add(labelDatabaseName);
+        fieldsetParentType.add(panelDatabase);
 
-	@Override
-	public void startUpdate() {
-		// TODO Auto-generated method stub
-		
-	}
+        radioActivity = new Radio();
+        radioActivity.setFieldLabel(I18N.CONSTANTS.activity());
 
-	@Override
-	public void setUpdateEnabled(boolean updateEnabled) {
-		// TODO Auto-generated method stub
-		
-	}
+        labelActivity = new LabelField(I18N.CONSTANTS.activity());
+        labelActivity.setWidth(100);
 
-	@Override
-	public HandlerRegistration addUpdateHandler(
-			org.activityinfo.client.mvp.CanUpdate.UpdateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        panelActivity = new HorizontalPanel();
+        panelActivity.add(labelActivity);
+        panelActivity.add(radioActivity);
+        panelActivity.add(comboboxactivities);
+        fieldsetParentType.add(panelActivity);
+        radiogroupParentType.add(radioActivity);
 
-	@Override
-	public HandlerRegistration addCancelUpdateHandler(
-			org.activityinfo.client.mvp.CanUpdate.CancelUpdateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        radioProject = new Radio();
+        radioProject.setFieldLabel(I18N.CONSTANTS.project());
+        radioProject.addListener(Events.Change, new Listener<FieldEvent>() {
+            @Override
+            public void handleEvent(FieldEvent be) {
+                comboboxProjects.setEnabled(radioProject.getValue());
+            }
+        });
 
-	@Override
-	public HandlerRegistration addRequestUpdateHandler(
-			org.activityinfo.client.mvp.CanUpdate.RequestUpdateHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        labelProject = new LabelField(I18N.CONSTANTS.project());
+        labelProject.setWidth(100);
 
-	@Override
-	public AsyncMonitor getCreatingMonitor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        panelProject = new HorizontalPanel();
+        panelProject.add(labelProject);
+        panelProject.add(radioProject);
+        panelProject.add(comboboxProjects);
+        fieldsetParentType.add(panelProject);
+        radiogroupParentType.add(radioProject);
 
-	@Override
-	public AsyncMonitor getUpdatingMonitor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        add(fieldsetParentType);
+
+        textfieldName = new TextField<String>();
+        textfieldName.setFieldLabel(I18N.CONSTANTS.name());
+        textfieldName.setAllowBlank(false);
+        add(textfieldName);
+
+        checkboxEnabled = new CheckBox();
+        checkboxEnabled.setFieldLabel(I18N.CONSTANTS.enabledColumn());
+        add(checkboxEnabled);
+
+        datefieldFromDate = new DateField();
+        datefieldFromDate.setFieldLabel(I18N.CONSTANTS.fromDate());
+        datefieldFromDate.setAllowBlank(false);
+        add(datefieldFromDate);
+
+        datefieldToDate = new DateField();
+        datefieldToDate.setFieldLabel(I18N.CONSTANTS.toDate());
+        datefieldFromDate.setAllowBlank(false);
+        add(datefieldToDate);
+
+        radiogroupParentType.addListener(Events.Change,
+            new Listener<FieldEvent>() {
+
+                @Override
+                public void handleEvent(FieldEvent be) {
+                    comboboxactivities.setAllowBlank(!radioActivity.getValue());
+                    comboboxProjects.setAllowBlank(!radioProject.getValue());
+                    comboboxactivities.clearInvalid();
+                    comboboxProjects.clearInvalid();
+                }
+            });
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public AsyncMonitor getLoadingMonitor() {
+        return null;
+    }
+
+    @Override
+    public void setValue(LockedPeriodDTO value) {
+        if (value != null) {
+            textfieldName.setValue(value.getName());
+            checkboxEnabled.setValue(value.isEnabled());
+            datefieldFromDate.setValue(value.getFromDate()
+                .atMidnightInMyTimezone());
+            datefieldToDate
+                .setValue(value.getToDate().atMidnightInMyTimezone());
+        }
+    }
+
+    @Override
+    public LockedPeriodDTO getValue() {
+        LockedPeriodDTO newLockedPeriod = new LockedPeriodDTO();
+        newLockedPeriod.setName(textfieldName.getValue());
+        newLockedPeriod.setEnabled(checkboxEnabled.getValue());
+        newLockedPeriod.setFromDate(datefieldFromDate.getValue());
+        newLockedPeriod.setToDate(datefieldToDate.getValue());
+        if (radioActivity.getValue() && comboboxactivities.getValue() != null) {
+            newLockedPeriod.setParent(comboboxactivities.getValue());
+        }
+        if (radioProject.getValue() && comboboxProjects.getValue() != null) {
+            newLockedPeriod.setParent(comboboxProjects.getValue());
+        }
+        if (radioDatabase.getValue()) {
+            newLockedPeriod.setParent(userDatabase);
+        }
+
+        return newLockedPeriod;
+    }
+
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
+
+    @Override
+    public HandlerRegistration addCreateHandler(
+        org.activityinfo.client.mvp.CanCreate.CreateHandler handler) {
+        return eventBus.addHandler(CreateEvent.TYPE, handler);
+    }
+
+    @Override
+    public void create(LockedPeriodDTO item) {
+    }
+
+    @Override
+    public void setCreateEnabled(boolean createEnabled) {
+    }
+
+    @Override
+    public HandlerRegistration addCancelCreateHandler(
+        org.activityinfo.client.mvp.CanCreate.CancelCreateHandler handler) {
+        return eventBus.addHandler(CancelCreateEvent.TYPE, handler);
+    }
+
+    @Override
+    public HandlerRegistration addStartCreateHandler(
+        org.activityinfo.client.mvp.CanCreate.StartCreateHandler handler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void startCreate() {
+        this.show();
+    }
+
+    private void setStartState() {
+        textfieldName.setValue(null);
+        datefieldFromDate.setValue(null);
+        datefieldToDate.setValue(null);
+        checkboxEnabled.setValue(true);
+        radioActivity.setValue(false);
+        radioProject.setValue(false);
+        radioDatabase.setValue(true);
+    }
+
+    @Override
+    public void cancelCreate() {
+        setStartState();
+        this.hide();
+    }
+
+    @Override
+    public void update(LockedPeriodDTO item) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void cancelUpdate(LockedPeriodDTO item) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void cancelUpdateAll() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void startUpdate() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setUpdateEnabled(boolean updateEnabled) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public HandlerRegistration addUpdateHandler(
+        org.activityinfo.client.mvp.CanUpdate.UpdateHandler handler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public HandlerRegistration addCancelUpdateHandler(
+        org.activityinfo.client.mvp.CanUpdate.CancelUpdateHandler handler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public HandlerRegistration addRequestUpdateHandler(
+        org.activityinfo.client.mvp.CanUpdate.RequestUpdateHandler handler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public AsyncMonitor getCreatingMonitor() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public AsyncMonitor getUpdatingMonitor() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

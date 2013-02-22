@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config;
 
 /*
@@ -27,6 +25,7 @@ package org.activityinfo.client.page.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.client.page.common.dialog.FormDialogImpl;
@@ -36,7 +35,6 @@ import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.config.form.PartnerForm;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.client.i18n.UIConstants;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
@@ -49,8 +47,9 @@ import com.google.inject.Inject;
 /**
  * @author Alex Bertram
  */
-public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
-                            implements DbPartnerEditor.View {
+public class DbPartnerGrid extends
+    AbstractGridView<PartnerDTO, DbPartnerEditor>
+    implements DbPartnerEditor.View {
 
     private final UIConstants messages;
     private final IconImageBundle icons;
@@ -64,7 +63,8 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
     }
 
     @Override
-	public void init(DbPartnerEditor editor, UserDatabaseDTO db, ListStore<PartnerDTO> store) {
+    public void init(DbPartnerEditor editor, UserDatabaseDTO db,
+        ListStore<PartnerDTO> store) {
         super.init(editor, store);
         this.setHeading(db.getName() + " - " + messages.partners());
 
@@ -72,13 +72,12 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
 
     @Override
     protected Grid<PartnerDTO> createGridAndAddToContainer(Store store) {
-        grid = new Grid<PartnerDTO>((ListStore)store, createColumnModel());
+        grid = new Grid<PartnerDTO>((ListStore) store, createColumnModel());
         grid.setAutoExpandColumn("fullName");
         grid.setLoadMask(true);
 
         this.setLayout(new FitLayout());
         this.add(grid);
-
 
         return grid;
     }
@@ -99,7 +98,8 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
     }
 
     @Override
-	public FormDialogTether showAddDialog(PartnerDTO partner, FormDialogCallback callback) {
+    public FormDialogTether showAddDialog(PartnerDTO partner,
+        FormDialogCallback callback) {
 
         PartnerForm form = new PartnerForm();
         form.getBinding().bind(partner);

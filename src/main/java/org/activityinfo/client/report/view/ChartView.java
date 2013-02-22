@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.report.view;
 
 /*
@@ -28,9 +26,10 @@ import org.activityinfo.shared.report.model.PivotChartReportElement;
 
 /**
  * Interface to a view of a PivotChartElement
- *
+ * 
  * @author Alex Bertram
  */
 public interface ChartView extends ReportView<PivotChartReportElement> {
+    @Override
     void show(PivotChartReportElement element);
 }

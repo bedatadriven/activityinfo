@@ -28,13 +28,12 @@ import org.activityinfo.shared.dto.PartnerDTO;
 
 public class OrgUnitListResult extends ListResult<PartnerDTO> {
 
-	public OrgUnitListResult() {
-		
-		
-	}
-	
-	public OrgUnitListResult(List<PartnerDTO> data) {
-		super(data);
-	}
-	
+    public OrgUnitListResult() {
+
+    }
+
+    public OrgUnitListResult(List<PartnerDTO> data) {
+        super(data);
+    }
+
 }

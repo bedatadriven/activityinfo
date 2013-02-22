@@ -27,18 +27,16 @@ import com.google.gwt.core.client.JsArray;
 
 public final class AdminEntityGeometry extends JavaScriptObject {
 
-	protected AdminEntityGeometry() {
-		
-	}
-	
+    protected AdminEntityGeometry() {
 
-	public native int getAdminEntityId() /*-{
-		return this.id;
-	}-*/;
-	
-	public native JsArray<AdminPolygon> getPolygons() /*-{
-		return this.polygons;
-	}-*/;
-	
-	
+    }
+
+    public native int getAdminEntityId() /*-{
+                                         return this.id;
+                                         }-*/;
+
+    public native JsArray<AdminPolygon> getPolygons() /*-{
+                                                      return this.polygons;
+                                                      }-*/;
+
 }

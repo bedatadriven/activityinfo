@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.logging.LogException;
@@ -43,23 +42,25 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 /**
- * New hibernate-free command servlet. Currently only used in 
- * test code, will eventually replace CommandServlet when
- * all dependencies on hibernate are removed.
- *
+ * New hibernate-free command servlet. Currently only used in test code, will
+ * eventually replace CommandServlet when all dependencies on hibernate are
+ * removed.
+ * 
  */
 @Singleton
-public class CommandServlet2 extends RemoteServiceServlet implements RemoteCommandService  {
+public class CommandServlet2 extends RemoteServiceServlet implements
+    RemoteCommandService {
 
     @Inject
     private Injector injector;
 
-    
-    private static final Logger LOGGER = Logger.getLogger(CommandServlet2.class.getName());
-    
+    private static final Logger LOGGER = Logger.getLogger(CommandServlet2.class
+        .getName());
+
     @Override
     @LogException
-    public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
+    public List<CommandResult> execute(String authToken, List<Command> commands)
+        throws CommandException {
         Authentication auth = retrieveAuthentication(authToken);
         try {
             return handleCommands(auth.getUser(), commands);
@@ -70,20 +71,21 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
         }
     }
 
-    public CommandResult execute(String authToken, Command command) throws CommandException {
+    public CommandResult execute(String authToken, Command command)
+        throws CommandException {
         Authentication auth = retrieveAuthentication(authToken);
         return handleCommand(auth.getUser(), command);
     }
 
-	private Authentication retrieveAuthentication(String authToken)
-			throws InvalidAuthTokenException {
-//		Authentication auth = userDAO.findAuthenticationByToken(authToken);        
-//		if (auth == null) {
-//            throw new InvalidAuthTokenException();
-//		}
-//		return auth;
-		throw new UnsupportedOperationException();
-	}
+    private Authentication retrieveAuthentication(String authToken)
+        throws InvalidAuthTokenException {
+        // Authentication auth = userDAO.findAuthenticationByToken(authToken);
+        // if (auth == null) {
+        // throw new InvalidAuthTokenException();
+        // }
+        // return auth;
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Publicly visible for testing *
@@ -109,10 +111,10 @@ public class CommandServlet2 extends RemoteServiceServlet implements RemoteComma
     }
 
     @LogException(emailAlert = true)
-    protected CommandResult handleCommand(User user, Command command) throws CommandException {
-    	RemoteExecutionContext context = new RemoteExecutionContext(injector);
-    	return context.execute(command);
+    protected CommandResult handleCommand(User user, Command command)
+        throws CommandException {
+        RemoteExecutionContext context = new RemoteExecutionContext(injector);
+        return context.execute(command);
     }
-    
-   
+
 }

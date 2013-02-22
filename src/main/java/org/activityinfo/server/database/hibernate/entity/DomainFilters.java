@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -35,26 +33,29 @@ import org.hibernate.ejb.HibernateEntityManager;
 
 public final class DomainFilters {
 
-	private DomainFilters() {}
-	
+    private DomainFilters() {
+    }
+
     public static void applyUserFilter(User user, EntityManager em) {
-         applyDeletedFilter(em);
-        applyVisibleFilter(user,em);
+        applyDeletedFilter(em);
+        applyVisibleFilter(user, em);
 
     }
 
     public static void applyDeletedFilter(EntityManager em) {
-        org.hibernate.Session session = ((HibernateEntityManager) em).getSession();
+        org.hibernate.Session session = ((HibernateEntityManager) em)
+            .getSession();
 
-        /* Hide entities deleted by users  */
+        /* Hide entities deleted by users */
         session.enableFilter("hideDeleted");
     }
 
     public static void applyVisibleFilter(User user, EntityManager em) {
         /* Hide entities that this user does not have permission to view */
-        org.hibernate.Session session = ((HibernateEntityManager) em).getSession();
+        org.hibernate.Session session = ((HibernateEntityManager) em)
+            .getSession();
 
         Filter filter = session.enableFilter("userVisible");
-		filter.setParameter("currentUserId", user.getId());
+        filter.setParameter("currentUserId", user.getId());
     }
 }

@@ -30,10 +30,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public interface AdminComboBox {
 
-	Widget asWidget();
-	void addSelectionChangeListener(Listener<SelectionChangedEvent> listener);
-	void setValue(AdminEntityDTO value);
-	void setEnabled(boolean enabled);
-	boolean validate();
+    Widget asWidget();
+
+    void addSelectionChangeListener(Listener<SelectionChangedEvent> listener);
+
+    void setValue(AdminEntityDTO value);
+
+    void setEnabled(boolean enabled);
+
+    boolean validate();
 
 }

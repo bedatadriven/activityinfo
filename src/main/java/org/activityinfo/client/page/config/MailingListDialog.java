@@ -24,7 +24,6 @@ package org.activityinfo.client.page.config;
 
 import java.util.List;
 
-import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.shared.command.GetUsers;
@@ -42,86 +41,87 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class MailingListDialog extends Window {
 
-	private final EventBus eventBus;
-	private final Dispatcher service;
-	private final int dbId;
+    private final Dispatcher service;
+    private final int dbId;
 
-	private Button CloseButton;
-	private TextArea emailsTextField ;
+    private Button closeButton;
+    private TextArea emailsTextField;
 
-	public MailingListDialog(EventBus eventBus, Dispatcher service, int dbId) {
+    public MailingListDialog(Dispatcher service, int dbId) {
 
-		this.eventBus =eventBus;
-		this.service = service;
-		this.dbId = dbId;
-		
-		initializeComponent();
-		hide();
-		
-		createTextField();
-		createCloseButton();
-		loadUsers();
-	}
+        this.service = service;
+        this.dbId = dbId;
 
-	private void initializeComponent() {
-		setHeading(I18N.CONSTANTS.mailingList());
-		setModal(true);
-		setLayout(new FitLayout());
-		setModal(true);
-		setClosable(false);
-		setBodyStyle("padding: 5px;");
-		setLayout(new FitLayout());
-	}
+        initializeComponent();
+        hide();
 
-	private void createCloseButton() {
-		CloseButton = new Button(I18N.CONSTANTS.close());
-		addButton(CloseButton);
-		CloseButton.addListener(Events.Select, new Listener<ButtonEvent>() {
-			public void handleEvent(ButtonEvent be) {
-				hide();
-			}
-		});
-	}
+        createTextField();
+        createCloseButton();
+        loadUsers();
+    }
 
-		
-	private void createTextField() {
-		emailsTextField = new TextArea();
-		emailsTextField.setHeight("175px");
-		emailsTextField.setWidth("250px");
-		emailsTextField.selectAll();
-		add(emailsTextField);
-	}
+    private void initializeComponent() {
+        setHeading(I18N.CONSTANTS.mailingList());
+        setModal(true);
+        setLayout(new FitLayout());
+        setModal(true);
+        setClosable(false);
+        setBodyStyle("padding: 5px;");
+        setLayout(new FitLayout());
+    }
 
-	public void show() {
-		super.show();
-	}
+    private void createCloseButton() {
+        closeButton = new Button(I18N.CONSTANTS.close());
+        addButton(closeButton);
+        closeButton.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
+            public void handleEvent(ButtonEvent be) {
+                hide();
+            }
+        });
+    }
 
-	private void loadUsers() {
-		service.execute(new GetUsers(dbId), new AsyncCallback<UserResult>() {
+    private void createTextField() {
+        emailsTextField = new TextArea();
+        emailsTextField.setHeight("175px");
+        emailsTextField.setWidth("250px");
+        emailsTextField.selectAll();
+        add(emailsTextField);
+    }
 
-			public void onFailure(Throwable caught) {
-			}
+    @Override
+    public void show() {
+        super.show();
+    }
 
-			public void onSuccess(UserResult result) {
-				String emails = CreateMailingList(result.getData());
-				emailsTextField.setValue(emails);
-				show();
-			}
-		});
-	}
+    private void loadUsers() {
+        service.execute(new GetUsers(dbId), new AsyncCallback<UserResult>() {
 
-	private String CreateMailingList(List<UserPermissionDTO> users ) {
-		StringBuilder emails = new StringBuilder();
+            @Override
+            public void onFailure(Throwable caught) {
+            }
 
-		for (UserPermissionDTO dto : users) {
-			emails.append("\"" + dto.getName() + "\"");
-			emails.append(" ");
-			emails.append("<" + dto.getEmail() + ">,");
-			emails.append(" ");
-		}
+            @Override
+            public void onSuccess(UserResult result) {
+                String emails = createMailingList(result.getData());
+                emailsTextField.setValue(emails);
+                show();
+            }
+        });
+    }
 
-		return emails.toString();
+    private String createMailingList(List<UserPermissionDTO> users) {
+        StringBuilder emails = new StringBuilder();
 
-	}
+        for (UserPermissionDTO dto : users) {
+            emails.append("\"" + dto.getName() + "\"");
+            emails.append(" ");
+            emails.append("<" + dto.getEmail() + ">,");
+            emails.append(" ");
+        }
+
+        return emails.toString();
+
+    }
 
 }

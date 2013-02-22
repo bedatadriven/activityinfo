@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -31,12 +29,12 @@ public enum EmailDelivery {
 
     /**
      * The report is not bound to a time frame
-     *
+     * 
      */
     NONE,
 
     /**
-     *
+     * 
      * The time frame of the report will be monthly.
      */
     MONTHLY,
@@ -45,6 +43,5 @@ public enum EmailDelivery {
      * The time frame of the report is weekly
      */
     WEEKLY;
-
 
 }

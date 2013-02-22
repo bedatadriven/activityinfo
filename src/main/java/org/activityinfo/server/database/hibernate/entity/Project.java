@@ -41,80 +41,80 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Project implements Serializable {
-	private int id;
-	private String name;
-	private String description;
-	private Date dateDeleted;
-	private UserDatabase userDatabase;
+    private int id;
+    private String name;
+    private String description;
+    private Date dateDeleted;
+    private UserDatabase userDatabase;
     private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>();
     private Set<Target> targets = new HashSet<Target>(0);
 
-	public Project() {
-		super();
-	}
+    public Project() {
+        super();
+    }
 
-	public Project(int id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
+    public Project(int id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ProjectId", unique = true, nullable = false)
-	public int getId() {
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	@Column(nullable=false, length=30)
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public int getId() {
+        return id;
+    }
 
-	@Lob
-	public String getDescription() {
-		return description;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setDateDeleted(Date dateDeleted) {
-		this.dateDeleted = dateDeleted;
-	}
+    @Column(nullable = false, length = 30)
+    public String getName() {
+        return name;
+    }
 
-	public Date getDateDeleted() {
-		return dateDeleted;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setUserDatabase(UserDatabase userDatabase) {
-		this.userDatabase = userDatabase;
-	}
-	
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Lob
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDateDeleted(Date dateDeleted) {
+        this.dateDeleted = dateDeleted;
+    }
+
+    public Date getDateDeleted() {
+        return dateDeleted;
+    }
+
+    public void setUserDatabase(UserDatabase userDatabase) {
+        this.userDatabase = userDatabase;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DatabaseId", nullable = false)
-	public UserDatabase getUserDatabase() {
-		return userDatabase;
-	}
+    public UserDatabase getUserDatabase() {
+        return userDatabase;
+    }
 
-	public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
-		this.lockedPeriods = lockedPeriods;
-	}
+    public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
+        this.lockedPeriods = lockedPeriods;
+    }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="project")
-    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-	public Set<LockedPeriod> getLockedPeriods() {
-		return lockedPeriods;
-	}
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
+    // @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    public Set<LockedPeriod> getLockedPeriods() {
+        return lockedPeriods;
+    }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
     public Set<Target> getTargets() {

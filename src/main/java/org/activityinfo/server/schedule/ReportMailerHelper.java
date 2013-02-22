@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.schedule;
 
 /*
@@ -35,15 +33,15 @@ import org.activityinfo.server.util.html.HtmlWriter;
 import org.activityinfo.shared.report.model.EmailDelivery;
 import org.activityinfo.shared.report.model.Report;
 
-
 public class ReportMailerHelper {
-
 
     /**
      * Checks if the given ReportSubscription should be mailed today.
-     *
-     * @param dateToday Today's date
-     * @param report The report for which to check
+     * 
+     * @param dateToday
+     *            Today's date
+     * @param report
+     *            The report for which to check
      * @return True if the report should be mailed.
      */
     public static boolean mailToday(Date dateToday, ReportSubscription report) {
@@ -51,12 +49,13 @@ public class ReportMailerHelper {
         Calendar today = Calendar.getInstance();
         today.setTime(dateToday);
 
-        if(report.getEmailDelivery() == EmailDelivery.WEEKLY) {
+        if (report.getEmailDelivery() == EmailDelivery.WEEKLY) {
             return today.get(Calendar.DAY_OF_WEEK) == report.getEmailDay();
 
-        } else if(report.getEmailDelivery() == EmailDelivery.MONTHLY) {
-            if(report.getEmailDay() == Report.LAST_DAY_OF_MONTH) {
-                return today.get(Calendar.DATE) == today.getActualMaximum(Calendar.DATE);
+        } else if (report.getEmailDelivery() == EmailDelivery.MONTHLY) {
+            if (report.getEmailDay() == Report.LAST_DAY_OF_MONTH) {
+                return today.get(Calendar.DATE) == today
+                    .getActualMaximum(Calendar.DATE);
             } else {
                 return today.get(Calendar.DATE) == report.getEmailDay();
             }
@@ -64,13 +63,15 @@ public class ReportMailerHelper {
         return false;
     }
 
-    public static String frequencyString(ResourceBundle messages, EmailDelivery frequency) {
-        if(frequency == EmailDelivery.WEEKLY) {
+    public static String frequencyString(ResourceBundle messages,
+        EmailDelivery frequency) {
+        if (frequency == EmailDelivery.WEEKLY) {
             return messages.getString("weekly");
-        } else if(frequency == EmailDelivery.MONTHLY) {
+        } else if (frequency == EmailDelivery.MONTHLY) {
             return messages.getString("monthly");
         } else {
-            throw new IllegalArgumentException("Invalid frequency = " + frequency);
+            throw new IllegalArgumentException("Invalid frequency = "
+                + frequency);
         }
     }
 
@@ -78,28 +79,33 @@ public class ReportMailerHelper {
 
         // load our resource bundle with localized messages
         ResourceBundle mailMessages =
-              ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages",  LocaleHelper.getLocaleObject(sub.getUser()));
+            ResourceBundle.getBundle(
+                "org.activityinfo.server.mail.MailMessages",
+                LocaleHelper.getLocaleObject(sub.getUser()));
 
         StringBuilder sb = new StringBuilder();
 
-        String greeting = MessageFormat.format(mailMessages.getString("greeting"), sub.getUser().getName());
+        String greeting = MessageFormat.format(
+            mailMessages.getString("greeting"), sub.getUser().getName());
         sb.append(greeting).append("\n\n");
 
         String intro;
-        if(sub.getInvitingUser() != null) {
-            intro = MessageFormat.format(mailMessages.getString("reportIntroInvited"),
-                    sub.getInvitingUser().getName(),
-                    sub.getInvitingUser().getEmail(),
-                    report.getTitle(),
-                    frequencyString(mailMessages, sub.getEmailDelivery()));
+        if (sub.getInvitingUser() != null) {
+            intro = MessageFormat.format(
+                mailMessages.getString("reportIntroInvited"),
+                sub.getInvitingUser().getName(),
+                sub.getInvitingUser().getEmail(),
+                report.getTitle(),
+                frequencyString(mailMessages, sub.getEmailDelivery()));
         } else {
             intro = MessageFormat.format(mailMessages.getString("reportIntro"),
-                    report.getTitle(),
-                    frequencyString(mailMessages, sub.getEmailDelivery()));
+                report.getTitle(),
+                frequencyString(mailMessages, sub.getEmailDelivery()));
 
         }
         sb.append(intro).append("\n\n");
-        sb.append(MessageFormat.format(mailMessages.getString("viewLive"), sub.getTemplate().getId()));
+        sb.append(MessageFormat.format(mailMessages.getString("viewLive"), sub
+            .getTemplate().getId()));
 
         return sb.toString();
     }
@@ -108,32 +114,37 @@ public class ReportMailerHelper {
 
         // load our resource bundle with localized messages
         ResourceBundle mailMessages =
-              ResourceBundle.getBundle("org.activityinfo.server.mail.MailMessages", LocaleHelper.getLocaleObject(sub.getUser()));
+            ResourceBundle.getBundle(
+                "org.activityinfo.server.mail.MailMessages",
+                LocaleHelper.getLocaleObject(sub.getUser()));
 
         HtmlWriter htmlWriter = new HtmlWriter();
 
         htmlWriter.startDocument();
         htmlWriter.startDocumentBody();
-        String greeting = MessageFormat.format(mailMessages.getString("greeting"), sub.getUser().getName());
+        String greeting = MessageFormat.format(
+            mailMessages.getString("greeting"), sub.getUser().getName());
         htmlWriter.paragraph(greeting);
 
         String intro;
-        if(sub.getInvitingUser() != null) {
-            intro = MessageFormat.format(mailMessages.getString("reportIntroInvited"),
-                    sub.getInvitingUser().getName(),
-                    sub.getInvitingUser().getEmail(),
-                    report.getTitle(),
-                    frequencyString(mailMessages, sub.getEmailDelivery()));
+        if (sub.getInvitingUser() != null) {
+            intro = MessageFormat.format(
+                mailMessages.getString("reportIntroInvited"),
+                sub.getInvitingUser().getName(),
+                sub.getInvitingUser().getEmail(),
+                report.getTitle(),
+                frequencyString(mailMessages, sub.getEmailDelivery()));
         } else {
             intro = MessageFormat.format(mailMessages.getString("reportIntro"),
-                    report.getTitle(),
-                    frequencyString(mailMessages, sub.getEmailDelivery()));
+                report.getTitle(),
+                frequencyString(mailMessages, sub.getEmailDelivery()));
 
         }
         htmlWriter.paragraph(intro);
 
-        htmlWriter.paragraph(MessageFormat.format(mailMessages.getString("viewLive"),
-                Integer.toString(sub.getTemplate().getId())));
+        htmlWriter.paragraph(MessageFormat.format(
+            mailMessages.getString("viewLive"),
+            Integer.toString(sub.getTemplate().getId())));
 
         htmlWriter.paragraph(mailMessages.getString("signature"));
 

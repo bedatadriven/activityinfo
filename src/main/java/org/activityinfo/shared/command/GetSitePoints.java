@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -31,14 +29,14 @@ import org.activityinfo.shared.command.result.SitePointList;
  */
 public class GetSitePoints implements Command<SitePointList> {
 
-    private int activityId  ;
+    private int activityId;
 
     private GetSitePoints() {
 
     }
 
     public GetSitePoints(int activityId) {
-        this.activityId= activityId;
+        this.activityId = activityId;
     }
 
     public int getActivityId() {
@@ -49,5 +47,3 @@ public class GetSitePoints implements Command<SitePointList> {
         this.activityId = activityId;
     }
 }
-
-

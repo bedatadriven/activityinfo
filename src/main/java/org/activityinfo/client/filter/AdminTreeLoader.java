@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.filter;
 
 /*
@@ -38,10 +36,10 @@ class AdminTreeLoader extends BaseTreeLoader<AdminEntityDTO> {
 
     @Override
     public boolean hasChildren(AdminEntityDTO parent) {
-    	return ((AdminTreeProxy)this.proxy).hasChildren(parent);
+        return ((AdminTreeProxy) this.proxy).hasChildren(parent);
     }
 
-	public void setFilter(Filter filter) {
-		((AdminTreeProxy)this.proxy).setFilter(filter);
-	}
+    public void setFilter(Filter filter) {
+        ((AdminTreeProxy) this.proxy).setFilter(filter);
+    }
 }

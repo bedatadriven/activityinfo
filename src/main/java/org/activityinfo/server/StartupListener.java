@@ -1,4 +1,3 @@
-
 package org.activityinfo.server;
 
 /*
@@ -22,7 +21,6 @@ package org.activityinfo.server;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import java.util.logging.Logger;
 
@@ -57,16 +55,15 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 
-
 /**
- * A Servlet context listener that initializes the Dependency Injection Framework (Guice)
- * upon startup.
- *
+ * A Servlet context listener that initializes the Dependency Injection
+ * Framework (Guice) upon startup.
+ * 
  */
 public class StartupListener extends GuiceServletContextListener {
 
-    private static Logger logger = Logger.getLogger(StartupListener.class.getName());
-
+    private static Logger logger = Logger.getLogger(StartupListener.class
+        .getName());
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -75,35 +72,34 @@ public class StartupListener extends GuiceServletContextListener {
 
     }
 
-
-	@Override
+    @Override
     protected Injector getInjector() {
 
         return Guice.createInjector(
-                new ConfigModule(), 
-                new LoggingModule(),
-                new TemplateModule(), 
-                new BeanMappingModule(), 
-                new MailModule(),
-                new ServerDatabaseModule(),
-                new HibernateModule(), 
-                new ContentModule(),
-                new GeometryModule(),
-                new AuthenticationModule(),
-                new AttachmentModule(),
-                new ReportModule(),
-                new EventModule(),
-                new BootstrapModule(),
-                new GwtRpcModule(),
-                new HealthCheckModule(),
-                new ExportModule(),
-                new MonitoringModule(),
-                new JsonRpcModule(),
-                new KmlModule(),
-                new TrackingModule(),
-                new RefineModule(),
-                new LocaleModule(),
-                new HxlModule());
+            new ConfigModule(),
+            new LoggingModule(),
+            new TemplateModule(),
+            new BeanMappingModule(),
+            new MailModule(),
+            new ServerDatabaseModule(),
+            new HibernateModule(),
+            new ContentModule(),
+            new GeometryModule(),
+            new AuthenticationModule(),
+            new AttachmentModule(),
+            new ReportModule(),
+            new EventModule(),
+            new BootstrapModule(),
+            new GwtRpcModule(),
+            new HealthCheckModule(),
+            new ExportModule(),
+            new MonitoringModule(),
+            new JsonRpcModule(),
+            new KmlModule(),
+            new TrackingModule(),
+            new RefineModule(),
+            new LocaleModule(),
+            new HxlModule());
     }
 
 }

@@ -34,65 +34,65 @@ import com.extjs.gxt.ui.client.event.Listener;
 
 public class NewLocationPresenter extends BaseObservable {
 
-	public static final EventType POSITION_CHANGED = new EventType();
-	public static final EventType ACTIVE_STATE_CHANGED = new EventType();
-	public static final EventType BOUNDS_CHANGED = new EventType();
-	public static final EventType ACCEPTED = new EventType();
-	
-	private AiLatLng latLng;
-	private boolean provisional;
-	private boolean active;
-	private Extents bounds;
-	
-	public NewLocationPresenter(CountryDTO country) {
-		provisional = true;
-		bounds = country.getBounds();
-		latLng = bounds.center();
-	}
-	
-	public AiLatLng getLatLng() {
-		return latLng;
-	}
+    public static final EventType POSITION_CHANGED = new EventType();
+    public static final EventType ACTIVE_STATE_CHANGED = new EventType();
+    public static final EventType BOUNDS_CHANGED = new EventType();
+    public static final EventType ACCEPTED = new EventType();
 
-	public boolean isProvisional() {
-		return provisional;
-	}
+    private AiLatLng latLng;
+    private boolean provisional;
+    private boolean active;
+    private Extents bounds;
 
-	public boolean isActive() {
-		return active;
-	}
+    public NewLocationPresenter(CountryDTO country) {
+        provisional = true;
+        bounds = country.getBounds();
+        latLng = bounds.center();
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-		fireEvent(ACTIVE_STATE_CHANGED, new BaseEvent(ACTIVE_STATE_CHANGED));
-	}
+    public AiLatLng getLatLng() {
+        return latLng;
+    }
 
-	public void setLatLng(AiLatLng latLng) {
-		this.latLng = latLng;
-		this.provisional = false;
-		fireEvent(POSITION_CHANGED, new BaseEvent(POSITION_CHANGED));
-	}
-	
-	public void setBounds(Extents bounds) {
-		this.bounds = bounds;
-		if(!bounds.contains(latLng)) {
-			latLng = bounds.center();
-			provisional = true;
-			fireEvent(POSITION_CHANGED, new BaseEvent(POSITION_CHANGED));
-		}
-		fireEvent(BOUNDS_CHANGED, new BaseEvent(BOUNDS_CHANGED));
-	}
+    public boolean isProvisional() {
+        return provisional;
+    }
 
-	public Extents getBounds() {
-		return bounds;
-	}
-	
-	public void addAcceptedListener(Listener<LocationEvent> listener) {
-		addListener(ACCEPTED, listener);
-	}
-	
-	public void accept(LocationDTO location) {
-		fireEvent(ACCEPTED, new LocationEvent(ACCEPTED, this, location));
-	}
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+        fireEvent(ACTIVE_STATE_CHANGED, new BaseEvent(ACTIVE_STATE_CHANGED));
+    }
+
+    public void setLatLng(AiLatLng latLng) {
+        this.latLng = latLng;
+        this.provisional = false;
+        fireEvent(POSITION_CHANGED, new BaseEvent(POSITION_CHANGED));
+    }
+
+    public void setBounds(Extents bounds) {
+        this.bounds = bounds;
+        if (!bounds.contains(latLng)) {
+            latLng = bounds.center();
+            provisional = true;
+            fireEvent(POSITION_CHANGED, new BaseEvent(POSITION_CHANGED));
+        }
+        fireEvent(BOUNDS_CHANGED, new BaseEvent(BOUNDS_CHANGED));
+    }
+
+    public Extents getBounds() {
+        return bounds;
+    }
+
+    public void addAcceptedListener(Listener<LocationEvent> listener) {
+        addListener(ACCEPTED, listener);
+    }
+
+    public void accept(LocationDTO location) {
+        fireEvent(ACCEPTED, new LocationEvent(ACCEPTED, this, location));
+    }
 
 }

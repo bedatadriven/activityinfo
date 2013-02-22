@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.remote.cache;
 
 /*
@@ -25,8 +23,6 @@ package org.activityinfo.client.dispatch.remote.cache;
  */
 
 import org.activityinfo.client.MockEventBus;
-import org.activityinfo.client.dispatch.remote.cache.AdminEntityCache;
-import org.activityinfo.client.dispatch.remote.cache.CacheResult;
 import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.result.ListResult;
 import org.activityinfo.shared.dto.AdminEntityDTO;
@@ -36,7 +32,6 @@ import org.junit.Test;
 
 public class AdminEntityCacheTest {
 
-
     @Test
     public void testRootLevelCache() {
 
@@ -44,9 +39,11 @@ public class AdminEntityCacheTest {
 
         new AdminEntityCache(proxyMgr);
 
-        proxyMgr.notifyListenersOfSuccess(new GetAdminEntities(1), DTOs.getProvinces());
+        proxyMgr.notifyListenersOfSuccess(new GetAdminEntities(1),
+            DTOs.getProvinces());
 
-        CacheResult<ListResult<AdminEntityDTO>> proxyResult = proxyMgr.execute(new GetAdminEntities(1));
+        CacheResult<ListResult<AdminEntityDTO>> proxyResult = proxyMgr
+            .execute(new GetAdminEntities(1));
 
         Assert.assertTrue(proxyResult.isCouldExecute());
         Assert.assertEquals(2, proxyResult.getResult().getData().size());

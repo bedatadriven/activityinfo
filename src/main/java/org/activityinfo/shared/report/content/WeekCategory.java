@@ -24,11 +24,11 @@ package org.activityinfo.shared.report.content;
 
 import org.activityinfo.client.i18n.I18N;
 
-public class WeekCategory  implements DimensionCategory {
+public class WeekCategory implements DimensionCategory {
 
     private static final int MAX_WEEKS_PER_YEAR = 60; // just to be safe
-    
-	private int year;
+
+    private int year;
     private int week;
 
     public WeekCategory() {
@@ -48,14 +48,15 @@ public class WeekCategory  implements DimensionCategory {
     }
 
     public int getWeek() {
-		return week;
-	}
+        return week;
+    }
 
-	public void setWeek(int week) {
-		this.week = week;
-	}
+    public void setWeek(int week) {
+        this.week = week;
+    }
 
-	public Comparable getSortKey() {
+    @Override
+    public Comparable getSortKey() {
         return year * MAX_WEEKS_PER_YEAR + week;
     }
 
@@ -92,8 +93,8 @@ public class WeekCategory  implements DimensionCategory {
         return "WeekCategory{" + year + " W " + week + "}";
     }
 
-	@Override
-	public String getLabel() {
-		return I18N.MESSAGES.week(year, week);
-	}
+    @Override
+    public String getLabel() {
+        return I18N.MESSAGES.week(year, week);
+    }
 }

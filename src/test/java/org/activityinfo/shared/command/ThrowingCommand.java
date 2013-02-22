@@ -22,7 +22,6 @@ package org.activityinfo.shared.command;
  * #L%
  */
 
-
 import org.activityinfo.shared.command.result.VoidResult;
 
 public class ThrowingCommand implements Command<VoidResult> {

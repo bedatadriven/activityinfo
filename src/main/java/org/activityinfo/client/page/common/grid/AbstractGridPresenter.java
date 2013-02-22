@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.grid;
 
 /*
@@ -52,18 +50,20 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 
 public abstract class AbstractGridPresenter<ModelT extends ModelData>
-        implements GridPresenter<ModelT>, Page {
+    implements GridPresenter<ModelT>, Page {
 
     private final EventBus eventBus;
     private final StateProvider stateMgr;
     private final GridView<GridPresenter, ModelT> view;
 
-    protected AbstractGridPresenter(EventBus eventBus, StateProvider stateMgr, GridView view) {
+    protected AbstractGridPresenter(EventBus eventBus, StateProvider stateMgr,
+        GridView view) {
         this.eventBus = eventBus;
         this.stateMgr = stateMgr;
         this.view = view;
     }
 
+    @Override
     public int getPageSize() {
         return -1;
     }
@@ -78,22 +78,25 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
 
                 @Override
                 public void loaderBeforeLoad(LoadEvent le) {
-                	if (le instanceof CommandLoadEvent) {
+                    if (le instanceof CommandLoadEvent) {
                         onBeforeLoad((CommandLoadEvent) le);
-                	}
-                    //onBeforeLoad(le);
+                    }
+                    // onBeforeLoad(le);
                 }
             });
         }
     }
 
+    @Override
     public void onDirtyFlagChanged(boolean isDirty) {
 
     }
 
+    @Override
     public void onUIAction(String actionId) {
         if (UIActions.DELETE.equals(actionId)) {
             view.confirmDeleteSelected(new ConfirmCallback() {
+                @Override
                 public void confirmed() {
                     onDeleteConfirmed(view.getSelection());
                 }
@@ -113,7 +116,8 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         return (pagenum - 1) * getPageSize();
     }
 
-    protected void initLoaderDefaults(PagingLoader loader, AbstractPagingGridPageState place, SortInfo defaultSort) {
+    protected void initLoaderDefaults(PagingLoader loader,
+        AbstractPagingGridPageState place, SortInfo defaultSort) {
         Map<String, Object> stateMap = getState();
         if (place.getSortInfo() != null) {
             loader.setSortField(place.getSortInfo().getSortField());
@@ -121,7 +125,7 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         } else if (stateMap.containsKey("sortField")) {
             loader.setSortField((String) stateMap.get("sortField"));
             loader.setSortDir("DESC".equals(stateMap.get("sortDir")) ?
-                    Style.SortDir.DESC : Style.SortDir.ASC);
+                Style.SortDir.DESC : Style.SortDir.ASC);
         } else {
             loader.setSortField(defaultSort.getSortField());
             loader.setSortDir(defaultSort.getSortDir());
@@ -137,7 +141,6 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
             loader.setOffset(0);
         }
     }
-
 
     protected void onDeleteConfirmed(ModelT model) {
 
@@ -179,7 +182,8 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         if (config instanceof ListLoadConfig) {
             SortInfo si = ((ListLoadConfig) config).getSortInfo();
             stateMap.put("sortField", si.getSortField());
-            stateMap.put("sortDir", si.getSortDir() == Style.SortDir.ASC ? "ASC" : "DESC");
+            stateMap.put("sortDir",
+                si.getSortDir() == Style.SortDir.ASC ? "ASC" : "DESC");
         }
         if (config instanceof PagingLoadConfig) {
             int offset = ((PagingLoadConfig) config).getOffset();
@@ -194,19 +198,25 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         if (config instanceof ListLoadConfig) {
             place.setSortInfo(((ListLoadConfig) config).getSortInfo());
         }
-        if (config instanceof PagingLoadConfig && place instanceof AbstractPagingGridPageState) {
+        if (config instanceof PagingLoadConfig
+            && place instanceof AbstractPagingGridPageState) {
             int offset = ((PagingLoadConfig) config).getOffset();
-            ((AbstractPagingGridPageState) place).setPageNum(pageFromOffset(offset));
+            ((AbstractPagingGridPageState) place)
+                .setPageNum(pageFromOffset(offset));
         }
 
-        eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationAgreed, place));
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_AGREED, place));
     }
 
-    protected void handleGridNavigation(ListLoader loader, AbstractGridPageState gridPlace) {
+    protected void handleGridNavigation(ListLoader loader,
+        AbstractGridPageState gridPlace) {
         boolean reloadRequired = false;
 
-        if (gridPlace.getSortInfo() != null &&
-                !SortInfoEqualityChecker.equals(gridPlace.getSortInfo(), new SortInfo(loader.getSortField(), loader.getSortDir()))) {
+        if (gridPlace.getSortInfo() != null
+            &&
+            !SortInfoEqualityChecker.equals(gridPlace.getSortInfo(),
+                new SortInfo(loader.getSortField(), loader.getSortDir()))) {
 
             loader.setSortField(gridPlace.getSortInfo().getSortField());
             loader.setSortDir(gridPlace.getSortInfo().getSortDir());
@@ -219,7 +229,8 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
             if (pgPlace.getPageNum() > 0) {
                 int offset = offsetFromPage(pgPlace.getPageNum());
                 if (offset != ((PagingLoader) loader).getOffset()) {
-                    ((PagingLoader) loader).setOffset((pgPlace.getPageNum() - 1) * getPageSize());
+                    ((PagingLoader) loader)
+                        .setOffset((pgPlace.getPageNum() - 1) * getPageSize());
                     reloadRequired = true;
                 }
             }
@@ -230,15 +241,19 @@ public abstract class AbstractGridPresenter<ModelT extends ModelData>
         }
     }
 
-    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
+    @Override
+    public void requestToNavigateAway(PageState place,
+        NavigationCallback callback) {
         callback.onDecided(true);
 
     }
 
+    @Override
     public String beforeWindowCloses() {
         return null;
     }
 
+    @Override
     public boolean beforeEdit(Record record, String property) {
         return true;
     }

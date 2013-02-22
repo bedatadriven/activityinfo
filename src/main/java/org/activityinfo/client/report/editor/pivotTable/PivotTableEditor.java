@@ -52,156 +52,153 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.inject.Inject;
 
-public class PivotTableEditor extends LayoutContainer implements ReportElementEditor<PivotTableReportElement>{
+public class PivotTableEditor extends LayoutContainer implements
+    ReportElementEditor<PivotTableReportElement> {
 
-	private final EventBus eventBus;
-	private final Dispatcher service;
-	private final StateProvider stateMgr;
-	
-	private final ReportEventHelper events;
-		
-	private PivotTrayPanel pivotPanel;
-	private PivotFilterPanel filterPane;
-	private ReportViewBinder<PivotContent, PivotTableReportElement> viewBinder;
-	
-	private DimensionPruner pruner;
-	
-	private LayoutContainer center;
-	private PivotGridPanel gridPanel;
-	
-	private PivotTableReportElement model; 
+    private final EventBus eventBus;
+    private final Dispatcher service;
+    private final StateProvider stateMgr;
 
-	@Inject
-	public PivotTableEditor(EventBus eventBus, Dispatcher service,
-			StateProvider stateMgr) {
-		this.eventBus = eventBus;
-		this.service = service;
-		this.stateMgr = stateMgr;
-		
-		initializeComponent();
+    private final ReportEventHelper events;
 
-		createPane();
-		createFilterPane();
-		createGridContainer();
+    private PivotTrayPanel pivotPanel;
+    private PivotFilterPanel filterPane;
+    private ReportViewBinder<PivotContent, PivotTableReportElement> viewBinder;
 
-		this.pruner = new DimensionPruner(eventBus, service);
+    private DimensionPruner pruner;
 
-		events = new ReportEventHelper(eventBus, this);
+    private LayoutContainer center;
+    private PivotGridPanel gridPanel;
 
+    private PivotTableReportElement model;
 
-//		initialDrillDownListener = new Listener<PivotCellEvent>() {
-//			@Override
-//			public void handleEvent(PivotCellEvent be) {
-//				createDrilldownPanel(be);
-//			}
-//		};
-//		eventBus.addListener(AppEvents.DRILL_DOWN, initialDrillDownListener);
+    @Inject
+    public PivotTableEditor(EventBus eventBus, Dispatcher service,
+        StateProvider stateMgr) {
+        this.eventBus = eventBus;
+        this.service = service;
+        this.stateMgr = stateMgr;
 
-	}
+        initializeComponent();
 
-	private void initializeComponent() {
-		BorderLayout borderLayout = new BorderLayout();
-		borderLayout.setEnableState(true);
-		setStateId("pivotPage");
-		setLayout(borderLayout);
-	}
+        createPane();
+        createFilterPane();
+        createGridContainer();
 
-	private void createPane() {
+        this.pruner = new DimensionPruner(eventBus, service);
 
-		pivotPanel = new PivotTrayPanel(eventBus, service);
+        events = new ReportEventHelper(eventBus, this);
 
-		BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST);
-		east.setCollapsible(true);
-		east.setSplit(true);
-		east.setMargins(new Margins(0, 5, 0, 0));
+        // initialDrillDownListener = new Listener<PivotCellEvent>() {
+        // @Override
+        // public void handleEvent(PivotCellEvent be) {
+        // createDrilldownPanel(be);
+        // }
+        // };
+        // eventBus.addListener(AppEvents.DRILL_DOWN, initialDrillDownListener);
 
-		add(pivotPanel, east);
-	}
+    }
 
-	private void createFilterPane() {
-		filterPane = new PivotFilterPanel(eventBus, service);
-		filterPane.applyBaseFilter(new Filter());
+    private void initializeComponent() {
+        BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setEnableState(true);
+        setStateId("pivotPage");
+        setLayout(borderLayout);
+    }
 
-		BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST);
-		west.setMinSize(250);
-		west.setSize(250);
-		west.setCollapsible(true);
-		west.setSplit(true);
-		west.setMargins(new Margins(0, 0, 0, 0));
-		add(filterPane, west);
-	}
+    private void createPane() {
 
-	private void createGridContainer() {
-		center = new LayoutContainer();
-		center.setLayout(new BorderLayout());
-		add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        pivotPanel = new PivotTrayPanel(eventBus, service);
 
-		gridPanel = new PivotGridPanel();
-		gridPanel.setHeaderVisible(true);
-		gridPanel.setHeading(I18N.CONSTANTS.preview());
+        BorderLayoutData east = new BorderLayoutData(Style.LayoutRegion.EAST);
+        east.setCollapsible(true);
+        east.setSplit(true);
+        east.setMargins(new Margins(0, 5, 0, 0));
 
-		center.add(gridPanel, new BorderLayoutData(
-				Style.LayoutRegion.CENTER));
-		
-		viewBinder = ReportViewBinder.create(eventBus, service, gridPanel);
-	}
+        add(pivotPanel, east);
+    }
 
-	private void createDrilldownPanel(PivotCellEvent event) {
-		BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
-		layout.setSplit(true);
-		layout.setCollapsible(true);
+    private void createFilterPane() {
+        filterPane = new PivotFilterPanel(eventBus, service);
+        filterPane.applyBaseFilter(new Filter());
 
-		DrillDownEditor drilldownEditor = new DrillDownEditor(eventBus,
-				service, stateMgr, new DateUtilGWTImpl());
-		drilldownEditor.onDrillDown(event);
+        BorderLayoutData west = new BorderLayoutData(Style.LayoutRegion.WEST);
+        west.setMinSize(250);
+        west.setSize(250);
+        west.setCollapsible(true);
+        west.setSplit(true);
+        west.setMargins(new Margins(0, 0, 0, 0));
+        add(filterPane, west);
+    }
 
-		center.add(drilldownEditor.getGridPanel(), layout);
+    private void createGridContainer() {
+        center = new LayoutContainer();
+        center.setLayout(new BorderLayout());
+        add(center, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
-		// disconnect our initial drilldown listener;
-		// subsequent events will be handled by the DrillDownEditor's listener
-		//eventBus.removeListener(AppEvents.DRILL_DOWN, initialDrillDownListener);
+        gridPanel = new PivotGridPanel();
+        gridPanel.setHeaderVisible(true);
+        gridPanel.setHeading(I18N.CONSTANTS.preview());
 
-		layout();
-	}
+        center.add(gridPanel, new BorderLayoutData(
+            Style.LayoutRegion.CENTER));
 
+        viewBinder = ReportViewBinder.create(eventBus, service, gridPanel);
+    }
 
-	public AsyncMonitor getMonitor() {
-		return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
-	}
+    private void createDrilldownPanel(PivotCellEvent event) {
+        BorderLayoutData layout = new BorderLayoutData(Style.LayoutRegion.SOUTH);
+        layout.setSplit(true);
+        layout.setCollapsible(true);
 
-	@Override
-	public PivotTableReportElement getModel() {
-		return model;
-	}
+        DrillDownEditor drilldownEditor = new DrillDownEditor(eventBus,
+            service, stateMgr, new DateUtilGWTImpl());
+        drilldownEditor.onDrillDown(event);
 
-	@Override
-	public void bind(PivotTableReportElement model) {
-		this.model = model;
-		pivotPanel.bind(model);
-		filterPane.bind(model);
-		viewBinder.bind(model);
-		pruner.bind(model);
-	}
-	
-	@Override
-	public void disconnect() {
-		pivotPanel.disconnect();
-		filterPane.disconnect();
-		viewBinder.disconnect();
-		pruner.disconnect();
-	}
+        center.add(drilldownEditor.getGridPanel(), layout);
 
-	@Override
-	public Component getWidget() {
-		return this;
-	}
+        // disconnect our initial drilldown listener;
+        // subsequent events will be handled by the DrillDownEditor's listener
+        // eventBus.removeListener(AppEvents.DRILL_DOWN,
+        // initialDrillDownListener);
 
-	@Override
-	public List<Format> getExportFormats() {
-		return Arrays.asList(Format.Excel, Format.Word, Format.PDF);
-	}
+        layout();
+    }
 
-	
-	
-	
+    public AsyncMonitor getMonitor() {
+        return new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading());
+    }
+
+    @Override
+    public PivotTableReportElement getModel() {
+        return model;
+    }
+
+    @Override
+    public void bind(PivotTableReportElement model) {
+        this.model = model;
+        pivotPanel.bind(model);
+        filterPane.bind(model);
+        viewBinder.bind(model);
+        pruner.bind(model);
+    }
+
+    @Override
+    public void disconnect() {
+        pivotPanel.disconnect();
+        filterPane.disconnect();
+        viewBinder.disconnect();
+        pruner.disconnect();
+    }
+
+    @Override
+    public Component getWidget() {
+        return this;
+    }
+
+    @Override
+    public List<Format> getExportFormats() {
+        return Arrays.asList(Format.Excel, Format.Word, Format.PDF);
+    }
+
 }

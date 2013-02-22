@@ -43,50 +43,52 @@ import freemarker.log.Logger;
 @Singleton
 public class WkbGeometryProvider implements AdminGeometryProvider {
 
-	private static final Logger LOGGER = Logger.getLogger(WkbGeometryProvider.class.getName());
-	
-	private GeometryFactory geometryFactory;
-	private GeometryStorage storage;
+    private static final Logger LOGGER = Logger
+        .getLogger(WkbGeometryProvider.class.getName());
 
-	@Inject
-	public WkbGeometryProvider(GeometryStorage storage) {
-		this.geometryFactory = new GeometryFactory();
-		this.storage = storage;
-	}
-	
-	@Override
-	@LogSlow(threshold = 200)
-	public List<AdminGeo> getGeometry(int adminLevelId) {
-		try {
-			List<AdminGeo> list = Lists.newArrayList();
-			DataInputStream in = new DataInputStream(storage.openWkb(adminLevelId));
-			WKBReader wkbReader = new WKBReader(geometryFactory);
-			int count = in.readInt();
-			for(int i=0;i!=count;++i) {
-				int id = in.readInt();
-				LOGGER.info("Reading geometry for admin entity " + id);
-				Geometry geometry = wkbReader.read(new DataInputInStream(in));
-				list.add(new AdminGeo(id, geometry));
-			}
-			return list;
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private static class DataInputInStream implements InStream {
-		private DataInput in;
-		
-		public DataInputInStream(DataInput in) {
-			super();
-			this.in = in;
-		}
-		
-		@Override
-		public void read(byte[] buf) throws IOException {
-			in.readFully(buf);
-		}
-	}
+    private GeometryFactory geometryFactory;
+    private GeometryStorage storage;
+
+    @Inject
+    public WkbGeometryProvider(GeometryStorage storage) {
+        this.geometryFactory = new GeometryFactory();
+        this.storage = storage;
+    }
+
+    @Override
+    @LogSlow(threshold = 200)
+    public List<AdminGeo> getGeometry(int adminLevelId) {
+        try {
+            List<AdminGeo> list = Lists.newArrayList();
+            DataInputStream in = new DataInputStream(
+                storage.openWkb(adminLevelId));
+            WKBReader wkbReader = new WKBReader(geometryFactory);
+            int count = in.readInt();
+            for (int i = 0; i != count; ++i) {
+                int id = in.readInt();
+                LOGGER.info("Reading geometry for admin entity " + id);
+                Geometry geometry = wkbReader.read(new DataInputInStream(in));
+                list.add(new AdminGeo(id, geometry));
+            }
+            return list;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static class DataInputInStream implements InStream {
+        private DataInput in;
+
+        public DataInputInStream(DataInput in) {
+            super();
+            this.in = in;
+        }
+
+        @Override
+        public void read(byte[] buf) throws IOException {
+            in.readFully(buf);
+        }
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -63,20 +61,20 @@ public class SitePointList implements CommandResult {
     public void setPoints(List<SitePointDTO> points) {
         this.points = points;
     }
-    
+
     public static SitePointList fromSitesList(List<SiteDTO> sites) {
-    	SitePointList result = new SitePointList();
-    	
-    	if (result.getPoints() == null) {
-    		result.setPoints(new ArrayList<SitePointDTO>());
-    	}
-    	
-    	if (sites != null) {
-	    	for (SiteDTO site : sites) {
-	    		 result.getPoints().add(SitePointDTO.fromSite(site));
-	    	}
-    	}
-    	
-    	return result;
+        SitePointList result = new SitePointList();
+
+        if (result.getPoints() == null) {
+            result.setPoints(new ArrayList<SitePointDTO>());
+        }
+
+        if (sites != null) {
+            for (SiteDTO site : sites) {
+                result.getPoints().add(SitePointDTO.fromSite(site));
+            }
+        }
+
+        return result;
     }
 }

@@ -30,7 +30,8 @@ import java.util.Map;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.content.PivotTableData;
 
-public class DefinedCategoryComparator implements Comparator<PivotTableData.Axis> {
+public class DefinedCategoryComparator implements
+    Comparator<PivotTableData.Axis> {
     private final Map<DimensionCategory, Integer> orderMap;
 
     public DefinedCategoryComparator(List<DimensionCategory> order) {

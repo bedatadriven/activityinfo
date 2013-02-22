@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -96,27 +94,27 @@ public class BubbleMapMarker extends MapMarker {
         return radius;
     }
 
-	public Set<Integer> getIndicatorIds() {
-		return indicatorIds;
-	}
+    public Set<Integer> getIndicatorIds() {
+        return indicatorIds;
+    }
 
-	public void setIndicatorIds(Set<Integer> indicatorIds) {
-		this.indicatorIds = indicatorIds;
-	}
+    public void setIndicatorIds(Set<Integer> indicatorIds) {
+        this.indicatorIds = indicatorIds;
+    }
 
-	public void setClustering(Clustering clustering) {
-		this.clustering = clustering;
-	}
+    public void setClustering(Clustering clustering) {
+        this.clustering = clustering;
+    }
 
-	public Clustering getClustering() {
-		return clustering;
-	}
+    public Clustering getClustering() {
+        return clustering;
+    }
 
-	public void setClusterAmount(int clusterAmount) {
-		this.clusterAmount = clusterAmount;
-	}
+    public void setClusterAmount(int clusterAmount) {
+        this.clusterAmount = clusterAmount;
+    }
 
-	public int getClusterAmount() {
-		return clusterAmount;
-	}
+    public int getClusterAmount() {
+        return clusterAmount;
+    }
 }

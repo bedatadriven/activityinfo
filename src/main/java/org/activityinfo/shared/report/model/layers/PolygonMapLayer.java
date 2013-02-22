@@ -22,42 +22,41 @@ package org.activityinfo.shared.report.model.layers;
  * #L%
  */
 
-
 public class PolygonMapLayer extends AbstractMapLayer {
 
-	private int adminLevelId;
-	private String maxColor = "#FF0000";
-	
-	@Override
-	public boolean supportsMultipleIndicators() {
-		return true;
-	}
+    private int adminLevelId;
+    private String maxColor = "#FF0000";
 
-	@Override
-	public String getTypeName() {
-		return "Polygon";
-	}
+    @Override
+    public boolean supportsMultipleIndicators() {
+        return true;
+    }
 
-	public int getAdminLevelId() {
-		return adminLevelId;
-	}
+    @Override
+    public String getTypeName() {
+        return "Polygon";
+    }
 
-	public void setAdminLevelId(int adminLevelId) {
-		this.adminLevelId = adminLevelId;
-	}
+    public int getAdminLevelId() {
+        return adminLevelId;
+    }
 
-	public String getMaxColor() {
-		return maxColor;
-	}
+    public void setAdminLevelId(int adminLevelId) {
+        this.adminLevelId = adminLevelId;
+    }
 
-	public void setMaxColor(String maxColor) {
-		this.maxColor = maxColor;
-	}
+    public String getMaxColor() {
+        return maxColor;
+    }
 
-	@Override
-	public String toString() {
-		return "PolygonMapLayer [adminLevelId=" + adminLevelId + ", maxColor="
-				+ maxColor + "]";
-	}
-	
+    public void setMaxColor(String maxColor) {
+        this.maxColor = maxColor;
+    }
+
+    @Override
+    public String toString() {
+        return "PolygonMapLayer [adminLevelId=" + adminLevelId + ", maxColor="
+            + maxColor + "]";
+    }
+
 }

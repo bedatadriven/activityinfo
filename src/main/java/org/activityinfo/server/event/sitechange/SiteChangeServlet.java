@@ -51,112 +51,126 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class SiteChangeServlet extends HttpServlet {
-	private static final long serialVersionUID = -7693455083421531780L;
+    private static final long serialVersionUID = -7693455083421531780L;
 
-	private static final Logger LOGGER = Logger.getLogger(SiteChangeServlet.class.getName());
-	
-	public static final String ENDPOINT = "/tasks/notifysitechange";
-	public static final String PARAM_USER = "u";
-	public static final String PARAM_SITE = "s";
-	public static final String PARAM_NEW = "n";
+    private static final Logger LOGGER = Logger
+        .getLogger(SiteChangeServlet.class.getName());
 
-	
-	private Provider<EntityManager> entityManager;
-	private Provider<MailSender> mailSender;
-	private ServerSideAuthProvider authProvider;
-	private DispatcherSync dispatcher;
-	
-	
-	@Inject
-	public SiteChangeServlet(Provider<EntityManager> entityManager, Provider<MailSender> mailSender, 
-			ServerSideAuthProvider authProvider,
-			DispatcherSync dispatcher) {
-		this.entityManager = entityManager;
-		this.mailSender = mailSender;
-		this.authProvider = authProvider;
-		this.dispatcher = dispatcher;
-	}
+    public static final String ENDPOINT = "/tasks/notifysitechange";
+    public static final String PARAM_USER = "u";
+    public static final String PARAM_SITE = "s";
+    public static final String PARAM_NEW = "n";
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-		try {
-			int userId = Integer.parseInt(req.getParameter(PARAM_USER));
-			int siteId = Integer.parseInt(req.getParameter(PARAM_SITE));
-			boolean isNew = Boolean.parseBoolean(req.getParameter(PARAM_NEW));
-			sendNotifications(userId, siteId, isNew);
-			
-		} catch (Throwable t) {
-			LOGGER.warning("can't complete notify task: "+t.getMessage());
-			LOGGER.throwing(this.getClass().getSimpleName(), "doGet", t);
-		}
-	}
-	
-	@VisibleForTesting
-	void sendNotifications(int editorUserId, int siteId, boolean newSite) {
-		User user = entityManager.get().find(User.class, editorUserId);
-		
-		/*
-		 * For our purposes, the user who initiated the change will
-		 * be considered the authenticated user for this thread
-		 */
-		
-		authProvider.set(user);
-		
-		SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));
+    private Provider<EntityManager> entityManager;
+    private Provider<MailSender> mailSender;
+    private ServerSideAuthProvider authProvider;
+    private DispatcherSync dispatcher;
+
+    @Inject
+    public SiteChangeServlet(Provider<EntityManager> entityManager,
+        Provider<MailSender> mailSender,
+        ServerSideAuthProvider authProvider,
+        DispatcherSync dispatcher) {
+        this.entityManager = entityManager;
+        this.mailSender = mailSender;
+        this.authProvider = authProvider;
+        this.dispatcher = dispatcher;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException {
+        try {
+            int userId = Integer.parseInt(req.getParameter(PARAM_USER));
+            int siteId = Integer.parseInt(req.getParameter(PARAM_SITE));
+            boolean isNew = Boolean.parseBoolean(req.getParameter(PARAM_NEW));
+            sendNotifications(userId, siteId, isNew);
+
+        } catch (Throwable t) {
+            LOGGER.warning("can't complete notify task: " + t.getMessage());
+            LOGGER.throwing(this.getClass().getSimpleName(), "doGet", t);
+        }
+    }
+
+    @VisibleForTesting
+    void sendNotifications(int editorUserId, int siteId, boolean newSite) {
+        User user = entityManager.get().find(User.class, editorUserId);
+
+        /*
+         * For our purposes, the user who initiated the change will be
+         * considered the authenticated user for this thread
+         */
+
+        authProvider.set(user);
+
+        SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));
         SiteDTO siteDTO = siteResult.getData().get(0);
-        
-		SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
-		ActivityDTO activityDTO = schemaDTO.getActivityById(siteDTO.getActivityId());
-		UserDatabaseDTO userDatabaseDTO = activityDTO.getDatabase();
 
-		Date date = new Date();
-		
-		List<User> recipients = findRecipients(userDatabaseDTO.getId());
-		for (User recipient : recipients) {
-			try {
-				// do not send users who modified the report an email to themselves!
-				if(recipient.getId() != editorUserId) {
-					LOGGER.info("sending sitechange notification email to "+recipient.getEmail());
-					
-					UpdateMessageBuilder message = new UpdateMessageBuilder();
-					message.setDate(date);
-					message.setEditor(user);
-					message.setRecipient(recipient);
-					message.setUserDatabaseDTO(userDatabaseDTO);
-					message.setSiteDTO(siteDTO);
-					message.setActivityDTO(activityDTO);
-					message.setNewSite(newSite);
-					
-					mailSender.get().send(message.build());
-				}
-				
-			} catch (Throwable t) {
-				LOGGER.warning("failed sending notification email to "+recipient.getName()+" <"+recipient.getEmail()+">: "+t.getMessage());
-				t.printStackTrace();
-			}
-		}
-	}
-	
-	// select owners/designers with the emailNotification flag set to true
-	@VisibleForTesting
+        SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
+        ActivityDTO activityDTO = schemaDTO.getActivityById(siteDTO
+            .getActivityId());
+        UserDatabaseDTO userDatabaseDTO = activityDTO.getDatabase();
+
+        Date date = new Date();
+
+        List<User> recipients = findRecipients(userDatabaseDTO.getId());
+        for (User recipient : recipients) {
+            try {
+                // do not send users who modified the report an email to
+                // themselves!
+                if (recipient.getId() != editorUserId) {
+                    LOGGER.info("sending sitechange notification email to "
+                        + recipient.getEmail());
+
+                    UpdateMessageBuilder message = new UpdateMessageBuilder();
+                    message.setDate(date);
+                    message.setEditor(user);
+                    message.setRecipient(recipient);
+                    message.setUserDatabaseDTO(userDatabaseDTO);
+                    message.setSiteDTO(siteDTO);
+                    message.setActivityDTO(activityDTO);
+                    message.setNewSite(newSite);
+
+                    mailSender.get().send(message.build());
+                }
+
+            } catch (Throwable t) {
+                LOGGER.warning("failed sending notification email to "
+                    + recipient.getName() + " <" + recipient.getEmail() + ">: "
+                    + t.getMessage());
+                t.printStackTrace();
+            }
+        }
+    }
+
+    // select owners/designers with the emailNotification flag set to true
+    @VisibleForTesting
     @SuppressWarnings("unchecked")
-	List<User> findRecipients(int userDatabaseId) {
-        Query query = entityManager.get().createNativeQuery(
-        		"select u.* from userlogin u " +
-        		"where u.userid in (" +
-        			"select p.userid uid from userpermission p where p.databaseid = ?1 and p.allowdesign = b'1' " +
-        			"union " +
-        			"select d.owneruserid uid from userdatabase d where d.DatabaseId = ?2 " +
-        		") and u.emailnotification = b'1'",
-        		User.class)
-                .setParameter(1, userDatabaseId)
-                .setParameter(2, userDatabaseId);
+    List<User> findRecipients(int userDatabaseId) {
+        Query query = entityManager
+            .get()
+            .createNativeQuery(
+                "select u.* from userlogin u "
+                    +
+                    "where u.userid in ("
+                    +
+                    "select p.userid uid from userpermission p where p.databaseid = ?1 and p.allowdesign = b'1' "
+                    +
+                    "union "
+                    +
+                    "select d.owneruserid uid from userdatabase d where d.DatabaseId = ?2 "
+                    +
+                    ") and u.emailnotification = b'1'",
+                User.class)
+            .setParameter(1, userDatabaseId)
+            .setParameter(2, userDatabaseId);
 
-		return query.getResultList();
-	}
-	
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		doGet(request, response);
-	}
+        return query.getResultList();
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException {
+        doGet(request, response);
+    }
 }

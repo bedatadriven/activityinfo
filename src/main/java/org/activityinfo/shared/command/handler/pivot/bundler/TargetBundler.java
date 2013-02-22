@@ -31,17 +31,17 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 
 public class TargetBundler implements Bundler {
 
-	public static final String TARGET_ALIAS = "_TARGET";
+    public static final String TARGET_ALIAS = "_TARGET";
 
-	@Override
-	public void bundle(SqlResultSetRow row, Bucket bucket) {
-		if(row.getInt(TARGET_ALIAS) == 0) {
-			bucket.setCategory(new Dimension(DimensionType.Target), TargetCategory.REALIZED);
-		} else {
-			bucket.setCategory(new Dimension(DimensionType.Target), TargetCategory.TARGETED);
-		}
-	}
-	
-	
-	
+    @Override
+    public void bundle(SqlResultSetRow row, Bucket bucket) {
+        if (row.getInt(TARGET_ALIAS) == 0) {
+            bucket.setCategory(new Dimension(DimensionType.Target),
+                TargetCategory.REALIZED);
+        } else {
+            bucket.setCategory(new Dimension(DimensionType.Target),
+                TargetCategory.TARGETED);
+        }
+    }
+
 }

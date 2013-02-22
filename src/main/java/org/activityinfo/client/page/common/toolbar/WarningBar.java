@@ -30,36 +30,36 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.gwt.user.client.ui.Image;
 
 public class WarningBar extends LayoutContainer {
-	private LabelField labelMessage;
-	private Image imageLocked;
-	private HorizontalPanel panelMain;
+    private LabelField labelMessage;
+    private Image imageLocked;
+    private HorizontalPanel panelMain;
 
-	public WarningBar() {
-		super();
-		
-		initializeComponent();
-	}
+    public WarningBar() {
+        super();
 
-	private void initializeComponent() {
-		panelMain = new HorizontalPanel();
-		add(panelMain);
-		
-		imageLocked = IconImageBundle.ICONS.lockedPeriod().createImage();
-		panelMain.add(imageLocked);
+        initializeComponent();
+    }
 
-		labelMessage = new LabelField();
-		panelMain.add(labelMessage);
+    private void initializeComponent() {
+        panelMain = new HorizontalPanel();
+        add(panelMain);
 
-		setStyleAttribute("padding", "0.25em");
-		setStyleAttribute("background-color", "#F5A9A9");
-	}
+        imageLocked = IconImageBundle.ICONS.lockedPeriod().createImage();
+        panelMain.add(imageLocked);
 
-	public String getWarning() {
-		return labelMessage.getText();
-	}
+        labelMessage = new LabelField();
+        panelMain.add(labelMessage);
 
-	public void setWarning(String message) {
-		labelMessage.setText(message);
-	}
-	
+        setStyleAttribute("padding", "0.25em");
+        setStyleAttribute("background-color", "#F5A9A9");
+    }
+
+    public String getWarning() {
+        return labelMessage.getText();
+    }
+
+    public void setWarning(String message) {
+        labelMessage.setText(message);
+    }
+
 }

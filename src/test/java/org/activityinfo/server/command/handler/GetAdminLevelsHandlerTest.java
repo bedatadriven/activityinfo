@@ -36,15 +36,15 @@ import com.google.common.collect.Sets;
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetAdminLevelsHandlerTest extends CommandTestCase2 {
 
-	@Test
-	public void test() {
-		
-		GetAdminLevels query = new GetAdminLevels();
-		query.setIndicatorIds(Sets.newHashSet(1));
-		
-		AdminLevelResult result = execute(query);
-		
-		System.out.println(result.getData());
-	}
-	
+    @Test
+    public void test() {
+
+        GetAdminLevels query = new GetAdminLevels();
+        query.setIndicatorIds(Sets.newHashSet(1));
+
+        AdminLevelResult result = execute(query);
+
+        System.out.println(result.getData());
+    }
+
 }

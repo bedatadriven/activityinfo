@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -22,7 +21,6 @@ package org.activityinfo.server.command.handler;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import java.util.Date;
 import java.util.logging.Level;
@@ -51,9 +49,11 @@ import com.google.inject.Inject;
  * @author Alex Bertram
  * @see org.activityinfo.shared.command.UpdateUserPermissions
  */
-public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPermissions> {
+public class UpdateUserPermissionsHandler implements
+    CommandHandler<UpdateUserPermissions> {
 
-    // TODO: this needs to be pushed down into the domain layer, it doesn't belong here at the endpoint layer
+    // TODO: this needs to be pushed down into the domain layer, it doesn't
+    // belong here at the endpoint layer
 
     private final UserDAO userDAO;
     private final UserDatabaseDAO databaseDAO;
@@ -61,12 +61,14 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
     private final UserPermissionDAO permDAO;
 
     private final MailSender mailSender;
-    
-    private static final Logger logger = Logger.getLogger(UpdateUserPermissionsHandler.class.getName());
+
+    private static final Logger logger = Logger
+        .getLogger(UpdateUserPermissionsHandler.class.getName());
 
     @Inject
-    public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO, PartnerDAO partnerDAO, UserDAO userDAO,
-                                        UserPermissionDAO permDAO, MailSender mailSender) {
+    public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO,
+        PartnerDAO partnerDAO, UserDAO userDAO,
+        UserPermissionDAO permDAO, MailSender mailSender) {
         this.userDAO = userDAO;
         this.partnerDAO = partnerDAO;
         this.permDAO = permDAO;
@@ -75,15 +77,16 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
     }
 
     @Override
-    public CommandResult execute(UpdateUserPermissions cmd, User executingUser) throws CommandException {
+    public CommandResult execute(UpdateUserPermissions cmd, User executingUser)
+        throws CommandException {
 
         UserDatabase database = databaseDAO.findById(cmd.getDatabaseId());
         UserPermissionDTO dto = cmd.getModel();
 
         /*
-           * First check that the current user has permission to
-           * add users to to the queries
-           */
+         * First check that the current user has permission to add users to to
+         * the queries
+         */
         boolean isOwner = executingUser.getId() == database.getOwner().getId();
         if (!isOwner) {
             verifyAuthority(cmd, database.getPermissionByUser(executingUser));
@@ -93,86 +96,97 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         if (userDAO.doesUserExist(dto.getEmail())) {
             user = userDAO.findUserByEmail(dto.getEmail());
         }
-        
+
         if (user == null) {
             user = createNewUser(executingUser, dto);
         }
 
         /*
-           * Does the permission record exist ?
-           */
+         * Does the permission record exist ?
+         */
         UserPermission perm = database.getPermissionByUser(user);
         if (perm == null) {
             perm = new UserPermission(database, user);
-            doUpdate(perm, dto, isOwner, database.getPermissionByUser(executingUser));
+            doUpdate(perm, dto, isOwner,
+                database.getPermissionByUser(executingUser));
             permDAO.persist(perm);
         } else {
-            doUpdate(perm, dto, isOwner, database.getPermissionByUser(executingUser));
+            doUpdate(perm, dto, isOwner,
+                database.getPermissionByUser(executingUser));
         }
 
         return null;
     }
 
-    private User createNewUser(User executingUser, UserPermissionDTO dto) throws CommandException {
-        User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(), executingUser.getLocale());
+    private User createNewUser(User executingUser, UserPermissionDTO dto)
+        throws CommandException {
+        User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(),
+            executingUser.getLocale());
         userDAO.persist(user);
-        
-        if(executingUser.getId() == 0) {
-        	throw new AssertionError("executingUser.id == 0!");
+
+        if (executingUser.getId() == 0) {
+            throw new AssertionError("executingUser.id == 0!");
         }
-        if(executingUser.getName() == null) {
-        	throw new AssertionError("executingUser.name == null!");
+        if (executingUser.getName() == null) {
+            throw new AssertionError("executingUser.name == null!");
         }
-        
+
         try {
-        	MessageBuilder message = mailSender.createMessage(new InvitationMessage(user, executingUser));
-        	message.replyTo(executingUser.getEmail(), executingUser.getName());
-        	mailSender.send(message.build());
+            MessageBuilder message = mailSender
+                .createMessage(new InvitationMessage(user, executingUser));
+            message.replyTo(executingUser.getEmail(), executingUser.getName());
+            mailSender.send(message.build());
         } catch (Exception e) {
-        	logger.log(Level.SEVERE, "Could not send invitation mail", e);
-        	throw new CommandException("Failed to send invitation email");
+            logger.log(Level.SEVERE, "Could not send invitation mail", e);
+            throw new CommandException("Failed to send invitation email");
         }
         return user;
     }
 
-
     /**
-     * Verifies that the user executing the command has the permission
-     * to do assign these permissions.
+     * Verifies that the user executing the command has the permission to do
+     * assign these permissions.
      * <p/>
      * Static and visible for testing
-     *
+     * 
      * @param cmd
      * @param executingUserPermissions
      * @throws IllegalAccessCommandException
      */
-    public static void verifyAuthority(UpdateUserPermissions cmd, UserPermission executingUserPermissions) throws IllegalAccessCommandException {
+    public static void verifyAuthority(UpdateUserPermissions cmd,
+        UserPermission executingUserPermissions)
+        throws IllegalAccessCommandException {
         if (!executingUserPermissions.isAllowManageUsers()) {
             throw new IllegalAccessCommandException(
-                    "Current user does not have the right to manage other users");
+                "Current user does not have the right to manage other users");
         }
 
-        if (!executingUserPermissions.isAllowManageAllUsers() &&
-                executingUserPermissions.getPartner().getId() != cmd.getModel().getPartner().getId()) {
+        if (!executingUserPermissions.isAllowManageAllUsers()
+            &&
+            executingUserPermissions.getPartner().getId() != cmd.getModel()
+                .getPartner().getId()) {
             throw new IllegalAccessCommandException(
-                    "Current user does not have the right to manage users from other partners");
+                "Current user does not have the right to manage users from other partners");
         }
 
         if (!executingUserPermissions.isAllowDesign() &&
-                cmd.getModel().getAllowDesign()) {
+            cmd.getModel().getAllowDesign()) {
             throw new IllegalAccessCommandException(
-                    "Current user does not have the right to grant design privileges");
+                "Current user does not have the right to grant design privileges");
         }
 
-        if (!executingUserPermissions.isAllowManageAllUsers() &&
-                (cmd.getModel().getAllowViewAll() || cmd.getModel().getAllowEditAll() ||
-                        cmd.getModel().getAllowManageAllUsers())) {
+        if (!executingUserPermissions.isAllowManageAllUsers()
+            &&
+            (cmd.getModel().getAllowViewAll()
+                || cmd.getModel().getAllowEditAll() ||
+            cmd.getModel().getAllowManageAllUsers())) {
             throw new IllegalAccessCommandException(
-                    "Current user does not have the right to grant viewAll, editAll, or manageAllUsers privileges");
+                "Current user does not have the right to grant viewAll, editAll, or manageAllUsers privileges");
         }
     }
 
-    protected void doUpdate(UserPermission perm, UserPermissionDTO dto, boolean isOwner, UserPermission executingUserPermissions) {
+    protected void doUpdate(UserPermission perm, UserPermissionDTO dto,
+        boolean isOwner, UserPermission executingUserPermissions) {
 
         perm.setPartner(partnerDAO.findById(dto.getPartner().getId()));
         perm.setAllowView(dto.getAllowView());
@@ -183,18 +197,23 @@ public class UpdateUserPermissionsHandler implements CommandHandler<UpdateUserPe
         // careful not to overwrite permissions that may have been granted by
         // other users with greater permissions
 
-        // The exception is when a user with partner-level user management rights
-        // (manageUsers but not manageAllUsers) removes view or edit permissions from
-        // an existing user who had been previously granted viewAll or editAll rights
+        // The exception is when a user with partner-level user management
+        // rights
+        // (manageUsers but not manageAllUsers) removes view or edit permissions
+        // from
+        // an existing user who had been previously granted viewAll or editAll
+        // rights
         // by a user with greater permissions.
         //
         // In this case, the only logical outcome (I think) is that
 
-        if (isOwner || executingUserPermissions.isAllowManageAllUsers() || !dto.getAllowView()) {
+        if (isOwner || executingUserPermissions.isAllowManageAllUsers()
+            || !dto.getAllowView()) {
             perm.setAllowViewAll(dto.getAllowViewAll());
         }
 
-        if (isOwner || executingUserPermissions.isAllowManageAllUsers() || !dto.getAllowEdit()) {
+        if (isOwner || executingUserPermissions.isAllowManageAllUsers()
+            || !dto.getAllowEdit()) {
             perm.setAllowEditAll(dto.getAllowEditAll());
         }
 

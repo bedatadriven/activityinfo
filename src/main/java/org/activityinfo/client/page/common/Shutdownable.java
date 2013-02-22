@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.client.page.common;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 public interface Shutdownable {
 

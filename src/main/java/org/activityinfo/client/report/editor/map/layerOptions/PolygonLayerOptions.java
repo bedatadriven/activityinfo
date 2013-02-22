@@ -36,59 +36,62 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class PolygonLayerOptions extends LayoutContainer implements LayerOptionsWidget<PolygonMapLayer> {
-		private PolygonMapLayer layer;
-		private ColorPalette colorPicker = new ColorPalette();
-		
-		public PolygonLayerOptions() {
-			super();
-			setStyleAttribute("padding", "5px");
-			createColorPicker();
-		}
+public class PolygonLayerOptions extends LayoutContainer implements
+    LayerOptionsWidget<PolygonMapLayer> {
+    private PolygonMapLayer layer;
+    private ColorPalette colorPicker = new ColorPalette();
 
-		private void createColorPicker() {
-			colorPicker.setValue("000000");
-			
-			// Set the selected color to the maplayer
-			colorPicker.addListener(Events.Select, new Listener<ColorPaletteEvent>() {
-				@Override
-				public void handleEvent(ColorPaletteEvent be) {
-					if(!Objects.equal(layer.getMaxColor(), colorPicker.getValue())) {
-						layer.setMaxColor(colorPicker.getValue());
-						ValueChangeEvent.fire(PolygonLayerOptions.this, layer);
-					}
-			}});
+    public PolygonLayerOptions() {
+        super();
+        setStyleAttribute("padding", "5px");
+        createColorPicker();
+    }
 
-			LabelField labelColor = new LabelField(I18N.CONSTANTS.color());
-			add(labelColor);
-			add(colorPicker);
-		}
-		
+    private void createColorPicker() {
+        colorPicker.setValue("000000");
 
-		@Override
-		public PolygonMapLayer getValue() {
-			return layer;
-		}
+        // Set the selected color to the maplayer
+        colorPicker.addListener(Events.Select,
+            new Listener<ColorPaletteEvent>() {
+                @Override
+                public void handleEvent(ColorPaletteEvent be) {
+                    if (!Objects.equal(layer.getMaxColor(),
+                        colorPicker.getValue())) {
+                        layer.setMaxColor(colorPicker.getValue());
+                        ValueChangeEvent.fire(PolygonLayerOptions.this, layer);
+                    }
+                }
+            });
 
-		private void updateUI() {
-			colorPicker.setValue(layer.getMaxColor());
-		}
-		
-		// TODO: fireevent
-		@Override
-		public void setValue(PolygonMapLayer value, boolean fireEvents) {
-			setValue(value);
-		}
-		 
-		@Override
-		public void setValue(PolygonMapLayer value) {
-			this.layer=value;
-			updateUI();
-		}
-		
-		@Override
-		public HandlerRegistration addValueChangeHandler(
-				ValueChangeHandler<PolygonMapLayer> handler) {
-			return this.addHandler(handler, ValueChangeEvent.getType());
-		}
-	}
+        LabelField labelColor = new LabelField(I18N.CONSTANTS.color());
+        add(labelColor);
+        add(colorPicker);
+    }
+
+    @Override
+    public PolygonMapLayer getValue() {
+        return layer;
+    }
+
+    private void updateUI() {
+        colorPicker.setValue(layer.getMaxColor());
+    }
+
+    // TODO: fireevent
+    @Override
+    public void setValue(PolygonMapLayer value, boolean fireEvents) {
+        setValue(value);
+    }
+
+    @Override
+    public void setValue(PolygonMapLayer value) {
+        this.layer = value;
+        updateUI();
+    }
+
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<PolygonMapLayer> handler) {
+        return this.addHandler(handler, ValueChangeEvent.getType());
+    }
+}

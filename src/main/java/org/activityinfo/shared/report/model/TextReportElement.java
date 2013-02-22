@@ -32,36 +32,36 @@ import org.activityinfo.shared.report.content.NullContent;
 
 /**
  * Report element containing static text
- *
+ * 
  */
 public class TextReportElement extends ReportElement<NullContent> {
-	
-	private String text;
-	
-	public TextReportElement() {
-		
-	}
-	
-	public TextReportElement(String paragraph) {
-		this.text = paragraph;
-	}
 
-	/**
-	 * @return the plain text to be included in the report. 
-	 */
-	@XmlElement(name="p")
-	public String getText() {
-		return text;
-	}
+    private String text;
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public TextReportElement() {
 
-	@Override
-	@XmlTransient
-	public Set<Integer> getIndicators() {
-		return Collections.emptySet();
-	}
+    }
+
+    public TextReportElement(String paragraph) {
+        this.text = paragraph;
+    }
+
+    /**
+     * @return the plain text to be included in the report.
+     */
+    @XmlElement(name = "p")
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
+    @XmlTransient
+    public Set<Integer> getIndicators() {
+        return Collections.emptySet();
+    }
 
 }

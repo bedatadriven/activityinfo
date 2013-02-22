@@ -41,61 +41,60 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.inject.Inject;
 
-public class TextElementEditor extends LayoutContainer implements ReportElementEditor<TextReportElement> {
+public class TextElementEditor extends LayoutContainer implements
+    ReportElementEditor<TextReportElement> {
 
-	private TextArea textArea;
-	private ReportEventHelper events;
-	private TextReportElement model = new TextReportElement();
-	
+    private TextArea textArea;
+    private ReportEventHelper events;
+    private TextReportElement model = new TextReportElement();
 
-	@Inject
-	public TextElementEditor(EventBus eventBus) {
-		super();
-		setLayout(new FitLayout());
-		textArea = new TextArea();
-		textArea.addListener(Events.Change, new Listener<FieldEvent>() {
+    @Inject
+    public TextElementEditor(EventBus eventBus) {
+        super();
+        setLayout(new FitLayout());
+        textArea = new TextArea();
+        textArea.addListener(Events.Change, new Listener<FieldEvent>() {
 
-			@Override
-			public void handleEvent(FieldEvent be) {
-				model.setText(textArea.getValue());
-			}
-		});
-		add(textArea);
-		events = new ReportEventHelper(eventBus, this);
-		events.listen(new ReportChangeHandler() {
-			
-			@Override
-			public void onChanged() {
-				textArea.setValue(model.getText());
-			}
-		});
-		
-		
-	}
-	
-	@Override
-	public void disconnect() {
-		events.disconnect();
-	}
+            @Override
+            public void handleEvent(FieldEvent be) {
+                model.setText(textArea.getValue());
+            }
+        });
+        add(textArea);
+        events = new ReportEventHelper(eventBus, this);
+        events.listen(new ReportChangeHandler() {
 
-	@Override
-	public Component getWidget() {
-		return this;
-	}
+            @Override
+            public void onChanged() {
+                textArea.setValue(model.getText());
+            }
+        });
 
-	@Override
-	public List<Format> getExportFormats() {
-		return Arrays.asList(Format.PDF, Format.Word);
-	}
+    }
 
-	@Override
-	public void bind(TextReportElement model) {
-		this.model = model;
-		this.textArea.setValue(model.getText());
-	}
+    @Override
+    public void disconnect() {
+        events.disconnect();
+    }
 
-	@Override
-	public TextReportElement getModel() {
-		return model;
-	}	
+    @Override
+    public Component getWidget() {
+        return this;
+    }
+
+    @Override
+    public List<Format> getExportFormats() {
+        return Arrays.asList(Format.PDF, Format.Word);
+    }
+
+    @Override
+    public void bind(TextReportElement model) {
+        this.model = model;
+        this.textArea.setValue(model.getText());
+    }
+
+    @Override
+    public TextReportElement getModel() {
+        return model;
+    }
 }

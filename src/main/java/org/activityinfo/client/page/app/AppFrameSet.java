@@ -1,4 +1,3 @@
-
 package org.activityinfo.client.page.app;
 
 /*
@@ -22,7 +21,6 @@ package org.activityinfo.client.page.app;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Log;
@@ -55,152 +53,161 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-
-
 @Singleton
 public class AppFrameSet implements Frame {
 
-	private EventBus eventBus;
-	private Viewport viewport;
+    private EventBus eventBus;
+    private Viewport viewport;
 
-	private Widget activeWidget;
-	private Page activePage;
-	private AppBar appBar;
-	private SyncStatusBar statusBar;
+    private Widget activeWidget;
+    private Page activePage;
+    private AppBar appBar;
+    private SyncStatusBar statusBar;
 
-	@Inject
-	public AppFrameSet(EventBus eventBus, AuthenticatedUser auth, AppBar appBar, 
-			SyncStatusBar statusBar) {
+    @Inject
+    public AppFrameSet(EventBus eventBus, AuthenticatedUser auth,
+        AppBar appBar,
+        SyncStatusBar statusBar) {
 
-		Log.trace("AppFrameSet constructor starting");
+        Log.trace("AppFrameSet constructor starting");
 
-		this.eventBus = eventBus;
-		this.appBar = appBar;
-		this.statusBar = statusBar;
-		
-		viewport = new Viewport();
-		viewport.setLayout(new BorderLayout());
+        this.eventBus = eventBus;
+        this.appBar = appBar;
+        this.statusBar = statusBar;
 
-		setupTabs();
-		setupStatus();
+        viewport = new Viewport();
+        viewport.setLayout(new BorderLayout());
 
-		Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
+        setupTabs();
+        setupStatus();
 
-		RootPanel.get().add(viewport);
+        Log.trace("AppFrameSet constructor finished, about to add to RootPanel");
 
-		Log.trace("AppFrameSet now added to RootPanel");
+        RootPanel.get().add(viewport);
 
-	}
+        Log.trace("AppFrameSet now added to RootPanel");
 
-	private void setupTabs() {
-		appBar.getSectionTabStrip().addSelectionHandler(new SelectionHandler<Section>() {
+    }
 
-			@Override
-			public void onSelection(SelectionEvent<Section> event) {
-				onSectionClicked(event.getSelectedItem());
-			}
-		});
-		eventBus.addListener(NavigationHandler.NavigationAgreed, new Listener<NavigationEvent>() {
+    private void setupTabs() {
+        appBar.getSectionTabStrip().addSelectionHandler(
+            new SelectionHandler<Section>() {
 
-			@Override
-			public void handleEvent(NavigationEvent event) {
-				appBar.getSectionTabStrip().setSelection(event.getPlace().getSection());				
-			}
-			
-		});
-		BorderLayoutData layout = new BorderLayoutData(LayoutRegion.NORTH);
-		layout.setSize(AppBar.HEIGHT);
-	
-		viewport.add(appBar, layout);
-	}
-	
-	private void setupStatus() {
-		BorderLayoutData layout = new BorderLayoutData(LayoutRegion.SOUTH);
-		layout.setSize(SyncStatusBar.HEIGHT);
-				
-		viewport.add(statusBar, layout);
-	}
+                @Override
+                public void onSelection(SelectionEvent<Section> event) {
+                    onSectionClicked(event.getSelectedItem());
+                }
+            });
+        eventBus.addListener(NavigationHandler.NAVIGATION_AGREED,
+            new Listener<NavigationEvent>() {
 
-	private void onSectionClicked(Section selectedItem) {
-		switch(selectedItem) {
-		case HOME:
-			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DashboardPlace()));
-			break;
-		case DATA_ENTRY:
-			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DataEntryPlace()));
-			break;
-		case ANALYSIS:
-			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new ReportsPlace()));
-			break;
-		case DESIGN:
-			eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new DbListPageState()));
-			break;
-		}
+                @Override
+                public void handleEvent(NavigationEvent event) {
+                    appBar.getSectionTabStrip().setSelection(
+                        event.getPlace().getSection());
+                }
 
-	}
+            });
+        BorderLayoutData layout = new BorderLayoutData(LayoutRegion.NORTH);
+        layout.setSize(AppBar.HEIGHT);
 
-	protected void search(String value) {
-		eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested, new SearchPageState(value)));
-	}
+        viewport.add(appBar, layout);
+    }
 
-	public void setWidget(Widget widget) {
+    private void setupStatus() {
+        BorderLayoutData layout = new BorderLayoutData(LayoutRegion.SOUTH);
+        layout.setSize(SyncStatusBar.HEIGHT);
 
-		if (activeWidget != null) {
-			viewport.remove(activeWidget);
-		}
-		viewport.add(widget, new BorderLayoutData(LayoutRegion.CENTER));
-		activeWidget = widget;
-		viewport.layout();
-	}
+        viewport.add(statusBar, layout);
+    }
 
-	@Override
-	public void setActivePage(Page page) {
-		setWidget((Widget) page.getWidget());
-		activePage = page;
-	}
+    private void onSectionClicked(Section selectedItem) {
+        switch (selectedItem) {
+        case HOME:
+            eventBus.fireEvent(new NavigationEvent(
+                NavigationHandler.NAVIGATION_REQUESTED, new DashboardPlace()));
+            break;
+        case DATA_ENTRY:
+            eventBus.fireEvent(new NavigationEvent(
+                NavigationHandler.NAVIGATION_REQUESTED, new DataEntryPlace()));
+            break;
+        case ANALYSIS:
+            eventBus.fireEvent(new NavigationEvent(
+                NavigationHandler.NAVIGATION_REQUESTED, new ReportsPlace()));
+            break;
+        case DESIGN:
+            eventBus.fireEvent(new NavigationEvent(
+                NavigationHandler.NAVIGATION_REQUESTED, new DbListPageState()));
+            break;
+        }
 
-	@Override
-	public Page getActivePage() {
-		return activePage;
-	}
+    }
 
-	@Override
-	public AsyncMonitor showLoadingPlaceHolder(PageId pageId, PageState loadingPlace) {
-		activePage = null;
-		LoadingPlaceHolder placeHolder = new LoadingPlaceHolder();
-		setWidget(placeHolder);
-		return placeHolder;
-	}
+    protected void search(String value) {
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_REQUESTED, new SearchPageState(value)));
+    }
 
-	@Override
-	public PageId getPageId() {
-		return null;
-	}
+    public void setWidget(Widget widget) {
 
-	@Override
-	public Object getWidget() {
-		return viewport;
-	}
+        if (activeWidget != null) {
+            viewport.remove(activeWidget);
+        }
+        viewport.add(widget, new BorderLayoutData(LayoutRegion.CENTER));
+        activeWidget = widget;
+        viewport.layout();
+    }
 
-	@Override
-	public void requestToNavigateAway(PageState place, NavigationCallback callback) {
-		callback.onDecided(true);
-	}
+    @Override
+    public void setActivePage(Page page) {
+        setWidget((Widget) page.getWidget());
+        activePage = page;
+    }
 
-	@Override                          
-	public String beforeWindowCloses() {
-		return null;
-	}
+    @Override
+    public Page getActivePage() {
+        return activePage;
+    }
 
-	@Override
-	public boolean navigate(PageState place) {
-		appBar.getSectionTabStrip().setSelection(place.getSection());
-		return true;
-	}
+    @Override
+    public AsyncMonitor showLoadingPlaceHolder(PageId pageId,
+        PageState loadingPlace) {
+        activePage = null;
+        LoadingPlaceHolder placeHolder = new LoadingPlaceHolder();
+        setWidget(placeHolder);
+        return placeHolder;
+    }
 
-	@Override
-	public void shutdown() {
+    @Override
+    public PageId getPageId() {
+        return null;
+    }
 
-	}
+    @Override
+    public Object getWidget() {
+        return viewport;
+    }
+
+    @Override
+    public void requestToNavigateAway(PageState place,
+        NavigationCallback callback) {
+        callback.onDecided(true);
+    }
+
+    @Override
+    public String beforeWindowCloses() {
+        return null;
+    }
+
+    @Override
+    public boolean navigate(PageState place) {
+        appBar.getSectionTabStrip().setSelection(place.getSection());
+        return true;
+    }
+
+    @Override
+    public void shutdown() {
+
+    }
 
 }

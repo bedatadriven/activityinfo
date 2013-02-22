@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -46,7 +44,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class DeleteTest extends CommandTestCase {
 
-
     public <T extends ModelData> T getById(Collection<T> list, Integer id) {
         for (T element : list) {
             if (id.equals(element.get("id"))) {
@@ -92,7 +89,6 @@ public class DeleteTest extends CommandTestCase {
         Assert.assertNull(schema.getActivityById(1).getAttributeById(1));
     }
 
-
     @Test
     public void testDeleteActivity() throws CommandException {
 
@@ -101,7 +97,8 @@ public class DeleteTest extends CommandTestCase {
         execute(new Delete("Activity", 4));
 
         schema = execute(new GetSchema());
-        Assert.assertNull("delete by entity reference", schema.getActivityById(1));
+        Assert.assertNull("delete by entity reference",
+            schema.getActivityById(1));
         Assert.assertNull("delete by id", schema.getActivityById(4));
     }
 }

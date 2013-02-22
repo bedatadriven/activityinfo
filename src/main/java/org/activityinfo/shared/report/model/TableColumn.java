@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -37,7 +35,7 @@ import org.activityinfo.shared.report.content.TreeNode;
 
 /**
  * @author Alex Bertram
-*/
+ */
 public class TableColumn extends TreeNode<TableColumn> {
 
     public enum SortOrder {
@@ -75,7 +73,7 @@ public class TableColumn extends TreeNode<TableColumn> {
 
     @XmlTransient
     public boolean isOrderAscending() {
-        return order== SortOrder.Ascending;
+        return order == SortOrder.Ascending;
     }
 
     @XmlAttribute
@@ -88,7 +86,7 @@ public class TableColumn extends TreeNode<TableColumn> {
     }
 
     @Override
-    @XmlElement(name="column")
+    @XmlElement(name = "column")
     public List<TableColumn> getChildren() {
         return children;
     }
@@ -107,12 +105,12 @@ public class TableColumn extends TreeNode<TableColumn> {
         return children.size() == 0;
     }
 
-    @XmlAttribute(name="source")
+    @XmlAttribute(name = "source")
     public String getProperty() {
         return property;
     }
 
-    @XmlAttribute(name="sourceId")
+    @XmlAttribute(name = "sourceId")
     public Integer getPropertyQualifyingId() {
         return propertyQualifyingId;
     }
@@ -124,29 +122,29 @@ public class TableColumn extends TreeNode<TableColumn> {
     public void setPropertyQualifyingId(Integer propertyQualifyingId) {
         this.propertyQualifyingId = propertyQualifyingId;
     }
-    
-    /** 
+
+    /**
      * @return the name of the property in SiteDTO
      */
     public String getSitePropertyName() {
-    	
-    	// support legacy models that used their own special names
-    	if("site.date1".equals(property)) {
-    		return "date1";
-    	} else if("site.date2".equals(property)) {
-    		return "date2";
-    	} else if("site.comments".equals(property)) {
-    		return "comments";
-    	} else if("location.name".equals(property)) {
-    		return "locationName";
-    	} else if("location.axe".equals(property)) {
-    		return "locationAxe";
-    	} else if("indicator".equals(property)) {
-    		return IndicatorDTO.getPropertyName(propertyQualifyingId);
-    	} else if("admin".equals(property)) {
-    		return AdminLevelDTO.getPropertyName(propertyQualifyingId);
-    	} else {
-    		return property;
-    	}
+
+        // support legacy models that used their own special names
+        if ("site.date1".equals(property)) {
+            return "date1";
+        } else if ("site.date2".equals(property)) {
+            return "date2";
+        } else if ("site.comments".equals(property)) {
+            return "comments";
+        } else if ("location.name".equals(property)) {
+            return "locationName";
+        } else if ("location.axe".equals(property)) {
+            return "locationAxe";
+        } else if ("indicator".equals(property)) {
+            return IndicatorDTO.getPropertyName(propertyQualifyingId);
+        } else if ("admin".equals(property)) {
+            return AdminLevelDTO.getPropertyName(propertyQualifyingId);
+        } else {
+            return property;
+        }
     }
 }

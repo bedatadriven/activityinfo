@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.remote.cache;
 
 /*
@@ -30,14 +28,15 @@ import org.activityinfo.shared.command.result.CommandResult;
 
 /**
  * Provides a default, empty implementation of the {@link DispatchListener}
- *
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
-public class DefaultDispatchListener<T extends Command> implements DispatchListener<T> {
+public class DefaultDispatchListener<T extends Command> implements
+    DispatchListener<T> {
 
     @Override
     public void beforeDispatched(T command) {
-     
+
     }
 
     @Override

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.authentication;
 
 /*
@@ -27,13 +25,11 @@ package org.activityinfo.server.authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
 
 /**
- * Service interface which provides validation of user passwords.
- * The only current implementation checks the password against the
- * database but this is intended to be an extensibility point for other
- * methods.
+ * Service interface which provides validation of user passwords. The only
+ * current implementation checks the password against the database but this is
+ * intended to be an extensibility point for other methods.
  */
 public interface Authenticator {
     boolean check(User user, String plaintextPassword);
-    
-    
+
 }

@@ -27,54 +27,53 @@ import org.activityinfo.shared.report.model.EmailDelivery;
 
 /**
  * Updates the relationship between a user and a report
- *
+ * 
  */
-public class UpdateReportSubscription implements MutatingCommand<VoidResult>{
-	private int reportId;
-	private String userEmail;
-	
-	private Boolean pinnedToDashboard;
-	private Integer emailDay;
-	private EmailDelivery frequency;
+public class UpdateReportSubscription implements MutatingCommand<VoidResult> {
+    private int reportId;
+    private String userEmail;
 
-	public int getReportId() {
-		return reportId;
-	}
+    private Boolean pinnedToDashboard;
+    private Integer emailDay;
+    private EmailDelivery frequency;
 
-	public void setReportId(int reportId) {
-		this.reportId = reportId;
-	}
+    public int getReportId() {
+        return reportId;
+    }
 
-	public String getUserEmail() {
-		return userEmail;
-	}
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
 
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
+    public String getUserEmail() {
+        return userEmail;
+    }
 
-	public Boolean getPinnedToDashboard() {
-		return pinnedToDashboard;
-	}
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
-	public void setPinnedToDashboard(Boolean pinnedToDashboard) {
-		this.pinnedToDashboard = pinnedToDashboard;
-	}
+    public Boolean getPinnedToDashboard() {
+        return pinnedToDashboard;
+    }
 
+    public void setPinnedToDashboard(Boolean pinnedToDashboard) {
+        this.pinnedToDashboard = pinnedToDashboard;
+    }
 
-	public Integer getEmailDay() {
-		return emailDay;
-	}
+    public Integer getEmailDay() {
+        return emailDay;
+    }
 
-	public void setEmailDay(Integer day) {
-		this.emailDay = day;
-	}
+    public void setEmailDay(Integer day) {
+        this.emailDay = day;
+    }
 
-	public EmailDelivery getEmailDelivery() {
-		return frequency;
-	}
+    public EmailDelivery getEmailDelivery() {
+        return frequency;
+    }
 
-	public void setEmailDelivery(EmailDelivery frequency) {
-		this.frequency = frequency;
-	}
+    public void setEmailDelivery(EmailDelivery frequency) {
+        this.frequency = frequency;
+    }
 }

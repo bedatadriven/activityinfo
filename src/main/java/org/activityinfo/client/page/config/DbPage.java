@@ -27,6 +27,6 @@ import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 public interface DbPage extends Page {
 
-	void go(UserDatabaseDTO db);
+    void go(UserDatabaseDTO db);
 
 }

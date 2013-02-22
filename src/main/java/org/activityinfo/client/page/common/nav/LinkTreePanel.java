@@ -32,23 +32,23 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class LinkTreePanel extends TreePanel<Link> {
 
-	public LinkTreePanel(Navigator navigator, String stateId) {
-		super(createStore(navigator));
-			    
-	    setStateful(true);
-	    setStateId(stateId);
-	    setDisplayProperty("name");
-	    setAutoLoad(true);
-	    setIconProvider(new ModelIconProvider<Link>() {
-	        @Override
-	        public AbstractImagePrototype getIcon(Link model) {
-	            return model.getIcon();
-	        }
-	    });
-	}
+    public LinkTreePanel(Navigator navigator, String stateId) {
+        super(createStore(navigator));
 
-	private static TreeStore<Link> createStore(final Navigator navigator) {
-	  TreeLoader<Link> loader = new BaseTreeLoader<Link>(navigator) {
+        setStateful(true);
+        setStateId(stateId);
+        setDisplayProperty("name");
+        setAutoLoad(true);
+        setIconProvider(new ModelIconProvider<Link>() {
+            @Override
+            public AbstractImagePrototype getIcon(Link model) {
+                return model.getIcon();
+            }
+        });
+    }
+
+    private static TreeStore<Link> createStore(final Navigator navigator) {
+        TreeLoader<Link> loader = new BaseTreeLoader<Link>(navigator) {
             @Override
             public boolean hasChildren(Link parent) {
                 return navigator.hasChildren(parent);
@@ -63,7 +63,6 @@ public class LinkTreePanel extends TreePanel<Link> {
             }
         });
         return store;
-	}
-	
-	
+    }
+
 }

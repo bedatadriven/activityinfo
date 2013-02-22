@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -38,8 +36,8 @@ public class GsLogCalculator implements RadiiCalculator {
         this.maxRadius = maxRadius;
     }
 
-	@Override
-	public void calculate(List<Cluster> clusters) {
+    @Override
+    public void calculate(List<Cluster> clusters) {
 
         // FIRST PASS:
         // calculate min and max of the markers
@@ -48,37 +46,37 @@ public class GsLogCalculator implements RadiiCalculator {
         double[] values = new double[clusters.size()];
         double minValue = Double.MAX_VALUE;
         double maxValue = Double.MIN_VALUE;
-        
-        for(int i=0; i!=clusters.size(); ++i) {
+
+        for (int i = 0; i != clusters.size(); ++i) {
 
             values[i] = clusters.get(i).sumValues();
 
-            if( values[i] > maxValue) {
+            if (values[i] > maxValue) {
                 maxValue = values[i];
             }
-            if( values[i] < minValue) {
+            if (values[i] < minValue) {
                 minValue = values[i];
             }
         }
 
-        /// SECOND PASS: calculate symbol size
+        // / SECOND PASS: calculate symbol size
 
         double logMin = Math.log(minValue);
         double logMax = Math.log(maxValue);
         double logRange = logMax - logMin;
         double symbolRange = maxRadius - minRadius;
 
-
-        for(int i=0; i!=clusters.size();++i) {
+        for (int i = 0; i != clusters.size(); ++i) {
 
             double logValue = Math.log(values[i]);
 
             double p = ((logValue - logMin) / logRange);
             if (Double.isNaN(p)) {
-            	p = 0.0;
+                p = 0.0;
             }
 
-            clusters.get(i).setRadius(Math.round(minRadius + (symbolRange * p)));
+            clusters.get(i)
+                .setRadius(Math.round(minRadius + (symbolRange * p)));
         }
-	}
+    }
 }

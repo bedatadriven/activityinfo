@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap.exception;
 
 /*
@@ -28,5 +26,5 @@ package org.activityinfo.server.bootstrap.exception;
  * @author Alex Bertram
  */
 public class InvalidKeyException extends Exception {
-	private static final long serialVersionUID = -916138398854260379L;
+    private static final long serialVersionUID = -916138398854260379L;
 }

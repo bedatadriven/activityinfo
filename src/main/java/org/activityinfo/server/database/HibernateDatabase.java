@@ -40,37 +40,37 @@ import com.google.inject.Provider;
 @Singleton
 public class HibernateDatabase extends SqlDatabase {
 
-	private final Provider<HibernateEntityManager> entityManager;
-	
-	public HibernateDatabase(Provider<HibernateEntityManager> entityManager) {
-		super();
-		this.entityManager = entityManager;
-	}
+    private final Provider<HibernateEntityManager> entityManager;
 
-	@Override
-	public void transaction(SqlTransactionCallback callback) {
-		entityManager.get().getSession().doWork(new Work() {
-			
-			@Override
-			public void execute(Connection connection) throws SQLException {
-				
-			}
-		});
-	}
+    public HibernateDatabase(Provider<HibernateEntityManager> entityManager) {
+        super();
+        this.entityManager = entityManager;
+    }
 
-	@Override
-	public SqlDialect getDialect() {
-		return new MySqlDialect();
-	}
+    @Override
+    public void transaction(SqlTransactionCallback callback) {
+        entityManager.get().getSession().doWork(new Work() {
 
-	@Override
-	public void executeUpdates(String bulkOperationJsonArray,
-			AsyncCallback<Integer> callback) {
-		callback.onFailure(new UnsupportedOperationException());
-	}
+            @Override
+            public void execute(Connection connection) throws SQLException {
 
-	@Override
-	public String getName() {
-		return "Hibernate";
-	}
+            }
+        });
+    }
+
+    @Override
+    public SqlDialect getDialect() {
+        return new MySqlDialect();
+    }
+
+    @Override
+    public void executeUpdates(String bulkOperationJsonArray,
+        AsyncCallback<Integer> callback) {
+        callback.onFailure(new UnsupportedOperationException());
+    }
+
+    @Override
+    public String getName() {
+        return "Hibernate";
+    }
 }

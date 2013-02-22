@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.exception;
 
 /*
@@ -25,8 +23,8 @@ package org.activityinfo.shared.exception;
  */
 
 /**
- * Exception indicating that a partner of this name 
- * already exists within the database
+ * Exception indicating that a partner of this name already exists within the
+ * database
  */
 public class DuplicatePartnerException extends CommandException {
 

@@ -38,36 +38,38 @@ import com.google.inject.Provider;
 
 public class EditorProvider {
 
-	private final Provider<ChartEditor> chartEditor;
-	private final Provider<MapEditor> mapEditor;
-	private final Provider<PivotTableEditor> pivotEditor;
-	private final Provider<CompositeEditor2> compositeEditor;
-	private final Provider<TextElementEditor> textEditor;
+    private final Provider<ChartEditor> chartEditor;
+    private final Provider<MapEditor> mapEditor;
+    private final Provider<PivotTableEditor> pivotEditor;
+    private final Provider<CompositeEditor2> compositeEditor;
+    private final Provider<TextElementEditor> textEditor;
 
-	@Inject
-	public EditorProvider(Provider<ChartEditor> chartEditor, Provider<MapEditor> mapEditor, 
-			Provider<PivotTableEditor> pivotEditor, Provider<CompositeEditor2> compositeEditor,
-			Provider<TextElementEditor> textEditor) {
-		this.chartEditor = chartEditor;
-		this.mapEditor = mapEditor;
-		this.pivotEditor = pivotEditor;
-		this.compositeEditor = compositeEditor;
-		this.textEditor = textEditor;
-	}
-	
-	public ReportElementEditor create(ReportElement model) {
-		if(model instanceof PivotChartReportElement) {
-			return chartEditor.get();
-		} else if(model instanceof PivotTableReportElement) {
-			return pivotEditor.get();
-		} else if(model instanceof MapReportElement) {
-			return mapEditor.get();
-		} else if(model instanceof TextReportElement) {
-			return textEditor.get();
-		} else if(model instanceof Report) {
-			return compositeEditor.get();
-		} else {
-			throw new IllegalArgumentException(model.getClass().getName());
-		}
-	}
+    @Inject
+    public EditorProvider(Provider<ChartEditor> chartEditor,
+        Provider<MapEditor> mapEditor,
+        Provider<PivotTableEditor> pivotEditor,
+        Provider<CompositeEditor2> compositeEditor,
+        Provider<TextElementEditor> textEditor) {
+        this.chartEditor = chartEditor;
+        this.mapEditor = mapEditor;
+        this.pivotEditor = pivotEditor;
+        this.compositeEditor = compositeEditor;
+        this.textEditor = textEditor;
+    }
+
+    public ReportElementEditor create(ReportElement model) {
+        if (model instanceof PivotChartReportElement) {
+            return chartEditor.get();
+        } else if (model instanceof PivotTableReportElement) {
+            return pivotEditor.get();
+        } else if (model instanceof MapReportElement) {
+            return mapEditor.get();
+        } else if (model instanceof TextReportElement) {
+            return textEditor.get();
+        } else if (model instanceof Report) {
+            return compositeEditor.get();
+        } else {
+            throw new IllegalArgumentException(model.getClass().getName());
+        }
+    }
 }

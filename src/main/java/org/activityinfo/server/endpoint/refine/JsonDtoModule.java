@@ -23,7 +23,6 @@ package org.activityinfo.server.endpoint.refine;
  */
 
 import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.module.SimpleModule;
 
 public class JsonDtoModule extends SimpleModule {

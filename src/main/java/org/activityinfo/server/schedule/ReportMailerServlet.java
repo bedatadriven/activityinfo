@@ -43,65 +43,66 @@ import com.google.inject.Singleton;
 @Singleton
 public class ReportMailerServlet extends HttpServlet {
 
-	private Provider<ReportMailer> mailerJob;
+    private Provider<ReportMailer> mailerJob;
 
-	@Inject
-	public ReportMailerServlet(Provider<ReportMailer> mailerJob) {
-		super();
-		this.mailerJob = mailerJob;
-	}
+    @Inject
+    public ReportMailerServlet(Provider<ReportMailer> mailerJob) {
+        super();
+        this.mailerJob = mailerJob;
+    }
 
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException {
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException {
 
-		Date today = parseDate(request);
-		Predicate<ReportSubscription> filter = parseFilter(request);
-	
-		mailerJob.get().execute(today, filter);
-	}
-	
-	private Predicate<ReportSubscription> parseFilter(HttpServletRequest req) {
-		// for testing purposes, check for an id parameter that will only dispatch
-		// a single report
-		if(Strings.isNullOrEmpty(req.getParameter("reportId"))) {
-			return Predicates.alwaysTrue();
-		} 
-		
-		final int reportId = Integer.parseInt(req.getParameter("reportId"));
-		
-		return new Predicate<ReportSubscription>() {
+        Date today = parseDate(request);
+        Predicate<ReportSubscription> filter = parseFilter(request);
 
-			@Override
-			public boolean apply(@Nullable ReportSubscription input) {
-				return input != null && input.getId().getReportId() == reportId;
-			}
-		};
-	}
+        mailerJob.get().execute(today, filter);
+    }
 
-	private Date parseDate(HttpServletRequest req) {
-		try {
-			if(Strings.isNullOrEmpty(req.getParameter("year"))) {
-				return new Date();
-			}
-			int year = Integer.parseInt(req.getParameter("year"));
-			int month = Integer.parseInt(req.getParameter("month"));
-			int day = Integer.parseInt(req.getParameter("day"));
-			
-			Calendar date = Calendar.getInstance();
-			date.set(Calendar.YEAR, year);
-			date.set(Calendar.MONTH, month-1);
-			date.set(Calendar.DATE, day);
-			return date.getTime();
-			
-		} catch(NumberFormatException e) {
-			return new Date();
-		}
-	}
-	
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException {
-		doGet(request, response);
-	}
+    private Predicate<ReportSubscription> parseFilter(HttpServletRequest req) {
+        // for testing purposes, check for an id parameter that will only
+        // dispatch
+        // a single report
+        if (Strings.isNullOrEmpty(req.getParameter("reportId"))) {
+            return Predicates.alwaysTrue();
+        }
+
+        final int reportId = Integer.parseInt(req.getParameter("reportId"));
+
+        return new Predicate<ReportSubscription>() {
+
+            @Override
+            public boolean apply(@Nullable ReportSubscription input) {
+                return input != null && input.getId().getReportId() == reportId;
+            }
+        };
+    }
+
+    private Date parseDate(HttpServletRequest req) {
+        try {
+            if (Strings.isNullOrEmpty(req.getParameter("year"))) {
+                return new Date();
+            }
+            int year = Integer.parseInt(req.getParameter("year"));
+            int month = Integer.parseInt(req.getParameter("month"));
+            int day = Integer.parseInt(req.getParameter("day"));
+
+            Calendar date = Calendar.getInstance();
+            date.set(Calendar.YEAR, year);
+            date.set(Calendar.MONTH, month - 1);
+            date.set(Calendar.DATE, day);
+            return date.getTime();
+
+        } catch (NumberFormatException e) {
+            return new Date();
+        }
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException {
+        doGet(request, response);
+    }
 }

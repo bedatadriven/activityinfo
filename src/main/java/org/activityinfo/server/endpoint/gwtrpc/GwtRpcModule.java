@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.gwtrpc;
 
 /*
@@ -25,7 +23,6 @@ package org.activityinfo.server.endpoint.gwtrpc;
  */
 
 import org.activityinfo.server.attachment.AttachmentServlet;
-import org.activityinfo.server.schedule.ReportMailerServlet;
 
 import com.google.inject.servlet.ServletModule;
 

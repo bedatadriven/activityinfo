@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report;
 
 /*
@@ -59,7 +57,8 @@ import org.junit.runner.RunWith;
 import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
-@Modules({ReportStubModule.class, ServletStubModule.class, MockHibernateModule.class}) 
+@Modules({ ReportStubModule.class, ServletStubModule.class,
+    MockHibernateModule.class })
 public class ReportsTest {
 
     @Inject
@@ -72,99 +71,108 @@ public class ReportsTest {
     private RendererFactory factory;
 
     @Inject
-	private User user;
+    private User user;
 
-	@Before
-	public void setup() {
+    @Before
+    public void setup() {
         user = getUser();
-    	createDirectoriesIfNecessary();    	
+        createDirectoriesIfNecessary();
     }
 
-	@Test
-	@Ignore("need dbunit xml with matching data")
+    @Test
+    @Ignore("need dbunit xml with matching data")
     public void testFullReport() throws Throwable {
         Report report = getReport("full-test.xml");
-        
+
         reportGenerator.generate(user, report, null, null);
         for (RenderElement.Format format : RenderElement.Format.values()) {
-            if (format != RenderElement.Format.Excel && format != RenderElement.Format.Excel_Data) {
+            if (format != RenderElement.Format.Excel
+                && format != RenderElement.Format.Excel_Data) {
                 Renderer renderer = factory.get(format);
-                FileOutputStream fos = new FileOutputStream("target/report-tests/full-test" + renderer.getFileSuffix());
+                FileOutputStream fos = new FileOutputStream(
+                    "target/report-tests/full-test" + renderer.getFileSuffix());
                 renderer.render(report, fos);
                 fos.close();
             }
         }
     }
-	
-	@Test
-	public void parseAllReports() {
 
-	}
-	
-	@Test
-	public void testApplesReport() throws Throwable {
+    @Test
+    public void parseAllReports() {
+
+    }
+
+    @Test
+    public void testApplesReport() throws Throwable {
         Report report = getReport("realworld/ApplesReport.xml");
 
         reportGenerator.generate(user, report, null, null);
 
         ReportElement element = report.getElements().get(0);
-        PivotContent pivotTable = (PivotContent) element.getContent();
+        element.getContent();
 
-        assertEquals("Expected different report title", report.getTitle(), "Phase one apple report");
-        
-        assertEquals("Expected different report description", 
-        		report.getDescription(), "Apples come in different shapes, colors and taste");
-        
-        assertEquals("Expected only one filter", 
-        		report.getFilter().getRestrictedDimensions().size(), 1);
-        
-        assertEquals("Expected one element", report.getElements().size(), 1); 
-        
-        assertTrue("Expected pivottable element", element.getContent() instanceof PivotContent);
-        
-        assertEquals("Expected title: 'Apples, bananas and oranges'", 
-        		element.getTitle(), "Apples, bananas and oranges");
-	}
-	
-	@Test
-	public void testConsolideDesActivitesReport() throws Throwable {
+        assertEquals("Expected different report title", report.getTitle(),
+            "Phase one apple report");
 
-		// Setup test
+        assertEquals("Expected different report description",
+            report.getDescription(),
+            "Apples come in different shapes, colors and taste");
+
+        assertEquals("Expected only one filter",
+            report.getFilter().getRestrictedDimensions().size(), 1);
+
+        assertEquals("Expected one element", report.getElements().size(), 1);
+
+        assertTrue("Expected pivottable element",
+            element.getContent() instanceof PivotContent);
+
+        assertEquals("Expected title: 'Apples, bananas and oranges'",
+            element.getTitle(), "Apples, bananas and oranges");
+    }
+
+    @Test
+    public void testConsolideDesActivitesReport() throws Throwable {
+
+        // Setup test
         Report report = getReport("realworld/ConsolideDesActivites.xml");
 
         reportGenerator.generate(user, report, null, null);
 
         TableElement pivotTable = (TableElement) report.getElements().get(2);
-        MapReportElement map1 = (MapReportElement) pivotTable.getMap();
+        MapReportElement map1 = pivotTable.getMap();
         BubbleMapLayer bubbleMap = (BubbleMapLayer) map1.getLayers().get(0);
-        
-        assertTrue("Arabic numbering expected", 
-        		bubbleMap.getLabelSequence() instanceof ArabicNumberSequence);
-        
+
+        assertTrue("Arabic numbering expected",
+            bubbleMap.getLabelSequence() instanceof ArabicNumberSequence);
+
         assertEquals("MinRadius of 8 expected", bubbleMap.getMinRadius(), 8);
         assertEquals("MaxRadius of 14 expected", bubbleMap.getMaxRadius(), 14);
-        assertEquals("Graduated scaling expected", bubbleMap.getScaling(), ScalingType.Graduated);
-	}
-    
+        assertEquals("Graduated scaling expected", bubbleMap.getScaling(),
+            ScalingType.Graduated);
+    }
+
     private void createDirectoriesIfNecessary() {
         File file = new File("target/report-test");
         file.mkdirs();
-	}
-
-	private User getUser() {
-		User u = new User();
-		u.setId(3); //akbertram
-		return u;
-//        return (User) em.createQuery("select u from User u where u.email = :email")
-//        		.setParameter("email", "akbertram@gmail.com").getResultList().get(0);
-	}
-
-	public Report getReport(String reportNameWithPath) throws JAXBException {
-    	return ReportParserJaxb.parseXML(new InputStreamReader(
-                getClass().getResourceAsStream("/report-def/" + reportNameWithPath)));
     }
-	
-	public Report getReport(int id) {
-		return null;
-	}
+
+    private User getUser() {
+        User u = new User();
+        u.setId(3); // akbertram
+        return u;
+        // return (User)
+        // em.createQuery("select u from User u where u.email = :email")
+        // .setParameter("email", "akbertram@gmail.com").getResultList().get(0);
+    }
+
+    public Report getReport(String reportNameWithPath) throws JAXBException {
+        return ReportParserJaxb
+            .parseXML(new InputStreamReader(
+                getClass().getResourceAsStream(
+                    "/report-def/" + reportNameWithPath)));
+    }
+
+    public Report getReport(int id) {
+        return null;
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report;
 
 /*
@@ -38,6 +36,7 @@ public class MapIconPathProvider implements Provider<String> {
         path = context.getRealPath("/mapicons");
     }
 
+    @Override
     public String get() {
         return path;
     }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -44,6 +42,7 @@ public class SimpleCategory implements DimensionCategory {
         return label;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
@@ -74,7 +73,7 @@ public class SimpleCategory implements DimensionCategory {
     @Override
     public String toString() {
         return "SimpleCategory{" +
-                "label='" + label + '\'' +
-                '}';
+            "label='" + label + '\'' +
+            '}';
     }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -31,23 +29,20 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.activityinfo.shared.report.model.typeadapter.CategoryAdapter;
 
 /**
- * I'm not sure if this is the proper OLAP terminology, but 
- * for our purposes we consider a Dimension like year, partner, province,
- * etc, to be divided into "categories". Each DimensionCategory has a label
- * and can be ordered. 
- *  
+ * I'm not sure if this is the proper OLAP terminology, but for our purposes we
+ * consider a Dimension like year, partner, province, etc, to be divided into
+ * "categories". Each DimensionCategory has a label and can be ordered.
+ * 
  */
 @XmlJavaTypeAdapter(CategoryAdapter.class)
 public interface DimensionCategory extends Serializable {
 
-
     /**
-     *
-     * @return  The value by which to sort this category
+     * 
+     * @return The value by which to sort this category
      */
     Comparable getSortKey();
-    
-    
+
     String getLabel();
-    
+
 }

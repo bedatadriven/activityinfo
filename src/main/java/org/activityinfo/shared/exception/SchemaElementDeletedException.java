@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.exception;
 
 /*
@@ -26,8 +24,8 @@ package org.activityinfo.shared.exception;
 
 public class SchemaElementDeletedException extends CommandException {
 
-	public SchemaElementDeletedException() {
-		super();
-	}
+    public SchemaElementDeletedException() {
+        super();
+    }
 
 }

@@ -22,24 +22,23 @@ package org.activityinfo.server.bootstrap.model;
  * #L%
  */
 
-
 import freemarker.template.Template;
 
 public class TemplateDirective {
-	final Template template;
-	
-	final PageModel pageModel;
+    final Template template;
 
-	public TemplateDirective(Template template, PageModel pageModel) {
-		this.template = template;
-		this.pageModel = pageModel;
-	}
+    final PageModel pageModel;
 
-	public Template getTemplate() {
-		return template;
-	}
+    public TemplateDirective(Template template, PageModel pageModel) {
+        this.template = template;
+        this.pageModel = pageModel;
+    }
 
-	public PageModel getPageModel() {
-		return pageModel;
-	}
+    public Template getTemplate() {
+        return template;
+    }
+
+    public PageModel getPageModel() {
+        return pageModel;
+    }
 }

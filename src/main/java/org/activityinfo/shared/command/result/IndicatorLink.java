@@ -25,47 +25,45 @@ package org.activityinfo.shared.command.result;
 import java.io.Serializable;
 
 public class IndicatorLink implements Serializable {
-	private int sourceDatabaseId;
-	private int sourceIndicatorId;
-	private int destinationDatabaseId;
-	private int destinationIndicatorId;
-	
-	public IndicatorLink() {
-		super();
-	}
+    private int sourceDatabaseId;
+    private int sourceIndicatorId;
+    private int destinationDatabaseId;
+    private int destinationIndicatorId;
 
-	public int getSourceDatabaseId() {
-		return sourceDatabaseId;
-	}
+    public IndicatorLink() {
+        super();
+    }
 
-	public void setSourceDatabaseId(int sourceDatabaseId) {
-		this.sourceDatabaseId = sourceDatabaseId;
-	}
+    public int getSourceDatabaseId() {
+        return sourceDatabaseId;
+    }
 
-	public int getSourceIndicatorId() {
-		return sourceIndicatorId;
-	}
+    public void setSourceDatabaseId(int sourceDatabaseId) {
+        this.sourceDatabaseId = sourceDatabaseId;
+    }
 
-	public void setSourceIndicatorId(int sourceIndicatorId) {
-		this.sourceIndicatorId = sourceIndicatorId;
-	}
+    public int getSourceIndicatorId() {
+        return sourceIndicatorId;
+    }
 
-	public int getDestinationDatabaseId() {
-		return destinationDatabaseId;
-	}
+    public void setSourceIndicatorId(int sourceIndicatorId) {
+        this.sourceIndicatorId = sourceIndicatorId;
+    }
 
-	public void setDestinationDatabaseId(int destinationDatabaseId) {
-		this.destinationDatabaseId = destinationDatabaseId;
-	}
+    public int getDestinationDatabaseId() {
+        return destinationDatabaseId;
+    }
 
-	public int getDestinationIndicatorId() {
-		return destinationIndicatorId;
-	}
+    public void setDestinationDatabaseId(int destinationDatabaseId) {
+        this.destinationDatabaseId = destinationDatabaseId;
+    }
 
-	public void setDestinationIndicatorId(int destinationIndicatorId) {
-		this.destinationIndicatorId = destinationIndicatorId;
-	}
-	
-	
-	
+    public int getDestinationIndicatorId() {
+        return destinationIndicatorId;
+    }
+
+    public void setDestinationIndicatorId(int destinationIndicatorId) {
+        this.destinationIndicatorId = destinationIndicatorId;
+    }
+
 }

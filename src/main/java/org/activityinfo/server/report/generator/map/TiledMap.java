@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -32,111 +30,103 @@ import org.activityinfo.shared.util.mapping.TileMath;
 
 public class TiledMap {
 
-	
-	private static final int TILE_SIZE = 256;
-	
-	/**
-	 * width in pixels of the map image
-	 */
-	private final int width;
-	
-	/**
-	 * height in pixels of the map image
-	 */
-	private final int height;
-	
-	/**
-	 * zoom level
-	 */
-	private final int zoom;
-	
-	
-	/**
-	 * The geographic center of the map
-	 */
-	private final AiLatLng geoCenter;
-	
+    private static final int TILE_SIZE = 256;
 
-	/**
-	 * The upper left hand corner of the image, in projected
-	 * coordinate system units
-	 */
-	private Point origin;
+    /**
+     * width in pixels of the map image
+     */
+    private final int width;
 
-	
-	private Tile tileOrigin;
-	
-	
-	public TiledMap(int width, int height, AiLatLng geographicCenter, int zoom) {
-		this.width = width;
-		this.height = height;
-		this.zoom = zoom;
-		this.geoCenter = geographicCenter;
-		
-		
-		/*
-		 * Calculate the center in pixels
-		 */
-		
-		Point center = TileMath.fromLatLngToPixel(geographicCenter, zoom);
-				
-		origin = center.translate(-(width/2), -(height/2));
-		
-		
-		tileOrigin = TileMath.tileForPoint(origin);
-	}
-	
-	public void drawLayer(TileHandler drawer, TileProvider source)  {
-		
-		int x = -(origin.getX() % TILE_SIZE);		
-		int tileX = tileOrigin.getX();
-		
-		while (x  < width) {
+    /**
+     * height in pixels of the map image
+     */
+    private final int height;
 
-			int y = -(origin.getY() % TILE_SIZE);
-			int tileY = tileOrigin.getY();
-			
-			while (y < height) {
-				
-				String url = source.getImageUrl(zoom, tileX, tileY);
-				drawer.addTile(url, x, y, TILE_SIZE, TILE_SIZE);
-				
-				y += TILE_SIZE;
-				tileY ++;
-			}
-			x += TILE_SIZE;
-			tileX ++;
-		}
-	}
-	
-	public Point fromLatLngToPixel(AiLatLng latLng) {
-		return TileMath.fromLatLngToPixel(latLng, this.zoom)
-					.translate(-origin.getDoubleX(), -origin.getDoubleY());
-	}
-	
-	public AiLatLng fromPixelToLatLng(Point px) {
-		return TileMath.inverse(px.translate(origin.getDoubleX(), origin.getDoubleY()), this.zoom);
-	}
-		
-	public AiLatLng fromPixelToLatLng(double x, double y) {
-		return fromPixelToLatLng(new Point(x,y));
-	}
+    /**
+     * zoom level
+     */
+    private final int zoom;
 
-	public int getWidth() {
-		return width;
-	}
+    /**
+     * The geographic center of the map
+     */
+    private final AiLatLng geoCenter;
 
+    /**
+     * The upper left hand corner of the image, in projected coordinate system
+     * units
+     */
+    private Point origin;
 
-	public int getHeight() {
-		return height;
-	}
+    private Tile tileOrigin;
 
-	public int getZoom() {
-		return zoom;
-	}
+    public TiledMap(int width, int height, AiLatLng geographicCenter, int zoom) {
+        this.width = width;
+        this.height = height;
+        this.zoom = zoom;
+        this.geoCenter = geographicCenter;
 
+        /*
+         * Calculate the center in pixels
+         */
 
-	public AiLatLng getGeoCenter() {
-		return geoCenter;
-	}
+        Point center = TileMath.fromLatLngToPixel(geographicCenter, zoom);
+
+        origin = center.translate(-(width / 2), -(height / 2));
+
+        tileOrigin = TileMath.tileForPoint(origin);
+    }
+
+    public void drawLayer(TileHandler drawer, TileProvider source) {
+
+        int x = -(origin.getX() % TILE_SIZE);
+        int tileX = tileOrigin.getX();
+
+        while (x < width) {
+
+            int y = -(origin.getY() % TILE_SIZE);
+            int tileY = tileOrigin.getY();
+
+            while (y < height) {
+
+                String url = source.getImageUrl(zoom, tileX, tileY);
+                drawer.addTile(url, x, y, TILE_SIZE, TILE_SIZE);
+
+                y += TILE_SIZE;
+                tileY++;
+            }
+            x += TILE_SIZE;
+            tileX++;
+        }
+    }
+
+    public Point fromLatLngToPixel(AiLatLng latLng) {
+        return TileMath.fromLatLngToPixel(latLng, this.zoom)
+            .translate(-origin.getDoubleX(), -origin.getDoubleY());
+    }
+
+    public AiLatLng fromPixelToLatLng(Point px) {
+        return TileMath.inverse(
+            px.translate(origin.getDoubleX(), origin.getDoubleY()), this.zoom);
+    }
+
+    public AiLatLng fromPixelToLatLng(double x, double y) {
+        return fromPixelToLatLng(new Point(x, y));
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getZoom() {
+        return zoom;
+    }
+
+    public AiLatLng getGeoCenter() {
+        return geoCenter;
+    }
 }

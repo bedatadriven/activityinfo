@@ -22,17 +22,17 @@ package org.activityinfo.shared.dto;
  * #L%
  */
 
-public enum FavoriteType   {
-	Report,
-	Map,
-	Site,
-	Activity,
-	Database,
-	PivotTable,
-	Chart,
-	Partner,
-	Project,
-	AttributeGroup,
-	Attribute,
-	Indicator;
+public enum FavoriteType {
+    Report,
+    Map,
+    Site,
+    Activity,
+    Database,
+    PivotTable,
+    Chart,
+    Partner,
+    Project,
+    AttributeGroup,
+    Attribute,
+    Indicator;
 }

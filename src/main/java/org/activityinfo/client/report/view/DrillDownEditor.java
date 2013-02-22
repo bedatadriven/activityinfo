@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.report.view;
 
 /*
@@ -41,13 +39,14 @@ import org.activityinfo.shared.util.date.DateUtil;
 import com.extjs.gxt.ui.client.event.Listener;
 
 public class DrillDownEditor implements Shutdownable {
-  
+
     private final EventBus eventBus;
     private final DateUtil dateUtil;
     private Listener<PivotCellEvent> eventListener;
     private SiteGridPanel gridPanel;
 
-    public DrillDownEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, DateUtil dateUtil) {
+    public DrillDownEditor(EventBus eventBus, Dispatcher service,
+        StateProvider stateMgr, DateUtil dateUtil) {
 
         this.eventBus = eventBus;
         this.dateUtil = dateUtil;
@@ -55,7 +54,7 @@ public class DrillDownEditor implements Shutdownable {
 
         eventListener = new Listener<PivotCellEvent>() {
             @Override
-			public void handleEvent(PivotCellEvent be) {
+            public void handleEvent(PivotCellEvent be) {
                 onDrillDown(be);
             }
         };
@@ -65,18 +64,20 @@ public class DrillDownEditor implements Shutdownable {
     @Override
     public void shutdown() {
         eventBus.removeListener(AppEvents.DRILL_DOWN, eventListener);
-    } 
+    }
 
     public void onDrillDown(PivotCellEvent event) {
 
         // construct our filter from the intersection of rows and columns
-        Filter filter = new Filter(filterFromAxis(event.getRow()), filterFromAxis(event.getColumn()));
+        Filter filter = new Filter(filterFromAxis(event.getRow()),
+            filterFromAxis(event.getColumn()));
 
         // apply the effective filter
-        final Filter effectiveFilter = new Filter(filter, event.getElement().getContent().getEffectiveFilter());
+        final Filter effectiveFilter = new Filter(filter, event.getElement()
+            .getContent().getEffectiveFilter());
 
-        // determine the indicator
-        final int indicatorId = effectiveFilter.getRestrictions(DimensionType.Indicator).iterator().next();
+        effectiveFilter.getRestrictions(DimensionType.Indicator).iterator()
+            .next();
         effectiveFilter.clearRestrictions(DimensionType.Indicator);
 
         gridPanel.load(NullGroupingModel.INSTANCE, effectiveFilter);
@@ -88,9 +89,11 @@ public class DrillDownEditor implements Shutdownable {
         while (axis != null) {
             if (axis.getDimension() != null) {
                 if (axis.getDimension().getType() == DimensionType.Date) {
-                    filter.setDateRange(dateUtil.rangeFromCategory(axis.getCategory()));
+                    filter.setDateRange(dateUtil.rangeFromCategory(axis
+                        .getCategory()));
                 } else if (axis.getCategory() instanceof EntityCategory) {
-                    filter.addRestriction(axis.getDimension().getType(), ((EntityCategory) axis.getCategory()).getId());
+                    filter.addRestriction(axis.getDimension().getType(),
+                        ((EntityCategory) axis.getCategory()).getId());
                 }
             }
             axis = axis.getParent();
@@ -98,9 +101,7 @@ public class DrillDownEditor implements Shutdownable {
         return filter;
     }
 
-	public SiteGridPanel getGridPanel() {
-		return gridPanel;
-	}
+    public SiteGridPanel getGridPanel() {
+        return gridPanel;
+    }
 }
-
-

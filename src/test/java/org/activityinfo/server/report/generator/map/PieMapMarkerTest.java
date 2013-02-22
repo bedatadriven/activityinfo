@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -29,8 +27,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.activityinfo.server.report.generator.map.PiechartLayerGenerator;
-import org.activityinfo.server.report.generator.map.TiledMap;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
@@ -66,7 +62,7 @@ public class PieMapMarkerTest {
         layer.addIndicatorId(101);
         layer.addIndicatorId(102);
         layer.addIndicatorId(103);
-        //layer.getColorDimensions().add(dimension);
+        // layer.getColorDimensions().add(dimension);
 
         MapReportElement mapElement = new MapReportElement();
         mapElement.addLayer(layer);

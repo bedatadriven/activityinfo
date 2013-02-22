@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.map;
 
 /*
@@ -27,9 +25,9 @@ package org.activityinfo.client.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 
-import org.activityinfo.client.Log;
 import com.google.gwt.ajaxloader.client.AjaxLoader;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -41,7 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Convenience wrapper for loading the Google Maps API asynchronously
- *
+ * 
  * @author Alex Bertram
  */
 public final class MapApiLoader {
@@ -53,19 +51,21 @@ public final class MapApiLoader {
     private static boolean loadInProgress = false;
     private static List<AsyncMonitor> waitingMonitors;
     private static List<AsyncCallback> waitingCallbacks;
-    
-    private MapApiLoader() {}
 
-    public static void load(final AsyncMonitor monitor, final AsyncCallback<Void> callback) {
-        if(Maps.isLoaded()) {
-            if(monitor != null) {
+    private MapApiLoader() {
+    }
+
+    public static void load(final AsyncMonitor monitor,
+        final AsyncCallback<Void> callback) {
+        if (Maps.isLoaded()) {
+            if (monitor != null) {
                 monitor.onCompleted();
             }
-            if(callback != null) {
+            if (callback != null) {
                 callback.onSuccess(null);
             }
         } else {
-            if(!loadInProgress) {
+            if (!loadInProgress) {
                 startLoad();
             }
             addListeners(monitor, callback);
@@ -75,7 +75,7 @@ public final class MapApiLoader {
 
     public static void load() {
         Log.debug("MapApiLoader: load()");
-        if(!Maps.isLoaded() && !loadInProgress) {
+        if (!Maps.isLoaded() && !loadInProgress) {
             startLoad();
         }
     }
@@ -89,21 +89,23 @@ public final class MapApiLoader {
         waitingMonitors = new ArrayList<AsyncMonitor>();
         waitingCallbacks = new ArrayList<AsyncCallback>();
 
-        final AjaxLoader.AjaxLoaderOptions options = AjaxLoader.AjaxLoaderOptions.newInstance();
+        final AjaxLoader.AjaxLoaderOptions options = AjaxLoader.AjaxLoaderOptions
+            .newInstance();
         options.setLanguage(LocaleInfo.getCurrentLocale().getLocaleName());
 
         DeferredCommand.addCommand(new Command() {
-			
-			@Override
-			public void execute() {
-			    Maps.loadMapsApi(getApiKey(), API_VERSION, USING_SENSOR, options, new Runnable() {
-		            @Override
-		            public void run() {
-		                onApiLoaded();
-		            }
-		        });			
-			}
-		});
+
+            @Override
+            public void execute() {
+                Maps.loadMapsApi(getApiKey(), API_VERSION, USING_SENSOR,
+                    options, new Runnable() {
+                        @Override
+                        public void run() {
+                            onApiLoaded();
+                        }
+                    });
+            }
+        });
         startFailureTimer();
     }
 
@@ -121,29 +123,30 @@ public final class MapApiLoader {
 
     private static void onApiLoaded() {
         loadInProgress = false;
-        for(AsyncMonitor monitor : waitingMonitors) {
+        for (AsyncMonitor monitor : waitingMonitors) {
             monitor.onCompleted();
         }
-        for(AsyncCallback callback : waitingCallbacks) {
+        for (AsyncCallback callback : waitingCallbacks) {
             callback.onSuccess(null);
         }
     }
 
     private static void onApiLoadFailure() {
         loadInProgress = false;
-        for(AsyncMonitor monitor : waitingMonitors) {
+        for (AsyncMonitor monitor : waitingMonitors) {
             monitor.onCompleted();
         }
-        for(AsyncCallback callback : waitingCallbacks) {
+        for (AsyncCallback callback : waitingCallbacks) {
             callback.onFailure(null);
         }
     }
 
-    private static void addListeners(AsyncMonitor monitor, AsyncCallback<Void> callback) {
-        if(monitor != null) {
+    private static void addListeners(AsyncMonitor monitor,
+        AsyncCallback<Void> callback) {
+        if (monitor != null) {
             waitingMonitors.add(monitor);
         }
-        if(callback != null) {
+        if (callback != null) {
             waitingCallbacks.add(callback);
         }
     }

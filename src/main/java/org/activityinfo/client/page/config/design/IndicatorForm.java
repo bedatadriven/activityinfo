@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.design;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.client.page.config.design;
  * #L%
  */
 
-
 import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.widget.MappingComboBox;
 import org.activityinfo.client.widget.MappingComboBoxBinding;
@@ -41,7 +38,7 @@ class IndicatorForm extends AbstractDesignForm {
 
     private FormBinding binding;
 
-    public IndicatorForm()  {
+    public IndicatorForm() {
         super();
 
         binding = new FormBinding(this);
@@ -82,15 +79,17 @@ class IndicatorForm extends AbstractDesignForm {
         aggregationCombo.setFieldLabel(constants.aggregationMethod());
         aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
         aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
-        aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT, constants.siteCount());
-        binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo, "aggregation"));
+        aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT,
+            constants.siteCount());
+        binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo,
+            "aggregation"));
         this.add(aggregationCombo);
-
 
         TextField<String> listHeaderField = new TextField<String>();
         listHeaderField.setFieldLabel(constants.listHeader());
         listHeaderField.setMaxLength(IndicatorDTO.MAX_LIST_HEADER_LENGTH);
-        binding.addFieldBinding(new FieldBinding(listHeaderField,"listHeader"));
+        binding
+            .addFieldBinding(new FieldBinding(listHeaderField, "listHeader"));
         this.add(listHeaderField);
 
         TextArea descField = new TextArea();

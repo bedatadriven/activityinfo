@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.entry;
 
 /*
@@ -40,27 +38,29 @@ import com.google.inject.Provider;
 
 public class DataEntryLoader implements PageLoader {
     private final Provider<DataEntryPage> dataEntryPageProvider;
-    
+
     @Inject
     public DataEntryLoader(
-    		NavigationHandler pageManager, 
-    		PageStateSerializer placeSerializer,
-    		Provider<DataEntryPage> dataEntryPageProvider) {
-    	
+        NavigationHandler pageManager,
+        PageStateSerializer placeSerializer,
+        Provider<DataEntryPage> dataEntryPageProvider) {
+
         this.dataEntryPageProvider = dataEntryPageProvider;
-        
-        pageManager.registerPageLoader(DataEntryPage.PAGE_ID, this);       
-        placeSerializer.registerParser(DataEntryPage.PAGE_ID, new DataEntryPlaceParser());
+
+        pageManager.registerPageLoader(DataEntryPage.PAGE_ID, this);
+        placeSerializer.registerParser(DataEntryPage.PAGE_ID,
+            new DataEntryPlaceParser());
     }
 
     @Override
-    public void load(final PageId pageId, final PageState pageState, final AsyncCallback<Page> callback) {
+    public void load(final PageId pageId, final PageState pageState,
+        final AsyncCallback<Page> callback) {
         GWT.runAsync(new RunAsyncCallback() {
             @Override
             public void onSuccess() {
                 DataEntryPage dataEntryPage = dataEntryPageProvider.get();
                 dataEntryPage.navigate(pageState);
-				callback.onSuccess(dataEntryPage);
+                callback.onSuccess(dataEntryPage);
             }
 
             @Override

@@ -25,33 +25,34 @@
   <application>activityinfoeu</application>
   <version>${gae.application.version}</version>
   <system-properties>
-    <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
-    <property name="user.name" value="ActivityInfo"/>
+    <property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
+    <property name="user.name" value="ActivityInfo" />
     
     <!--  JAXB Context Initialization was taking up to 2 seconds on AppEngine -->
-    <property name="com.sun.xml.bind.v2.runtime.JAXBContextImpl.fastBoot" value="true"/>
+    <property name="com.sun.xml.bind.v2.runtime.JAXBContextImpl.fastBoot"
+      value="true" />
   </system-properties>
 
   <static-files>
-  	<include path="/robots.txt" expiration="1d"/>
-  	<include path="/ActivityInfo/**.gif" expiration="365d"/>
-  	<include path="/ActivityInfo/**.png" expiration="365d"/>
-  	<include path="/ActivityInfo/**.js" expiration="365d"/>
-  	<include path="/ActivityInfo/**.css" expiration="365d"/>
-  	<include path="/ActivityInfo/**.swf" expiration="365d"/>
-    <include path="/ActivityInfo/**.cache.html" expiration="365d"/>
-    <include path="/**.nocache.html" expiration="0s"/>
-  	<include path="/Login/**.css" expiration="365d"/>
-    <include path="/Login/**.cache.html" expiration="365d"/>
-    <include path="/static/**.png" expiration="365d"/>
+    <include path="/robots.txt" expiration="1d" />
+    <include path="/ActivityInfo/**.gif" expiration="365d" />
+    <include path="/ActivityInfo/**.png" expiration="365d" />
+    <include path="/ActivityInfo/**.js" expiration="365d" />
+    <include path="/ActivityInfo/**.css" expiration="365d" />
+    <include path="/ActivityInfo/**.swf" expiration="365d" />
+    <include path="/ActivityInfo/**.cache.html" expiration="365d" />
+    <include path="/**.nocache.html" expiration="0s" />
+    <include path="/Login/**.css" expiration="365d" />
+    <include path="/Login/**.cache.html" expiration="365d" />
+    <include path="/static/**.png" expiration="365d" />
   </static-files>
 
-	<admin-console>
-		<page name="Appstats" url="/appstats" />
-	</admin-console>
- 
+  <admin-console>
+    <page name="Appstats" url="/appstats" />
+  </admin-console>
+
   <sessions-enabled>false</sessions-enabled>
   <precompilation-enabled>false</precompilation-enabled>
   <threadsafe>true</threadsafe>
-  
+
 </appengine-web-app>

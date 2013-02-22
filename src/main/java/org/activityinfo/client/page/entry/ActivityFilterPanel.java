@@ -55,156 +55,164 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ActivityFilterPanel extends ContentPanel implements FilterPanel {
 
-	private LinkTreePanel tree;
-	private Filter currentFilter = new Filter();
-	
-	public ActivityFilterPanel(Dispatcher dispatcher) {		
-		
-		setHeading(I18N.CONSTANTS.activities());
-		setLayout(new FitLayout());
-		
-		tree = new LinkTreePanel(new TreeProxy(dispatcher), "activityFilter");
-		tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<Link>() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent<Link> se) {
-				if(se.getSelectedItem() != null) {
-					PageState pageState = se.getSelectedItem().getPageState();
-					if(pageState instanceof DataEntryPlace) {
-						currentFilter = ((DataEntryPlace) pageState).getFilter();
-						ValueChangeEvent.fire(ActivityFilterPanel.this, currentFilter);
-					}
-				}
-			}
-		});
-		tree.getStore().getLoader().load();
-		add(tree);
-	}
+    private LinkTreePanel tree;
+    private Filter currentFilter = new Filter();
 
-	@Override
-	public Filter getValue() {
-		return currentFilter;
-	}
+    public ActivityFilterPanel(Dispatcher dispatcher) {
 
-	@Override
-	public void setValue(Filter value) {
-		// TODO Auto-generated method stub
-		
-	}
+        setHeading(I18N.CONSTANTS.activities());
+        setLayout(new FitLayout());
 
-	@Override
-	public void setValue(Filter value, boolean fireEvents) {
-		// TODO Auto-generated method stub
-		
-	}
+        tree = new LinkTreePanel(new TreeProxy(dispatcher), "activityFilter");
+        tree.getSelectionModel().addSelectionChangedListener(
+            new SelectionChangedListener<Link>() {
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<Filter> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
+                @Override
+                public void selectionChanged(SelectionChangedEvent<Link> se) {
+                    if (se.getSelectedItem() != null) {
+                        PageState pageState = se.getSelectedItem()
+                            .getPageState();
+                        if (pageState instanceof DataEntryPlace) {
+                            currentFilter = ((DataEntryPlace) pageState)
+                                .getFilter();
+                            ValueChangeEvent.fire(ActivityFilterPanel.this,
+                                currentFilter);
+                        }
+                    }
+                }
+            });
+        tree.getStore().getLoader().load();
+        add(tree);
+    }
 
-	@Override
-	public void applyBaseFilter(Filter filter) {
-		// do nothing
-	}
+    @Override
+    public Filter getValue() {
+        return currentFilter;
+    }
 
+    @Override
+    public void setValue(Filter value) {
+        // TODO Auto-generated method stub
 
-	private static class TreeProxy implements Navigator {
+    }
 
-		private final Dispatcher dispatcher;
+    @Override
+    public void setValue(Filter value, boolean fireEvents) {
+        // TODO Auto-generated method stub
 
-		public TreeProxy(Dispatcher dispatcher) {
-			super();
-			this.dispatcher = dispatcher;
-		}
-		
-		@Override
-		public void load(DataReader<List<Link>> reader, Object parent,
-				final AsyncCallback<List<Link>> callback) {
-			if (parent == null) {
-				dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						callback.onFailure(caught);
-					}
+    }
 
-					@Override
-					public void onSuccess(SchemaDTO schema) {
-						callback.onSuccess(buildTree(schema));
-					}
-				});
-			} else {
-				List<Link> list = new ArrayList<Link>();
-				List<ModelData> children = ((Link) parent).getChildren();
-				for (ModelData child : children) {
-					list.add((Link) child);
-				}
-				callback.onSuccess(list);
-			}
-		}
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<Filter> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
 
-		private List<Link> buildTree(SchemaDTO schema) {
-			List<Link> list = new ArrayList<Link>();
-			for (UserDatabaseDTO db : schema.getDatabases()) {
-				if (db.getActivities().size() != 0) {
+    @Override
+    public void applyBaseFilter(Filter filter) {
+        // do nothing
+    }
 
-					Link dbLink = Link.to(new DataEntryPlace(db))
-					.labeled(db.getName())
-					.usingKey(databaseKey(db))
-					.withIcon(IconImageBundle.ICONS.database())
-					.build();
+    private static class TreeProxy implements Navigator {
 
-					Map<String, Link> categories = new HashMap<String, Link>();
-					for (ActivityDTO activity : db.getActivities()) {
+        private final Dispatcher dispatcher;
 
-						Link actLink = Link
-						.to(new DataEntryPlace(activity))
-						.labeled(activity.getName())
-						.withIcon(IconImageBundle.ICONS.table()).build();
+        public TreeProxy(Dispatcher dispatcher) {
+            super();
+            this.dispatcher = dispatcher;
+        }
 
-						if (activity.getCategory() != null) {
-							Link category = categories.get(activity.getCategory());
-							if (category == null) {
-								category = Link.folderLabelled(activity.getCategory())
-								.usingKey(categoryKey(activity, categories))
-								.build();
-								categories.put(activity.getCategory(), category);
-								dbLink.add(category);
-							}
-							category.add(actLink);
-						} else {
-							dbLink.add(actLink);
-						}
-					}
-					list.add(dbLink);
-				}
-			}
-			return list;
-		}
+        @Override
+        public void load(DataReader<List<Link>> reader, Object parent,
+            final AsyncCallback<List<Link>> callback) {
+            if (parent == null) {
+                dispatcher.execute(new GetSchema(),
+                    new AsyncCallback<SchemaDTO>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            callback.onFailure(caught);
+                        }
 
-		private String categoryKey(ActivityDTO activity, Map<String, Link> categories) {
-			return "category" + activity.getDatabase().getId() + activity.getCategory() + categories.size();
-		}
+                        @Override
+                        public void onSuccess(SchemaDTO schema) {
+                            callback.onSuccess(buildTree(schema));
+                        }
+                    });
+            } else {
+                List<Link> list = new ArrayList<Link>();
+                List<ModelData> children = ((Link) parent).getChildren();
+                for (ModelData child : children) {
+                    list.add((Link) child);
+                }
+                callback.onSuccess(list);
+            }
+        }
 
-		private String databaseKey(UserDatabaseDTO db) {
-			return "database" + db.getId();
-		}
+        private List<Link> buildTree(SchemaDTO schema) {
+            List<Link> list = new ArrayList<Link>();
+            for (UserDatabaseDTO db : schema.getDatabases()) {
+                if (db.getActivities().size() != 0) {
 
+                    Link dbLink = Link.to(new DataEntryPlace(db))
+                        .labeled(db.getName())
+                        .usingKey(databaseKey(db))
+                        .withIcon(IconImageBundle.ICONS.database())
+                        .build();
 
-		@Override
-		public String getHeading() {
-			return I18N.CONSTANTS.activities();
-		}
+                    Map<String, Link> categories = new HashMap<String, Link>();
+                    for (ActivityDTO activity : db.getActivities()) {
 
-		@Override
-		public boolean hasChildren(Link parent) {
-			return parent.getChildCount() != 0;
-		}
+                        Link actLink = Link
+                            .to(new DataEntryPlace(activity))
+                            .labeled(activity.getName())
+                            .withIcon(IconImageBundle.ICONS.table()).build();
 
-		@Override
-		public String getStateId() {
-			return "activityFilter";
-		}
-	}
+                        if (activity.getCategory() != null) {
+                            Link category = categories.get(activity
+                                .getCategory());
+                            if (category == null) {
+                                category = Link
+                                    .folderLabelled(activity.getCategory())
+                                    .usingKey(categoryKey(activity, categories))
+                                    .build();
+                                categories
+                                    .put(activity.getCategory(), category);
+                                dbLink.add(category);
+                            }
+                            category.add(actLink);
+                        } else {
+                            dbLink.add(actLink);
+                        }
+                    }
+                    list.add(dbLink);
+                }
+            }
+            return list;
+        }
+
+        private String categoryKey(ActivityDTO activity,
+            Map<String, Link> categories) {
+            return "category" + activity.getDatabase().getId()
+                + activity.getCategory() + categories.size();
+        }
+
+        private String databaseKey(UserDatabaseDTO db) {
+            return "database" + db.getId();
+        }
+
+        @Override
+        public String getHeading() {
+            return I18N.CONSTANTS.activities();
+        }
+
+        @Override
+        public boolean hasChildren(Link parent) {
+            return parent.getChildCount() != 0;
+        }
+
+        @Override
+        public String getStateId() {
+            return "activityFilter";
+        }
+    }
 }

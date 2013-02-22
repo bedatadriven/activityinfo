@@ -26,8 +26,7 @@ import org.activityinfo.shared.command.result.ReportsResult;
 
 public class GetUserReports extends GetListCommand<ReportsResult> {
 
-	public GetUserReports(){
-		
-	}
-}
+    public GetUserReports() {
 
+    }
+}

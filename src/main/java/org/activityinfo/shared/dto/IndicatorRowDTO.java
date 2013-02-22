@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -29,13 +27,12 @@ import org.activityinfo.shared.command.Month;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- *
+ * 
  * Projection DTO of the ReportingPeriod, IndicatorValue, and Indicator tables.
  * 
- * Each IndicatorRowDTO contains values for a single Site,
- * and a single Indicator, but values (stored as properties) for a series of 
- * ReportingPeriod
- *
+ * Each IndicatorRowDTO contains values for a single Site, and a single
+ * Indicator, but values (stored as properties) for a series of ReportingPeriod
+ * 
  */
 public final class IndicatorRowDTO extends BaseModelData implements DTO {
 
@@ -44,7 +41,7 @@ public final class IndicatorRowDTO extends BaseModelData implements DTO {
     private int indicatorId;
 
     /**
-     *
+     * 
      * @return The id of the site to which this row belongs.
      */
     public int getSiteId() {
@@ -56,9 +53,8 @@ public final class IndicatorRowDTO extends BaseModelData implements DTO {
     }
 
     /**
-     *
-     * @return The id of the Activity row
-     * to which the row's Site belongs.
+     * 
+     * @return The id of the Activity row to which the row's Site belongs.
      */
     public int getActivityId() {
         return activityId;
@@ -69,8 +65,10 @@ public final class IndicatorRowDTO extends BaseModelData implements DTO {
     }
 
     /**
-     *
-     * @return The id of the {@link org.activityinfo.server.database.hibernate.entity.Indicator Indicator}
+     * 
+     * @return The id of the
+     *         {@link org.activityinfo.server.database.hibernate.entity.Indicator
+     *         Indicator}
      */
     public int getIndicatorId() {
         return indicatorId;
@@ -81,8 +79,10 @@ public final class IndicatorRowDTO extends BaseModelData implements DTO {
     }
 
     /**
-     *
-     * @return The name of the {@link org.activityinfo.server.database.hibernate.entity.Indicator}.
+     * 
+     * @return The name of the
+     *         {@link org.activityinfo.server.database.hibernate.entity.Indicator}
+     *         .
      */
     public String getIndicatorName() {
         return get("indicatorName");
@@ -94,9 +94,10 @@ public final class IndicatorRowDTO extends BaseModelData implements DTO {
 
     /**
      * The value of the Indicator for the
-     * {@link org.activityinfo.server.database.hibernate.entity.ReportingPeriod ReportingPeriod}
-     * corresponding to the given <code>year</code> and <code>month</code>
-     *
+     * {@link org.activityinfo.server.database.hibernate.entity.ReportingPeriod
+     * ReportingPeriod} corresponding to the given <code>year</code> and
+     * <code>month</code>
+     * 
      * @param year
      * @param month
      * @return

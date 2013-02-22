@@ -30,20 +30,20 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 
 public class GoogleEarthPortlet extends Portlet {
-	public interface Templates extends ClientBundle {
+    public interface Templates extends ClientBundle {
 
-		@Source("GoogleEarth.html")
-		TextResource googleEarthText();
+        @Source("GoogleEarth.html")
+        TextResource googleEarthText();
 
-	}
+    }
 
-	public static final Templates TEMPLATES = GWT.create(Templates.class);
+    public static final Templates TEMPLATES = GWT.create(Templates.class);
 
-	public GoogleEarthPortlet() {
-		setHeading("Google Earth");
-		setLayout(new FitLayout());
-		add(new Html(TEMPLATES.googleEarthText().getText()));
-		
-	}
-	
+    public GoogleEarthPortlet() {
+        setHeading("Google Earth");
+        setLayout(new FitLayout());
+        add(new Html(TEMPLATES.googleEarthText().getText()));
+
+    }
+
 }

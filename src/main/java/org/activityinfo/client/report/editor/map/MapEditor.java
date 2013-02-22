@@ -30,10 +30,6 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.page.common.toolbar.ActionListener;
-import org.activityinfo.client.page.common.toolbar.ActionToolBar;
-import org.activityinfo.client.page.common.toolbar.ExportMenuButton;
-import org.activityinfo.client.page.common.toolbar.UIActions;
 import org.activityinfo.client.page.report.ReportChangeHandler;
 import org.activityinfo.client.page.report.ReportEventHelper;
 import org.activityinfo.client.page.report.editor.ReportElementEditor;
@@ -54,153 +50,153 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
 import com.google.inject.Inject;
 
-public class MapEditor extends ContentPanel implements ReportElementEditor<MapReportElement> {
+public class MapEditor extends ContentPanel implements
+    ReportElementEditor<MapReportElement> {
 
-	private static final int CONTROL_TOP_MARGIN = 10;
-	private static final int LAYERS_STYLE_TOP_MARGIN = 50;
-	private static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
+    private static final int CONTROL_TOP_MARGIN = 10;
+    private static final int LAYERS_STYLE_TOP_MARGIN = 50;
+    private static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
 
-	private final Dispatcher dispatcher;
-	private final ReportEventHelper events;
-	private final EventBus eventBus;
+    private final Dispatcher dispatcher;
+    private final ReportEventHelper events;
+    private final EventBus eventBus;
 
-	// Contained widgets
-	private MapEditorMapView mapPanel;
-	private LayersWidget layersWidget;
-	private LayerOptionsPanel optionsPanel;
-	private MapReportElement mapReportElement = new MapReportElement();
-	private AbsoluteLayout layout;
+    // Contained widgets
+    private MapEditorMapView mapPanel;
+    private LayersWidget layersWidget;
+    private LayerOptionsPanel optionsPanel;
+    private MapReportElement mapReportElement = new MapReportElement();
+    private AbsoluteLayout layout;
 
-	@Inject
-	public MapEditor(Dispatcher dispatcher, EventBus eventBus) {
-		this.dispatcher = dispatcher;
-		this.eventBus = eventBus;
-		this.events = new ReportEventHelper(eventBus, this);
-		this.events.listen(new ReportChangeHandler() {
-			
-			@Override
-			public void onChanged() {
-			}
-		});
+    @Inject
+    public MapEditor(Dispatcher dispatcher, EventBus eventBus) {
+        this.dispatcher = dispatcher;
+        this.eventBus = eventBus;
+        this.events = new ReportEventHelper(eventBus, this);
+        this.events.listen(new ReportChangeHandler() {
 
-		MapResources.INSTANCE.style().ensureInjected();
+            @Override
+            public void onChanged() {
+            }
+        });
 
-		initializeComponent();
+        MapResources.INSTANCE.style().ensureInjected();
 
-		createMap();
-		createLayersOptionsPanel();
-		createLayersWidget();
-	}
+        initializeComponent();
 
-	protected void initializeComponent() {
-		setHeaderVisible(false);
-		layout = new AbsoluteLayout();
-		setLayout(layout);
-	}
+        createMap();
+        createLayersOptionsPanel();
+        createLayersWidget();
+    }
 
-	protected void createLayersOptionsPanel() {
-		optionsPanel = new LayerOptionsPanel(dispatcher);
-		optionsPanel.setVisible(false);
+    protected void initializeComponent() {
+        setHeaderVisible(false);
+        layout = new AbsoluteLayout();
+        setLayout(layout);
+    }
 
-		optionsPanel.addListener(Events.Hide, new Listener<BaseEvent>() {
+    protected void createLayersOptionsPanel() {
+        optionsPanel = new LayerOptionsPanel(dispatcher);
+        optionsPanel.setVisible(false);
 
-			@Override
-			public void handleEvent(BaseEvent be) {
-				mapPanel.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
-			}
-		});
+        optionsPanel.addListener(Events.Hide, new Listener<BaseEvent>() {
 
-		optionsPanel.addListener(Events.Show, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                mapPanel.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
+            }
+        });
 
-			@Override
-			public void handleEvent(BaseEvent be) {
-				mapPanel.setZoomControlOffsetX(LayerOptionsPanel.WIDTH
-						+ ZOOM_CONTROL_LEFT_MARGIN);
-			}
-		});
-		
-		optionsPanel.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<MapLayer> event) {
-				events.fireChange();
-			}
-		});
+        optionsPanel.addListener(Events.Show, new Listener<BaseEvent>() {
 
-		add(optionsPanel, new AbsoluteData(0, CONTROL_TOP_MARGIN));
-	}
-	
-	private void onChanged() {
-		
-	}
+            @Override
+            public void handleEvent(BaseEvent be) {
+                mapPanel.setZoomControlOffsetX(LayerOptionsPanel.WIDTH
+                    + ZOOM_CONTROL_LEFT_MARGIN);
+            }
+        });
 
-	protected void createLayersWidget() {
-		layersWidget = new LayersWidget(dispatcher, eventBus, optionsPanel);
+        optionsPanel.addValueChangeHandler(new ValueChangeHandler<MapLayer>() {
 
-		// positioning is actually only set when setSize() is called below
-		add(layersWidget, new AbsoluteData());
-	}
+            @Override
+            public void onValueChange(ValueChangeEvent<MapLayer> event) {
+                events.fireChange();
+            }
+        });
 
-	protected void createMap() {
+        add(optionsPanel, new AbsoluteData(0, CONTROL_TOP_MARGIN));
+    }
 
-		mapPanel = new MapEditorMapView(dispatcher, eventBus);
-		mapPanel.setHeading(I18N.CONSTANTS.preview());
-		mapPanel.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
+    private void onChanged() {
 
-		AbsoluteData layout = new AbsoluteData();
-		layout.setLeft(0);
-		layout.setTop(0);
-		layout.setAnchorSpec("100% 100%");
-		add(mapPanel, layout);
-	}
+    }
 
-	public AsyncMonitor getMapLoadingMonitor() {
-		return new MaskingAsyncMonitor(mapPanel, I18N.CONSTANTS.loading());
-	}
+    protected void createLayersWidget() {
+        layersWidget = new LayersWidget(dispatcher, eventBus, optionsPanel);
 
-	@Override
-	protected void onRender(Element parent, int pos) {
-		super.onRender(parent, pos);
-	}
+        // positioning is actually only set when setSize() is called below
+        add(layersWidget, new AbsoluteData());
+    }
 
-	@Override
-	public void setSize(int width, int height) {
-		// right align side bar
-		layout.setPosition(layersWidget, width - LayersWidget.WIDTH,
-				CONTROL_TOP_MARGIN);
+    protected void createMap() {
 
-		super.setSize(width, height);
-	}
+        mapPanel = new MapEditorMapView(dispatcher, eventBus);
+        mapPanel.setHeading(I18N.CONSTANTS.preview());
+        mapPanel.setZoomControlOffsetX(ZOOM_CONTROL_LEFT_MARGIN);
 
-	@Override
-	public void bind(MapReportElement model) {
-		this.mapReportElement = model;
-	
-		layersWidget.bind(model);
-		mapPanel.bind(model);
-	}
-	
-	
-	
-	@Override
-	public void disconnect() {
-		events.disconnect();
-		layersWidget.disconnect();
-		mapPanel.disconnect();
-	}
+        AbsoluteData layout = new AbsoluteData();
+        layout.setLeft(0);
+        layout.setTop(0);
+        layout.setAnchorSpec("100% 100%");
+        add(mapPanel, layout);
+    }
 
-	@Override
-	public MapReportElement getModel() {
-		return mapReportElement;
-	}
+    public AsyncMonitor getMapLoadingMonitor() {
+        return new MaskingAsyncMonitor(mapPanel, I18N.CONSTANTS.loading());
+    }
 
-	@Override
-	public Component getWidget() {
-		return this;
-	}
+    @Override
+    protected void onRender(Element parent, int pos) {
+        super.onRender(parent, pos);
+    }
 
-	@Override
-	public List<Format> getExportFormats() {
-		return Arrays.asList(Format.PowerPoint, Format.Word, Format.PDF, Format.PNG);
-	}
+    @Override
+    public void setSize(int width, int height) {
+        // right align side bar
+        layout.setPosition(layersWidget, width - LayersWidget.WIDTH,
+            CONTROL_TOP_MARGIN);
+
+        super.setSize(width, height);
+    }
+
+    @Override
+    public void bind(MapReportElement model) {
+        this.mapReportElement = model;
+
+        layersWidget.bind(model);
+        mapPanel.bind(model);
+    }
+
+    @Override
+    public void disconnect() {
+        events.disconnect();
+        layersWidget.disconnect();
+        mapPanel.disconnect();
+    }
+
+    @Override
+    public MapReportElement getModel() {
+        return mapReportElement;
+    }
+
+    @Override
+    public Component getWidget() {
+        return this;
+    }
+
+    @Override
+    public List<Format> getExportFormats() {
+        return Arrays.asList(Format.PowerPoint, Format.Word, Format.PDF,
+            Format.PNG);
+    }
 }

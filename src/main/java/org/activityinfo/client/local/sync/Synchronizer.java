@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.local.sync;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.client.local.sync;
  * #L%
  */
 
-
 import java.util.Date;
 
 import org.activityinfo.shared.command.Command;
@@ -32,28 +29,29 @@ import org.activityinfo.shared.command.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Decouples the actual offline implementation from the manager
- * so we can stick all the offline code in a separate js split.
+ * Decouples the actual offline implementation from the manager so we can stick
+ * all the offline code in a separate js split.
  */
 public interface Synchronizer {
     void install(AsyncCallback<Void> callback);
 
     /**
-     * @return  the date of the last successful synchronization to the client
+     * @return the date of the last successful synchronization to the client
      */
     void getLastSyncTime(AsyncCallback<Date> callback);
 
     /**
      * Conducts sanity checks to be sure that we are really prepared to go
-     * offline. (It's possible that the Offline "state" flag was mis-set in the past.)
-     *
+     * offline. (It's possible that the Offline "state" flag was mis-set in the
+     * past.)
+     * 
      * @return true if we are ready
      */
     void validateOfflineInstalled(AsyncCallback<Void> callback);
-    
+
     void synchronize();
-    
+
     // TODO: move to separate interface
     void execute(Command command, AsyncCallback callback);
-    
+
 }

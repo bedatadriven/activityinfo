@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -24,36 +22,36 @@ package org.activityinfo.shared.report.model;
  * #L%
  */
 
-
 import java.io.Serializable;
+
 import com.google.gwt.resources.client.ImageResource;
 
 /**
- * A generic bitmap icon that can be used on the client or server side,
- * in tiled maps as well as SVG maps.
- *
+ * A generic bitmap icon that can be used on the client or server side, in tiled
+ * maps as well as SVG maps.
+ * 
  * @author Alex Bertram
  */
 public final class MapIcon implements Serializable, ImageResource {
     private static final int DEFAULT_SIZE = 32;
-    
-	private String name;
-	private String url;
-	
-	// Default to 32x32 sized icons
-    private int width = DEFAULT_SIZE; 
+
+    private String name;
+    private String url;
+
+    // Default to 32x32 sized icons
+    private int width = DEFAULT_SIZE;
     private int height = DEFAULT_SIZE;
-    
+
     private int anchorX;
     private int anchorY;
 
     public MapIcon() {
     }
-	
-	public MapIcon(String name) {
+
+    public MapIcon(String name) {
         setName(name);
-	}
-	
+    }
+
     public MapIcon(String name, int width, int height, int anchorX, int anchorY) {
         setName(name);
         this.width = width;
@@ -63,11 +61,11 @@ public final class MapIcon implements Serializable, ImageResource {
     }
 
     /**
-     *
+     * 
      * @return A short name of the icon
      */
     @Override
-	public String getName() {
+    public String getName() {
         return name;
     }
 
@@ -81,7 +79,7 @@ public final class MapIcon implements Serializable, ImageResource {
      * @return The width of the icon image, in pixels
      */
     @Override
-	public int getWidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -90,11 +88,11 @@ public final class MapIcon implements Serializable, ImageResource {
     }
 
     /**
-     *
+     * 
      * @return The height of the icon image, in pixels
      */
     @Override
-	public int getHeight() {
+    public int getHeight() {
         return height;
     }
 
@@ -103,23 +101,22 @@ public final class MapIcon implements Serializable, ImageResource {
     }
 
     /**
-     *
+     * 
      * @return The distance from the left side at which the image should be
-     * anchored to the point.
+     *         anchored to the point.
      */
     public int getAnchorX() {
         return anchorX;
     }
-
 
     public void setAnchorX(int anchorX) {
         this.anchorX = anchorX;
     }
 
     /**
-     *
+     * 
      * @return The distance from the top at which of the image should be
-     * anchored to the point.
+     *         anchored to the point.
      */
     public int getAnchorY() {
         return anchorY;
@@ -129,36 +126,35 @@ public final class MapIcon implements Serializable, ImageResource {
         this.anchorY = anchorY;
     }
 
+    @Override
+    public int getLeft() {
+        return 0;
+    }
 
-	@Override
-	public int getLeft() {
-		return 0;
-	}
+    @Override
+    public int getTop() {
+        return 0;
+    }
 
-	@Override
-	public int getTop() {
-		return 0;
-	}
+    @Override
+    public String getURL() {
+        return url;
+    }
 
-	@Override
-	public String getURL() {
-		return url;
-	}
+    @Override
+    public boolean isAnimated() {
+        return false;
+    }
 
-	@Override
-	public boolean isAnimated() {
-		return false;
-	}
-	
-	public static MapIcon fromEnum(Icon icon) {
-		return new MapIcon(icon.toString());
-	}
-    
-	public enum Icon {
-		Default,
-		Doctor,
-		Fire,
-		Food,
-		Water
-	}
+    public static MapIcon fromEnum(Icon icon) {
+        return new MapIcon(icon.toString());
+    }
+
+    public enum Icon {
+        Default,
+        Doctor,
+        Fire,
+        Food,
+        Water
+    }
 }

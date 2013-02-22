@@ -59,231 +59,241 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Maintains a list of dimensions applicable for the current element
- *
+ * 
  */
 public class DimensionTree implements HasReportElement<PivotTableReportElement> {
 
-	private final Dispatcher dispatcher;
-	private final ReportEventHelper events;
-	
-	private final TreeStore<DimensionModel> store;
-	private final TreePanel<DimensionModel> treePanel;
+    private final Dispatcher dispatcher;
+    private final ReportEventHelper events;
 
-	private Set<Integer> previouslyLoaded = Collections.emptySet();
-	
-	private PivotTableReportElement model;
-	private DimensionModel geographyRoot;
-	private final List<DimensionModel> attributeDimensions = Lists.newArrayList();
+    private final TreeStore<DimensionModel> store;
+    private final TreePanel<DimensionModel> treePanel;
 
-	
-	public DimensionTree(EventBus eventBus, Dispatcher dispatcher) {
-		this.events = new ReportEventHelper(eventBus, this);
-		this.events.listen(new ReportChangeHandler() {
-			
-			@Override
-			public void onChanged() {
-				onModelChanged();
-			}
-		});
-		this.dispatcher = dispatcher;
-		
-		this.store = new TreeStore<DimensionModel>();
-		addDimension(DimensionType.Database, I18N.CONSTANTS.database());
-		addDimension(DimensionType.Activity, I18N.CONSTANTS.activity());
-		addDimension(DimensionType.Indicator, I18N.CONSTANTS.indicator());
-		addDimension(DimensionType.Partner, I18N.CONSTANTS.partner());
-		addDimension(DimensionType.Project, I18N.CONSTANTS.project());
-		addDimension(DimensionType.Target, I18N.CONSTANTS.realizedOrTargeted());
-		addTimeDimensions();		
-		addGeographyRoot();
-	
-		treePanel = new TreePanel<DimensionModel>(store);
-		treePanel.setBorders(true);
-		treePanel.setCheckable(true);
-		treePanel.setCheckNodes(TreePanel.CheckNodes.LEAF);
-		treePanel.setCheckStyle(TreePanel.CheckCascade.NONE);
-		treePanel.getStyle().setNodeCloseIcon(null);
-		treePanel.getStyle().setNodeOpenIcon(null);
-		treePanel.setStateful(true);
-		treePanel.setDisplayProperty("name");
-		treePanel.addListener(Events.Expand, new Listener<BaseEvent>() {
+    private Set<Integer> previouslyLoaded = Collections.emptySet();
 
-			@Override
-			public void handleEvent(BaseEvent be) {
-				applyModelState();
-			}
-		});
+    private PivotTableReportElement model;
+    private DimensionModel geographyRoot;
+    private final List<DimensionModel> attributeDimensions = Lists
+        .newArrayList();
 
-		/* enable drag and drop for dev */
-		// TreePanelDragSource source = new TreePanelDragSource(treePanel);
-		// source.setTreeSource(DND.TreeSource.LEAF);
-		/* end enable drag and drop for dev */
+    public DimensionTree(EventBus eventBus, Dispatcher dispatcher) {
+        this.events = new ReportEventHelper(eventBus, this);
+        this.events.listen(new ReportChangeHandler() {
 
-		treePanel.setId("statefullavaildims");
-		treePanel.collapseAll();
+            @Override
+            public void onChanged() {
+                onModelChanged();
+            }
+        });
+        this.dispatcher = dispatcher;
 
-		treePanel.addListener(Events.CheckChange, new Listener<TreePanelEvent<DimensionModel>>() {
+        this.store = new TreeStore<DimensionModel>();
+        addDimension(DimensionType.Database, I18N.CONSTANTS.database());
+        addDimension(DimensionType.Activity, I18N.CONSTANTS.activity());
+        addDimension(DimensionType.Indicator, I18N.CONSTANTS.indicator());
+        addDimension(DimensionType.Partner, I18N.CONSTANTS.partner());
+        addDimension(DimensionType.Project, I18N.CONSTANTS.project());
+        addDimension(DimensionType.Target, I18N.CONSTANTS.realizedOrTargeted());
+        addTimeDimensions();
+        addGeographyRoot();
 
-			@Override
-			public void handleEvent(TreePanelEvent<DimensionModel> be) {
-				updateModelAfterCheckChange(be);
-			}
-		});
-	}
+        treePanel = new TreePanel<DimensionModel>(store);
+        treePanel.setBorders(true);
+        treePanel.setCheckable(true);
+        treePanel.setCheckNodes(TreePanel.CheckNodes.LEAF);
+        treePanel.setCheckStyle(TreePanel.CheckCascade.NONE);
+        treePanel.getStyle().setNodeCloseIcon(null);
+        treePanel.getStyle().setNodeOpenIcon(null);
+        treePanel.setStateful(true);
+        treePanel.setDisplayProperty("name");
+        treePanel.addListener(Events.Expand, new Listener<BaseEvent>() {
 
-	private void addGeographyRoot() {
-		geographyRoot = new DimensionModel(I18N.CONSTANTS.geography());
-		store.add(geographyRoot, false);
-		addLocationDimension();
-	}
+            @Override
+            public void handleEvent(BaseEvent be) {
+                applyModelState();
+            }
+        });
 
-	private void addLocationDimension() {
-		store.add(geographyRoot, new DimensionModel(DimensionType.Location, I18N.CONSTANTS.location()), false);
-	}
+        /* enable drag and drop for dev */
+        // TreePanelDragSource source = new TreePanelDragSource(treePanel);
+        // source.setTreeSource(DND.TreeSource.LEAF);
+        /* end enable drag and drop for dev */
 
-	private void addDimension(DimensionType type, String name) {
-		store.add(new DimensionModel(type, name), false);
-	}
-		
-	private void addTimeDimensions() {
-		DimensionModel folder = new DimensionModel(I18N.CONSTANTS.time());
-		store.add(folder, false);
-		store.add(folder, new DimensionModel(DateUnit.YEAR), false);
-		store.add(folder, new DimensionModel(DateUnit.QUARTER), false);
-		store.add(folder, new DimensionModel(DateUnit.MONTH), false);
-		store.add(folder, new DimensionModel(DateUnit.WEEK_MON), false);
+        treePanel.setId("statefullavaildims");
+        treePanel.collapseAll();
 
-	}
-	
-	@Override
-	public void bind(PivotTableReportElement model) {
-		this.model = model;
-		applyModelState();
-	}
+        treePanel.addListener(Events.CheckChange,
+            new Listener<TreePanelEvent<DimensionModel>>() {
 
-	@Override
-	public PivotTableReportElement getModel() {
-		return model;
-	}
-	
-	private void onModelChanged() {
-		if(needToReloadDimensions(model)) {
-			clearIndicatorSpecificDimensions();
-			dispatcher.execute(new GetSchema(), 
-					new MaskingAsyncMonitor(treePanel, I18N.CONSTANTS.loading()), new AsyncCallback<SchemaDTO>() {
-	
-				@Override
-				public void onFailure(Throwable caught) {
-					
-				}
-	
-				@Override
-				public void onSuccess(SchemaDTO result) {
-					populateIndicatorSpecificDimensions(result);
-					applyModelState();
-				}
-			});
-		} 
-	}
-	
-	private void applyModelState() {	
-		for(DimensionModel node : store.getAllItems()) {
-			if(node.hasDimension()) {
-				treePanel.setChecked(node, 
-						model.getRowDimensions().contains(node.getDimension()) ||
-						model.getColumnDimensions().contains(node.getDimension()));
-				
-			}
-		}
-	}
+                @Override
+                public void handleEvent(TreePanelEvent<DimensionModel> be) {
+                    updateModelAfterCheckChange(be);
+                }
+            });
+    }
 
-	private boolean needToReloadDimensions(PivotTableReportElement model) {
-		return !previouslyLoaded.containsAll(model.getIndicators()) ||
-			   !model.getIndicators().containsAll(previouslyLoaded);
-	}
+    private void addGeographyRoot() {
+        geographyRoot = new DimensionModel(I18N.CONSTANTS.geography());
+        store.add(geographyRoot, false);
+        addLocationDimension();
+    }
 
-	private void clearIndicatorSpecificDimensions() {
-		
-		for(DimensionModel model : Lists.newArrayList(store.getAllItems())) {
-			if(model.hasDimension() && (
-					model.getDimension() instanceof AttributeGroupDimension ||
-					model.getDimension() instanceof AdminDimension)) {
-				store.remove(model);
-			}
-		}
-	}
+    private void addLocationDimension() {
+        store.add(geographyRoot, new DimensionModel(DimensionType.Location,
+            I18N.CONSTANTS.location()), false);
+    }
 
-	private void populateIndicatorSpecificDimensions(SchemaDTO schema) {
-		
-		addGeography(schema);
-		addAttributeGroups(schema);
-		previouslyLoaded = model.getIndicators();
-	}
+    private void addDimension(DimensionType type, String name) {
+        store.add(new DimensionModel(type, name), false);
+    }
 
-	private void addGeography(SchemaDTO schema) {
-		
-		Set<CountryDTO> countries = schema.getCountriesForIndicators(model.getIndicators());
+    private void addTimeDimensions() {
+        DimensionModel folder = new DimensionModel(I18N.CONSTANTS.time());
+        store.add(folder, false);
+        store.add(folder, new DimensionModel(DateUnit.YEAR), false);
+        store.add(folder, new DimensionModel(DateUnit.QUARTER), false);
+        store.add(folder, new DimensionModel(DateUnit.MONTH), false);
+        store.add(folder, new DimensionModel(DateUnit.WEEK_MON), false);
 
-		store.removeAll(geographyRoot);		
-		if(countries.size() == 1) {
-			CountryDTO country = countries.iterator().next();
-			for(AdminLevelDTO level : country.getAdminLevels()) {
-				store.add(geographyRoot, new DimensionModel(level), 
-						false);
-			}
-			addLocationDimension();
-		}
-	}
-	
-	private void addAttributeGroups(SchemaDTO schema) {
-		
-		// clear existing attributes
-		for(DimensionModel model : attributeDimensions) {
-			store.remove(model);
-		}
-		attributeDimensions.clear();
-		
-		for(UserDatabaseDTO db : schema.getDatabases()) {
-			for(ActivityDTO activity : db.getActivities()) {
-				if(activity.containsAny(model.getIndicators())) {
-					for(AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
-						DimensionModel dimModel = new DimensionModel(attributeGroup);
-						store.add(dimModel, false);
-						attributeDimensions.add(dimModel);
-					}
-				}
-			}
-		}
-	}
+    }
 
+    @Override
+    public void bind(PivotTableReportElement model) {
+        this.model = model;
+        applyModelState();
+    }
 
-	private void updateModelAfterCheckChange(TreePanelEvent<DimensionModel> event) {
-		Dimension dim = event.getItem().getDimension();
+    @Override
+    public PivotTableReportElement getModel() {
+        return model;
+    }
 
-		if(event.isChecked()) {
-			if(!model.getRowDimensions().contains(dim) &&
-			   !model.getColumnDimensions().contains(dim)) { 
-				
-				if (model.getRowDimensions().size() > model.getColumnDimensions().size()) {
-					model.addColDimension(dim);
-				} else {
-					model.addRowDimension(dim);
-				}
-			}
-		} else {
-			model.getRowDimensions().remove(dim);
-			model.getColumnDimensions().remove(dim);
-		}		
-		
-		events.fireChange();
-	}
+    private void onModelChanged() {
+        if (needToReloadDimensions(model)) {
+            clearIndicatorSpecificDimensions();
+            dispatcher.execute(new GetSchema(),
+                new MaskingAsyncMonitor(treePanel, I18N.CONSTANTS.loading()),
+                new AsyncCallback<SchemaDTO>() {
 
-	public Component asComponent() {
-		return treePanel;
-	}
+                    @Override
+                    public void onFailure(Throwable caught) {
 
-	@Override
-	public void disconnect() {
-		events.disconnect();
-	}
+                    }
+
+                    @Override
+                    public void onSuccess(SchemaDTO result) {
+                        populateIndicatorSpecificDimensions(result);
+                        applyModelState();
+                    }
+                });
+        }
+    }
+
+    private void applyModelState() {
+        for (DimensionModel node : store.getAllItems()) {
+            if (node.hasDimension()) {
+                treePanel.setChecked(
+                    node,
+                    model.getRowDimensions().contains(node.getDimension())
+                        ||
+                        model.getColumnDimensions().contains(
+                            node.getDimension()));
+
+            }
+        }
+    }
+
+    private boolean needToReloadDimensions(PivotTableReportElement model) {
+        return !previouslyLoaded.containsAll(model.getIndicators()) ||
+            !model.getIndicators().containsAll(previouslyLoaded);
+    }
+
+    private void clearIndicatorSpecificDimensions() {
+
+        for (DimensionModel model : Lists.newArrayList(store.getAllItems())) {
+            if (model.hasDimension() && (
+                model.getDimension() instanceof AttributeGroupDimension ||
+                model.getDimension() instanceof AdminDimension)) {
+                store.remove(model);
+            }
+        }
+    }
+
+    private void populateIndicatorSpecificDimensions(SchemaDTO schema) {
+
+        addGeography(schema);
+        addAttributeGroups(schema);
+        previouslyLoaded = model.getIndicators();
+    }
+
+    private void addGeography(SchemaDTO schema) {
+
+        Set<CountryDTO> countries = schema.getCountriesForIndicators(model
+            .getIndicators());
+
+        store.removeAll(geographyRoot);
+        if (countries.size() == 1) {
+            CountryDTO country = countries.iterator().next();
+            for (AdminLevelDTO level : country.getAdminLevels()) {
+                store.add(geographyRoot, new DimensionModel(level),
+                    false);
+            }
+            addLocationDimension();
+        }
+    }
+
+    private void addAttributeGroups(SchemaDTO schema) {
+
+        // clear existing attributes
+        for (DimensionModel model : attributeDimensions) {
+            store.remove(model);
+        }
+        attributeDimensions.clear();
+
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            for (ActivityDTO activity : db.getActivities()) {
+                if (activity.containsAny(model.getIndicators())) {
+                    for (AttributeGroupDTO attributeGroup : activity
+                        .getAttributeGroups()) {
+                        DimensionModel dimModel = new DimensionModel(
+                            attributeGroup);
+                        store.add(dimModel, false);
+                        attributeDimensions.add(dimModel);
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateModelAfterCheckChange(
+        TreePanelEvent<DimensionModel> event) {
+        Dimension dim = event.getItem().getDimension();
+
+        if (event.isChecked()) {
+            if (!model.getRowDimensions().contains(dim) &&
+                !model.getColumnDimensions().contains(dim)) {
+
+                if (model.getRowDimensions().size() > model
+                    .getColumnDimensions().size()) {
+                    model.addColDimension(dim);
+                } else {
+                    model.addRowDimension(dim);
+                }
+            }
+        } else {
+            model.getRowDimensions().remove(dim);
+            model.getColumnDimensions().remove(dim);
+        }
+
+        events.fireChange();
+    }
+
+    public Component asComponent() {
+        return treePanel;
+    }
+
+    @Override
+    public void disconnect() {
+        events.disconnect();
+    }
 }

@@ -38,43 +38,43 @@ import com.sun.jersey.spi.inject.SingletonTypeInjectableProvider;
 
 @Provider
 @Singleton
-public class ConfigProvider extends SingletonTypeInjectableProvider<Context, ServletConfig> {
+public class ConfigProvider extends
+    SingletonTypeInjectableProvider<Context, ServletConfig> {
 
-	
-	@Inject
-	public ConfigProvider(ServletContext servletContext) {
-		super(ServletConfig.class, new Config(servletContext));
-	}
+    @Inject
+    public ConfigProvider(ServletContext servletContext) {
+        super(ServletConfig.class, new Config(servletContext));
+    }
 
-	private static class Config implements ServletConfig {
+    private static class Config implements ServletConfig {
 
-		private Map<String, String> initParams = Maps.newHashMap();
-		private ServletContext servletContext;
-		
-		public Config(ServletContext servletContext) {
-			this.servletContext = servletContext;
-		}
+        private Map<String, String> initParams = Maps.newHashMap();
+        private ServletContext servletContext;
 
-		@Override
-		public String getInitParameter(String key) {
-			return initParams.get(key);
-		}
+        public Config(ServletContext servletContext) {
+            this.servletContext = servletContext;
+        }
 
-		@Override
-		public Enumeration getInitParameterNames() {
-			return Collections.enumeration(initParams.keySet());
-		}
+        @Override
+        public String getInitParameter(String key) {
+            return initParams.get(key);
+        }
 
-		@Override
-		public ServletContext getServletContext() {
-			return servletContext;
-		}
+        @Override
+        public Enumeration getInitParameterNames() {
+            return Collections.enumeration(initParams.keySet());
+        }
 
-		@Override
-		public String getServletName() {
-			return "ActivityInfo";
-		}
-		
-	}
-	
+        @Override
+        public ServletContext getServletContext() {
+            return servletContext;
+        }
+
+        @Override
+        public String getServletName() {
+            return "ActivityInfo";
+        }
+
+    }
+
 }

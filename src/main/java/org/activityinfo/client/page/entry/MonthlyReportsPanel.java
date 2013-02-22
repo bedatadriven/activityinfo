@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.entry;
 
 /*
@@ -64,78 +62,78 @@ public class MonthlyReportsPanel extends ContentPanel implements ActionListener 
     private ListLoader<MonthlyReportResult> loader;
     private ListStore<IndicatorRowDTO> store;
     private MonthlyGrid grid;
-	private ReportingPeriodProxy proxy;
-	private MappingComboBox<Month> monthCombo;
-    
-	private int currentSiteId;
+    private ReportingPeriodProxy proxy;
+    private MappingComboBox<Month> monthCombo;
 
-	private ActionToolBar toolBar;
+    private int currentSiteId;
+
+    private ActionToolBar toolBar;
 
     public MonthlyReportsPanel(Dispatcher service) {
         this.service = service;
-        
+
         setHeading(I18N.CONSTANTS.monthlyReports());
         setIcon(IconImageBundle.ICONS.table());
         setLayout(new FitLayout());
-        
+
         proxy = new ReportingPeriodProxy();
-		loader = new BaseListLoader<MonthlyReportResult>(proxy);
+        loader = new BaseListLoader<MonthlyReportResult>(proxy);
         store = new ListStore<IndicatorRowDTO>(loader);
         store.setMonitorChanges(true);
         grid = new MonthlyGrid(store);
         add(grid);
-        
+
         addToolBar();
     }
-    
+
     private void addToolBar() {
-    	toolBar = new ActionToolBar();
-    	toolBar.setListener(this);
-    	toolBar.addSaveSplitButton();
-    	toolBar.add(new LabelToolItem(I18N.CONSTANTS.month() + ": "));
+        toolBar = new ActionToolBar();
+        toolBar.setListener(this);
+        toolBar.addSaveSplitButton();
+        toolBar.add(new LabelToolItem(I18N.CONSTANTS.month() + ": "));
 
-    	monthCombo = new MappingComboBox<Month>();
-    	monthCombo.setEditable(false);
-    	monthCombo.addListener(Events.Select, new Listener<FieldEvent>() {
-    		@Override
-			public void handleEvent(FieldEvent be) {
-    			selectStartMonth(monthCombo.getMappedValue());
-    		}	
-    	});
+        monthCombo = new MappingComboBox<Month>();
+        monthCombo.setEditable(false);
+        monthCombo.addListener(Events.Select, new Listener<FieldEvent>() {
+            @Override
+            public void handleEvent(FieldEvent be) {
+                selectStartMonth(monthCombo.getMappedValue());
+            }
+        });
 
-    	DateWrapper today = new DateWrapper();
-    	DateTimeFormat monthFormat = DateTimeFormat.getFormat("MMM yyyy");
-    	for(int year = today.getFullYear(); year != today.getFullYear()-3; --year) {
+        DateWrapper today = new DateWrapper();
+        DateTimeFormat monthFormat = DateTimeFormat.getFormat("MMM yyyy");
+        for (int year = today.getFullYear(); year != today.getFullYear() - 3; --year) {
 
-    		for(int month = 12; month != 0; --month) {
+            for (int month = 12; month != 0; --month) {
 
-    			DateWrapper d= new DateWrapper(year, month, 1);
+                DateWrapper d = new DateWrapper(year, month, 1);
 
-    			Month m = new Month(year, month);
-    			monthCombo.add(m, monthFormat.format(d.asDate()));
-    		}
-    	}
+                Month m = new Month(year, month);
+                monthCombo.add(m, monthFormat.format(d.asDate()));
+            }
+        }
 
-    	toolBar.add(monthCombo);
-    	
-    	setTopComponent(toolBar);
-	}
+        toolBar.add(monthCombo);
 
-	public void load(SiteDTO site) {
-		this.currentSiteId = site.getId();
-    	Month startMonth = getInitialStartMonth(site);
-    	monthCombo.setMappedValue(startMonth);
-    	grid.updateMonthColumns(startMonth);
-    	proxy.setStartMonth(startMonth);
-    	proxy.setSiteId(site.getId());
-    	loader.load();
+        setTopComponent(toolBar);
     }
-	
-	private void selectStartMonth(Month startMonth) {
-		proxy.setStartMonth(startMonth);
-		grid.updateMonthColumns(startMonth);
-		loader.load();
-	}
+
+    public void load(SiteDTO site) {
+        this.currentSiteId = site.getId();
+        Month startMonth = getInitialStartMonth(site);
+        monthCombo.setMappedValue(startMonth);
+        grid.updateMonthColumns(startMonth);
+        proxy.setStartMonth(startMonth);
+        proxy.setSiteId(site.getId());
+        loader.load();
+    }
+
+    private void selectStartMonth(Month startMonth) {
+        proxy.setStartMonth(startMonth);
+        grid.updateMonthColumns(startMonth);
+        loader.load();
+    }
 
     private Month getInitialStartMonth(SiteDTO site) {
         String stateKey = "monthlyView" + site.getActivityId() + "startMonth";
@@ -145,25 +143,24 @@ public class MonthlyReportsPanel extends ContentPanel implements ActionListener 
             } catch (NumberFormatException e) {
             }
         }
-   
+
         DateWrapper today = new DateWrapper();
         return new Month(today.getFullYear(), today.getMonth());
     }
 
-
     public void onMonthSelected(Month month) {
-    	Month startMonth = new Month(month.getYear(), month.getMonth() - 3);
-    	proxy.setStartMonth(startMonth);
-    	grid.updateMonthColumns(startMonth);
+        Month startMonth = new Month(month.getYear(), month.getMonth() - 3);
+        proxy.setStartMonth(startMonth);
+        grid.updateMonthColumns(startMonth);
         loader.load();
     }
-    
-	@Override
-	public void onUIAction(String actionId) {
-		if(UIActions.SAVE.equals(actionId)) {
-			save();
-		}
-	}
+
+    @Override
+    public void onUIAction(String actionId) {
+        if (UIActions.SAVE.equals(actionId)) {
+            save();
+        }
+    }
 
     private void save() {
         ArrayList<UpdateMonthlyReports.Change> changes = new ArrayList<UpdateMonthlyReports.Change>();
@@ -173,42 +170,44 @@ public class MonthlyReportsPanel extends ContentPanel implements ActionListener 
                 UpdateMonthlyReports.Change change = new UpdateMonthlyReports.Change();
                 change.setIndicatorId(report.getIndicatorId());
                 change.setMonth(IndicatorRowDTO.monthForProperty(property));
-                change.setValue((Double)report.get(property));
+                change.setValue((Double) report.get(property));
                 changes.add(change);
             }
         }
-        service.execute(new UpdateMonthlyReports(currentSiteId, changes), 
-        		new MaskingAsyncMonitor(this, I18N.CONSTANTS.save()), new AsyncCallback<VoidResult>() {
+        service.execute(new UpdateMonthlyReports(currentSiteId, changes),
+            new MaskingAsyncMonitor(this, I18N.CONSTANTS.save()),
+            new AsyncCallback<VoidResult>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					// handled by monitor
-				}
+                @Override
+                public void onFailure(Throwable caught) {
+                    // handled by monitor
+                }
 
-				@Override
-				public void onSuccess(VoidResult result) {
-				}
-        });
+                @Override
+                public void onSuccess(VoidResult result) {
+                }
+            });
     }
-    
+
     private class ReportingPeriodProxy extends RpcProxy<MonthlyReportResult> {
 
-    	private Month startMonth;
-    	private int siteId;
+        private Month startMonth;
+        private int siteId;
 
-    	public void setSiteId(int siteId) {
-    		this.siteId = siteId;
-    	}
-    	
-    	public void setStartMonth(Month startMonth) {
-    		this.startMonth = startMonth;
-    	}
+        public void setSiteId(int siteId) {
+            this.siteId = siteId;
+        }
 
-		@Override
-		protected void load(Object loadConfig,
-				AsyncCallback<MonthlyReportResult> callback) {
-		
-			service.execute(new GetMonthlyReports(siteId, startMonth, 7), callback);
-		}
+        public void setStartMonth(Month startMonth) {
+            this.startMonth = startMonth;
+        }
+
+        @Override
+        protected void load(Object loadConfig,
+            AsyncCallback<MonthlyReportResult> callback) {
+
+            service.execute(new GetMonthlyReports(siteId, startMonth, 7),
+                callback);
+        }
     }
 }

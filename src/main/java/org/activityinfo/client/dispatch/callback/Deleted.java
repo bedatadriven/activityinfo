@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.callback;
 
 /*
@@ -36,7 +34,6 @@ public abstract class Deleted implements AsyncCallback<VoidResult> {
     @Override
     public void onFailure(Throwable caught) {
     }
-
 
     @Override
     public void onSuccess(VoidResult result) {

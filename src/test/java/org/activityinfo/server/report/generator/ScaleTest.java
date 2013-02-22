@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator;
 
 /*
@@ -26,7 +24,6 @@ package org.activityinfo.server.report.generator;
 
 import junit.framework.Assert;
 
-import org.activityinfo.server.report.generator.ScaleUtil;
 import org.junit.Test;
 
 /**

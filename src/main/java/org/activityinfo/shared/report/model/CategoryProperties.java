@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -35,7 +33,7 @@ public class CategoryProperties implements Serializable {
     private Integer color;
 
     public CategoryProperties() {
-        
+
     }
 
     public String getLabel() {
@@ -55,14 +53,9 @@ public class CategoryProperties implements Serializable {
     }
 
     public void setColor(int r, int g, int b) {
-       this.color = ((r & 0xFF) << 16) |
-                    ((g & 0xFF) << 8)  |
-                    ((b & 0xFF) << 0);
+        this.color = ((r & 0xFF) << 16) |
+            ((g & 0xFF) << 8) |
+            ((b & 0xFF) << 0);
     }
 
-    public static CategoryProperties Color(int r, int g, int b) {
-        CategoryProperties props = new CategoryProperties();
-        props.setColor(r, g, b);
-        return props;
-    }
 }

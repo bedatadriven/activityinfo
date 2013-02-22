@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -31,21 +29,20 @@ import org.activityinfo.shared.util.mapping.Extents;
 
 public interface LayerGenerator {
 
-	void query(DispatcherSync dispatcher, Filter effectiveFilter);
+    void query(DispatcherSync dispatcher, Filter effectiveFilter);
 
-	
     /**
      * Calculates the geographic extents for this layer
-     *
+     * 
      * @param sites
      * @return A geographic bounding box
      */
     Extents calculateExtents();
 
     /**
-     * Calculates the maximum potential margins (in pixels)
-     * outside of the geographic bounds.
-     *
+     * Calculates the maximum potential margins (in pixels) outside of the
+     * geographic bounds.
+     * 
      * @return
      */
     Margins calculateMargins();

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -42,32 +40,34 @@ import com.google.inject.Inject;
 
 public class CreateReportHandler implements CommandHandler<CreateReport> {
     private EntityManager em;
-	private final ReportJsonFactory reportJsonFactory;
+    private final ReportJsonFactory reportJsonFactory;
 
     private ReportDefinition reportDef;
 
     @Inject
-    public CreateReportHandler(EntityManager em, ReportJsonFactory reportJsonFactory) {
+    public CreateReportHandler(EntityManager em,
+        ReportJsonFactory reportJsonFactory) {
         this.em = em;
         this.reportJsonFactory = reportJsonFactory;
     }
 
     @Override
     public CommandResult execute(CreateReport cmd, User user)
-            throws CommandException {
+        throws CommandException {
 
         // verify that the XML is valid
         try {
-        	reportDef = new ReportDefinition();
-            
-        	// TODO should allow null to xml field 
-        	String xml = ReportParserJaxb.createXML(cmd.getReport());
+            reportDef = new ReportDefinition();
+
+            // TODO should allow null to xml field
+            String xml = ReportParserJaxb.createXML(cmd.getReport());
             reportDef.setXml(xml);
- 	
-        	if(cmd.getDatabaseId() != null) { 
-        		reportDef.setDatabase(em.getReference(UserDatabase.class, cmd.getDatabaseId()));
-        	} 
-        	
+
+            if (cmd.getDatabaseId() != null) {
+                reportDef.setDatabase(em.getReference(UserDatabase.class,
+                    cmd.getDatabaseId()));
+            }
+
             reportDef.setTitle(cmd.getReport().getTitle());
             reportDef.setDescription(cmd.getReport().getDescription());
             reportDef.setOwner(user);

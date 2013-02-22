@@ -54,82 +54,84 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
-@Modules({TestDatabaseModule.class})
+@Modules({ TestDatabaseModule.class })
 @OnDataSet("/dbunit/polygons.db.xml")
 public class PolygonGeneratorTest extends CommandTestCase2 {
 
-	@Inject
-	private MapGenerator generator;
+    @Inject
+    private MapGenerator generator;
 
+    @Before
+    public void setUpDirs() {
+        new File("target/report-tests").mkdirs();
+    }
 
-	@Before
-	public void setUpDirs() {
-		new File("target/report-tests").mkdirs();
-	}
-	
-	@Test
-	public void basicTest() throws IOException {
-		
-		PolygonMapLayer layer = new PolygonMapLayer();
-		layer.addIndicatorId(1);
-		layer.setAdminLevelId(1383);
-		
-		MapReportElement map = new MapReportElement();
-		map.addLayer(layer);
+    @Test
+    public void basicTest() throws IOException {
 
-		MapContent content = execute(new GenerateElement<MapContent>(map));
-		map.setContent(content);
-		 
-		FileOutputStream fos = new FileOutputStream("target/report-tests/polygon.pdf");
-		PdfReportRenderer pdfr = new PdfReportRenderer(TestGeometry.get(), "");
-		pdfr.render(map, fos);
-		fos.close();
-	}
-	
+        PolygonMapLayer layer = new PolygonMapLayer();
+        layer.addIndicatorId(1);
+        layer.setAdminLevelId(1383);
 
-	@Test
-	public void polygonWithHole() throws IOException {
+        MapReportElement map = new MapReportElement();
+        map.addLayer(layer);
 
-		AdminMarker marker = new AdminMarker();
-		marker.setAdminEntityId(1930);
-		marker.setColor("#FFBBBB");
-	
-		AdminOverlay overlay = new AdminOverlay(1383);
-		overlay.setOutlineColor("#FF0000");
-		overlay.addPolygon(marker);
-		
-		
-		PolygonMapLayer layer = new PolygonMapLayer();
-		layer.addIndicatorId(1);
-		layer.setAdminLevelId(1383);
-		
-		MapContent content = new MapContent();
-		content.setZoomLevel(8);
-		content.setBaseMap(GoogleBaseMap.ROADMAP);
-		content.setCenter(new AiLatLng(12.60500192642215, -7.98924994468689));
-		content.getAdminOverlays().add(overlay);
-		content.setFilterDescriptions(new ArrayList<FilterDescription>());
+        MapContent content = execute(new GenerateElement<MapContent>(map));
+        map.setContent(content);
 
-		PolygonLegend.ColorClass clazz1 = new PolygonLegend.ColorClass(1, 53.6, "0000FF");
-		PolygonLegend.ColorClass clazz2 = new PolygonLegend.ColorClass(600, 600, "FF0000");
-		
-		PolygonLegend legend = new PolygonLegend(layer, Lists.newArrayList(clazz1, clazz2));
-		
-		content.getLegends().add(legend);
-		
-		IndicatorDTO indicator = new IndicatorDTO();
-		indicator.setId(1);
-		indicator.setName("Indicator Test");
-		
-		content.getIndicators().add(indicator);
-		
-		MapReportElement map = new MapReportElement();
-		map.addLayer(layer);
-		map.setContent(content);
-		
-		FileOutputStream fos = new FileOutputStream("target/report-tests/polygon-hole.pdf");
-		PdfReportRenderer pdfr = new PdfReportRenderer(TestGeometry.get(), "");
-		pdfr.render(map, fos);
-		fos.close();
-	}
+        FileOutputStream fos = new FileOutputStream(
+            "target/report-tests/polygon.pdf");
+        PdfReportRenderer pdfr = new PdfReportRenderer(TestGeometry.get(), "");
+        pdfr.render(map, fos);
+        fos.close();
+    }
+
+    @Test
+    public void polygonWithHole() throws IOException {
+
+        AdminMarker marker = new AdminMarker();
+        marker.setAdminEntityId(1930);
+        marker.setColor("#FFBBBB");
+
+        AdminOverlay overlay = new AdminOverlay(1383);
+        overlay.setOutlineColor("#FF0000");
+        overlay.addPolygon(marker);
+
+        PolygonMapLayer layer = new PolygonMapLayer();
+        layer.addIndicatorId(1);
+        layer.setAdminLevelId(1383);
+
+        MapContent content = new MapContent();
+        content.setZoomLevel(8);
+        content.setBaseMap(GoogleBaseMap.ROADMAP);
+        content.setCenter(new AiLatLng(12.60500192642215, -7.98924994468689));
+        content.getAdminOverlays().add(overlay);
+        content.setFilterDescriptions(new ArrayList<FilterDescription>());
+
+        PolygonLegend.ColorClass clazz1 = new PolygonLegend.ColorClass(1, 53.6,
+            "0000FF");
+        PolygonLegend.ColorClass clazz2 = new PolygonLegend.ColorClass(600,
+            600, "FF0000");
+
+        PolygonLegend legend = new PolygonLegend(layer, Lists.newArrayList(
+            clazz1, clazz2));
+
+        content.getLegends().add(legend);
+
+        IndicatorDTO indicator = new IndicatorDTO();
+        indicator.setId(1);
+        indicator.setName("Indicator Test");
+
+        content.getIndicators().add(indicator);
+
+        MapReportElement map = new MapReportElement();
+        map.addLayer(layer);
+        map.setContent(content);
+
+        FileOutputStream fos = new FileOutputStream(
+            "target/report-tests/polygon-hole.pdf");
+        PdfReportRenderer pdfr = new PdfReportRenderer(TestGeometry.get(), "");
+        pdfr.render(map, fos);
+        fos.close();
+    }
 }

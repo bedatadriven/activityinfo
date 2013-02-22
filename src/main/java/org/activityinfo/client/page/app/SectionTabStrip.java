@@ -38,95 +38,102 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SectionTabStrip extends Widget implements HasSelectionHandlers<Section> {
+public class SectionTabStrip extends Widget implements
+    HasSelectionHandlers<Section> {
 
-	private static SectionTabStripUiBinder uiBinder = GWT.create(SectionTabStripUiBinder.class);
+    private static SectionTabStripUiBinder uiBinder = GWT
+        .create(SectionTabStripUiBinder.class);
 
-	interface SectionTabStripUiBinder extends UiBinder<Element, SectionTabStrip> {
-	}
+    interface SectionTabStripUiBinder extends
+        UiBinder<Element, SectionTabStrip> {
+    }
 
-	interface MyStyle extends CssResource {
-		String section();
-		String activeSection();
-		String hoverSection();
-	}
+    interface MyStyle extends CssResource {
+        String section();
 
-	@UiField
-	DivElement sectionDiv;
-	
-	@UiField
-	MyStyle style;
-	
-//  Not ready yet
-//	SectionPopup popup;
+        String activeSection();
 
-	DivElement hoverElement;
-		
-	public SectionTabStrip() {
-		setElement(uiBinder.createAndBindUi(this));
-		sinkEvents(Event.MOUSEEVENTS);
-		sinkEvents(Event.ONCLICK);
-		
-		//popup = new SectionPopup();
+        String hoverSection();
+    }
 
-	}
+    @UiField
+    DivElement sectionDiv;
 
-	public void onBrowserEvent(Event event) {
-		El element = El.fly(Element.as(event.getEventTarget()));
-		
-		switch (DOM.eventGetType(event)) {
-		case Event.ONMOUSEOVER:
-			if(element.hasStyleName(style.section())) {
-				unhighlight();
-				highlight(element.dom);
-			}	
-			break;
-		case Event.ONMOUSEOUT:
-			if(hoverElement!= null && element.dom.isOrHasChild(hoverElement)) {
-				unhighlight();
-			}
-			//popup.delayedHide();
-			break;
-		case Event.ONCLICK:
-			if(element.hasStyleName(style.section())) {
-				int index = element.getParent().getChildIndex(element.dom);
-				SelectionEvent.fire(this, Section.values()[index]);
-			}
-			break;
-		}
-	}
+    @UiField
+    MyStyle style;
 
-	private void unhighlight() {
-		if(hoverElement != null) {
-			hoverElement.removeClassName(style.hoverSection());
-		}
-	}
+    // Not ready yet
+    // SectionPopup popup;
 
-	private void highlight(Element element) {
-		hoverElement = element.cast();
-		hoverElement.addClassName(style.hoverSection());
-		
-//		popup.setPopupPosition(element.getAbsoluteLeft(), element.getAbsoluteBottom());
-//		popup.delayedShow();SectionPopup popup;
+    DivElement hoverElement;
 
+    public SectionTabStrip() {
+        setElement(uiBinder.createAndBindUi(this));
+        sinkEvents(Event.MOUSEEVENTS);
+        sinkEvents(Event.ONCLICK);
 
-	}
-	
-	public void setSelection(Section section) {
-		NodeList<com.google.gwt.user.client.Element> tabs = El.fly(sectionDiv).select("." + style.section());
-		for(int i=0;i!=tabs.getLength();++i) {
-			Element tab = tabs.getItem(i).cast();
-			if(section != null && i == section.ordinal()) {
-				tab.addClassName(style.activeSection());
-			} else {
-				tab.removeClassName(style.activeSection());
-			}
-		}
-	}
-	
-	@Override
-	public HandlerRegistration addSelectionHandler(
-			SelectionHandler<Section> handler) {
-		return addHandler(handler, SelectionEvent.getType());
-	}
+        // popup = new SectionPopup();
+
+    }
+
+    @Override
+    public void onBrowserEvent(Event event) {
+        El element = El.fly(Element.as(event.getEventTarget()));
+
+        switch (DOM.eventGetType(event)) {
+        case Event.ONMOUSEOVER:
+            if (element.hasStyleName(style.section())) {
+                unhighlight();
+                highlight(element.dom);
+            }
+            break;
+        case Event.ONMOUSEOUT:
+            if (hoverElement != null && element.dom.isOrHasChild(hoverElement)) {
+                unhighlight();
+            }
+            // popup.delayedHide();
+            break;
+        case Event.ONCLICK:
+            if (element.hasStyleName(style.section())) {
+                int index = element.getParent().getChildIndex(element.dom);
+                SelectionEvent.fire(this, Section.values()[index]);
+            }
+            break;
+        }
+    }
+
+    private void unhighlight() {
+        if (hoverElement != null) {
+            hoverElement.removeClassName(style.hoverSection());
+        }
+    }
+
+    private void highlight(Element element) {
+        hoverElement = element.cast();
+        hoverElement.addClassName(style.hoverSection());
+
+        // popup.setPopupPosition(element.getAbsoluteLeft(),
+        // element.getAbsoluteBottom());
+        // popup.delayedShow();SectionPopup popup;
+
+    }
+
+    public void setSelection(Section section) {
+        NodeList<com.google.gwt.user.client.Element> tabs = El.fly(sectionDiv)
+            .select("." + style.section());
+        for (int i = 0; i != tabs.getLength(); ++i) {
+            Element tab = tabs.getItem(i).cast();
+            if (section != null && i == section.ordinal()) {
+                tab.addClassName(style.activeSection());
+            } else {
+                tab.removeClassName(style.activeSection());
+            }
+        }
+    }
+
+    @Override
+    public HandlerRegistration addSelectionHandler(
+        SelectionHandler<Section> handler) {
+        return addHandler(handler, SelectionEvent.getType());
+    }
 }

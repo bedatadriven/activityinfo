@@ -49,138 +49,147 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel, ReportDTO> {
-	
-	private static final Logger LOGGER = Logger.getLogger(GetReportModelHandler.class.getName());
-	
-	private final EntityManager em;
+public class GetReportModelHandler implements
+    CommandHandlerAsync<GetReportModel, ReportDTO> {
 
-	@Inject
-	public GetReportModelHandler(final EntityManager em) {
-		this.em = em;
-	}
+    private static final Logger LOGGER = Logger
+        .getLogger(GetReportModelHandler.class.getName());
 
-	@Override
-	public void execute(final GetReportModel cmd, final ExecutionContext context,
-			final AsyncCallback<ReportDTO> callback) {
+    private final EntityManager em;
 
-		ReportDTO reportDTO = null;
-		Integer reportId = cmd.getReportId();
-		
-		LOGGER.finest("Loading model for report id = "  + reportId);
+    @Inject
+    public GetReportModelHandler(final EntityManager em) {
+        this.em = em;
+    }
 
-		if (reportId != null) {
+    @Override
+    public void execute(final GetReportModel cmd,
+        final ExecutionContext context,
+        final AsyncCallback<ReportDTO> callback) {
 
-			// always load report
-			ReportDefinition entity = em.find(ReportDefinition.class, reportId);
-			Report report = new Report();
+        ReportDTO reportDTO = null;
+        Integer reportId = cmd.getReportId();
 
-			try {
-				LOGGER.finest("Starting to parse xml (size = " + entity.getXml().length() + ")");
-				
-				report = ReportParserJaxb.parseXml(entity.getXml());
-				
-				LOGGER.finest("Parsing complete");
-			} catch (JAXBException e) {
-				throw new UnexpectedCommandException(e);
-			}
-			report.setId(reportId);
+        LOGGER.finest("Loading model for report id = " + reportId);
 
-			reportDTO = new ReportDTO(report);
+        if (reportId != null) {
 
-			if (cmd.isLoadMetadata()) {
-				// load metadata if specified
-				loadMetadata(reportId, context, reportDTO, callback);
-			} else {
-				// exit handler with only the report object filled
-				callback.onSuccess(reportDTO);
-			}
-		}
-	}
+            // always load report
+            ReportDefinition entity = em.find(ReportDefinition.class, reportId);
+            Report report = new Report();
 
-	private void loadMetadata(final Integer reportId, final ExecutionContext context,
-			final ReportDTO reportDTO, final AsyncCallback<ReportDTO> callback) {
-		
-		final int userId = context.getUser().getId();
+            try {
+                LOGGER.finest("Starting to parse xml (size = "
+                    + entity.getXml().length() + ")");
 
-		SqlQuery mySubscriptions =
-				SqlQuery.selectAll()
-						.from("reportsubscription")
-						.where("userId").equalTo(userId);
+                report = ReportParserJaxb.parseXml(entity.getXml());
 
-		SqlQuery myDatabases =
-				SqlQuery.selectSingle("d.databaseid")
-						.from("userdatabase", "d")
-						.leftJoin(
-								SqlQuery.selectAll()
-										.from(Tables.USER_PERMISSION, "UserPermission")
-										.where("UserPermission.UserId").equalTo(userId), "p")
-						.on("p.DatabaseId = d.DatabaseId")
-						.where("d.ownerUserId").equalTo(userId)
-						.or("p.AllowView").equalTo(1);
+                LOGGER.finest("Parsing complete");
+            } catch (JAXBException e) {
+                throw new UnexpectedCommandException(e);
+            }
+            report.setId(reportId);
 
-		SqlQuery.select()
-				.appendColumn("r.reportTemplateId", "reportId")
-				.appendColumn("r.title", "title")
-				.appendColumn("r.ownerUserId", "ownerUserId")
-				.appendColumn("o.name", "ownerName")
-				.appendColumn("s.dashboard", "dashboard")
-				.appendColumn("s.emaildelivery", "emaildelivery")
-				.appendColumn("s.emailday", "emailday")
-				.appendColumn(
-						SqlQuery.selectSingle("max(defaultDashboard)")
-								.from("reportvisibility", "v")
-								.where("v.databaseId").in(myDatabases)
-								.whereTrue("v.reportid = r.reportTemplateId"),
-						"defaultDashboard")
-				.from("reporttemplate", "r")
-				.leftJoin("userlogin o").on("o.userid = r.ownerUserId")
-				.leftJoin(mySubscriptions, "s").on("r.reportTemplateId = s.reportId")
-				.where("r.ownerUserId").equalTo(userId)
-				.where("r.reportTemplateId").equalTo(reportId)
-				.execute(context.getTransaction(), new SqlResultCallback() {
+            reportDTO = new ReportDTO(report);
 
-					@Override
-					public void onSuccess(final SqlTransaction tx, final SqlResultSet results) {
-						List<ReportMetadataDTO> dtos = Lists.newArrayList();
+            if (cmd.isLoadMetadata()) {
+                // load metadata if specified
+                loadMetadata(reportId, context, reportDTO, callback);
+            } else {
+                // exit handler with only the report object filled
+                callback.onSuccess(reportDTO);
+            }
+        }
+    }
 
-						for (SqlResultSetRow row : results.getRows()) {
-							ReportMetadataDTO dto = new ReportMetadataDTO();
-							dto.setId(row.getInt("reportId"));
-							dto.setAmOwner(row.getInt("ownerUserId") == userId);
-							dto.setOwnerName(row.getString("ownerName"));
-							dto.setTitle(row.getString("title"));
-							dto.setEditAllowed(dto.getAmOwner());
-							if (!row.isNull("emaildelivery")) {
-								dto.setEmailDelivery(EmailDelivery.valueOf(row.getString("emaildelivery")));
-							}
-							if (row.isNull("emailday")) {
-								dto.setDay(1);
-							} else {
-								dto.setDay(row.getInt("emailday"));
-							}
-							if (row.isNull("dashboard")) {
-								// inherited from database-wide visibility
-								dto.setDashboard(!row.isNull("defaultDashboard") &&
-										row.getBoolean("defaultDashboard"));
-							} else {
-								dto.setDashboard(row.getBoolean("dashboard"));
-							}
-							dtos.add(dto);
-						}
+    private void loadMetadata(final Integer reportId,
+        final ExecutionContext context,
+        final ReportDTO reportDTO, final AsyncCallback<ReportDTO> callback) {
 
-						if (dtos.size() == 0) {
-							ReportMetadataDTO dummy = new ReportMetadataDTO();
-							dummy.setId(reportId);
-							dtos.add(dummy);
-						}
+        final int userId = context.getUser().getId();
 
-						// there should be only one result
-						reportDTO.setReportMetadataDTO(dtos.get(0));
+        SqlQuery mySubscriptions =
+            SqlQuery.selectAll()
+                .from("reportsubscription")
+                .where("userId").equalTo(userId);
 
-						// exit handler with both the report and metadata objects filled
-						callback.onSuccess(reportDTO);
-					}
-				});
-	}
+        SqlQuery myDatabases =
+            SqlQuery.selectSingle("d.databaseid")
+                .from("userdatabase", "d")
+                .leftJoin(
+                    SqlQuery.selectAll()
+                        .from(Tables.USER_PERMISSION, "UserPermission")
+                        .where("UserPermission.UserId").equalTo(userId), "p")
+                .on("p.DatabaseId = d.DatabaseId")
+                .where("d.ownerUserId").equalTo(userId)
+                .or("p.AllowView").equalTo(1);
+
+        SqlQuery.select()
+            .appendColumn("r.reportTemplateId", "reportId")
+            .appendColumn("r.title", "title")
+            .appendColumn("r.ownerUserId", "ownerUserId")
+            .appendColumn("o.name", "ownerName")
+            .appendColumn("s.dashboard", "dashboard")
+            .appendColumn("s.emaildelivery", "emaildelivery")
+            .appendColumn("s.emailday", "emailday")
+            .appendColumn(
+                SqlQuery.selectSingle("max(defaultDashboard)")
+                    .from("reportvisibility", "v")
+                    .where("v.databaseId").in(myDatabases)
+                    .whereTrue("v.reportid = r.reportTemplateId"),
+                "defaultDashboard")
+            .from("reporttemplate", "r")
+            .leftJoin("userlogin o").on("o.userid = r.ownerUserId")
+            .leftJoin(mySubscriptions, "s")
+            .on("r.reportTemplateId = s.reportId")
+            .where("r.ownerUserId").equalTo(userId)
+            .where("r.reportTemplateId").equalTo(reportId)
+            .execute(context.getTransaction(), new SqlResultCallback() {
+
+                @Override
+                public void onSuccess(final SqlTransaction tx,
+                    final SqlResultSet results) {
+                    List<ReportMetadataDTO> dtos = Lists.newArrayList();
+
+                    for (SqlResultSetRow row : results.getRows()) {
+                        ReportMetadataDTO dto = new ReportMetadataDTO();
+                        dto.setId(row.getInt("reportId"));
+                        dto.setAmOwner(row.getInt("ownerUserId") == userId);
+                        dto.setOwnerName(row.getString("ownerName"));
+                        dto.setTitle(row.getString("title"));
+                        dto.setEditAllowed(dto.getAmOwner());
+                        if (!row.isNull("emaildelivery")) {
+                            dto.setEmailDelivery(EmailDelivery.valueOf(row
+                                .getString("emaildelivery")));
+                        }
+                        if (row.isNull("emailday")) {
+                            dto.setDay(1);
+                        } else {
+                            dto.setDay(row.getInt("emailday"));
+                        }
+                        if (row.isNull("dashboard")) {
+                            // inherited from database-wide visibility
+                            dto.setDashboard(!row.isNull("defaultDashboard") &&
+                                row.getBoolean("defaultDashboard"));
+                        } else {
+                            dto.setDashboard(row.getBoolean("dashboard"));
+                        }
+                        dtos.add(dto);
+                    }
+
+                    if (dtos.size() == 0) {
+                        ReportMetadataDTO dummy = new ReportMetadataDTO();
+                        dummy.setId(reportId);
+                        dtos.add(dummy);
+                    }
+
+                    // there should be only one result
+                    reportDTO.setReportMetadataDTO(dtos.get(0));
+
+                    // exit handler with both the report and metadata objects
+                    // filled
+                    callback.onSuccess(reportDTO);
+                }
+            });
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -26,67 +24,62 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.dto.SchemaDTO;
 
-
 /**
- * Returns a {@link org.activityinfo.shared.dto.SchemaDTO} data transfer object that
- * includes the definitions of a databases visible to the authenticated user.
- *
+ * Returns a {@link org.activityinfo.shared.dto.SchemaDTO} data transfer object
+ * that includes the definitions of a databases visible to the authenticated
+ * user.
+ * 
  * @author Alex Bertram
  */
 public class GetSchema implements Command<SchemaDTO> {
-    
-	private int newElement;
-	private String foobar;
-	private double thirdElement;
-	private double forthElement;
-	private int foofoo;
-	
-	
-	
-	
-	
-	
-	public int getFoofoo() {
-		return foofoo;
-	}
 
-	public void setFoofoo(int foofoo) {
-		this.foofoo = foofoo;
-	}
+    private int newElement;
+    private String foobar;
+    private double thirdElement;
+    private double forthElement;
+    private int foofoo;
 
-	public double getForthElement() {
-		return forthElement;
-	}
+    public int getFoofoo() {
+        return foofoo;
+    }
 
-	public void setForthElement(double forthElement) {
-		this.forthElement = forthElement;
-	}
+    public void setFoofoo(int foofoo) {
+        this.foofoo = foofoo;
+    }
 
-	public double getThirdElement() {
-		return thirdElement;
-	}
+    public double getForthElement() {
+        return forthElement;
+    }
 
-	public void setThirdElement(double thirdElement) {
-		this.thirdElement = thirdElement;
-	}
+    public void setForthElement(double forthElement) {
+        this.forthElement = forthElement;
+    }
 
-	public int getNewElement() {
-		return newElement;
-	}
+    public double getThirdElement() {
+        return thirdElement;
+    }
 
-	public void setNewElement(int newElement) {
-		this.newElement = newElement;
-	}
+    public void setThirdElement(double thirdElement) {
+        this.thirdElement = thirdElement;
+    }
 
-	public String getFoobar() {
-		return foobar;
-	}
+    public int getNewElement() {
+        return newElement;
+    }
 
-	public void setFoobar(String foobar) {
-		this.foobar = foobar;
-	}
+    public void setNewElement(int newElement) {
+        this.newElement = newElement;
+    }
 
-	@Override
+    public String getFoobar() {
+        return foobar;
+    }
+
+    public void setFoobar(String foobar) {
+        this.foobar = foobar;
+    }
+
+    @Override
     public String toString() {
         return "GetSchema";
     }
@@ -98,7 +91,7 @@ public class GetSchema implements Command<SchemaDTO> {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) {
+        if (obj == null) {
             return false;
         }
         return obj instanceof GetSchema;

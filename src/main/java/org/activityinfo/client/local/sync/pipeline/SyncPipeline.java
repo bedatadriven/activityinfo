@@ -31,11 +31,11 @@ import com.google.inject.Inject;
 
 public class SyncPipeline extends AsyncPipeline {
 
-	@Inject
-	public SyncPipeline(
-			AppCacheSynchronizer appCacheSynchronizer, 
-			UpdateSynchronizer updateSynchronizer, 
-			DownSynchronizer downSychronizer) {
-		super(appCacheSynchronizer, updateSynchronizer, downSychronizer);
-	}
+    @Inject
+    public SyncPipeline(
+        AppCacheSynchronizer appCacheSynchronizer,
+        UpdateSynchronizer updateSynchronizer,
+        DownSynchronizer downSychronizer) {
+        super(appCacheSynchronizer, updateSynchronizer, downSychronizer);
+    }
 }

@@ -22,7 +22,6 @@ package org.activityinfo.client.local;
  * #L%
  */
 
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -42,38 +41,41 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
 public class LocalModuleStub extends AbstractModule {
-	
-	private final SqlDatabase database;
-	private final AuthenticatedUser authentication;
-	private Dispatcher remoteDispatcher;
-	
-	public LocalModuleStub(AuthenticatedUser auth, SqlDatabase database, 
-			Dispatcher remoteDispatcher) {
-		this.database = database;
-		this.authentication = auth;
-		this.remoteDispatcher = remoteDispatcher;
-	}
-	
-	@Override
-	protected void configure() {
-		bind(SqlDatabase.class).toInstance(database);
-		bind(AuthenticatedUser.class).toInstance(authentication);
-		bind(HandlerRegistry.class).toProvider(HandlerRegistryProvider.class);
-		bind(SqlDialect.class).to(SqliteDialect.class);
-		bind(Dispatcher.class).annotatedWith(Remote.class).toInstance(remoteDispatcher);
-		bind(EventBus.class).to(MockEventBus.class);
-	}
-	
-	@Provides
-	public UIConstants provideConstants() {
-		return (UIConstants) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] { UIConstants.class },
-				new InvocationHandler() {
-			
-			@Override
-			public Object invoke(Object instance, Method method, Object[] arguments)
-					throws Throwable {
-				return method.getName();
-			}
-		});
-	}
+
+    private final SqlDatabase database;
+    private final AuthenticatedUser authentication;
+    private Dispatcher remoteDispatcher;
+
+    public LocalModuleStub(AuthenticatedUser auth, SqlDatabase database,
+        Dispatcher remoteDispatcher) {
+        this.database = database;
+        this.authentication = auth;
+        this.remoteDispatcher = remoteDispatcher;
+    }
+
+    @Override
+    protected void configure() {
+        bind(SqlDatabase.class).toInstance(database);
+        bind(AuthenticatedUser.class).toInstance(authentication);
+        bind(HandlerRegistry.class).toProvider(HandlerRegistryProvider.class);
+        bind(SqlDialect.class).to(SqliteDialect.class);
+        bind(Dispatcher.class).annotatedWith(Remote.class).toInstance(
+            remoteDispatcher);
+        bind(EventBus.class).to(MockEventBus.class);
+    }
+
+    @Provides
+    public UIConstants provideConstants() {
+        return (UIConstants) Proxy.newProxyInstance(this.getClass()
+            .getClassLoader(), new Class[] { UIConstants.class },
+            new InvocationHandler() {
+
+                @Override
+                public Object invoke(Object instance, Method method,
+                    Object[] arguments)
+                    throws Throwable {
+                    return method.getName();
+                }
+            });
+    }
 }

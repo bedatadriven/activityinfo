@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.shared.command;
  * #L%
  */
 
-
 import java.util.List;
 
 import org.activityinfo.shared.command.result.CommandResult;
@@ -33,7 +30,8 @@ import org.activityinfo.shared.exception.CommandException;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface RemoteCommandService extends RemoteService {
-    
-    List<CommandResult> execute(String authToken, List<Command> cmd) throws CommandException;
+
+    List<CommandResult> execute(String authToken, List<Command> cmd)
+        throws CommandException;
 
 }

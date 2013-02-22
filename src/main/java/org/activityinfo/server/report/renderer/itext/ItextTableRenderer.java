@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.report.renderer.itext;
 
 /*
@@ -23,7 +22,6 @@ package org.activityinfo.server.report.renderer.itext;
  * #L%
  */
 
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -43,8 +41,9 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Table;
 
 /**
- * Renders a {@link org.activityinfo.shared.report.model.TableElement} to an iText Document.
- *
+ * Renders a {@link org.activityinfo.shared.report.model.TableElement} to an
+ * iText Document.
+ * 
  */
 public class ItextTableRenderer implements ItextRenderer<TableElement> {
 
@@ -56,17 +55,20 @@ public class ItextTableRenderer implements ItextRenderer<TableElement> {
     }
 
     @Override
-    public void render(DocWriter writer, Document document, TableElement element) throws DocumentException {
+    public void render(DocWriter writer, Document document, TableElement element)
+        throws DocumentException {
         document.add(ThemeHelper.elementTitle(element.getTitle()));
-        ItextRendererHelper.addFilterDescription(document, element.getContent().getFilterDescriptions());
-        ItextRendererHelper.addDateFilterDescription(document, element.getFilter().getDateRange());
+        ItextRendererHelper.addFilterDescription(document, element.getContent()
+            .getFilterDescriptions());
+        ItextRendererHelper.addDateFilterDescription(document, element
+            .getFilter().getDateRange());
         TableData data = element.getContent().getData();
 
-        if(data.isEmpty()) {
+        if (data.isEmpty()) {
             renderEmptyText(document);
 
         } else {
-            if(element.getMap() != null) {
+            if (element.getMap() != null) {
                 mapRenderer.renderMap(writer, element.getMap(), document);
             }
             renderTable(document, data);
@@ -74,10 +76,11 @@ public class ItextTableRenderer implements ItextRenderer<TableElement> {
     }
 
     private void renderEmptyText(Document document) throws DocumentException {
-        document.add(new Paragraph("Aucune Données"));  // TODO: i18n
+        document.add(new Paragraph("Aucune Données")); // TODO: i18n
     }
 
-    private void renderTable(Document document, TableData data) throws DocumentException {
+    private void renderTable(Document document, TableData data)
+        throws DocumentException {
         int colDepth = data.getRootColumn().getDepth();
         List<TableColumn> colLeaves = data.getRootColumn().getLeaves();
         int colBreadth = colLeaves.size();
@@ -89,13 +92,15 @@ public class ItextTableRenderer implements ItextRenderer<TableElement> {
 
         // first write the column headers
 
-        for(int depth = 1; depth<=colDepth; ++depth) {
-            List<TableColumn> columns = data.getRootColumn().getDescendantsAtDepth(depth);
-            for(TableColumn column : columns) {
-                Cell cell = ThemeHelper.columnHeaderCell(column.getLabel(), column.isLeaf(),
-                        computeHAlign(column));
+        for (int depth = 1; depth <= colDepth; ++depth) {
+            List<TableColumn> columns = data.getRootColumn()
+                .getDescendantsAtDepth(depth);
+            for (TableColumn column : columns) {
+                Cell cell = ThemeHelper.columnHeaderCell(column.getLabel(),
+                    column.isLeaf(),
+                    computeHAlign(column));
                 cell.setColspan(Math.max(1, column.getChildren().size()));
-                cell.setRowspan(colDepth-depth-column.getDepth()+1);
+                cell.setRowspan(colDepth - depth - column.getDepth() + 1);
                 table.addCell(cell);
             }
         }
@@ -105,32 +110,33 @@ public class ItextTableRenderer implements ItextRenderer<TableElement> {
         NumberFormat numberFormat = NumberFormat.getIntegerInstance();
         numberFormat.setGroupingUsed(true);
 
-        for(SiteDTO row : data.getRows()) {
-            for(TableColumn column : colLeaves) {
+        for (SiteDTO row : data.getRows()) {
+            for (TableColumn column : colLeaves) {
 
                 Object value = row.get(column.getSitePropertyName());
 
                 String label = "";
-                if(value instanceof Date) {
+                if (value instanceof Date) {
                     label = dateFormat.format(value);
-                } else if(value instanceof Number) {
+                } else if (value instanceof Number) {
                     label = numberFormat.format(value);
-                } else if(value != null) {
+                } else if (value != null) {
                     label = value.toString();
                 }
 
-                table.addCell(ThemeHelper.bodyCell(label, false, 0, true, computeHAlign(column)));
+                table.addCell(ThemeHelper.bodyCell(label, false, 0, true,
+                    computeHAlign(column)));
             }
         }
         document.add(table);
     }
 
     protected int computeHAlign(TableColumn column) {
-        if(!column.isLeaf()) {
+        if (!column.isLeaf()) {
             return Cell.ALIGN_CENTER;
-        } else if("indicator".equals(column.getProperty())) {
+        } else if ("indicator".equals(column.getProperty())) {
             return Cell.ALIGN_RIGHT;
-        } else if("map".equals(column.getProperty())) {
+        } else if ("map".equals(column.getProperty())) {
             return Cell.ALIGN_CENTER;
         } else {
             return Cell.ALIGN_LEFT;

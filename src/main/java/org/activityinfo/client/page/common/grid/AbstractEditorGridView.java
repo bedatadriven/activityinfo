@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.grid;
 
 /*
@@ -35,7 +33,7 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 
 public abstract class AbstractEditorGridView<M extends ModelData, P extends GridPresenter<M>>
-        extends AbstractGridView<M, P> {
+    extends AbstractGridView<M, P> {
 
     private M lastSelection;
 
@@ -44,29 +42,33 @@ public abstract class AbstractEditorGridView<M extends ModelData, P extends Grid
         grid.getStore().setMonitorChanges(true);
 
         grid.getStore().addListener(Store.Update, new Listener<StoreEvent>() {
+            @Override
             public void handleEvent(StoreEvent se) {
                 toolBar.setDirty(true);
             }
         });
 
         grid.addListener(Events.CellClick, new Listener<GridEvent>() {
+            @Override
             public void handleEvent(GridEvent be) {
                 onCellClick(be);
             }
         });
-        
-        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<M>() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent<M> se) {
-				if(se.getSelectedItem() != null) {
-					presenter.onSelectionChanged(se.getSelectedItem());
-				}
-			}
-        });
+
+        grid.getSelectionModel().addSelectionChangedListener(
+            new SelectionChangedListener<M>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<M> se) {
+                    if (se.getSelectedItem() != null) {
+                        presenter.onSelectionChanged(se.getSelectedItem());
+                    }
+                }
+            });
 
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent>() {
+            @Override
             public void handleEvent(GridEvent be) {
-                if(!presenter.beforeEdit(be.getRecord(), be.getProperty())) {
+                if (!presenter.beforeEdit(be.getRecord(), be.getProperty())) {
                     be.setCancelled(true);
                 }
             }
@@ -74,13 +76,13 @@ public abstract class AbstractEditorGridView<M extends ModelData, P extends Grid
     }
 
     protected void onCellClick(GridEvent ge) {
-    	M selection = (M) ge.getGrid().getSelectionModel().getSelectedItem();
-        if(lastSelection != selection) {
+        M selection = (M) ge.getGrid().getSelectionModel().getSelectedItem();
+        if (lastSelection != selection) {
             lastSelection = selection;
-            presenter.onSelectionChanged(selection); 
+            presenter.onSelectionChanged(selection);
         }
     }
- 
+
     @Override
     public void setActionEnabled(String actionId, boolean enabled) {
         super.setActionEnabled(actionId, enabled);

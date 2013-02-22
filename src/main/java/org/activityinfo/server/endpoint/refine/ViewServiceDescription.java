@@ -22,17 +22,16 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-
 public class ViewServiceDescription {
-	private String url;
+    private String url;
 
-	public ViewServiceDescription(String uri) {
-		super();
-		this.url = uri.toString();
-	}
+    public ViewServiceDescription(String uri) {
+        super();
+        this.url = uri.toString();
+    }
 
-	public String getUrl() {
-		return url;
-	}
-	
+    public String getUrl() {
+        return url;
+    }
+
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -58,12 +56,14 @@ public class GetUsersHandler implements CommandHandler<GetUsers> {
     }
 
     @Override
-    public CommandResult execute(GetUsers cmd, User currentUser) throws CommandException {
+    public CommandResult execute(GetUsers cmd, User currentUser)
+        throws CommandException {
 
         String orderByClause = "";
 
         if (cmd.getSortInfo().getSortDir() != Style.SortDir.NONE) {
-            String dir = cmd.getSortInfo().getSortDir() == Style.SortDir.ASC ? "asc" : "desc";
+            String dir = cmd.getSortInfo().getSortDir() == Style.SortDir.ASC ? "asc"
+                : "desc";
             String property = null;
             String field = cmd.getSortInfo().getSortField();
 
@@ -83,10 +83,10 @@ public class GetUsersHandler implements CommandHandler<GetUsers> {
         }
 
         Query query = em.createQuery("select up from UserPermission up where " +
-                "up.database.id = :dbId and " +
-                "up.user.id <> :currentUserId " + orderByClause)
-                .setParameter("dbId", cmd.getDatabaseId())
-                .setParameter("currentUserId", currentUser.getId());
+            "up.database.id = :dbId and " +
+            "up.user.id <> :currentUserId " + orderByClause)
+            .setParameter("dbId", cmd.getDatabaseId())
+            .setParameter("currentUserId", currentUser.getId());
 
         if (cmd.getOffset() > 0) {
             query.setFirstResult(cmd.getOffset());
@@ -102,13 +102,14 @@ public class GetUsersHandler implements CommandHandler<GetUsers> {
             models.add(mapper.map(perm, UserPermissionDTO.class));
         }
 
-        int totalCount = ((Number) em.createQuery("select count(up) from UserPermission up where " +
+        int totalCount = ((Number) em
+            .createQuery("select count(up) from UserPermission up where " +
                 "up.database.id = :dbId and " +
                 "up.user.id <> :currentUserId ")
-                .setParameter("dbId", cmd.getDatabaseId())
-                .setParameter("currentUserId", currentUser.getId())
-                .getSingleResult())
-                .intValue();
+            .setParameter("dbId", cmd.getDatabaseId())
+            .setParameter("currentUserId", currentUser.getId())
+            .getSingleResult())
+            .intValue();
 
         return new UserResult(models, cmd.getOffset(), totalCount);
     }

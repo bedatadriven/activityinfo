@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.exception;
 
 /*
@@ -28,7 +26,6 @@ package org.activityinfo.shared.exception;
  * @author Alex Bertram
  */
 public class UnexpectedCommandException extends CommandException {
-
 
     public UnexpectedCommandException() {
     }

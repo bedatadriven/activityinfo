@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -51,7 +49,9 @@ public class GetMapIconsHandler implements CommandHandler<GetMapIcons> {
         this.mapIconPath = mapIconPath;
     }
 
-    public CommandResult execute(GetMapIcons cmd, User user) throws CommandException {
+    @Override
+    public CommandResult execute(GetMapIcons cmd, User user)
+        throws CommandException {
 
         File iconFolder = new File(mapIconPath);
 

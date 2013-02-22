@@ -35,53 +35,53 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GetDimensionLabelsHandler implements CommandHandlerAsync<GetDimensionLabels, DimensionLabels> {
-	
-	@Override
-	public void execute(GetDimensionLabels command, ExecutionContext context,
-			final AsyncCallback<DimensionLabels> callback) {
-		
-		SqlQuery query = composeQuery(command);
-		query.execute(context.getTransaction(), new SqlResultCallback() {
-			@Override
-			public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-				Map<Integer, String> labels = Maps.newHashMap();
-				for (SqlResultSetRow row : results.getRows()) {
-					labels.put(row.getInt("id"), row.getString("name"));
-				}
-				callback.onSuccess(new DimensionLabels(labels));
-			}
-		});
-	}
+public class GetDimensionLabelsHandler implements
+    CommandHandlerAsync<GetDimensionLabels, DimensionLabels> {
 
-	private SqlQuery composeQuery(GetDimensionLabels command) {
-		String tableName;
-		String primaryKey;
-		
-		switch(command.getType()) {
-		case Site:
-			tableName = "(select s.siteid, l.name from site s left join location l on (s.locationid=l.locationid))";
-			primaryKey = "siteid";
-			break;
-		case Database:
-			tableName = "UserDatabase";
-			primaryKey = "DatabaseId";
-			break;
-		case AdminLevel:
-			tableName = "AdminEntity";
-			primaryKey = "AdminEntityId";
-			break;
-		default:
-			tableName = command.getType().toString();
-			primaryKey = tableName + "Id";
-		}
-		
-		return SqlQuery.select()
-				.appendColumn("name")
-				.appendColumn(primaryKey, "id")
-				.from(tableName.toLowerCase(), "t")
-				.where(primaryKey)
-				.in(command.getIds());
-	}
+    @Override
+    public void execute(GetDimensionLabels command, ExecutionContext context,
+        final AsyncCallback<DimensionLabels> callback) {
+
+        SqlQuery query = composeQuery(command);
+        query.execute(context.getTransaction(), new SqlResultCallback() {
+            @Override
+            public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                Map<Integer, String> labels = Maps.newHashMap();
+                for (SqlResultSetRow row : results.getRows()) {
+                    labels.put(row.getInt("id"), row.getString("name"));
+                }
+                callback.onSuccess(new DimensionLabels(labels));
+            }
+        });
+    }
+
+    private SqlQuery composeQuery(GetDimensionLabels command) {
+        String tableName;
+        String primaryKey;
+
+        switch (command.getType()) {
+        case Site:
+            tableName = "(select s.siteid, l.name from site s left join location l on (s.locationid=l.locationid))";
+            primaryKey = "siteid";
+            break;
+        case Database:
+            tableName = "UserDatabase";
+            primaryKey = "DatabaseId";
+            break;
+        case AdminLevel:
+            tableName = "AdminEntity";
+            primaryKey = "AdminEntityId";
+            break;
+        default:
+            tableName = command.getType().toString();
+            primaryKey = tableName + "Id";
+        }
+
+        return SqlQuery.select()
+            .appendColumn("name")
+            .appendColumn(primaryKey, "id")
+            .from(tableName.toLowerCase(), "t")
+            .where(primaryKey)
+            .in(command.getIds());
+    }
 }
-

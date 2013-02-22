@@ -28,17 +28,17 @@ import java.util.List;
 import org.activityinfo.shared.dto.TargetDTO;
 
 public class TargetResult extends ListResult<TargetDTO> implements
-		CommandResult {
+    CommandResult {
 
-	public TargetResult() {
+    public TargetResult() {
 
-	}
+    }
 
-	public TargetResult(List<TargetDTO> targets) {
-		super(targets);
-	}
+    public TargetResult(List<TargetDTO> targets) {
+        super(targets);
+    }
 
-	public TargetResult(TargetDTO... targets) {
-		super(Arrays.asList(targets));
-	}
+    public TargetResult(TargetDTO... targets) {
+        super(Arrays.asList(targets));
+    }
 }

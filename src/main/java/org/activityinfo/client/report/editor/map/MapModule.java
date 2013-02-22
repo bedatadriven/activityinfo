@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.report.editor.map;
 
 /*

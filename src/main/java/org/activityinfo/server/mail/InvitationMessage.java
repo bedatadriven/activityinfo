@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.mail;
 
 /*
@@ -43,9 +41,9 @@ public class InvitationMessage extends MailMessage {
         return invitingUser;
     }
 
-	@Override
-	public User getRecipient() {
-		return newUser;
-	}
+    @Override
+    public User getRecipient() {
+        return newUser;
+    }
 
 }

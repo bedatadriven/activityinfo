@@ -39,6 +39,7 @@ public class SimpleBundler implements Bundler {
 
     @Override
     public void bundle(SqlResultSetRow rs, Bucket bucket) {
-        bucket.setCategory(dimension, new SimpleCategory(rs.getString(labelColumnIndex)));
+        bucket.setCategory(dimension,
+            new SimpleCategory(rs.getString(labelColumnIndex)));
     }
 }

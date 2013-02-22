@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.util.logging;
 
 /*
@@ -45,8 +43,7 @@ public class LoggingInterceptor implements MethodInterceptor {
 
     private MailSender mailSender;
     private final List<String> alertRecipients = new ArrayList<String>(0);
-    
-    
+
     @Inject(optional = true)
     public void setMailSender(MailSender sender) {
         this.mailSender = sender;
@@ -54,27 +51,27 @@ public class LoggingInterceptor implements MethodInterceptor {
 
     @Inject(optional = true)
     public void setProperties(DeploymentConfiguration properties) {
-        String alertRecipientsProperty = properties.getProperty("alert.recipients");
-        if(alertRecipientsProperty != null) {
-            for(String alertRecipient : alertRecipientsProperty.split(",")) {
+        String alertRecipientsProperty = properties
+            .getProperty("alert.recipients");
+        if (alertRecipientsProperty != null) {
+            for (String alertRecipient : alertRecipientsProperty.split(",")) {
                 String alertRecipientTrimmed = alertRecipient.trim();
-                if(alertRecipientTrimmed.length() > 0) {
+                if (alertRecipientTrimmed.length() > 0) {
                     this.alertRecipients.add(alertRecipientTrimmed);
                 }
             }
         }
     }
-  
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        if(isTraceEnabled(invocation)) {
+        if (isTraceEnabled(invocation)) {
             trace(invocation);
         }
         try {
             return invocation.proceed();
-        } catch(Exception e) {
-            if(isExceptionLoggingEnabled(invocation)) {
+        } catch (Exception e) {
+            if (isExceptionLoggingEnabled(invocation)) {
                 onException(invocation, e);
             }
             throw e;
@@ -82,44 +79,59 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     private void onException(MethodInvocation invocation, Throwable caught) {
-        Logger logger = Logger.getLogger(getOriginalClass(invocation).getName());
+        Logger logger = Logger
+            .getLogger(getOriginalClass(invocation).getName());
         logException(invocation, caught, logger);
-        if(isEmailAlertEnabled(invocation)) {
+        if (isEmailAlertEnabled(invocation)) {
             mailException(invocation, caught, logger);
         }
     }
 
-    private void logException(MethodInvocation invocation, Throwable e, Logger logger) {
-        logger.log(Level.SEVERE, "Exception was thrown while executing " + invocation.getMethod().getName(), e);
+    private void logException(MethodInvocation invocation, Throwable e,
+        Logger logger) {
+        logger.log(Level.SEVERE, "Exception was thrown while executing "
+            + invocation.getMethod().getName(), e);
     }
 
-    private void mailException(MethodInvocation invocation, Throwable caught, Logger logger) {
-        if(mailSender == null) {
-            logger.log(Level.WARNING, "emailAlert is enabled for " + invocation.getMethod().getName() + " but no MailSender is conigured");
+    private void mailException(MethodInvocation invocation, Throwable caught,
+        Logger logger) {
+        if (mailSender == null) {
+            logger.log(Level.WARNING, "emailAlert is enabled for "
+                + invocation.getMethod().getName()
+                + " but no MailSender is conigured");
         }
-        if(alertRecipients.isEmpty()) {
-            logger.log(Level.WARNING, "emailAlert is enabled for " + invocation.getMethod().getName() + " but no alert recipients are specified. " +
-                    "Please set the 'alert.recipients' property in the activityinfo.config file");
+        if (alertRecipients.isEmpty()) {
+            logger
+                .log(
+                    Level.WARNING,
+                    "emailAlert is enabled for "
+                        + invocation.getMethod().getName()
+                        + " but no alert recipients are specified. "
+                        +
+                        "Please set the 'alert.recipients' property in the activityinfo.config file");
         }
-        if(mailSender != null && !alertRecipients.isEmpty()) {
+        if (mailSender != null && !alertRecipients.isEmpty()) {
             try {
                 sendMail(caught);
             } catch (MessagingException e) {
-                logger.log(Level.WARNING, "Exception thrown while trying to email alert about previous exception", e);
+                logger
+                    .log(
+                        Level.WARNING,
+                        "Exception thrown while trying to email alert about previous exception",
+                        e);
             }
         }
     }
 
     private void sendMail(Throwable caught) throws MessagingException {
-    	MessageBuilder email = new MessageBuilder();
-        for(String address : alertRecipients) {
+        MessageBuilder email = new MessageBuilder();
+        for (String address : alertRecipients) {
             email.to(address);
         }
         email.subject("[ACTIVITYINFO EXCEPTION] " + caught.getMessage());
-        email.body( stackTraceToString(caught));
+        email.body(stackTraceToString(caught));
         mailSender.send(email.build());
     }
-
 
     private String stackTraceToString(Throwable caught) {
         StringWriter stringWriter = new StringWriter();
@@ -133,7 +145,8 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     private void trace(MethodInvocation invocation) {
-        Logger logger = Logger.getLogger(invocation.getThis().getClass().getName());
+        Logger logger = Logger.getLogger(invocation.getThis().getClass()
+            .getName());
         logger.finer("Calling " + invocation.getMethod().getName());
     }
 
@@ -142,7 +155,8 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     private boolean isEmailAlertEnabled(MethodInvocation invocation) {
-        LogException logSetting =  invocation.getMethod().getAnnotation(LogException.class);
+        LogException logSetting = invocation.getMethod().getAnnotation(
+            LogException.class);
         return logSetting != null && logSetting.emailAlert();
     }
 

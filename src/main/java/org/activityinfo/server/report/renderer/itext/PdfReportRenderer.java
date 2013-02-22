@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.report.renderer.itext;
 
 /*
@@ -23,7 +22,6 @@ package org.activityinfo.server.report.renderer.itext;
  * #L%
  */
 
-
 import java.io.OutputStream;
 import java.net.URL;
 
@@ -45,108 +43,111 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
-
 /**
  * iText ReportRenderer targeting PDF output
- *
+ * 
  */
 public class PdfReportRenderer extends ItextReportRenderer {
 
-	private PdfWriter writer;
+    private PdfWriter writer;
 
-	@Inject
-	public PdfReportRenderer(AdminGeometryProvider geometryProvider, @MapIconPath String mapIconPath) {
-		super(geometryProvider, mapIconPath);
-	}
+    @Inject
+    public PdfReportRenderer(AdminGeometryProvider geometryProvider,
+        @MapIconPath String mapIconPath) {
+        super(geometryProvider, mapIconPath);
+    }
 
-	@Override
-	protected DocWriter createWriter(Document document, OutputStream os) throws DocumentException {
-		writer = PdfWriter.getInstance(document, os);
-		writer.setStrictImageSequence(true);
+    @Override
+    protected DocWriter createWriter(Document document, OutputStream os)
+        throws DocumentException {
+        writer = PdfWriter.getInstance(document, os);
+        writer.setStrictImageSequence(true);
 
-		return writer;
-	}
+        return writer;
+    }
 
-	@Override
-	public String getMimeType() {
-		return "application/pdf";
-	}
+    @Override
+    public String getMimeType() {
+        return "application/pdf";
+    }
 
-	@Override
-	public String getFileSuffix() {
-		return ".pdf";
-	}
+    @Override
+    public String getFileSuffix() {
+        return ".pdf";
+    }
 
-	@Override
-	protected void renderFooter(Document document) {
-		HeaderFooter footer = new HeaderFooter(new Phrase("Page ", ThemeHelper.footerFont()), true);
-		document.setFooter(footer);		
-	}
+    @Override
+    protected void renderFooter(Document document) {
+        HeaderFooter footer = new HeaderFooter(new Phrase("Page ",
+            ThemeHelper.footerFont()), true);
+        document.setFooter(footer);
+    }
 
-	@Override
-	protected ImageCreator getImageCreator() {
-		return new PdfVectorImageCreator();
-	}
+    @Override
+    protected ImageCreator getImageCreator() {
+        return new PdfVectorImageCreator();
+    }
 
-	private class PdfVectorImageCreator implements ImageCreator {
-		@Override
-		public PdfVectorImage create(int width, int height) {
-			PdfContentByte cb = writer.getDirectContent();
-			PdfTemplate template = cb.createTemplate(width, height);
-			
-			return new PdfVectorImage(template, template.createGraphics(width, height), height);
-		}
+    private class PdfVectorImageCreator implements ImageCreator {
+        @Override
+        public PdfVectorImage create(int width, int height) {
+            PdfContentByte cb = writer.getDirectContent();
+            PdfTemplate template = cb.createTemplate(width, height);
 
-		@Override
-		public ItextGraphic createMap(int width, int height) {
-			return create(width, height);
-		}
-	}
+            return new PdfVectorImage(template, template.createGraphics(width,
+                height), height);
+        }
 
-	private static class PdfVectorImage implements ItextGraphic {
-		private PdfTemplate template;
-		private Graphics2D g2d;
-		private int height;
+        @Override
+        public ItextGraphic createMap(int width, int height) {
+            return create(width, height);
+        }
+    }
 
-		public PdfVectorImage(PdfTemplate template, Graphics2D g2d, int height) {
-			super();
-			this.template = template;
-			this.g2d = g2d;
-			this.height = height;
-		}
+    private static class PdfVectorImage implements ItextGraphic {
+        private PdfTemplate template;
+        private Graphics2D g2d;
+        private int height;
 
-		@Override
-		public Graphics2D getGraphics() {
-			return g2d;
-		}
+        public PdfVectorImage(PdfTemplate template, Graphics2D g2d, int height) {
+            super();
+            this.template = template;
+            this.g2d = g2d;
+            this.height = height;
+        }
 
-		@Override
-		public Image toItextImage() throws BadElementException {
-			g2d.dispose();
-			Image image = Image.getInstance(template);
-			image.scalePercent(72f/92f*100f);
+        @Override
+        public Graphics2D getGraphics() {
+            return g2d;
+        }
 
-			return image;
-		}
+        @Override
+        public Image toItextImage() throws BadElementException {
+            g2d.dispose();
+            Image image = Image.getInstance(template);
+            image.scalePercent(72f / 92f * 100f);
 
-		@Override
-		public void addImage(String imageUrl, int x, int y, int width,
-				int height) {
-			Image image;
-			try {
-				image = Image.getInstance(new URL(imageUrl));
-			} catch (Exception e) {
-				// ignore missing tiles
-				return;
-			}
-			try {
-				int top = this.height - y - height;
-				image.setAbsolutePosition(x, top);
-				template.addImage(image, false);
+            return image;
+        }
 
-			} catch (DocumentException e) {
-				throw new RuntimeException(e);
-			}			
-		}
-	}
+        @Override
+        public void addImage(String imageUrl, int x, int y, int width,
+            int height) {
+            Image image;
+            try {
+                image = Image.getInstance(new URL(imageUrl));
+            } catch (Exception e) {
+                // ignore missing tiles
+                return;
+            }
+            try {
+                int top = this.height - y - height;
+                image.setAbsolutePosition(x, top);
+                template.addImage(image, false);
+
+            } catch (DocumentException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

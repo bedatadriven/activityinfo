@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.mock;
 
 /*
@@ -39,47 +37,46 @@ import org.activityinfo.shared.exception.CommandException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
-* @author Alex Bertram (akbertram@gmail.com)
-*/
+ * @author Alex Bertram (akbertram@gmail.com)
+ */
 public class MockRemoteCommandService implements RemoteCommandServiceAsync {
 
     public Map<Class, Integer> commandCounts = new HashMap<Class, Integer>();
 
     public SchemaDTO schema;
-    
+
     public MockRemoteCommandService() {
-    	
-    }
-    
-    public MockRemoteCommandService(SchemaDTO schema) {
-    	this.schema = schema;
+
     }
 
+    public MockRemoteCommandService(SchemaDTO schema) {
+        this.schema = schema;
+    }
 
     public int getCommandCount(Class clazz) {
         Integer count = commandCounts.get(clazz);
-        if(count == null) {
+        if (count == null) {
             return 0;
         } else {
             return count;
         }
     }
 
-
     @Override
-    public void execute(String authToken, List<Command> cmds, AsyncCallback<List<CommandResult>> callback) {
+    public void execute(String authToken, List<Command> cmds,
+        AsyncCallback<List<CommandResult>> callback) {
 
         List<CommandResult> results = new ArrayList<CommandResult>();
 
-        for(Command cmd : cmds ) {
+        for (Command cmd : cmds) {
 
             Integer count = commandCounts.get(cmd.getClass());
             commandCounts.put(cmd.getClass(), count == null ? 1 : count + 1);
 
-            if(schema!=null && cmd instanceof GetSchema) {
-            	results.add(schema);
+            if (schema != null && cmd instanceof GetSchema) {
+                results.add(schema);
             } else {
-            	results.add(mockExecute(cmd));
+                results.add(mockExecute(cmd));
             }
         }
         callback.onSuccess(results);

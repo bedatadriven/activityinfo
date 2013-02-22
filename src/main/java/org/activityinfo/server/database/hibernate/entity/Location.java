@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -44,147 +42,147 @@ import javax.persistence.PreUpdate;
 /**
  * 
  * @author Alex Bertram
- *
+ * 
  */
 @Entity
 public class Location implements java.io.Serializable {
 
-	private int id;
+    private int id;
     private LocationType locationType;
-	private String locationGuid;
-	private Double x;
-	private Double y;
-	private String name;
-	private String axe;
-	private Set<Site> sites = new HashSet<Site>(0);
-	private Set<AdminEntity> adminEntities = new HashSet<AdminEntity>(0);
+    private String locationGuid;
+    private Double x;
+    private Double y;
+    private String name;
+    private String axe;
+    private Set<Site> sites = new HashSet<Site>(0);
+    private Set<AdminEntity> adminEntities = new HashSet<AdminEntity>(0);
     private long timeEdited;
 
-	public Location() {
-	}
+    public Location() {
+    }
 
     @Id
-	@Column(name = "LocationID", unique = true, nullable = false)
-	public int getId() {
-		return this.id;
-	}
+    @Column(name = "LocationID", unique = true, nullable = false)
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LocationTypeID", nullable = false)
-	public LocationType getLocationType() {
-		return this.locationType;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LocationTypeID", nullable = false)
+    public LocationType getLocationType() {
+        return this.locationType;
+    }
 
-	public void setLocationType(LocationType locationType) {
-		this.locationType = locationType;
-	}
+    public void setLocationType(LocationType locationType) {
+        this.locationType = locationType;
+    }
 
-	@Column(name = "LocationGuid", length = 36)
-	public String getLocationGuid() {
-		return this.locationGuid;
-	}
+    @Column(name = "LocationGuid", length = 36)
+    public String getLocationGuid() {
+        return this.locationGuid;
+    }
 
-	public void setLocationGuid(String locationGuid) {
-		this.locationGuid = locationGuid;
-	}
+    public void setLocationGuid(String locationGuid) {
+        this.locationGuid = locationGuid;
+    }
 
-	@Column(name = "X", precision = 7, scale = 0)
-	public Double getX() {
-		return this.x;
-	}
+    @Column(name = "X", precision = 7, scale = 0)
+    public Double getX() {
+        return this.x;
+    }
 
-	public void setX(Double x) {
-		this.x = x;
-	}
+    public void setX(Double x) {
+        this.x = x;
+    }
 
-	@Column(name = "Y", precision = 7, scale = 0)
-	public Double getY() {
-		return this.y;
-	}
+    @Column(name = "Y", precision = 7, scale = 0)
+    public Double getY() {
+        return this.y;
+    }
 
-	public void setY(Double y) {
-		this.y = y;
-	}
+    public void setY(Double y) {
+        this.y = y;
+    }
 
-	@Column(name = "Name", nullable = false, length = 50)
-	public String getName() {
-		return this.name;
-	}
+    @Column(name = "Name", nullable = false, length = 50)
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Column(name = "Axe", length = 50)
-	public String getAxe() {
-		return this.axe;
-	}
+    @Column(name = "Axe", length = 50)
+    public String getAxe() {
+        return this.axe;
+    }
 
-	public void setAxe(String axe) {
-		this.axe = axe;
-	}
+    public void setAxe(String axe) {
+        this.axe = axe;
+    }
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "location")
-	public Set<Site> getSites() {
-		return this.sites;
-	}
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "location")
+    public Set<Site> getSites() {
+        return this.sites;
+    }
 
-	public void setSites(Set<Site> sites) {
-		this.sites = sites;
-	}
+    public void setSites(Set<Site> sites) {
+        this.sites = sites;
+    }
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "LocationAdminLink", 
-			joinColumns = { 
-				@JoinColumn(name = "LocationId", nullable = false, updatable = false) }, 
-			inverseJoinColumns = { 
-				@JoinColumn(name = "AdminEntityId", nullable = false, updatable = false) })
-	public Set<AdminEntity> getAdminEntities() {
-		return this.adminEntities;
-	}
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "LocationAdminLink",
+        joinColumns = {
+            @JoinColumn(name = "LocationId", nullable = false, updatable = false) },
+        inverseJoinColumns = {
+            @JoinColumn(name = "AdminEntityId", nullable = false, updatable = false) })
+    public Set<AdminEntity> getAdminEntities() {
+        return this.adminEntities;
+    }
 
-	public void setAdminEntities(Set<AdminEntity> adminEntities) {
-		this.adminEntities = adminEntities;
-	}
+    public void setAdminEntities(Set<AdminEntity> adminEntities) {
+        this.adminEntities = adminEntities;
+    }
 
-	public void setAdminEntity(int levelId, AdminEntity newEntity) {
-		
-		for(AdminEntity entity : getAdminEntities()) {
-			if(entity.getLevel().getId() == levelId) {
-				
-				if(newEntity == null) {
-					getAdminEntities().remove(entity);
-				} else if(newEntity.getId() != entity.getId()) {
-					getAdminEntities().remove(entity);
-					getAdminEntities().add(newEntity);
-				}
-				
-				return;
-			}
-		}
-	
-		if(newEntity!=null) {
-			getAdminEntities().add(newEntity);
-		}
-	}
-    
+    public void setAdminEntity(int levelId, AdminEntity newEntity) {
+
+        for (AdminEntity entity : getAdminEntities()) {
+            if (entity.getLevel().getId() == levelId) {
+
+                if (newEntity == null) {
+                    getAdminEntities().remove(entity);
+                } else if (newEntity.getId() != entity.getId()) {
+                    getAdminEntities().remove(entity);
+                    getAdminEntities().add(newEntity);
+                }
+
+                return;
+            }
+        }
+
+        if (newEntity != null) {
+            getAdminEntities().add(newEntity);
+        }
+    }
+
     public long getTimeEdited() {
-		return timeEdited;
-	}
+        return timeEdited;
+    }
 
-	public void setTimeEdited(long timeEdited) {
-		this.timeEdited = timeEdited;
-	}
+    public void setTimeEdited(long timeEdited) {
+        this.timeEdited = timeEdited;
+    }
 
-	public void setTimeEdited(Date date) {
-		this.timeEdited = date.getTime();
-	}
+    public void setTimeEdited(Date date) {
+        this.timeEdited = date.getTime();
+    }
 
-	@PrePersist
+    @PrePersist
     public void onCreate() {
         Date now = new Date();
         setTimeEdited(now.getTime());

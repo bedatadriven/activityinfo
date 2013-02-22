@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model.labeling;
 
 /*
@@ -27,9 +25,9 @@ package org.activityinfo.shared.report.model.labeling;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * 
  * Provides a sequence of latin letters: A...Z, AA..AZ
- *
+ * 
  * @author Alex Bertram
  */
 @XmlRootElement
@@ -39,11 +37,11 @@ public class LatinAlphaSequence implements LabelSequence {
 
     @Override
     public String next() {
-        int number = nextNumber ++;
+        int number = nextNumber++;
         StringBuilder label = new StringBuilder();
-        while(number >= 26) {
+        while (number >= 26) {
             int digit = number / 26;
-            label.append((char)(65+digit));
+            label.append((char) (65 + digit));
             number -= digit * 26;
         }
         return label.toString();

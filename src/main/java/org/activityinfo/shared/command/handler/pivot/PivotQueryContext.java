@@ -35,38 +35,41 @@ import com.google.common.collect.Maps;
 
 public class PivotQueryContext {
 
-	private PivotSites command;
-	private ExecutionContext executionContext;
-	private SqlDialect dialect;
-	private Map<Object, Bucket> buckets = Maps.newHashMap();
-	
-	public PivotQueryContext(PivotSites command, ExecutionContext context, SqlDialect dialect) {
-		this.command = command;
-		this.executionContext = context;
-		this.dialect = dialect;
-	}
-	public PivotSites getCommand() {
-		return command;
-	}
-	public ExecutionContext getExecutionContext() {
-		return executionContext;
-	}
-	public SqlDialect getDialect() {
-		return dialect;
-	}
-	
-	public void addBucket(Bucket bucket) {
-		Bucket existing = buckets.get(bucket.getKey());
-		if(existing == null) {
-			buckets.put(bucket.getKey(), bucket);
-		} else {
-			existing.add(bucket);
-		}
-	}
-	public List<Bucket> getBuckets() {
-		return Lists.newArrayList(buckets.values());
-	}
-	
-	
-	
+    private PivotSites command;
+    private ExecutionContext executionContext;
+    private SqlDialect dialect;
+    private Map<Object, Bucket> buckets = Maps.newHashMap();
+
+    public PivotQueryContext(PivotSites command, ExecutionContext context,
+        SqlDialect dialect) {
+        this.command = command;
+        this.executionContext = context;
+        this.dialect = dialect;
+    }
+
+    public PivotSites getCommand() {
+        return command;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return executionContext;
+    }
+
+    public SqlDialect getDialect() {
+        return dialect;
+    }
+
+    public void addBucket(Bucket bucket) {
+        Bucket existing = buckets.get(bucket.getKey());
+        if (existing == null) {
+            buckets.put(bucket.getKey(), bucket);
+        } else {
+            existing.add(bucket);
+        }
+    }
+
+    public List<Bucket> getBuckets() {
+        return Lists.newArrayList(buckets.values());
+    }
+
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap.exception;
 
 /*
@@ -28,5 +26,5 @@ package org.activityinfo.server.bootstrap.exception;
  * @author Alex Bertram
  */
 public class IncompleteFormException extends RuntimeException {
-	private static final long serialVersionUID = 8501341221388150659L;
+    private static final long serialVersionUID = 8501341221388150659L;
 }

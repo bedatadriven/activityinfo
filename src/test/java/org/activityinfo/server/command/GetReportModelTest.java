@@ -37,33 +37,32 @@ import org.junit.runner.RunWith;
 @OnDataSet("/dbunit/getreporttests.db.xml")
 public class GetReportModelTest extends CommandTestCase {
 
-	@Test
-	public void selectReportOnly() {
-		setUser(1);
-		ReportDTO result = execute(new GetReportModel(3));
-		assertNotNull(result.getReport());
-		assertEquals("Report 3", result.getReport().getTitle());
-		assertNull(result.getReportMetadataDTO());
-	}
+    @Test
+    public void selectReportOnly() {
+        setUser(1);
+        ReportDTO result = execute(new GetReportModel(3));
+        assertNotNull(result.getReport());
+        assertEquals("Report 3", result.getReport().getTitle());
+        assertNull(result.getReportMetadataDTO());
+    }
 
-	@Test
-	public void selectReportOnly2() {
-		setUser(1);
-		ReportDTO result = execute(new GetReportModel(3, false));
-		assertNotNull(result.getReport());
-		assertEquals("Report 3", result.getReport().getTitle());
-		assertNull(result.getReportMetadataDTO());
-	}
+    @Test
+    public void selectReportOnly2() {
+        setUser(1);
+        ReportDTO result = execute(new GetReportModel(3, false));
+        assertNotNull(result.getReport());
+        assertEquals("Report 3", result.getReport().getTitle());
+        assertNull(result.getReportMetadataDTO());
+    }
 
+    @Test
+    public void selectReportWithMetadata() {
+        setUser(1);
+        ReportDTO result = execute(new GetReportModel(3, true));
+        assertNotNull(result.getReport());
+        assertEquals("Report 3", result.getReport().getTitle());
 
-	@Test
-	public void selectReportWithMetadata() {
-		setUser(1);
-		ReportDTO result = execute(new GetReportModel(3, true));
-		assertNotNull(result.getReport());
-		assertEquals("Report 3", result.getReport().getTitle());
-
-		assertNotNull(result.getReportMetadataDTO());
-		assertEquals("Alex", result.getReportMetadataDTO().getOwnerName());
-	}
+        assertNotNull(result.getReportMetadataDTO());
+        assertEquals("Alex", result.getReportMetadataDTO().getOwnerName());
+    }
 }

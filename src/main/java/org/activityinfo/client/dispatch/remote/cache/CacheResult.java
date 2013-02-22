@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.remote.cache;
 
 /*
@@ -27,8 +25,9 @@ package org.activityinfo.client.dispatch.remote.cache;
 import org.activityinfo.shared.command.result.CommandResult;
 
 /**
- * Encapsulates the return value of call to a {@link org.activityinfo.client.dispatch.CommandCache}.
- *
+ * Encapsulates the return value of call to a
+ * {@link org.activityinfo.client.dispatch.CommandCache}.
+ * 
  * @author Alex Bertram
  */
 public class CacheResult<T extends CommandResult> {
@@ -39,8 +38,9 @@ public class CacheResult<T extends CommandResult> {
     private final boolean couldExecute;
 
     /**
-     * The result of the local execution. N.B.: <code>null</code> is a legitimate
-     * return value of a {@link org.activityinfo.shared.command.Command} so be sure to check the
+     * The result of the local execution. N.B.: <code>null</code> is a
+     * legitimate return value of a
+     * {@link org.activityinfo.shared.command.Command} so be sure to check the
      * value of <code>couldExecute</code>
      */
     private final T result;
@@ -53,10 +53,10 @@ public class CacheResult<T extends CommandResult> {
     }
 
     /**
-     * Creates a return value indicating that local excecution was
-     * successful
-     *
-     * @param result The result of the local execution (can be null)
+     * Creates a return value indicating that local excecution was successful
+     * 
+     * @param result
+     *            The result of the local execution (can be null)
      */
     public CacheResult(T result) {
         this.couldExecute = true;
@@ -65,19 +65,19 @@ public class CacheResult<T extends CommandResult> {
 
     /**
      * Creates a return value indicating that local execution was not possible.
-     *
-     * @return A {@link org.activityinfo.client.dispatch.CommandCache} return value indicating that
-     *         local execution was not possible.
+     * 
+     * @return A {@link org.activityinfo.client.dispatch.CommandCache} return
+     *         value indicating that local execution was not possible.
      */
     public static CacheResult couldNotExecute() {
         return failed;
     }
 
-	public T getResult() {
-		return result;
-	}
+    public T getResult() {
+        return result;
+    }
 
-	public boolean isCouldExecute() {
-		return couldExecute;
-	}
+    public boolean isCouldExecute() {
+        return couldExecute;
+    }
 }

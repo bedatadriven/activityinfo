@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.form;
 
 /*
@@ -52,50 +50,54 @@ public class DatabaseForm extends FormPanel {
     public DatabaseForm(final Dispatcher dispatcher) {
         binding = new FormBinding(this);
 
-		TextField<String> nameField = new TextField<String>();
-		nameField.setFieldLabel(I18N.CONSTANTS.name());
-		nameField.setAllowBlank(false);
-		nameField.setMaxLength(16);
+        TextField<String> nameField = new TextField<String>();
+        nameField.setFieldLabel(I18N.CONSTANTS.name());
+        nameField.setAllowBlank(false);
+        nameField.setMaxLength(16);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
-		add(nameField);
-		
-		TextField<String> fullNameField = new TextField<String>();
-		fullNameField.setFieldLabel(I18N.CONSTANTS.description());
-		fullNameField.setMaxLength(50);
+        add(nameField);
+
+        TextField<String> fullNameField = new TextField<String>();
+        fullNameField.setFieldLabel(I18N.CONSTANTS.description());
+        fullNameField.setMaxLength(50);
         binding.addFieldBinding(new FieldBinding(fullNameField, "fullName"));
-		add(fullNameField);
+        add(fullNameField);
 
         ComboBox<CountryDTO> countryField = new RemoteComboBox<CountryDTO>();
-		countryField.setStore(createCountryStore(dispatcher, countryField));
+        countryField.setStore(createCountryStore(dispatcher, countryField));
         countryField.setFieldLabel(I18N.CONSTANTS.country());
         countryField.setValueField("id");
         countryField.setDisplayField("name");
         countryField.setAllowBlank(false);
-		countryField.setTriggerAction(TriggerAction.ALL);
+        countryField.setTriggerAction(TriggerAction.ALL);
 
-		binding.addFieldBinding(new FieldBinding(countryField, "country") {
+        binding.addFieldBinding(new FieldBinding(countryField, "country") {
             @Override
             public void updateModel() {
-                ((UserDatabaseDTO)model).setCountry((CountryDTO) field
-						.getValue());
-			}
-		});
-
-		add(countryField);
-	}
-
-	private static ListStore<CountryDTO> createCountryStore(
-			final Dispatcher dispatcher, final Component component) {
-
-        return new ListStore<CountryDTO>(new BaseListLoader<CountryResult>(new DataProxy<CountryResult>(){
-            @Override
-            public void load(DataReader<CountryResult> countryResultDataReader, Object loadConfig, final AsyncCallback<CountryResult> callback) {
-						dispatcher.execute(new GetCountries(),
-								new MaskingAsyncMonitor(component,
-										I18N.CONSTANTS.loading()), callback);
-
+                ((UserDatabaseDTO) model).setCountry((CountryDTO) field
+                    .getValue());
             }
-        }));
+        });
+
+        add(countryField);
+    }
+
+    private static ListStore<CountryDTO> createCountryStore(
+        final Dispatcher dispatcher, final Component component) {
+
+        return new ListStore<CountryDTO>(new BaseListLoader<CountryResult>(
+            new DataProxy<CountryResult>() {
+                @Override
+                public void load(
+                    DataReader<CountryResult> countryResultDataReader,
+                    Object loadConfig,
+                    final AsyncCallback<CountryResult> callback) {
+                    dispatcher.execute(new GetCountries(),
+                        new MaskingAsyncMonitor(component,
+                            I18N.CONSTANTS.loading()), callback);
+
+                }
+            }));
     }
 
     public FormBinding getBinding() {

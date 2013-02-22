@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command;
 
 /*
@@ -37,14 +35,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(InjectionSupport.class)
-@Modules({ReportModule.class, GwtRpcModule.class})
+@Modules({ ReportModule.class, GwtRpcModule.class })
 public class GetMapIconsTest {
 
     @Test
     public void testGetMapIcons() throws Exception {
 
         GetMapIconsHandler handler = new GetMapIconsHandler("war/mapicons");
-        MapIconResult result = (MapIconResult) handler.execute(new GetMapIcons(), new User());
+        MapIconResult result = (MapIconResult) handler.execute(
+            new GetMapIcons(), new User());
 
         Assert.assertTrue(result.getData().size() > 0);
 

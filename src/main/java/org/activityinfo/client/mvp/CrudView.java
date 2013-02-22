@@ -44,15 +44,18 @@ import org.activityinfo.shared.dto.DTO;
  * P: parent, holding a collection of DTO's
  */
 public interface CrudView<M extends DTO, P extends DTO> extends
-	ListView<M, P>, 
-	CanCreate<M>,
-	CanUpdate<M>,
-	CanDelete<M>,
-	CanFilter<M>,
-	CanRefresh<M> 
-{
-	List<M> getUnsavedItems();
-	boolean hasChangedItems();
-	boolean hasSingleChangedItem();
-	Map<String, Object> getChanges(M item);
+    ListView<M, P>,
+    CanCreate<M>,
+    CanUpdate<M>,
+    CanDelete<M>,
+    CanFilter<M>,
+    CanRefresh<M> {
+    
+    List<M> getUnsavedItems();
+
+    boolean hasChangedItems();
+
+    boolean hasSingleChangedItem();
+
+    Map<String, Object> getChanges(M item);
 }

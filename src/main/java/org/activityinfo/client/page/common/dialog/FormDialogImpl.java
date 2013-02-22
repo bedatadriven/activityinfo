@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.dialog;
 
 /*
@@ -43,7 +41,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 /*
  * Default implementation for a FormDialog that displays a FormPanel
  */
-public class FormDialogImpl<FormT extends FormPanel> extends Window implements AsyncMonitor, FormDialogTether {
+public class FormDialogImpl<FormT extends FormPanel> extends Window implements
+    AsyncMonitor, FormDialogTether {
     protected FormT form;
     private Status status;
     protected Button saveButton;
@@ -53,43 +52,44 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
     private boolean asyncCallInProgress = false;
     private boolean asyncCallCancelled;
 
-
     public FormDialogImpl(final FormT form) {
         this.form = form;
-    	
+
         initializeComponent();
 
         adjustAppearanceToFitDialog(form);
 
         add(form);
-        
+
         createStatusButtonBar();
         createSaveButton();
         createCancelButton();
     }
 
-	private void adjustAppearanceToFitDialog(final FormT form) {
-		if (!form.isRendered()) {
+    private void adjustAppearanceToFitDialog(final FormT form) {
+        if (!form.isRendered()) {
             form.setHeaderVisible(false);
             form.setFrame(false);
         }
-	}
+    }
 
-	private void createCancelButton() {
+    private void createCancelButton() {
         cancelButton = new Button(I18N.CONSTANTS.cancel());
         cancelButton.setIcon(IconImageBundle.ICONS.cancel());
         addButton(cancelButton);
         cancelButton.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent be) {
                 hide();
             }
         });
-	}
+    }
 
-	private void createSaveButton() {
-		saveButton = new Button(I18N.CONSTANTS.save());
+    private void createSaveButton() {
+        saveButton = new Button(I18N.CONSTANTS.save());
         saveButton.setIcon(IconImageBundle.ICONS.save());
         saveButton.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent be) {
                 // use a deferred handler to make sure we get any change
                 // events first
@@ -98,7 +98,7 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
                     public void execute() {
                         if (!form.isValid()) {
                             MessageBox.alert(getHeading(),
-                                    I18N.CONSTANTS.pleaseCompleteForm(), null);
+                                I18N.CONSTANTS.pleaseCompleteForm(), null);
                         } else {
                             onValidated();
                         }
@@ -107,22 +107,22 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
             }
         });
         addButton(saveButton);
-	}
+    }
 
-	private void createStatusButtonBar() {
-		status = new Status();
+    private void createStatusButtonBar() {
+        status = new Status();
         status.setWidth(200);
         this.getButtonBar().add(status);
-	}
+    }
 
-	private void initializeComponent() {
-		setModal(true);
+    private void initializeComponent() {
+        setModal(true);
         setLayout(new FitLayout());
         setModal(true);
         setClosable(false);
         setBodyStyle("padding: 5px;");
         setLayout(new FitLayout());
-	}
+    }
 
     public FormT getForm() {
         return form;
@@ -156,7 +156,6 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
         return workingText;
     }
 
-
     public void setWorkingText(String workingText) {
         this.workingText = workingText;
     }
@@ -164,7 +163,6 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
     public Status getStatus() {
         return status;
     }
-
 
     @Override
     public void beforeRequest() {
@@ -176,7 +174,6 @@ public class FormDialogImpl<FormT extends FormPanel> extends Window implements A
 
         status.setBusy(workingText);
     }
-
 
     @Override
     public void onConnectionProblem() {

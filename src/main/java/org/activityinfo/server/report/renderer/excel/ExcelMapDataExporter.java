@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.renderer.excel;
 
 /*
@@ -48,13 +46,15 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class ExcelMapDataExporter implements Renderer {
 
     @Override
-	public void render(ReportElement element, OutputStream stm) throws IOException {
+    public void render(ReportElement element, OutputStream stm)
+        throws IOException {
 
-        if(!(element instanceof MapReportElement)) {
-            throw new RuntimeException("ExcelMapDataExporter accepts only MapElements");
+        if (!(element instanceof MapReportElement)) {
+            throw new RuntimeException(
+                "ExcelMapDataExporter accepts only MapElements");
         }
 
-        MapContent content = ((MapReportElement)element).getContent();
+        MapContent content = ((MapReportElement) element).getContent();
 
         Workbook book = new HSSFWorkbook();
         Sheet sheet = book.createSheet();
@@ -70,19 +70,19 @@ public class ExcelMapDataExporter implements Renderer {
 
         int rowIndex = 1;
 
-        for(MapMarker marker : content.getMarkers()) {
+        for (MapMarker marker : content.getMarkers()) {
 
             Row dataRow = sheet.createRow(rowIndex++);
             helper.addCell(dataRow, 0, marker.getLat());
             helper.addCell(dataRow, 1, marker.getLng());
-            if(marker instanceof BubbleMapMarker) {
+            if (marker instanceof BubbleMapMarker) {
                 BubbleMapMarker bmarker = (BubbleMapMarker) marker;
                 helper.addCell(dataRow, 2, bmarker.getValue());
                 helper.addCell(dataRow, 3, bmarker.getColor());
             }
-            if(marker instanceof IconMapMarker) {
+            if (marker instanceof IconMapMarker) {
                 IconMapMarker imarker = (IconMapMarker) marker;
-                if(imarker.getIcon() != null) {
+                if (imarker.getIcon() != null) {
                     helper.addCell(dataRow, 4, imarker.getIcon().getName());
                 }
             }
@@ -111,7 +111,7 @@ public class ExcelMapDataExporter implements Renderer {
         }
 
         private void addCell(Row row, int colIndex, String value) {
-            if(value != null) {
+            if (value != null) {
                 Cell cell = row.createCell(colIndex);
                 cell.setCellValue(factory.createRichTextString(value));
             }
@@ -123,6 +123,5 @@ public class ExcelMapDataExporter implements Renderer {
         }
 
     }
-
 
 }

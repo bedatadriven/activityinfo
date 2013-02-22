@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.util.date;
 
 /*
@@ -34,21 +32,20 @@ import org.activityinfo.shared.util.date.DateUtil;
 import com.extjs.gxt.ui.client.util.DateWrapper;
 
 /**
- * Client-side implementation of the {@link org.activityinfo.shared.util.date.DateUtil} interface.
- *
+ * Client-side implementation of the
+ * {@link org.activityinfo.shared.util.date.DateUtil} interface.
+ * 
  * @author Alex Bertram
  */
 public class DateUtilGWTImpl extends DateUtil {
 
-	
-	public static final DateUtilGWTImpl INSTANCE = new DateUtilGWTImpl(); 
-	
+    public static final DateUtilGWTImpl INSTANCE = new DateUtilGWTImpl();
+
     @Override
-	public Month getCurrentMonth() {
+    public Month getCurrentMonth() {
         DateWrapper today = new DateWrapper();
         return new Month(today.getFullYear(), today.getMonth());
     }
-
 
     @Override
     public DateRange yearRange(int year) {
@@ -69,7 +66,7 @@ public class DateUtilGWTImpl extends DateUtil {
 
         DateRange range = new DateRange();
 
-        DateWrapper date = new DateWrapper(year, month-1, 1);
+        DateWrapper date = new DateWrapper(year, month - 1, 1);
         range.setMinDate(date.asDate());
 
         date = date.addMonths(1);
@@ -80,7 +77,6 @@ public class DateUtilGWTImpl extends DateUtil {
 
     }
 
-
     @Override
     public int getYear(Date date) {
         DateWrapper dw = new DateWrapper(date);
@@ -90,7 +86,7 @@ public class DateUtilGWTImpl extends DateUtil {
     @Override
     public int getMonth(Date date) {
         DateWrapper dw = new DateWrapper(date);
-        return dw.getMonth()+1;
+        return dw.getMonth() + 1;
     }
 
     @Override
@@ -111,7 +107,7 @@ public class DateUtilGWTImpl extends DateUtil {
 
     @Override
     public Date add(Date date, DateUnit dateUnit, int count) {
-         throw new RuntimeException("not implemented");
+        throw new RuntimeException("not implemented");
     }
 
     @Override

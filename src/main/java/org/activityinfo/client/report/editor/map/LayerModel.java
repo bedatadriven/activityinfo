@@ -27,36 +27,37 @@ import org.activityinfo.shared.report.model.layers.MapLayer;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class LayerModel extends BaseModelData {
-	private transient MapLayer mapLayer;
-	public String getName() {
-		return get("name");
-	}
+    private transient MapLayer mapLayer;
 
-	public void setName(String name) {
-		set("name", name);
-	}
+    public String getName() {
+        return get("name");
+    }
 
-	public boolean isVisible() {
-		return (Boolean) get("visible");
-	}
+    public void setName(String name) {
+        set("name", name);
+    }
 
-	public void setVisible(boolean isVisible) {
-		set("visible", isVisible);
-	}
+    public boolean isVisible() {
+        return (Boolean) get("visible");
+    }
 
-	public void setMapLayer(MapLayer mapLayer) {
-		this.mapLayer = mapLayer;
-	}
+    public void setVisible(boolean isVisible) {
+        set("visible", isVisible);
+    }
 
-	public MapLayer getMapLayer() {
-		return mapLayer;
-	}
-	
-	public String getLayerType() {
-		return get("type");
-	}
-	
-	public void setLayerType(String type) {
-		set("type", type);
-	}
+    public void setMapLayer(MapLayer mapLayer) {
+        this.mapLayer = mapLayer;
+    }
+
+    public MapLayer getMapLayer() {
+        return mapLayer;
+    }
+
+    public String getLayerType() {
+        return get("type");
+    }
+
+    public void setLayerType(String type) {
+        set("type", type);
+    }
 }

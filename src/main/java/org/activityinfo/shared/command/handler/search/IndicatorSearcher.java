@@ -36,36 +36,36 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class IndicatorSearcher implements Searcher {
 
-	@Override
-	public void search(List<String> testQuery, SqlTransaction tx,
-			final AsyncCallback<List<Integer>> callback) {
-		
-		final String primaryKey = "IndicatorId";
-		String tableName="Indicator";
-		String columnToSearch = "description";
-		
-		SqlQuery
-				.select(primaryKey)
-				.from(tableName.toLowerCase())
-				.whereLikes(columnToSearch)
-				.likeMany(testQuery)
-				
-				.execute(tx, new SqlResultCallback() {
-					@Override
-					public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-						List<Integer> ids = new ArrayList<Integer>();
-						for (SqlResultSetRow row : results.getRows()) {
-							ids.add(row.getInt(primaryKey));
-						}
-						callback.onSuccess(ids);
-					}
-				});
-		
-	}
+    @Override
+    public void search(List<String> testQuery, SqlTransaction tx,
+        final AsyncCallback<List<Integer>> callback) {
 
-	@Override
-	public DimensionType getDimensionType() {
-		return DimensionType.Indicator;
-	}
+        final String primaryKey = "IndicatorId";
+        String tableName = "Indicator";
+        String columnToSearch = "description";
+
+        SqlQuery
+            .select(primaryKey)
+            .from(tableName.toLowerCase())
+            .whereLikes(columnToSearch)
+            .likeMany(testQuery)
+
+            .execute(tx, new SqlResultCallback() {
+                @Override
+                public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                    List<Integer> ids = new ArrayList<Integer>();
+                    for (SqlResultSetRow row : results.getRows()) {
+                        ids.add(row.getInt(primaryKey));
+                    }
+                    callback.onSuccess(ids);
+                }
+            });
+
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.Indicator;
+    }
 
 }

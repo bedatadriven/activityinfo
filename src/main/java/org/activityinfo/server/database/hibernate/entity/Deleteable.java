@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -27,12 +25,12 @@ package org.activityinfo.server.database.hibernate.entity;
 /**
  * 
  * @author Alex Bertram
- *
+ * 
  */
 public interface Deleteable {
 
-	public void delete();
-	
-	public boolean isDeleted();
+    public void delete();
+
+    public boolean isDeleted();
 
 }

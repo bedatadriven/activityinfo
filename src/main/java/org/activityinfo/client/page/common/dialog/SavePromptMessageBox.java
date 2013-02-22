@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.dialog;
 
 /*
@@ -56,13 +54,10 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         CANCEL
     }
 
-    ;
-
-
     public SavePromptMessageBox() {
         /*
-           * Configure this window
-           */
+         * Configure this window
+         */
         setModal(true);
         setClosable(false);
         setBodyStyle("padding: 5px;");
@@ -72,10 +67,9 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         setLayout(new CenterLayout());
         add(new Html(I18N.CONSTANTS.promptSave()));
 
-
         /*
-           * Create the status button bar
-           */
+         * Create the status button bar
+         */
 
         status = new Status();
         this.getButtonBar().add(status);
@@ -83,6 +77,7 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         saveButton = new Button(I18N.CONSTANTS.save());
         saveButton.setIcon(IconImageBundle.ICONS.save());
         saveButton.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent be) {
                 callback.save(SavePromptMessageBox.this);
             }
@@ -100,11 +95,11 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         });
         addButton(discardButton);
 
-
         cancelButton = new Button(I18N.CONSTANTS.cancel());
         addButton(cancelButton);
 
         cancelButton.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent be) {
                 hide();
                 callback.cancel();
@@ -129,12 +124,10 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         status.setBusy(I18N.CONSTANTS.saving());
     }
 
-
     @Override
     public void onConnectionProblem() {
         status.setBusy(I18N.CONSTANTS.connectionProblem());
     }
-
 
     @Override
     public boolean onRetrying() {
@@ -148,7 +141,6 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         return true;
     }
 
-
     @Override
     public void onServerError() {
 
@@ -159,10 +151,8 @@ public class SavePromptMessageBox extends Window implements AsyncMonitor {
         MessageBox.alert(this.getHeading(), I18N.CONSTANTS.serverError(), null);
     }
 
-
     @Override
     public void onCompleted() {
         hide();
     }
 }
-

@@ -28,8 +28,6 @@ import java.util.Map;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.page.search.SearchFilterView.DimensionAddedEvent;
-import org.activityinfo.client.page.search.SearchFilterView.DimensionAddedEventHandler;
 import org.activityinfo.client.page.search.SearchPresenter.RecentSiteModel;
 import org.activityinfo.shared.command.handler.search.QueryChecker;
 import org.activityinfo.shared.command.handler.search.QueryChecker.QueryFail;
@@ -58,236 +56,241 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class SearchResultsPage extends ContentPanel implements SearchView {
-	private VerticalPanel panelSearchResults;
-	private LayoutContainer containerFilterAndResult;
-	private PivotContent pivotContent;
-	//private SearchFilterView filterView;
-	private RecentSitesView recentSitesView;
+    private VerticalPanel panelSearchResults;
+    private LayoutContainer containerFilterAndResult;
+    private PivotContent pivotContent;
+    // private SearchFilterView filterView;
+    private RecentSitesView recentSitesView;
 
-	private TextBox textboxSearch;
-	private AsyncMonitor loadingMonitor;
-	private SimpleEventBus eventBus = new SimpleEventBus();
-	private String searchQuery;
+    private TextBox textboxSearch;
+    private AsyncMonitor loadingMonitor;
+    private SimpleEventBus eventBus = new SimpleEventBus();
+    private String searchQuery;
 
-	public SearchResultsPage() {
-		initializeComponent();
+    public SearchResultsPage() {
+        initializeComponent();
 
-		createRecentSitesView();
-		
-		createCompleteResultPanel();
-		//createFilterView();
-		createSearchResultsPanel();
+        createRecentSitesView();
 
-		createSearchBox();
-	}
+        createCompleteResultPanel();
+        // createFilterView();
+        createSearchResultsPanel();
 
-	private void initializeComponent() {
-		setHeaderVisible(false);
-		setLayout(new BorderLayout());
+        createSearchBox();
+    }
 
-		SearchResources.INSTANCE.searchStyles().ensureInjected();
-		loadingMonitor = new MaskingAsyncMonitor(this, I18N.CONSTANTS.busySearching());
-	}
+    private void initializeComponent() {
+        setHeaderVisible(false);
+        setLayout(new BorderLayout());
 
-	private void createRecentSitesView() {
-		recentSitesView = new RecentSitesView();
+        SearchResources.INSTANCE.searchStyles().ensureInjected();
+        loadingMonitor = new MaskingAsyncMonitor(this,
+            I18N.CONSTANTS.busySearching());
+    }
 
-		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.EAST);
-		bld.setSplit(true);
-		bld.setCollapsible(true);
-		bld.setMinSize(300);
-		bld.setSize(0.4F);
+    private void createRecentSitesView() {
+        recentSitesView = new RecentSitesView();
 
-		add(recentSitesView, bld);
-	}
+        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.EAST);
+        bld.setSplit(true);
+        bld.setCollapsible(true);
+        bld.setMinSize(300);
+        bld.setSize(0.4F);
 
-	private void createSearchResultsPanel() {
-		panelSearchResults = new VerticalPanel();
-		panelSearchResults.setScrollMode(Scroll.AUTO);
-		containerFilterAndResult.add(panelSearchResults);
-	}
+        add(recentSitesView, bld);
+    }
 
-	private void createCompleteResultPanel() {
-		containerFilterAndResult = new LayoutContainer();
-		RowLayout layout = new RowLayout();
-		layout.setOrientation(Orientation.VERTICAL);
-		containerFilterAndResult.setLayout(layout);
-		containerFilterAndResult.setScrollMode(Scroll.AUTOY);
-		
-		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
-		bld.setSplit(true);
-		bld.setSize(0.5F);
+    private void createSearchResultsPanel() {
+        panelSearchResults = new VerticalPanel();
+        panelSearchResults.setScrollMode(Scroll.AUTO);
+        containerFilterAndResult.add(panelSearchResults);
+    }
 
-		add(containerFilterAndResult, bld);
-	}
+    private void createCompleteResultPanel() {
+        containerFilterAndResult = new LayoutContainer();
+        RowLayout layout = new RowLayout();
+        layout.setOrientation(Orientation.VERTICAL);
+        containerFilterAndResult.setLayout(layout);
+        containerFilterAndResult.setScrollMode(Scroll.AUTOY);
 
-//	private void createFilterView() {
-//		filterView = new SearchFilterView();
-//		containerFilterAndResult.add(filterView);
-//		filterView.addDimensionAddedHandler(new DimensionAddedEventHandler() {
-//			@Override
-//			public void onDimensionAdded(DimensionAddedEvent event) {
-//				addEntityToSearchBox(event.getAddedEntity());
-//			}
-//		});
-//	}
-	
-	private void showError(String error) {
-		containerFilterAndResult.el().mask(error);
-		recentSitesView.el().mask();
-	}
+        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
+        bld.setSplit(true);
+        bld.setSize(0.5F);
 
-	private void showError(List<QueryFail> fails) {
-		StringBuilder sb = new StringBuilder();
-		for (QueryFail fail : fails) {
-			sb.append(fail.fail());
-			sb.append("\r\n");
-		}
-		showError(sb.toString());
-	}
+        add(containerFilterAndResult, bld);
+    }
 
-	private void clearErrorsIfShowing() {
-		containerFilterAndResult.el().unmask();
-		recentSitesView.el().unmask();
-	}
+    // private void createFilterView() {
+    // filterView = new SearchFilterView();
+    // containerFilterAndResult.add(filterView);
+    // filterView.addDimensionAddedHandler(new DimensionAddedEventHandler() {
+    // @Override
+    // public void onDimensionAdded(DimensionAddedEvent event) {
+    // addEntityToSearchBox(event.getAddedEntity());
+    // }
+    // });
+    // }
 
-	private void addEntityToSearchBox(SearchResultEntity addedEntity) {
-		textboxSearch.setText(textboxSearch.getText() + " " + createEntityText(addedEntity));
-	}
+    private void showError(String error) {
+        containerFilterAndResult.el().mask(error);
+        recentSitesView.el().mask();
+    }
 
-	private String createEntityText(SearchResultEntity addedEntity) {
-		return new StringBuilder()
-			.append(addedEntity.getDimension().toString())
-			.append(":")
-			.append(addedEntity.getName())
-			.toString();
-	}
+    private void showError(List<QueryFail> fails) {
+        StringBuilder sb = new StringBuilder();
+        for (QueryFail fail : fails) {
+            sb.append(fail.fail());
+            sb.append("\r\n");
+        }
+        showError(sb.toString());
+    }
 
-	private void createSearchBox() {
-		textboxSearch = new TextBox();
-		textboxSearch.setSize("2em", "2em");
-		textboxSearch.setStylePrimaryName("searchBox");
-		textboxSearch.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					QueryChecker checker = new QueryChecker();
-					
-					if (checker.checkQuery(textboxSearch.getText())) {
-						eventBus.fireEvent(new SearchEvent(textboxSearch.getText()));
-					} else {
-						showError(checker.getFails());
-					}
-				}
-			}
-		});
+    private void clearErrorsIfShowing() {
+        containerFilterAndResult.el().unmask();
+        recentSitesView.el().unmask();
+    }
 
-		BorderLayoutData bld = new BorderLayoutData(LayoutRegion.NORTH);
-		bld.setSize(40);
-		bld.setMargins(new Margins(16));
+    private void addEntityToSearchBox(SearchResultEntity addedEntity) {
+        textboxSearch.setText(textboxSearch.getText() + " "
+            + createEntityText(addedEntity));
+    }
 
-		add(textboxSearch, bld);
-	}
+    private String createEntityText(SearchResultEntity addedEntity) {
+        return new StringBuilder()
+            .append(addedEntity.getDimension().toString())
+            .append(":")
+            .append(addedEntity.getName())
+            .toString();
+    }
 
-	@Override
-	public void setParent(SearchResult parent) {
-//		searchResult = parent;
-	}
+    private void createSearchBox() {
+        textboxSearch = new TextBox();
+        textboxSearch.setSize("2em", "2em");
+        textboxSearch.setStylePrimaryName("searchBox");
+        textboxSearch.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                    QueryChecker checker = new QueryChecker();
 
-	@Override
-	public void setItems(List<SearchHitDTO> items) {
-	}
+                    if (checker.checkQuery(textboxSearch.getText())) {
+                        eventBus.fireEvent(new SearchEvent(textboxSearch
+                            .getText()));
+                    } else {
+                        showError(checker.getFails());
+                    }
+                }
+            }
+        });
 
-	@Override
-	public void initialize() {
-		// TODO Auto-generated method stub
+        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.NORTH);
+        bld.setSize(40);
+        bld.setMargins(new Margins(16));
 
-	}
+        add(textboxSearch, bld);
+    }
 
-	@Override
-	public AsyncMonitor getLoadingMonitor() {
-		return loadingMonitor;
-	}
+    @Override
+    public void setParent(SearchResult parent) {
+        // searchResult = parent;
+    }
 
-	@Override
-	public void setValue(SearchHitDTO value) {
-	}
+    @Override
+    public void setItems(List<SearchHitDTO> items) {
+    }
 
-	@Override
-	public SearchHitDTO getValue() {
-		return null;
-	}
+    @Override
+    public void initialize() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public com.google.gwt.event.shared.HandlerRegistration addSearchHandler(org.activityinfo.client.page.search.SearchView.SearchHandler handler) {
-		return eventBus.addHandler(SearchEvent.TYPE, handler);
-	}
+    }
 
-	@Override
-	public void setSearchResults(PivotContent pivotTabelData) {
-		this.pivotContent = pivotTabelData;
+    @Override
+    public AsyncMonitor getLoadingMonitor() {
+        return loadingMonitor;
+    }
 
-		showSearchResults();
-	}
+    @Override
+    public void setValue(SearchHitDTO value) {
+    }
 
-	private void showSearchResults() {
-		panelSearchResults.removeAll();
-		clearErrorsIfShowing();
+    @Override
+    public SearchHitDTO getValue() {
+        return null;
+    }
 
-		int activities=0;
-		int databases=0;
-		int indicators=0;
-		
-		LabelField labelResults = new LabelField();
-		panelSearchResults.add(labelResults);
-		
-		if (pivotContent != null) {
-			VerticalPanel panelSpacer = new VerticalPanel();
-			panelSpacer.setHeight(16);
-			panelSearchResults.add(panelSpacer);
-			panelSearchResults.setStylePrimaryName("searchResults");
-	
-			for (Axis axis : pivotContent.getData().getRootRow().getChildren()) {
-				SearchResultItem itemWidget = new SearchResultItem();
-				itemWidget.setDabaseName(axis.getLabel());
-				itemWidget.setChilds(axis.getChildList());
-	
-				panelSearchResults.add(itemWidget);
-				databases++;
-				activities += itemWidget.getActivityCount();
-				indicators += itemWidget.getIndicatorCount();
-			}
-		}
+    @Override
+    public com.google.gwt.event.shared.HandlerRegistration addSearchHandler(
+        org.activityinfo.client.page.search.SearchView.SearchHandler handler) {
+        return eventBus.addHandler(SearchEvent.TYPE, handler);
+    }
 
-		labelResults.setText(I18N.MESSAGES.searchResultsFound(
-				searchQuery, 
-				Integer.toString(databases), 
-				Integer.toString(activities), 
-				Integer.toString(indicators)));
+    @Override
+    public void setSearchResults(PivotContent pivotTabelData) {
+        this.pivotContent = pivotTabelData;
 
-		layout();
-	}
+        showSearchResults();
+    }
 
-	@Override
-	public void setSearchQuery(String query) {
-		this.searchQuery = query;
+    private void showSearchResults() {
+        panelSearchResults.removeAll();
+        clearErrorsIfShowing();
 
-		textboxSearch.setText(query);
-	}
+        int activities = 0;
+        int databases = 0;
+        int indicators = 0;
 
-	@Override
-	public void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
-	//	filterView.setFilter(affectedEntities);
-	}
+        LabelField labelResults = new LabelField();
+        panelSearchResults.add(labelResults);
 
-	@Override
-	public void setSites(List<RecentSiteModel> sites) {
-		recentSitesView.setSites(sites);
-	}
-	
-	@Override
-	public void setSitePoints(SitePointList sitePoints) {
-		recentSitesView.setSitePoins(sitePoints);
-	}
+        if (pivotContent != null) {
+            VerticalPanel panelSpacer = new VerticalPanel();
+            panelSpacer.setHeight(16);
+            panelSearchResults.add(panelSpacer);
+            panelSearchResults.setStylePrimaryName("searchResults");
+
+            for (Axis axis : pivotContent.getData().getRootRow().getChildren()) {
+                SearchResultItem itemWidget = new SearchResultItem();
+                itemWidget.setDabaseName(axis.getLabel());
+                itemWidget.setChilds(axis.getChildList());
+
+                panelSearchResults.add(itemWidget);
+                databases++;
+                activities += itemWidget.getActivityCount();
+                indicators += itemWidget.getIndicatorCount();
+            }
+        }
+
+        labelResults.setText(I18N.MESSAGES.searchResultsFound(
+            searchQuery,
+            Integer.toString(databases),
+            Integer.toString(activities),
+            Integer.toString(indicators)));
+
+        layout();
+    }
+
+    @Override
+    public void setSearchQuery(String query) {
+        this.searchQuery = query;
+
+        textboxSearch.setText(query);
+    }
+
+    @Override
+    public void setFilter(
+        Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
+        // filterView.setFilter(affectedEntities);
+    }
+
+    @Override
+    public void setSites(List<RecentSiteModel> sites) {
+        recentSitesView.setSites(sites);
+    }
+
+    @Override
+    public void setSitePoints(SitePointList sitePoints) {
+        recentSitesView.setSitePoins(sitePoints);
+    }
 
 }

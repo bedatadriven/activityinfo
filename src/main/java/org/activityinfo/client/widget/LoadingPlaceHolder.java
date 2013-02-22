@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.widget;
 
 /*
@@ -32,9 +30,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 
 /**
- * An AsyncMonitor implementation that shows the "Loading Component"
- * message
- *
+ * An AsyncMonitor implementation that shows the "Loading Component" message
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class LoadingPlaceHolder extends LayoutContainer implements AsyncMonitor {

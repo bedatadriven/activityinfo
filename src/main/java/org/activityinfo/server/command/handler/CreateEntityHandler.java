@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -46,7 +44,8 @@ import org.activityinfo.shared.exception.IllegalAccessCommandException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-public class CreateEntityHandler extends BaseEntityHandler implements CommandHandler<CreateEntity> {
+public class CreateEntityHandler extends BaseEntityHandler implements
+    CommandHandler<CreateEntity> {
 
     private final Injector injector;
 
@@ -57,13 +56,16 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
     }
 
     @Override
-    public CommandResult execute(CreateEntity cmd, User user) throws CommandException {
+    public CommandResult execute(CreateEntity cmd, User user)
+        throws CommandException {
 
         Map<String, Object> properties = cmd.getProperties().getTransientMap();
-        PropertyMap propertyMap = new PropertyMap(cmd.getProperties().getTransientMap());
+        PropertyMap propertyMap = new PropertyMap(cmd.getProperties()
+            .getTransientMap());
 
         if ("UserDatabase".equals(cmd.getEntityName())) {
-            UserDatabasePolicy policy = injector.getInstance(UserDatabasePolicy.class);
+            UserDatabasePolicy policy = injector
+                .getInstance(UserDatabasePolicy.class);
             return new CreateResult((Integer) policy.create(user, propertyMap));
         } else if ("Activity".equals(cmd.getEntityName())) {
             ActivityPolicy policy = injector.getInstance(ActivityPolicy.class);
@@ -74,45 +76,55 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return createAttribute(cmd, properties);
         } else if ("Indicator".equals(cmd.getEntityName())) {
             return createIndicator(user, cmd, properties);
-        }else {
-            throw new CommandException("Invalid entity class " + cmd.getEntityName());
+        } else {
+            throw new CommandException("Invalid entity class "
+                + cmd.getEntityName());
         }
     }
 
-    private CommandResult createAttributeGroup(CreateEntity cmd, Map<String, Object> properties) {
+    private CommandResult createAttributeGroup(CreateEntity cmd,
+        Map<String, Object> properties) {
         AttributeGroup group = new AttributeGroup();
         updateAttributeGroupProperties(group, properties);
 
         entityManager().persist(group);
 
-        Activity activity = entityManager().find(Activity.class, properties.get("activityId"));
+        Activity activity = entityManager().find(Activity.class,
+            properties.get("activityId"));
         activity.getAttributeGroups().add(group);
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
 
         return new CreateResult(group.getId());
     }
-    
-    private CommandResult createAttribute(CreateEntity cmd, Map<String, Object> properties) {
+
+    private CommandResult createAttribute(CreateEntity cmd,
+        Map<String, Object> properties) {
         Attribute attribute = new Attribute();
-        AttributeGroup ag = entityManager().getReference(AttributeGroup.class, properties.get("attributeGroupId")); 
+        AttributeGroup ag = entityManager().getReference(AttributeGroup.class,
+            properties.get("attributeGroupId"));
         attribute.setGroup(ag);
 
         updateAttributeProperties(properties, attribute);
-        
-        Activity activity = ag.getActivities().iterator().next(); // Assume group has only one activity
+
+        Activity activity = ag.getActivities().iterator().next(); // Assume
+                                                                  // group has
+                                                                  // only one
+                                                                  // activity
 
         entityManager().persist(attribute);
         activity.getDatabase().setLastSchemaUpdate(new Date());
-        
+
         return new CreateResult(attribute.getId());
     }
 
-    private CommandResult createIndicator(User user, CreateEntity cmd, Map<String, Object> properties)
-            throws IllegalAccessCommandException {
+    private CommandResult createIndicator(User user, CreateEntity cmd,
+        Map<String, Object> properties)
+        throws IllegalAccessCommandException {
 
         Indicator indicator = new Indicator();
-        Activity activity = entityManager().getReference(Activity.class, properties.get("activityId"));
+        Activity activity = entityManager().getReference(Activity.class,
+            properties.get("activityId"));
         indicator.setActivity(activity);
 
         assertDesignPriviledges(user, indicator.getActivity().getDatabase());

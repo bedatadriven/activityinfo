@@ -66,210 +66,221 @@ import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ShareReportDialog extends Dialog {
-	
-	private final Dispatcher dispatcher;
-	private final ListStore<ReportVisibilityDTO> gridStore;
-	private CheckColumnConfig visibleColumn;
-	private CheckColumnConfig dashboardColumn;
-	private Report currentReport;
-	private final Grid<ReportVisibilityDTO> grid;
 
-	public ShareReportDialog(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-		
-		setHeading(I18N.CONSTANTS.shareReport());
-		setWidth(450);
-		setHeight(350);	
-		setButtons(Dialog.OKCANCEL);
-		
-		gridStore = new ListStore<ReportVisibilityDTO>();
-		grid = new Grid<ReportVisibilityDTO>(gridStore, createColumnModel());
-		grid.addPlugin(visibleColumn);
-		grid.addPlugin(dashboardColumn);
-		add(grid);
-		
-		setLayout(new FitLayout());
-		
-		
-	}
+    private final Dispatcher dispatcher;
+    private final ListStore<ReportVisibilityDTO> gridStore;
+    private CheckColumnConfig visibleColumn;
+    private CheckColumnConfig dashboardColumn;
+    private Report currentReport;
+    private final Grid<ReportVisibilityDTO> grid;
 
-	private ColumnModel createColumnModel() {
-			
-		ColumnConfig icon = new ColumnConfig("icon", "", 26);
-		icon.setSortable(false);
-		icon.setResizable(false);
-		icon.setMenuDisabled(true);
-		icon.setRenderer(new GridCellRenderer<ReportVisibilityDTO>() {
+    public ShareReportDialog(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
 
-			@Override
-			public Object render(ReportVisibilityDTO model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ReportVisibilityDTO> store,
-					Grid<ReportVisibilityDTO> grid) {
-				return IconImageBundle.ICONS.group().getHTML();
-			}
-		});
-		
-		ColumnConfig name = new ColumnConfig("databaseName", I18N.CONSTANTS.group(), 150);
-		name.setRenderer(new GridCellRenderer<ReportVisibilityDTO>() {
+        setHeading(I18N.CONSTANTS.shareReport());
+        setWidth(450);
+        setHeight(350);
+        setButtons(Dialog.OKCANCEL);
 
-			@Override
-			public Object render(ReportVisibilityDTO model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ReportVisibilityDTO> store, Grid<ReportVisibilityDTO> grid) {
-				
-				return 
-					model.getDatabaseName() + " Users";
-				
-			}
-		});
-		
-        visibleColumn = new CheckColumnConfig("visible", I18N.CONSTANTS.shared(), 75);
+        gridStore = new ListStore<ReportVisibilityDTO>();
+        grid = new Grid<ReportVisibilityDTO>(gridStore, createColumnModel());
+        grid.addPlugin(visibleColumn);
+        grid.addPlugin(dashboardColumn);
+        add(grid);
+
+        setLayout(new FitLayout());
+
+    }
+
+    private ColumnModel createColumnModel() {
+
+        ColumnConfig icon = new ColumnConfig("icon", "", 26);
+        icon.setSortable(false);
+        icon.setResizable(false);
+        icon.setMenuDisabled(true);
+        icon.setRenderer(new GridCellRenderer<ReportVisibilityDTO>() {
+
+            @Override
+            public Object render(ReportVisibilityDTO model, String property,
+                ColumnData config, int rowIndex, int colIndex,
+                ListStore<ReportVisibilityDTO> store,
+                Grid<ReportVisibilityDTO> grid) {
+                return IconImageBundle.ICONS.group().getHTML();
+            }
+        });
+
+        ColumnConfig name = new ColumnConfig("databaseName",
+            I18N.CONSTANTS.group(), 150);
+        name.setRenderer(new GridCellRenderer<ReportVisibilityDTO>() {
+
+            @Override
+            public Object render(ReportVisibilityDTO model, String property,
+                ColumnData config, int rowIndex, int colIndex,
+                ListStore<ReportVisibilityDTO> store,
+                Grid<ReportVisibilityDTO> grid) {
+
+                return
+                model.getDatabaseName() + " Users";
+
+            }
+        });
+
+        visibleColumn = new CheckColumnConfig("visible",
+            I18N.CONSTANTS.shared(), 75);
         visibleColumn.setDataIndex("visible");
 
-        dashboardColumn = new CheckColumnConfig("defaultDashboard", I18N.CONSTANTS.defaultDashboard(), 75);
+        dashboardColumn = new CheckColumnConfig("defaultDashboard",
+            I18N.CONSTANTS.defaultDashboard(), 75);
         dashboardColumn.setDataIndex("defaultDashboard");
-        
-        
-        ColumnModel columnModel = new ColumnModel(Arrays.asList(icon, name, visibleColumn, dashboardColumn));
-		return columnModel;
-	}
-	
-	public void show(ReportMetadataDTO metadata) {
-		super.show();
 
-		BatchCommand batch = new BatchCommand();
-		batch.add(new GetReportModel(metadata.getId()));
-		batch.add(new GetSchema());
-		batch.add(new GetReportVisibility(metadata.getId()));
-		
-		dispatcher.execute(batch, new MaskingAsyncMonitor(grid, I18N.CONSTANTS.loading()),
-				new AsyncCallback<BatchResult>() {
+        ColumnModel columnModel = new ColumnModel(Arrays.asList(icon, name,
+            visibleColumn, dashboardColumn));
+        return columnModel;
+    }
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void onSuccess(BatchResult batch) {
+    public void show(ReportMetadataDTO metadata) {
+        super.show();
 
-						currentReport = ((ReportDTO) batch.getResult(0))
-								.getReport();
-				
-				populateGrid((SchemaDTO)batch.getResult(1), 
-							 (ReportVisibilityResult)batch.getResult(2));
-			}
-		});
-	}
-	
-	public void show(final Report report) {
-		super.show();
-		
-		this.currentReport = report;
-		
-		// we need to combine the databases which already have visiblity with those
-		// that could potentially be added
-		BatchCommand batch = new BatchCommand();
-		batch.add(new GetSchema());
-		batch.add(new GetReportVisibility(currentReport.getId()));
-		
-		dispatcher.execute(batch, new MaskingAsyncMonitor(grid, I18N.CONSTANTS.loading()),
-				new AsyncCallback<BatchResult>() {
+        BatchCommand batch = new BatchCommand();
+        batch.add(new GetReportModel(metadata.getId()));
+        batch.add(new GetSchema());
+        batch.add(new GetReportVisibility(metadata.getId()));
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void onSuccess(BatchResult batch) {
-				populateGrid((SchemaDTO)batch.getResult(0), 
-							 (ReportVisibilityResult)batch.getResult(1));
-			}
-		});
-	}
-	
-	private void populateGrid(SchemaDTO schema, ReportVisibilityResult visibility) {
-		gridStore.removeAll();
-		Set<Integer> indicators = currentReport.getIndicators();
-		Map<Integer, ReportVisibilityDTO> databases = Maps.newHashMap();
-		
-		for(ReportVisibilityDTO model : visibility.getList()) {
-			databases.put(model.getDatabaseId(), model);
-		}
-		
-		for(UserDatabaseDTO db : schema.getDatabases()) {
-			if( hasAny(db, indicators)) {
-				if(databases.containsKey(db.getId())) {
-					gridStore.add(databases.get(db.getId()));
-				} else {
-					ReportVisibilityDTO model = new ReportVisibilityDTO();
-					model.setDatabaseId(db.getId());
-					model.setDatabaseName(db.getName());
-					gridStore.add(model);
-				}
-			}
-		}	
-		
-		if(gridStore.getCount() == 0) {
-			MessageBox.alert(I18N.CONSTANTS.share(), "This report is still empty, so it can't yet be shared.", 
-					new Listener<MessageBoxEvent>() {
-				
-				@Override
-				public void handleEvent(MessageBoxEvent be) {
-					hide();
-				}
-			});
-		}
-	}
+        dispatcher.execute(batch,
+            new MaskingAsyncMonitor(grid, I18N.CONSTANTS.loading()),
+            new AsyncCallback<BatchResult>() {
 
-	protected boolean hasAny(UserDatabaseDTO db, Set<Integer> indicators) {
-		for(ActivityDTO activity : db.getActivities()) {
-			for(IndicatorDTO indicator :activity.getIndicators()) {
-				if(indicators.contains(indicator.getId())) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
 
-	@Override
-	protected void onButtonPressed(Button button) {
-		if(button.getItemId().equals(Dialog.OK)) {
-			save();
-		} else {
-			hide();
-		}
-	}
+                }
 
-	private void save() {
-		List<ReportVisibilityDTO> toSave = Lists.newArrayList();
-		for(ReportVisibilityDTO model : gridStore.getModels()) {
-			if(gridStore.getRecord(model).isDirty()) {
-				toSave.add(model);
-			}
-		}
-		
-		if(toSave.isEmpty()) {
-			hide();
-		} else {
-			dispatcher.execute(new UpdateReportVisibility(currentReport.getId(), toSave), 
-				new MaskingAsyncMonitor(grid, I18N.CONSTANTS.saving()),
-				new AsyncCallback<VoidResult>() {
+                @Override
+                public void onSuccess(BatchResult batch) {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						// handled by monitor
-					}
+                    currentReport = ((ReportDTO) batch.getResult(0))
+                        .getReport();
 
-					@Override
-					public void onSuccess(VoidResult result) {
-						hide();
-					}
-				});
-		}
-	}
+                    populateGrid((SchemaDTO) batch.getResult(1),
+                        (ReportVisibilityResult) batch.getResult(2));
+                }
+            });
+    }
+
+    public void show(final Report report) {
+        super.show();
+
+        this.currentReport = report;
+
+        // we need to combine the databases which already have visiblity with
+        // those
+        // that could potentially be added
+        BatchCommand batch = new BatchCommand();
+        batch.add(new GetSchema());
+        batch.add(new GetReportVisibility(currentReport.getId()));
+
+        dispatcher.execute(batch,
+            new MaskingAsyncMonitor(grid, I18N.CONSTANTS.loading()),
+            new AsyncCallback<BatchResult>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onSuccess(BatchResult batch) {
+                    populateGrid((SchemaDTO) batch.getResult(0),
+                        (ReportVisibilityResult) batch.getResult(1));
+                }
+            });
+    }
+
+    private void populateGrid(SchemaDTO schema,
+        ReportVisibilityResult visibility) {
+        gridStore.removeAll();
+        Set<Integer> indicators = currentReport.getIndicators();
+        Map<Integer, ReportVisibilityDTO> databases = Maps.newHashMap();
+
+        for (ReportVisibilityDTO model : visibility.getList()) {
+            databases.put(model.getDatabaseId(), model);
+        }
+
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            if (hasAny(db, indicators)) {
+                if (databases.containsKey(db.getId())) {
+                    gridStore.add(databases.get(db.getId()));
+                } else {
+                    ReportVisibilityDTO model = new ReportVisibilityDTO();
+                    model.setDatabaseId(db.getId());
+                    model.setDatabaseName(db.getName());
+                    gridStore.add(model);
+                }
+            }
+        }
+
+        if (gridStore.getCount() == 0) {
+            MessageBox.alert(I18N.CONSTANTS.share(),
+                "This report is still empty, so it can't yet be shared.",
+                new Listener<MessageBoxEvent>() {
+
+                    @Override
+                    public void handleEvent(MessageBoxEvent be) {
+                        hide();
+                    }
+                });
+        }
+    }
+
+    protected boolean hasAny(UserDatabaseDTO db, Set<Integer> indicators) {
+        for (ActivityDTO activity : db.getActivities()) {
+            for (IndicatorDTO indicator : activity.getIndicators()) {
+                if (indicators.contains(indicator.getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void onButtonPressed(Button button) {
+        if (button.getItemId().equals(Dialog.OK)) {
+            save();
+        } else {
+            hide();
+        }
+    }
+
+    private void save() {
+        List<ReportVisibilityDTO> toSave = Lists.newArrayList();
+        for (ReportVisibilityDTO model : gridStore.getModels()) {
+            if (gridStore.getRecord(model).isDirty()) {
+                toSave.add(model);
+            }
+        }
+
+        if (toSave.isEmpty()) {
+            hide();
+        } else {
+            dispatcher.execute(new UpdateReportVisibility(
+                currentReport.getId(), toSave),
+                new MaskingAsyncMonitor(grid, I18N.CONSTANTS.saving()),
+                new AsyncCallback<VoidResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // handled by monitor
+                    }
+
+                    @Override
+                    public void onSuccess(VoidResult result) {
+                        hide();
+                    }
+                });
+        }
+    }
 
 }

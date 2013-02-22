@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.widget;
 
 /*
@@ -27,7 +25,6 @@ package org.activityinfo.client.widget;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.activityinfo.client.widget.CoordinateEditor;
 import org.activityinfo.client.widget.CoordinateField.Axis;
 import org.activityinfo.shared.map.CoordinateFormatException;
 import org.junit.Assert;
@@ -36,14 +33,13 @@ import org.junit.Test;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
-
 public class CoordinateEditorTest {
     private static final double DELTA = 0.00001;
-	private CoordinateEditor editor;
-    
+    private CoordinateEditor editor;
+
     @Before
     public void before() {
-		LocaleProxy.initialize();
+        LocaleProxy.initialize();
         LocaleProxy.setLocale(Locale.ENGLISH);
     }
 
@@ -56,15 +52,14 @@ public class CoordinateEditorTest {
         Assert.assertEquals(+2.0, editor.parse("2N"), DELTA);
     }
 
-
-	private void createLatitudeEditor() {
-		editor = new CoordinateEditor(Axis.LATITUDE, new JreNumberFormats());
-	}
+    private void createLatitudeEditor() {
+        editor = new CoordinateEditor(Axis.LATITUDE, new JreNumberFormats());
+    }
 
     @Test(expected = CoordinateFormatException.class)
     public void testNoHemiError() throws CoordinateFormatException {
 
-    	createLatitudeEditor();
+        createLatitudeEditor();
         editor.parse("2.345");
 
     }
@@ -82,15 +77,14 @@ public class CoordinateEditorTest {
 
     }
 
-
-	private void createLongitudeEditor() {
-		editor = new CoordinateEditor(Axis.LONGITUDE, new JreNumberFormats());
-	}
+    private void createLongitudeEditor() {
+        editor = new CoordinateEditor(Axis.LONGITUDE, new JreNumberFormats());
+    }
 
     @Test
     public void testDMd() throws CoordinateFormatException {
-    	createLatitudeEditor();
-    	
+        createLatitudeEditor();
+
         Assert.assertEquals(30.25, editor.parse("30 15.00\"  N"), DELTA);
         Assert.assertEquals(-30.75, editor.parse("30 45.0000\" S"), DELTA);
         Assert.assertEquals(-25.25, editor.parse("S   25 15 "), DELTA);
@@ -99,17 +93,19 @@ public class CoordinateEditorTest {
 
     @Test
     public void testDMS() throws CoordinateFormatException {
-    	createLatitudeEditor();
-    	
-        Assert.assertEquals(25.18173056, editor.parse("25 10 54.23\"  N"), DELTA);
-        Assert.assertEquals(-176.8397222, editor.parse("176 50' 23\" S"), DELTA);
+        createLatitudeEditor();
+
+        Assert.assertEquals(25.18173056, editor.parse("25 10 54.23\"  N"),
+            DELTA);
+        Assert
+            .assertEquals(-176.8397222, editor.parse("176 50' 23\" S"), DELTA);
     }
 
     @Test
     public void formatDDd() {
 
-    	createLatitudeEditor();
-    	
+        createLatitudeEditor();
+
         editor.setNotation(CoordinateEditor.Notation.DDd);
         Assert.assertEquals("+2.405000", editor.format(2.405));
     }
@@ -118,26 +114,25 @@ public class CoordinateEditorTest {
     public void testNearEquator() {
         createLatitudeEditor();
 
-        Assert.assertEquals(editor.format(-0.9392889738082886), "0° 56' 21.44\" S");
+        Assert.assertEquals(editor.format(-0.9392889738082886),
+            "0° 56' 21.44\" S");
     }
-    
-    
+
     public class JreNumberFormats implements CoordinateEditor.NumberFormats {
 
-
-    	@Override
+        @Override
         public double parseDouble(String s) {
             return Double.parseDouble(s);
         }
 
         @Override
         public String formatDDd(double value) {
-            NumberFormat fmt =  NumberFormat.getInstance();
+            NumberFormat fmt = NumberFormat.getInstance();
             fmt.setMinimumFractionDigits(6);
             fmt.setMaximumFractionDigits(6);
             fmt.setMinimumIntegerDigits(0);
 
-            if(value > 0) {
+            if (value > 0) {
                 return "+" + fmt.format(value);
             } else {
                 return fmt.format(value);
@@ -146,7 +141,7 @@ public class CoordinateEditorTest {
 
         @Override
         public String formatShortFrac(double value) {
-            NumberFormat fmt =  NumberFormat.getInstance();
+            NumberFormat fmt = NumberFormat.getInstance();
             fmt.setMinimumFractionDigits(2);
             fmt.setMaximumFractionDigits(2);
             fmt.setMinimumIntegerDigits(0);

@@ -40,8 +40,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Observable;
 
 /**
- * Serializes GXT-based ModelData classes where properties
- * are stored in both fields and the RpcMap.
+ * Serializes GXT-based ModelData classes where properties are stored in both
+ * fields and the RpcMap.
  */
 public class DtoSerializer extends JsonSerializer<ModelData> {
 
@@ -54,19 +54,20 @@ public class DtoSerializer extends JsonSerializer<ModelData> {
     public void serialize(ModelData value, JsonGenerator jgen,
         SerializerProvider provider) throws IOException,
         JsonProcessingException {
-       
+
         jgen.writeStartObject();
         try {
-            for(PropertyDescriptor propertyDescriptor : 
-                Introspector.getBeanInfo(value.getClass()).getPropertyDescriptors()) {
+            for (PropertyDescriptor propertyDescriptor : Introspector
+                .getBeanInfo(value.getClass()).getPropertyDescriptors()) {
 
                 Method getter = propertyDescriptor.getReadMethod();
-                if(isSerializable(propertyDescriptor)) {
-                  
+                if (isSerializable(propertyDescriptor)) {
+
                     Object fieldValue = getter.invoke(value);
-                    if(!isEmptyish(fieldValue) && (isPropertyBacked(propertyDescriptor,value) ||
+                    if (!isEmptyish(fieldValue)
+                        && (isPropertyBacked(propertyDescriptor, value) ||
                         isFieldBacked(propertyDescriptor, value))) {
-                        
+
                         jgen.writeFieldName(propertyDescriptor.getName());
                         jgen.writeObject(fieldValue);
                     }
@@ -76,10 +77,11 @@ public class DtoSerializer extends JsonSerializer<ModelData> {
             throw new IOException(e);
         }
         jgen.writeEndObject();
- 
+
     }
 
-    private boolean isFieldBacked(PropertyDescriptor propertyDescriptor, ModelData value) {
+    private boolean isFieldBacked(PropertyDescriptor propertyDescriptor,
+        ModelData value) {
         try {
             return value.getClass().getField(propertyDescriptor.getName()) != null;
         } catch (Exception e) {
@@ -89,21 +91,23 @@ public class DtoSerializer extends JsonSerializer<ModelData> {
 
     private boolean isPropertyBacked(PropertyDescriptor propertyDescriptor,
         ModelData value) {
-       
+
         return value.getPropertyNames().contains(propertyDescriptor.getName());
     }
 
     private boolean isEmptyish(Object fieldValue) {
-        if(fieldValue == null) {
+        if (fieldValue == null) {
             return true;
         }
-        if(fieldValue instanceof Collection && ((Collection) fieldValue).isEmpty()) {
+        if (fieldValue instanceof Collection
+            && ((Collection) fieldValue).isEmpty()) {
             return true;
         }
-        if(fieldValue instanceof Map && ((Map) fieldValue).isEmpty()) {
+        if (fieldValue instanceof Map && ((Map) fieldValue).isEmpty()) {
             return true;
         }
-        if(fieldValue instanceof CharSequence && ((CharSequence) fieldValue).length() == 0) {
+        if (fieldValue instanceof CharSequence
+            && ((CharSequence) fieldValue).length() == 0) {
             return true;
         }
         return false;
@@ -111,11 +115,11 @@ public class DtoSerializer extends JsonSerializer<ModelData> {
 
     private boolean isSerializable(PropertyDescriptor propertyDescriptor) {
         Method getter = propertyDescriptor.getReadMethod();
-        if(getter == null) {
+        if (getter == null) {
             return false;
         }
         Class declaringClass = getter.getDeclaringClass();
-        if(declaringClass.equals(ModelData.class) ||
+        if (declaringClass.equals(ModelData.class) ||
             declaringClass.equals(BaseModelData.class) ||
             declaringClass.equals(Model.class) ||
             declaringClass.equals(Observable.class) ||
@@ -123,7 +127,7 @@ public class DtoSerializer extends JsonSerializer<ModelData> {
             declaringClass.equals(Object.class)) {
             return false;
         }
-        
+
         return true;
     }
 }

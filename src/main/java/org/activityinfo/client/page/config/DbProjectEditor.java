@@ -56,31 +56,36 @@ import com.google.inject.Inject;
 /*
  * Displays a grid where users can add, remove and change projects
  */
-public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> implements DbPage {
-	
-	public static final PageId PAGE_ID = new PageId("projects");
-	
+public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO>
+    implements DbPage {
+
+    public static final PageId PAGE_ID = new PageId("projects");
+
     @ImplementedBy(DbProjectGrid.class)
     public interface View extends GridView<DbProjectEditor, ProjectDTO> {
-        public void init(DbProjectEditor editor, UserDatabaseDTO db, ListStore<ProjectDTO> store);
-        public FormDialogTether showAddDialog(ProjectDTO partner, FormDialogCallback callback);
+        public void init(DbProjectEditor editor, UserDatabaseDTO db,
+            ListStore<ProjectDTO> store);
+
+        public FormDialogTether showAddDialog(ProjectDTO partner,
+            FormDialogCallback callback);
     }
-	
+
     private final Dispatcher service;
     private final EventBus eventBus;
     private final View view;
-    
+
     private UserDatabaseDTO db;
     private ListStore<ProjectDTO> store;
-    
+
     @Inject
-    public DbProjectEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
+    public DbProjectEditor(EventBus eventBus, Dispatcher service,
+        StateProvider stateMgr, View view) {
         super(eventBus, stateMgr, view);
         this.service = service;
         this.eventBus = eventBus;
         this.view = view;
     }
-    
+
     @Override
     public void go(UserDatabaseDTO db) {
         this.db = db;
@@ -94,86 +99,97 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO> implement
         view.setActionEnabled(UIActions.DELETE, false);
     }
 
-	@Override
-	protected void onDeleteConfirmed(final ProjectDTO project) {
-        service.execute(new RemoveProject(db.getId(), project.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-            public void onFailure(Throwable caught) {
-                if (caught instanceof ProjectHasSitesException) { 
-                    MessageBox.alert(I18N.CONSTANTS.removeItem(), I18N.MESSAGES.projectHasDataWarning(project.getName()), null);
-                } else {
-                	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
+    @Override
+    protected void onDeleteConfirmed(final ProjectDTO project) {
+        service.execute(new RemoveProject(db.getId(), project.getId()),
+            view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    if (caught instanceof ProjectHasSitesException) {
+                        MessageBox.alert(I18N.CONSTANTS.removeItem(),
+                            I18N.MESSAGES.projectHasDataWarning(project
+                                .getName()), null);
+                    } else {
+                        MessageBox.alert(I18N.CONSTANTS.error(),
+                            I18N.CONSTANTS.errorOnServer(), null);
+                    }
                 }
-            }
 
-            public void onSuccess(VoidResult result) {
-                store.remove(project);
-            }
-        });
-	}
+                @Override
+                public void onSuccess(VoidResult result) {
+                    store.remove(project);
+                }
+            });
+    }
 
-	@Override
-	protected void onAdd() {
+    @Override
+    protected void onAdd() {
         final ProjectDTO newProject = new ProjectDTO();
         this.view.showAddDialog(newProject, new FormDialogCallback() {
 
             @Override
             public void onValidated(final FormDialogTether dlg) {
 
-                service.execute(new AddProject(db.getId(), newProject), dlg, new AsyncCallback<CreateResult>() {
-                    public void onFailure(Throwable caught) {
-                        if (caught instanceof DuplicatePartnerException) {
-                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
-                        } else {
-                        	MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.errorOnServer(), null);
+                service.execute(new AddProject(db.getId(), newProject), dlg,
+                    new AsyncCallback<CreateResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            if (caught instanceof DuplicatePartnerException) {
+                                MessageBox.alert(I18N.CONSTANTS.error(),
+                                    I18N.CONSTANTS.errorOnServer(), null);
+                            } else {
+                                MessageBox.alert(I18N.CONSTANTS.error(),
+                                    I18N.CONSTANTS.errorOnServer(), null);
+                            }
                         }
-                    }
 
-                    public void onSuccess(CreateResult result) {
-                    	newProject.setId(result.getNewId());
-                        store.add(newProject);
-                        db.getProjects().add(newProject);
-                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-                        dlg.hide();
-                    }
-                });
+                        @Override
+                        public void onSuccess(CreateResult result) {
+                            newProject.setId(result.getNewId());
+                            store.add(newProject);
+                            db.getProjects().add(newProject);
+                            eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                            dlg.hide();
+                        }
+                    });
             }
         });
-	}
+    }
 
-//	@Override
-//	public void onSelectionChanged(ProjectDTO selectedItem) {
-//		view.setActionEnabled(UIActions.delete, true);
-//	}
+    // @Override
+    // public void onSelectionChanged(ProjectDTO selectedItem) {
+    // view.setActionEnabled(UIActions.delete, true);
+    // }
 
-	@Override
-	public PageId getPageId() {
-		return PAGE_ID;
-	}
+    @Override
+    public PageId getPageId() {
+        return PAGE_ID;
+    }
 
-	@Override
-	public Object getWidget() {
-		return view;
-	}
+    @Override
+    public Object getWidget() {
+        return view;
+    }
 
-	@Override
-	public boolean navigate(PageState place) {
-		return false;
-	}
+    @Override
+    public boolean navigate(PageState place) {
+        return false;
+    }
 
-	@Override
-	public void shutdown() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void shutdown() {
+        // TODO Auto-generated method stub
 
-	@Override
-	protected String getStateId() {
-		return "ProjectsGrid";
-	}
+    }
 
-	@Override
-	public void onSelectionChanged(ModelData selectedItem) {
-		view.setActionEnabled(UIActions.DELETE, true);
-	}
+    @Override
+    protected String getStateId() {
+        return "ProjectsGrid";
+    }
+
+    @Override
+    public void onSelectionChanged(ModelData selectedItem) {
+        view.setActionEnabled(UIActions.DELETE, true);
+    }
 
 }

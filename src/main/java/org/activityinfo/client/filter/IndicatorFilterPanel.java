@@ -32,50 +32,51 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class IndicatorFilterPanel extends IndicatorTreePanel implements FilterPanel {
-		
-	public IndicatorFilterPanel(Dispatcher service, boolean multipleSelection) {
-		super(service, multipleSelection);
-		
-		addCheckChangedListener(new Listener<TreePanelEvent>() {
-			
-			@Override
-			public void handleEvent(TreePanelEvent be) {
-				ValueChangeEvent.fire(IndicatorFilterPanel.this, getValue());
-			}
-		});
-	}
+public class IndicatorFilterPanel extends IndicatorTreePanel implements
+    FilterPanel {
 
-	@Override
-	public Filter getValue() {
-		Filter filter = new Filter();
-		filter.addRestriction(DimensionType.Indicator, getSelectedIds());
-		
-		return filter;
-	}
+    public IndicatorFilterPanel(Dispatcher service, boolean multipleSelection) {
+        super(service, multipleSelection);
 
-	@Override
-	public void setValue(Filter value) {
-		setSelection(value.getRestrictions(DimensionType.Indicator));
-	}
+        addCheckChangedListener(new Listener<TreePanelEvent>() {
 
-	@Override
-	public void setValue(Filter value, boolean fireEvents) {
-		setSelection(value.getRestrictions(DimensionType.Indicator));
-		if(fireEvents) {
-			ValueChangeEvent.fire(this, value);
-		}
-	}
+            @Override
+            public void handleEvent(TreePanelEvent be) {
+                ValueChangeEvent.fire(IndicatorFilterPanel.this, getValue());
+            }
+        });
+    }
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<Filter> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
+    @Override
+    public Filter getValue() {
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Indicator, getSelectedIds());
 
-	@Override
-	public void applyBaseFilter(Filter filter) {
-		// we don't filter indicators
-	}
+        return filter;
+    }
+
+    @Override
+    public void setValue(Filter value) {
+        setSelection(value.getRestrictions(DimensionType.Indicator));
+    }
+
+    @Override
+    public void setValue(Filter value, boolean fireEvents) {
+        setSelection(value.getRestrictions(DimensionType.Indicator));
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, value);
+        }
+    }
+
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<Filter> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    @Override
+    public void applyBaseFilter(Filter filter) {
+        // we don't filter indicators
+    }
 
 }

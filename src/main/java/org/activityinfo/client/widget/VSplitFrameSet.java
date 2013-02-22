@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.widget;
 
 /*
@@ -40,8 +38,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Standard 2-column split frame with a left-hand pane for navigation and the center
- * component for page navigation.
+ * Standard 2-column split frame with a left-hand pane for navigation and the
+ * center component for page navigation.
  */
 public class VSplitFrameSet implements Frame {
 
@@ -61,13 +59,14 @@ public class VSplitFrameSet implements Frame {
     }
 
     @Override
-	public void shutdown() {
+    public void shutdown() {
         getNavPanel().shutdown();
     }
 
     private void addNavigationPanel() {
 
-        BorderLayoutData layoutData = new BorderLayoutData(Style.LayoutRegion.WEST);
+        BorderLayoutData layoutData = new BorderLayoutData(
+            Style.LayoutRegion.WEST);
         layoutData.setSplit(true);
         layoutData.setCollapsible(true);
         layoutData.setMargins(new Margins(0, 5, 0, 0));
@@ -100,7 +99,8 @@ public class VSplitFrameSet implements Frame {
     }
 
     @Override
-    public AsyncMonitor showLoadingPlaceHolder(PageId page, PageState loadingPlace) {
+    public AsyncMonitor showLoadingPlaceHolder(PageId page,
+        PageState loadingPlace) {
 
         LoadingPlaceHolder placeHolder = new LoadingPlaceHolder();
         setWidget(placeHolder);
@@ -116,7 +116,8 @@ public class VSplitFrameSet implements Frame {
     }
 
     @Override
-    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place,
+        NavigationCallback callback) {
         if (activePage == null) {
             callback.onDecided(true);
         } else {
@@ -130,22 +131,21 @@ public class VSplitFrameSet implements Frame {
     }
 
     @Override
-	public boolean navigate(PageState place) {
+    public boolean navigate(PageState place) {
         return true;
     }
 
     @Override
-	public PageId getPageId() {
+    public PageId getPageId() {
         return pageId;
     }
 
-	public void setNavPanel(NavigationPanel navPanel) {
-		this.navPanel = navPanel;
-	}
+    public void setNavPanel(NavigationPanel navPanel) {
+        this.navPanel = navPanel;
+    }
 
-	public NavigationPanel getNavPanel() {
-		return navPanel;
-	}
-
+    public NavigationPanel getNavPanel() {
+        return navPanel;
+    }
 
 }

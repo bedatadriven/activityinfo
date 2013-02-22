@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common.nav;
 
 /*
@@ -31,7 +29,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * A TreeModel that a represents a link to another PageId+PageState
- *
+ * 
  * @author Alex Bertram
  */
 public final class Link extends BaseTreeModel {
@@ -43,7 +41,7 @@ public final class Link extends BaseTreeModel {
     }
 
     /**
-     *
+     * 
      * @return this Link's label
      */
     public String getLabel() {
@@ -51,7 +49,7 @@ public final class Link extends BaseTreeModel {
     }
 
     /**
-     *
+     * 
      * @return the PageState to which to link
      */
     public PageState getPageState() {
@@ -59,14 +57,14 @@ public final class Link extends BaseTreeModel {
     }
 
     /**
-     * @return  this Link's icon
+     * @return this Link's icon
      */
     public AbstractImagePrototype getIcon() {
         return icon;
     }
 
     /**
-     *
+     * 
      * @return this Link's key, for use in state management
      */
     public String getKey() {
@@ -99,11 +97,12 @@ public final class Link extends BaseTreeModel {
         }
 
         /**
-         *  Sets the destination to the given PageState
+         * Sets the destination to the given PageState
          */
         private Builder to(PageState pageState) {
             link.pageState = pageState;
-            link.key = pageState.getPageId() + "/" + pageState.serializeAsHistoryToken();
+            link.key = pageState.getPageId() + "/"
+                + pageState.serializeAsHistoryToken();
             return this;
         }
 
@@ -132,7 +131,7 @@ public final class Link extends BaseTreeModel {
         }
 
         /**
-         * @return  the Link
+         * @return the Link
          */
         public Link build() {
             assert link.getLabel() != null : "Link models must have a name/label";

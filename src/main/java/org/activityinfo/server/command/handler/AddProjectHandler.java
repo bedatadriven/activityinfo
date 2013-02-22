@@ -37,7 +37,6 @@ import org.activityinfo.shared.exception.CommandException;
 
 import com.google.inject.Inject;
 
-
 /*
  * Adds given Project to the database
  */
@@ -46,13 +45,13 @@ public class AddProjectHandler implements CommandHandler<AddProject> {
     private final EntityManager em;
 
     @Inject
-	public AddProjectHandler(EntityManager em) {
-		this.em = em;
-	}
+    public AddProjectHandler(EntityManager em) {
+        this.em = em;
+    }
 
-	@Override
-	public CommandResult execute(AddProject cmd, User user)
-			throws CommandException {
+    @Override
+    public CommandResult execute(AddProject cmd, User user)
+        throws CommandException {
 
         UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
 
@@ -63,11 +62,11 @@ public class AddProjectHandler implements CommandHandler<AddProject> {
         project.setUserDatabase(db);
 
         db.setLastSchemaUpdate(new Date());
-        
+
         em.persist(project);
         em.persist(db);
         db.getProjects().add(project);
 
         return new CreateResult(project.getId());
-	}
+    }
 }

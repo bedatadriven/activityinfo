@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -30,9 +28,9 @@ import org.activityinfo.shared.dto.AdminEntityDTO;
 
 /**
  * Result of a <code>GetAdminEntities</code> command.
- *
+ * 
  * @see org.activityinfo.shared.command.GetAdminEntities
- *
+ * 
  * @author Alex Bertram
  */
 public class AdminEntityResult extends ListResult<AdminEntityDTO> {

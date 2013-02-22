@@ -48,99 +48,102 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class ExportDialog extends Dialog {
-	
-	private final Dispatcher dispatcher;
-	private ProgressBar bar;
-	private Text downloadLink;
-	private boolean canceled = false;
-	private Button button;
-	
-	public ExportDialog(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-		
-		setWidth(350);
-		setHeight(175);
-		setHeading(I18N.CONSTANTS.export());
-		setClosable(false);
-		setButtonAlign(HorizontalAlignment.CENTER);
-		
-		VBoxLayout layout = new VBoxLayout();
-		layout.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
-		
-		setLayout(layout);
-		
-		bar = new ProgressBar();
-		bar.setWidth(300);
-		add(bar, new VBoxLayoutData(new Margins(20, 15, 25, 15)));
-		
-		downloadLink = new Text(I18N.CONSTANTS.clickToDownload());
-		downloadLink.setTagName("a");
-		downloadLink.setVisible(false);
-		add(downloadLink, new VBoxLayoutData(0, 15, 0, 15));
-		
-	}
 
-	@Override
-	protected void createButtons() {
-		
-		button = new Button();
-		button.setText(I18N.CONSTANTS.cancel());
-		button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				ExportDialog.this.canceled = true;
-				bar.reset();
-				hide();
-			}
-		});
-		getButtonBar().add(button);
-	}
+    private final Dispatcher dispatcher;
+    private ProgressBar bar;
+    private Text downloadLink;
+    private boolean canceled = false;
+    private Button button;
 
+    public ExportDialog(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
 
-	public void export(String filename, ReportElement model, Format format) {
-		show();
-		bar.updateText(I18N.CONSTANTS.exportProgress());
-		bar.auto();
-		
-		RenderElement command = new RenderElement(model, format);
-		command.setFilename(filename);
-		
-		dispatcher.execute(command, new AsyncCallback<UrlResult>() {
+        setWidth(350);
+        setHeight(175);
+        setHeading(I18N.CONSTANTS.export());
+        setClosable(false);
+        setButtonAlign(HorizontalAlignment.CENTER);
 
-			@Override
-			public void onFailure(Throwable caught) {
-				MessageBox.alert(I18N.CONSTANTS.export(), I18N.CONSTANTS.serverError(), new Listener<MessageBoxEvent>() {
+        VBoxLayout layout = new VBoxLayout();
+        layout.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
 
-					@Override
-					public void handleEvent(MessageBoxEvent be) {
-						ExportDialog.this.hide();
-					}
-				});
-			}
+        setLayout(layout);
 
-			@Override
-			public void onSuccess(UrlResult result) {
-				if(!canceled) {
-					bar.reset();
-					bar.updateProgress(1.0, I18N.CONSTANTS.downloadReady());
-					button.setText(I18N.CONSTANTS.close());
-					tryStartDownloadWithIframe(result.getUrl());
-					downloadLink.getElement().setAttribute("href", result.getUrl());
-					downloadLink.setVisible(true);
-					layout(true);
-				}
-			}
-		});
-	}
+        bar = new ProgressBar();
+        bar.setWidth(300);
+        add(bar, new VBoxLayoutData(new Margins(20, 15, 25, 15)));
 
-	private void tryStartDownloadWithIframe(String url) {
-		com.google.gwt.user.client.ui.Frame frame = new com.google.gwt.user.client.ui.Frame(url);
-		El el = El.fly(frame.getElement());
-		el.setStyleAttribute("width", 0);
-		el.setStyleAttribute("height", 0);
-		el.setStyleAttribute("position", "absolute");
-		el.setStyleAttribute("border", 0);
-		RootPanel.get().add(frame);		
-	}
+        downloadLink = new Text(I18N.CONSTANTS.clickToDownload());
+        downloadLink.setTagName("a");
+        downloadLink.setVisible(false);
+        add(downloadLink, new VBoxLayoutData(0, 15, 0, 15));
+
+    }
+
+    @Override
+    protected void createButtons() {
+
+        button = new Button();
+        button.setText(I18N.CONSTANTS.cancel());
+        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ExportDialog.this.canceled = true;
+                bar.reset();
+                hide();
+            }
+        });
+        getButtonBar().add(button);
+    }
+
+    public void export(String filename, ReportElement model, Format format) {
+        show();
+        bar.updateText(I18N.CONSTANTS.exportProgress());
+        bar.auto();
+
+        RenderElement command = new RenderElement(model, format);
+        command.setFilename(filename);
+
+        dispatcher.execute(command, new AsyncCallback<UrlResult>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                MessageBox.alert(I18N.CONSTANTS.export(),
+                    I18N.CONSTANTS.serverError(),
+                    new Listener<MessageBoxEvent>() {
+
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            ExportDialog.this.hide();
+                        }
+                    });
+            }
+
+            @Override
+            public void onSuccess(UrlResult result) {
+                if (!canceled) {
+                    bar.reset();
+                    bar.updateProgress(1.0, I18N.CONSTANTS.downloadReady());
+                    button.setText(I18N.CONSTANTS.close());
+                    tryStartDownloadWithIframe(result.getUrl());
+                    downloadLink.getElement().setAttribute("href",
+                        result.getUrl());
+                    downloadLink.setVisible(true);
+                    layout(true);
+                }
+            }
+        });
+    }
+
+    private void tryStartDownloadWithIframe(String url) {
+        com.google.gwt.user.client.ui.Frame frame = new com.google.gwt.user.client.ui.Frame(
+            url);
+        El el = El.fly(frame.getElement());
+        el.setStyleAttribute("width", 0);
+        el.setStyleAttribute("height", 0);
+        el.setStyleAttribute("position", "absolute");
+        el.setStyleAttribute("border", 0);
+        RootPanel.get().add(frame);
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.remote;
 
 /*
@@ -41,8 +39,8 @@ import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.remote.cache.CacheManager;
-import org.activityinfo.client.dispatch.remote.cache.CachingDispatcher;
 import org.activityinfo.client.dispatch.remote.cache.CacheResult;
+import org.activityinfo.client.dispatch.remote.cache.CachingDispatcher;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.GetSchema;
@@ -67,26 +65,28 @@ public class RemoteDispatcherTest {
     private Dispatcher dispatcher;
     private CommandCache proxy;
     private CacheManager proxyManager = new CacheManager(new MockEventBus());
-    
+
     private Capture<AsyncCallback> remoteCallback = new Capture<AsyncCallback>();
 
     private IncompatibleRemoteHandler dummyIncompatibleRemoteHandler = new IncompatibleRemoteHandler() {
-		@Override
-		public void handle() { }
-	};
-	
-	private StubScheduler scheduler = new StubScheduler();
-	
+        @Override
+        public void handle() {
+        }
+    };
+
+    private StubScheduler scheduler = new StubScheduler();
+
     @Before
     public void setUp() {
         service = createMock("remoteService", RemoteCommandServiceAsync.class);
         proxy = createMock("proxy", CommandCache.class);
-        AuthenticatedUser auth = new AuthenticatedUser(AUTH_TOKEN, 1, "alex@alex.com");
-        
-        dispatcher = new CachingDispatcher(proxyManager, 
-        		new MergingDispatcher(
-        		new RemoteDispatcher(new MockEventBus(), auth, service),
-        		scheduler));
+        AuthenticatedUser auth = new AuthenticatedUser(AUTH_TOKEN, 1,
+            "alex@alex.com");
+
+        dispatcher = new CachingDispatcher(proxyManager,
+            new MergingDispatcher(
+                new RemoteDispatcher(new MockEventBus(), auth, service),
+                scheduler));
     }
 
     @Test
@@ -156,39 +156,39 @@ public class RemoteDispatcherTest {
         verify(callback1);
         verify(callback2);
     }
-    
+
     @Test
     public void successiveCommandsServedByProxyAreCorrectlyHandleded() {
-    	
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.maybeExecute(eq(command))).andReturn(new CacheResult(new SchemaDTO())).anyTimes();
+        expect(proxy.maybeExecute(eq(command))).andReturn(
+            new CacheResult(new SchemaDTO())).anyTimes();
         replay(proxy);
 
-        replay(service);   // no calls should be made to the remote service
+        replay(service); // no calls should be made to the remote service
 
         final AsyncCallback callback2 = makeCallbackThatExpectsNonNullSuccess();
 
         proxyManager.registerProxy(GetSchema.class, proxy);
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-			@Override
-			public void onFailure(Throwable arg0) {
-				throw new AssertionError();
-			}
+            @Override
+            public void onFailure(Throwable arg0) {
+                throw new AssertionError();
+            }
 
-			@Override
-			public void onSuccess(SchemaDTO arg0) {
-		        dispatcher.execute(new GetSchema(), callback2);				
-			}
-        	
+            @Override
+            public void onSuccess(SchemaDTO arg0) {
+                dispatcher.execute(new GetSchema(), callback2);
+            }
+
         });
         processPendingCommands();
         processPendingCommands();
 
         verify(proxy, service, callback2);
-    	
+
     }
 
     @Test
@@ -196,10 +196,11 @@ public class RemoteDispatcherTest {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.maybeExecute(eq(command))).andReturn(new CacheResult(new SchemaDTO()));
+        expect(proxy.maybeExecute(eq(command))).andReturn(
+            new CacheResult(new SchemaDTO()));
         replay(proxy);
 
-        replay(service);   // no calls should be made to the remote service
+        replay(service); // no calls should be made to the remote service
 
         AsyncCallback callback = makeCallbackThatExpectsNonNullSuccess();
 
@@ -210,13 +211,13 @@ public class RemoteDispatcherTest {
         verify(proxy, service, callback);
     }
 
-
     @Test
     public void commandsUnsuccessfullyExecutedThroughProxiesShouldBeSentToServer() {
 
         GetSchema command = new GetSchema();
 
-        expect(proxy.maybeExecute(eq(command))).andReturn(CacheResult.couldNotExecute());
+        expect(proxy.maybeExecute(eq(command))).andReturn(
+            CacheResult.couldNotExecute());
         replay(proxy);
 
         expectRemoteCall(command);
@@ -236,7 +237,8 @@ public class RemoteDispatcherTest {
     public void commandExceptionsShouldBeCalledBackWithFailure() {
 
         expectRemoteCall(new GetSchema());
-        andCallbackWihSuccess(new CommandException());  // remote call succeeded, command failed
+        andCallbackWihSuccess(new CommandException()); // remote call succeeded,
+                                                       // command failed
         replay(service);
 
         AsyncCallback callback = makeCallbackThatExpectsFailure();
@@ -248,9 +250,9 @@ public class RemoteDispatcherTest {
     }
 
     /**
-     * The RemoteDispatcher will group and bundle commands together-- we
-     * need to make sure that different components remain isolated from
-     * failures within other components.
+     * The RemoteDispatcher will group and bundle commands together-- we need to
+     * make sure that different components remain isolated from failures within
+     * other components.
      */
     @Test
     public void exceptionsThrownByCallbacksDoNotDistubOthers() {
@@ -263,17 +265,18 @@ public class RemoteDispatcherTest {
         // but something will go wrong when the command return (successfully)
         // the error is unrelated to the remote command -- it just happens to be
         // there.
-        dispatcher.execute(new GetSchema(), null, new AsyncCallback<SchemaDTO>() {
-            @Override
-            public void onFailure(Throwable caught) {
+        dispatcher.execute(new GetSchema(), null,
+            new AsyncCallback<SchemaDTO>() {
+                @Override
+                public void onFailure(Throwable caught) {
 
-            }
+                }
 
-            @Override
-            public void onSuccess(SchemaDTO result) {
-                throw new RuntimeException();
-            }
-        });
+                @Override
+                public void onSuccess(SchemaDTO result) {
+                    throw new RuntimeException();
+                }
+            });
 
         // the second command independently requests the same command,
         // we need to make sure we receive a result
@@ -285,14 +288,13 @@ public class RemoteDispatcherTest {
         verify(secondCallback);
     }
 
-
     private void processPendingCommands() {
-    	for(RepeatingCommand command : scheduler.getRepeatingCommands()) {
-    		command.execute();
-    	}
-	}
+        for (RepeatingCommand command : scheduler.getRepeatingCommands()) {
+            command.execute();
+        }
+    }
 
-	private AsyncCallback<SchemaDTO> makeNullCallback() {
+    private AsyncCallback<SchemaDTO> makeNullCallback() {
         return new AsyncCallback<SchemaDTO>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -318,23 +320,22 @@ public class RemoteDispatcherTest {
         return callback;
     }
 
-
     private void expectRemoteCall(GetSchema command) {
         service.execute(
-                eq(AUTH_TOKEN),
-                eq(Collections.<Command>singletonList(command)),
-                capture(remoteCallback));
+            eq(AUTH_TOKEN),
+            eq(Collections.<Command> singletonList(command)),
+            capture(remoteCallback));
     }
 
     private void andCallbackWihSuccess(final CommandResult result) {
         expectLastCall().andAnswer(new IAnswer<Object>() {
             @Override
             public Object answer() throws Throwable {
-                ((AsyncCallback) getCurrentArguments()[2]).onSuccess(Collections.singletonList(result));
+                ((AsyncCallback) getCurrentArguments()[2])
+                    .onSuccess(Collections.singletonList(result));
                 return null;
             }
         });
     }
-
 
 }

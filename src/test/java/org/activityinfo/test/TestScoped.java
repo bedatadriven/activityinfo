@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.test;
 
 /*
@@ -28,7 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import com.google.inject.ScopeAnnotation;
-
 
 @ScopeAnnotation
 @Retention(RetentionPolicy.RUNTIME)

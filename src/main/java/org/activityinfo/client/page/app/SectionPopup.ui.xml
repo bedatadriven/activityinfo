@@ -20,20 +20,20 @@
   #L%
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
-	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-	<ui:style>
-        .panel {
-            background-color: white;
-			border-left: 1px solid #99BBE8;
-			border-right: 1px solid #99BBE8;
-			border-bottom: 1px solid #99BBE8;
-			width: 300px;
-			height: 200px;
-        }
-    </ui:style>
-   	<g:HTMLPanel styleName="{style.panel}">
-   		hello world!
-   	
-   	</g:HTMLPanel>
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  <ui:style>
+    .panel {
+    background-color: white;
+    border-left: 1px solid #99BBE8;
+    border-right: 1px solid #99BBE8;
+    border-bottom: 1px solid #99BBE8;
+    width: 300px;
+    height: 200px;
+    }
+  </ui:style>
+  <g:HTMLPanel styleName="{style.panel}">
+    hello world!
+
+  </g:HTMLPanel>
 </ui:UiBinder>

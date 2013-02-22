@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -56,13 +54,16 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
         this.em = em;
     }
 
-    public CommandResult execute(AddPartner cmd, User user) throws CommandException {
+    @Override
+    public CommandResult execute(AddPartner cmd, User user)
+        throws CommandException {
 
         UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
         if (db.getOwner().getId() != user.getId()) {
             UserPermission perm = db.getPermissionByUser(user);
             if (perm == null || !perm.isAllowManageAllUsers()) {
-                throw new IllegalAccessCommandException("The user does not have the manageAllUsers permission.");
+                throw new IllegalAccessCommandException(
+                    "The user does not have the manageAllUsers permission.");
             }
         }
 
@@ -77,9 +78,10 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
         }
 
         // now try to match this partner by name
-        List<Partner> allPartners = em.createQuery("select p from Partner p where p.name = ?1")
-                .setParameter(1, cmd.getPartner().getName())
-                .getResultList();
+        List<Partner> allPartners = em
+            .createQuery("select p from Partner p where p.name = ?1")
+            .setParameter(1, cmd.getPartner().getName())
+            .getResultList();
 
         if (allPartners.size() != 0) {
             db.getPartners().add(allPartners.get(0));

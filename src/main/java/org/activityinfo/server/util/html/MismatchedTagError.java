@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.util.html;
 
 /*
@@ -26,14 +24,12 @@ package org.activityinfo.server.util.html;
 
 public class MismatchedTagError extends Error {
 
-	public MismatchedTagError() {
-		
-	}
-	
-	public MismatchedTagError(String message) {
-		super(message);
-	}
+    public MismatchedTagError() {
 
-	
-	
+    }
+
+    public MismatchedTagError(String message) {
+        super(message);
+    }
+
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.exception;
 
 /*
@@ -25,18 +23,17 @@ package org.activityinfo.shared.exception;
  */
 
 /**
- * Indicates that the auth token is missing from the request, is not found in the 
- * database, or has expired.
+ * Indicates that the auth token is missing from the request, is not found in
+ * the database, or has expired.
  */
 public class InvalidAuthTokenException extends CommandException {
 
-	public InvalidAuthTokenException() {
-		
-	}
+    public InvalidAuthTokenException() {
 
-	public InvalidAuthTokenException(String message) {
-		super(message);
-	}
+    }
 
+    public InvalidAuthTokenException(String message) {
+        super(message);
+    }
 
 }

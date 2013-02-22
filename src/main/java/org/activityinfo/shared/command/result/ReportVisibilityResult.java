@@ -28,24 +28,23 @@ import org.activityinfo.shared.dto.ReportVisibilityDTO;
 
 public class ReportVisibilityResult implements CommandResult {
 
-	private List<ReportVisibilityDTO> list;
-	
-	public ReportVisibilityResult() {
-		
-	}
+    private List<ReportVisibilityDTO> list;
 
-	public ReportVisibilityResult(List<ReportVisibilityDTO> list) {
-		super();
-		this.list = list;
-	}
+    public ReportVisibilityResult() {
 
-	public List<ReportVisibilityDTO> getList() {
-		return list;
-	}
+    }
 
-	public void setList(List<ReportVisibilityDTO> list) {
-		this.list = list;
-	}
-	
-	
+    public ReportVisibilityResult(List<ReportVisibilityDTO> list) {
+        super();
+        this.list = list;
+    }
+
+    public List<ReportVisibilityDTO> getList() {
+        return list;
+    }
+
+    public void setList(List<ReportVisibilityDTO> list) {
+        this.list = list;
+    }
+
 }

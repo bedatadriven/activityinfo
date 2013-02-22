@@ -29,8 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface GeometryStorage {
 
-	InputStream openWkb(int adminLevelId) throws IOException;
-	
-	void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response) throws IOException;
-	
+    InputStream openWkb(int adminLevelId) throws IOException;
+
+    void serveJson(int adminLevelId, boolean gzip, HttpServletResponse response)
+        throws IOException;
+
 }

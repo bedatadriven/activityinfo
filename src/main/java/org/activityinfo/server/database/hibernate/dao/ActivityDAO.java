@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -29,15 +27,17 @@ import java.util.Set;
 import org.activityinfo.server.database.hibernate.entity.Activity;
 
 /**
- * DAO for the {@link org.activityinfo.server.database.hibernate.entity.Activity} domain object. Implemented automatically by proxy,
- * see the Activity class for query definitions.
- *
+ * DAO for the
+ * {@link org.activityinfo.server.database.hibernate.entity.Activity} domain
+ * object. Implemented automatically by proxy, see the Activity class for query
+ * definitions.
+ * 
  * @author Alex Bertram
  */
 public interface ActivityDAO extends DAO<Activity, Integer> {
 
     Integer queryMaxSortOrder(int databaseId);
-    
-    Set<Activity> getActivitiesByDatabaseId(int databaseId); 
+
+    Set<Activity> getActivitiesByDatabaseId(int databaseId);
 
 }

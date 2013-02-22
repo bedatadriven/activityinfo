@@ -1,5 +1,3 @@
-
-
 /**
  * The root package of each of the Application's main "rubriques"
  */
@@ -32,7 +30,8 @@ package org.activityinfo.client.page;
  */
 public final class Frames {
 
-	private Frames() {}
-	
+    private Frames() {
+    }
+
     public static final PageId STATIC = new PageId("static");
 }

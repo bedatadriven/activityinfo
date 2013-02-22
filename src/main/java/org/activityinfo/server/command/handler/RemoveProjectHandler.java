@@ -47,10 +47,10 @@ public class RemoveProjectHandler implements CommandHandler<RemoveProject> {
     public RemoveProjectHandler(EntityManager em) {
         this.em = em;
     }
-	
-	@Override
-	public CommandResult execute(RemoveProject cmd, User user)
-			throws CommandException {
+
+    @Override
+    public CommandResult execute(RemoveProject cmd, User user)
+        throws CommandException {
         // verify the current user has access to this site
         UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
         if (db.isAllowedDesign(user)) {
@@ -63,24 +63,29 @@ public class RemoveProjectHandler implements CommandHandler<RemoveProject> {
         // check to see if there are already sites associated with this
         // partner
 
-        int siteCount = ((Number) em.createQuery("select count(s) from Site s where " +
-                "s.activity.id in (select a.id from Activity a where a.database.id = :dbId) and " +
-                "s.project.id = :projectId and " +
-                "s.dateDeleted is null")
-                .setParameter("dbId", cmd.getDatabaseId())
-                .setParameter("projectId", cmd.getProjectId())
-                .getSingleResult()).intValue();
+        int siteCount = ((Number) em
+            .createQuery(
+                "select count(s) from Site s where "
+                    +
+                    "s.activity.id in (select a.id from Activity a where a.database.id = :dbId) and "
+                    +
+                    "s.project.id = :projectId and " +
+                    "s.dateDeleted is null")
+            .setParameter("dbId", cmd.getDatabaseId())
+            .setParameter("projectId", cmd.getProjectId())
+            .getSingleResult()).intValue();
 
         if (siteCount > 0) {
             throw new ProjectHasSitesException();
         }
 
-        db.getPartners().remove(em.getReference(Project.class, cmd.getProjectId()));
+        db.getPartners().remove(
+            em.getReference(Project.class, cmd.getProjectId()));
 
         db.setLastSchemaUpdate(new Date());
         em.persist(db);
 
         return new VoidResult();
-	}
+    }
 
 }

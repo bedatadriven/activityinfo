@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -26,8 +24,8 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.SyncRegions;
 
-public class GetSyncRegions implements Command<SyncRegions>  {
-    
+public class GetSyncRegions implements Command<SyncRegions> {
+
     public GetSyncRegions() {
     }
 }

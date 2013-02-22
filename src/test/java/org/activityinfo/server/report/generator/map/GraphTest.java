@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -38,7 +36,6 @@ import org.junit.Test;
 
 public class GraphTest {
 
-
     @Test
     public void testGraph() throws Exception {
 
@@ -56,13 +53,13 @@ public class GraphTest {
         points.add(new PointValue(null, null, 150, new Point(500, 200)));
         points.add(new PointValue(null, null, 30, new Point(700, 200)));
 
-      //  MarkerGraph graph = new MarkerGraph(points, new GraduatedLogCalculator(50, 100), 100);
-
-
+        // MarkerGraph graph = new MarkerGraph(points, new
+        // GraduatedLogCalculator(50, 100), 100);
 
     }
 
-    protected void saveGraphImage(String testName, MarkerGraph graph, int maxRadius) throws Exception {
+    protected void saveGraphImage(String testName, MarkerGraph graph,
+        int maxRadius) throws Exception {
 
         File outputDir = new File("target/report-tests");
         outputDir.mkdirs();
@@ -72,26 +69,26 @@ public class GraphTest {
         FileWriter svg = new FileWriter(outputFile);
 
         svg.write("<svg width='100%' height='100%' transform='scale(50)' version='1.1'  xmlns='http://www.w3.org/2000/svg'>");
-        for(MarkerGraph.Edge edge : graph.getEdges()) {
+        for (MarkerGraph.Edge edge : graph.getEdges()) {
             svg.write(String.format("<line x1='%d' y1='%d' x2='%d' y2='%d' " +
-                        "style='stroke:rgb(99,99,99);stroke-width:1'/>",
-                        edge.getA().getPoint().getX(),
-                         edge.getA().getPoint().getY(),
-                         edge.getB().getPoint().getX(),
-                         edge.getB().getPoint().getY()));
+                "style='stroke:rgb(99,99,99);stroke-width:1'/>",
+                edge.getA().getPoint().getX(),
+                edge.getA().getPoint().getY(),
+                edge.getB().getPoint().getX(),
+                edge.getB().getPoint().getY()));
         }
 
-        for(MarkerGraph.Node node : graph.getNodes()) {
+        for (MarkerGraph.Node node : graph.getNodes()) {
             svg.write(String.format("<circle cx='%d' cy='%d' r='1.5' " +
-                        "style='stroke:none; fill: blue'/>",
-                         node.getPoint().getX(),
-                         node.getPoint().getY()));
-//            svg.write(String.format("<circle cx='%d' cy='%d' r='%d' " +
-//                        "style='stroke:blue; stroke-width:1; fill: none' title='node%d'/>",
-//                         node.getPoint().getX(),
-//                         node.getPoint().getY(),
-//                         maxRadius,
-//                         node.index));
+                "style='stroke:none; fill: blue'/>",
+                node.getPoint().getX(),
+                node.getPoint().getY()));
+            // svg.write(String.format("<circle cx='%d' cy='%d' r='%d' " +
+            // "style='stroke:blue; stroke-width:1; fill: none' title='node%d'/>",
+            // node.getPoint().getX(),
+            // node.getPoint().getY(),
+            // maxRadius,
+            // node.index));
 
         }
         svg.write("</svg>");
@@ -99,84 +96,84 @@ public class GraphTest {
 
     }
 
-    protected void saveClusters(MarkerGraph graph, String fileName, List<Cluster> clusters) throws IOException {
-
+    protected void saveClusters(MarkerGraph graph, String fileName,
+        List<Cluster> clusters) throws IOException {
 
         File outputDir = new File("target/report-tests");
         outputDir.mkdirs();
-        
+
         File outputFile = new File("target/report-tests/" + fileName + ".svg");
 
         FileWriter svg = new FileWriter(outputFile);
 
-        svg.write("<svg width='100%' height='100%' transform='scale(500)' version='1.1'  " +
-                "xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' >\n");
+        svg.write("<svg width='100%' height='100%' transform='scale(500)' version='1.1'  "
+            +
+            "xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' >\n");
 
-        for(MarkerGraph.Edge edge : graph.getEdges()) {
+        for (MarkerGraph.Edge edge : graph.getEdges()) {
             svg.write(String.format("<path d='M%d %d L%d %d' " +
-                        "style='stroke:rgb(92,92,92);stroke-width:0.25'/>\n",
-                         edge.getA().getPoint().getX(),
-                         edge.getA().getPoint().getY(),
-                         edge.getB().getPoint().getX(),
-                         edge.getB().getPoint().getY()));
+                "style='stroke:rgb(92,92,92);stroke-width:0.25'/>\n",
+                edge.getA().getPoint().getX(),
+                edge.getA().getPoint().getY(),
+                edge.getB().getPoint().getX(),
+                edge.getB().getPoint().getY()));
         }
 
         String[] colors = new String[] {
-                "antiquewhite", "blue", "brown", "chartreuse", "cornflowerblue",
-                "crimson", "darkkhaki", "darkorange", "darkorchid", "lightpink",
-                "lightseagreen", "lightskyblue", "lime", "limegreen", "magenta",
-                "mediumaqua" };
+            "antiquewhite", "blue", "brown", "chartreuse", "cornflowerblue",
+            "crimson", "darkkhaki", "darkorange", "darkorchid", "lightpink",
+            "lightseagreen", "lightskyblue", "lime", "limegreen", "magenta",
+            "mediumaqua" };
 
-        int colorIndex =0;
-        for(int i=0; i!= clusters.size();++i) {
+        int colorIndex = 0;
+        for (int i = 0; i != clusters.size(); ++i) {
             Cluster cluster = clusters.get(i);
             svg.write(String.format("<circle cx='%d' cy='%d' r='%f' " +
-                         "style='fill: %s; fill-opacity: 0.5; stroke:none'/>\n",
-                        cluster.getPoint().getX(),
-                        cluster.getPoint().getY(),
-                        cluster.getRadius(),
-                        colors[colorIndex]));
+                "style='fill: %s; fill-opacity: 0.5; stroke:none'/>\n",
+                cluster.getPoint().getX(),
+                cluster.getPoint().getY(),
+                cluster.getRadius(),
+                colors[colorIndex]));
 
-
-            for(PointValue pointValue : cluster.getPointValues()) {
-                svg.write(String.format("<circle cx='%d' cy='%d' r='1.5' " +
+            for (PointValue pointValue : cluster.getPointValues()) {
+                svg.write(String
+                    .format(
+                        "<circle cx='%d' cy='%d' r='1.5' "
+                            +
                             "style='stroke:rgb(92,92,92); stroke-width:0.1; fill: %s' title='%f'/>\n",
-                             pointValue.getPx().getX(),
-                             pointValue.getPx().getY(),
-                             colors[colorIndex],
-                             pointValue.getValue()));
+                        pointValue.getPx().getX(),
+                        pointValue.getPx().getY(),
+                        colors[colorIndex],
+                        pointValue.getValue()));
             }
 
             colorIndex++;
-            if(colorIndex == colors.length) {
+            if (colorIndex == colors.length) {
                 colorIndex = 0;
             }
 
         }
 
-
-
         // label subgraphs
         List<List<MarkerGraph.Node>> subgraphs = graph.getSubgraphs();
-        for(int i=0; i!=subgraphs.size();++i) {
+        for (int i = 0; i != subgraphs.size(); ++i) {
             Point p = findLR(subgraphs.get(i));
 
             svg.write(String.format("<text x='%d' y='%d'>%d</text>\n",
-                    p.getX() + 5,
-                    p.getY(),
-                    i));
+                p.getX() + 5,
+                p.getY(),
+                i));
         }
-        
+
         svg.write("</svg>\n");
         svg.close();
-
 
     }
 
     private Point findLR(List<MarkerGraph.Node> nodes) {
         Point lr = new Point(Integer.MIN_VALUE, 0);
-        for(MarkerGraph.Node node : nodes) {
-            if(node.getPoint().getX() > lr.getX()) {
+        for (MarkerGraph.Node node : nodes) {
+            if (node.getPoint().getX() > lr.getX()) {
                 lr = node.getPoint();
             }
         }

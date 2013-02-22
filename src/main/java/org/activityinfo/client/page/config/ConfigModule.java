@@ -1,5 +1,3 @@
-
-
 /**
  * The set of pages comprising the configuration rubrique, including definition and creation
  * of databases, user settings, etc.

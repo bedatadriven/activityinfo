@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.design;
 
 /*
@@ -38,12 +36,11 @@ import java.util.List;
 
 import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.DispatcherStub;
+import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.mock.StateManagerStub;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.common.grid.ConfirmCallback;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.page.config.design.DesignPresenter;
-import org.activityinfo.client.page.config.design.IndicatorFolder;
 import org.activityinfo.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.Delete;
@@ -57,7 +54,6 @@ import org.activityinfo.shared.dto.SchemaDTO;
 import org.easymock.IAnswer;
 import org.junit.Assert;
 import org.junit.Test;
-import org.activityinfo.client.i18n.UIConstants;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
@@ -65,13 +61,11 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 
 public class DesignTest {
 
-
     @Test
     public void testSave() {
 
         // Dummy Data
-        SchemaDTO schema = DTOs.PEAR();
-
+        SchemaDTO schema = DTOs.pear();
 
         // Collaborator
         MockEventBus eventBus = new MockEventBus();
@@ -89,14 +83,16 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(eventBus, service, new StateManagerStub(),
-                view, constants);
+        DesignPresenter designer = new DesignPresenter(eventBus, service,
+            new StateManagerStub(),
+            view, constants);
         designer.go(schema.getDatabaseById(1));
 
         // Verify that following a change to the record, a save call
         // triggers an update command
 
-        ActivityDTO activity = (ActivityDTO) ((TreeStore)designer.getStore()).getRootItems().get(0);
+        ActivityDTO activity = (ActivityDTO) ((TreeStore) designer.getStore())
+            .getRootItems().get(0);
         Record record = designer.getStore().getRecord(activity);
 
         record.set("name", "New Name");
@@ -114,8 +110,7 @@ public class DesignTest {
     public void testSaveOnNavigateAway() {
 
         // Dummy Data
-        SchemaDTO schema = DTOs.PEAR();
-
+        SchemaDTO schema = DTOs.pear();
 
         // Collaborator
         MockEventBus eventBus = new MockEventBus();
@@ -133,23 +128,27 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(eventBus, service, new StateManagerStub(),
-                view, constants);
+        DesignPresenter designer = new DesignPresenter(eventBus, service,
+            new StateManagerStub(),
+            view, constants);
         designer.go(schema.getDatabaseById(1));
 
         // Verify that following a change to the record, a save call
         // triggers an update command
 
-        ActivityDTO activity = (ActivityDTO) ((TreeStore)designer.getStore()).getRootItems().get(0);
+        ActivityDTO activity = (ActivityDTO) ((TreeStore) designer.getStore())
+            .getRootItems().get(0);
         Record record = designer.getStore().getRecord(activity);
 
         record.set("name", "New Name");
 
-        designer.requestToNavigateAway(new DataEntryPlace(), new NavigationCallback() {
-            public void onDecided(boolean allowed) {
+        designer.requestToNavigateAway(new DataEntryPlace(),
+            new NavigationCallback() {
+                @Override
+                public void onDecided(boolean allowed) {
 
-            }
-        });
+                }
+            });
 
         UpdateEntity cmd = service.getLastExecuted(UpdateEntity.class);
 
@@ -161,9 +160,8 @@ public class DesignTest {
     @Test
     public void testDelete() {
 
-
         // Dummy Data
-        SchemaDTO schema = DTOs.PEAR();
+        SchemaDTO schema = DTOs.pear();
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
@@ -176,8 +174,9 @@ public class DesignTest {
         expect(view.getSelection()).andReturn(schema.getActivityById(91));
         view.confirmDeleteSelected(isA(ConfirmCallback.class));
         expectLastCall().andAnswer(new IAnswer<Object>() {
+            @Override
             public Object answer() throws Throwable {
-                ((ConfirmCallback)getCurrentArguments()[0]).confirmed();
+                ((ConfirmCallback) getCurrentArguments()[0]).confirmed();
                 return null;
             }
         });
@@ -187,8 +186,9 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new StateManagerStub(),
-                view, constants);
+        DesignPresenter designer = new DesignPresenter(new MockEventBus(),
+            service, new StateManagerStub(),
+            view, constants);
         designer.go(schema.getDatabaseById(1));
 
         // Verify that the proper delete command executes
@@ -206,7 +206,7 @@ public class DesignTest {
     public void testDeleteEnabled() {
 
         // Dummy Data
-        SchemaDTO schema = DTOs.PEAR();
+        SchemaDTO schema = DTOs.pear();
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
@@ -222,14 +222,16 @@ public class DesignTest {
         UIConstants constants = createNiceMock(UIConstants.class);
         replay(constants);
 
-        DesignPresenter designer = new DesignPresenter(new MockEventBus(), service, new StateManagerStub(),
-                view, constants);
+        DesignPresenter designer = new DesignPresenter(new MockEventBus(),
+            service, new StateManagerStub(),
+            view, constants);
         designer.go(schema.getDatabaseById(1));
 
         // Verify that the delete command is initially disabled
         verify(view);
 
-        // Verify that the delete command is enabled when an activity is selected
+        // Verify that the delete command is enabled when an activity is
+        // selected
         resetToDefault(view);
         view.setActionEnabled(UIActions.DELETE, true);
         replay(view);
@@ -253,7 +255,7 @@ public class DesignTest {
     public void testNewActivityComesWithFolders() {
 
         // Test data
-        SchemaDTO schema = DTOs.PEAR();
+        SchemaDTO schema = DTOs.pear();
 
         // Collaborator : EventBus
         MockEventBus eventBus = new MockEventBus();
@@ -271,21 +273,25 @@ public class DesignTest {
         replay(constants);
 
         // Class under test
-        DesignPresenter designer = new DesignPresenter(eventBus, service, new StateManagerStub(), view, constants);
+        DesignPresenter designer = new DesignPresenter(eventBus, service,
+            new StateManagerStub(), view, constants);
 
-        // VERIFY that when an activity is added, it appears at the end of the list with two
+        // VERIFY that when an activity is added, it appears at the end of the
+        // list with two
         // sub folders
 
         designer.go(schema.getDatabaseById(1));
-        
+
         view.newEntityProperties.put("name", "Psychosocial support");
         designer.onNew("Activity");
 
         List<ModelData> rootItems = designer.getTreeStore().getRootItems();
-        ActivityDTO addedActivity = (ActivityDTO) rootItems.get(rootItems.size() - 1);
+        ActivityDTO addedActivity = (ActivityDTO) rootItems.get(rootItems
+            .size() - 1);
 
         Assert.assertEquals("Psychosocial support", addedActivity.getName());
-        Assert.assertEquals("child nodes", 2, designer.getTreeStore().getChildCount(addedActivity));
+        Assert.assertEquals("child nodes", 2, designer.getTreeStore()
+            .getChildCount(addedActivity));
 
     }
 

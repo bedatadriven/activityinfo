@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -27,6 +25,5 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.BaseMapResult;
 
 public class GetBaseMaps implements Command<BaseMapResult> {
-
 
 }

@@ -50,165 +50,180 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Image;
 
-
 public class SearchFilterView extends ContentPanel {
-	private Map<DimensionType, List<SearchResultEntity>> affectedEntities;
-	private static List<DimensionType> supportedDimensions = new ArrayList<DimensionType>();
-	private Map<DimensionType, EntityPanel> dimensionPanels = new HashMap<DimensionType, EntityPanel>();
-	private EventBus eventBus = new SimpleEventBus();
-	
-	static {
-		supportedDimensions.add(DimensionType.AdminLevel);
-		supportedDimensions.add(DimensionType.Project);
-		supportedDimensions.add(DimensionType.Partner);
-		supportedDimensions.add(DimensionType.Location);
-		supportedDimensions.add(DimensionType.AttributeGroup);
-	}
-	
-	public SearchFilterView() {
-		super();
-		
-		SearchResources.INSTANCE.searchStyles().ensureInjected();
-		setStylePrimaryName("filterView");
-		setHeading(I18N.CONSTANTS.showingSearchResultFor());
-		setHeight(350);
-		//setStyleAttribute("height", "auto"); 
-		//setHeight("auto");
-		
-		VBoxLayout layout = new VBoxLayout();
-		layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-		layout.setPadding(new Padding(4,4,4,4));
-		setLayout(layout);
+    private Map<DimensionType, List<SearchResultEntity>> affectedEntities;
+    private static List<DimensionType> supportedDimensions = new ArrayList<DimensionType>();
+    private Map<DimensionType, EntityPanel> dimensionPanels = new HashMap<DimensionType, EntityPanel>();
+    private EventBus eventBus = new SimpleEventBus();
 
-		for (DimensionType dimension : supportedDimensions) {
-			EntityPanel entityPanel = new EntityPanel(dimension);
-			dimensionPanels.put(dimension, entityPanel);
-			add(entityPanel);
-			// FIXME temporary removed the dimension search
-//			entityPanel.addDimensionAddedHandler(new DimensionAddedEventHandler() {
-//				@Override
-//				public void onDimensionAdded(DimensionAddedEvent event) {
-//					eventBus.fireEvent(new DimensionAddedEvent(event.getAddedEntity()));
-//				}
-//			});
-		}
-		layout(true);
-	}
+    static {
+        supportedDimensions.add(DimensionType.AdminLevel);
+        supportedDimensions.add(DimensionType.Project);
+        supportedDimensions.add(DimensionType.Partner);
+        supportedDimensions.add(DimensionType.Location);
+        supportedDimensions.add(DimensionType.AttributeGroup);
+    }
 
-	private void updateUI() {
-		for (DimensionType foundEntity : supportedDimensions) {
-			dimensionPanels.get(foundEntity).fillWithEntities(affectedEntities.get(foundEntity));
-		}
-		
-		layout(true);
-	}
-	
-	public void setFilter(Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
-		this.affectedEntities = affectedEntities;
+    public SearchFilterView() {
+        super();
 
-		updateUI();		
-	}
-	
-	public void addDimensionAddedHandler(DimensionAddedEventHandler handler) {
-		eventBus.addHandler(DimensionAddedEvent.TYPE, handler);
-	}
-	
-	public interface DimensionAddedEventHandler extends EventHandler {
-		public void onDimensionAdded(DimensionAddedEvent event);
-	}
-	
-	public static class DimensionAddedEvent extends GwtEvent<DimensionAddedEventHandler> {
-		public final static Type<DimensionAddedEventHandler> TYPE = new Type<DimensionAddedEventHandler>();
-		private SearchResultEntity addedEntity;
-		
-		public DimensionAddedEvent(SearchResultEntity addedEntity) {
-			this.addedEntity = addedEntity;
-		}
+        SearchResources.INSTANCE.searchStyles().ensureInjected();
+        setStylePrimaryName("filterView");
+        setHeading(I18N.CONSTANTS.showingSearchResultFor());
+        setHeight(350);
+        // setStyleAttribute("height", "auto");
+        // setHeight("auto");
 
-		public SearchResultEntity getAddedEntity() {
-			return addedEntity;
-		}
+        VBoxLayout layout = new VBoxLayout();
+        layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+        layout.setPadding(new Padding(4, 4, 4, 4));
+        setLayout(layout);
 
-		@Override
-		public Type<DimensionAddedEventHandler> getAssociatedType() {
-			return TYPE;
-		}
+        for (DimensionType dimension : supportedDimensions) {
+            EntityPanel entityPanel = new EntityPanel(dimension);
+            dimensionPanels.put(dimension, entityPanel);
+            add(entityPanel);
+            // FIXME temporary removed the dimension search
+            // entityPanel.addDimensionAddedHandler(new
+            // DimensionAddedEventHandler() {
+            // @Override
+            // public void onDimensionAdded(DimensionAddedEvent event) {
+            // eventBus.fireEvent(new
+            // DimensionAddedEvent(event.getAddedEntity()));
+            // }
+            // });
+        }
+        layout(true);
+    }
 
-		@Override
-		protected void dispatch(DimensionAddedEventHandler handler) {
-			handler.onDimensionAdded(this);
-		}
+    private void updateUI() {
+        for (DimensionType foundEntity : supportedDimensions) {
+            dimensionPanels.get(foundEntity).fillWithEntities(
+                affectedEntities.get(foundEntity));
+        }
 
-	}
-	
-	private class EntityPanel extends VerticalPanel {
-		private DimensionType dimension;
-		private HorizontalPanel panelHeader;
-		private ListStore<BaseModelData> store = new ListStore<BaseModelData>();
-		private ListView<BaseModelData> listviewEntities = new ListView<BaseModelData>(store);
-		private LabelField labelNoSearch = new LabelField(I18N.CONSTANTS.noSearch());
-		private LabelField labelNoMatches = new LabelField(I18N.CONSTANTS.noMatches());
-		private EventBus eventBus = new SimpleEventBus();
+        layout(true);
+    }
 
-		public EntityPanel(DimensionType dimension) {
-			super();
-			
-			this.dimension = dimension;
+    public void setFilter(
+        Map<DimensionType, List<SearchResultEntity>> affectedEntities) {
+        this.affectedEntities = affectedEntities;
 
-			SearchResources.INSTANCE.searchStyles().ensureInjected();
-			
-			initializeComponent();
-		}
+        updateUI();
+    }
 
-		public void addDimensionAddedHandler(DimensionAddedEventHandler handler) {
-			eventBus.addHandler(DimensionAddedEvent.TYPE, handler);
-		}
+    public void addDimensionAddedHandler(DimensionAddedEventHandler handler) {
+        eventBus.addHandler(DimensionAddedEvent.TYPE, handler);
+    }
 
-		private void initializeComponent() {
-			listviewEntities.setTemplate(SearchResources.INSTANCE.entitiesTemplate().getText());
+    public interface DimensionAddedEventHandler extends EventHandler {
+        public void onDimensionAdded(DimensionAddedEvent event);
+    }
 
-			panelHeader = new HorizontalPanel();
-			panelHeader.setStyleAttribute("margin", "4px");
-			Image icon = IconImageBundle.fromEntities.fromDimension(dimension).createImage();
-			icon.setStylePrimaryName(".entityIcon");
-			panelHeader.add(icon);
-			panelHeader.add(new LabelField(I18N.FROM_ENTITIES.getDimensionTypePluralName(dimension)));
-			add(panelHeader);
-			
-			labelNoMatches.setStyleAttribute("color", "grey");
-			labelNoSearch.setStyleAttribute("color", "grey");
-			add(labelNoSearch);
-			
-//			addListenerToListview();
-			listviewEntities.setItemSelector(".searchSmall");
-			listviewEntities.setSelectStyle(".searchSmallSelect");
-			listviewEntities.setStyleAttribute("margin", "4px 8px 4px 22px");
-		}
+    public static class DimensionAddedEvent extends
+        GwtEvent<DimensionAddedEventHandler> {
+        public final static Type<DimensionAddedEventHandler> TYPE = new Type<DimensionAddedEventHandler>();
+        private SearchResultEntity addedEntity;
 
-		private void addListenerToListview() {
-			listviewEntities.addListener(Events.Select, new Listener<ListViewEvent>() {
-				@Override
-				public void handleEvent(ListViewEvent be) {
-					if (be.getTargetEl().findParent(".searchSmall", 3)  != null) { // icon: add to search box
-						eventBus.fireEvent(new DimensionAddedEvent(
-								(SearchResultEntity) be.getModel()));
-					}
-				}
-			});
-		}
-		
-		public void fillWithEntities(List<SearchResultEntity> affectedEntities) {
-			removeAll();
-			add(panelHeader);
+        public DimensionAddedEvent(SearchResultEntity addedEntity) {
+            this.addedEntity = addedEntity;
+        }
 
-			if (affectedEntities == null) {
-				add(labelNoMatches);
-			} else {
-				store.removeAll();
-				store.add(affectedEntities);
-				add(listviewEntities);
-			}
-		}
-		
-	}
+        public SearchResultEntity getAddedEntity() {
+            return addedEntity;
+        }
+
+        @Override
+        public Type<DimensionAddedEventHandler> getAssociatedType() {
+            return TYPE;
+        }
+
+        @Override
+        protected void dispatch(DimensionAddedEventHandler handler) {
+            handler.onDimensionAdded(this);
+        }
+
+    }
+
+    private class EntityPanel extends VerticalPanel {
+        private DimensionType dimension;
+        private HorizontalPanel panelHeader;
+        private ListStore<BaseModelData> store = new ListStore<BaseModelData>();
+        private ListView<BaseModelData> listviewEntities = new ListView<BaseModelData>(
+            store);
+        private LabelField labelNoSearch = new LabelField(
+            I18N.CONSTANTS.noSearch());
+        private LabelField labelNoMatches = new LabelField(
+            I18N.CONSTANTS.noMatches());
+        private EventBus eventBus = new SimpleEventBus();
+
+        public EntityPanel(DimensionType dimension) {
+            super();
+
+            this.dimension = dimension;
+
+            SearchResources.INSTANCE.searchStyles().ensureInjected();
+
+            initializeComponent();
+        }
+
+        public void addDimensionAddedHandler(DimensionAddedEventHandler handler) {
+            eventBus.addHandler(DimensionAddedEvent.TYPE, handler);
+        }
+
+        private void initializeComponent() {
+            listviewEntities.setTemplate(SearchResources.INSTANCE
+                .entitiesTemplate().getText());
+
+            panelHeader = new HorizontalPanel();
+            panelHeader.setStyleAttribute("margin", "4px");
+            Image icon = IconImageBundle.fromEntities.fromDimension(dimension)
+                .createImage();
+            icon.setStylePrimaryName(".entityIcon");
+            panelHeader.add(icon);
+            panelHeader.add(new LabelField(I18N.FROM_ENTITIES
+                .getDimensionTypePluralName(dimension)));
+            add(panelHeader);
+
+            labelNoMatches.setStyleAttribute("color", "grey");
+            labelNoSearch.setStyleAttribute("color", "grey");
+            add(labelNoSearch);
+
+            // addListenerToListview();
+            listviewEntities.setItemSelector(".searchSmall");
+            listviewEntities.setSelectStyle(".searchSmallSelect");
+            listviewEntities.setStyleAttribute("margin", "4px 8px 4px 22px");
+        }
+
+        private void addListenerToListview() {
+            listviewEntities.addListener(Events.Select,
+                new Listener<ListViewEvent>() {
+                    @Override
+                    public void handleEvent(ListViewEvent be) {
+                        if (be.getTargetEl().findParent(".searchSmall", 3) != null) { // icon:
+                                                                                      // add
+                                                                                      // to
+                                                                                      // search
+                                                                                      // box
+                            eventBus.fireEvent(new DimensionAddedEvent(
+                                (SearchResultEntity) be.getModel()));
+                        }
+                    }
+                });
+        }
+
+        public void fillWithEntities(List<SearchResultEntity> affectedEntities) {
+            removeAll();
+            add(panelHeader);
+
+            if (affectedEntities == null) {
+                add(labelNoMatches);
+            } else {
+                store.removeAll();
+                store.add(affectedEntities);
+                add(listviewEntities);
+            }
+        }
+
+    }
 }

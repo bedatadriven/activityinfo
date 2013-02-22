@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.remote.cache;
 
 /*
@@ -40,23 +38,23 @@ import org.activityinfo.shared.command.result.CommandResult;
  * <p/>
  * To create a subclass:
  * <p/>
- * 1. make sure the command which you are going to cache
- * implements equals() <u>and</u> hashCode() (press ALT+INS in IntelliJ to
- * generate these methods automatically)
+ * 1. make sure the command which you are going to cache implements equals()
+ * <u>and</u> hashCode() (press ALT+INS in IntelliJ to generate these methods
+ * automatically)
  * <p/>
- * 2. Your subclass constructor should accept Dispatcher as a parameter
- * and use the reference to register itself
+ * 2. Your subclass constructor should accept Dispatcher as a parameter and use
+ * the reference to register itself
  * <p/>
  * 3. Add your subclass to AppModule as an Eager Singleton
- *
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class AbstractCache {
 
     /**
-     * Internal data structure that keeps track of commands and their
-     * results, as well as statistics on cache usage that can potentially
-     * be used to clean the cache.
+     * Internal data structure that keeps track of commands and their results,
+     * as well as statistics on cache usage that can potentially be used to
+     * clean the cache.
      */
     protected class CacheEntry {
 
@@ -72,8 +70,7 @@ public class AbstractCache {
         private Date dateCached;
 
         /**
-         * The number of times this result has been accessed
-         * since being cached.
+         * The number of times this result has been accessed since being cached.
          */
         private int hits;
 
@@ -114,7 +111,7 @@ public class AbstractCache {
 
     /**
      * Adds a command and its result to the cache
-     *
+     * 
      * @param cmd
      * @param result
      */
@@ -128,10 +125,10 @@ public class AbstractCache {
 
     /**
      * Attempts to retrieve the results of a cached command
-     *
+     * 
      * @param command
-     * @return The result originally returned by the server or null if there
-     *         is no matching cache entry
+     * @return The result originally returned by the server or null if there is
+     *         no matching cache entry
      */
     protected CommandResult fetch(Command command) {
 
@@ -150,8 +147,8 @@ public class AbstractCache {
     protected Set<Map.Entry<Command, CacheEntry>> getCacheEntries() {
         return results.entrySet();
     }
-    
+
     public void clear() {
-    	cache.clear();
+        cache.clear();
     }
 }

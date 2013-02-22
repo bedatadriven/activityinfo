@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -28,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-
 import org.activityinfo.server.database.hibernate.dao.CountryDAO;
 import org.activityinfo.server.database.hibernate.entity.Country;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -44,11 +40,11 @@ import com.google.inject.Inject;
 
 public class GetCountriesHandler implements CommandHandler<GetCountries> {
 
-    private final static Logger LOG = Logger.getLogger(GetCountriesHandler.class.getName());
+    private final static Logger LOG = Logger
+        .getLogger(GetCountriesHandler.class.getName());
 
     private final CountryDAO countryDAO;
     private final Mapper mapper;
-
 
     @Inject
     public GetCountriesHandler(CountryDAO countryDAO, Mapper mapper) {
@@ -58,8 +54,10 @@ public class GetCountriesHandler implements CommandHandler<GetCountries> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public CommandResult execute(GetCountries cmd, User user) throws CommandException {        
-        return new CountryResult(mapToDtos(countryDAO.queryAllCountriesAlphabetically()));
+    public CommandResult execute(GetCountries cmd, User user)
+        throws CommandException {
+        return new CountryResult(
+            mapToDtos(countryDAO.queryAllCountriesAlphabetically()));
     }
 
     private ArrayList<CountryDTO> mapToDtos(List<Country> countries) {

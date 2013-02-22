@@ -35,93 +35,92 @@ import com.google.common.collect.Sets;
 
 public class PivotSites implements Command<PivotResult> {
 
-	public enum ValueType {
-		INDICATOR,
-		TOTAL_SITES
-	}
-	
-	private Set<Dimension> dimensions;
-	private Filter filter;
-	private ValueType valueType = ValueType.INDICATOR;
-	
-	public PivotSites() {
-	}
-	
-	public PivotSites(Set<Dimension> dimensions, Filter filter) {
-		super();
-		this.dimensions = dimensions;
-		this.filter = filter;
-	}
+    public enum ValueType {
+        INDICATOR,
+        TOTAL_SITES
+    }
 
-	public Set<Dimension> getDimensions() {
-		return dimensions;
-	}
-	
-	public Set<DimensionType> getDimensionTypes() {
-		Set<DimensionType> set = Sets.newHashSet();
-		for(Dimension dim : getDimensions()) {
-			set.add(dim.getType());
-		}
-		return set;
-	}
+    private Set<Dimension> dimensions;
+    private Filter filter;
+    private ValueType valueType = ValueType.INDICATOR;
 
-	public void setDimensions(Set<Dimension> dimensions) {
-		this.dimensions = dimensions;
-	}
-	
-	public void setDimensions(Dimension... dimensions) {
-		this.dimensions = Sets.newHashSet(dimensions);
-	}
+    public PivotSites() {
+    }
 
-	public Filter getFilter() {
-		return filter;
-	}
+    public PivotSites(Set<Dimension> dimensions, Filter filter) {
+        super();
+        this.dimensions = dimensions;
+        this.filter = filter;
+    }
 
-	public void setFilter(Filter filter) {
-		this.filter = filter;
-	}
+    public Set<Dimension> getDimensions() {
+        return dimensions;
+    }
 
-	public ValueType getValueType() {
-		return valueType;
-	}
+    public Set<DimensionType> getDimensionTypes() {
+        Set<DimensionType> set = Sets.newHashSet();
+        for (Dimension dim : getDimensions()) {
+            set.add(dim.getType());
+        }
+        return set;
+    }
 
-	public void setValueType(ValueType valueType) {
-		this.valueType = valueType;
-	}
+    public void setDimensions(Set<Dimension> dimensions) {
+        this.dimensions = dimensions;
+    }
 
-	@Override
-	public String toString() {
-		return "PivotSites [dimensions=" + dimensions + ", filter=" + filter
-				+ ", valueType=" + valueType + "]";
-	}
+    public void setDimensions(Dimension... dimensions) {
+        this.dimensions = Sets.newHashSet(dimensions);
+    }
 
-	public boolean isPivotedBy(DimensionType dimType) {
-		for(Dimension dim : dimensions) {
-			if(dim.getType() == dimType) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public Filter getFilter() {
+        return filter;
+    }
 
+    public void setFilter(Filter filter) {
+        this.filter = filter;
+    }
 
-	public static class PivotResult implements CommandResult {
-		private List<Bucket> buckets;
+    public ValueType getValueType() {
+        return valueType;
+    }
 
-		public PivotResult() {
-		}
-		
-		public PivotResult(List<Bucket> buckets) {
-			this.buckets = buckets;
-		}
-		
-		public List<Bucket> getBuckets() {
-			return buckets;
-		}
-		
-		public void setBuckets(List<Bucket> buckets) {
-			this.buckets = buckets;
-		}
-	}
-	
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType;
+    }
+
+    @Override
+    public String toString() {
+        return "PivotSites [dimensions=" + dimensions + ", filter=" + filter
+            + ", valueType=" + valueType + "]";
+    }
+
+    public boolean isPivotedBy(DimensionType dimType) {
+        for (Dimension dim : dimensions) {
+            if (dim.getType() == dimType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static class PivotResult implements CommandResult {
+        private List<Bucket> buckets;
+
+        public PivotResult() {
+        }
+
+        public PivotResult(List<Bucket> buckets) {
+            this.buckets = buckets;
+        }
+
+        public List<Bucket> getBuckets() {
+            return buckets;
+        }
+
+        public void setBuckets(List<Bucket> buckets) {
+            this.buckets = buckets;
+        }
+    }
+
 }

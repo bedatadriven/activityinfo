@@ -38,64 +38,67 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 
 /**
  * User interface for selecting row / column dimensions
- *
+ * 
  */
-public class PivotTrayPanel extends ContentPanel implements HasReportElement<PivotTableReportElement> {
+public class PivotTrayPanel extends ContentPanel implements
+    HasReportElement<PivotTableReportElement> {
 
-	private DimensionTree tree;
-	private DimensionSelectionListView rowList;
-	private DimensionSelectionListView colList;
-	
-	private PivotTableReportElement model;
-	
-	public PivotTrayPanel(EventBus eventBus, Dispatcher dispatcher) {
-	
-		this.tree = new DimensionTree(eventBus, dispatcher);
-		this.rowList = new DimensionSelectionListView(eventBus, dispatcher, Axis.ROW);
-		this.colList = new DimensionSelectionListView(eventBus, dispatcher, Axis.COLUMN);
-		
-		setHeading(I18N.CONSTANTS.dimensions());
-		setScrollMode(Style.Scroll.NONE);
-		setIcon(null);
-		
-		VBoxLayout layout = new VBoxLayout();
-		layout.setPadding(new Padding(5));
-		layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-		setLayout(layout);
+    private DimensionTree tree;
+    private DimensionSelectionListView rowList;
+    private DimensionSelectionListView colList;
 
-		VBoxLayoutData labelLayout = new VBoxLayoutData();
-		VBoxLayoutData listLayout = new VBoxLayoutData();
-		listLayout.setFlex(1.0);
+    private PivotTableReportElement model;
 
-		tree = new DimensionTree(eventBus, dispatcher);
-		
-		add(tree.asComponent(), listLayout);
-		
-		add(new Text(I18N.CONSTANTS.rows()), labelLayout);
-		add(rowList.asComponent(), listLayout);
+    public PivotTrayPanel(EventBus eventBus, Dispatcher dispatcher) {
 
-		add(new Text(I18N.CONSTANTS.columns()), labelLayout);
-		add(colList.asComponent(), listLayout);	
-	}
+        this.tree = new DimensionTree(eventBus, dispatcher);
+        this.rowList = new DimensionSelectionListView(eventBus, dispatcher,
+            Axis.ROW);
+        this.colList = new DimensionSelectionListView(eventBus, dispatcher,
+            Axis.COLUMN);
 
-	@Override
-	public void bind(PivotTableReportElement model) {
-		this.model = model;
-		tree.bind(model);
-		rowList.bind(model);
-		colList.bind(model);
-	}
-	
-	@Override
-	public PivotTableReportElement getModel() {
-		return model;
-	}
+        setHeading(I18N.CONSTANTS.dimensions());
+        setScrollMode(Style.Scroll.NONE);
+        setIcon(null);
 
-	@Override
-	public void disconnect() {
-		tree.disconnect();
-		rowList.disconnect();
-		colList.disconnect();
-	}
+        VBoxLayout layout = new VBoxLayout();
+        layout.setPadding(new Padding(5));
+        layout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
+        setLayout(layout);
+
+        VBoxLayoutData labelLayout = new VBoxLayoutData();
+        VBoxLayoutData listLayout = new VBoxLayoutData();
+        listLayout.setFlex(1.0);
+
+        tree = new DimensionTree(eventBus, dispatcher);
+
+        add(tree.asComponent(), listLayout);
+
+        add(new Text(I18N.CONSTANTS.rows()), labelLayout);
+        add(rowList.asComponent(), listLayout);
+
+        add(new Text(I18N.CONSTANTS.columns()), labelLayout);
+        add(colList.asComponent(), listLayout);
+    }
+
+    @Override
+    public void bind(PivotTableReportElement model) {
+        this.model = model;
+        tree.bind(model);
+        rowList.bind(model);
+        colList.bind(model);
+    }
+
+    @Override
+    public PivotTableReportElement getModel() {
+        return model;
+    }
+
+    @Override
+    public void disconnect() {
+        tree.disconnect();
+        rowList.disconnect();
+        colList.disconnect();
+    }
 
 }

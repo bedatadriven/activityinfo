@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.widget;
 
 /*
@@ -30,12 +28,14 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
 /**
  * ComboBox that wraps primitive values (integers, Strings, etc) with labels.
- *
- * This is a common case where we want to present a drop down list to the user so they can
- * choose from a list of codes. We could use {@link com.extjs.gxt.ui.client.widget.form.SimpleComboBox},
- * but then the user sees the full
- *
- * @param <T> the underlying (boxed) primitive type
+ * 
+ * This is a common case where we want to present a drop down list to the user
+ * so they can choose from a list of codes. We could use
+ * {@link com.extjs.gxt.ui.client.widget.form.SimpleComboBox}, but then the user
+ * sees the full
+ * 
+ * @param <T>
+ *            the underlying (boxed) primitive type
  */
 public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
 
@@ -46,7 +46,7 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
         }
 
         public T getWrappedValue() {
-            return (T)get("value");
+            return (T) get("value");
         }
 
         @Override
@@ -57,17 +57,17 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj == null) {
+            if (obj == null) {
                 return false;
             }
-            if(obj instanceof Wrapper) {
+            if (obj instanceof Wrapper) {
                 return false;
             }
-            Wrapper otherWrapper = (Wrapper)obj;
+            Wrapper otherWrapper = (Wrapper) obj;
             Object otherValue = otherWrapper.get("value");
             Object value = get("value");
 
-            if(value == null) {
+            if (value == null) {
                 return otherValue != null;
             }
             return !value.equals(otherValue);
@@ -78,27 +78,27 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
         }
     }
 
-	private ListStore<Wrapper<T>> myStore;
+    private ListStore<Wrapper<T>> myStore;
 
-	public MappingComboBox() {
-		super();
-		myStore = new ListStore<Wrapper<T>>();
-		setStore(myStore);
-		setValueField("value");
-		setDisplayField("label");
-		setEditable(true);
-		setForceSelection(true);
-		setTypeAhead(true);
-		this.setMinChars(0);
-		setTriggerAction(TriggerAction.ALL);
-	}
+    public MappingComboBox() {
+        super();
+        myStore = new ListStore<Wrapper<T>>();
+        setStore(myStore);
+        setValueField("value");
+        setDisplayField("label");
+        setEditable(true);
+        setForceSelection(true);
+        setTypeAhead(true);
+        this.setMinChars(0);
+        setTriggerAction(TriggerAction.ALL);
+    }
 
-	public void add(T value, String label) {
-		myStore.add(new Wrapper(value, label));
-	}
+    public void add(T value, String label) {
+        myStore.add(new Wrapper(value, label));
+    }
 
     public Wrapper wrap(T value) {
-        if(value == null) {
+        if (value == null) {
             return null;
         } else {
             return myStore.findModel("value", value);
@@ -109,12 +109,12 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
         setOriginalValue(wrap(value));
     }
 
-	public void setMappedValue(T value) {
-		setValue(wrap(value));
-	}
+    public void setMappedValue(T value) {
+        setValue(wrap(value));
+    }
 
     public String getValueLabel() {
-        if(getValue() == null) {
+        if (getValue() == null) {
             return null;
         } else {
             return getValue().getLabel();
@@ -127,13 +127,13 @@ public class MappingComboBox<T> extends ComboBox<MappingComboBox.Wrapper<T>> {
     }
 
     /**
-     * @return  the underlying primitive type
+     * @return the underlying primitive type
      */
-	public T getMappedValue() {
-		if(getValue() == null) {
+    public T getMappedValue() {
+        if (getValue() == null) {
             return null;
         }
 
-		return getValue().getWrappedValue();
-	}
+        return getValue().getWrappedValue();
+    }
 }

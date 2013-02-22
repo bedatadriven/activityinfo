@@ -30,36 +30,36 @@ import org.activityinfo.shared.report.model.PivotChartReportElement;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
-public class ChartPivotBar extends ToolBar implements HasReportElement<PivotChartReportElement> {
-	
-	
-	private DimensionComboBoxSet comboBoxes;
+public class ChartPivotBar extends ToolBar implements
+    HasReportElement<PivotChartReportElement> {
 
-	
-	public ChartPivotBar(EventBus eventBus, Dispatcher dispatcher) {
-		comboBoxes = new DimensionComboBoxSet(eventBus, dispatcher);
-		
-		add(comboBoxes.getCategoryLabel());
-		add(comboBoxes.getCategoryCombo());
+    private DimensionComboBoxSet comboBoxes;
 
-		add(new FillToolItem());
+    public ChartPivotBar(EventBus eventBus, Dispatcher dispatcher) {
+        comboBoxes = new DimensionComboBoxSet(eventBus, dispatcher);
 
-		add(comboBoxes.getSeriesLabel());
-		add(comboBoxes.getSeriesCombo());
-	}
-	
-	@Override
-	public void bind(PivotChartReportElement model) {
-		this.comboBoxes.bind(model);
-	}
-	
-	public PivotChartReportElement getModel() {
-		return this.comboBoxes.getModel();
-	}
+        add(comboBoxes.getCategoryLabel());
+        add(comboBoxes.getCategoryCombo());
 
-	@Override
-	public void disconnect() {
-		this.comboBoxes.disconnect();
-	}
+        add(new FillToolItem());
+
+        add(comboBoxes.getSeriesLabel());
+        add(comboBoxes.getSeriesCombo());
+    }
+
+    @Override
+    public void bind(PivotChartReportElement model) {
+        this.comboBoxes.bind(model);
+    }
+
+    @Override
+    public PivotChartReportElement getModel() {
+        return this.comboBoxes.getModel();
+    }
+
+    @Override
+    public void disconnect() {
+        this.comboBoxes.disconnect();
+    }
 
 }

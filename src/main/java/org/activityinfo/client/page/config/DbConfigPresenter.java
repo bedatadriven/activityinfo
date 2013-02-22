@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config;
 
 /*
@@ -27,12 +25,10 @@ package org.activityinfo.client.page.config;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.NavigationCallback;
-import org.activityinfo.client.page.Page;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.GalleryView;
 import org.activityinfo.client.page.config.design.DesignPresenter;
-import org.activityinfo.client.page.config.link.IndicatorLinkPage;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 
 import com.google.inject.Inject;
@@ -41,8 +37,8 @@ public class DbConfigPresenter implements DbPage {
 
     private final GalleryView view;
     private final Dispatcher dispatcher;
-    
-    public static final PageId PAGE_ID =  new PageId("db");
+
+    public static final PageId PAGE_ID = new PageId("db");
 
     @Inject
     public DbConfigPresenter(GalleryView view, Dispatcher dispatcher) {
@@ -50,36 +46,51 @@ public class DbConfigPresenter implements DbPage {
         this.dispatcher = dispatcher;
     }
 
+    @Override
     public void go(UserDatabaseDTO db) {
-        view.setHeading(db.getFullName() == null ? db.getName() : db.getFullName());
+        view.setHeading(db.getFullName() == null ? db.getName() : db
+            .getFullName());
 
         if (db.isDesignAllowed()) {
-            view.add(I18N.CONSTANTS.design(), I18N.CONSTANTS.designDescription(),
-                    "db-design.png", new DbPageState(DesignPresenter.PAGE_ID, db.getId()));
+            view.add(I18N.CONSTANTS.design(),
+                I18N.CONSTANTS.designDescription(),
+                "db-design.png",
+                new DbPageState(DesignPresenter.PAGE_ID, db.getId()));
         }
         if (db.isManageAllUsersAllowed()) {
-            view.add(I18N.CONSTANTS.partner(), I18N.CONSTANTS.partnerEditorDescription(),
-                    "db-partners.png", new DbPageState(DbPartnerEditor.PAGE_ID, db.getId()));
+            view.add(I18N.CONSTANTS.partner(),
+                I18N.CONSTANTS.partnerEditorDescription(),
+                "db-partners.png",
+                new DbPageState(DbPartnerEditor.PAGE_ID, db.getId()));
         }
         if (db.isManageUsersAllowed()) {
-            view.add(I18N.CONSTANTS.users(), I18N.CONSTANTS.userManagerDescription(),
-                    "db-users.png", new DbPageState(DbUserEditor.PAGE_ID, db.getId()));
+            view.add(I18N.CONSTANTS.users(),
+                I18N.CONSTANTS.userManagerDescription(),
+                "db-users.png",
+                new DbPageState(DbUserEditor.PAGE_ID, db.getId()));
         }
         if (db.isDesignAllowed()) {
-            view.add(I18N.CONSTANTS.timeLocks(), I18N.CONSTANTS.lockPeriodsDescription(), 
-                    "db-lockedperiods.png", new DbPageState(LockedPeriodsPresenter.PAGE_ID, db.getId()));
+            view.add(I18N.CONSTANTS.timeLocks(), I18N.CONSTANTS
+                .lockPeriodsDescription(),
+                "db-lockedperiods.png", new DbPageState(
+                    LockedPeriodsPresenter.PAGE_ID, db.getId()));
         }
         if (db.isDesignAllowed()) {
-	        view.add(I18N.CONSTANTS.project(), I18N.CONSTANTS.projectManagerDescription(),
-        			"db-projects.png", new DbPageState(DbProjectEditor.PAGE_ID, db.getId()));
+            view.add(I18N.CONSTANTS.project(),
+                I18N.CONSTANTS.projectManagerDescription(),
+                "db-projects.png",
+                new DbPageState(DbProjectEditor.PAGE_ID, db.getId()));
         }
         if (db.isDesignAllowed()) {
-	        view.add(I18N.CONSTANTS.target(), I18N.CONSTANTS.targetDescription(),
-        			"db-targets.png", new DbPageState(DbTargetEditor.PAGE_ID, db.getId()));
+            view.add(I18N.CONSTANTS.target(),
+                I18N.CONSTANTS.targetDescription(),
+                "db-targets.png",
+                new DbPageState(DbTargetEditor.PAGE_ID, db.getId()));
         }
-        
-//        view.add("Cibles", "Définer les cibles pour les indicateurs.", "db-targets",
-//                new DbPageState(Pages.DatabaseTargets, db.getId()));
+
+        // view.add("Cibles", "Définer les cibles pour les indicateurs.",
+        // "db-targets",
+        // new DbPageState(Pages.DatabaseTargets, db.getId()));
     }
 
     @Override
@@ -93,7 +104,8 @@ public class DbConfigPresenter implements DbPage {
     }
 
     @Override
-    public void requestToNavigateAway(PageState place, NavigationCallback callback) {
+    public void requestToNavigateAway(PageState place,
+        NavigationCallback callback) {
         callback.onDecided(true);
     }
 

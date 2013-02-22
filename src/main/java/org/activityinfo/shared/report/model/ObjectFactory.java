@@ -29,5 +29,7 @@ import javax.xml.bind.annotation.XmlRegistry;
  */
 @XmlRegistry
 public class ObjectFactory {
-    public Report createReport() { return new Report(); }
+    public Report createReport() {
+        return new Report();
+    }
 }

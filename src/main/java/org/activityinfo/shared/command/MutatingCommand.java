@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -27,11 +25,10 @@ package org.activityinfo.shared.command;
 import org.activityinfo.shared.command.result.CommandResult;
 
 /**
- *
- * Marker interface for Commands that have
- * an effect on the remote state. (for example,
- * a command which updates the database)
+ * 
+ * Marker interface for Commands that have an effect on the remote state. (for
+ * example, a command which updates the database)
  */
 public interface MutatingCommand<R extends CommandResult> extends Command<R> {
-	
+
 }

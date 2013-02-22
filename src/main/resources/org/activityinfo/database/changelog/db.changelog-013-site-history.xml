@@ -22,44 +22,49 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-	
-	<changeSet author="jasper" id="013-01">
-		<comment>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet author="jasper" id="013-01">
+    <comment>
 			Creates the sitehistory table, storing sitedata as json
 		</comment>
-		<createTable tableName="sitehistory">
-			<column name="id" type="int" autoIncrement="true">
-				<constraints nullable="false" primaryKey="true" />
-			</column>
-			<column name="siteid" type="int">
-				<constraints nullable="false" foreignKeyName="fk_sitehistory_site" references="site(siteid)" />
-			</column>
-			<column name="userid" type="int">
-				<constraints nullable="false" foreignKeyName="fk_sitehistory_userlogin" references="userlogin(userid)" />
-			</column>
-			<column name="timecreated" type="bigint" defaultValueNumeric="0">
-				<constraints nullable="false" /> 
-			</column>
-			<column name="initial" type="bit" defaultValueBoolean="false">
-				<constraints nullable="false"/>
-			</column>
-			<column name="json" type="longtext" />
-		</createTable>
-	</changeSet>
-	
-	<changeSet author="jasper" id="013-02">
-		<comment>
+    <createTable tableName="sitehistory">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" />
+      </column>
+      <column name="siteid" type="int">
+        <constraints nullable="false" foreignKeyName="fk_sitehistory_site"
+          references="site(siteid)" />
+      </column>
+      <column name="userid" type="int">
+        <constraints nullable="false" foreignKeyName="fk_sitehistory_userlogin"
+          references="userlogin(userid)" />
+      </column>
+      <column name="timecreated" type="bigint"
+        defaultValueNumeric="0">
+        <constraints nullable="false" />
+      </column>
+      <column name="initial" type="bit" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+      <column name="json" type="longtext" />
+    </createTable>
+  </changeSet>
+
+  <changeSet author="jasper" id="013-02">
+    <comment>
 			Alters the sitehistory table, changing the json column to varchar(5000)
 		</comment>
-		<modifyDataType tableName="sitehistory" columnName="json" newDataType="varchar(5000)"/>
-	</changeSet>
-	<changeSet author="alex" id="013-03">
-		<comment>
+    <modifyDataType tableName="sitehistory" columnName="json"
+      newDataType="varchar(5000)" />
+  </changeSet>
+  <changeSet author="alex" id="013-03">
+    <comment>
 			Alters the sitehistory table, changing the json column back to longtext following
 			fix in rebar library
 		</comment>
-		<modifyDataType tableName="sitehistory" columnName="json" newDataType="longtext"/>
-	</changeSet>
+    <modifyDataType tableName="sitehistory" columnName="json"
+      newDataType="longtext" />
+  </changeSet>
 </databaseChangeLog>

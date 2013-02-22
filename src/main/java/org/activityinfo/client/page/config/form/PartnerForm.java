@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.form;
 
 /*
@@ -36,26 +34,26 @@ public class PartnerForm extends FormPanel {
 
     private FormBinding binding;
 
-	public PartnerForm() {
-		super();
+    public PartnerForm() {
+        super();
 
         binding = new FormBinding(this);
-		
-		UIConstants constants = GWT.create(UIConstants.class);
-		
-		TextField<String> nameField = new TextField<String>();
-		nameField.setFieldLabel(constants.name());
-		nameField.setMaxLength(16);
-		nameField.setAllowBlank(false);
+
+        UIConstants constants = GWT.create(UIConstants.class);
+
+        TextField<String> nameField = new TextField<String>();
+        nameField.setFieldLabel(constants.name());
+        nameField.setMaxLength(16);
+        nameField.setAllowBlank(false);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
-		this.add(nameField);
-		
-		TextField<String> fullField = new TextField<String> ();
-		fullField.setFieldLabel(constants.fullName());
-		fullField.setMaxLength(64);
+        this.add(nameField);
+
+        TextField<String> fullField = new TextField<String>();
+        fullField.setFieldLabel(constants.fullName());
+        fullField.setMaxLength(64);
         binding.addFieldBinding(new FieldBinding(fullField, "fullName"));
-		this.add(fullField);
-	}
+        this.add(fullField);
+    }
 
     public FormBinding getBinding() {
         return binding;

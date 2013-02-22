@@ -31,8 +31,8 @@ import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.shared.report.model.PointValue;
 
 /**
- * Represents a collection of nodes that
- * are clustered together in a given chromosome
+ * Represents a collection of nodes that are clustered together in a given
+ * chromosome
  */
 public class Cluster {
     private List<PointValue> pointValues;
@@ -40,12 +40,12 @@ public class Cluster {
     private Point point;
     private Rectangle rectangle;
     private String title;
-    
+
     /**
-     * Creates a cluster positioned at the given point
-     * on the projected space.
+     * Creates a cluster positioned at the given point on the projected space.
      * 
-     * @param point the position of the cluster
+     * @param point
+     *            the position of the cluster
      */
     public Cluster(Point point) {
         pointValues = new ArrayList<PointValue>();
@@ -53,8 +53,7 @@ public class Cluster {
     }
 
     /**
-     * Creates a cluster positioned on the given 
-     * PointValue
+     * Creates a cluster positioned on the given PointValue
      * 
      * @param pointValue
      */
@@ -64,56 +63,55 @@ public class Cluster {
         point = pointValue.getPx();
     }
 
-	public void addNode(MarkerGraph.Node node) {
+    public void addNode(MarkerGraph.Node node) {
         pointValues.add(node.getPointValue());
     }
 
-	public void addPointValue(PointValue pv) {
-		pointValues.add(pv);
-	}
+    public void addPointValue(PointValue pv) {
+        pointValues.add(pv);
+    }
 
     public String getTitle() {
-		return title;
-	}
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public boolean hasTitle() {
-		return this.title != null;
-	}
-	
-	/**
-     *
+    public boolean hasTitle() {
+        return this.title != null;
+    }
+
+    /**
+     * 
      * @return The weighted centroid of the cluster
      */
-	public Point bboxCenter() {
+    public Point bboxCenter() {
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
-        for(PointValue pointValue : pointValues) {
+        for (PointValue pointValue : pointValues) {
             Point p = pointValue.getPx();
-            if(p.getX() < minX) {
+            if (p.getX() < minX) {
                 minX = p.getX();
             }
-            if(p.getY() < minY) {
+            if (p.getY() < minY) {
                 minY = p.getY();
             }
-            if(p.getX() > maxX) {
+            if (p.getX() > maxX) {
                 maxX = p.getX();
             }
-            if(p.getY() > maxY) {
+            if (p.getY() > maxY) {
                 maxY = p.getY();
             }
         }
 
-        return new Point((minX + maxX)/2, (minY + maxY)/2);
+        return new Point((minX + maxX) / 2, (minY + maxY) / 2);
     }
 
-
-	public double getRadius() {
+    public double getRadius() {
         return radius;
     }
 
@@ -131,25 +129,25 @@ public class Cluster {
 
     public double sumValues() {
         double sum = 0;
-        for(PointValue pointValue : pointValues) {
+        for (PointValue pointValue : pointValues) {
             sum += pointValue.getValue();
         }
         return sum;
     }
 
-	public List<PointValue> getPointValues() {
+    public List<PointValue> getPointValues() {
         return pointValues;
     }
 
-	public Rectangle getRectangle() {
+    public Rectangle getRectangle() {
         return rectangle;
     }
 
-	public void setRectangle(Rectangle rectangle) {
+    public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
     }
 
-	public boolean hasPoint() {
-		return point != null;
-	}
+    public boolean hasPoint() {
+        return point != null;
+    }
 }

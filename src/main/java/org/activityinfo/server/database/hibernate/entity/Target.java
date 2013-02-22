@@ -33,103 +33,102 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 @Entity
-public class Target implements Serializable, ReallyDeleteable  {
+public class Target implements Serializable, ReallyDeleteable {
 
-	private int id;
-	private String name;
-	private Date date1;
-	private Date date2;
-	private Project project;
-	private Partner partner;
-	private AdminEntity adminEntity;
-	private UserDatabase userDatabase;
+    private int id;
+    private String name;
+    private Date date1;
+    private Date date2;
+    private Project project;
+    private Partner partner;
+    private AdminEntity adminEntity;
+    private UserDatabase userDatabase;
 
-	public Target() {
-		super();
-	}
+    public Target() {
+        super();
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "targetId", unique = true, nullable = false)
-	public int getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "targetId", unique = true, nullable = false)
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	@Column(name = "Name", nullable = false, length = 30)
-	public String getName() {
-		return name;
-	}
+    @Column(name = "Name", nullable = false, length = 30)
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Date getDate1() {
-		return date1;
-	}
+    public Date getDate1() {
+        return date1;
+    }
 
-	public void setDate1(Date date1) {
-		this.date1 = date1;
-	}
+    public void setDate1(Date date1) {
+        this.date1 = date1;
+    }
 
-	public Date getDate2() {
-		return date2;
-	}
+    public Date getDate2() {
+        return date2;
+    }
 
-	public void setDate2(Date date2) {
-		this.date2 = date2;
-	}
+    public void setDate2(Date date2) {
+        this.date2 = date2;
+    }
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ProjectId")
-	public Project getProject() {
-		return project;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ProjectId")
+    public Project getProject() {
+        return project;
+    }
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "PartnerId")
-	public Partner getPartner() {
-		return partner;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "PartnerId")
+    public Partner getPartner() {
+        return partner;
+    }
 
-	public void setPartner(Partner partner) {
-		this.partner = partner;
-	}
+    public void setPartner(Partner partner) {
+        this.partner = partner;
+    }
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "AdminEntityId")
-	public AdminEntity getAdminEntity() {
-		return adminEntity;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "AdminEntityId")
+    public AdminEntity getAdminEntity() {
+        return adminEntity;
+    }
 
-	public void setAdminEntity(AdminEntity adminEntity) {
-		this.adminEntity = adminEntity;
-	}
+    public void setAdminEntity(AdminEntity adminEntity) {
+        this.adminEntity = adminEntity;
+    }
 
-	public void setUserDatabase(UserDatabase userDatabase) {
-		this.userDatabase = userDatabase;
-	}
+    public void setUserDatabase(UserDatabase userDatabase) {
+        this.userDatabase = userDatabase;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DatabaseId", nullable = false)
-	public UserDatabase getUserDatabase() {
-		return userDatabase;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DatabaseId", nullable = false)
+    public UserDatabase getUserDatabase() {
+        return userDatabase;
+    }
 
-	@Override
-	public void deleteReferences() {
-		// delete references also , from targetValue
-	}
+    @Override
+    public void deleteReferences() {
+        // delete references also , from targetValue
+    }
 
 }

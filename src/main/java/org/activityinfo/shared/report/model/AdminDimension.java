@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -24,49 +22,48 @@ package org.activityinfo.shared.report.model;
  * #L%
  */
 
-
 public class AdminDimension extends Dimension {
 
-	private int levelId;
-	
-	// required for serialization 
+    private int levelId;
+
+    // required for serialization
     @SuppressWarnings("unused")
-	private AdminDimension() {
-    	super(DimensionType.AdminLevel);
+    private AdminDimension() {
+        super(DimensionType.AdminLevel);
     }
 
     public AdminDimension(int levelId) {
-    	super(DimensionType.AdminLevel);
-		this.levelId = levelId;
-    }
-    
-	public AdminDimension(String caption, int levelId) {
-		super(DimensionType.AdminLevel);
-		this.levelId = levelId;
+        super(DimensionType.AdminLevel);
+        this.levelId = levelId;
     }
 
-	public int getLevelId() {
-		return this.levelId;
-	}
+    public AdminDimension(String caption, int levelId) {
+        super(DimensionType.AdminLevel);
+        this.levelId = levelId;
+    }
+
+    public int getLevelId() {
+        return this.levelId;
+    }
 
     @Override
-	public boolean equals(Object other) {
-		if(this==other) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-		if(other==null) {
+        if (other == null) {
             return false;
         }
-		if(!(other instanceof AdminDimension)) {
+        if (!(other instanceof AdminDimension)) {
             return false;
         }
 
-		AdminDimension that = (AdminDimension)other;
-		return this.levelId == that.levelId;
-	}
+        AdminDimension that = (AdminDimension) other;
+        return this.levelId == that.levelId;
+    }
 
     @Override
     public int hashCode() {
-    	return levelId;
+        return levelId;
     }
 }

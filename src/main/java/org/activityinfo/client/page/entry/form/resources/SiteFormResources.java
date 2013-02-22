@@ -30,33 +30,39 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 
 public interface SiteFormResources extends ClientBundle {
-	
-	static final SiteFormResources INSTANCE = GWT.create(SiteFormResources.class);
-	
-	@Source("LocationTemplate.html")
-	TextResource locationTemplate();
-	
-	@Source("FormNavigationTemplate.html")
-	TextResource formNavigationTemplate();
-	
-	@Source("collectionForm.html")
-	TextResource collectionForm();
-	
-	@Source("FormStyle.css")
-	@NotStrict
-	FormStyle style();
-	
-	@Source("marker.png")
-	ImageResource marker();
-	
-	interface FormStyle extends CssResource {
-		
-		String adminClearSpan();
-		String addLocationButton();
-		String locationDialogHeader();
-		String locationDialogHelp();
-		String locationDialogPane();
-		String locationSearchResults();
-	
-	}
+
+    static final SiteFormResources INSTANCE = GWT
+        .create(SiteFormResources.class);
+
+    @Source("LocationTemplate.html")
+    TextResource locationTemplate();
+
+    @Source("FormNavigationTemplate.html")
+    TextResource formNavigationTemplate();
+
+    @Source("collectionForm.html")
+    TextResource collectionForm();
+
+    @Source("FormStyle.css")
+    @NotStrict
+    FormStyle style();
+
+    @Source("marker.png")
+    ImageResource marker();
+
+    interface FormStyle extends CssResource {
+
+        String adminClearSpan();
+
+        String addLocationButton();
+
+        String locationDialogHeader();
+
+        String locationDialogHelp();
+
+        String locationDialogPane();
+
+        String locationSearchResults();
+
+    }
 }

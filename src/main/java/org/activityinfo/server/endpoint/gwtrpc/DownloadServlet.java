@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.gwtrpc;
 
 /*
@@ -53,7 +51,7 @@ import com.google.inject.Singleton;
  * example,
  * <p/>
  * http://www.activityinfo.org/download?ABCDEF12345ABCDEF12345.jpg
- *
+ * 
  * @author Alex Bertram
  */
 @Singleton
@@ -70,15 +68,16 @@ public class DownloadServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
 
         String tempFile = request.getQueryString();
         String tempPath = context.getRealPath("/temp/" + tempFile);
 
         String ext = tempFile.substring(tempFile.lastIndexOf('.'));
 
-        String friendlyName = "ActivityInfo" + dateFormat.format(new Date()) + ext;
-
+        String friendlyName = "ActivityInfo" + dateFormat.format(new Date())
+            + ext;
 
         FileInputStream in = new FileInputStream(tempPath);
 
@@ -86,12 +85,15 @@ public class DownloadServlet extends HttpServlet {
         File file = new File(tempPath);
         response.setContentLength((int) file.length());
 
-        // The Content-Disposition header instructst he browser to download the file
-        // with the given name rather than try to display it in-line. This usally means the
+        // The Content-Disposition header instructst he browser to download the
+        // file
+        // with the given name rather than try to display it in-line. This
+        // usally means the
         // the user will be presented with a "Save As" dialog
         response.setContentType(context.getMimeType(tempPath));
         response.setContentLength((int) file.length());
-        response.addHeader("Content-disposition", "attachment; filename=" + friendlyName);
+        response.addHeader("Content-disposition", "attachment; filename="
+            + friendlyName);
 
         OutputStream out = response.getOutputStream();
         ByteStreams.copy(in, out);

@@ -21,69 +21,87 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
-		.panel {
-			background-color: white;
-			border-top: 1px solid #99BBE8;
-			
-		}
-		.email {
-			font-weight: bold;
-		}
-		.group {
-			border-left: 1px solid #99BBE8;
-			border-right: 1px solid #99BBE8;
-			border-bottom: 1px solid #99BBE8;
-			padding-bottom: 5px;
-			padding-top: 5px;
-		}
-		.menuRow {
-			font-family: tahoma, arial, verdana, sans-serif;
-			font-size: 11px;
-			color: black;
-			margin-bottom: 3px;
-			padding-left: 5px;
-			padding-right: 5px;
-		}
-		
-		.appCacheStatus {
-			font-style: italic;
-		}
-				
-		.action {
-			text-decoration: underline;
-			cursor: pointer;
-			display: inline;
-		}
-	</ui:style>
-	<ui:with field="constants" type="org.activityinfo.client.i18n.UIConstants"/>
-	
-	<g:HTMLPanel styleName="{style.panel}">
-		<div class="{style.group}">
-			<div class="{style.menuRow}"><ui:text from="{constants.appVersion}"/> <span ui:field="versionLabel">2.5.1</span></div>
-			<div class="{style.menuRow}"><span ui:field="versionStatus"/></div>
-			<div class="{style.menuRow}"><span ui:field="appCacheStatus" styleName="{style.appCacheStatus}"/></div>
-			<div class="{style.menuRow}">
-				<g:Label text="{constants.loadNewVersionNow}" ui:field="refreshLink" styleName="{style.action}"/>
-			</div>
-		</div>
-	
-		<div class="{style.group}">	
-			<div ui:field="syncRow" class="{style.menuRow}">
-				<g:InlineLabel ui:field="lastSyncedLabel"/> 
-				<g:InlineLabel ui:field="syncNowLabel" styleName="{style.action}">
-					<ui:text from="{constants.syncNow}"/> 
-				</g:InlineLabel>
-			</div>
-			<div class="{style.menuRow}"><g:Label ui:field="offlineStatusLabel"/></div>
-			
-			<div class="{style.menuRow}"><g:Label ui:field="offlineInstallLabel" styleName="{style.action}"/></div>
-		</div>
-		
-		<div class="{style.group}">
-			<div class="{style.menuRow}">Logged in as <span class="{style.email}" ui:field="emailLabel"/></div>
-			<div class="{style.menuRow}"><g:Label text="{constants.logout}" styleName="{style.action}" ui:field="logoutLink"/></div>
-		</div>
-	</g:HTMLPanel>
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+  <ui:style>
+    .panel {
+    background-color: white;
+    border-top: 1px solid #99BBE8;
+
+    }
+    .email {
+    font-weight: bold;
+    }
+    .group {
+    border-left: 1px solid #99BBE8;
+    border-right: 1px solid #99BBE8;
+    border-bottom: 1px solid #99BBE8;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    }
+    .menuRow {
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size: 11px;
+    color: black;
+    margin-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    }
+
+    .appCacheStatus {
+    font-style: italic;
+    }
+
+    .action {
+    text-decoration: underline;
+    cursor: pointer;
+    display: inline;
+    }
+  </ui:style>
+  <ui:with field="constants" type="org.activityinfo.client.i18n.UIConstants" />
+
+  <g:HTMLPanel styleName="{style.panel}">
+    <div class="{style.group}">
+      <div class="{style.menuRow}">
+        <ui:text from="{constants.appVersion}" />
+        <span ui:field="versionLabel">2.5.1</span>
+      </div>
+      <div class="{style.menuRow}">
+        <span ui:field="versionStatus" />
+      </div>
+      <div class="{style.menuRow}">
+        <span ui:field="appCacheStatus" styleName="{style.appCacheStatus}" />
+      </div>
+      <div class="{style.menuRow}">
+        <g:Label text="{constants.loadNewVersionNow}" ui:field="refreshLink"
+          styleName="{style.action}" />
+      </div>
+    </div>
+
+    <div class="{style.group}">
+      <div ui:field="syncRow" class="{style.menuRow}">
+        <g:InlineLabel ui:field="lastSyncedLabel" />
+        <g:InlineLabel ui:field="syncNowLabel" styleName="{style.action}">
+          <ui:text from="{constants.syncNow}" />
+        </g:InlineLabel>
+      </div>
+      <div class="{style.menuRow}">
+        <g:Label ui:field="offlineStatusLabel" />
+      </div>
+
+      <div class="{style.menuRow}">
+        <g:Label ui:field="offlineInstallLabel" styleName="{style.action}" />
+      </div>
+    </div>
+
+    <div class="{style.group}">
+      <div class="{style.menuRow}">
+        Logged in as
+        <span class="{style.email}" ui:field="emailLabel" />
+      </div>
+      <div class="{style.menuRow}">
+        <g:Label text="{constants.logout}" styleName="{style.action}"
+          ui:field="logoutLink" />
+      </div>
+    </div>
+  </g:HTMLPanel>
 </ui:UiBinder> 

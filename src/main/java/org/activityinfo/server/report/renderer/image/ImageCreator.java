@@ -22,11 +22,10 @@ package org.activityinfo.server.report.renderer.image;
  * #L%
  */
 
-
 public interface ImageCreator {
 
-	ItextGraphic create(int width, int height);
-	
-	ItextGraphic createMap(int width, int height);
-		
+    ItextGraphic create(int width, int height);
+
+    ItextGraphic createMap(int width, int height);
+
 }

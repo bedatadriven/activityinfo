@@ -30,43 +30,44 @@ import com.extjs.gxt.ui.client.data.RpcMap;
 
 public class UpdateTargetValue implements MutatingCommand<VoidResult> {
 
-	private int targetId;
-	private int indicatorId;
-	private RpcMap changes;
+    private int targetId;
+    private int indicatorId;
+    private RpcMap changes;
 
-	public UpdateTargetValue(){
-		
-	}
-	
-	public UpdateTargetValue(int targetId, int indicatorId, Map<String, Object> changes) {
+    public UpdateTargetValue() {
+
+    }
+
+    public UpdateTargetValue(int targetId, int indicatorId,
+        Map<String, Object> changes) {
         this.targetId = targetId;
         this.indicatorId = indicatorId;
-		this.changes = new RpcMap();
+        this.changes = new RpcMap();
         this.changes.putAll(changes);
     }
-	
-	public int getTargetId() {
-		return targetId;
-	}
 
-	public void setTargetId(int targetId) {
-		this.targetId = targetId;
-	}
+    public int getTargetId() {
+        return targetId;
+    }
 
-	public int getIndicatorId() {
-		return indicatorId;
-	}
+    public void setTargetId(int targetId) {
+        this.targetId = targetId;
+    }
 
-	public void setIndicatorId(int indicatorId) {
-		this.indicatorId = indicatorId;
-	}
+    public int getIndicatorId() {
+        return indicatorId;
+    }
 
-	public RpcMap getChanges() {
-		return changes;
-	}
+    public void setIndicatorId(int indicatorId) {
+        this.indicatorId = indicatorId;
+    }
 
-	public void setChanges(RpcMap changes) {
-		this.changes = changes;
-	}
+    public RpcMap getChanges() {
+        return changes;
+    }
+
+    public void setChanges(RpcMap changes) {
+        this.changes = changes;
+    }
 
 }

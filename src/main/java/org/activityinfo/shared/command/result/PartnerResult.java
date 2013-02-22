@@ -28,14 +28,12 @@ import org.activityinfo.shared.dto.PartnerDTO;
 
 public class PartnerResult extends ListResult<PartnerDTO> {
 
-	public PartnerResult() {
-		super();
-	}
+    public PartnerResult() {
+        super();
+    }
 
-	public PartnerResult(List<PartnerDTO> data) {
-		super(data);
-	}
-	
-	
+    public PartnerResult(List<PartnerDTO> data) {
+        super(data);
+    }
 
 }

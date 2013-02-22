@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -26,18 +24,18 @@ package org.activityinfo.server.database.hibernate.entity;
 
 public enum AggregationMethod {
 
-	Sum(0),
-	Average(1),
-	SiteCount(2);
-	
-	private final int code;
-	
-	private AggregationMethod(int code) {
-		this.code = code;
-	}
-	
-	public final Integer code() {
-		return code;
-	}
-	
+    Sum(0),
+    Average(1),
+    SiteCount(2);
+
+    private final int code;
+
+    private AggregationMethod(int code) {
+        this.code = code;
+    }
+
+    public final Integer code() {
+        return code;
+    }
+
 }

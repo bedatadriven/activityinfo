@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.client;
  * #L%
  */
 
-import org.activityinfo.client.Log;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.EventType;
@@ -44,10 +41,11 @@ public class LoggingEventBus extends BaseObservable implements EventBus {
         Log.trace("LoggingEventBus: initialized");
     }
 
+    @Override
     public boolean fireEvent(BaseEvent event) {
-		return fireEvent(event.getType(), event);
-	}
-	
+        return fireEvent(event.getType(), event);
+    }
+
     @Override
     public boolean fireEvent(EventType eventType, BaseEvent be) {
         Log.debug("EventBus: " + eventType.toString() + ": " + be.toString());
@@ -61,8 +59,9 @@ public class LoggingEventBus extends BaseObservable implements EventBus {
         } catch (Exception e) {
             // don't allow one misbehaving component to throw
             // everything off
-            Log.error("EventBus: " + listener.getClass().toString() + " threw an exception while receiving the event " +
-                    be.toString(), e);
+            Log.error("EventBus: " + listener.getClass().toString()
+                + " threw an exception while receiving the event " +
+                be.toString(), e);
         }
     }
 }

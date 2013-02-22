@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -26,26 +24,29 @@ package org.activityinfo.server.database.hibernate.dao;
 
 /**
  * Defines common methods of Data Access Objects (DAOs)
- *
- * @param <T> The entity type (should be annotated with @Entity)
- * @param <K> The type of the entity's @Id property
- *
+ * 
+ * @param <T>
+ *            The entity type (should be annotated with @Entity)
+ * @param <K>
+ *            The type of the entity's @Id property
+ * 
  * @author Alex Bertram
  */
 public interface DAO<T, K> {
 
     /**
      * Persists the entity to the datastore.
-     *
+     * 
      * Same as enitityManager.persist(entity)
-     *
+     * 
      * @param entity
      */
     void persist(T entity);
 
     /**
      * @param primaryKey
-     * @return the entity with the specified key or null if no such entity exists
+     * @return the entity with the specified key or null if no such entity
+     *         exists
      */
     T findById(K primaryKey);
 }

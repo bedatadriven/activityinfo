@@ -1,4 +1,3 @@
-
 package org.activityinfo.server.endpoint.gwtrpc;
 
 /*
@@ -22,7 +21,6 @@ package org.activityinfo.server.endpoint.gwtrpc;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,24 +53,27 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-
 /**
  * Process command objects from the client and returns CommandResults.
  * <p/>
- * This servlet is at the heart of the command execution pipeline, but delegates all
- * logic processing to the {@link org.activityinfo.server.command.handler.CommandHandler} corresponding
+ * This servlet is at the heart of the command execution pipeline, but delegates
+ * all logic processing to the
+ * {@link org.activityinfo.server.command.handler.CommandHandler} corresponding
  * to the given {@link org.activityinfo.shared.command.Command}s.
  * <p/>
- * CommandHandlers are loaded based on name from the org.activityinfo.server.command.handler package.
+ * CommandHandlers are loaded based on name from the
+ * org.activityinfo.server.command.handler package.
  * <p/>
- * E.g. UpdateEntity => org.activityinfo.server.command.handler.UpdateEntityHandler
+ * E.g. UpdateEntity =>
+ * org.activityinfo.server.command.handler.UpdateEntityHandler
  */
 @Singleton
-public class CommandServlet extends RemoteServiceServlet implements RemoteCommandService {
+public class CommandServlet extends RemoteServiceServlet implements
+    RemoteCommandService {
 
-    private static final Logger LOGGER = Logger.getLogger(CommandServlet.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CommandServlet.class
+        .getName());
 
-	
     @Inject
     private Injector injector;
 
@@ -81,26 +82,23 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
     @Inject
     private ServerSideAuthProvider authProvider;
-    
+
     private AppEnginePolicyProvider policyProvider;
-    
-    
-    
+
     @Override
-	public void init(ServletConfig config) throws ServletException {
-    	super.init(config);
-    	if(DeploymentEnvironment.isAppEngine()) {
-    		policyProvider = new AppEnginePolicyProvider(getServletContext());
-    	}
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        if (DeploymentEnvironment.isAppEngine()) {
+            policyProvider = new AppEnginePolicyProvider(getServletContext());
+        }
     }
 
-
-
-	@Override
+    @Override
     @LogException
-    public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
-    	checkAuthentication(authToken);
-    	
+    public List<CommandResult> execute(String authToken, List<Command> commands)
+        throws CommandException {
+        checkAuthentication(authToken);
+
         try {
             return handleCommands(commands);
 
@@ -109,9 +107,10 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
         }
     }
 
-    public CommandResult execute(String authToken, Command command) throws CommandException {
-    	checkAuthentication(authToken);
-    	applyUserFilters();
+    public CommandResult execute(String authToken, Command command)
+        throws CommandException {
+        checkAuthentication(authToken);
+        applyUserFilters();
         return handleCommand(command);
     }
 
@@ -124,9 +123,10 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
 
         List<CommandResult> results = new ArrayList<CommandResult>();
         for (Command command : commands) {
-        	
-        	LOGGER.log(Level.INFO, authProvider.get().getEmail() + ": " + command.getClass().getSimpleName());
-        	
+
+            LOGGER.log(Level.INFO, authProvider.get().getEmail() + ": "
+                + command.getClass().getSimpleName());
+
             try {
                 results.add(handleCommand(command));
             } catch (CommandException e) {
@@ -150,59 +150,67 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
     }
 
     @LogException(emailAlert = true)
-    protected CommandResult handleCommand(Command command) throws CommandException {
-    	long timeStart = System.currentTimeMillis();
-    	RemoteExecutionContext context = new RemoteExecutionContext(injector);
-		CommandResult result = context.startExecute(command);
+    protected CommandResult handleCommand(Command command)
+        throws CommandException {
+        long timeStart = System.currentTimeMillis();
+        RemoteExecutionContext context = new RemoteExecutionContext(injector);
+        CommandResult result = context.startExecute(command);
 
-		long timeElapsed = System.currentTimeMillis() - timeStart;
-		if(timeElapsed > 1000) {
-			LOGGER.warning("Command " + command.toString() + " completed in " + timeElapsed + "ms" );
-		}
-		
-		if ( !(result instanceof CommandException))  {
-			// if the command completed successfully, notify listeners
-			LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
-			serverEventBus.post(new CommandEvent(command, result, context));
-		}
-		
-		return result;
+        long timeElapsed = System.currentTimeMillis() - timeStart;
+        if (timeElapsed > 1000) {
+            LOGGER.warning("Command " + command.toString() + " completed in "
+                + timeElapsed + "ms");
+        }
+
+        if (!(result instanceof CommandException)) {
+            // if the command completed successfully, notify listeners
+            LOGGER.fine("notifying serverEventBus of completed command "
+                + command.toString());
+            serverEventBus.post(new CommandEvent(command, result, context));
+        }
+
+        return result;
     }
-    
-  	@Override
-	public void log(String message, Throwable t) {
-		super.log(message, t);
-		LOGGER.log(Level.SEVERE, message, t);
-	}
 
-	@Override
-	public void log(String msg) {
-		super.log(msg);
-		LOGGER.log(Level.INFO, msg);
-	}
+    @Override
+    public void log(String message, Throwable t) {
+        super.log(message, t);
+        LOGGER.log(Level.SEVERE, message, t);
+    }
 
-	@Override
-	protected SerializationPolicy doGetSerializationPolicy(
-			HttpServletRequest request, String moduleBaseURL, String strongName) {
-		if(policyProvider == null) {
-			return super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
-		} else {
-			return policyProvider.getSerializationPolicy(moduleBaseURL, strongName);
-		}
-	}
+    @Override
+    public void log(String msg) {
+        super.log(msg);
+        LOGGER.log(Level.INFO, msg);
+    }
 
-	private void checkAuthentication(String authToken) {
-    	if(authToken.equals(AnonymousUser.AUTHTOKEN)) {
-    		authProvider.set(AuthenticatedUser.getAnonymous());
-    	} else {
-    		
-    		// TODO(alex): renable this check once the authToken has been removed from the host
-    		// page
-    		
-//    		// user is already authenticated, but ensure that the authTokens match
-//    		if(!authToken.equals(authProvider.get().getAuthToken())) {
-//    			throw new InvalidAuthTokenException("Auth Tokens do not match, possible XSRF attack");
-//    		}
-    	}
+    @Override
+    protected SerializationPolicy doGetSerializationPolicy(
+        HttpServletRequest request, String moduleBaseURL, String strongName) {
+        if (policyProvider == null) {
+            return super.doGetSerializationPolicy(request, moduleBaseURL,
+                strongName);
+        } else {
+            return policyProvider.getSerializationPolicy(moduleBaseURL,
+                strongName);
+        }
+    }
+
+    private void checkAuthentication(String authToken) {
+        if (authToken.equals(AnonymousUser.AUTHTOKEN)) {
+            authProvider.set(AuthenticatedUser.getAnonymous());
+        } else {
+
+            // TODO(alex): renable this check once the authToken has been
+            // removed from the host
+            // page
+
+            // // user is already authenticated, but ensure that the authTokens
+            // match
+            // if(!authToken.equals(authProvider.get().getAuthToken())) {
+            // throw new
+            // InvalidAuthTokenException("Auth Tokens do not match, possible XSRF attack");
+            // }
+        }
     }
 }

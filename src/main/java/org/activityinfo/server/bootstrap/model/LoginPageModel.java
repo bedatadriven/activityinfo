@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap.model;
 
 /*
@@ -25,7 +23,7 @@ package org.activityinfo.server.bootstrap.model;
  */
 
 public class LoginPageModel extends PageModel {
-    private boolean loginError;         
+    private boolean loginError;
 
     public LoginPageModel() {
     }

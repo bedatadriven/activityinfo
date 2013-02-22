@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.endpoint.kml;
 
 /*
@@ -41,11 +39,12 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * Serves a simple KML file containing a network link to {@link org.activityinfo.server.endpoint.kml.KmlDataServlet}.
- *
- * This file will be downloaded to the users computer and can be saved locally, but will asssure
- * that all actual data comes live from the server.
- *
+ * Serves a simple KML file containing a network link to
+ * {@link org.activityinfo.server.endpoint.kml.KmlDataServlet}.
+ * 
+ * This file will be downloaded to the users computer and can be saved locally,
+ * but will asssure that all actual data comes live from the server.
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 @Singleton
@@ -59,17 +58,19 @@ public class KmlLinkServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
-        Map<String,Object> link = new HashMap<String, Object>();
+        Map<String, Object> link = new HashMap<String, Object>();
 
         link.put("href", "http://" + req.getServerName() + ":" +
-                    req.getServerPort() + "/" +  req.getRequestURI() + "/activities");
+            req.getServerPort() + "/" + req.getRequestURI() + "/activities");
 
         Template tpl = templateCfg.getTemplate("kml/NetworkLink.kml.ftl");
         resp.setContentType("application/vnd.google-earth.kml+xml;");
-        resp.setCharacterEncoding("UTF-8");		
-        resp.setHeader("Content-Disposition", "attachment; filename=ActivityInfo.kml");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setHeader("Content-Disposition",
+            "attachment; filename=ActivityInfo.kml");
 
         try {
             tpl.process(link, resp.getWriter());

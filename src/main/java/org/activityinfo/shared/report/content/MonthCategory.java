@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -29,8 +27,8 @@ import java.util.Date;
 import org.activityinfo.client.i18n.I18N;
 
 /**
- * DimensionCategory within the Month dimension. Each category
- * represents a calendar month.
+ * DimensionCategory within the Month dimension. Each category represents a
+ * calendar month.
  */
 public class MonthCategory implements DimensionCategory {
 
@@ -92,12 +90,12 @@ public class MonthCategory implements DimensionCategory {
     public String toString() {
         return "MonthCategory{" + year + "/" + month + "}";
     }
-   
-	@Override
-	@SuppressWarnings("deprecation")
-	public String getLabel() {
-    	// hackish, yes, but it's the only thing that works on client & server
-		Date date = new Date(year-1900, month-1, 1);
-		return I18N.MESSAGES.month(date);
-	}
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public String getLabel() {
+        // hackish, yes, but it's the only thing that works on client & server
+        Date date = new Date(year - 1900, month - 1, 1);
+        return I18N.MESSAGES.month(date);
+    }
 }

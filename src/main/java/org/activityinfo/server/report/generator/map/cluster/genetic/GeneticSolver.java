@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map.cluster.genetic;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.server.report.generator.map.cluster.genetic;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,26 +48,29 @@ public class GeneticSolver {
     private double solutionFitness;
 
     /**
-     * Probability that a single chromosome will mutate
-     * over the course of a generation
+     * Probability that a single chromosome will mutate over the course of a
+     * generation
      */
     private static final double PROB_MUTATE = 0.15;
 
     /**
-     * The root value of the Cumulative Density Function (CDF)
-     * of the random variable used to select phenotypes with
-     * probability proportionate to fitness.
-     *
-     * Should be between 0 and 1: the lower the value, the greater
-     * the preference for the most fit. The greater the value, the
-     * more likely that unfit phenotypes will reproduce.
+     * The root value of the Cumulative Density Function (CDF) of the random
+     * variable used to select phenotypes with probability proportionate to
+     * fitness.
+     * 
+     * Should be between 0 and 1: the lower the value, the greater the
+     * preference for the most fit. The greater the value, the more likely that
+     * unfit phenotypes will reproduce.
      */
     private static final double SELECTION_CDF_ROOT = 0.1;
 
     public interface Tracer {
         void breeding(GeneticSolver solver, int i, int j);
+
         void evolved(GeneticSolver solver, int generation, int stagnationCount);
-        void crossover(GeneticSolver solver, int[] p1, int[] p2, int xoverPoint, int[] c1, int[] c2);
+
+        void crossover(GeneticSolver solver, int[] p1, int[] p2,
+            int xoverPoint, int[] c1, int[] c2);
     }
 
     private Tracer tracer;
@@ -84,8 +84,9 @@ public class GeneticSolver {
         public Phenotype(int[] chromosomes) {
             this.chromosomes = Arrays.copyOf(chromosomes, chromosomes.length);
             this.clusters = new ArrayList<Cluster>();
-            for(int i=0;i!=chromosomes.length;++i){
-                this.clusters.addAll(KMeans.cluster(subgraphs.get(i), chromosomes[i]));
+            for (int i = 0; i != chromosomes.length; ++i) {
+                this.clusters.addAll(KMeans.cluster(subgraphs.get(i),
+                    chromosomes[i]));
             }
             this.clusters.addAll(simpleClusters);
             radiiCalculator.calculate(this.clusters);
@@ -108,7 +109,7 @@ public class GeneticSolver {
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append('[');
-            for(int i=0; i!=chromosomes.length;++i) {
+            for (int i = 0; i != chromosomes.length; ++i) {
                 sb.append(' ').append(String.format("%3d", chromosomes[i]));
             }
             sb.append(" ]; fitness=").append(String.format("%+10.0f", fitness));
@@ -116,8 +117,9 @@ public class GeneticSolver {
         }
     }
 
-    public List<Cluster> solve(MarkerGraph graph, RadiiCalculator radiiCalculator,
-                         FitnessFunctor fitnessFunctor, List<Integer> allUpperBounds) {
+    public List<Cluster> solve(MarkerGraph graph,
+        RadiiCalculator radiiCalculator,
+        FitnessFunctor fitnessFunctor, List<Integer> allUpperBounds) {
 
         this.radiiCalculator = radiiCalculator;
         this.fitnessFunctor = fitnessFunctor;
@@ -136,9 +138,10 @@ public class GeneticSolver {
 
         for (int i = 0; i != allSubGraphs.size(); i++) {
             List<MarkerGraph.Node> subGraph = allSubGraphs.get(i);
-            if (subGraph.size()==1) {
-                simpleClusters.add(new Cluster(subGraph.get(0).getPointValue()));
-            } else if(allUpperBounds.get(i) == 1) {
+            if (subGraph.size() == 1) {
+                simpleClusters
+                    .add(new Cluster(subGraph.get(0).getPointValue()));
+            } else if (allUpperBounds.get(i) == 1) {
                 simpleClusters.addAll(KMeans.cluster(subGraph, 1));
             } else {
                 upperBounds.add(allUpperBounds.get(i));
@@ -146,7 +149,7 @@ public class GeneticSolver {
                 popSize += 1 + (int) Math.log(allUpperBounds.get(i) * 32);
             }
         }
-        if(popSize > 50) {
+        if (popSize > 50) {
             popSize = 50;
         }
 
@@ -157,23 +160,23 @@ public class GeneticSolver {
         double lastFitnessScore = 0;
         int generationsStagnated = 0;
 
-        if(subgraphs.size() > 0) {
-            for(int generation=0; generation < 100; ++generation) {
+        if (subgraphs.size() > 0) {
+            for (int generation = 0; generation < 100; ++generation) {
 
                 double fitness = evolve(generationsStagnated);
 
-                if(tracer != null) {
+                if (tracer != null) {
                     tracer.evolved(this, generation, generationsStagnated);
                 }
 
-                if(fitness != lastFitnessScore) {
+                if (fitness != lastFitnessScore) {
                     lastFitnessScore = fitness;
                     generationsStagnated = 0;
                 } else {
-                    generationsStagnated ++;
+                    generationsStagnated++;
                 }
 
-                if(generationsStagnated == 8) {
+                if (generationsStagnated == 8) {
                     break;
                 }
             }
@@ -183,9 +186,9 @@ public class GeneticSolver {
     }
 
     private void addRandomPhenotypes(List<Phenotype> population, int count) {
-        for(int i=0;i!= count;++i){
+        for (int i = 0; i != count; ++i) {
             int[] chromosomes = new int[subgraphs.size()];
-            for(int j=0;j!=chromosomes.length;++j) {
+            for (int j = 0; j != chromosomes.length; ++j) {
                 chromosomes[j] = randomChromosome(j);
             }
             population.add(new Phenotype(chromosomes));
@@ -193,7 +196,7 @@ public class GeneticSolver {
     }
 
     private int randomChromosome(int i) {
-        return 1 + random.nextInt(upperBounds.get(i)-1);
+        return 1 + random.nextInt(upperBounds.get(i) - 1);
     }
 
     public double evolve(int generationsStagnated) {
@@ -204,16 +207,17 @@ public class GeneticSolver {
         // to avoid regressing backwords...
         nextgen.add(population.get(0));
 
-        while(nextgen.size() < population.size()) {
+        while (nextgen.size() < population.size()) {
 
             List<int[]> parents = selectParents();
             int[] child1 = Arrays.copyOf(parents.get(0), parents.get(0).length);
             int[] child2 = Arrays.copyOf(parents.get(1), parents.get(1).length);
 
             crossover(child1, child2);
-            double pMutate = Math.pow( PROB_MUTATE, 1+(generationsStagnated/2.0));
-            mutate(child1, pMutate );
-            mutate(child2, pMutate );
+            double pMutate = Math.pow(PROB_MUTATE,
+                1 + (generationsStagnated / 2.0));
+            mutate(child1, pMutate);
+            mutate(child2, pMutate);
 
             nextgen.add(new Phenotype(child1));
             nextgen.add(new Phenotype(child2));
@@ -227,6 +231,7 @@ public class GeneticSolver {
 
     private void orderPopulation() {
         Collections.sort(population, new Comparator<Phenotype>() {
+            @Override
             public int compare(Phenotype o1, Phenotype o2) {
                 return -Double.compare(o1.getFitness(), o2.getFitness());
             }
@@ -240,11 +245,13 @@ public class GeneticSolver {
     /**
      * Performs a "crossover" operation on two phenotypes. Supposed to be
      * analogous to what happens in biological reproduction.
-     *
+     * 
      * See http://en.wikipedia.org/wiki/Crossover_%28genetic_algorithm%29
-     *
-     * @param p1 First phenotype (array of chromosomes)
-     * @param p2 Second phenotype (array of chromosomes)
+     * 
+     * @param p1
+     *            First phenotype (array of chromosomes)
+     * @param p2
+     *            Second phenotype (array of chromosomes)
      * @return
      */
     public List<int[]> crossover(int[] p1, int[] p2) {
@@ -257,8 +264,9 @@ public class GeneticSolver {
 
         swap(children.get(0), children.get(1), xoverPoint);
 
-        if(tracer != null) {
-            tracer.crossover(this, p1, p2, xoverPoint, children.get(0), children.get(1));
+        if (tracer != null) {
+            tracer.crossover(this, p1, p2, xoverPoint, children.get(0),
+                children.get(1));
         }
 
         return children;
@@ -271,31 +279,33 @@ public class GeneticSolver {
     }
 
     /**
-     *
+     * 
      * @param chromosomes
-     * @param pMutate Probability that an individual chromosome will mutate
+     * @param pMutate
+     *            Probability that an individual chromosome will mutate
      */
     private void mutate(int[] chromosomes, double pMutate) {
-        for(int i=0;i!=chromosomes.length;++i) {
-            if(random.nextDouble() < pMutate) {
+        for (int i = 0; i != chromosomes.length; ++i) {
+            if (random.nextDouble() < pMutate) {
                 chromosomes[i] = randomChromosome(i);
             }
         }
     }
 
     /**
-     *
-     * @return  The index of a random phenotype, selected with probabality proportionate
-     * to its fitness rank
+     * 
+     * @return The index of a random phenotype, selected with probabality
+     *         proportionate to its fitness rank
      */
     public int randomPhenotype() {
-        return (int)Math.round((1-Math.pow(random.nextDouble(), SELECTION_CDF_ROOT)) * (double)(population.size()-1));
+        return (int) Math.round((1 - Math.pow(random.nextDouble(),
+            SELECTION_CDF_ROOT)) * (population.size() - 1));
     }
 
     /**
-     *
-     * @return A random pair of <code>Phenotype</code>s, selected with probability proportionate
-     * to fitness rank.
+     * 
+     * @return A random pair of <code>Phenotype</code>s, selected with
+     *         probability proportionate to fitness rank.
      */
     public List<int[]> selectParents() {
 
@@ -304,9 +314,9 @@ public class GeneticSolver {
             i = randomPhenotype();
             j = randomPhenotype();
 
-        } while(i==j);
+        } while (i == j);
 
-        if(tracer != null) {
+        if (tracer != null) {
             tracer.breeding(this, i, j);
         }
 

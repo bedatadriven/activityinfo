@@ -1,6 +1,3 @@
-
-
-
 /**
  * Data Transfer Objects (DTO) for the {@link org.activityinfo.server.domain domain} classes.
  *

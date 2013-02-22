@@ -26,8 +26,8 @@ import com.google.inject.servlet.ServletModule;
 
 public class MonitoringModule extends ServletModule {
 
-	@Override
-	protected void configureServlets() {
-		serve("/ActivityInfo/clientMetrics").with(ClientMetricsServlet.class);
-	}
+    @Override
+    protected void configureServlets() {
+        serve("/ActivityInfo/clientMetrics").with(ClientMetricsServlet.class);
+    }
 }

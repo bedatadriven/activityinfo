@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.common;
 
 /*
@@ -55,7 +53,8 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
 
         private PageState place;
 
-        public GalleryModel(String name, String desc, String path, PageState place) {
+        public GalleryModel(String name, String desc, String path,
+            PageState place) {
             set("name", name);
             set("path", path);
             set("desc", desc);
@@ -99,21 +98,22 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
             new Listener<ListViewEvent<GalleryModel>>() {
 
                 @Override
-				public void handleEvent(ListViewEvent<GalleryModel> event) {
-                    eventBus.fireEvent(new NavigationEvent(NavigationHandler.NavigationRequested,
-                            event.getModel().getPlace()));
+                public void handleEvent(ListViewEvent<GalleryModel> event) {
+                    eventBus.fireEvent(new NavigationEvent(
+                        NavigationHandler.NAVIGATION_REQUESTED,
+                        event.getModel().getPlace()));
                 }
             });
         add(view);
     }
 
     @Override
-	public void setHeading(String html) {
+    public void setHeading(String html) {
         heading.setHtml(html);
     }
 
     @Override
-	public void setIntro(String html) {
+    public void setIntro(String html) {
         introPara.setHtml(html);
     }
 
@@ -124,14 +124,14 @@ public class GalleryPage extends LayoutContainer implements GalleryView {
     }
 
     private native String getTemplate(String base) /*-{
-              return ['<dl><tpl for=".">',
-              '<dd>',
-              '<img src="' + base + 'thumbs/{path}" title="{name}">',
-              '<div>',
-              '<h4>{name}</h4><p>{desc}</p></div>',
-              '</tpl>',
-              '<div style="clear:left;"></div></dl>'].join("");
+                                                   return ['<dl><tpl for=".">',
+                                                   '<dd>',
+                                                   '<img src="' + base + 'thumbs/{path}" title="{name}">',
+                                                   '<div>',
+                                                   '<h4>{name}</h4><p>{desc}</p></div>',
+                                                   '</tpl>',
+                                                   '<div style="clear:left;"></div></dl>'].join("");
 
-              }-*/;
+                                                   }-*/;
 
 }

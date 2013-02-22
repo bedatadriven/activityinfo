@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -31,35 +29,38 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
- * Abstract base class of <code>CommandResult</code>s that are compatible with the GXT loading interface.
- *
+ * Abstract base class of <code>CommandResult</code>s that are compatible with
+ * the GXT loading interface.
+ * 
  * @see com.extjs.gxt.ui.client.data.ListLoadResult
  * @see com.extjs.gxt.ui.client.data.ModelData
- *
- * @param <D> The type of item that the list will contain.
+ * 
+ * @param <D>
+ *            The type of item that the list will contain.
  */
-public abstract class ListResult<D extends ModelData> implements CommandResult, ListLoadResult<D> {
+public abstract class ListResult<D extends ModelData> implements CommandResult,
+    ListLoadResult<D> {
 
-	private List<D> data;
+    private List<D> data;
 
-	protected ListResult() {
-	    data = new ArrayList<D>();	
-	}
-	
-	public ListResult(List<D> data) {
-		this.data = data;
-	}
+    protected ListResult() {
+        data = new ArrayList<D>();
+    }
+
+    public ListResult(List<D> data) {
+        this.data = data;
+    }
 
     public ListResult(ListResult<D> result) {
         this.data = new ArrayList<D>(result.getData());
     }
 
     @Override
-	public List<D> getData() {
-		return data;
-	}	
-    
+    public List<D> getData() {
+        return data;
+    }
+
     public void setData(List<D> data) {
-    	this.data = data;
+        this.data = data;
     }
 }

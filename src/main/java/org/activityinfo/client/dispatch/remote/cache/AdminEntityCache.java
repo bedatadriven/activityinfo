@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch.remote.cache;
 
 /*
@@ -35,11 +33,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Caches the results of {@link org.activityinfo.shared.command.GetAdminEntities}
- *
+ * Caches the results of
+ * {@link org.activityinfo.shared.command.GetAdminEntities}
+ * 
  */
 @Singleton
-public class AdminEntityCache extends AbstractCache implements CommandCache<GetAdminEntities>, DispatchListener<GetAdminEntities> {
+public class AdminEntityCache extends AbstractCache implements
+    CommandCache<GetAdminEntities>, DispatchListener<GetAdminEntities> {
 
     @Inject
     public AdminEntityCache(DispatchEventSource connection) {
@@ -58,7 +58,8 @@ public class AdminEntityCache extends AbstractCache implements CommandCache<GetA
         if (result == null) {
             return CacheResult.couldNotExecute();
         } else {
-            return new CacheResult<AdminEntityResult>(new AdminEntityResult(result));
+            return new CacheResult<AdminEntityResult>(new AdminEntityResult(
+                result));
         }
     }
 

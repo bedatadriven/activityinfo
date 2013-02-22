@@ -32,33 +32,33 @@ import org.activityinfo.client.page.app.Section;
 
 public class SearchPageState implements PageState {
 
-	private String searchQuery = "";
-	
-	public SearchPageState() {
-	}
+    private String searchQuery = "";
 
-	public SearchPageState(String query) {
-		searchQuery = query;
-	}
+    public SearchPageState() {
+    }
 
-	@Override
-	public String serializeAsHistoryToken() {
-		if (searchQuery != null & !searchQuery.isEmpty()) {
-			return "q=" + searchQuery;
-		} 
-		return null;
-	}
+    public SearchPageState(String query) {
+        searchQuery = query;
+    }
 
-	@Override
-	public PageId getPageId() {
-		return SearchPresenter.SEARCH_PAGE_ID;
-	}
+    @Override
+    public String serializeAsHistoryToken() {
+        if (searchQuery != null & !searchQuery.isEmpty()) {
+            return "q=" + searchQuery;
+        }
+        return null;
+    }
 
-	@Override
-	public List<PageId> getEnclosingFrames() {
-		return Arrays.asList(SearchPresenter.SEARCH_PAGE_ID);
-	}
-	
+    @Override
+    public PageId getPageId() {
+        return SearchPresenter.SEARCH_PAGE_ID;
+    }
+
+    @Override
+    public List<PageId> getEnclosingFrames() {
+        return Arrays.asList(SearchPresenter.SEARCH_PAGE_ID);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -73,38 +73,39 @@ public class SearchPageState implements PageState {
         if (searchQuery != searchPlace.searchQuery) {
             return false;
         }
-        
+
         return true;
     }
-	
+
     @Override
     public int hashCode() {
         return 0;
     }
-	
-	public String getSearchQuery() {
-		return searchQuery;
-	}
 
-	public static class Parser implements PageStateParser {
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public static class Parser implements PageStateParser {
         @Override
-        public PageState parse(String token) { 
-        	if(token == null) {
-        		return new SearchPageState();
-        	}
-        	String query = "";
-        	if (token.startsWith("q")) {
-        		try {
-        			query = token.split("=")[1];
-        		} catch(Exception ex) { }
-        	}
+        public PageState parse(String token) {
+            if (token == null) {
+                return new SearchPageState();
+            }
+            String query = "";
+            if (token.startsWith("q")) {
+                try {
+                    query = token.split("=")[1];
+                } catch (Exception ex) {
+                }
+            }
             return new SearchPageState(query);
         }
     }
 
-	@Override
-	public Section getSection() {
-		return null;
-	}
-	
+    @Override
+    public Section getSection() {
+        return null;
+    }
+
 }

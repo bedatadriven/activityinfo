@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -34,8 +32,6 @@ import static org.junit.Assert.assertNotNull;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import org.activityinfo.server.database.hibernate.dao.TransactionModule;
-import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.junit.Test;
 
 import com.google.inject.AbstractModule;
@@ -59,7 +55,6 @@ public class TransactionalInterceptorTest {
         verify(tx);
     }
 
-
     @Test
     public void testFailedCase() {
         EntityTransaction tx = createMock(EntityTransaction.class);
@@ -81,7 +76,6 @@ public class TransactionalInterceptorTest {
 
         verify(tx);
     }
-
 
     @Test
     public void testNestedSuccessful() {
@@ -118,16 +112,15 @@ public class TransactionalInterceptorTest {
         }
         assertNotNull("exception is propagated", rte);
 
-
         verify(tx);
     }
 
     private MockClass getMockInstance(EntityTransaction tx) {
-        Injector injector = Guice.createInjector(new MockEntityManagerModule(tx));
+        Injector injector = Guice
+            .createInjector(new MockEntityManagerModule(tx));
         MockClass mock = injector.getInstance(MockClass.class);
         return mock;
     }
-
 
     public static class MockClass {
 
@@ -160,10 +153,10 @@ public class TransactionalInterceptorTest {
             replay(em);
         }
 
-		@Override
-		protected void configure() {
-			bind(EntityManager.class).toInstance(em);	
-			install(new TransactionModule());
-		}
+        @Override
+        protected void configure() {
+            bind(EntityManager.class).toInstance(em);
+            install(new TransactionModule());
+        }
     }
 }

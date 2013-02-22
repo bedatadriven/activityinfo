@@ -30,11 +30,11 @@ import org.activityinfo.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.widget.Component;
 
-public interface ReportElementEditor<M extends ReportElement> extends HasReportElement<M> {
+public interface ReportElementEditor<M extends ReportElement> extends
+    HasReportElement<M> {
 
-	
-	Component getWidget(); 
+    Component getWidget();
 
-	List<RenderElement.Format> getExportFormats();
-	
+    List<RenderElement.Format> getExportFormats();
+
 }

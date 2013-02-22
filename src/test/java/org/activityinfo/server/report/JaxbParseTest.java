@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report;
 
 /*
@@ -34,7 +32,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.activityinfo.shared.report.model.EmailDelivery;
 import org.activityinfo.shared.report.model.ImageReportElement;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
@@ -51,15 +48,18 @@ import org.junit.Test;
 public class JaxbParseTest {
 
     public Report parseXml(String filename) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Report.class.getPackage().getName());
+        JAXBContext jc = JAXBContext.newInstance(Report.class.getPackage()
+            .getName());
         Unmarshaller um = jc.createUnmarshaller();
         um.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
         return (Report) um.unmarshal(new InputStreamReader(
-                getClass().getResourceAsStream("/report-def/parse-test/" + filename)));
+            getClass()
+                .getResourceAsStream("/report-def/parse-test/" + filename)));
     }
 
     public static void dumpXml(Report report) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Report.class.getPackage().getName());
+        JAXBContext jc = JAXBContext.newInstance(Report.class.getPackage()
+            .getName());
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         m.marshal(report, System.out);
@@ -69,20 +69,27 @@ public class JaxbParseTest {
     public void testReport() throws JAXBException {
         Report report = parseXml("report.xml");
         Assert.assertEquals("My Title", report.getTitle());
-    }                        
+    }
 
     @Test
     public void testElements() throws JAXBException {
         Report report = parseXml("report-elements.xml");
         dumpXml(report);
         Assert.assertEquals("element count", 7, report.getElements().size());
-        Assert.assertTrue("pivotTable", report.getElements().get(0) instanceof PivotTableReportElement);
-        Assert.assertTrue("pivotChart", report.getElements().get(1) instanceof PivotChartReportElement);
-        Assert.assertTrue("table", report.getElements().get(2) instanceof TableElement);
-        Assert.assertTrue("map", report.getElements().get(3) instanceof MapReportElement);
-        Assert.assertTrue("static", report.getElements().get(4) instanceof TextReportElement);
-        Assert.assertTrue("static", report.getElements().get(5) instanceof TextReportElement);
-        Assert.assertTrue("static", report.getElements().get(6) instanceof ImageReportElement);
+        Assert.assertTrue("pivotTable",
+            report.getElements().get(0) instanceof PivotTableReportElement);
+        Assert.assertTrue("pivotChart",
+            report.getElements().get(1) instanceof PivotChartReportElement);
+        Assert.assertTrue("table",
+            report.getElements().get(2) instanceof TableElement);
+        Assert.assertTrue("map",
+            report.getElements().get(3) instanceof MapReportElement);
+        Assert.assertTrue("static",
+            report.getElements().get(4) instanceof TextReportElement);
+        Assert.assertTrue("static",
+            report.getElements().get(5) instanceof TextReportElement);
+        Assert.assertTrue("static",
+            report.getElements().get(6) instanceof ImageReportElement);
     }
 
     @Test
@@ -91,13 +98,18 @@ public class JaxbParseTest {
         dumpXml(report);
 
         Assert.assertEquals("element count", 1, report.getElements().size());
-        Assert.assertTrue("is pivotTable", report.getElements().get(0) instanceof PivotTableReportElement);
+        Assert.assertTrue("is pivotTable",
+            report.getElements().get(0) instanceof PivotTableReportElement);
 
         PivotTableReportElement table = report.getElement(0);
-        Assert.assertEquals("dimension count", 2, table.getRowDimensions().size());
-        Assert.assertEquals("indicator type", DimensionType.Indicator, table.getRowDimensions().get(0).getType());
-        Assert.assertTrue("admin subclass", table.getRowDimensions().get(1) instanceof AdminDimension);
-        Assert.assertEquals("level is 91", 91, ((AdminDimension) table.getRowDimensions().get(1)).getLevelId() );
+        Assert.assertEquals("dimension count", 2, table.getRowDimensions()
+            .size());
+        Assert.assertEquals("indicator type", DimensionType.Indicator, table
+            .getRowDimensions().get(0).getType());
+        Assert.assertTrue("admin subclass",
+            table.getRowDimensions().get(1) instanceof AdminDimension);
+        Assert.assertEquals("level is 91", 91, ((AdminDimension) table
+            .getRowDimensions().get(1)).getLevelId());
     }
 
     @Test
@@ -116,9 +128,12 @@ public class JaxbParseTest {
 
         TableElement table = report.getElement(0);
 
-        Assert.assertEquals("column count", 8, table.getRootColumn().getChildren().size());
-//        Assert.assertEquals(TableColumn.SortOrder.Descending, table.getSortBy().get(0).getOrder());
-//        Assert.assertEquals(TableColumn.SortOrder.Ascending, table.getSortBy().get(1).getOrder());
+        Assert.assertEquals("column count", 8, table.getRootColumn()
+            .getChildren().size());
+        // Assert.assertEquals(TableColumn.SortOrder.Descending,
+        // table.getSortBy().get(0).getOrder());
+        // Assert.assertEquals(TableColumn.SortOrder.Ascending,
+        // table.getSortBy().get(1).getOrder());
     }
 
     @Test
@@ -132,8 +147,10 @@ public class JaxbParseTest {
         Assert.assertEquals(11, minDate.get(Calendar.MONTH));
         Assert.assertEquals(1, minDate.get(Calendar.DATE));
 
-        Assert.assertTrue(report.getFilter().isRestricted(DimensionType.Indicator));
-        Assert.assertTrue(report.getFilter().getRestrictions(DimensionType.Indicator).contains(21));
+        Assert.assertTrue(report.getFilter().isRestricted(
+            DimensionType.Indicator));
+        Assert.assertTrue(report.getFilter()
+            .getRestrictions(DimensionType.Indicator).contains(21));
 
     }
 }

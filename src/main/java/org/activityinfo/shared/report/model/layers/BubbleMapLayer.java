@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model.layers;
 
 /*
@@ -34,7 +32,8 @@ import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 
 /**
- * Defines a graduated symbol layer where indicators are visualized using a circle
+ * Defines a graduated symbol layer where indicators are visualized using a
+ * circle
  */
 public class BubbleMapLayer extends CircledMapLayer {
 
@@ -50,8 +49,8 @@ public class BubbleMapLayer extends CircledMapLayer {
     }
 
     public boolean containsIndicatorDimension() {
-        for(Dimension dim : colorDimensions) {
-            if(dim.getType() == DimensionType.Indicator) {
+        for (Dimension dim : colorDimensions) {
+            if (dim.getType() == DimensionType.Indicator) {
                 return true;
             }
         }
@@ -59,8 +58,8 @@ public class BubbleMapLayer extends CircledMapLayer {
     }
 
     @Deprecated
-    @XmlElement(name="dimension")
-    @XmlElementWrapper(name="colors")
+    @XmlElement(name = "dimension")
+    @XmlElementWrapper(name = "colors")
     public List<Dimension> getColorDimensions() {
         return colorDimensions;
     }
@@ -68,12 +67,12 @@ public class BubbleMapLayer extends CircledMapLayer {
     @Deprecated
     public void setColorDimensions(List<Dimension> colorDimensions) {
         this.colorDimensions = colorDimensions;
-        
+
     }
 
     /**
      * 
-     * @return the color used to draw the circles 
+     * @return the color used to draw the circles
      */
     @XmlElement
     public String getBubbleColor() {
@@ -82,7 +81,8 @@ public class BubbleMapLayer extends CircledMapLayer {
 
     /**
      * 
-     * @param color the color used to draw the circles
+     * @param color
+     *            the color used to draw the circles
      */
     public void setBubbleColor(String color) {
         this.bubbleColor = color;
@@ -99,26 +99,26 @@ public class BubbleMapLayer extends CircledMapLayer {
 
     /**
      * 
-     * @param labelColor the color to use when labelling bubbles (for the text)
+     * @param labelColor
+     *            the color to use when labelling bubbles (for the text)
      */
     public void setLabelColor(String labelColor) {
         this.labelColor = labelColor;
     }
 
-	@Override
-	public boolean supportsMultipleIndicators() {
-		return true;
-	}
+    @Override
+    public boolean supportsMultipleIndicators() {
+        return true;
+    }
 
-	@Override
-	public String getTypeName() {
-		return "Bubble";
-	}
+    @Override
+    public String getTypeName() {
+        return "Bubble";
+    }
 
-	@Override
-	public String toString() {
-		return "BubbleMapLayer [ indicators=" + getIndicatorIds() + "]";
-	}
-	
-	
+    @Override
+    public String toString() {
+        return "BubbleMapLayer [ indicators=" + getIndicatorIds() + "]";
+    }
+
 }

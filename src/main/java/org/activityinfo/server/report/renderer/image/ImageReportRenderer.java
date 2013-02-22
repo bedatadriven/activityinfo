@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.renderer.image;
 
 /*
@@ -40,23 +38,25 @@ import com.google.inject.Inject;
  */
 public class ImageReportRenderer implements Renderer {
 
-
     private final ImageMapRenderer mapRenderer;
     private final ChartRendererJC chartRenderer;
 
     @Inject
-    public ImageReportRenderer(ImageMapRenderer renderer, ChartRendererJC chartRendererJC) {
+    public ImageReportRenderer(ImageMapRenderer renderer,
+        ChartRendererJC chartRendererJC) {
         this.mapRenderer = renderer;
         this.chartRenderer = chartRendererJC;
     }
 
-    public void render(ReportElement element, OutputStream os) throws IOException {
+    @Override
+    public void render(ReportElement element, OutputStream os)
+        throws IOException {
         // TODO: support for other types?
 
-        if(element instanceof MapReportElement) {
+        if (element instanceof MapReportElement) {
             mapRenderer.render((MapReportElement) element, os);
-        } else if(element instanceof PivotChartReportElement) {
-        	chartRenderer.render((PivotChartReportElement)element, os);
+        } else if (element instanceof PivotChartReportElement) {
+            chartRenderer.render((PivotChartReportElement) element, os);
         }
 
     }

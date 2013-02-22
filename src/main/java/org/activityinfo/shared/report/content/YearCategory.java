@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -76,8 +74,8 @@ public class YearCategory implements DimensionCategory {
         return "YearCategory{" + year + '}';
     }
 
-	@Override
-	public String getLabel() {
-		return Integer.toString(year);
-	}
+    @Override
+    public String getLabel() {
+        return Integer.toString(year);
+    }
 }

@@ -43,15 +43,14 @@ public class CategoryComparator implements Comparator<PivotTableData.Axis> {
             return 1;
         }
 
-
         return c1.compareTo(c2);
     }
 
-	private Comparable sortKey(PivotTableData.Axis a1) {
-		if(a1.getCategory() == null) {
-			return null;
-		} else {
-			return a1.getCategory().getSortKey();
-		}
-	}
+    private Comparable sortKey(PivotTableData.Axis a1) {
+        if (a1.getCategory() == null) {
+            return null;
+        } else {
+            return a1.getCategory().getSortKey();
+        }
+    }
 }

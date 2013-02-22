@@ -23,8 +23,8 @@
 
 <module rename-to="ActivityInfo">
 
-	<inherits name='org.activityinfo.ActivityInfoCore'/>
-	
-	<inherits name="com.bedatadriven.rebar.appcache.AppCacheLinker"/>
+  <inherits name='org.activityinfo.ActivityInfoCore' />
+
+  <inherits name="com.bedatadriven.rebar.appcache.AppCacheLinker" />
 
 </module>

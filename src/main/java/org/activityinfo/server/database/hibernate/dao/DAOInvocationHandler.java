@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.dao;
 
 /*
@@ -32,37 +30,41 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 /**
- * Invocation Handler for {@link org.activityinfo.server.database.hibernate.dao.DAO} interfaces.
+ * Invocation Handler for
+ * {@link org.activityinfo.server.database.hibernate.dao.DAO} interfaces.
  * 
  * This InvocationHandler provides implementations for
- * {@link org.activityinfo.server.database.hibernate.dao.DAO#findById(Object) findById} and
- * {@link org.activityinfo.server.database.hibernate.dao.DAO#persist(Object) persist}. Any other methods defined in the interface
- * are matched to named JPA queries, and their parameters as provided to the query as <em>positional</em>
+ * {@link org.activityinfo.server.database.hibernate.dao.DAO#findById(Object)
+ * findById} and
+ * {@link org.activityinfo.server.database.hibernate.dao.DAO#persist(Object)
+ * persist}. Any other methods defined in the interface are matched to named JPA
+ * queries, and their parameters as provided to the query as <em>positional</em>
  * parameters.
- *
+ * 
  * For example, given the declaration:
- *
+ * 
  * <pre>
- * &#64;Entity
- * &#64;NamedQuery(name="queryAllCountriesAlphabetically",
- *             query="select c from Country c order by c.name")
- * public class Country implements Serializable, SchemaElement {  }
- * </pre>
- *
- * and
- *
- * <pre>
- * public interface CountryDAO extends DAO<Country, Integer> {
- *      List<Country> queryAllCountriesAlphabetically();
+ * &#064;Entity
+ * &#064;NamedQuery(name = &quot;queryAllCountriesAlphabetically&quot;,
+ *     query = &quot;select c from Country c order by c.name&quot;)
+ * public class Country implements Serializable, SchemaElement {
  * }
  * </pre>
- *
+ * 
+ * and
+ * 
+ * <pre>
+ * public interface CountryDAO extends DAO&lt;Country, Integer&gt; {
+ *     List&lt;Country&gt; queryAllCountriesAlphabetically();
+ * }
+ * </pre>
+ * 
  * a call to queryAllCountriesAlphabetically will invoke the named query.
- *
- * Other notes:
- * If the method returns a {@link java.util.List List}, {@link javax.persistence.Query#getResultList()} will be
- * invoked, otherwise {@link javax.persistence.Query#getSingleResult()}
- *
+ * 
+ * Other notes: If the method returns a {@link java.util.List List},
+ * {@link javax.persistence.Query#getResultList()} will be invoked, otherwise
+ * {@link javax.persistence.Query#getSingleResult()}
+ * 
  * @author Alex Bertram
  */
 public class DAOInvocationHandler implements InvocationHandler {
@@ -76,7 +78,8 @@ public class DAOInvocationHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args)
+        throws Throwable {
         if (method.getName().equals("persist")) {
             return invokePersist(args[0]);
         } else if (method.getName().equals("findById")) {
@@ -110,13 +113,15 @@ public class DAOInvocationHandler implements InvocationHandler {
         try {
             return em.createNamedQuery(name);
         } catch (IllegalArgumentException e) {
-            throw new UnsupportedOperationException("The hibernate DAO proxy does not know how to handle the method " +
+            throw new UnsupportedOperationException(
+                "The hibernate DAO proxy does not know how to handle the method "
+                    +
                     method.getName());
         }
     }
 
     private void applyPositionalParameters(Object[] args, Query query) {
-        if(args != null) {
+        if (args != null) {
             for (int i = 0; i != args.length; ++i) {
                 query.setParameter(i + 1, args[i]);
             }

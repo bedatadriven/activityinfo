@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.design;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.client.page.config.design;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 public class AttributeGroupFolder extends Folder {
 

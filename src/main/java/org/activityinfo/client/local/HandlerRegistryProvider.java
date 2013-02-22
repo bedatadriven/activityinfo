@@ -55,44 +55,47 @@ import com.google.inject.Provider;
 
 public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
 
-	private final HandlerRegistry registry; 
-	
-	@Inject
-	public HandlerRegistryProvider(
-			GetSchemaHandler schemaHandler,
-            GetSitesHandler sitesHandler,
-            GetAdminEntitiesHandler adminHandler,
-            GetPartnersWithSitesHandler partnersWithSitesHandler,
-            CreateSiteHandler createSiteHandler,
-            UpdateSiteHandler updateSiteHandler,
-            CreateLocationHandler createLocationHandler,
-            SearchLocationsHandler searchLocationsHandler,
-            //SearchHandler searchHandler,
-            PivotSitesHandler pivotSitesHandler,
-            GeneratePivotTableHandler generatePivotTableHandler,
-            GetLocationsHandler getLocationsHandler,
-            DeleteSiteHandler deleteSiteHandler,
-            GetSiteAttachmentsHandler getSiteAttachmentsHandler) {
-		
-		registry = new HandlerRegistry();
-    	registry.registerHandler(GetSchema.class, schemaHandler);
-    	registry.registerHandler(GetSites.class, sitesHandler);
-    	registry.registerHandler(GetAdminEntities.class, adminHandler);
-    	registry.registerHandler(GetPartnersWithSites.class, partnersWithSitesHandler);
-    	registry.registerHandler(CreateSite.class, createSiteHandler);
-    	registry.registerHandler(UpdateSite.class, updateSiteHandler);
-    	registry.registerHandler(CreateLocation.class, createLocationHandler);
-    	//registry.registerHandler(Search.class, searchHandler);
-    	registry.registerHandler(SearchLocations.class, searchLocationsHandler);
-    	registry.registerHandler(GeneratePivotTable.class, generatePivotTableHandler);
-    	registry.registerHandler(PivotSites.class, pivotSitesHandler);
-    	registry.registerHandler(GetLocations.class, getLocationsHandler);
-    	registry.registerHandler(DeleteSite.class, deleteSiteHandler);	
-    	registry.registerHandler(GetSiteAttachments.class, getSiteAttachmentsHandler);
-	}
+    private final HandlerRegistry registry;
 
-	@Override
-	public HandlerRegistry get() {
-		return registry;
-	}	
+    @Inject
+    public HandlerRegistryProvider(
+        GetSchemaHandler schemaHandler,
+        GetSitesHandler sitesHandler,
+        GetAdminEntitiesHandler adminHandler,
+        GetPartnersWithSitesHandler partnersWithSitesHandler,
+        CreateSiteHandler createSiteHandler,
+        UpdateSiteHandler updateSiteHandler,
+        CreateLocationHandler createLocationHandler,
+        SearchLocationsHandler searchLocationsHandler,
+        // SearchHandler searchHandler,
+        PivotSitesHandler pivotSitesHandler,
+        GeneratePivotTableHandler generatePivotTableHandler,
+        GetLocationsHandler getLocationsHandler,
+        DeleteSiteHandler deleteSiteHandler,
+        GetSiteAttachmentsHandler getSiteAttachmentsHandler) {
+
+        registry = new HandlerRegistry();
+        registry.registerHandler(GetSchema.class, schemaHandler);
+        registry.registerHandler(GetSites.class, sitesHandler);
+        registry.registerHandler(GetAdminEntities.class, adminHandler);
+        registry.registerHandler(GetPartnersWithSites.class,
+            partnersWithSitesHandler);
+        registry.registerHandler(CreateSite.class, createSiteHandler);
+        registry.registerHandler(UpdateSite.class, updateSiteHandler);
+        registry.registerHandler(CreateLocation.class, createLocationHandler);
+        // registry.registerHandler(Search.class, searchHandler);
+        registry.registerHandler(SearchLocations.class, searchLocationsHandler);
+        registry.registerHandler(GeneratePivotTable.class,
+            generatePivotTableHandler);
+        registry.registerHandler(PivotSites.class, pivotSitesHandler);
+        registry.registerHandler(GetLocations.class, getLocationsHandler);
+        registry.registerHandler(DeleteSite.class, deleteSiteHandler);
+        registry.registerHandler(GetSiteAttachments.class,
+            getSiteAttachmentsHandler);
+    }
+
+    @Override
+    public HandlerRegistry get() {
+        return registry;
+    }
 }

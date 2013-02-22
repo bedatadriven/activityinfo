@@ -33,23 +33,25 @@ import com.google.gwt.core.client.GWT;
 
 public class BasePromptDialog extends Dialog {
 
-	static {
-		ProfileResources.INSTANCE.style().ensureInjected();
-	}
-	
-	protected final static LocalCapabilityProfile capabilityProfile = GWT.create(LocalCapabilityProfile.class);
-		
-	public BasePromptDialog(String html) {
-		
-		setWidth(500);
-		setHeight(350);
-		setHeading(I18N.CONSTANTS.installOffline());
-		setModal(true);
-		setLayout(new FitLayout());
-		
-		Html bodyHtml = new Html(html);
-		bodyHtml.addStyleName(ProfileResources.INSTANCE.style().startupDialogBody());
-        
-		add(bodyHtml);
-	}
+    static {
+        ProfileResources.INSTANCE.style().ensureInjected();
+    }
+
+    protected final static LocalCapabilityProfile CAPABILITY_PROFILE = GWT
+        .create(LocalCapabilityProfile.class);
+
+    public BasePromptDialog(String html) {
+
+        setWidth(500);
+        setHeight(350);
+        setHeading(I18N.CONSTANTS.installOffline());
+        setModal(true);
+        setLayout(new FitLayout());
+
+        Html bodyHtml = new Html(html);
+        bodyHtml.addStyleName(ProfileResources.INSTANCE.style()
+            .startupDialogBody());
+
+        add(bodyHtml);
+    }
 }

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -42,18 +40,19 @@ public class IconRectCalculator implements RadiiCalculator {
         this.icon = icon;
     }
 
+    @Override
     public void calculate(List<Cluster> clusters) {
-        for(Cluster cluster : clusters) {
+        for (Cluster cluster : clusters) {
             cluster.setRectangle(iconRect(cluster.getPoint()));
         }
-     }
+    }
 
     public Rectangle iconRect(int x, int y) {
         return new Rectangle(
-                x - icon.getAnchorX(),
-                y - icon.getAnchorY(),
-                icon.getWidth(),
-                icon.getHeight());
+            x - icon.getAnchorX(),
+            y - icon.getAnchorY(),
+            icon.getWidth(),
+            icon.getHeight());
     }
 
     public Rectangle iconRect(Point p) {

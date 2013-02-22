@@ -54,241 +54,249 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
-public final class LayerOptionsPanel extends LayoutContainer implements HasValue<MapLayer> {
-	
-	public static final int WIDTH = 271;
-	public static final int HEIGHT = 377;
+public final class LayerOptionsPanel extends LayoutContainer implements
+    HasValue<MapLayer> {
 
-	private MapLayer selectedMapLayer;
+    public static final int WIDTH = 271;
+    public static final int HEIGHT = 377;
 
-	// Options for every supported MapLayer type
-	private BubbleLayerOptions bubbleMapLayerOptions = new BubbleLayerOptions();
-	private IconLayerOptions iconMapLayerOptions = new IconLayerOptions();
-	private PiechartLayerOptions piechartMapLayerOptions;
-	private PolygonLayerOptions polygonLayerOptions = new PolygonLayerOptions();
+    private MapLayer selectedMapLayer;
 
-	// Clustering options
-	private ClusteringOptionsWidget clusteringOptions;
+    // Options for every supported MapLayer type
+    private BubbleLayerOptions bubbleMapLayerOptions = new BubbleLayerOptions();
+    private IconLayerOptions iconMapLayerOptions = new IconLayerOptions();
+    private PiechartLayerOptions piechartMapLayerOptions;
+    private PolygonLayerOptions polygonLayerOptions = new PolygonLayerOptions();
 
-	private ContentPanel stylePanel;
-	private ContentPanel clusteringPanel;
-	private LayerFilterPanel filterPanel;
-	
-	private Dispatcher dispatcher;
+    // Clustering options
+    private ClusteringOptionsWidget clusteringOptions;
 
-	private AccordionLayout layout;
+    private ContentPanel stylePanel;
+    private ContentPanel clusteringPanel;
+    private LayerFilterPanel filterPanel;
 
-	public LayerOptionsPanel(Dispatcher service) {
-		super();
-	
-		this.dispatcher = service;
+    private Dispatcher dispatcher;
 
-		initializeComponent();
-		this.piechartMapLayerOptions = new PiechartLayerOptions(service);
-		bindLayerOptions(bubbleMapLayerOptions);
-		bindLayerOptions(iconMapLayerOptions);
-		bindLayerOptions(piechartMapLayerOptions);
-		bindLayerOptions(polygonLayerOptions);
+    private AccordionLayout layout;
 
-		createClusteringOptions(service);
-		createFilterPanel(service);
-	}
+    public LayerOptionsPanel(Dispatcher service) {
+        super();
 
-	private void createClusteringOptions(Dispatcher service) {
-		clusteringOptions = new ClusteringOptionsWidget(service);
-		clusteringOptions.addValueChangeHandler(new ValueChangeHandler<Clustering>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Clustering> event) {
-				if (selectedMapLayer instanceof PointMapLayer) {
-					((PointMapLayer)selectedMapLayer).setClustering(event.getValue());
-					ValueChangeEvent.fire(LayerOptionsPanel.this, selectedMapLayer);
-				}
-			}
-		});
-		clusteringPanel.add(clusteringOptions);
-	}
+        this.dispatcher = service;
 
-	private <L extends MapLayer> void bindLayerOptions(HasValue<L> layerOptions) {
-		layerOptions.addValueChangeHandler(new ValueChangeHandler<L>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<L> event) {
-				ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
-			}
-		});
-	}
+        initializeComponent();
+        this.piechartMapLayerOptions = new PiechartLayerOptions(service);
+        bindLayerOptions(bubbleMapLayerOptions);
+        bindLayerOptions(iconMapLayerOptions);
+        bindLayerOptions(piechartMapLayerOptions);
+        bindLayerOptions(polygonLayerOptions);
 
-	private void initializeComponent() {
-		setWidth(WIDTH);
-		setHeight(HEIGHT);
-		
-		layout = new AccordionLayout() {
+        createClusteringOptions(service);
+        createFilterPanel(service);
+    }
 
-			@Override
-			protected void renderComponent(Component component, int index,
-					El target) {
-				super.renderComponent(component, index, target);
-				
-				// keep the default style of rounded corners on the content panels
-			    El.fly(((ContentPanel)component).getElement("header"))
-			    	.removeStyleName("x-accordion-hd");
-			}
+    private void createClusteringOptions(Dispatcher service) {
+        clusteringOptions = new ClusteringOptionsWidget(service);
+        clusteringOptions
+            .addValueChangeHandler(new ValueChangeHandler<Clustering>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<Clustering> event) {
+                    if (selectedMapLayer instanceof PointMapLayer) {
+                        ((PointMapLayer) selectedMapLayer).setClustering(event
+                            .getValue());
+                        ValueChangeEvent.fire(LayerOptionsPanel.this,
+                            selectedMapLayer);
+                    }
+                }
+            });
+        clusteringPanel.add(clusteringOptions);
+    }
 
-			@Override
-			protected void setItemSize(Component item, Size size) {
-				// don't set the height of the panels
-				ContentPanel cp = (ContentPanel) item;
-				cp.setWidth(size.width);
-			}
-		};
-		layout.setHideCollapseTool(true);
-		setLayout(layout);
-		
-		//setFieldsetHeadingToLayerName();
-		stylePanel = new ContentPanel();
-		stylePanel.setHeading(I18N.CONSTANTS.style()); 
-		stylePanel.setIcon(AbstractImagePrototype.create(MapResources.INSTANCE.styleIcon()));
-		stylePanel.setCollapsible(true);
-		stylePanel.setHideCollapseTool(true);
-		stylePanel.setAnimCollapse(true);
-		
-		ToolButton closeBtn = new ToolButton("x-tool-close");
-	    closeBtn.addListener(Events.Select, new Listener<ComponentEvent>() {
-	        @Override
-			public void handleEvent(ComponentEvent ce) {
-	          fadeOut();
-	        }
-	      });
-	    stylePanel.getHeader().addTool(closeBtn);
-	    
-		add(stylePanel);
+    private <L extends MapLayer> void bindLayerOptions(HasValue<L> layerOptions) {
+        layerOptions.addValueChangeHandler(new ValueChangeHandler<L>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<L> event) {
+                ValueChangeEvent.fire(LayerOptionsPanel.this, event.getValue());
+            }
+        });
+    }
 
-		clusteringPanel = new ContentPanel();
-		clusteringPanel.setIcon(AbstractImagePrototype.create(MapResources.INSTANCE.clusterIcon()));
-		clusteringPanel.setHeading(I18N.CONSTANTS.clustering());
-		clusteringPanel.setCollapsible(true);
-		clusteringPanel.setHideCollapseTool(true);
-		clusteringPanel.setAnimCollapse(true);
-		
-		add(clusteringPanel);
-	}
+    private void initializeComponent() {
+        setWidth(WIDTH);
+        setHeight(HEIGHT);
 
+        layout = new AccordionLayout() {
 
-	private void createFilterPanel(Dispatcher service) {
-		filterPanel = new LayerFilterPanel(service);
-		filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Filter> event) {
-				selectedMapLayer.setFilter(event.getValue());
-				ValueChangeEvent.fire(LayerOptionsPanel.this, selectedMapLayer);
-			}
-		});
-		add(filterPanel);
-	}
-	
-	private LayerOptionsWidget fromLayer(MapLayer mapLayer) {
-		if (mapLayer instanceof BubbleMapLayer) {
-			return bubbleMapLayerOptions;
-		} else if (mapLayer instanceof IconMapLayer) {
-			return iconMapLayerOptions;
-		} else if (mapLayer instanceof PiechartMapLayer) {
-			return piechartMapLayerOptions;
-		} else if (mapLayer instanceof PolygonMapLayer) {
-			return polygonLayerOptions;
-		}
-		 
-		throw new IllegalArgumentException("layer: " + mapLayer.getClass().getName());
-	}
-	
-	private Filter baseFilterFromLayer(MapLayer layer) {
-		Filter filter = new Filter();
-		filter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
-		return filter;
-	}
-	
-	private void setStyleOptions(LayerOptionsWidget layerOptionsWidget) {
-		stylePanel.removeAll();
-		stylePanel.add((Widget)layerOptionsWidget);
-		stylePanel.layout();
-		
-	}
-	
-	public void fadeOut() {
-		el().fadeOut(new FxConfig(new Listener<FxEvent>() {
-			
-			@Override
-			public void handleEvent(FxEvent be) {
-				hide();
-			}
-		}));
-	}
+            @Override
+            protected void renderComponent(Component component, int index,
+                El target) {
+                super.renderComponent(component, index, target);
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<MapLayer> handler) {
-		return this.addHandler(handler, ValueChangeEvent.getType());
-	}
+                // keep the default style of rounded corners on the content
+                // panels
+                El.fly(((ContentPanel) component).getElement("header"))
+                    .removeStyleName("x-accordion-hd");
+            }
 
-	@Override
-	public MapLayer getValue() {
-		return selectedMapLayer;
-	}
-	
-	@Override
-	public void setValue(MapLayer mapLayer) {
-		if(mapLayer != selectedMapLayer) {
-			this.selectedMapLayer = mapLayer;
-			LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
-			layerOptionsWidget.setValue(mapLayer);
-			
-			setStyleOptions(layerOptionsWidget);
-			clusteringOptions.loadForm(mapLayer);
-			if(mapLayer instanceof PointMapLayer) {
-				clusteringOptions.setValue(((PointMapLayer) mapLayer).getClustering(), false);
-				clusteringPanel.show();
-			} else {
-				clusteringPanel.hide();
-			}
-	
-			filterPanel.getFilterPanelSet().applyBaseFilter(baseFilterFromLayer(mapLayer));
-			filterPanel.setValue(mapLayer.getFilter(), false);
-		}
-	}
+            @Override
+            protected void setItemSize(Component item, Size size) {
+                // don't set the height of the panels
+                ContentPanel cp = (ContentPanel) item;
+                cp.setWidth(size.width);
+            }
+        };
+        layout.setHideCollapseTool(true);
+        setLayout(layout);
 
-	@Override
-	public void setValue(MapLayer mapLayer, boolean fireEvents) {
-		setValue(mapLayer);
-		if (fireEvents) {
-			ValueChangeEvent.fire(this, mapLayer);
-		}
-	}
+        // setFieldsetHeadingToLayerName();
+        stylePanel = new ContentPanel();
+        stylePanel.setHeading(I18N.CONSTANTS.style());
+        stylePanel.setIcon(AbstractImagePrototype.create(MapResources.INSTANCE
+            .styleIcon()));
+        stylePanel.setCollapsible(true);
+        stylePanel.setHideCollapseTool(true);
+        stylePanel.setAnimCollapse(true);
 
-	public void showStyle(MapLayer mapLayer) {
-		show(mapLayer, stylePanel);
-	}
+        ToolButton closeBtn = new ToolButton("x-tool-close");
+        closeBtn.addListener(Events.Select, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent ce) {
+                fadeOut();
+            }
+        });
+        stylePanel.getHeader().addTool(closeBtn);
 
-	public void showAggregation(MapLayer mapLayer) {
-		show(mapLayer, clusteringPanel);
-	}
-	
+        add(stylePanel);
 
-	public void showFilter(MapLayer mapLayer) {
-		show(mapLayer, filterPanel);
-	}
-	
-	private void show(MapLayer mapLayer, ContentPanel panel) {
-		if(!isVisible()) {
-			setVisible(true);
-		}
-		el().fadeIn(FxConfig.NONE);
-		setValue(mapLayer);
-		layout.setActiveItem(panel);
-	}
+        clusteringPanel = new ContentPanel();
+        clusteringPanel.setIcon(AbstractImagePrototype
+            .create(MapResources.INSTANCE.clusterIcon()));
+        clusteringPanel.setHeading(I18N.CONSTANTS.clustering());
+        clusteringPanel.setCollapsible(true);
+        clusteringPanel.setHideCollapseTool(true);
+        clusteringPanel.setAnimCollapse(true);
 
-	public void onLayerSelectionChanged(MapLayer model) {
-		if (model == null) {
-			setVisible(false);
-		} else if(isVisible()) {
-			setValue(model);
-		}
-	}
+        add(clusteringPanel);
+    }
+
+    private void createFilterPanel(Dispatcher service) {
+        filterPanel = new LayerFilterPanel(service);
+        filterPanel.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Filter> event) {
+                selectedMapLayer.setFilter(event.getValue());
+                ValueChangeEvent.fire(LayerOptionsPanel.this, selectedMapLayer);
+            }
+        });
+        add(filterPanel);
+    }
+
+    private LayerOptionsWidget fromLayer(MapLayer mapLayer) {
+        if (mapLayer instanceof BubbleMapLayer) {
+            return bubbleMapLayerOptions;
+        } else if (mapLayer instanceof IconMapLayer) {
+            return iconMapLayerOptions;
+        } else if (mapLayer instanceof PiechartMapLayer) {
+            return piechartMapLayerOptions;
+        } else if (mapLayer instanceof PolygonMapLayer) {
+            return polygonLayerOptions;
+        }
+
+        throw new IllegalArgumentException("layer: "
+            + mapLayer.getClass().getName());
+    }
+
+    private Filter baseFilterFromLayer(MapLayer layer) {
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Indicator, layer.getIndicatorIds());
+        return filter;
+    }
+
+    private void setStyleOptions(LayerOptionsWidget layerOptionsWidget) {
+        stylePanel.removeAll();
+        stylePanel.add((Widget) layerOptionsWidget);
+        stylePanel.layout();
+
+    }
+
+    public void fadeOut() {
+        el().fadeOut(new FxConfig(new Listener<FxEvent>() {
+
+            @Override
+            public void handleEvent(FxEvent be) {
+                hide();
+            }
+        }));
+    }
+
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<MapLayer> handler) {
+        return this.addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    @Override
+    public MapLayer getValue() {
+        return selectedMapLayer;
+    }
+
+    @Override
+    public void setValue(MapLayer mapLayer) {
+        if (mapLayer != selectedMapLayer) {
+            this.selectedMapLayer = mapLayer;
+            LayerOptionsWidget layerOptionsWidget = fromLayer(mapLayer);
+            layerOptionsWidget.setValue(mapLayer);
+
+            setStyleOptions(layerOptionsWidget);
+            clusteringOptions.loadForm(mapLayer);
+            if (mapLayer instanceof PointMapLayer) {
+                clusteringOptions.setValue(
+                    ((PointMapLayer) mapLayer).getClustering(), false);
+                clusteringPanel.show();
+            } else {
+                clusteringPanel.hide();
+            }
+
+            filterPanel.getFilterPanelSet().applyBaseFilter(
+                baseFilterFromLayer(mapLayer));
+            filterPanel.setValue(mapLayer.getFilter(), false);
+        }
+    }
+
+    @Override
+    public void setValue(MapLayer mapLayer, boolean fireEvents) {
+        setValue(mapLayer);
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, mapLayer);
+        }
+    }
+
+    public void showStyle(MapLayer mapLayer) {
+        show(mapLayer, stylePanel);
+    }
+
+    public void showAggregation(MapLayer mapLayer) {
+        show(mapLayer, clusteringPanel);
+    }
+
+    public void showFilter(MapLayer mapLayer) {
+        show(mapLayer, filterPanel);
+    }
+
+    private void show(MapLayer mapLayer, ContentPanel panel) {
+        if (!isVisible()) {
+            setVisible(true);
+        }
+        el().fadeIn(FxConfig.NONE);
+        setValue(mapLayer);
+        layout.setActiveItem(panel);
+    }
+
+    public void onLayerSelectionChanged(MapLayer model) {
+        if (model == null) {
+            setVisible(false);
+        } else if (isVisible()) {
+            setValue(model);
+        }
+    }
 }

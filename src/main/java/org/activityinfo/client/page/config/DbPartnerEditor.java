@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config;
 
 /*
@@ -58,15 +56,18 @@ import com.google.inject.Inject;
 /**
  * @author Alex Bertram
  */
-public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> implements DbPage {
+public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO>
+    implements DbPage {
     public static final PageId PAGE_ID = new PageId("partners");
 
     @ImplementedBy(DbPartnerGrid.class)
     public interface View extends GridView<DbPartnerEditor, PartnerDTO> {
 
-        public void init(DbPartnerEditor editor, UserDatabaseDTO db, ListStore<PartnerDTO> store);
+        public void init(DbPartnerEditor editor, UserDatabaseDTO db,
+            ListStore<PartnerDTO> store);
 
-        public FormDialogTether showAddDialog(PartnerDTO partner, FormDialogCallback callback);
+        public FormDialogTether showAddDialog(PartnerDTO partner,
+            FormDialogCallback callback);
     }
 
     private final Dispatcher service;
@@ -76,9 +77,9 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> implement
     private UserDatabaseDTO db;
     private ListStore<PartnerDTO> store;
 
-
     @Inject
-    public DbPartnerEditor(EventBus eventBus, Dispatcher service, StateProvider stateMgr, View view) {
+    public DbPartnerEditor(EventBus eventBus, Dispatcher service,
+        StateProvider stateMgr, View view) {
         super(eventBus, stateMgr, view);
         this.service = service;
         this.eventBus = eventBus;
@@ -103,9 +104,9 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> implement
         return "PartnersGrid";
     }
 
-//    public void onSelectionChanged(PartnerDTO selectedItem) {
-//        this.view.setActionEnabled(UIActions.delete, selectedItem != null);
-//    }
+    // public void onSelectionChanged(PartnerDTO selectedItem) {
+    // this.view.setActionEnabled(UIActions.delete, selectedItem != null);
+    // }
 
     @Override
     protected void onAdd() {
@@ -115,66 +116,72 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> implement
             @Override
             public void onValidated(final FormDialogTether dlg) {
 
-                service.execute(new AddPartner(db.getId(), newPartner), dlg, new AsyncCallback<CreateResult>() {
-                    @Override
-					public void onFailure(Throwable caught) {
-                        if (caught instanceof DuplicatePartnerException) {
-                        	MessageBox.alert(I18N.CONSTANTS.newPartner(), I18N.CONSTANTS.duplicatePartner(), null);
+                service.execute(new AddPartner(db.getId(), newPartner), dlg,
+                    new AsyncCallback<CreateResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            if (caught instanceof DuplicatePartnerException) {
+                                MessageBox.alert(I18N.CONSTANTS.newPartner(),
+                                    I18N.CONSTANTS.duplicatePartner(), null);
+                            }
                         }
-                    }
 
-                    @Override
-					public void onSuccess(CreateResult result) {
-                        newPartner.setId(result.getNewId());
-                        store.add(newPartner);
-                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-                        dlg.hide();
-                    }
-                });
+                        @Override
+                        public void onSuccess(CreateResult result) {
+                            newPartner.setId(result.getNewId());
+                            store.add(newPartner);
+                            eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                            dlg.hide();
+                        }
+                    });
             }
         });
     }
 
     @Override
     protected void onDeleteConfirmed(final PartnerDTO model) {
-        service.execute(new RemovePartner(db.getId(), model.getId()), view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
-            @Override
-			public void onFailure(Throwable caught) {
-                if (caught instanceof PartnerHasSitesException) {
-                    MessageBox.alert(I18N.CONSTANTS.removeItem(), I18N.MESSAGES.partnerHasDataWarning(model.getName()), null);
+        service.execute(new RemovePartner(db.getId(), model.getId()),
+            view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    if (caught instanceof PartnerHasSitesException) {
+                        MessageBox.alert(
+                            I18N.CONSTANTS.removeItem(),
+                            I18N.MESSAGES.partnerHasDataWarning(model.getName()),
+                            null);
+                    }
                 }
-            }
 
-            @Override
-			public void onSuccess(VoidResult result) {
-                store.remove(model);
-            }
-        });
+                @Override
+                public void onSuccess(VoidResult result) {
+                    store.remove(model);
+                }
+            });
 
     }
 
     @Override
-	public PageId getPageId() {
+    public PageId getPageId() {
         return PAGE_ID;
     }
 
     @Override
-	public Object getWidget() {
+    public Object getWidget() {
         return view;
     }
 
     @Override
-	public boolean navigate(PageState place) {
-    	return false;
+    public boolean navigate(PageState place) {
+        return false;
     }
 
     @Override
-	public void shutdown() {
+    public void shutdown() {
 
     }
 
-	@Override
-	public void onSelectionChanged(ModelData selectedItem) {
+    @Override
+    public void onSelectionChanged(ModelData selectedItem) {
         this.view.setActionEnabled(UIActions.DELETE, selectedItem != null);
-	}
+    }
 }

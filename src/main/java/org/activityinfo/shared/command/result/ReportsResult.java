@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command.result;
 
 /*
@@ -33,7 +31,7 @@ import org.activityinfo.shared.dto.ReportMetadataDTO;
  * @author Alex Bertram
  */
 public class ReportsResult extends ListResult<ReportMetadataDTO> {
-    
+
     public ReportsResult() {
     }
 
@@ -41,13 +39,13 @@ public class ReportsResult extends ListResult<ReportMetadataDTO> {
         super(data);
     }
 
-	public ReportMetadataDTO forId(int id) {
-		for(ReportMetadataDTO report : getData()) {
-			if(report.getId() == id) {
-				return report;
-			}
-		}
-		throw new IllegalArgumentException();
-	}
+    public ReportMetadataDTO forId(int id) {
+        for (ReportMetadataDTO report : getData()) {
+            if (report.getId() == id) {
+                return report;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
 
 }

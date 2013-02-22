@@ -32,59 +32,60 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public final class ShowLockedPeriodsDialog extends Dialog implements ShowLockedPeriodsView{
-	private final LockedPeriodGrid grid = new LockedPeriodGrid();
+public final class ShowLockedPeriodsDialog extends Dialog implements
+    ShowLockedPeriodsView {
+    private final LockedPeriodGrid grid = new LockedPeriodGrid();
 
-	public ShowLockedPeriodsDialog() {
-		super();
-		
-		setHideOnButtonClick(true);
-		
-		grid.setReadOnly(true);
-		add(grid);
-		setMinHeight(400);
-		setMinWidth(600); 
-		setLayout(new FitLayout());
-	}
+    public ShowLockedPeriodsDialog() {
+        super();
 
-	@Override
-	public List<LockedPeriodDTO> getValue() {
-		return null;
-	}
+        setHideOnButtonClick(true);
 
-	@Override
-	public void setValue(List<LockedPeriodDTO> value) {
-		grid.setItems(value);
-	}
+        grid.setReadOnly(true);
+        add(grid);
+        setMinHeight(400);
+        setMinWidth(600);
+        setLayout(new FitLayout());
+    }
 
-	@Override
-	public void setValue(List<LockedPeriodDTO> value, boolean fireEvents) {
-		
-	}
+    @Override
+    public List<LockedPeriodDTO> getValue() {
+        return null;
+    }
 
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<List<LockedPeriodDTO>> handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void setValue(List<LockedPeriodDTO> value) {
+        grid.setItems(value);
+    }
 
-	@Override
-	public void setActivityFilter(ActivityDTO activity) {
-		grid.setActivityFilter(activity);
-	}
+    @Override
+    public void setValue(List<LockedPeriodDTO> value, boolean fireEvents) {
 
-	@Override
-	public void show() {
-		super.show();
-		
-		layout(true);
-	}
+    }
 
-	@Override
-	public void setHeader(String header) {
-		setHeading(header);
-		grid.setHeaderVisible(false);
-	}
-	
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+        ValueChangeHandler<List<LockedPeriodDTO>> handler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setActivityFilter(ActivityDTO activity) {
+        grid.setActivityFilter(activity);
+    }
+
+    @Override
+    public void show() {
+        super.show();
+
+        layout(true);
+    }
+
+    @Override
+    public void setHeader(String header) {
+        setHeading(header);
+        grid.setHeaderVisible(false);
+    }
+
 }

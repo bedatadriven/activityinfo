@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.local.sync;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.client.local.sync;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import org.activityinfo.client.EventBus.NamedEventType;
 

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.dto;
 
 /*
@@ -28,23 +26,27 @@ import org.activityinfo.shared.util.mapping.Extents;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-
 /**
- * One-to-one DTO for the {@link org.activityinfo.server.database.hibernate.entity.AdminEntity} domain object.
- *
+ * One-to-one DTO for the
+ * {@link org.activityinfo.server.database.hibernate.entity.AdminEntity} domain
+ * object.
+ * 
  * @author Alex Bertram
  */
 public final class AdminEntityDTO extends BaseModelData implements DTO {
-	private Extents bounds;
-	
-	public AdminEntityDTO() {
-	}
+    private Extents bounds;
+
+    public AdminEntityDTO() {
+    }
 
     /**
-     *
-     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
-     * @param id  the id of this AdminEntity
-     * @param name  the name of this AdminEntity
+     * 
+     * @param levelId
+     *            the id of the AdminLevel to which this AdminEntity belongs
+     * @param id
+     *            the id of this AdminEntity
+     * @param name
+     *            the name of this AdminEntity
      */
     public AdminEntityDTO(int levelId, int id, String name) {
         setId(id);
@@ -53,11 +55,15 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
     }
 
     /**
-     *
-     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
-     * @param id the id of this AdminEntity
-     * @param parentId the id of this AdminEntity's parent
-     * @param name  this AdminEntity's name
+     * 
+     * @param levelId
+     *            the id of the AdminLevel to which this AdminEntity belongs
+     * @param id
+     *            the id of this AdminEntity
+     * @param parentId
+     *            the id of this AdminEntity's parent
+     * @param name
+     *            this AdminEntity's name
      */
     public AdminEntityDTO(int levelId, int id, int parentId, String name) {
         setId(id);
@@ -67,10 +73,14 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
     }
 
     /**
-     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
-     * @param id the id of this AdminEntity
-     * @param name  the name of this AdminEntity
-     * @param bounds the geographing BoundingBox of this AdminEntity
+     * @param levelId
+     *            the id of the AdminLevel to which this AdminEntity belongs
+     * @param id
+     *            the id of this AdminEntity
+     * @param name
+     *            the name of this AdminEntity
+     * @param bounds
+     *            the geographing BoundingBox of this AdminEntity
      */
     public AdminEntityDTO(int levelId, int id, String name, Extents bounds) {
         setId(id);
@@ -80,13 +90,19 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
     }
 
     /**
-     * @param levelId the id of the AdminLevel to which this AdminEntity belongs
-     * @param id the id of this AdminEntity
-     * @param parentId the id of this AdminEntity's parent
-     * @param name  the name of this AdminEntity
-     * @param bounds the geographing BoundingBox of this AdminEntity
+     * @param levelId
+     *            the id of the AdminLevel to which this AdminEntity belongs
+     * @param id
+     *            the id of this AdminEntity
+     * @param parentId
+     *            the id of this AdminEntity's parent
+     * @param name
+     *            the name of this AdminEntity
+     * @param bounds
+     *            the geographing BoundingBox of this AdminEntity
      */
-    public AdminEntityDTO(int levelId, int id, int parentId, String name, Extents bounds) {
+    public AdminEntityDTO(int levelId, int id, int parentId, String name,
+        Extents bounds) {
         setId(id);
         setLevelId(levelId);
         setParentId(parentId);
@@ -94,108 +110,111 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
         setBounds(bounds);
     }
 
-
     /**
      * Sets this AdminEntity's id
      */
     public void setId(int id) {
-		set("id", id);
-	}
+        set("id", id);
+    }
 
     /**
-     * @return  this AdminEntity's id
+     * @return this AdminEntity's id
      */
-	public int getId() {
-		return (Integer)get("id");
-	}
+    public int getId() {
+        return (Integer) get("id");
+    }
 
     /**
      * @return this AdminEntity's name
      */
-	public String getName() {
-		return get("name");
-	}
+    public String getName() {
+        return get("name");
+    }
 
     /**
      * Sets this AdminEntity's name
      */
-	public void setName(String name) {
-		set("name", name);
-	}
+    public void setName(String name) {
+        set("name", name);
+    }
 
     /**
      * 
-     * @return  the id of this AdminEntity's corresponding {@link org.activityinfo.server.database.hibernate.entity.AdminLevel}
+     * @return the id of this AdminEntity's corresponding
+     *         {@link org.activityinfo.server.database.hibernate.entity.AdminLevel}
      */
-	public int getLevelId() {
-		return (Integer)get("levelId");
-	}
+    public int getLevelId() {
+        return (Integer) get("levelId");
+    }
 
     /**
      * Sets the id of the AdminLevel to which this AdminEntity belongs
      */
-	public void setLevelId(int levelId) {
-		set("levelId", levelId);
-	}
+    public void setLevelId(int levelId) {
+        set("levelId", levelId);
+    }
 
     /**
      * Sets the id of this AdminEntity's parent.
      */
-	public void setParentId(Integer value) {
-		set("parentId", value);
-	}
+    public void setParentId(Integer value) {
+        set("parentId", value);
+    }
 
     /**
-     *
+     * 
      * @return the id of this AdminEntity's corresponding parent AdminEntity
      */
-	public Integer getParentId() { 
-		return get("parentId");
-	}
+    public Integer getParentId() {
+        return get("parentId");
+    }
 
     /**
-     * @return  true if this AdminEntity has non-null bounds
+     * @return true if this AdminEntity has non-null bounds
      */
-	public boolean hasBounds() {
-		return getBounds() != null;
-	}
+    public boolean hasBounds() {
+        return getBounds() != null;
+    }
 
     /**
-     *
+     * 
      * @return the geographic Extents of this AdminEntity
      */
-	public Extents getBounds() {
-		return bounds;
-	}
+    public Extents getBounds() {
+        return bounds;
+    }
 
     /**
      * Sets the Extents of this AdminEntity.
      */
-	public void setBounds(Extents bounds) {
-		this.bounds = bounds;
-	}
+    public void setBounds(Extents bounds) {
+        this.bounds = bounds;
+    }
 
     /**
-     * Gets the property name for a given AdminLevel when AdminEntities are stored in pivoted form.
-     *
-     * @param levelId the id of the AdminLevel
+     * Gets the property name for a given AdminLevel when AdminEntities are
+     * stored in pivoted form.
+     * 
+     * @param levelId
+     *            the id of the AdminLevel
      * @return the property name
      */
-	public static String getPropertyName(int levelId) {
-		return AdminLevelDTO.getPropertyName(levelId);
-	}
+    public static String getPropertyName(int levelId) {
+        return AdminLevelDTO.getPropertyName(levelId);
+    }
 
     /**
-     * @return the property name used for this AdminEntity's AdminLevel when stored in pivoted form
+     * @return the property name used for this AdminEntity's AdminLevel when
+     *         stored in pivoted form
      */
-	public String getPropertyName() {
-		return AdminLevelDTO.getPropertyName(this.getLevelId());
-	}
+    public String getPropertyName() {
+        return AdminLevelDTO.getPropertyName(this.getLevelId());
+    }
 
     @Override
-	public String toString() {
-		return getName();
-	}
+    public String toString() {
+        return getName();
+    }
 
     @Override
     public int hashCode() {
@@ -207,17 +226,17 @@ public final class AdminEntityDTO extends BaseModelData implements DTO {
      */
     @Override
     public boolean equals(Object other) {
-        if(other==null) {
+        if (other == null) {
             return false;
         }
-        if(other==this) {
+        if (other == this) {
             return true;
         }
-        if(!(other instanceof AdminEntityDTO)) {
+        if (!(other instanceof AdminEntityDTO)) {
             return false;
         }
 
-        AdminEntityDTO that = (AdminEntityDTO)other;
+        AdminEntityDTO that = (AdminEntityDTO) other;
         return getId() == that.getId();
     }
 }

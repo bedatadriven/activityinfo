@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.mail;
 
 /*
@@ -38,13 +36,12 @@ import freemarker.template.Configuration;
 @TestScoped
 public class MailSenderStub extends MailSender {
 
-	@Inject
+    @Inject
     public MailSenderStub(Configuration templateCfg) {
-		super(templateCfg);
-	}
+        super(templateCfg);
+    }
 
-	public List<Message> sentMail = Lists.newArrayList();
-
+    public List<Message> sentMail = Lists.newArrayList();
 
     @Override
     public void send(Message message) {

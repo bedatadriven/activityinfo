@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -29,14 +27,12 @@ import org.activityinfo.shared.command.result.UserResult;
 /**
  * Queries the list of users authorized to access a given
  * {@link org.activityinfo.server.database.hibernate.entity.UserDatabase}
- *
- * The resulting {@link org.activityinfo.shared.dto.UserPermissionDTO} are
- * a projection of the UserLogin,
- * UserPermission, and
- * Partner tables.
- *
+ * 
+ * The resulting {@link org.activityinfo.shared.dto.UserPermissionDTO} are a
+ * projection of the UserLogin, UserPermission, and Partner tables.
+ * 
  */
-public class GetUsers extends PagingGetCommand<UserResult>  {
+public class GetUsers extends PagingGetCommand<UserResult> {
 
     private int databaseId;
 
@@ -44,25 +40,29 @@ public class GetUsers extends PagingGetCommand<UserResult>  {
         // required
     }
 
-	public GetUsers(int databaseId) {
-		super();
-		this.databaseId = databaseId;
-	}
+    public GetUsers(int databaseId) {
+        super();
+        this.databaseId = databaseId;
+    }
 
     /**
-     * Gets the id of the database for which to query the list of UserPermissions.
-     *
-     * @return the id of the database for which to query the list of authorized users.
+     * Gets the id of the database for which to query the list of
+     * UserPermissions.
+     * 
+     * @return the id of the database for which to query the list of authorized
+     *         users.
      */
-	public int getDatabaseId() {
-		return databaseId;
-	}
+    public int getDatabaseId() {
+        return databaseId;
+    }
 
     /**
-     * Sets the id of the database for which toquery the list of UserPermissions.
-      * @param databaseId
+     * Sets the id of the database for which toquery the list of
+     * UserPermissions.
+     * 
+     * @param databaseId
      */
-	public void setDatabaseId(int databaseId) {
-		this.databaseId = databaseId;
-	}
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
+    }
 }

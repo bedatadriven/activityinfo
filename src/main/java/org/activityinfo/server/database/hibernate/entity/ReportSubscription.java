@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -39,10 +37,9 @@ import javax.persistence.ManyToOne;
 
 import org.activityinfo.shared.report.model.EmailDelivery;
 
-
 /**
  * Defines a subscription to a given report.
- *
+ * 
  * @author Alex Bertram
  */
 @Entity
@@ -66,9 +63,9 @@ public class ReportSubscription implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( {                                                          
-            @AttributeOverride(name = "reportId", column = @Column(name = "reportId", nullable = false)),
-            @AttributeOverride(name = "userId", column = @Column(name = "userId", nullable = false)) })
+    @AttributeOverrides({
+        @AttributeOverride(name = "reportId", column = @Column(name = "reportId", nullable = false)),
+        @AttributeOverride(name = "userId", column = @Column(name = "userId", nullable = false)) })
     public ReportSubscriptionId getId() {
         return this.id;
     }
@@ -77,22 +74,22 @@ public class ReportSubscription implements Serializable {
         this.id = id;
     }
 
-
     /**
      * Gets the ReportTemplate to which the user is subscribed
-     *
+     * 
      * @return the ReportTemplate to which the user is subscribed
      */
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "reportId", nullable = false, insertable = false, updatable = false)
-	public ReportDefinition getTemplate() {
-		return this.template;
-	}
+    @JoinColumn(name = "reportId", nullable = false, insertable = false, updatable = false)
+    public ReportDefinition getTemplate() {
+        return this.template;
+    }
 
     /**
      * Sets the Report Template to which the user is subscribed.
-     *
-     * @param template The report template
+     * 
+     * @param template
+     *            The report template
      */
     public void setTemplate(ReportDefinition template) {
         this.template = template;
@@ -100,19 +97,20 @@ public class ReportSubscription implements Serializable {
 
     /**
      * Get the user who will receive the report by mail.
-     *
+     * 
      * @return The user to whom the report will be mailed.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="userId", nullable=false, insertable=false, updatable=false)
+    @JoinColumn(name = "userId", nullable = false, insertable = false, updatable = false)
     public User getUser() {
         return user;
     }
 
     /**
      * Sets the user who will receive the report by mail.
-     *
-     * @param user  The user who will receive the report by mail.
+     * 
+     * @param user
+     *            The user who will receive the report by mail.
      */
     public void setUser(User user) {
         this.user = user;
@@ -120,22 +118,22 @@ public class ReportSubscription implements Serializable {
 
     /**
      * Gets the inviting user
-     *
-     * @return The second user who has invited <code>user</code> to
-     * subscribe to this report. NULL if the user has set their
-     * own preferences.
+     * 
+     * @return The second user who has invited <code>user</code> to subscribe to
+     *         this report. NULL if the user has set their own preferences.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="invitingUserId", nullable=true)
+    @JoinColumn(name = "invitingUserId", nullable = true)
     public User getInvitingUser() {
         return invitingUser;
     }
 
     /**
      * Sets the inviting user
-     *
-     * @param invitingUser A second user who has invited the <code>user</code> to subscribe to the
-     * report.
+     * 
+     * @param invitingUser
+     *            A second user who has invited the <code>user</code> to
+     *            subscribe to the report.
      */
     public void setInvitingUser(User invitingUser) {
         this.invitingUser = invitingUser;
@@ -143,7 +141,7 @@ public class ReportSubscription implements Serializable {
 
     /**
      * Gets the subscription status to <code>report</code>
-     *
+     * 
      * @return True if the user is subscribed to the <code>report</code>
      */
     public boolean isSubscribed() {
@@ -152,13 +150,13 @@ public class ReportSubscription implements Serializable {
 
     /**
      * Sets the subscription status to <code>report</code>
-     *
-     * @param subscribed True if the user is to receive this report by mail.
+     * 
+     * @param subscribed
+     *            True if the user is to receive this report by mail.
      */
     public void setSubscribed(boolean subscribed) {
         this.subscribed = subscribed;
     }
-
 
     @Enumerated(EnumType.STRING)
     public EmailDelivery getEmailDelivery() {
@@ -168,7 +166,6 @@ public class ReportSubscription implements Serializable {
     public void setEmailDelivery(EmailDelivery frequency) {
         this.emailDelivery = frequency;
     }
-
 
     @Column(nullable = true)
     public Integer getEmailDay() {

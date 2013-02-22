@@ -33,37 +33,37 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AdminEntityProxy extends RpcProxy<ListResult<AdminEntityDTO>> {
 
-	private final Dispatcher dispatcher;
-	private final int levelId;
-	private Integer parentId;
-	
-	public AdminEntityProxy(Dispatcher dispatcher, int levelId) {
-		this.dispatcher = dispatcher;
-		this.levelId = levelId;
-	}
-	
-	public void setParentAdminEntityId(Integer id) {
-		this.parentId = id;
-	}
-	
-	@Override
-	protected void load(Object loadConfig,
-			final AsyncCallback<ListResult<AdminEntityDTO>> callback) {
+    private final Dispatcher dispatcher;
+    private final int levelId;
+    private Integer parentId;
 
-		GetAdminEntities query = new GetAdminEntities(levelId);
-		query.setParentId(parentId);
-		
-		dispatcher.execute(query, new AsyncCallback<AdminEntityResult>() {
+    public AdminEntityProxy(Dispatcher dispatcher, int levelId) {
+        this.dispatcher = dispatcher;
+        this.levelId = levelId;
+    }
 
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
+    public void setParentAdminEntityId(Integer id) {
+        this.parentId = id;
+    }
 
-			@Override
-			public void onSuccess(AdminEntityResult result) {
-				callback.onSuccess(result);
-			}
-		});
-	}
+    @Override
+    protected void load(Object loadConfig,
+        final AsyncCallback<ListResult<AdminEntityDTO>> callback) {
+
+        GetAdminEntities query = new GetAdminEntities(levelId);
+        query.setParentId(parentId);
+
+        dispatcher.execute(query, new AsyncCallback<AdminEntityResult>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(AdminEntityResult result) {
+                callback.onSuccess(result);
+            }
+        });
+    }
 }

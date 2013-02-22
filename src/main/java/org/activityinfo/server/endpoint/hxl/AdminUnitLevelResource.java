@@ -39,35 +39,35 @@ import com.sun.jersey.api.view.Viewable;
 
 public class AdminUnitLevelResource {
 
-	private AdminLevel level;
+    private AdminLevel level;
 
-	public AdminUnitLevelResource(AdminLevel level) {
-		super();
-		this.level = level;
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable get() {
-		return new Viewable("/resource/AdminUnitLevel.ftl", level);
-	}
-	
-	@GET
-	@Path("/units")
-	@Produces(MediaType.APPLICATION_JSON)
-	public ObjectNode getUnits(@Context UriInfo uri) {
-		ArrayNode array = JsonNodeFactory.instance.arrayNode();
-		for(AdminEntity entity : level.getEntities()) {
-			ObjectNode unit = JsonNodeFactory.instance.objectNode();
-			unit.put("id", uri.getBaseUriBuilder()
-					.path(HxlResources.class)
-					.path("adminUnit")
-					.path(Integer.toString(entity.getId())).build().toString());
-			unit.put("name", entity.getName());
-			array.add(unit);
-		}
-		ObjectNode wrapper = JsonNodeFactory.instance.objectNode();
-		wrapper.put("units", array);
-		return wrapper;
-	}	
+    public AdminUnitLevelResource(AdminLevel level) {
+        super();
+        this.level = level;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable get() {
+        return new Viewable("/resource/AdminUnitLevel.ftl", level);
+    }
+
+    @GET
+    @Path("/units")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ObjectNode getUnits(@Context UriInfo uri) {
+        ArrayNode array = JsonNodeFactory.instance.arrayNode();
+        for (AdminEntity entity : level.getEntities()) {
+            ObjectNode unit = JsonNodeFactory.instance.objectNode();
+            unit.put("id", uri.getBaseUriBuilder()
+                .path(HxlResources.class)
+                .path("adminUnit")
+                .path(Integer.toString(entity.getId())).build().toString());
+            unit.put("name", entity.getName());
+            array.add(unit);
+        }
+        ObjectNode wrapper = JsonNodeFactory.instance.objectNode();
+        wrapper.put("units", array);
+        return wrapper;
+    }
 }

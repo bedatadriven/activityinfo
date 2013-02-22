@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client;
 
 /*
@@ -24,7 +22,6 @@ package org.activityinfo.client;
  * #L%
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,45 +37,42 @@ import com.extjs.gxt.ui.client.event.EventType;
 public class MockEventBus extends BaseObservable implements EventBus {
 
     public List<BaseEvent> eventLog = new ArrayList<BaseEvent>();
-    
+
     @Override
     public boolean fireEvent(EventType eventType, BaseEvent be) {
         eventLog.add(be);
         return super.fireEvent(eventType, be);
     }
 
-	@Override
-	public boolean fireEvent(BaseEvent event) {
-		return fireEvent(event.getType(), event);
-	}
+    @Override
+    public boolean fireEvent(BaseEvent event) {
+        return fireEvent(event.getType(), event);
+    }
 
     public void assertEventFired(BaseEvent event) {
-    	if(!eventLog.contains(event)) {
-    		throw new AssertionError();
-    	}
+        if (!eventLog.contains(event)) {
+            throw new AssertionError();
+        }
     }
 
     public int getEventCount(EventType type) {
         int count = 0;
-        for(BaseEvent event : eventLog) {
+        for (BaseEvent event : eventLog) {
 
-            if(event.getType() == type) {
+            if (event.getType() == type) {
                 count++;
             }
-       }
+        }
         return count;
     }
 
-
-
-
     public <T> T getLastNavigationEvent(Class<T> placeClass) {
-        for(int i=eventLog.size()-1; i>=0;i--) {
+        for (int i = eventLog.size() - 1; i >= 0; i--) {
             BaseEvent event = eventLog.get(i);
-            if(event instanceof NavigationEvent) {
-                NavigationEvent nevent = (NavigationEvent)event;
-                if(placeClass.isAssignableFrom(nevent.getPlace().getClass())) {
-                    return (T)nevent.getPlace();
+            if (event instanceof NavigationEvent) {
+                NavigationEvent nevent = (NavigationEvent) event;
+                if (placeClass.isAssignableFrom(nevent.getPlace().getClass())) {
+                    return (T) nevent.getPlace();
                 }
             }
         }
@@ -86,8 +80,9 @@ public class MockEventBus extends BaseObservable implements EventBus {
     }
 
     public void assertNotFired(EventType eventType) {
-    	if(getEventCount(eventType)!=0) {
-    		throw new AssertionError("eventType" + eventType.toString() + " has not been fired");
-    	}
+        if (getEventCount(eventType) != 0) {
+            throw new AssertionError("eventType" + eventType.toString()
+                + " has not been fired");
+        }
     }
 }

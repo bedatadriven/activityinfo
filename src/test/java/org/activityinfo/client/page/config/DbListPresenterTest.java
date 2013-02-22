@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config;
 
 /*
@@ -52,7 +50,6 @@ import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.toolbar.UIActions;
-import org.activityinfo.client.page.config.DbListPresenter;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
@@ -184,7 +181,8 @@ public class DbListPresenterTest {
         presenter.save(newDb, niceFormDialogMock());
 
         assertTrue("command was dispatched", cmd.hasCaptured());
-        assertThat((Integer)cmd.getValue().getProperties().get("countryId"), is(equalTo(31)));
+        assertThat((Integer) cmd.getValue().getProperties().get("countryId"),
+            is(equalTo(31)));
     }
 
     private FormDialogTether niceFormDialogMock() {
@@ -194,9 +192,9 @@ public class DbListPresenterTest {
     }
 
     private void captureDispatch(Capture<CreateEntity> cmd) {
-        dispatcher.execute(and(isA(CreateEntity.class), capture(cmd)), optionalMonitor(), isA(AsyncCallback.class));
+        dispatcher.execute(and(isA(CreateEntity.class), capture(cmd)),
+            optionalMonitor(), isA(AsyncCallback.class));
     }
-
 
     private void createPresenter() {
         presenter = new DbListPresenter(eventBus, dispatcher, view);
@@ -216,7 +214,7 @@ public class DbListPresenterTest {
             public Void answer() throws Throwable {
                 String actionId = (String) getCurrentArguments()[0];
                 Boolean enabled = (Boolean) getCurrentArguments()[1];
-                if(enabled) {
+                if (enabled) {
                     disabledActions.remove(actionId);
                 } else {
                     disabledActions.add(actionId);
@@ -226,9 +224,10 @@ public class DbListPresenterTest {
         }).anyTimes();
     }
 
-    private <T extends CommandResult> void expectDispatch(Command<T> command, final T result) {
+    private <T extends CommandResult> void expectDispatch(Command<T> command,
+        final T result) {
         this.dispatcher.execute(eq(command),
-                isA(AsyncCallback.class));
+            isA(AsyncCallback.class));
         expectLastCall().andAnswer(new IAnswer<Void>() {
             @Override
             public Void answer() throws Throwable {
@@ -239,7 +238,7 @@ public class DbListPresenterTest {
     }
 
     private AsyncMonitor optionalMonitor() {
-        return or(isA(AsyncMonitor.class), EasyMock.<AsyncMonitor>isNull());
+        return or(isA(AsyncMonitor.class), EasyMock.<AsyncMonitor> isNull());
     }
 
 }

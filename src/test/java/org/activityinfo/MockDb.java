@@ -1,5 +1,3 @@
-
-
 package org.activityinfo;
 
 /*
@@ -23,8 +21,6 @@ package org.activityinfo;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -52,7 +48,8 @@ public class MockDb {
         }
 
         for (Object entity : entities) {
-            if (entity.getClass().equals(entityClass) && primaryKey.equals(getId(entity))) {
+            if (entity.getClass().equals(entityClass)
+                && primaryKey.equals(getId(entity))) {
                 return entity;
             }
         }
@@ -79,10 +76,11 @@ public class MockDb {
     public <S extends DAO> S getDAO(Class<S> daoSubClass) {
         ClassLoader cl = daoSubClass.getClassLoader();
         Type daoClass = daoSubClass.getGenericInterfaces()[0];
-        Class persistentClass = (Class)((ParameterizedType) daoClass).getActualTypeArguments()[0];
-        return (S) Proxy.newProxyInstance(cl, new Class[]{daoSubClass}, new Handler(persistentClass));
+        Class persistentClass = (Class) ((ParameterizedType) daoClass)
+            .getActualTypeArguments()[0];
+        return (S) Proxy.newProxyInstance(cl, new Class[] { daoSubClass },
+            new Handler(persistentClass));
     }
-
 
     public class Handler implements InvocationHandler {
 
@@ -93,7 +91,8 @@ public class MockDb {
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
 
             if (method.getName().equals("findById")) {
                 return findById(persistentClass, args[0]);

@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.command;
 
 /*
@@ -28,13 +26,13 @@ import org.activityinfo.shared.command.result.UrlResult;
 import org.activityinfo.shared.report.model.ReportElement;
 
 /**
- *
+ * 
  * Renders a {@link org.activityinfo.shared.report.model.ReportElement} in the
  * specified format, saves the file to the server, and returns the name of the
  * temporary file that can be used to initiate a download.
- *
+ * 
  * See also: {@link org.activityinfo.server.endpoint.gwtrpc.DownloadServlet}
- *
+ * 
  * @author Alex Bertram
  */
 public class RenderElement implements Command<UrlResult> {
@@ -62,7 +60,7 @@ public class RenderElement implements Command<UrlResult> {
     }
 
     /**
-     *
+     * 
      * @return The format into which to render the element.
      */
     public Format getFormat() {
@@ -74,8 +72,8 @@ public class RenderElement implements Command<UrlResult> {
     }
 
     /**
-     *
-     * @return  The element to be rendered
+     * 
+     * @return The element to be rendered
      */
     public ReportElement getElement() {
         return element;
@@ -85,12 +83,11 @@ public class RenderElement implements Command<UrlResult> {
         this.element = element;
     }
 
-	public String getFilename() {
-		return filename;
-	}
+    public String getFilename() {
+        return filename;
+    }
 
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 }
-	

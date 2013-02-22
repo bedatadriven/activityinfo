@@ -41,71 +41,75 @@ import com.google.inject.Inject;
 
 public class HibernateExecutor extends JdbcExecutor {
 
-	
-	private final HibernateEntityManager entityManager;
-	
-	private final static Logger LOGGER = Logger.getLogger(HibernateExecutor.class.getName());
+    private final HibernateEntityManager entityManager;
 
-	@Inject
-	public HibernateExecutor(EntityManager em) {
-		this.entityManager = (HibernateEntityManager) em;
-	}
-	
-	public HibernateExecutor(HibernateEntityManager entityManager) {
-		super();
-		this.entityManager = entityManager;
-	}
+    private final static Logger LOGGER = Logger
+        .getLogger(HibernateExecutor.class.getName());
 
-	@Override
-	public SqlResultSet execute(final String statement, final Object[] params)
-			throws Exception {
-		final List<SqlResultSet> result = Lists.newArrayList();
-		entityManager.getSession().doWork(new Work() {
-			
-			@Override
-			public void execute(Connection connection) throws SQLException {
-				try {
-					if(LOGGER.isLoggable(Level.FINEST)) {
-						LOGGER.finest("Starting query: " + format(statement));
-					}
-					
-					long startTime = System.currentTimeMillis();
-					result.add(doExecute(connection, statement, params));
-					long elapsed = System.currentTimeMillis() - startTime;
-					
-					LOGGER.finest("Query complete");
-					
-					if(elapsed > 100) {
-						String formatted = format(statement);
-						LOGGER.warning("Slow query completed in " + elapsed + "ms:\n" + formatted);
-					}
-				} catch (Throwable e) {
-					LOGGER.log(Level.SEVERE, "Exception occured while executing query: " + statement, e);
-					throw new SQLException(e);
-				}
-			}
-		});
-		if(result.size() != 1) {
-			throw new AssertionError();
-		}
-		return result.get(0);
-	}
+    @Inject
+    public HibernateExecutor(EntityManager em) {
+        this.entityManager = (HibernateEntityManager) em;
+    }
 
-	@Override
-	public boolean begin() throws Exception {
-		return true;
-	}
+    public HibernateExecutor(HibernateEntityManager entityManager) {
+        super();
+        this.entityManager = entityManager;
+    }
 
-	@Override
-	public void commit() throws Exception {
-	}
+    @Override
+    public SqlResultSet execute(final String statement, final Object[] params)
+        throws Exception {
+        final List<SqlResultSet> result = Lists.newArrayList();
+        entityManager.getSession().doWork(new Work() {
 
-	@Override
-	public void rollback() throws Exception {
-		
-	}
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                try {
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.finest("Starting query: " + format(statement));
+                    }
 
-	private String format(final String statement) {
-		return FormatStyle.BASIC.getFormatter().format(statement);
-	}
+                    long startTime = System.currentTimeMillis();
+                    result.add(doExecute(connection, statement, params));
+                    long elapsed = System.currentTimeMillis() - startTime;
+
+                    LOGGER.finest("Query complete");
+
+                    if (elapsed > 100) {
+                        String formatted = format(statement);
+                        LOGGER.warning("Slow query completed in " + elapsed
+                            + "ms:\n" + formatted);
+                    }
+                } catch (Throwable e) {
+                    LOGGER
+                        .log(Level.SEVERE,
+                            "Exception occured while executing query: "
+                                + statement, e);
+                    throw new SQLException(e);
+                }
+            }
+        });
+        if (result.size() != 1) {
+            throw new AssertionError();
+        }
+        return result.get(0);
+    }
+
+    @Override
+    public boolean begin() throws Exception {
+        return true;
+    }
+
+    @Override
+    public void commit() throws Exception {
+    }
+
+    @Override
+    public void rollback() throws Exception {
+
+    }
+
+    private String format(final String statement) {
+        return FormatStyle.BASIC.getFormatter().format(statement);
+    }
 }

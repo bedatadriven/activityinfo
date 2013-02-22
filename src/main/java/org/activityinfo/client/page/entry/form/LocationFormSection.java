@@ -29,8 +29,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface LocationFormSection extends FormSection<SiteDTO> {
 
-	void updateForm(LocationDTO location, boolean isNew);
-	
-	void save(AsyncCallback<Void> callback);
+    void updateForm(LocationDTO location, boolean isNew);
+
+    void save(AsyncCallback<Void> callback);
 
 }

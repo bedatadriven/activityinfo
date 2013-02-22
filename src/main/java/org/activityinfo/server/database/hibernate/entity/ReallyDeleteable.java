@@ -27,5 +27,5 @@ package org.activityinfo.server.database.hibernate.entity;
  * deleted using a dateDeleted flag
  */
 public interface ReallyDeleteable {
-	public void deleteReferences();
+    public void deleteReferences();
 }

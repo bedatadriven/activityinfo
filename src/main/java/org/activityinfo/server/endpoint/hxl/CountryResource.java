@@ -40,45 +40,44 @@ import com.wordnik.swagger.annotations.ApiParam;
 
 @Path("/country")
 @Produces(MediaType.APPLICATION_JSON)
-@Api(value="/country", description = "Operations on countries and their geography")
+@Api(value = "/country", description = "Operations on countries and their geography")
 public class CountryResource {
-	
-	private final Provider<EntityManager> entityManager;
-	
-	@Inject
-	public CountryResource(Provider<EntityManager> entityManager) {
-		super();
-		this.entityManager = entityManager;
-	}
 
-	@GET
-	@Path("{code}")
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getPageById(@PathParam("code") String code) {
-		return new Viewable("/resource/Country.ftl", getByCode(code));
-	}
-	
-	@GET
-	@Path("{id: [0-9]+}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation("Gets the country by id")
-	public Country getById(
-			@ApiParam(value = "ID of the country to be fetched", required = true, defaultValue="1") 
-			@PathParam("id") int id) {
-		return entityManager.get().find(Country.class, id);
-	}
-	
-	@GET
-	@Path("{code: [A-Z]+}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation("Gets the country by two-letter ISO code")
-	public Country getByCode(
-			@ApiParam(value = "Code of the country to be fetched", required = true, defaultValue="CD") 
-			@PathParam("code") String code) {
-		
-		return (Country) entityManager.get().createQuery("select c from Country c where c.codeISO = :iso")
-				.setParameter("iso", code)
-				.getSingleResult();	
-	}
+    private final Provider<EntityManager> entityManager;
+
+    @Inject
+    public CountryResource(Provider<EntityManager> entityManager) {
+        super();
+        this.entityManager = entityManager;
+    }
+
+    @GET
+    @Path("{code}")
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getPageById(@PathParam("code") String code) {
+        return new Viewable("/resource/Country.ftl", getByCode(code));
+    }
+
+    @GET
+    @Path("{id: [0-9]+}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation("Gets the country by id")
+    public Country getById(
+        @ApiParam(value = "ID of the country to be fetched", required = true, defaultValue = "1") @PathParam("id") int id) {
+        return entityManager.get().find(Country.class, id);
+    }
+
+    @GET
+    @Path("{code: [A-Z]+}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation("Gets the country by two-letter ISO code")
+    public Country getByCode(
+        @ApiParam(value = "Code of the country to be fetched", required = true, defaultValue = "CD") @PathParam("code") String code) {
+
+        return (Country) entityManager.get()
+            .createQuery("select c from Country c where c.codeISO = :iso")
+            .setParameter("iso", code)
+            .getSingleResult();
+    }
 
 }

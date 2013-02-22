@@ -50,115 +50,110 @@ import org.activityinfo.client.mvp.CanUpdate.UpdateEvent;
 import org.activityinfo.client.mvp.CanUpdate.UpdateHandler;
 import org.activityinfo.shared.dto.DTO;
 
-public class ListPresenterBase
-		<M extends DTO, 
-		 L extends List<M>, 
-		 P extends DTO, 
-		 V extends CrudView<M, P>> 
-	extends 
-		PresenterBase<V, M>
-	implements 
-		UpdateHandler,
-		CancelUpdateHandler,
-		ConfirmDeleteHandler,
-		CreateHandler,
-		FilterHandler,
-		RefreshHandler,
-		RequestDeleteHandler, 
-		StartCreateHandler, 
-		CancelCreateHandler, 
-		RequestUpdateHandler, 
-		CancelDeleteHandler
-	{
-	
-	protected P parentModel;
+public class ListPresenterBase<M extends DTO, L extends List<M>, P extends DTO, V extends CrudView<M, P>>
+    extends
+    PresenterBase<V, M>
+    implements
+    UpdateHandler,
+    CancelUpdateHandler,
+    ConfirmDeleteHandler,
+    CreateHandler,
+    FilterHandler,
+    RefreshHandler,
+    RequestDeleteHandler,
+    StartCreateHandler,
+    CancelCreateHandler,
+    RequestUpdateHandler,
+    CancelDeleteHandler {
 
-	public ListPresenterBase(Dispatcher service, EventBus eventBus, V view) {
-		super(service, eventBus, view);
-	}
+    protected P parentModel;
 
-	@Override
-	protected void addListeners() {
-		// Create
-		view.addStartCreateHandler(this);
-		view.addCancelCreateHandler(this);
-		view.addCreateHandler(this);
+    public ListPresenterBase(Dispatcher service, EventBus eventBus, V view) {
+        super(service, eventBus, view);
+    }
 
-		// Update
-		view.addRequestUpdateHandler(this);
-		view.addCancelUpdateHandler(this);
-		view.addUpdateHandler(this);
+    @Override
+    protected void addListeners() {
+        // Create
+        view.addStartCreateHandler(this);
+        view.addCancelCreateHandler(this);
+        view.addCreateHandler(this);
 
-		// Delete
-		view.addRequestDeleteHandler(this);
-		view.addCancelDeleteHandler(this);
-		view.addConfirmDeleteHandler(this);
+        // Update
+        view.addRequestUpdateHandler(this);
+        view.addCancelUpdateHandler(this);
+        view.addUpdateHandler(this);
 
-		view.addFilterHandler(this);
-		view.addRefreshHandler(this);
-	}
+        // Delete
+        view.addRequestDeleteHandler(this);
+        view.addCancelDeleteHandler(this);
+        view.addConfirmDeleteHandler(this);
 
-	@Override
-	public void onRequestDelete(RequestDeleteEvent deleteEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+        view.addFilterHandler(this);
+        view.addRefreshHandler(this);
+    }
 
-	@Override
-	public void onRefresh(RefreshEvent refreshEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void onRequestDelete(RequestDeleteEvent deleteEvent) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void onFilter(FilterEvent filterEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void onCreate(CreateEvent createEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void onRefresh(RefreshEvent refreshEvent) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void onConfirmDelete(ConfirmDeleteEvent deleteEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void onCancelUpdate(CancelUpdateEvent updateEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void onFilter(FilterEvent filterEvent) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void onUpdate(UpdateEvent updateEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void onCancelDelete(CancelDeleteEvent cancelDeleteEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void onCreate(CreateEvent createEvent) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void onRequestUpdate(RequestUpdateEvent requestUpdateEvent) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void onCancelCreate(CancelCreateEvent createEvent) {
-		view.cancelCreate();
-	}
+    @Override
+    public void onConfirmDelete(ConfirmDeleteEvent deleteEvent) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void onStartCreate(StartCreateEvent createEvent) {
-		view.startCreate();
-	}
+    }
+
+    @Override
+    public void onCancelUpdate(CancelUpdateEvent updateEvent) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onUpdate(UpdateEvent updateEvent) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onCancelDelete(CancelDeleteEvent cancelDeleteEvent) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onRequestUpdate(RequestUpdateEvent requestUpdateEvent) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onCancelCreate(CancelCreateEvent createEvent) {
+        view.cancelCreate();
+    }
+
+    @Override
+    public void onStartCreate(StartCreateEvent createEvent) {
+        view.startCreate();
+    }
 }

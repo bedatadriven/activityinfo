@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.dispatch;
 
 /*
@@ -36,14 +34,16 @@ import com.google.inject.Singleton;
  * Configures and provides the RemoteCommandServiceAsync instance
  */
 @Singleton
-public class RemoteServiceProvider implements Provider<RemoteCommandServiceAsync> {
+public class RemoteServiceProvider implements
+    Provider<RemoteCommandServiceAsync> {
 
+    @Override
     public RemoteCommandServiceAsync get() {
         RemoteCommandServiceAsync remoteService = (RemoteCommandServiceAsync)
-                GWT.create(RemoteCommandService.class);
-		ServiceDefTarget endpoint = (ServiceDefTarget) remoteService;
-		String moduleRelativeURL = GWT.getModuleBaseURL() + "cmd";
-		endpoint.setServiceEntryPoint(moduleRelativeURL);
+            GWT.create(RemoteCommandService.class);
+        ServiceDefTarget endpoint = (ServiceDefTarget) remoteService;
+        String moduleRelativeURL = GWT.getModuleBaseURL() + "cmd";
+        endpoint.setServiceEntryPoint(moduleRelativeURL);
         return remoteService;
     }
 }

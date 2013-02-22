@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page;
 
 /*
@@ -26,7 +24,7 @@ package org.activityinfo.client.page;
 
 /**
  * Uniquely identifies a page within the application.
- *
+ * 
  * @author Alex Bertram (akbertram@gmail.com)
  */
 public class PageId {

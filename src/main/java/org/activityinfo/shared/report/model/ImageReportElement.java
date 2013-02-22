@@ -34,28 +34,26 @@ import org.activityinfo.shared.report.content.NullContent;
  * Defines an external, static image to be included in the report
  * 
  */
-public class ImageReportElement extends ReportElement<NullContent>{
-	
-	private String url;
+public class ImageReportElement extends ReportElement<NullContent> {
 
-	
-	/**
-	 * 
-	 * @return the URL of the image to include in the report
-	 */
-	@XmlElement
-	public String getUrl() {
-		return url;
-	}
+    private String url;
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    /**
+     * 
+     * @return the URL of the image to include in the report
+     */
+    @XmlElement
+    public String getUrl() {
+        return url;
+    }
 
-	@Override
-	public Set<Integer> getIndicators() {
-		return Collections.emptySet();
-	}
-	
-	
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public Set<Integer> getIndicators() {
+        return Collections.emptySet();
+    }
+
 }

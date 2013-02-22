@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -94,58 +92,59 @@ public class MapContent implements Content {
     }
 
     public AiLatLng getCenter() {
-		return center;
-	}
+        return center;
+    }
 
-	public void setCenter(AiLatLng center) {
-		this.center = center;
-	}
+    public void setCenter(AiLatLng center) {
+        this.center = center;
+    }
 
-	public void setBaseMap(BaseMap baseMap) {
+    public void setBaseMap(BaseMap baseMap) {
         this.baseMap = baseMap;
     }
 
     public Set<IndicatorDTO> getIndicators() {
-		return indicators;
-	}
+        return indicators;
+    }
 
-	public void setIndicators(Set<IndicatorDTO> indicators) {
-		this.indicators = indicators;
-	}
-	
-	public IndicatorDTO getIndicatorById(int indicatorId) {
-		for (IndicatorDTO indicator : indicators) {
-			if (indicator.getId() ==  indicatorId) {
-				return indicator;
-			}
-		}
-		return null;
-	}
+    public void setIndicators(Set<IndicatorDTO> indicators) {
+        this.indicators = indicators;
+    }
 
-	public List<MapLayerLegend> getLegends() {
-		return legends;
-	}
+    public IndicatorDTO getIndicatorById(int indicatorId) {
+        for (IndicatorDTO indicator : indicators) {
+            if (indicator.getId() == indicatorId) {
+                return indicator;
+            }
+        }
+        return null;
+    }
 
-	public void setLegends(List<MapLayerLegend> legends) {
-		this.legends = legends;
-	}
-	
-	public void addLegend(MapLayerLegend legend) {
-		this.legends.add(legend);
-	}
-	
-	public List<AdminOverlay> getAdminOverlays() {
-		return adminOverlays;
-	}
+    public List<MapLayerLegend> getLegends() {
+        return legends;
+    }
 
-	public void setAdminOverlays(List<AdminOverlay> adminOverlays) {
-		this.adminOverlays = adminOverlays;
-	}
+    public void setLegends(List<MapLayerLegend> legends) {
+        this.legends = legends;
+    }
 
-	public Map<Integer, String> siteLabelMap() {
+    public void addLegend(MapLayerLegend legend) {
+        this.legends.add(legend);
+    }
+
+    public List<AdminOverlay> getAdminOverlays() {
+        return adminOverlays;
+    }
+
+    public void setAdminOverlays(List<AdminOverlay> adminOverlays) {
+        this.adminOverlays = adminOverlays;
+    }
+
+    public Map<Integer, String> siteLabelMap() {
         Map<Integer, String> map = new HashMap<Integer, String>();
-        for(MapMarker marker : getMarkers()) {
-            if(marker instanceof BubbleMapMarker && ((BubbleMapMarker) marker).getLabel() != null) {
+        for (MapMarker marker : getMarkers()) {
+            if (marker instanceof BubbleMapMarker
+                && ((BubbleMapMarker) marker).getLabel() != null) {
                 for (Integer siteId : marker.getSiteIds()) {
                     map.put(siteId, ((BubbleMapMarker) marker).getLabel());
                 }
@@ -154,12 +153,12 @@ public class MapContent implements Content {
         return map;
     }
 
-	public Extents getExtents() {
-		return extents;
-	}
+    public Extents getExtents() {
+        return extents;
+    }
 
-	public void setExtents(Extents extents) {
-		this.extents = extents;
-	}
-	
+    public void setExtents(Extents extents) {
+        this.extents = extents;
+    }
+
 }

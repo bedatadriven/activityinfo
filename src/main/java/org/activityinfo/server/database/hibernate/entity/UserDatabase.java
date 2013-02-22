@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.database.hibernate.entity;
 
 /*
@@ -57,15 +55,16 @@ import javax.persistence.Transient;
  */
 @Entity
 @org.hibernate.annotations.FilterDefs({
-        @org.hibernate.annotations.FilterDef(name = "userVisible", parameters = { @org.hibernate.annotations.ParamDef(name = "currentUserId", type = "int") }),
-        @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
+    @org.hibernate.annotations.FilterDef(name = "userVisible", parameters = { @org.hibernate.annotations.ParamDef(name = "currentUserId", type = "int") }),
+    @org.hibernate.annotations.FilterDef(name = "hideDeleted") })
 @org.hibernate.annotations.Filters({
-        @org.hibernate.annotations.Filter(name = "userVisible", condition = "(:currentUserId = OwnerUserId  "
-                + "or :currentUserId in (select p.UserId from userpermission p " 
-                + "where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))"),
-        @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
+    @org.hibernate.annotations.Filter(name = "userVisible", condition = "(:currentUserId = OwnerUserId  "
+        + "or :currentUserId in (select p.UserId from userpermission p "
+        + "where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))"),
+    @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 @NamedQuery(name = "queryAllUserDatabasesAlphabetically", query = "select db from UserDatabase db order by db.name")
-public class UserDatabase implements java.io.Serializable, Deleteable, SchemaElement {
+public class UserDatabase implements java.io.Serializable, Deleteable,
+    SchemaElement {
 
     private static final long serialVersionUID = 7405094318163898712L;
 
@@ -301,7 +300,8 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
         if (!permission.isAllowManageUsers()) {
             return false;
         }
-        if (!permission.isAllowManageAllUsers() && permission.getPartner().getId() != partner.getId()) {
+        if (!permission.isAllowManageAllUsers()
+            && permission.getPartner().getId() != partner.getId()) {
             return false;
         }
 
@@ -316,7 +316,8 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      */
     public UserPermission getPermissionByUser(User user) {
         for (UserPermission perm : this.getUserPermissions()) {
-            if (perm.getUser().getId() == user.getId() || perm.getUser().equals(user)) {
+            if (perm.getUser().getId() == user.getId()
+                || perm.getUser().equals(user)) {
                 return perm;
             }
         }
@@ -358,6 +359,7 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
      * Marks this database as deleted. (Though the row is not removed from the
      * database)
      */
+    @Override
     public void delete() {
         Date now = new Date();
         setDateDeleted(now);
@@ -387,14 +389,14 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
     }
 
     public long getVersion() {
-		return version;
-	}
+        return version;
+    }
 
-	public void setVersion(long version) {
-		this.version = version;
-	}
+    public void setVersion(long version) {
+        this.version = version;
+    }
 
-	/**
+    /**
      * Sets the timestamp on which the structure of the database (activities,
      * indicateurs, etc was last modified.
      * 
@@ -404,30 +406,30 @@ public class UserDatabase implements java.io.Serializable, Deleteable, SchemaEle
         this.version = lastSchemaUpdate.getTime();
     }
 
-	public void setProjects(Set<Project> projects) {
-		this.projects = projects;
-	}
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="userDatabase")
-	public Set<Project> getProjects() {
-		return projects;
-	}
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userDatabase")
+    public Set<Project> getProjects() {
+        return projects;
+    }
 
-	public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
-		this.lockedPeriods = lockedPeriods;
-	}
+    public void setLockedPeriods(Set<LockedPeriod> lockedPeriods) {
+        this.lockedPeriods = lockedPeriods;
+    }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="userDatabase")
-	public Set<LockedPeriod> getLockedPeriods() {
-		return lockedPeriods;
-	}
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userDatabase")
+    public Set<LockedPeriod> getLockedPeriods() {
+        return lockedPeriods;
+    }
 
-	public void setTargets(Set<Target> targets) {
-		this.targets = targets;
-	}
+    public void setTargets(Set<Target> targets) {
+        this.targets = targets;
+    }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="userDatabase")
-	public Set<Target> getTargets() {
-		return targets;
-	}
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userDatabase")
+    public Set<Target> getTargets() {
+        return targets;
+    }
 }

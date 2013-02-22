@@ -40,33 +40,38 @@ import org.activityinfo.shared.report.model.PivotReportElement;
 
 public class PivotTableDataBuilder {
 
+    public PivotTableData build(PivotReportElement<?> element,
+        List<Dimension> rowDims,
+        List<Dimension> colDims, List<Bucket> buckets) {
 
-	public PivotTableData build(PivotReportElement<?> element, List<Dimension> rowDims,
-			List<Dimension> colDims, List<Bucket> buckets) {
-		
-		PivotTableData table = new PivotTableData();
+        PivotTableData table = new PivotTableData();
         Map<Dimension, Comparator<PivotTableData.Axis>> comparators =
-                createComparators(element.allDimensions());
+            createComparators(element.allDimensions());
 
         for (Bucket bucket : buckets) {
 
-            PivotTableData.Axis column = colDims.isEmpty() ? table.getRootColumn() :
-                    find(table.getRootColumn(), colDims.iterator(), comparators, bucket);
+            PivotTableData.Axis column = colDims.isEmpty() ? table
+                .getRootColumn() :
+                find(table.getRootColumn(), colDims.iterator(), comparators,
+                    bucket);
             PivotTableData.Axis row = rowDims.isEmpty() ? table.getRootRow() :
-                    find(table.getRootRow(), rowDims.iterator(), comparators, bucket);
+                find(table.getRootRow(), rowDims.iterator(), comparators,
+                    bucket);
 
             row.setValue(column, bucket.doubleValue());
         }
         return table;
-	}
+    }
 
-    protected Map<Dimension, Comparator<PivotTableData.Axis>> createComparators(Set<Dimension> dimensions) {
+    protected Map<Dimension, Comparator<PivotTableData.Axis>> createComparators(
+        Set<Dimension> dimensions) {
         Map<Dimension, Comparator<PivotTableData.Axis>> map =
-                new HashMap<Dimension, Comparator<PivotTableData.Axis>>();
+            new HashMap<Dimension, Comparator<PivotTableData.Axis>>();
 
         for (Dimension dimension : dimensions) {
             if (dimension.isOrderDefined()) {
-                map.put(dimension, new DefinedCategoryComparator(dimension.getOrdering()));
+                map.put(dimension,
+                    new DefinedCategoryComparator(dimension.getOrdering()));
             } else {
                 map.put(dimension, new CategoryComparator());
             }
@@ -74,9 +79,10 @@ public class PivotTableDataBuilder {
         return map;
     }
 
-    protected PivotTableData.Axis find(PivotTableData.Axis axis, Iterator<Dimension> dimensionIterator,
-                                       Map<Dimension, Comparator<PivotTableData.Axis>> comparators,
-                                       Bucket result) {
+    protected PivotTableData.Axis find(PivotTableData.Axis axis,
+        Iterator<Dimension> dimensionIterator,
+        Map<Dimension, Comparator<PivotTableData.Axis>> comparators,
+        Bucket result) {
 
         Dimension childDimension = dimensionIterator.next();
         DimensionCategory category = result.getCategory(childDimension);
@@ -86,19 +92,19 @@ public class PivotTableDataBuilder {
         if (child == null) {
 
             String categoryLabel;
-            if(category == null) {
-            	categoryLabel = I18N.CONSTANTS.emptyDimensionCategory();
+            if (category == null) {
+                categoryLabel = I18N.CONSTANTS.emptyDimensionCategory();
             } else {
-            	categoryLabel = childDimension.getLabel(category);
-	            if (categoryLabel == null) {
-	                categoryLabel = category.getLabel();
-	            }
+                categoryLabel = childDimension.getLabel(category);
+                if (categoryLabel == null) {
+                    categoryLabel = category.getLabel();
+                }
             }
-           
+
             child = axis.addChild(childDimension,
-                    result.getCategory(childDimension),
-                    categoryLabel,
-                    comparators.get(childDimension));
+                result.getCategory(childDimension),
+                categoryLabel,
+                comparators.get(childDimension));
 
         }
         if (dimensionIterator.hasNext()) {

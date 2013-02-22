@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report.generator.map;
 
 /*
@@ -36,8 +34,9 @@ public class FixedRadiiCalculator implements RadiiCalculator {
         this.radius = radius;
     }
 
+    @Override
     public void calculate(List<Cluster> clusters) {
-        for(Cluster cluster : clusters) {
+        for (Cluster cluster : clusters) {
             cluster.setRadius(radius);
         }
     }

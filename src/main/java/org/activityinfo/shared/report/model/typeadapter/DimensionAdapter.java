@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model.typeadapter;
 
 /*
@@ -43,7 +41,8 @@ import org.activityinfo.shared.report.model.DimensionType;
 /**
  * @author Alex Bertram
  */
-public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionElement, Dimension>  {
+public class DimensionAdapter extends
+    XmlAdapter<DimensionAdapter.DimensionElement, Dimension> {
 
     public static class CategoryElement {
         @XmlAttribute(required = true)
@@ -66,46 +65,51 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
 
         @XmlAttribute
         private String dateUnit;
-        
+
         @XmlAttribute
         private Integer attributeGroupId;
 
-        @XmlElement(name="category")
-        private List<CategoryElement> categories = new ArrayList<CategoryElement>(0);
+        @XmlElement(name = "category")
+        private List<CategoryElement> categories = new ArrayList<CategoryElement>(
+            0);
     }
 
     private Dimension createDim(DimensionElement element) {
-         if("admin".equals(element.type)) {
+        if ("admin".equals(element.type)) {
             return new AdminDimension(element.levelId);
-         } else if("date".equals(element.type)) {
-             return new DateDimension(findEnumValue(DateUnit.values(), element.dateUnit));
-         } else if("attribute".equals(element.type)) {
-        	 return new AttributeGroupDimension(element.attributeGroupId);
-         } else {
-            return new Dimension(findEnumValue(DimensionType.values(), element.type));
+        } else if ("date".equals(element.type)) {
+            return new DateDimension(findEnumValue(DateUnit.values(),
+                element.dateUnit));
+        } else if ("attribute".equals(element.type)) {
+            return new AttributeGroupDimension(element.attributeGroupId);
+        } else {
+            return new Dimension(findEnumValue(DimensionType.values(),
+                element.type));
         }
     }
 
     private <T extends Enum<T>> T findEnumValue(T[] values, String text) {
-        for(T value : values) {
-            if(value.toString().equalsIgnoreCase(text)) {
+        for (T value : values) {
+            if (value.toString().equalsIgnoreCase(text)) {
                 return value;
             }
         }
-        throw new IllegalArgumentException("'" + text + "' is not a member of " + values[0].getClass().getName());
+        throw new IllegalArgumentException("'" + text + "' is not a member of "
+            + values[0].getClass().getName());
     }
 
     @Override
     public Dimension unmarshal(DimensionElement element) {
         Dimension dim = createDim(element);
 
-        for(CategoryElement category : element.categories) {
-           CategoryProperties props = new CategoryProperties();
-           props.setLabel(category.label);
-            if(category.color != null) {
+        for (CategoryElement category : element.categories) {
+            CategoryProperties props = new CategoryProperties();
+            props.setLabel(category.label);
+            if (category.color != null) {
                 props.setColor(decodeColor(category.color));
             }
-            EntityCategory entityCategory = new EntityCategory(Integer.parseInt(category.name));
+            EntityCategory entityCategory = new EntityCategory(
+                Integer.parseInt(category.name));
             dim.getCategories().put(entityCategory, props);
             dim.getOrdering().add(entityCategory);
         }
@@ -114,26 +118,28 @@ public class DimensionAdapter extends XmlAdapter<DimensionAdapter.DimensionEleme
     }
 
     private int decodeColor(String color) {
-        if(color.startsWith("#")) {
-            return Integer.parseInt(color.substring(1),16);
+        if (color.startsWith("#")) {
+            return Integer.parseInt(color.substring(1), 16);
         } else {
             return Integer.parseInt(color, 16);
         }
     }
 
     @Override
-    public DimensionElement marshal(Dimension dim)  {
+    public DimensionElement marshal(Dimension dim) {
         DimensionElement element = new DimensionElement();
         element.type = dim.getType().toString();
-        if(dim instanceof AdminDimension) {
+        if (dim instanceof AdminDimension) {
             element.type = "admin";
             element.levelId = ((AdminDimension) dim).getLevelId();
-        } else if(dim instanceof DateDimension) {
+        } else if (dim instanceof DateDimension) {
             element.type = "date";
-            element.dateUnit = ((DateDimension) dim).getUnit().toString().toLowerCase();
-        } else if(dim instanceof AttributeGroupDimension){
-        	element.type = "attribute";
-        	element.attributeGroupId = ((AttributeGroupDimension) dim).getAttributeGroupId();
+            element.dateUnit = ((DateDimension) dim).getUnit().toString()
+                .toLowerCase();
+        } else if (dim instanceof AttributeGroupDimension) {
+            element.type = "attribute";
+            element.attributeGroupId = ((AttributeGroupDimension) dim)
+                .getAttributeGroupId();
         }
         return element;
     }

@@ -37,36 +37,37 @@ import org.junit.Test;
 
 public class PiechartMapLayerGeneratorTest {
 
-	@Test
-	public void testSomething() {
-		SiteDTO siteData = new SiteDTO();
-		siteData.setId(42);
-		siteData.setX(15.0);
-		siteData.setY(0.0);
-		siteData.setIndicatorValue(1, 50.0);
-		siteData.setIndicatorValue(2, 10.0);
-		siteData.setIndicatorValue(3, 20.0);
-		siteData.setIndicatorValue(4, 40.0);
-		
-		PiechartMapLayer pcml = new PiechartMapLayer();
-		pcml.setMinRadius(10);
-		pcml.setMaxRadius(50);
-		pcml.addIndicatorId(1);
-		pcml.addIndicatorId(2);
-		pcml.addIndicatorId(3);
-		pcml.addIndicatorId(4);
-		pcml.setClustering(new NoClustering());
-		
-		TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
+    @Test
+    public void testSomething() {
+        SiteDTO siteData = new SiteDTO();
+        siteData.setId(42);
+        siteData.setX(15.0);
+        siteData.setY(0.0);
+        siteData.setIndicatorValue(1, 50.0);
+        siteData.setIndicatorValue(2, 10.0);
+        siteData.setIndicatorValue(3, 20.0);
+        siteData.setIndicatorValue(4, 40.0);
 
-		PiechartLayerGenerator gen = new PiechartLayerGenerator(pcml);
-		gen.setSites(Arrays.asList(siteData));
-		
-		MapContent mc = new MapContent(); 
-		
-		gen.generate(map, mc);
-		
-		assertThat(mc.getMarkers().size(), equalTo(1));
-		assertThat(((PieMapMarker)mc.getMarkers().get(0)).getSlices().size(), equalTo(4));
-	}
+        PiechartMapLayer pcml = new PiechartMapLayer();
+        pcml.setMinRadius(10);
+        pcml.setMaxRadius(50);
+        pcml.addIndicatorId(1);
+        pcml.addIndicatorId(2);
+        pcml.addIndicatorId(3);
+        pcml.addIndicatorId(4);
+        pcml.setClustering(new NoClustering());
+
+        TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
+
+        PiechartLayerGenerator gen = new PiechartLayerGenerator(pcml);
+        gen.setSites(Arrays.asList(siteData));
+
+        MapContent mc = new MapContent();
+
+        gen.generate(map, mc);
+
+        assertThat(mc.getMarkers().size(), equalTo(1));
+        assertThat(((PieMapMarker) mc.getMarkers().get(0)).getSlices().size(),
+            equalTo(4));
+    }
 }

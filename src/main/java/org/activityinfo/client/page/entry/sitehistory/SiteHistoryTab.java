@@ -43,68 +43,84 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SiteHistoryTab extends TabItem {
 
-	private final Html content;
-	private final Dispatcher dispatcher;
-	
-	public SiteHistoryTab(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-		
-		this.setScrollMode(Scroll.AUTO);
-		
-		setText(I18N.CONSTANTS.history());
-		
-		content = new Html();
-		content.setStyleName("details");
-		add(content);
-	}
-	
-	// retrieve all needed data: sitehistoryresult, schema, and locations
-	public void setSite(final SiteDTO site) {
-		renderLoading();
-		
-		dispatcher.execute(new GetSiteHistory(site.getId()), new AsyncCallback<GetSiteHistoryResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				renderNotAvailable(site);
-			}
-			@Override
-			public void onSuccess(final GetSiteHistoryResult historyResult) {
-				if (historyResult.hasHistories()) {
-					dispatcher.execute(new GetLocations(historyResult.collectLocationIds()), new AsyncCallback<GetLocationsResult>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							renderNotAvailable(site);
-						}
-						@Override
-						public void onSuccess(final GetLocationsResult locationsResult) {
-							dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-								@Override
-								public void onFailure(Throwable caught) {
-									renderNotAvailable(site);
-								}
-								@Override
-								public void onSuccess(SchemaDTO schema) {
-									render(schema, locationsResult.getLocations(), site, historyResult.getSiteHistories());
-								}
-							});
-						}
-					});
-				} else {
-					renderNotAvailable(site);
-				}
-			}
-		});
-	}
-	
-	private void render(final SchemaDTO schema, final List<LocationDTO> locations, final SiteDTO site, final List<SiteHistoryDTO> histories) {
-		content.setHtml(new SiteHistoryRenderer().render(schema, locations, site, histories));
-	}
+    private final Html content;
+    private final Dispatcher dispatcher;
 
-	private void renderNotAvailable(final SiteDTO site) {
-		content.setHtml(new SiteHistoryRenderer().renderNotAvailable(site));
-	}
+    public SiteHistoryTab(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
 
-	private void renderLoading() {
-		content.setHtml(new SiteHistoryRenderer().renderLoading());
-	}
+        this.setScrollMode(Scroll.AUTO);
+
+        setText(I18N.CONSTANTS.history());
+
+        content = new Html();
+        content.setStyleName("details");
+        add(content);
+    }
+
+    // retrieve all needed data: sitehistoryresult, schema, and locations
+    public void setSite(final SiteDTO site) {
+        renderLoading();
+
+        dispatcher.execute(new GetSiteHistory(site.getId()),
+            new AsyncCallback<GetSiteHistoryResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    renderNotAvailable(site);
+                }
+
+                @Override
+                public void onSuccess(final GetSiteHistoryResult historyResult) {
+                    if (historyResult.hasHistories()) {
+                        dispatcher.execute(
+                            new GetLocations(historyResult.collectLocationIds()),
+                            new AsyncCallback<GetLocationsResult>() {
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    renderNotAvailable(site);
+                                }
+
+                                @Override
+                                public void onSuccess(
+                                    final GetLocationsResult locationsResult) {
+                                    dispatcher.execute(new GetSchema(),
+                                        new AsyncCallback<SchemaDTO>() {
+                                            @Override
+                                            public void onFailure(
+                                                Throwable caught) {
+                                                renderNotAvailable(site);
+                                            }
+
+                                            @Override
+                                            public void onSuccess(
+                                                SchemaDTO schema) {
+                                                render(schema, locationsResult
+                                                    .getLocations(), site,
+                                                    historyResult
+                                                        .getSiteHistories());
+                                            }
+                                        });
+                                }
+                            });
+                    } else {
+                        renderNotAvailable(site);
+                    }
+                }
+            });
+    }
+
+    private void render(final SchemaDTO schema,
+        final List<LocationDTO> locations, final SiteDTO site,
+        final List<SiteHistoryDTO> histories) {
+        content.setHtml(new SiteHistoryRenderer().render(schema, locations,
+            site, histories));
+    }
+
+    private void renderNotAvailable(final SiteDTO site) {
+        content.setHtml(new SiteHistoryRenderer().renderNotAvailable(site));
+    }
+
+    private void renderLoading() {
+        content.setHtml(new SiteHistoryRenderer().renderLoading());
+    }
 }

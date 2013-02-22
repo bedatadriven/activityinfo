@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.model;
 
 /*
@@ -43,13 +41,13 @@ import org.activityinfo.shared.report.model.typeadapter.DimensionAdapter;
 @XmlJavaTypeAdapter(DimensionAdapter.class)
 public class Dimension implements Serializable {
 
-	public static final Dimension TARGET = new Dimension(DimensionType.Target);
+    public static final Dimension TARGET = new Dimension(DimensionType.Target);
 
     private DimensionType type;
     private String color;
 
     private Map<DimensionCategory, CategoryProperties> categories =
-            new HashMap<DimensionCategory, CategoryProperties>(0);
+        new HashMap<DimensionCategory, CategoryProperties>(0);
 
     private List<DimensionCategory> ordering = new ArrayList<DimensionCategory>();
 
@@ -80,7 +78,8 @@ public class Dimension implements Serializable {
     }
 
     /**
-     * @return The model-supplied (i.e. specified in the XML) category order of this dimension.
+     * @return The model-supplied (i.e. specified in the XML) category order of
+     *         this dimension.
      */
     @XmlTransient
     public List<DimensionCategory> getOrdering() {
@@ -93,8 +92,8 @@ public class Dimension implements Serializable {
 
     /**
      * @param category
-     * @return The model-supplied (i.e. specified in the XML) category label for a given category
-     *         in this dimension
+     * @return The model-supplied (i.e. specified in the XML) category label for
+     *         a given category in this dimension
      */
     public String getLabel(DimensionCategory category) {
         CategoryProperties props = categories.get(category);
@@ -106,20 +105,21 @@ public class Dimension implements Serializable {
         return categories;
     }
 
-    public void setCategories(Map<DimensionCategory, CategoryProperties> categories) {
+    public void setCategories(
+        Map<DimensionCategory, CategoryProperties> categories) {
         this.categories = categories;
     }
 
     /**
      * Adds a model supplied label for a given category in this dimension
-     *
+     * 
      * @param category
      * @param props
      */
-    public void setProperties(DimensionCategory category, CategoryProperties props) {
+    public void setProperties(DimensionCategory category,
+        CategoryProperties props) {
         categories.put(category, props);
     }
-
 
     public void setProperties(int id, CategoryProperties props) {
         categories.put(new EntityCategory(id), props);

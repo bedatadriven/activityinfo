@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.command.handler;
 
 /*
@@ -37,15 +35,16 @@ import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.json.JSONException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegionUpdates> {
+public class GetSyncRegionUpdatesHandler implements
+    CommandHandler<GetSyncRegionUpdates> {
 
-	private static final Logger LOGGER = Logger.getLogger(GetSyncRegionsHandler.class.getName());
-	
+    private static final Logger LOGGER = Logger
+        .getLogger(GetSyncRegionsHandler.class.getName());
+
     private final Injector injector;
 
     @Inject
@@ -54,29 +53,32 @@ public class GetSyncRegionUpdatesHandler implements CommandHandler<GetSyncRegion
     }
 
     @Override
-    public CommandResult execute(GetSyncRegionUpdates cmd, User user) throws CommandException {
+    public CommandResult execute(GetSyncRegionUpdates cmd, User user)
+        throws CommandException {
 
-    	Log.info("Fetching updates for " + cmd.getRegionId() + ", localVersion = " + cmd.getLocalVersion());
-    	
+        Log.info("Fetching updates for " + cmd.getRegionId()
+            + ", localVersion = " + cmd.getLocalVersion());
+
         UpdateBuilder builder;
 
-        if(cmd.getRegionId().equals("schema")) {
+        if (cmd.getRegionId().equals("schema")) {
             builder = injector.getInstance(SchemaUpdateBuilder.class);
 
-        } else if(cmd.getRegionId().startsWith("admin/")) {
+        } else if (cmd.getRegionId().startsWith("admin/")) {
             builder = injector.getInstance(AdminUpdateBuilder.class);
 
-        } else if(cmd.getRegionId().startsWith("location/")) {
+        } else if (cmd.getRegionId().startsWith("location/")) {
             builder = injector.getInstance(LocationUpdateBuilder.class);
 
-        } else if(cmd.getRegionId().startsWith("site/")) {
+        } else if (cmd.getRegionId().startsWith("site/")) {
             builder = injector.getInstance(SiteUpdateBuilder.class);
 
-        } else if(cmd.getRegionId().equals("site-tables")) {
+        } else if (cmd.getRegionId().equals("site-tables")) {
             builder = injector.getInstance(SiteTableUpdateBuilder.class);
 
         } else {
-            throw new CommandException("Unknown sync region: " + cmd.getRegionId());
+            throw new CommandException("Unknown sync region: "
+                + cmd.getRegionId());
         }
 
         try {

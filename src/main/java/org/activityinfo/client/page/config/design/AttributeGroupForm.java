@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.client.page.config.design;
 
 /*
@@ -23,7 +21,6 @@ package org.activityinfo.client.page.config.design;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.widget.MappingComboBox;
@@ -60,7 +57,8 @@ class AttributeGroupForm extends AbstractDesignForm {
         typeField.add(true, I18N.CONSTANTS.multipleChoice());
         typeField.add(false, I18N.CONSTANTS.singleChoice());
         typeField.setFieldLabel(I18N.CONSTANTS.choiceType());
-        binding.addFieldBinding(new MappingComboBoxBinding(typeField, "multipleAllowed"));
+        binding.addFieldBinding(new MappingComboBoxBinding(typeField,
+            "multipleAllowed"));
         add(typeField);
     }
 

@@ -36,35 +36,34 @@ import org.activityinfo.shared.report.model.labeling.LatinAlphaSequence;
 
 public abstract class PointMapLayer extends AbstractMapLayer {
 
-	private LabelSequence labelSequence;
-	private Clustering clustering = new NoClustering();
-	
+    private LabelSequence labelSequence;
+    private Clustering clustering = new NoClustering();
 
-	@XmlElementRefs({ @XmlElementRef(type = ArabicNumberSequence.class),
-			@XmlElementRef(type = LatinAlphaSequence.class) })
-	public LabelSequence getLabelSequence() {
-		return labelSequence;
-	}
-	
-	public void setLabelSequence(LabelSequence labelSequence) {
-		this.labelSequence = labelSequence;
-	}
+    @XmlElementRefs({ @XmlElementRef(type = ArabicNumberSequence.class),
+        @XmlElementRef(type = LatinAlphaSequence.class) })
+    public LabelSequence getLabelSequence() {
+        return labelSequence;
+    }
 
-	@XmlTransient
-	public boolean isClustered() {
-	    return clustering.isClustered();
-	}
+    public void setLabelSequence(LabelSequence labelSequence) {
+        this.labelSequence = labelSequence;
+    }
 
-	@XmlElementRefs({
-			@XmlElementRef(type = AdministrativeLevelClustering.class),
-			@XmlElementRef(type = NoClustering.class),
-			@XmlElementRef(type = AutomaticClustering.class) })
-	public Clustering getClustering() {
-		return clustering;
-	}
+    @XmlTransient
+    public boolean isClustered() {
+        return clustering.isClustered();
+    }
 
-	public void setClustering(Clustering clustering) {
-		this.clustering = clustering;
-	}
+    @XmlElementRefs({
+        @XmlElementRef(type = AdministrativeLevelClustering.class),
+        @XmlElementRef(type = NoClustering.class),
+        @XmlElementRef(type = AutomaticClustering.class) })
+    public Clustering getClustering() {
+        return clustering;
+    }
+
+    public void setClustering(Clustering clustering) {
+        this.clustering = clustering;
+    }
 
 }

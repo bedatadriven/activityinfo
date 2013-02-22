@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.mail;
 
 /*
@@ -39,29 +37,29 @@ import com.google.inject.Inject;
 import freemarker.template.Configuration;
 
 public class MailSenderImpl extends MailSender {
-	
-	private final DeploymentConfiguration configuration;
-	
-	@Inject	
-    public MailSenderImpl(DeploymentConfiguration configuration, Configuration templateCfg) {
-		super(templateCfg);
-		this.configuration = configuration;
-	}
 
-    
-	@Override
-	@LogException
+    private final DeploymentConfiguration configuration;
+
+    @Inject
+    public MailSenderImpl(DeploymentConfiguration configuration,
+        Configuration templateCfg) {
+        super(templateCfg);
+        this.configuration = configuration;
+    }
+
+    @Override
+    @LogException
     public void send(Message message) {
-		try {
-			message.setFrom(new InternetAddress(
-	        		configuration.getProperty("smtp.from"), 
-	        		configuration.getProperty("smtp.from.name")));
-	     
-	        Transport.send(message);
-		} catch(MessagingException e) {
-			throw new RuntimeException(e);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+        try {
+            message.setFrom(new InternetAddress(
+                configuration.getProperty("smtp.from"),
+                configuration.getProperty("smtp.from.name")));
+
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

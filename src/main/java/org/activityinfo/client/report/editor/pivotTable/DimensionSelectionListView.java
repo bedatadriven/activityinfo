@@ -50,160 +50,164 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DimensionSelectionListView implements HasReportElement<PivotTableReportElement> {
-	
-	public enum Axis {
-		ROW, 
-		COLUMN
-	}
-	
-	private ReportEventHelper events;
-	private Dispatcher dispatcher;
-	private Axis axis;
-	
+public class DimensionSelectionListView implements
+    HasReportElement<PivotTableReportElement> {
 
-	private ListStore<DimensionModel> store;
-	private ListView<DimensionModel> list;
+    public enum Axis {
+        ROW,
+        COLUMN
+    }
 
-	private PivotTableReportElement model;
+    private ReportEventHelper events;
+    private Dispatcher dispatcher;
+    private Axis axis;
 
-	
-	public DimensionSelectionListView(EventBus eventBus, Dispatcher dispatcher, Axis axis) {
-		this.events = new ReportEventHelper(eventBus, this);
-		this.events.listen(new ReportChangeHandler() {
-			
-			@Override
-			public void onChanged() {
-				onModelChanged();
-			}
-		});
-		this.dispatcher = dispatcher;
-		this.axis = axis;
-		
-		store = new ListStore<DimensionModel>();
-		
-		list = new ListView<DimensionModel>(store);
-		list.setDisplayProperty("name");
-		ListViewDragSource source = new ListViewDragSource(list);
-		ListViewDropTarget target = new ListViewDropTarget(list);
-		target.setFeedback(DND.Feedback.INSERT);
-		target.setAllowSelfAsSource(true);
-		
-		store.addStoreListener(new StoreListener<DimensionModel>() {
+    private ListStore<DimensionModel> store;
+    private ListView<DimensionModel> list;
 
-			@Override
-			public void storeAdd(StoreEvent<DimensionModel> se) {
-				updateModelAfterDragDrop();
-			}
+    private PivotTableReportElement model;
 
-			@Override
-			public void storeRemove(StoreEvent<DimensionModel> se) {
-				updateModelAfterDragDrop();
-			}
-			
-		});
-	}
-	
-	private void updateModelAfterDragDrop() {
-		List<Dimension> dims = Lists.newArrayList();
-		for(DimensionModel model : store.getModels()) {
-			dims.add(model.getDimension());
-		}
-		switch(axis) {
-		case ROW:
-			model.setRowDimensions(dims);
-			break;
-		case COLUMN:
-			model.setColumnDimensions(dims);
-		}
-		events.fireChange();
-	}
+    public DimensionSelectionListView(EventBus eventBus, Dispatcher dispatcher,
+        Axis axis) {
+        this.events = new ReportEventHelper(eventBus, this);
+        this.events.listen(new ReportChangeHandler() {
 
-	@Override
-	public void bind(PivotTableReportElement model) {
-		this.model = model;
-		onModelChanged();
-	}
+            @Override
+            public void onChanged() {
+                onModelChanged();
+            }
+        });
+        this.dispatcher = dispatcher;
+        this.axis = axis;
 
-	@Override
-	public void disconnect() {
-		events.disconnect();
-	}
-	
-	private void onModelChanged() {
-		dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+        store = new ListStore<DimensionModel>();
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
+        list = new ListView<DimensionModel>(store);
+        list.setDisplayProperty("name");
+        new ListViewDragSource(list);
+        ListViewDropTarget target = new ListViewDropTarget(list);
+        target.setFeedback(DND.Feedback.INSERT);
+        target.setAllowSelfAsSource(true);
 
-			@Override
-			public void onSuccess(SchemaDTO result) {
-				updateStoreAfterModelChanged(result);
-			}
-		});			
-	}
+        store.addStoreListener(new StoreListener<DimensionModel>() {
 
-	private List<Dimension> getSelection() {
-		switch(axis) {
-		case ROW:
-			return model.getRowDimensions();
-		case COLUMN:
-			return model.getColumnDimensions();
-		}
-		throw new IllegalStateException(""+axis);
-	}
-	
-	private void updateStoreAfterModelChanged(SchemaDTO schema) {
-		store.setFiresEvents(false);
-		store.removeAll();
-		for(Dimension dim : getSelection()) {
-			DimensionModel model = toModel(dim, schema);
-			if(model != null) {
-				store.add(model);
-			}
-		}
-		store.setFiresEvents(true);
-		list.refresh();
-	}
-	
-	private DimensionModel toModel(Dimension dim, SchemaDTO schema) {
-		if(dim instanceof DateDimension) {
-			return new DimensionModel(((DateDimension) dim).getUnit());
-		} else if(dim instanceof AdminDimension) {
-			return new DimensionModel(schema.getAdminLevelById(((AdminDimension) dim).getLevelId()));
-		} else if(dim instanceof AttributeGroupDimension) {
-			AttributeGroupDTO group = schema.getAttributeGroupById(((AttributeGroupDimension) dim).getAttributeGroupId());
-			return group == null ? null : new DimensionModel(group);
-		} else {
-			switch(dim.getType()) {
-			case Database:
-				return new DimensionModel(dim, I18N.CONSTANTS.database());
-			case Activity:
-				return new DimensionModel(dim, I18N.CONSTANTS.activity());
-			case Indicator:
-				return new DimensionModel(dim, I18N.CONSTANTS.indicator());
-			case Partner:
-				return new DimensionModel(dim, I18N.CONSTANTS.partner());
-			case Project:
-				return new DimensionModel(dim, I18N.CONSTANTS.project());
-			case Location:
-				return new DimensionModel(dim, I18N.CONSTANTS.location());
-			case Target:
-				return new DimensionModel(dim, I18N.CONSTANTS.realizedOrTargeted());
-			}
-		}
-		return null;
-	}
+            @Override
+            public void storeAdd(StoreEvent<DimensionModel> se) {
+                updateModelAfterDragDrop();
+            }
 
-	@Override
-	public PivotTableReportElement getModel() {
-		return model;
-	}
+            @Override
+            public void storeRemove(StoreEvent<DimensionModel> se) {
+                updateModelAfterDragDrop();
+            }
 
-	public Component asComponent() {
-		return list;
-	}
+        });
+    }
+
+    private void updateModelAfterDragDrop() {
+        List<Dimension> dims = Lists.newArrayList();
+        for (DimensionModel model : store.getModels()) {
+            dims.add(model.getDimension());
+        }
+        switch (axis) {
+        case ROW:
+            model.setRowDimensions(dims);
+            break;
+        case COLUMN:
+            model.setColumnDimensions(dims);
+        }
+        events.fireChange();
+    }
+
+    @Override
+    public void bind(PivotTableReportElement model) {
+        this.model = model;
+        onModelChanged();
+    }
+
+    @Override
+    public void disconnect() {
+        events.disconnect();
+    }
+
+    private void onModelChanged() {
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                updateStoreAfterModelChanged(result);
+            }
+        });
+    }
+
+    private List<Dimension> getSelection() {
+        switch (axis) {
+        case ROW:
+            return model.getRowDimensions();
+        case COLUMN:
+            return model.getColumnDimensions();
+        }
+        throw new IllegalStateException("" + axis);
+    }
+
+    private void updateStoreAfterModelChanged(SchemaDTO schema) {
+        store.setFiresEvents(false);
+        store.removeAll();
+        for (Dimension dim : getSelection()) {
+            DimensionModel model = toModel(dim, schema);
+            if (model != null) {
+                store.add(model);
+            }
+        }
+        store.setFiresEvents(true);
+        list.refresh();
+    }
+
+    private DimensionModel toModel(Dimension dim, SchemaDTO schema) {
+        if (dim instanceof DateDimension) {
+            return new DimensionModel(((DateDimension) dim).getUnit());
+        } else if (dim instanceof AdminDimension) {
+            return new DimensionModel(
+                schema.getAdminLevelById(((AdminDimension) dim).getLevelId()));
+        } else if (dim instanceof AttributeGroupDimension) {
+            AttributeGroupDTO group = schema
+                .getAttributeGroupById(((AttributeGroupDimension) dim)
+                    .getAttributeGroupId());
+            return group == null ? null : new DimensionModel(group);
+        } else {
+            switch (dim.getType()) {
+            case Database:
+                return new DimensionModel(dim, I18N.CONSTANTS.database());
+            case Activity:
+                return new DimensionModel(dim, I18N.CONSTANTS.activity());
+            case Indicator:
+                return new DimensionModel(dim, I18N.CONSTANTS.indicator());
+            case Partner:
+                return new DimensionModel(dim, I18N.CONSTANTS.partner());
+            case Project:
+                return new DimensionModel(dim, I18N.CONSTANTS.project());
+            case Location:
+                return new DimensionModel(dim, I18N.CONSTANTS.location());
+            case Target:
+                return new DimensionModel(dim,
+                    I18N.CONSTANTS.realizedOrTargeted());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public PivotTableReportElement getModel() {
+        return model;
+    }
+
+    public Component asComponent() {
+        return list;
+    }
 }

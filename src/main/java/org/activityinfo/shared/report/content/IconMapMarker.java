@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.shared.report.content;
 
 /*
@@ -30,7 +28,7 @@ import org.activityinfo.shared.report.model.MapIcon;
  * @author Alex Bertram
  */
 public class IconMapMarker extends MapMarker {
-    
+
     private int indicatorId = 0;
     private MapIcon icon;
 
@@ -42,13 +40,12 @@ public class IconMapMarker extends MapMarker {
         this.icon = icon;
     }
 
-	public int getIndicatorId() {
-		return indicatorId;
-	}
+    public int getIndicatorId() {
+        return indicatorId;
+    }
 
-	public void setIndicatorId(int indicatorId) {
-		this.indicatorId = indicatorId;
-	}
-    
-    
+    public void setIndicatorId(int indicatorId) {
+        this.indicatorId = indicatorId;
+    }
+
 }

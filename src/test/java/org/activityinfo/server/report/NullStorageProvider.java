@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.report;
 
 /*
@@ -27,20 +25,21 @@ package org.activityinfo.server.report;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.output.StorageProvider;
+import org.activityinfo.server.report.output.TempStorage;
 
 public class NullStorageProvider implements StorageProvider {
 
-	@Override
-	public TempStorage allocateTemporaryFile(String mimeType, String suffix) throws IOException {
-		
-		return new TempStorage("http://", new OutputStream() {
+    @Override
+    public TempStorage allocateTemporaryFile(String mimeType, String suffix)
+        throws IOException {
 
-			@Override
-			public void write(int b) throws IOException {
-				// NOOOP!
-			}
-		});
-	}
+        return new TempStorage("http://", new OutputStream() {
+
+            @Override
+            public void write(int b) throws IOException {
+                // NOOOP!
+            }
+        });
+    }
 }

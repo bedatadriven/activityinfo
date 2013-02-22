@@ -1,5 +1,3 @@
-
-
 package org.activityinfo.server.bootstrap.model;
 
 /*
@@ -25,6 +23,5 @@ package org.activityinfo.server.bootstrap.model;
  */
 
 public class InvalidInvitePageModel extends PageModel {
-
 
 }

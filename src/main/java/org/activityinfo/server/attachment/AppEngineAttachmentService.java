@@ -37,8 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 
-import com.google.appengine.api.blobstore.BlobInfo;
-import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -51,153 +49,159 @@ import com.google.common.io.ByteStreams;
 
 public class AppEngineAttachmentService implements AttachmentService {
 
-	
-	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    private BlobstoreService blobstoreService = BlobstoreServiceFactory
+        .getBlobstoreService();
 
-	@Override
-	public void serveAttachment(String blobId, HttpServletResponse response) throws IOException {
-		BlobKey blobKey = blobKey(blobId);
-		blobstoreService.serve(blobKey, response);
-	}
+    @Override
+    public void serveAttachment(String blobId, HttpServletResponse response)
+        throws IOException {
+        BlobKey blobKey = blobKey(blobId);
+        blobstoreService.serve(blobKey, response);
+    }
 
-	private BlobKey blobKey(String blobId) {
-		BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/activityinfo-attachments/" + blobId);
-		return blobKey;
-	}
+    private BlobKey blobKey(String blobId) {
+        BlobKey blobKey = blobstoreService
+            .createGsBlobKey("/gs/activityinfo-attachments/" + blobId);
+        return blobKey;
+    }
 
-	@Override
-	public void upload(String key, FileItem fileItem,
-			InputStream uploadingStream) {
-		try {
-	
-			GSFileOptionsBuilder builder = new GSFileOptionsBuilder()
-			.setBucket("activityinfo-attachments")
-			.setKey(key)
-			.setContentDisposition("attachment; filename=\"" + fileItem.getName() + "\"")
-			.setMimeType(fileItem.getContentType());
-	
-			FileService fileService = FileServiceFactory.getFileService();
-			AppEngineFile writableFile = fileService.createNewGSFile(builder.build());
-			boolean lock = true;
-			FileWriteChannel writeChannel = fileService.openWriteChannel(writableFile, lock);
-			OutputStream os = Channels.newOutputStream(writeChannel);
-			ByteStreams.copy(fileItem.getInputStream(), os);
-			os.flush();
-			writeChannel.closeFinally();
+    @Override
+    public void upload(String key, FileItem fileItem,
+        InputStream uploadingStream) {
+        try {
 
-		} catch(Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+            GSFileOptionsBuilder builder = new GSFileOptionsBuilder()
+                .setBucket("activityinfo-attachments")
+                .setKey(key)
+                .setContentDisposition(
+                    "attachment; filename=\"" + fileItem.getName() + "\"")
+                .setMimeType(fileItem.getContentType());
 
-	@Override
-	public void delete(String key) {
-		blobstoreService.delete(blobKey(key));
-	}
+            FileService fileService = FileServiceFactory.getFileService();
+            AppEngineFile writableFile = fileService.createNewGSFile(builder
+                .build());
+            boolean lock = true;
+            FileWriteChannel writeChannel = fileService.openWriteChannel(
+                writableFile, lock);
+            OutputStream os = Channels.newOutputStream(writeChannel);
+            ByteStreams.copy(fileItem.getInputStream(), os);
+            os.flush();
+            writeChannel.closeFinally();
 
-	@Override
-	public FileItemFactory createFileItemFactory() {
-		return new FileItemFactory() {
-			
-			@Override
-			public FileItem createItem(String fieldName, String contentType,
-					boolean isFormField, String fileName) {
-				return new InMemoryFileItem(fieldName, contentType, isFormField, fileName);
-			}
-		};
-	}
-	
-	private static class InMemoryFileItem implements FileItem {
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-		private ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		private boolean formField;
-		private String fieldName;
-		private String contentType;
-		private String fileName;
-		
-		public InMemoryFileItem(String fieldName, String contentType,
-				boolean isFormField, String fileName) {
-			this.fieldName = fieldName;
-			this.contentType = contentType;
-			this.formField = isFormField;
-			this.fileName = fileName;
-		}
+    @Override
+    public void delete(String key) {
+        blobstoreService.delete(blobKey(key));
+    }
 
-		@Override
-		public InputStream getInputStream() throws IOException {
-			return new ByteArrayInputStream(baos.toByteArray());
-		}
+    @Override
+    public FileItemFactory createFileItemFactory() {
+        return new FileItemFactory() {
 
-		@Override
-		public String getContentType() {
-			return contentType;
-		}
+            @Override
+            public FileItem createItem(String fieldName, String contentType,
+                boolean isFormField, String fileName) {
+                return new InMemoryFileItem(fieldName, contentType,
+                    isFormField, fileName);
+            }
+        };
+    }
 
-		@Override
-		public String getName() {
-			return fileName;
-		}
+    private static class InMemoryFileItem implements FileItem {
 
-		@Override
-		public boolean isInMemory() {
-			return true;
-		}
+        private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        private boolean formField;
+        private String fieldName;
+        private String contentType;
+        private String fileName;
 
-		@Override
-		public long getSize() {
-			return baos.size();
-		}
+        public InMemoryFileItem(String fieldName, String contentType,
+            boolean isFormField, String fileName) {
+            this.fieldName = fieldName;
+            this.contentType = contentType;
+            this.formField = isFormField;
+            this.fileName = fileName;
+        }
 
-		@Override
-		public byte[] get() {
-			return baos.toByteArray();
-		}
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return new ByteArrayInputStream(baos.toByteArray());
+        }
 
-		@Override
-		public String getString(String encoding)
-				throws UnsupportedEncodingException {
-			return new String(baos.toByteArray(), Charset.forName(encoding));
-		}
+        @Override
+        public String getContentType() {
+            return contentType;
+        }
 
-		@Override
-		public String getString() {
-			return new String(baos.toByteArray());
-		}
+        @Override
+        public String getName() {
+            return fileName;
+        }
 
-		@Override
-		public void write(File file) throws Exception {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public boolean isInMemory() {
+            return true;
+        }
 
-		@Override
-		public void delete() {
-			baos.reset();
-		}
+        @Override
+        public long getSize() {
+            return baos.size();
+        }
 
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
+        @Override
+        public byte[] get() {
+            return baos.toByteArray();
+        }
 
-		@Override
-		public void setFieldName(String name) {
-			this.fieldName = name;
-		}
+        @Override
+        public String getString(String encoding)
+            throws UnsupportedEncodingException {
+            return new String(baos.toByteArray(), Charset.forName(encoding));
+        }
 
-		@Override
-		public boolean isFormField() {
-			return formField;
-		}
+        @Override
+        public String getString() {
+            return new String(baos.toByteArray());
+        }
 
-		@Override
-		public void setFormField(boolean state) {
-			this.formField = state;
-		}
+        @Override
+        public void write(File file) throws Exception {
+            throw new UnsupportedOperationException();
+        }
 
-		@Override
-		public OutputStream getOutputStream() throws IOException {
-			return baos;
-		}
-		
-	}
+        @Override
+        public void delete() {
+            baos.reset();
+        }
+
+        @Override
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        @Override
+        public void setFieldName(String name) {
+            this.fieldName = name;
+        }
+
+        @Override
+        public boolean isFormField() {
+            return formField;
+        }
+
+        @Override
+        public void setFormField(boolean state) {
+            this.formField = state;
+        }
+
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            return baos;
+        }
+
+    }
 }

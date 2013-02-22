@@ -33,96 +33,99 @@ import com.google.gwt.resources.client.TextResource;
 
 public class PrintDataEntryForm {
 
-	private StringBuilder html;
-	private ActivityDTO activity;
+    private StringBuilder html;
+    private ActivityDTO activity;
 
-	public PrintDataEntryForm(ActivityDTO activity) {
+    public PrintDataEntryForm(ActivityDTO activity) {
 
-		super();
-		this.activity = activity;
-		init();
-	}
+        super();
+        this.activity = activity;
+        init();
+    }
 
-	private void init() {
+    private void init() {
 
-		String contents = getFormContents();
+        String contents = getFormContents();
 
-		contents = contents.replace("{$activityName}", activity.getName())
-				.replace("{$databaseName}", activity.getDatabase().getName())
-				.replace("{$activityName}", activity.getName())
-				.replace("{$indicators}", addIndicators())
-				.replace("{$attributes}", addAttributes());
+        contents = contents.replace("{$activityName}", activity.getName())
+            .replace("{$databaseName}", activity.getDatabase().getName())
+            .replace("{$activityName}", activity.getName())
+            .replace("{$indicators}", addIndicators())
+            .replace("{$attributes}", addAttributes());
 
-		html = new StringBuilder();
-		html.append(contents);
-	}
+        html = new StringBuilder();
+        html.append(contents);
+    }
 
-	private String getFormContents() {
-		TextResource formPage = SiteFormResources.INSTANCE.collectionForm();
-		return formPage.getText();
-	}
+    private String getFormContents() {
+        TextResource formPage = SiteFormResources.INSTANCE.collectionForm();
+        return formPage.getText();
+    }
 
-	public void print() {
-		Print.it(html.toString());
-	}
+    public void print() {
+        Print.it(html.toString());
+    }
 
-	private String addIndicators() {
-		StringBuilder builder = new StringBuilder();
-		
-		builder.append("<table border=\"1px\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" class=\"form-detail\">");
-		
-		for (IndicatorGroup group : activity.groupIndicators()) {
+    private String addIndicators() {
+        StringBuilder builder = new StringBuilder();
 
-			if (group.getName() != null) {
-				builder.append("<tr><td colspan='3'><h3 class='indicatorGroup'> " + group.getName() + "</h3><td></tr>");
-			}
-			
-			builder.append("<tr>");
-			builder.append("<td>Indicator</td>");
-			builder.append("<td>Valeur</td>");
-			builder.append("<td>Units</td>");
-			builder.append("</tr>");
-			for (IndicatorDTO indicator : group.getIndicators()) {
-				addIndicator(indicator, builder);
-			}
-			
-		}
-		
-		builder.append("</table>");
-		
-		return builder.toString();
-	}
+        builder
+            .append("<table border=\"1px\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\" class=\"form-detail\">");
 
-	private void addIndicator(IndicatorDTO indicator, StringBuilder builder) {
-		builder.append("<tr>");
-		builder.append("<td>" + indicator.getName() + "</td>");
-		builder.append("<td>&nbsp;</td>");
-		builder.append("<td>" + indicator.getUnits() + "</td>");
-		builder.append("</tr>");
-	}
+        for (IndicatorGroup group : activity.groupIndicators()) {
 
-	private String addAttributes() {
+            if (group.getName() != null) {
+                builder
+                    .append("<tr><td colspan='3'><h3 class='indicatorGroup'> "
+                        + group.getName() + "</h3><td></tr>");
+            }
 
-		StringBuilder builder = new StringBuilder();
-		for (AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
+            builder.append("<tr>");
+            builder.append("<td>Indicator</td>");
+            builder.append("<td>Valeur</td>");
+            builder.append("<td>Units</td>");
+            builder.append("</tr>");
+            for (IndicatorDTO indicator : group.getIndicators()) {
+                addIndicator(indicator, builder);
+            }
 
-			builder.append("<tr>");
-			builder.append("<td id=\"field-set\" valign=\"top\">"
-					+ attributeGroup.getName() + ":</td><td>");
+        }
 
-			attributeCheckBoxGroup(attributeGroup, builder);
-			builder.append("</td></tr>");
-		}
-		return builder.toString();
-	}
+        builder.append("</table>");
 
-	private void attributeCheckBoxGroup(AttributeGroupDTO group,
-			StringBuilder builder) {
+        return builder.toString();
+    }
 
-		for (AttributeDTO attribture : group.getAttributes()) {
-			builder.append("[  ] " + attribture.getName() + "<br />");
-		}
+    private void addIndicator(IndicatorDTO indicator, StringBuilder builder) {
+        builder.append("<tr>");
+        builder.append("<td>" + indicator.getName() + "</td>");
+        builder.append("<td>&nbsp;</td>");
+        builder.append("<td>" + indicator.getUnits() + "</td>");
+        builder.append("</tr>");
+    }
 
-	}
+    private String addAttributes() {
+
+        StringBuilder builder = new StringBuilder();
+        for (AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
+
+            builder.append("<tr>");
+            builder.append("<td id=\"field-set\" valign=\"top\">"
+                + attributeGroup.getName() + ":</td><td>");
+
+            attributeCheckBoxGroup(attributeGroup, builder);
+            builder.append("</td></tr>");
+        }
+        return builder.toString();
+    }
+
+    private void attributeCheckBoxGroup(AttributeGroupDTO group,
+        StringBuilder builder) {
+
+        for (AttributeDTO attribture : group.getAttributes()) {
+            builder.append("[  ] " + attribture.getName() + "<br />");
+        }
+
+    }
 
 }
