@@ -21,6 +21,7 @@ import javax.mail.internet.MimeMultipart;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.apache.commons.codec.binary.Base64;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -71,11 +72,12 @@ public class PostmarkMailSender extends MailSender {
         URLConnection conn = url.openConnection();
         conn.setDoOutput(true);
         conn.setRequestProperty("X-Postmark-Server-Token", apiKey);
-        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type",
+            "application/json; charset=UTF-8");
         conn.setRequestProperty("Accept", "application/json");
 
         OutputStreamWriter writer = new OutputStreamWriter(
-            conn.getOutputStream());
+            conn.getOutputStream(), Charsets.UTF_8);
         writer.write(node.toString());
         writer.flush();
         String line;
