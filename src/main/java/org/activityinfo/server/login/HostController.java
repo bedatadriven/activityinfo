@@ -27,6 +27,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -63,7 +64,11 @@ public class HostController {
         @Context HttpServletRequest req,
         @QueryParam("redirect") boolean redirect) throws Exception {
         if (!authProvider.isAuthenticated()) {
-            return Response.ok(new LoginPageModel().asViewable()).build();
+            return Response
+                .ok(new LoginPageModel().asViewable())
+                .type(MediaType.TEXT_HTML)
+                .cacheControl(CacheControl.valueOf("no-cache"))
+                .build();
         }
 
         if (redirect) {
@@ -78,7 +83,10 @@ public class HostController {
         HostPageModel model = new HostPageModel(appUri);
         model.setAppCacheEnabled(checkAppCacheEnabled(req));
         model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
-        return Response.ok(model.asViewable()).build();
+        return Response.ok(model.asViewable())
+            .type(MediaType.TEXT_HTML)
+            .cacheControl(CacheControl.valueOf("no-cache"))
+            .build();
     }
 
     private boolean checkAppCacheEnabled(HttpServletRequest req) {
