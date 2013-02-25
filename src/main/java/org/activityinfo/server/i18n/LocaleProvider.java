@@ -50,9 +50,11 @@ public class LocaleProvider implements Provider<Locale> {
     @Override
     public Locale get() {
         String language = null;
-        for (Cookie cookie : req.get().getCookies()) {
-            if (cookie.getName().equals(AuthenticatedUser.USER_LOCAL_COOKIE)) {
-                language = cookie.getValue();
+        if (req.get().getCookies() != null) {
+            for (Cookie cookie : req.get().getCookies()) {
+                if (cookie.getName().equals(AuthenticatedUser.USER_LOCAL_COOKIE)) {
+                    language = cookie.getValue();
+                }
             }
         }
 
