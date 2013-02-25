@@ -22,10 +22,8 @@ package org.activityinfo.server.command;
  * #L%
  */
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import org.activityinfo.MockDb;
 import org.activityinfo.server.command.handler.UpdateUserPermissionsHandler;
@@ -38,9 +36,9 @@ import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
-import org.activityinfo.server.mail.InvitationMessage;
-import org.activityinfo.server.mail.MailSender;
+import org.activityinfo.server.mail.MailSenderStub;
 import org.activityinfo.server.mail.MailSenderStubModule;
+import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.shared.command.GetUsers;
 import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.UserResult;
@@ -55,6 +53,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import freemarker.template.TemplateModelException;
+
 @RunWith(InjectionSupport.class)
 @Modules({ MailSenderStubModule.class })
 public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
@@ -63,13 +63,13 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
     private Partner IRC;
     private PartnerDTO NRC_DTO;
 
-    private MockDb db = new MockDb();
-    private MailSender mailer;
+    private final MockDb db = new MockDb();
+    private MailSenderStub mailer;
     private UpdateUserPermissionsHandler handler;
     private User owner;
 
     @Before
-    public void setup() {
+    public void setup() throws TemplateModelException {
 
         NRC = new Partner();
         NRC.setId(1);
@@ -85,7 +85,8 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         NRC_DTO = new PartnerDTO(1, "NRC");
 
-        mailer = createMock("InvitationMailer", MailSender.class);
+        TemplateModule templateModule = new TemplateModule();
+        mailer = new MailSenderStub(templateModule.provideConfiguration());
 
         handler = new UpdateUserPermissionsHandler(
             db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class),
@@ -95,6 +96,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         owner = new User();
         owner.setId(99);
         owner.setName("Alex");
+        owner.setEmail("alex@bedatadriven.com");
         db.persist(owner);
 
         UserDatabase udb = new UserDatabase(1, "PEAR");
@@ -106,11 +108,9 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
     @Test
     public void ownerCanAddUser() throws Exception {
 
-        mailer.send(isA(InvitationMessage.class));
-        replay(mailer);
-
         UserPermissionDTO user = new UserPermissionDTO();
         user.setEmail("other@foobar");
+        user.setName("Foo Bar");
         user.setPartner(NRC_DTO);
         user.setAllowView(true);
 
@@ -118,7 +118,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         handler.execute(cmd, owner);
 
-        verify(mailer);
+        assertThat(mailer.sentMail.size(), equalTo(1));
     }
 
     /**
