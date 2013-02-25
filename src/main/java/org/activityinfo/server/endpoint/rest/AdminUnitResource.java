@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.endpoint.rest;
 
 /*
  * #%L
@@ -22,17 +22,31 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-public class RefineModule extends ServletModule {
+import org.activityinfo.server.database.hibernate.entity.AdminEntity;
+import org.activityinfo.server.endpoint.refine.AdminEntityPreview;
 
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+import com.sun.jersey.api.view.Viewable;
+
+@Path("/adminUnit")
+public class AdminUnitResource {
+
+    private AdminEntity unit;
+
+    public AdminUnitResource(AdminEntity unit) {
+        super();
+        this.unit = unit;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable get() {
+        return new Viewable("/resource/AdminUnit.ftl", new AdminEntityPreview(
+            unit));
     }
 
 }

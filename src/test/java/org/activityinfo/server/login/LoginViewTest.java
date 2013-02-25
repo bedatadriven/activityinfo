@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login;
 
 /*
  * #%L
@@ -22,17 +22,14 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import org.activityinfo.server.login.model.LoginPageModel;
+import org.junit.Test;
 
-public class RefineModule extends ServletModule {
+public class LoginViewTest extends ViewTestCase {
 
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    @Test
+    public void templateProcesses() {
+        assertProcessable(new LoginPageModel());
     }
 
 }

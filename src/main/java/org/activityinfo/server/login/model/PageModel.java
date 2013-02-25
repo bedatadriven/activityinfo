@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,17 +22,28 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.sun.jersey.api.view.Viewable;
 
-public class RefineModule extends ServletModule {
+public abstract class PageModel {
 
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    private static final String SUFFIX = "PageModel";
+
+    public static <T extends PageModel> String getTemplateName(
+        Class<T> pageModelClass) {
+        String className = pageModelClass.getSimpleName();
+        assert className.endsWith(SUFFIX) : "Page Model classes should end in '"
+            + SUFFIX + "'";
+
+        return "/page/"
+            + className.substring(0, className.length() - SUFFIX.length())
+            + ".ftl";
     }
 
+    public String getTemplateName() {
+        return getTemplateName(getClass());
+    }
+
+    public Viewable asViewable() {
+        return new Viewable(getTemplateName(), this);
+    }
 }

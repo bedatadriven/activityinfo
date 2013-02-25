@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.endpoint.rest;
 
 /*
  * #%L
@@ -22,17 +22,28 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
-public class RefineModule extends ServletModule {
+import com.wordnik.swagger.jaxrs.JaxrsApiReader;
+
+public class RestApiModule extends AbstractRestModule {
 
     @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    protected void configureResources() {
+
+        configureSwagger();
+
+        bindResource(HxlResources.class);
+        bind(SwaggerConfigProvider.class);
+        bindResource(ApiListingResource.class);
+        bindResource(CountryResource.class);
+
+    }
+
+    private void configureSwagger() {
+        // disable .json and .xml suffixes on rest resources
+        // ick!
+        JaxrsApiReader.setFormatString("");
     }
 
 }

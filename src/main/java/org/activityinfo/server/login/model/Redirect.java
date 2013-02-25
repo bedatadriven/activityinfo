@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,17 +22,24 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+/**
+ * Represents a Page Redirect - Used for JAX-RS Redirects
+ * 
+ * @author aldrin
+ * 
+ */
+public class Redirect {
+    /**
+     * Absolute Page Path
+     */
+    final String location;
 
-public class RefineModule extends ServletModule {
-
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    public Redirect(String location) {
+        super();
+        this.location = location;
     }
 
+    public String getLocation() {
+        return location;
+    }
 }

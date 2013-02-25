@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,17 +22,17 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import org.activityinfo.server.database.hibernate.entity.User;
 
-public class RefineModule extends ServletModule {
+public class ChangePasswordPageModel extends PageModel {
+    private User user;
 
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    public ChangePasswordPageModel(User user) {
+        super();
+        this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
 }

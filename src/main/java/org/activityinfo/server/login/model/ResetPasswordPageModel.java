@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,17 +22,40 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+/**
+ * @author Alex Bertram
+ */
+public class ResetPasswordPageModel extends PageModel {
 
-public class RefineModule extends ServletModule {
+    private boolean loginError;
+    private boolean emailSent;
+    private boolean emailError;
 
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    public ResetPasswordPageModel() {
+    }
+
+    public boolean isLoginError() {
+        return loginError;
+    }
+
+    public void setLoginError(boolean loginError) {
+        this.loginError = loginError;
+    }
+
+    public boolean isEmailSent() {
+        return emailSent;
+    }
+
+    public void setEmailSent(boolean emailSent) {
+        this.emailSent = emailSent;
+    }
+
+    public boolean isEmailError() {
+        return emailError;
+    }
+
+    public void setEmailError(boolean emailError) {
+        this.emailError = emailError;
     }
 
 }

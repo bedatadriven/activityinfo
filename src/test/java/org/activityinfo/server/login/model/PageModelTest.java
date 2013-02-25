@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,17 +22,20 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import static org.junit.Assert.assertEquals;
 
-public class RefineModule extends ServletModule {
+import org.activityinfo.server.login.model.LoginPageModel;
+import org.activityinfo.server.login.model.PageModel;
+import org.junit.Test;
 
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+/**
+ * @author Alex Bertram
+ */
+public class PageModelTest {
+
+    @Test
+    public void testGetTemplateName() throws Exception {
+        assertEquals("/page/Login.ftl",
+            PageModel.getTemplateName(LoginPageModel.class));
     }
-
 }

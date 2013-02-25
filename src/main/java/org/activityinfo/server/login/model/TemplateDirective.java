@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,17 +22,23 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import freemarker.template.Template;
 
-public class RefineModule extends ServletModule {
+public class TemplateDirective {
+    final Template template;
 
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    final PageModel pageModel;
+
+    public TemplateDirective(Template template, PageModel pageModel) {
+        this.template = template;
+        this.pageModel = pageModel;
     }
 
+    public Template getTemplate() {
+        return template;
+    }
+
+    public PageModel getPageModel() {
+        return pageModel;
+    }
 }

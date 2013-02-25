@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,17 +22,19 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+public class LoginPageModel extends PageModel {
+    private boolean loginError;
 
-public class RefineModule extends ServletModule {
-
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
+    public LoginPageModel() {
     }
 
+    public static LoginPageModel unsuccessful() {
+        LoginPageModel model = new LoginPageModel();
+        model.loginError = true;
+        return model;
+    }
+
+    public boolean isLoginError() {
+        return loginError;
+    }
 }

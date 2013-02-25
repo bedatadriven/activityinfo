@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.refine;
+package org.activityinfo.server.login.exception;
 
 /*
  * #%L
@@ -22,17 +22,9 @@ package org.activityinfo.server.endpoint.refine;
  * #L%
  */
 
-import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-
-public class RefineModule extends ServletModule {
-
-    @Override
-    protected void configureServlets() {
-        bind(ReconciliationService.class);
-        bind(RefineIndexTask.class);
-        filter("/reconcile*").through(GuiceContainer.class);
-        filter("/tasks/refine/index").through(GuiceContainer.class);
-    }
-
+/**
+ * @author Alex Bertram
+ */
+public class InvalidKeyException extends Exception {
+    private static final long serialVersionUID = -916138398854260379L;
 }
