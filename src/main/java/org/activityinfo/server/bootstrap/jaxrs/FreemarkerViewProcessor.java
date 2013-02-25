@@ -30,11 +30,14 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.spi.template.ViewProcessor;
 
@@ -58,6 +61,8 @@ public class FreemarkerViewProcessor implements ViewProcessor<Template> {
 
     private final Configuration templateConfig;
     private final javax.inject.Provider<Locale> localeProvider;
+   
+    private @Context HttpContext httpContext;
 
     @Inject
     public FreemarkerViewProcessor(Configuration templateConfig,
@@ -84,6 +89,10 @@ public class FreemarkerViewProcessor implements ViewProcessor<Template> {
     public void writeTo(Template t, Viewable viewable, OutputStream out)
         throws IOException {
 
+        // ensure that we set an content type and charset
+        httpContext.getResponse().getHttpHeaders()
+        .putSingle(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
+        
         Writer writer = new OutputStreamWriter(out, Charsets.UTF_8);
         try {
             Environment env = t.createProcessingEnvironment(

@@ -33,7 +33,9 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 import org.activityinfo.server.authentication.SecureTokenGenerator;
 import org.activityinfo.server.bootstrap.model.ResetPasswordPageModel;
@@ -58,6 +60,7 @@ public class ResetPasswordController {
     private Provider<UserDAO> userDAO;
 
     @GET
+    @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
     public Viewable getPage(@Context HttpServletRequest req)
         throws ServletException, IOException {
@@ -65,6 +68,7 @@ public class ResetPasswordController {
     }
 
     @POST
+    @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
     @Transactional
     public Viewable resetPassword(@FormParam("email") String email) {

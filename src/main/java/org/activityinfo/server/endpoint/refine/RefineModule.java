@@ -35,7 +35,7 @@ public class RefineModule extends ServletModule {
     protected void configureServlets() {
         bind(ReconciliationService.class);
         bind(JacksonJsonProvider.class).toInstance(
-            new JacksonJsonProvider(createObjectMapper()));
+            new Utf8JacksonJsonProvider(createObjectMapper()));
         bind(RefineIndexTask.class);
         filter("/reconcile*").through(GuiceContainer.class);
         filter("/tasks/refine/index").through(GuiceContainer.class);

@@ -29,7 +29,9 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -59,6 +61,7 @@ public class ConfirmInviteController {
     }
 
     @GET
+    @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
     public Viewable getPage(@Context UriInfo uri) throws Exception {
         try {
@@ -95,10 +98,12 @@ public class ConfirmInviteController {
 
         } catch (EntityNotFoundException e) {
             return Response.ok(new InvalidInvitePageModel().asViewable())
+                .type(MediaType.TEXT_HTML)
                 .build();
         } catch (IllegalArgumentException e) {
             return Response.ok(
                 ConfirmInvitePageModel.incompleteForm(user).asViewable())
+                .type(MediaType.TEXT_HTML)
                 .build();
         }
     }

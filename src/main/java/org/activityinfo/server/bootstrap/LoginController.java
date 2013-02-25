@@ -27,7 +27,9 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -57,6 +59,7 @@ public class LoginController {
 
     @GET
     @LogException(emailAlert = true)
+    @Produces(MediaType.TEXT_HTML)
     public Viewable getLoginPage(@Context UriInfo uri) throws Exception {
         return new LoginPageModel().asViewable();
     }
@@ -90,6 +93,7 @@ public class LoginController {
             checkPassword(password, user);
         } catch (LoginException e) {
             return Response.ok(LoginPageModel.unsuccessful().asViewable())
+                .type(MediaType.TEXT_HTML)
                 .build();
         }
 
