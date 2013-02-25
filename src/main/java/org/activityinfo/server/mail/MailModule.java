@@ -22,12 +22,28 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
+import org.activityinfo.server.util.config.DeploymentConfiguration;
+
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 public class MailModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(MailSender.class).to(MailSenderImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    public MailSender provideMailSender(DeploymentConfiguration config,
+        Injector injector) {
+        if (config.hasProperty("postmark.key")) {
+            return injector.getInstance(PostmarkMailSender.class);
+        } else {
+            return injector.getInstance(MailSenderImpl.class);
+        }
+
     }
 }

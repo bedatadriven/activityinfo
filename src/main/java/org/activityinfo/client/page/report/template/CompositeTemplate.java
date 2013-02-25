@@ -35,12 +35,11 @@ public class CompositeTemplate extends ReportTemplate {
 
         setName(I18N.CONSTANTS.customReport());
         setDescription(I18N.CONSTANTS.customReportDescription());
-        setImagePath("time.png");
+        setImagePath("empty.png");
     }
 
     @Override
     public void createReport(AsyncCallback<Report> callback) {
         callback.onSuccess(new Report());
     }
-
 }

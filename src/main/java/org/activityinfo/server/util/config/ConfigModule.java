@@ -25,6 +25,7 @@ package org.activityinfo.server.util.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.security.AccessControlException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -32,6 +33,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
+import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.util.logging.Trace;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -39,16 +41,26 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.base.Strings;
-import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
-public class ConfigModule extends AbstractModule {
+/**
+ * Guice module that provides the {@link DeploymentConfiguration} used across
+ * the server side.
+ * 
+ */
+public class ConfigModule extends ServletModule {
     private static Logger logger = Logger.getLogger(ConfigModule.class
         .getName());
 
     @Override
-    protected void configure() {
+    protected void configureServlets() {
+        if (DeploymentEnvironment.isAppEngine()) {
+            bind(AppengineConfigResource.class);
+            filter("/admin/config").through(GuiceContainer.class);
+        }
     }
 
     @Provides
@@ -62,6 +74,7 @@ public class ConfigModule extends AbstractModule {
         tryToLoadFrom(properties, systemSettings());
         tryToLoadFrom(properties, userSettings());
         tryToLoadFromS3(properties);
+        tryToLoadFromAppEngineDatastore(properties);
         tryToLoadFrom(properties, versionSpecific(context));
 
         return new DeploymentConfiguration(properties);
@@ -145,6 +158,19 @@ public class ConfigModule extends AbstractModule {
             logger
                 .log(Level.SEVERE, "Exception reading configuration from S3: "
                     + e.getMessage(), e);
+        }
+    }
+
+    private void tryToLoadFromAppEngineDatastore(Properties properties) {
+        try {
+            String config = AppEngineConfig.getPropertyFile();
+            if (!Strings.isNullOrEmpty(config)) {
+                logger.info("Read config from datastore: \n" + config);
+                properties.load(new StringReader(config));
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,
+                "Exception reading configuration from AppEngine Datastore", e);
         }
     }
 
