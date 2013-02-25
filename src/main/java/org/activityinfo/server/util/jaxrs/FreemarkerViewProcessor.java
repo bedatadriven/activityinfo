@@ -61,8 +61,9 @@ public class FreemarkerViewProcessor implements ViewProcessor<Template> {
 
     private final Configuration templateConfig;
     private final javax.inject.Provider<Locale> localeProvider;
-   
-    private @Context HttpContext httpContext;
+
+    private @Context
+    HttpContext httpContext;
 
     @Inject
     public FreemarkerViewProcessor(Configuration templateConfig,
@@ -90,9 +91,13 @@ public class FreemarkerViewProcessor implements ViewProcessor<Template> {
         throws IOException {
 
         // ensure that we set an content type and charset
-        httpContext.getResponse().getHttpHeaders()
-        .putSingle(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
-        
+        if (httpContext != null) {
+            httpContext
+                .getResponse()
+                .getHttpHeaders()
+                .putSingle(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
+        }
+
         Writer writer = new OutputStreamWriter(out, Charsets.UTF_8);
         try {
             Environment env = t.createProcessingEnvironment(
