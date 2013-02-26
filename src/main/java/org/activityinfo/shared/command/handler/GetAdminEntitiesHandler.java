@@ -81,11 +81,11 @@ public class GetAdminEntitiesHandler implements
         if (cmd.getFilter() != null
             && cmd.getFilter().isRestricted(DimensionType.Activity)) {
             SqlQuery subQuery = SqlQuery.select("link.AdminEntityId")
-                .from(Tables.LOCATION_ADMIN_LINK, "link")
+                .from(Tables.SITE, "site")
                 .leftJoin(Tables.LOCATION, "Location")
-                .on("link.LocationId = Location.LocationId")
-                .leftJoin(Tables.SITE, "Site")
                 .on("Location.LocationId = Site.LocationId")
+                .leftJoin(Tables.LOCATION_ADMIN_LINK, "link")
+                .on("link.LocationId = Location.LocationId")
                 .where("Site.ActivityId")
                 .in(cmd.getFilter().getRestrictions(DimensionType.Activity));
 

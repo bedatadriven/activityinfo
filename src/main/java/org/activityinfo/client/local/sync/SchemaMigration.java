@@ -47,7 +47,10 @@ public class SchemaMigration {
         "ALTER TABLE UserDatabase ADD COLUMN version REAL",
         "ALTER TABLE UserPermission ADD COLUMN version REAL",
         "ALTER TABLE AdminLevel ADD COLUMN polygons INT",
-        "ALTER TABLE UserLogin ADD COLUMN emailnotification INT"
+        "ALTER TABLE UserLogin ADD COLUMN emailnotification INT",
+        "CREATE INDEX IF NOT EXISTS adminentity_pk on adminentity (adminentityid)",
+        "CREATE INDEX IF NOT EXISTS location_link on locationadminlink (locationid)",
+        "CREATE INDEX IF NOT EXISTS location_entity on locationadminlink (adminentityid)",
     };
 
     @Inject
