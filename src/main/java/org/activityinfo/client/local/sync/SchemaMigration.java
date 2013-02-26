@@ -50,7 +50,7 @@ public class SchemaMigration {
         "ALTER TABLE UserLogin ADD COLUMN emailnotification INT",
         "CREATE INDEX IF NOT EXISTS adminentity_pk on adminentity (adminentityid)",
         "CREATE INDEX IF NOT EXISTS location_link on locationadminlink (locationid)",
-        "CREATE INDEX IF NOT EXISTS location_entity on locationadminlink (adminentityid)",
+        "CREATE INDEX IF NOT EXISTS location_entity on locationadminlink (adminentityid)"
     };
 
     @Inject

@@ -45,7 +45,6 @@ public class FFCapabilityProfile extends LocalCapabilityProfile {
     private boolean hasPlugin;
 
     public FFCapabilityProfile() {
-        Log.debug("FireFox version: " + Window.Navigator.getUserAgent());
         hasPlugin = hasPlugin();
     }
 
@@ -64,15 +63,6 @@ public class FFCapabilityProfile extends LocalCapabilityProfile {
             FFPermissionsDialog dialog = new FFPermissionsDialog(callback);
             dialog.show();
         }
-    }
-
-    private String createReceipt() {
-        AuthenticatedUser user = new ClientSideAuthProvider().get();
-        StringBuilder receipt = new StringBuilder();
-        receipt.append(user.getUserId()).append("|")
-            .append(user.getAuthToken()).append("|")
-            .append(user.getEmail());
-        return receipt.toString();
     }
 
     @Override

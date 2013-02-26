@@ -114,7 +114,7 @@ public class PromptOfflineDialog extends BasePromptDialog {
             html.append("<p>").append(I18N.CONSTANTS.offlineIntro4())
                 .append("</p>");
         } else {
-            html.append(CAPABILITY_PROFILE.isOfflineModeSupported());
+            html.append(CAPABILITY_PROFILE.getInstallInstructions());
         }
         return html.toString();
     }

@@ -56,14 +56,6 @@
     <any>
       <when-property-is name="user.agent" value="ie6" />
       <when-property-is name="user.agent" value="ie8" />
-    </any>
-  </replace-with>
-
-  <replace-with
-    class="org.activityinfo.client.local.capability.IE9CapabilityProfile">
-    <when-type-is
-      class="org.activityinfo.client.local.capability.LocalCapabilityProfile" />
-    <any>
       <when-property-is name="user.agent" value="ie9" />
     </any>
   </replace-with>
