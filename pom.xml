@@ -796,13 +796,6 @@
             </configuration>
             <executions>
               <execution>
-                <id>unpack</id>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <phase>initialize</phase>
-              </execution>
-              <execution>
                 <id>deploy</id>
                 <goals>
                   <goal>deploy</goal>
@@ -830,13 +823,6 @@
               <serverId>appengine.google.com</serverId>
             </configuration>
             <executions>
-              <execution>
-                <id>unpack</id>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <phase>initialize</phase>
-              </execution>
               <execution>
                 <id>deploy</id>
                 <goals>
