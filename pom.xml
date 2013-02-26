@@ -790,7 +790,7 @@
           <plugin>
             <groupId>net.kindleit</groupId>
             <artifactId>maven-gae-plugin</artifactId>
-            <version>0.9.5</version>
+            <version>0.9.5-bdd</version>
             <configuration>
               <serverId>appengine.google.com</serverId>
             </configuration>
@@ -825,7 +825,7 @@
           <plugin>
             <groupId>net.kindleit</groupId>
             <artifactId>maven-gae-plugin</artifactId>
-            <version>0.9.5</version>
+            <version>0.9.5-bdd</version>
             <configuration>
               <serverId>appengine.google.com</serverId>
             </configuration>
