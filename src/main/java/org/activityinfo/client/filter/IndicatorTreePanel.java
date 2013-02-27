@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.callback.SuccessCallback;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
@@ -43,12 +44,14 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.DataReader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.ModelStringProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
@@ -132,6 +135,14 @@ public class IndicatorTreePanel extends ContentPanel {
         add(tree);
         createFilterBar();
 
+        tree.getStore().getLoader().addLoadListener(new LoadListener() {
+
+            @Override
+            public void loaderLoad(LoadEvent le) {
+                Log.info("Loaded " + le);
+            }
+        });
+        
         tree.getStore().addStoreListener(new StoreListener<ModelData>() {
 
             @Override
@@ -152,6 +163,8 @@ public class IndicatorTreePanel extends ContentPanel {
                     } else {
                         selection.remove(indicator.getId());
                     }
+                } else if(be.isChecked()) {
+                    tree.getStore().getLoader().loadChildren(be.getItem());
                 }
             }
         });
@@ -217,6 +230,7 @@ public class IndicatorTreePanel extends ContentPanel {
         filter.bind(store);
         setTopComponent(toolBar);
     }
+    
 
     private final class NodeLabelProvider implements
         ModelStringProvider<ModelData> {
@@ -407,7 +421,6 @@ public class IndicatorTreePanel extends ContentPanel {
             if (model instanceof IndicatorDTO) {
                 IndicatorDTO indicator = (IndicatorDTO) model;
                 boolean selected = selection.contains(indicator.getId());
-                tree.setExpanded(indicator, selected);
                 setChecked(indicator, selected);
             }
         }
