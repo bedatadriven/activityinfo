@@ -57,11 +57,12 @@ public class SiteDialog extends Window {
 
     public static final int HEIGHT = 450;
     public static final int WIDTH = 500;
-    private FormNavigationListView navigationListView;
-    private LayoutContainer sectionContainer;
+    private final FormNavigationListView navigationListView;
+    private final LayoutContainer sectionContainer;
 
-    private List<FormSection<SiteDTO>> sections = Lists.newArrayList();
+    private final List<FormSection<SiteDTO>> sections = Lists.newArrayList();
     private LocationFormSection locationForm;
+    private final Button finishButton;
 
     private final Dispatcher dispatcher;
     private final ActivityDTO activity;
@@ -130,7 +131,7 @@ public class SiteDialog extends Window {
 
         }
 
-        addSection(FormSectionModel.forComponent(new CommentSection())
+        addSection(FormSectionModel.forComponent(new CommentSection(315, 330))
             .withHeader(I18N.CONSTANTS.comments())
             .withDescription(I18N.CONSTANTS.siteDialogComments()));
 
@@ -149,12 +150,17 @@ public class SiteDialog extends Window {
                 }
             });
 
-        Button finishButton = new Button(I18N.CONSTANTS.save(),
+        finishButton = new Button(I18N.CONSTANTS.save(),
             IconImageBundle.ICONS.save(), new SelectionListener<ButtonEvent>() {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    onSaveClicked();
+                    finishButton.disable();
+                    if (validateSections()) {
+                        saveLocation();
+                    } else {
+                        finishButton.enable();
+                    }
                 }
             });
 
@@ -202,12 +208,6 @@ public class SiteDialog extends Window {
         sections.add(model.getSection());
     }
 
-    private void onSaveClicked() {
-        if (validateSections()) {
-            saveLocation();
-        }
-    }
-
     private boolean validateSections() {
         for (FormSectionModel<SiteDTO> section : navigationListView.getStore()
             .getModels()) {
@@ -231,8 +231,7 @@ public class SiteDialog extends Window {
 
             @Override
             public void onFailure(Throwable caught) {
-                MessageBox.alert(I18N.CONSTANTS.saving(),
-                    I18N.CONSTANTS.serverError(), null);
+                showError(caught);
             }
         });
     }
@@ -294,7 +293,8 @@ public class SiteDialog extends Window {
     }
 
     private void showError(Throwable caught) {
-        if (caught instanceof NotAuthorizedException) {
+        finishButton.enable();
+        if (caught != null && caught instanceof NotAuthorizedException) {
             MessageBox.alert(I18N.CONSTANTS.dataEntry(),
                 I18N.CONSTANTS.notAuthorized(), null);
         } else {
