@@ -30,17 +30,26 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 
 public class CommentSection extends FormSectionWithFormLayout<SiteDTO> {
 
-    private TextArea commentField;
+    private final TextArea commentField;
 
-    public CommentSection() {
-
+    public CommentSection(int width, int height) {
         getFormLayout().setLabelAlign(LabelAlign.TOP);
 
         commentField = new TextArea();
         commentField.setName("comments");
         commentField.setFieldLabel(I18N.CONSTANTS.comments());
-        commentField.setWidth(350);
+        if (width > 0) {
+            getFormLayout().setDefaultWidth(width);
+            commentField.setWidth(width);
+        }
+        if (height > 0) {
+            commentField.setHeight(height);
+        }
         add(commentField);
+    }
+
+    public CommentSection() {
+        this(350, 0);
     }
 
     @Override

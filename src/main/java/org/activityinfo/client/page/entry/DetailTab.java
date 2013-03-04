@@ -29,6 +29,7 @@ import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -41,6 +42,8 @@ public class DetailTab extends TabItem {
     public DetailTab(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
         setText(I18N.CONSTANTS.details());
+
+        this.setScrollMode(Scroll.AUTO);
 
         content = new Html();
         content.setStyleName("details");

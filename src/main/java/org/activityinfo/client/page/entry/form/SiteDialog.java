@@ -131,7 +131,7 @@ public class SiteDialog extends Window {
 
         }
 
-        addSection(FormSectionModel.forComponent(new CommentSection())
+        addSection(FormSectionModel.forComponent(new CommentSection(315, 330))
             .withHeader(I18N.CONSTANTS.comments())
             .withDescription(I18N.CONSTANTS.siteDialogComments()));
 
