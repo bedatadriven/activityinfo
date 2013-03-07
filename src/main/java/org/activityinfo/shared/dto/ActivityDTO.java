@@ -396,6 +396,15 @@ public final class ActivityDTO
         }
         return null;
     }
+    
+    public AttributeGroupDTO getAttributeGroupByName(String attributeName) {
+        for (AttributeGroupDTO group : attributeGroups) {
+            if (group.getName().equalsIgnoreCase(attributeName)) {
+                return group;
+            }
+        }
+        return null;
+    }
 
     @Override
     public String getKey() {

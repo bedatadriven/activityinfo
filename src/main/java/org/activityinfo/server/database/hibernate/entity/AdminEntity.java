@@ -40,11 +40,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * @author Alex Bertram
  */
 @Entity
 @Table(name = "AdminEntity")
+@JsonAutoDetect(JsonMethod.NONE)
 public class AdminEntity implements java.io.Serializable {
 
     private int id;
@@ -69,6 +74,7 @@ public class AdminEntity implements java.io.Serializable {
     }
 
     @Id
+    @JsonProperty
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AdminEntityId", unique = true, nullable = false)
     public int getId() {
@@ -114,6 +120,7 @@ public class AdminEntity implements java.io.Serializable {
         this.parent = parent;
     }
 
+    @JsonProperty
     @Column(name = "Name", nullable = false, length = 50)
     public String getName() {
         return this.name;
@@ -132,6 +139,7 @@ public class AdminEntity implements java.io.Serializable {
         this.soundex = soundex;
     }
 
+    @JsonProperty
     @Column(name = "Code", length = 15)
     public String getCode() {
         return this.code;
@@ -142,6 +150,7 @@ public class AdminEntity implements java.io.Serializable {
     }
 
     @Embedded
+    @JsonProperty
     public Bounds getBounds() {
         return bounds;
     }
@@ -204,5 +213,4 @@ public class AdminEntity implements java.io.Serializable {
     public int hashCode() {
         return getId();
     }
-
 }

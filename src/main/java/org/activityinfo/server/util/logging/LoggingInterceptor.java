@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import javax.mail.MessagingException;
 
 import org.activityinfo.server.mail.MailSender;
-import org.activityinfo.server.mail.MessageBuilder;
+import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -124,13 +124,13 @@ public class LoggingInterceptor implements MethodInterceptor {
     }
 
     private void sendMail(Throwable caught) throws MessagingException {
-        MessageBuilder email = new MessageBuilder();
+        Message email = new Message();
         for (String address : alertRecipients) {
             email.to(address);
         }
         email.subject("[ACTIVITYINFO EXCEPTION] " + caught.getMessage());
         email.body(stackTraceToString(caught));
-        mailSender.send(email.build());
+        mailSender.send(email);
     }
 
     private String stackTraceToString(Throwable caught) {

@@ -24,7 +24,7 @@ package org.activityinfo.server.mail;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 
-public class PasswordExpiredMessage extends MailMessage {
+public class PasswordExpiredMessage extends MessageModel {
 
     private User user;
 

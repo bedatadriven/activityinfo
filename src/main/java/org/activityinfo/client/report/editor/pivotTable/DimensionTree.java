@@ -34,12 +34,9 @@ import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
 import org.activityinfo.client.page.report.ReportEventHelper;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
-import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
-import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateUnit;
@@ -162,7 +159,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
         this.model = model;
         applyModelState();
     }
-
+    
     @Override
     public PivotTableReportElement getModel() {
         return model;
@@ -183,24 +180,71 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
                     @Override
                     public void onSuccess(SchemaDTO result) {
                         populateIndicatorSpecificDimensions(result);
-                        applyModelState();
+                        applyModelState(result);
                     }
                 });
         }
     }
+    
+
 
     private void applyModelState() {
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+               
+            }
+
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                applyModelState(result);
+            }
+        });
+    }
+
+
+    private void applyModelState(SchemaDTO schema) {
         for (DimensionModel node : store.getAllItems()) {
             if (node.hasDimension()) {
                 treePanel.setChecked(
                     node,
-                    model.getRowDimensions().contains(node.getDimension())
-                        ||
-                        model.getColumnDimensions().contains(
-                            node.getDimension()));
-
+                    isDimensionSelected(schema, node.getDimension()));
             }
         }
+    }
+
+    private boolean isDimensionSelected(SchemaDTO schema, Dimension dim) {
+        return isDimensionSelected(schema, model.getRowDimensions(), dim) ||
+            isDimensionSelected(schema, model.getColumnDimensions(), dim);
+    }
+
+    private boolean isDimensionSelected(SchemaDTO schema, List<Dimension> dims,
+        Dimension dim) {
+
+        if (dim instanceof AttributeGroupDimension) {
+            return isAttributeDimensionSelected(schema, dims, (AttributeGroupDimension) dim);
+        } else {
+            return dims.contains(dim);
+        }
+    }
+
+    private boolean isAttributeDimensionSelected(SchemaDTO schema,
+        List<Dimension> dims, AttributeGroupDimension dim) {
+        
+        String name = schema.getAttributeGroupNameSafe(dim.getAttributeGroupId());
+        
+        for (Dimension selectedDim : dims) {
+            if (selectedDim instanceof AttributeGroupDimension) {
+                int selectedId = ((AttributeGroupDimension)selectedDim).getAttributeGroupId();
+                String selectedName = schema.getAttributeGroupNameSafe(selectedId);
+                if (selectedName.equalsIgnoreCase(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+        
     }
 
     private boolean needToReloadDimensions(PivotTableReportElement model) {
@@ -249,21 +293,13 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
             store.remove(model);
         }
         attributeDimensions.clear();
-
-        for (UserDatabaseDTO db : schema.getDatabases()) {
-            for (ActivityDTO activity : db.getActivities()) {
-                if (activity.containsAny(model.getIndicators())) {
-                    for (AttributeGroupDTO attributeGroup : activity
-                        .getAttributeGroups()) {
-                        DimensionModel dimModel = new DimensionModel(
-                            attributeGroup);
-                        store.add(dimModel, false);
-                        attributeDimensions.add(dimModel);
-                    }
-                }
-            }
-        }
+        
+        List<DimensionModel> models = DimensionModel.attributeGroupModels(schema, model.getIndicators());
+        
+        store.add(models, false);
+        attributeDimensions.addAll(models);
     }
+
 
     private void updateModelAfterCheckChange(
         TreePanelEvent<DimensionModel> event) {

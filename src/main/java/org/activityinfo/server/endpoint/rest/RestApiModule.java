@@ -24,26 +24,13 @@ package org.activityinfo.server.endpoint.rest;
 
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
-import com.wordnik.swagger.jaxrs.JaxrsApiReader;
-
 public class RestApiModule extends AbstractRestModule {
 
     @Override
     protected void configureResources() {
 
-        configureSwagger();
+        bindResource(RootResource.class);
 
-        bindResource(HxlResources.class);
-        bind(SwaggerConfigProvider.class);
-        bindResource(ApiListingResource.class);
-        bindResource(CountryResource.class);
-
-    }
-
-    private void configureSwagger() {
-        // disable .json and .xml suffixes on rest resources
-        // ick!
-        JaxrsApiReader.setFormatString("");
     }
 
 }

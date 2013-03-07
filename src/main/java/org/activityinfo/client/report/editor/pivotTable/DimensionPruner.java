@@ -112,8 +112,10 @@ public class DimensionPruner implements
     private boolean isApplicable(SchemaDTO schema,
         Set<ActivityDTO> activities, AttributeGroupDimension dim) {
 
+        String attributeName = schema.getAttributeGroupNameSafe(dim.getAttributeGroupId());
+        
         for (ActivityDTO activity : activities) {
-            if (activity.getAttributeGroupById(dim.getAttributeGroupId()) != null) {
+            if (activity.getAttributeGroupByName(attributeName) != null) {
                 return true;
             }
         }

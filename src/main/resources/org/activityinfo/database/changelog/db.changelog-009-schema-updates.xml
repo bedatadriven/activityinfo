@@ -22,37 +22,35 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-  <changeSet author="alex" id="009-01">
-    <comment>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+	<changeSet author="alex" id="009-01">
+		<comment>
 			We're using the timeEdited field as a rough versioning mechanism to detect
 			when users need to synchronize, so we want pretty good resolution, and 
 			we don't need MySQL mucking around with the timestamps
 		</comment>
-
-    <addColumn tableName="userdatabase">
-      <column name="version" type="BIGINT" defaultValueNumeric="0">
-        <constraints nullable="false" />
-      </column>
-    </addColumn>
-    <addColumn tableName="userpermission">
-      <column name="version" type="BIGINT" defaultValueNumeric="0">
-        <constraints nullable="false" />
-      </column>
-    </addColumn>				
+		
+		<addColumn tableName="userdatabase">
+			<column name="version" type="BIGINT" defaultValueNumeric="0">
+				<constraints nullable="false"/>
+			</column>	
+		</addColumn>		
+		<addColumn tableName="userpermission">
+			<column name="version" type="BIGINT" defaultValueNumeric="0">
+				<constraints nullable="false"/>
+			</column>	
+		</addColumn>				
 		
 		<!--  We don't want to delete the lastSchemaUpdate columns just yet -->
-    <addDefaultValue tableName="userdatabase"
-      columnName="lastSchemaUpdate" defaultValue="0000-00-00" />
-    <addDefaultValue tableName="userpermission"
-      columnName="lastSchemaUpdate" defaultValue="0000-00-00" />
-
-    <sql>
-      UPDATE userdatabase SET version = UNIX_TIMESTAMP()*1000;
-      UPDATE userpermission SET version = UNIX_TIMESTAMP()*1000;
-    </sql>
-
-  </changeSet>
+		<addDefaultValue tableName="userdatabase" columnName="lastSchemaUpdate" defaultValue="0000-00-00"/>
+		<addDefaultValue tableName="userpermission" columnName="lastSchemaUpdate" defaultValue="0000-00-00"/>
+		
+		<sql>
+			UPDATE userdatabase SET version = UNIX_TIMESTAMP()*1000;
+			UPDATE userpermission SET version = UNIX_TIMESTAMP()*1000;
+		</sql>
+		
+	</changeSet>
 </databaseChangeLog>

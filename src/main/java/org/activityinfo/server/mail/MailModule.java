@@ -42,7 +42,7 @@ public class MailModule extends AbstractModule {
         if (config.hasProperty("postmark.key")) {
             return injector.getInstance(PostmarkMailSender.class);
         } else {
-            return injector.getInstance(MailSenderImpl.class);
+            return injector.getInstance(SmtpMailSender.class);
         }
 
     }

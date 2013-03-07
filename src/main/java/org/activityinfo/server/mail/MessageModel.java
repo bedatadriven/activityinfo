@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.jsonrpc;
+package org.activityinfo.server.mail;
 
 /*
  * #%L
@@ -22,16 +22,27 @@ package org.activityinfo.server.endpoint.jsonrpc;
  * #L%
  */
 
-public class JsonRpcException extends Exception {
+import org.activityinfo.server.database.hibernate.entity.User;
 
-    private int statusCode;
+public abstract class MessageModel {
 
-    public JsonRpcException(int statusCode, String message) {
-        super(message);
-        this.statusCode = statusCode;
+    public abstract User getRecipient();
+
+    public String getSubjectKey() {
+        String key = getMessageName() + "Subject";
+        return key.substring(0, 1).toLowerCase() + key.substring(1);
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    public String getTemplateName() {
+        return "mail/" + getMessageName() + ".ftl";
+    }
+
+    private String getMessageName() {
+        if (!getClass().getSimpleName().endsWith("Message")) {
+            throw new RuntimeException(
+                "MailMessage subclasses must end in 'Message'!");
+        }
+        return getClass().getSimpleName().substring(0,
+            getClass().getSimpleName().length() - "Message".length());
     }
 }

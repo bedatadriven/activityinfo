@@ -83,10 +83,10 @@ public class GetAdminEntitiesHandler implements
             SqlQuery subQuery = SqlQuery.select("link.AdminEntityId")
                 .from(Tables.SITE, "site")
                 .leftJoin(Tables.LOCATION, "Location")
-                .on("Location.LocationId = Site.LocationId")
+                .on("Location.LocationId = site.LocationId")
                 .leftJoin(Tables.LOCATION_ADMIN_LINK, "link")
                 .on("link.LocationId = Location.LocationId")
-                .where("Site.ActivityId")
+                .where("site.ActivityId")
                 .in(cmd.getFilter().getRestrictions(DimensionType.Activity));
 
             query.where("AdminEntity.AdminEntityId").in(subQuery);

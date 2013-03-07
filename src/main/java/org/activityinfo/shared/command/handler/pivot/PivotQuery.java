@@ -29,6 +29,7 @@ import java.util.Set;
 import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.PivotSites;
+import org.activityinfo.shared.command.handler.pivot.bundler.AttributeBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.Bundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.EntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.MonthBundler;
@@ -285,46 +286,56 @@ public class PivotQuery {
                     tableAlias + ".Name");
 
             } else if (dimension instanceof AttributeGroupDimension) {
-                // this pivots the data by a single-valued attribute group
-
-                AttributeGroupDimension attrGroupDim = (AttributeGroupDimension) dimension;
-
-                String valueQueryAlias = "attributeValues"
-                    + attrGroupDim.getAttributeGroupId();
-                String labelQueryAlias = "attributeLabels"
-                    + attrGroupDim.getAttributeGroupId();
-
-                // this first query gives us the single chosen attribute for
-                // each
-                // site, arbitrarily taking the attribute with the minimum id if
-                // more
-                // than one attribute has been selected (i.e db is inconsistent)
-                SqlQuery derivedValueQuery = SqlQuery
-                    .select()
-                    .appendColumn("v.siteId", "siteId")
-                    .appendColumn("min(v.attributeId)", "attributeId")
-                    .from("attributevalue", "v")
-                    .leftJoin("attribute", "a")
-                    .on("v.AttributeId = a.AttributeId")
-                    .whereTrue("v.value=1")
-                    .whereTrue(
-                        "a.attributeGroupId="
-                            + attrGroupDim.getAttributeGroupId())
-                    .groupBy("v.siteId");
-
-                query.leftJoin(derivedValueQuery, valueQueryAlias)
-                    .on(baseTable.getDimensionIdColumn(DimensionType.Site)
-                        + "=" + valueQueryAlias + ".SiteId");
-
-                // now we need the names of the attributes we've just selected
-                query.leftJoin("attribute", labelQueryAlias)
-                    .on(valueQueryAlias + ".AttributeId=" + labelQueryAlias
-                        + ".AttributeId");
-
-                addEntityDimension(attrGroupDim, valueQueryAlias
-                    + ".AttributeId", labelQueryAlias + ".Name");
+                defineAttributeDimension((AttributeGroupDimension)dimension);
             }
         }
+    }
+    
+    /**
+     * Defines an a dimension based on an Attribute Group defined
+     * by the user. This is essentially a custom dimension
+     * @param dimension
+     */
+    private void defineAttributeDimension(AttributeGroupDimension dim) {
+        // this pivots the data by a single-valued attribute group
+
+        String valueQueryAlias = "attributeValues"
+            + dim.getAttributeGroupId();
+
+        // this first query gives us the single chosen attribute for
+        // each site, arbitrarily taking the attribute with the minimum
+        // id if more than one attribute has been selected (i.e db is inconsistent)
+        
+        // note that we select attributes by NAME rather than
+        // the attribute group id itself. This permits merging 
+        // of attributes from other activities/dbs with the same name
+        
+        SqlQuery groupNameQuery = SqlQuery
+            .select()
+            .appendColumn("name")
+            .from(Tables.ATTRIBUTE_GROUP)
+            .whereTrue("AttributeGroupId=" + dim.getAttributeGroupId());
+        
+        SqlQuery derivedValueQuery = SqlQuery
+            .select()
+            .appendColumn("v.siteId", "siteId")
+            .appendColumn("min(a.name)", "value")
+            .appendColumn("min(a.sortOrder)", "sortOrder")
+            .from("attributevalue", "v")
+            .leftJoin("attribute", "a").on("v.AttributeId = a.AttributeId")
+            .leftJoin("attributegroup", "g").on("a.AttributeGroupId=g.AttributeGroupId")
+            .whereTrue("v.value=1")
+            .where("g.name").in(groupNameQuery)
+            .groupBy("v.siteId");
+
+        query.leftJoin(derivedValueQuery, valueQueryAlias)
+            .on(baseTable.getDimensionIdColumn(DimensionType.Site)
+                + "=" + valueQueryAlias + ".SiteId");
+        
+        String valueAlias = appendDimColumn(valueQueryAlias + ".value");
+        String sortOrderAlias = appendDimColumn(valueQueryAlias + ".sortOrder");
+
+        bundlers.add(new AttributeBundler(dim, valueAlias, sortOrderAlias));
     }
 
     private void addEntityDimension(Dimension dimension, String id, String label) {

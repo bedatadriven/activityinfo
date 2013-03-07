@@ -24,7 +24,7 @@ package org.activityinfo.server.mail;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 
-public class ResetPasswordMessage extends MailMessage {
+public class ResetPasswordMessage extends MessageModel {
     private User user;
 
     public ResetPasswordMessage(User user) {

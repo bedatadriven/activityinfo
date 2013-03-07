@@ -22,23 +22,23 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-  <changeSet author="alex" id="011-01">
-    <comment>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+	<changeSet author="alex" id="011-01">
+		<comment>
 			Increase the length of allowable indicator names
 		</comment>
-    <addColumn tableName="adminlevel">
-      <column name="polygons" type="boolean" defaultValueBoolean="true">
-        <constraints nullable="false" />
-      </column>
-    </addColumn>
-  </changeSet>
-  <changeSet author="alex" id="011-02">
-    <comment>
+		<addColumn tableName="adminlevel">
+			<column name="polygons" type="boolean" defaultValueBoolean="true">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+	<changeSet author="alex" id="011-02">
+		<comment>
 			Cleans up disused field
 		</comment>
-    <dropColumn tableName="adminlevel" columnName="AllowAdd" />
-  </changeSet>
+		<dropColumn tableName="adminlevel" columnName="AllowAdd"/>
+	</changeSet>
 </databaseChangeLog>

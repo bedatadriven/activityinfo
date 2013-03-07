@@ -24,7 +24,7 @@ package org.activityinfo.server.mail;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 
-public class InvitationMessage extends MailMessage {
+public class InvitationMessage extends MessageModel {
     private User newUser;
     private User invitingUser;
 

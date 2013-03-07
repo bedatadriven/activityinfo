@@ -35,8 +35,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 @Entity
+@JsonAutoDetect(JsonMethod.NONE)
 public class AdminLevel implements java.io.Serializable {
 
     private int id;
@@ -46,6 +52,7 @@ public class AdminLevel implements java.io.Serializable {
     private boolean polygons;
     private Set<AdminEntity> entities = new HashSet<AdminEntity>(0);
     private Set<AdminLevel> childLevels = new HashSet<AdminLevel>(0);
+    private Set<LocationType> boundLocationTypes = new HashSet<LocationType>(0);
 
     public AdminLevel() {
     }
@@ -57,6 +64,7 @@ public class AdminLevel implements java.io.Serializable {
     }
 
     @Id
+    @JsonProperty
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AdminLevelId", unique = true, nullable = false)
     public int getId() {
@@ -82,11 +90,22 @@ public class AdminLevel implements java.io.Serializable {
     public AdminLevel getParent() {
         return this.parent;
     }
+    
+    @Transient
+    @JsonProperty
+    public Integer getParentId() {
+        if (getParent() == null) {
+            return null;
+        } else {
+            return getParent().getId();
+        }
+    }
 
     public void setParent(AdminLevel adminLevel) {
         this.parent = adminLevel;
     }
 
+    @JsonProperty
     @Column(name = "Name", nullable = false, length = 30)
     public String getName() {
         return this.name;
@@ -109,11 +128,21 @@ public class AdminLevel implements java.io.Serializable {
     public Set<AdminEntity> getEntities() {
         return this.entities;
     }
+    
 
     public void setEntities(Set<AdminEntity> entities) {
         this.entities = entities;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "boundAdminLevel")
+    public Set<LocationType> getBoundLocationTypes() {
+        return this.boundLocationTypes;
+    }
+    
+    public void setBoundLocationTypes(Set<LocationType> locationTypes) {
+        this.boundLocationTypes = locationTypes;
+    }
+    
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
     public Set<AdminLevel> getChildLevels() {
         return this.childLevels;

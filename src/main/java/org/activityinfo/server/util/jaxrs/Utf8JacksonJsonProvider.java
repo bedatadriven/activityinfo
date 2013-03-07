@@ -10,8 +10,10 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.http.HttpHeaders;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+
 
 /**
  * Wraps the JacksonJsonProvider to refine the ObjectMapper and 
@@ -40,6 +42,7 @@ public class Utf8JacksonJsonProvider extends JacksonJsonProvider {
     private static ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // mapper.registerModule(new JsonDtoModule("dto",
         // Version.unknownVersion()));
         return mapper;

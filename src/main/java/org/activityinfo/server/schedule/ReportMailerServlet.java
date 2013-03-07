@@ -65,17 +65,17 @@ public class ReportMailerServlet extends HttpServlet {
         // for testing purposes, check for an id parameter that will only
         // dispatch
         // a single report
-        if (Strings.isNullOrEmpty(req.getParameter("reportId"))) {
+        if (Strings.isNullOrEmpty(req.getParameter("userId"))) {
             return Predicates.alwaysTrue();
         }
 
-        final int reportId = Integer.parseInt(req.getParameter("reportId"));
+        final int userId = Integer.parseInt(req.getParameter("userId"));
 
         return new Predicate<ReportSubscription>() {
 
             @Override
             public boolean apply(@Nullable ReportSubscription input) {
-                return input != null && input.getId().getReportId() == reportId;
+                return input != null && input.getId().getUserId() == userId;
             }
         };
     }

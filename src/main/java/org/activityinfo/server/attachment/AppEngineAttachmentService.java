@@ -34,6 +34,8 @@ import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.activityinfo.server.util.blob.BlobService;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 
@@ -46,12 +48,23 @@ import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.api.files.GSFileOptions.GSFileOptionsBuilder;
 import com.google.common.io.ByteStreams;
+import com.google.inject.Inject;
 
 public class AppEngineAttachmentService implements AttachmentService {
 
     private BlobstoreService blobstoreService = BlobstoreServiceFactory
         .getBlobstoreService();
+    
+    private final BlobService blobService;
+    private final String attachmentRoot;
 
+    @Inject
+    public AppEngineAttachmentService(BlobService blobService, DeploymentConfiguration config) {
+        this.blobService = blobService;
+        this.attachmentRoot = config.getProperty("attachment.blob.root", "/gs/activityinfo-attachments");
+    }
+    
+    
     @Override
     public void serveAttachment(String blobId, HttpServletResponse response)
         throws IOException {

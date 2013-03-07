@@ -24,6 +24,8 @@ package org.activityinfo.server.login;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Provider;
 import javax.persistence.NoResultException;
@@ -52,6 +54,8 @@ import com.sun.jersey.api.view.Viewable;
 @Path(ResetPasswordController.ENDPOINT)
 public class ResetPasswordController {
     public static final String ENDPOINT = "/loginProblem";
+    
+    private static final Logger LOGGER = Logger.getLogger(ResetPasswordController.class.getName());
 
     @Inject
     private MailSender mailer;
@@ -91,6 +95,9 @@ public class ResetPasswordController {
             return model.asViewable();
 
         } catch (Exception e) {
+            
+            LOGGER.log(Level.SEVERE, "Failed to send password reset email", e);
+            
             ResetPasswordPageModel model = new ResetPasswordPageModel();
             model.setEmailError(true);
 

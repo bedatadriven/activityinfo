@@ -25,6 +25,8 @@ package org.activityinfo.client.report.editor.pivotTable;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.activityinfo.client.MockEventBus;
 import org.activityinfo.client.dispatch.DispatcherStub;
 import org.activityinfo.client.page.report.ReportChangeEvent;
@@ -43,8 +45,12 @@ import org.junit.Test;
 
 public class DimensionPrunerTest {
 
-    private static final int FUNDING_GROUP_ID = 102;
+    private static final int NFI_FUNDING_GROUP_ID = 102;
+    private static final int FAIR_FUNDING_GROUP_ID = 103;
+
     private static final int NB_MENAGES_INDICATOR_ID = 101;
+    private static final int VOUCHER_INDICATOR_ID = 102;
+
     private SchemaDTO schema;
     private DispatcherStub dispatcher = new DispatcherStub();
     private MockEventBus eventBus = new MockEventBus();
@@ -58,12 +64,25 @@ public class DimensionPrunerTest {
         nbMenages.setName("Nb Menages");
         dist.getIndicators().add(nbMenages);
 
-        AttributeGroupDTO funding = new AttributeGroupDTO(FUNDING_GROUP_ID);
-        funding.setName("Funding Source");
-        dist.getAttributeGroups().add(funding);
+        AttributeGroupDTO distFunding = new AttributeGroupDTO(NFI_FUNDING_GROUP_ID);
+        distFunding.setName("Funding Source");
+        dist.getAttributeGroups().add(distFunding);
 
+
+        ActivityDTO fairs = new ActivityDTO(2, "Faire");
+        
+        AttributeGroupDTO fairFunding = new AttributeGroupDTO(FAIR_FUNDING_GROUP_ID);
+        fairFunding.setName("Funding Source");
+        fairs.getAttributeGroups().add(fairFunding);
+        
+        IndicatorDTO voucherValue = new IndicatorDTO();
+        voucherValue.setId(VOUCHER_INDICATOR_ID);
+        voucherValue.setName("Voucher Value");
+        fairs.getIndicators().add(voucherValue);
+        
         UserDatabaseDTO nfi = new UserDatabaseDTO(1, "NFI");
         nfi.getActivities().add(dist);
+        nfi.getActivities().add(fairs);
 
         this.schema = new SchemaDTO();
         schema.getDatabases().add(nfi);
@@ -85,7 +104,7 @@ public class DimensionPrunerTest {
         eventBus.fireEvent(new ReportChangeEvent(this, table));
 
         AttributeGroupDimension groupDim = new AttributeGroupDimension(
-            FUNDING_GROUP_ID);
+            NFI_FUNDING_GROUP_ID);
         table.addColDimension(groupDim);
         eventBus.fireEvent(new ReportChangeEvent(this, table));
 
@@ -97,5 +116,34 @@ public class DimensionPrunerTest {
         eventBus.fireEvent(new ReportChangeEvent(this, table));
 
         assertFalse(table.getColumnDimensions().contains(groupDim));
+    }
+    
+    @Test
+    public void testMergedAttributes() {
+        PivotTableReportElement table = new PivotTableReportElement();
+
+        DimensionPruner pruner = new DimensionPruner(eventBus, dispatcher);
+        pruner.bind(table);
+
+        table.getFilter().addRestriction(DimensionType.Indicator,
+            Arrays.asList(NB_MENAGES_INDICATOR_ID, VOUCHER_INDICATOR_ID));
+        
+        table.addColDimension(new Dimension(DimensionType.Indicator));
+        eventBus.fireEvent(new ReportChangeEvent(this, table));
+
+        AttributeGroupDimension groupDim = new AttributeGroupDimension(
+            NFI_FUNDING_GROUP_ID);
+        table.addColDimension(groupDim);
+        eventBus.fireEvent(new ReportChangeEvent(this, table));
+        
+        // now remove the first indicator and verify that the attribute group
+        // has NOT been removed, because it shares a name with the other attrib group
+        
+        table.getFilter().clearRestrictions(DimensionType.Indicator);
+        table.getFilter().addRestriction(DimensionType.Indicator, VOUCHER_INDICATOR_ID);
+        eventBus.fireEvent(new ReportChangeEvent(this, table));
+
+        assertTrue(table.getColumnDimensions().contains(groupDim));
+        
     }
 }

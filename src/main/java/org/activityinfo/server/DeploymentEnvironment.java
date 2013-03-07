@@ -23,11 +23,12 @@ package org.activityinfo.server;
  */
 
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.common.base.Strings;
 
 public class DeploymentEnvironment {
 
     public static boolean isAppEngine() {
-        return true;
+        return !Strings.isNullOrEmpty(SystemProperty.applicationId.get());
     }
 
     public static boolean isAppEngineProduction() {
@@ -36,7 +37,6 @@ public class DeploymentEnvironment {
 
     public static boolean isAppEngineDevelopment() {
         return SystemProperty.environment.value() == SystemProperty.Environment.Value.Development;
-
     }
 
 }

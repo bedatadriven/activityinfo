@@ -42,7 +42,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class LocationType implements Serializable, SchemaElement {
-
+    
     private int id;
     private boolean reuse;
     private String name;
