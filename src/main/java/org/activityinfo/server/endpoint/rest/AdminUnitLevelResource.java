@@ -25,6 +25,7 @@ package org.activityinfo.server.endpoint.rest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
@@ -35,7 +36,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -50,7 +50,6 @@ import org.activityinfo.server.endpoint.rest.model.UpdatedAdminLevel;
 import org.activityinfo.server.util.blob.BlobNotFoundException;
 import org.activityinfo.server.util.blob.BlobService;
 import org.activityinfo.shared.auth.AuthenticatedUser;
-import org.apache.log4j.Logger;
 
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.NotFoundException;

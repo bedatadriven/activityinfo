@@ -46,7 +46,6 @@ import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.wordnik.swagger.annotations.ApiParam;
 
 @Path("/resources")
 public class RootResource {
@@ -91,7 +90,7 @@ public class RootResource {
 
     @Path("/country/{id: [0-9]+}")
     public CountryResource getCountryById(
-        @ApiParam(value = "ID of the country to be fetched", required = true, defaultValue = "1") @PathParam("id") int id) {
+       @PathParam("id") int id) {
         return new CountryResource((Country)entityManager.get().find(Country.class, id));
     }
 
