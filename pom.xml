@@ -27,6 +27,7 @@
     <display.version>${project.version}</display.version>
 
     <gae.version>1.7.4</gae.version>
+    
     <gae.application.version>2</gae.application.version>
 
     <jersey.version>1.17</jersey.version>

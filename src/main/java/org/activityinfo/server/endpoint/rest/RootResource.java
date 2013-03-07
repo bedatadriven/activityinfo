@@ -31,9 +31,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
+import org.activityinfo.server.database.hibernate.entity.Country;
+import org.activityinfo.server.util.blob.BlobService;
 import org.activityinfo.shared.command.GetCountries;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.CountryDTO;
@@ -43,19 +46,23 @@ import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.wordnik.swagger.annotations.ApiParam;
 
 @Path("/resources")
-public class HxlResources {
+public class RootResource {
 
     private Provider<EntityManager> entityManager;
+    private BlobService blobService;
     private DispatcherSync dispatcher;
 
     @Inject
-    public HxlResources(Provider<EntityManager> entityManager,
+    public RootResource(Provider<EntityManager> entityManager,
+        BlobService blobService,
         DispatcherSync dispatcher) {
         super();
         this.entityManager = entityManager;
         this.dispatcher = dispatcher;
+        this.blobService = blobService;
     }
 
     @Path("/adminUnit/{id}")
@@ -80,6 +87,22 @@ public class HxlResources {
     public List<CountryDTO> getCountries() {
         return dispatcher.execute(new GetCountries()).getData();
     }
+    
+
+    @Path("/country/{id: [0-9]+}")
+    public CountryResource getCountryById(
+        @ApiParam(value = "ID of the country to be fetched", required = true, defaultValue = "1") @PathParam("id") int id) {
+        return new CountryResource((Country)entityManager.get().find(Country.class, id));
+    }
+
+    @Path("/country/{code: [A-Z]+}")
+    public CountryResource getCountryByCode(@PathParam("code") String code) {
+
+        return new CountryResource((Country) entityManager.get()
+            .createQuery("select c from Country c where c.codeISO = :iso")
+            .setParameter("iso", code)
+            .getSingleResult());
+    }
 
     @GET
     @Path("/databases")
@@ -101,8 +124,8 @@ public class HxlResources {
 
     @Path("/adminUnitLevel/{id}")
     public AdminUnitLevelResource getAdminUnitLevel(@PathParam("id") int id) {
-        return new AdminUnitLevelResource(entityManager.get().find(
+        return new AdminUnitLevelResource(entityManager, blobService, entityManager.get().find(
             AdminLevel.class, id));
     }
-
+    
 }

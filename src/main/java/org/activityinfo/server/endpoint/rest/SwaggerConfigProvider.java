@@ -37,10 +37,9 @@ import com.google.inject.Singleton;
 import com.sun.jersey.spi.inject.SingletonTypeInjectableProvider;
 
 /**
- * Workaround for Swagger, which requires ServletConfig to be injected.
- * Some how this doesn't work with Guice Container so we'll just inject 
- * what we need.
- *
+ * Workaround for Swagger, which requires ServletConfig to be injected. Some how
+ * this doesn't work with Guice Container so we'll just inject what we need.
+ * 
  */
 @Provider
 @Singleton
@@ -54,11 +53,14 @@ public class SwaggerConfigProvider extends
 
     private static class Config implements ServletConfig {
 
-        private Map<String, String> initParams = Maps.newHashMap();
-        private ServletContext servletContext;
+        private final Map<String, String> initParams = Maps.newHashMap();
+        private final ServletContext servletContext;
 
         public Config(ServletContext servletContext) {
             this.servletContext = servletContext;
+            this.initParams.put("swagger.api.basepath",
+                "http://localhost:8888");
+            this.initParams.put("api.version", "0.1");
         }
 
         @Override

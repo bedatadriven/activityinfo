@@ -20,35 +20,25 @@
   <http://www.gnu.org/licenses/gpl-3.0.html>.
   #L%
   -->
+ 
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-000-initial.xml" />
-  <include file="org/activityinfo/database/changelog/db.changelog-001.xml" />
-  <include file="org/activityinfo/database/changelog/db.changelog-002.xml" />
-  <include file="org/activityinfo/database/changelog/db.changelog-003.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-004-timestamps.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-005-subscriptions.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-006-report-vis.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-007-fieldcleanup.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-008-charsets.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-009-schema-updates.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-010-indicator.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-011-polygons.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-012-email-notifications.xml" />
-  <include
-    file="org/activityinfo/database/changelog/db.changelog-013-site-history.xml" />
-
+  <include file="org/activityinfo/database/changelog/db.changelog-000-initial.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-001.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-002.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-003.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-004-timestamps.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-005-subscriptions.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-006-report-vis.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-007-fieldcleanup.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-008-charsets.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-009-schema-updates.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-010-indicator.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-011-polygons.xml"/> 
+  <include file="org/activityinfo/database/changelog/db.changelog-012-email-notifications.xml"/>
+  <include file="org/activityinfo/database/changelog/db.changelog-013-site-history.xml"/>
+  <include file="org/activityinfo/database/changelog/db.changelog-014-refine.xml"/>
+  <include file="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml"/>
+  
 </databaseChangeLog> 

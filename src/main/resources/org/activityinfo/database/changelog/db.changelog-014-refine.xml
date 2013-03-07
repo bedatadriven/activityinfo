@@ -22,30 +22,27 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-  <changeSet author="alex" id="014-01">
-    <comment>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	
+	<changeSet author="alex" id="014-01">
+		<comment>
 			Creates an index table for admin entities
 		</comment>
-    <createTable tableName="adminentity_soundex">
-      <column name="id" type="int">
-        <constraints nullable="false"
-          foreignKeyName="fk_adminentity_soundex_adminentity"
-          references="adminentity(adminentityid)" />
-      </column>
-      <column name="levelid" type="int">
-        <constraints nullable="false"
-          foreignKeyName="fk_adminentity_soundex_adminlevel" references="adminlevel(adminlevelid)" />
-      </column>
-      <column name="soundex" type="varchar(255)">
-        <constraints nullable="false" />
-      </column>
-      <column name="score" type="double">
-        <constraints nullable="false" />
-      </column>
-    </createTable>
-  </changeSet>
-
+		<createTable tableName="adminentity_soundex">
+			<column name="id" type="int">
+				<constraints nullable="false" foreignKeyName="fk_adminentity_soundex_adminentity" references="adminentity(adminentityid)" />
+			</column>
+			<column name="levelid" type="int">
+				<constraints nullable="false" foreignKeyName="fk_adminentity_soundex_adminlevel" references="adminlevel(adminlevelid)" />
+			</column>
+			<column name="soundex" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="score" type="double">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	
 </databaseChangeLog>
