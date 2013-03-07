@@ -94,7 +94,7 @@ public class AdminLevel implements java.io.Serializable {
     @Transient
     @JsonProperty
     public Integer getParentId() {
-        if(getParent() == null) {
+        if (getParent() == null) {
             return null;
         } else {
             return getParent().getId();

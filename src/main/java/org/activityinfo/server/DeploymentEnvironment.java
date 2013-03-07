@@ -37,7 +37,6 @@ public class DeploymentEnvironment {
 
     public static boolean isAppEngineDevelopment() {
         return SystemProperty.environment.value() == SystemProperty.Environment.Value.Development;
-
     }
 
 }

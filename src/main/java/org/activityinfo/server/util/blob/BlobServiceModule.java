@@ -21,13 +21,13 @@ public class BlobServiceModule extends AbstractModule {
     @Provides
     @Singleton
     public BlobService provideBlobService(DeploymentConfiguration config) {
-        if(DeploymentEnvironment.isAppEngine()) {
+        if (DeploymentEnvironment.isAppEngine()) {
             return new AppEngineBlobService();
         } else {
             String defaultRoot = System.getProperty("user.home") + File.separator + "activityinfo.blob";
             
             File blobRoot = new File(config.getProperty(BLOB_ROOT_KEY, defaultRoot));
-            if(blobRoot.exists() && !blobRoot.isDirectory()) {
+            if (blobRoot.exists() && !blobRoot.isDirectory()) {
                 throw new RuntimeException("blob.root must be a directory");
             }
             return new LocalBlobService(blobRoot);

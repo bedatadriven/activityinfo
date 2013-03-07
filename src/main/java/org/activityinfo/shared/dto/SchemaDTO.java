@@ -260,6 +260,21 @@ public final class SchemaDTO extends BaseModelData implements DTO {
         }
         return null;
     }
+    
+    /**
+     * Retrieves the name of the AttributeGroup from the Schema graph, 
+     * or returns "" if the attribute group cannot be found in the 
+     * loaded schema.
+     *
+     */
+    public String getAttributeGroupNameSafe(int attributeGroupId) {
+        AttributeGroupDTO group = getAttributeGroupById(attributeGroupId);
+        if (group == null) {
+            return "";
+        } else {
+            return group.getName();
+        }
+    }
 
     public AttributeDTO getAttributeById(int attributeId) {
         for (UserDatabaseDTO db : getDatabases()) {

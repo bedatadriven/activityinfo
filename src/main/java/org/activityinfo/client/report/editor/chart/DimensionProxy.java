@@ -29,12 +29,9 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.report.editor.pivotTable.DimensionModel;
 import org.activityinfo.shared.command.GetSchema;
-import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
-import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
-import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.DateUnit;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
@@ -90,9 +87,8 @@ public class DimensionProxy extends RpcProxy<ListLoadResult<DimensionModel>> {
                 @Override
                 public void onSuccess(SchemaDTO schema) {
                     addGeographicDimensions(list, schema);
-                    addAttributeDimensions(list, schema);
-                    callback.onSuccess(new BaseListLoadResult<DimensionModel>(
-                        list));
+                    list.addAll(DimensionModel.attributeGroupModels(schema, model.getIndicators()));
+                    callback.onSuccess(new BaseListLoadResult<DimensionModel>(list));
                 }
             });
         }
@@ -111,18 +107,5 @@ public class DimensionProxy extends RpcProxy<ListLoadResult<DimensionModel>> {
         }
     }
 
-    private void addAttributeDimensions(List<DimensionModel> list,
-        SchemaDTO schema) {
-        for (UserDatabaseDTO db : schema.getDatabases()) {
-            for (ActivityDTO activity : db.getActivities()) {
-                if (activity.containsAny(model.getIndicators())) {
-                    for (AttributeGroupDTO attributeGroup : activity
-                        .getAttributeGroups()) {
-                        list.add(new DimensionModel(attributeGroup));
-                    }
-                }
-            }
-        }
-    }
-
+   
 }

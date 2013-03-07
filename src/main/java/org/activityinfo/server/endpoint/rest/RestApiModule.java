@@ -24,8 +24,6 @@ package org.activityinfo.server.endpoint.rest;
 
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-
 public class RestApiModule extends AbstractRestModule {
 
     @Override

@@ -459,6 +459,16 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         assertThat().forIndicator(3).thereIsOneBucketWithValue(1500);
     }
 
+    @Test
+    @OnDataSet("/dbunit/attrib-merge.db.xml")
+    public void testAttributesAreMergedAcrossDbByName() {
+        withIndicatorAsDimension();
+        withAttributeGroupDim(1);
+        execute();
+        
+    }
+    
+    
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets,
         Dimension dim, DimensionCategory cat) {
         List<Bucket> matching = new ArrayList<Bucket>();

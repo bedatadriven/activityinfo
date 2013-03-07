@@ -58,13 +58,13 @@ import com.sun.jersey.api.view.Viewable;
 
 public class AdminUnitLevelResource {
 
-    private static final Logger LOGGER = Logger.getLogger(AdminUnitLevelResource.class.getName());
-    
+    private static final Logger LOGGER = Logger
+        .getLogger(AdminUnitLevelResource.class.getName());
+
     private Provider<EntityManager> entityManager;
     private AdminLevel level;
     private BlobService blobService;
-    
-    
+
     // TODO: create list of geoadmins per country
     private static final int SUPER_USER_ID = 3;
 
@@ -81,28 +81,29 @@ public class AdminUnitLevelResource {
     public Viewable get() {
         return new Viewable("/resource/AdminUnitLevel.ftl", level);
     }
-    
+
     @PUT
-    @Consumes(MediaType.APPLICATION_JSON)   
-    public Response update(@InjectParam AuthenticatedUser user, UpdatedAdminLevel updatedLevel) {
-        
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response update(@InjectParam AuthenticatedUser user,
+        UpdatedAdminLevel updatedLevel) {
+
         assertAuthorized(user);
-        
+
         entityManager.get().getTransaction().begin();
         AdminLevel level = entityManager.get().merge(this.level);
         level.setName(updatedLevel.getName());
-        
-        for(LocationType boundLocationType : level.getBoundLocationTypes()) {
+
+        for (LocationType boundLocationType : level.getBoundLocationTypes()) {
             boundLocationType.setName(updatedLevel.getName());
         }
-        
+
         entityManager.get().getTransaction().commit();
-  
+
         return Response.ok().build();
     }
 
     private void assertAuthorized(AuthenticatedUser user) {
-        if(user.getId() != SUPER_USER_ID) {
+        if (user.getId() != SUPER_USER_ID) {
             throw new WebApplicationException(Status.FORBIDDEN);
         }
     }
@@ -113,27 +114,29 @@ public class AdminUnitLevelResource {
     public Set<AdminEntity> getUnits() {
         return level.getEntities();
     }
-    
+
     @PUT
     @Path("/units")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUnits(@InjectParam AuthenticatedUser user, List<UpdatedAdminEntity> units) {
+    public Response updateUnits(@InjectParam AuthenticatedUser user,
+        List<UpdatedAdminEntity> units) {
 
         assertAuthorized(user);
 
         EntityManager em = entityManager.get();
         em.getTransaction().begin();
-        for(UpdatedAdminEntity updatedEntity : units) {
-            AdminEntity entity = em.find(AdminEntity.class, updatedEntity.getId());
+        for (UpdatedAdminEntity updatedEntity : units) {
+            AdminEntity entity = em.find(AdminEntity.class,
+                updatedEntity.getId());
             entity.setName(updatedEntity.getName());
             entity.setCode(updatedEntity.getCode());
             entity.setBounds(updatedEntity.getBounds());
         }
         em.getTransaction().commit();
-        
+
         return Response.ok().build();
     }
-    
+
     @GET
     @Path("/geometry/wkb")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -144,57 +147,60 @@ public class AdminUnitLevelResource {
             return Response
                 .ok(ByteStreams.toByteArray(blobService.get(wkbKey())))
                 .build();
-            
+
         } catch (BlobNotFoundException e) {
             throw new NotFoundException();
-        } 
+        }
     }
-    
+
     @PUT
     @Path("/geometry/wkb")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public void putWkbGeometry(@InjectParam AuthenticatedUser user, byte[] wkb) throws IOException {
+    public void putWkbGeometry(@InjectParam AuthenticatedUser user, byte[] wkb)
+        throws IOException {
         assertAuthorized(user);
 
         blobService.put(wkbKey(), ByteStreams.newInputStreamSupplier(wkb));
     }
-    
+
     @POST
     @Path("/childLevels")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response postNewLevel(@InjectParam AuthenticatedUser user, NewAdminLevel newLevel) {
-        
+    public Response postNewLevel(@InjectParam AuthenticatedUser user,
+        NewAdminLevel newLevel) {
+
         assertAuthorized(user);
 
         EntityManager em = entityManager.get();
         em.getTransaction().begin();
-        
+
         AdminLevel child = new AdminLevel();
         child.setCountry(level.getCountry());
         child.setName(newLevel.getName());
         child.setParent(level);
         em.persist(child);
 
-        for(NewAdminEntity entity : newLevel.getEntities()) {
+        for (NewAdminEntity entity : newLevel.getEntities()) {
             AdminEntity childEntity = new AdminEntity();
             childEntity.setName(entity.getName());
             childEntity.setLevel(child);
             childEntity.setCode(entity.getCode());
             childEntity.setBounds(entity.getBounds());
-            childEntity.setParent(em.getReference(AdminEntity.class, entity.getParentId()));
+            childEntity.setParent(em.getReference(AdminEntity.class,
+                entity.getParentId()));
             child.getEntities().add(childEntity);
             em.persist(childEntity);
         }
-        
+
         // create bound location type
         LocationType boundType = new LocationType();
         boundType.setBoundAdminLevel(child);
         boundType.setCountry(level.getCountry());
         boundType.setName(child.getName());
         em.persist(boundType);
-        
+
         em.getTransaction().commit();
-        
+
         return Response.ok().build();
     }
 

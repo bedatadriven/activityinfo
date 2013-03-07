@@ -22,9 +22,15 @@ package org.activityinfo.client.report.editor.pivotTable;
  * #L%
  */
 
+import java.util.List;
+import java.util.Set;
+
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
+import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.report.model.AdminDimension;
 import org.activityinfo.shared.report.model.AttributeGroupDimension;
 import org.activityinfo.shared.report.model.DateDimension;
@@ -33,6 +39,8 @@ import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class DimensionModel extends BaseModelData {
 
@@ -99,4 +107,35 @@ public class DimensionModel extends BaseModelData {
     public boolean hasDimension() {
         return dimension != null;
     }
+    
+
+    public static List<DimensionModel> attributeGroupModels(SchemaDTO schema, Set<Integer> indicators) {
+        /*
+         * Attribute Groups retain their own identity and ids 
+         * by Activity, but once we get to this stage, we treat
+         * attribute groups with the same name as the same thing.
+         * 
+         * This allows user to define attributes across databases
+         * and activities through "offline" coordination.
+         */
+        Set<String> groupsAdded = Sets.newHashSet();
+        List<DimensionModel> models = Lists.newArrayList();
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            for (ActivityDTO activity : db.getActivities()) {
+                if (activity.containsAny(indicators)) {
+                    for (AttributeGroupDTO attributeGroup : activity
+                        .getAttributeGroups()) {
+                        if (!groupsAdded.contains(attributeGroup.getName())) {
+                            DimensionModel dimModel = new DimensionModel(
+                                attributeGroup);
+                            models.add(dimModel);
+                            groupsAdded.add(attributeGroup.getName());
+                        }
+                    }
+                }
+            }
+        }
+        return models;
+    }
+
 }

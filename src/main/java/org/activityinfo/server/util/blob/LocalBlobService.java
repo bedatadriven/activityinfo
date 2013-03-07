@@ -36,7 +36,7 @@ public class LocalBlobService implements BlobService {
     public InputSupplier<FileInputStream> get(String key)
         throws BlobNotFoundException {
         File file = getFile(key);
-        if(!file.exists()) {
+        if (!file.exists()) {
             LOGGER.severe("Couldn't find '" + key + "' at " + file.getAbsolutePath());
             throw new BlobNotFoundException();
         }
