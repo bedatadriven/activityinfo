@@ -29,6 +29,7 @@ import java.util.Set;
 import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.PivotSites;
+import org.activityinfo.shared.command.handler.pivot.bundler.AttributeBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.Bundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.EntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.MonthBundler;
@@ -300,8 +301,6 @@ public class PivotQuery {
 
         String valueQueryAlias = "attributeValues"
             + dim.getAttributeGroupId();
-        String labelQueryAlias = "attributeLabels"
-            + dim.getAttributeGroupId();
 
         // this first query gives us the single chosen attribute for
         // each site, arbitrarily taking the attribute with the minimum
@@ -321,6 +320,7 @@ public class PivotQuery {
             .select()
             .appendColumn("v.siteId", "siteId")
             .appendColumn("min(a.name)", "value")
+            .appendColumn("min(a.sortOrder)", "sortOrder")
             .from("attributevalue", "v")
             .leftJoin("attribute", "a").on("v.AttributeId = a.AttributeId")
             .leftJoin("attributegroup", "g").on("a.AttributeGroupId=g.AttributeGroupId")
@@ -333,7 +333,9 @@ public class PivotQuery {
                 + "=" + valueQueryAlias + ".SiteId");
         
         String valueAlias = appendDimColumn(valueQueryAlias + ".value");
-        bundlers.add(new SimpleBundler(dim, valueAlias));
+        String sortOrderAlias = appendDimColumn(valueQueryAlias + ".sortOrder");
+
+        bundlers.add(new AttributeBundler(dim, valueAlias, sortOrderAlias));
     }
 
     private void addEntityDimension(Dimension dimension, String id, String label) {

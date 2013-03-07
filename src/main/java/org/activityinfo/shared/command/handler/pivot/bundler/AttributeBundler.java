@@ -21,8 +21,12 @@ public class AttributeBundler implements Bundler {
 
     @Override
     public void bundle(SqlResultSetRow row, Bucket bucket) {
-        bucket.setCategory(dimension,
-            new AttributeCategory(row.getString(valueColumnAlias), row.getInt(orderColumnAlias)));
+        if (!row.isNull(valueColumnAlias)) {
+            bucket.setCategory(
+                dimension,
+                new AttributeCategory(row.getString(valueColumnAlias), row
+                    .getInt(orderColumnAlias)));
+        }
     }
 
 }
