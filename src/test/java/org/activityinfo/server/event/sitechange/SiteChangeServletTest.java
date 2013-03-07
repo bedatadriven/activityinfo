@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.persistence.EntityManager;
 
@@ -40,6 +39,7 @@ import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.MailSenderStub;
 import org.activityinfo.server.mail.MailSenderStubModule;
+import org.activityinfo.server.mail.Message;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.Modules;
 import org.hamcrest.Description;
@@ -88,9 +88,9 @@ public class SiteChangeServletTest extends CommandTestCase2 {
         assertThat(msgs.size(), is(equalTo(1)));
 
         Message msgToMarlene = msgs.get(0);
-        assertThat(msgToMarlene.getRecipients(RecipientType.TO)[0].toString(),
+        assertThat(msgToMarlene.getTo().get(0).toString(),
             is(equalTo("Marlene <marlene@solidarites>")));
-        assertTrue(msgToMarlene.getContentType().startsWith("text/html"));
+        assertTrue(msgToMarlene.hasHtmlBody());
         assertThat(msgToMarlene.getSubject(),
             is(equalTo("PEAR: New NFI at Penekusu Kivu by NRC")));
     }

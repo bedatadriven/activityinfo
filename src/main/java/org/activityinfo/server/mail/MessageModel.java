@@ -24,7 +24,7 @@ package org.activityinfo.server.mail;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 
-public abstract class MailMessage {
+public abstract class MessageModel {
 
     public abstract User getRecipient();
 

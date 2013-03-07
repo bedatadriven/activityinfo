@@ -37,12 +37,13 @@ import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.ReportSubscription;
 import org.activityinfo.server.mail.MailSender;
-import org.activityinfo.server.mail.MessageBuilder;
+import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.report.ReportParserJaxb;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.itext.RtfReportRenderer;
 import org.activityinfo.shared.report.model.DateRange;
 import org.activityinfo.shared.report.model.Report;
+import org.apache.commons.lang.LocaleUtils;
 import org.xml.sax.SAXException;
 
 import com.google.common.base.Predicate;
@@ -61,7 +62,6 @@ public class ReportMailer {
 
     private final ServerSideAuthProvider authProvider;
 
-    private DateFormat reportDateFormat;
 
     @Inject
     public ReportMailer(EntityManager em, ReportGenerator reportGenerator,
@@ -73,9 +73,6 @@ public class ReportMailer {
         this.rtfReportRenderer = rtfReportRenderer;
         this.mailer = mailer;
         this.authProvider = authProvider;
-
-        reportDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-
     }
 
     public void execute(Date today) {
@@ -92,7 +89,9 @@ public class ReportMailer {
 
         for (ReportSubscription subscription : subscriptions) {
             try {
-                if (ReportMailerHelper.mailToday(today, subscription)) {
+                if (ReportMailerHelper.mailToday(today, subscription) &&
+                    filter.apply(subscription)) {
+                    
                     Report report = ReportParserJaxb.parseXml(subscription
                         .getTemplate().getXml());
                     execute(today, subscription, report);
@@ -137,17 +136,20 @@ public class ReportMailer {
 
         LOGGER.log(Level.INFO, "Sending email to " + sub.getUser().getEmail());
 
-        MessageBuilder email = new MessageBuilder();
+        DateFormat reportDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, 
+            LocaleUtils.toLocale(sub.getUser().getLocale()));
+
+        
+        Message email = new Message();
         email.to(sub.getUser().getEmail(), sub.getUser().getName());
         email.subject("ActivityInfo: " + report.getTitle());
-        email.addPart()
-            .withText(ReportMailerHelper.composeTextEmail(sub, report));
+        email.body(ReportMailerHelper.composeTextEmail(sub, report));
 
-        email.addPart()
+        email.addAttachment()
             .withContent(content, "text/enriched")
             .withFileName(report.getContent().getFileName() + " " +
                 reportDateFormat.format(today) + ".rtf");
 
-        mailer.send(email.build());
+        mailer.send(email);
     }
 }

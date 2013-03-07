@@ -25,7 +25,6 @@ package org.activityinfo.server.mail;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.mail.Message;
 
 import org.activityinfo.test.TestScoped;
 

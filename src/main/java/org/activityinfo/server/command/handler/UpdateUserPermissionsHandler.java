@@ -36,7 +36,7 @@ import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.server.mail.InvitationMessage;
 import org.activityinfo.server.mail.MailSender;
-import org.activityinfo.server.mail.MessageBuilder;
+import org.activityinfo.server.mail.Message;
 import org.activityinfo.shared.command.UpdateUserPermissions;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.UserPermissionDTO;
@@ -132,10 +132,10 @@ public class UpdateUserPermissionsHandler implements
         }
 
         try {
-            MessageBuilder message = mailSender
+            Message message = mailSender
                 .createMessage(new InvitationMessage(user, executingUser));
             message.replyTo(executingUser.getEmail(), executingUser.getName());
-            mailSender.send(message.build());
+            mailSender.send(message);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not send invitation mail", e);
             throw new CommandException("Failed to send invitation email");

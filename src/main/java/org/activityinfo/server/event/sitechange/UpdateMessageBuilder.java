@@ -26,7 +26,6 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
 
 import org.activityinfo.client.i18n.I18N;
@@ -34,7 +33,7 @@ import org.activityinfo.client.page.entry.form.SiteRenderer;
 import org.activityinfo.client.page.entry.form.SiteRenderer.IndicatorValueFormatter;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
-import org.activityinfo.server.mail.MessageBuilder;
+import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.html.HtmlWriter;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.SiteDTO;
@@ -83,12 +82,12 @@ public class UpdateMessageBuilder {
         this.userDatabaseDTO = userDatabaseDTO;
     }
 
-    public Message build() throws MessagingException {
+    public Message build() throws MessagingException  {
         // set the locale of the messages
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(recipient));
 
         // create message, set recipient & bcc
-        MessageBuilder message = new MessageBuilder();
+        Message message = new Message();
         message.to(recipient.getEmail(), recipient.getName());
         message.bcc("alex@bedatadriven.com");
 
@@ -162,6 +161,6 @@ public class UpdateMessageBuilder {
 
         message.htmlBody(htmlWriter.toString());
 
-        return message.build();
+        return message;
     }
 }

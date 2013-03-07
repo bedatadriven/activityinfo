@@ -142,7 +142,7 @@ public class IndicatorTreePanel extends ContentPanel {
                 Log.info("Loaded " + le);
             }
         });
-        
+
         tree.getStore().addStoreListener(new StoreListener<ModelData>() {
 
             @Override
@@ -163,7 +163,7 @@ public class IndicatorTreePanel extends ContentPanel {
                     } else {
                         selection.remove(indicator.getId());
                     }
-                } else if(be.isChecked()) {
+                } else if (be.isChecked()) {
                     tree.getStore().getLoader().loadChildren(be.getItem());
                 }
             }
@@ -230,7 +230,6 @@ public class IndicatorTreePanel extends ContentPanel {
         filter.bind(store);
         setTopComponent(toolBar);
     }
-    
 
     private final class NodeLabelProvider implements
         ModelStringProvider<ModelData> {

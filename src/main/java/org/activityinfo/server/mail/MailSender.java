@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ResourceBundle;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
@@ -49,10 +48,10 @@ public abstract class MailSender {
     public abstract void send(Message message) throws MessagingException;
 
     @LogException
-    public void send(MailMessage model) {
+    public void send(MessageModel model) {
         try {
-            MessageBuilder message = createMessage(model);
-            send(message.build());
+            Message message = createMessage(model);
+            send(message);
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -63,10 +62,10 @@ public abstract class MailSender {
         }
     }
 
-    public MessageBuilder createMessage(MailMessage model)
+    public Message createMessage(MessageModel model)
         throws MessagingException, AddressException, IOException,
         TemplateException {
-        MessageBuilder message = new MessageBuilder();
+        Message message = new Message();
         message.to(model.getRecipient().getEmail(), model.getRecipient()
             .getName());
         message.bcc("akbertram@gmail.com");
@@ -75,7 +74,7 @@ public abstract class MailSender {
         return message;
     }
 
-    private String composeMessage(MailMessage model)
+    private String composeMessage(MessageModel model)
         throws IOException, TemplateException {
 
         StringWriter writer = new StringWriter();
@@ -85,7 +84,7 @@ public abstract class MailSender {
         return writer.toString();
     }
 
-    private String getSubject(MailMessage message) {
+    private String getSubject(MessageModel message) {
         String subject = getResourceBundle(message).getString(
             message.getSubjectKey());
         if (subject == null) {
@@ -95,7 +94,7 @@ public abstract class MailSender {
         return subject;
     }
 
-    private ResourceBundle getResourceBundle(MailMessage message) {
+    private ResourceBundle getResourceBundle(MessageModel message) {
         return ResourceBundle.getBundle(
             "org.activityinfo.server.mail.MailMessages",
             LocaleHelper.getLocaleObject(message.getRecipient()));

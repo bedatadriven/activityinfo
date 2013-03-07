@@ -2,27 +2,21 @@ package org.activityinfo.server.mail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
-import javax.mail.Address;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMultipart;
 
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.ByteStreams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -45,6 +39,8 @@ import freemarker.template.Configuration;
  */
 public class PostmarkMailSender extends MailSender {
 
+    public static final String POSTMARK_API_KEY = "postmark.key";
+
     private final String apiKey;
 
     private static final Logger LOGGER = Logger
@@ -54,7 +50,7 @@ public class PostmarkMailSender extends MailSender {
     public PostmarkMailSender(DeploymentConfiguration deploymentConfig,
         Configuration templateCfg) {
         super(templateCfg);
-        this.apiKey = deploymentConfig.getProperty("postmark.key");
+        this.apiKey = deploymentConfig.getProperty(POSTMARK_API_KEY);
     }
 
     @Override
@@ -75,6 +71,8 @@ public class PostmarkMailSender extends MailSender {
         conn.setRequestProperty("Content-Type",
             "application/json; charset=UTF-8");
         conn.setRequestProperty("Accept", "application/json");
+        conn.setConnectTimeout(5 * 60 * 1000);
+        conn.setReadTimeout(5 * 60 * 1000);
 
         OutputStreamWriter writer = new OutputStreamWriter(
             conn.getOutputStream(), Charsets.UTF_8);
@@ -94,39 +92,32 @@ public class PostmarkMailSender extends MailSender {
         IOException {
         JsonObject json = new JsonObject();
         json.addProperty("From", "notifications@activityinfo.org");
-        json.addProperty("To",
-            toString(message.getRecipients(RecipientType.TO)));
+        json.addProperty("To", toString(message.getTo()));
         json.addProperty("Subject", message.getSubject());
-        if (message.getContentType().startsWith("text/plain")) {
-            json.addProperty("TextBody", message.getContent().toString());
 
-        } else if (message.getContentType().startsWith("text/html")) {
-            json.addProperty("HtmlBody", message.getContent().toString());
-
-        } else if (message.getContent() instanceof MimeMultipart) {
-            MimeMultipart multipart = (MimeMultipart) message.getContent();
-            JsonArray attachments = new JsonArray();
-            for (int i = 0; i != multipart.getCount(); ++i) {
-                BodyPart part = multipart.getBodyPart(i);
-                if (part.getContentType().startsWith("text/plain")) {
-                    json.addProperty("TextBody", part.toString());
-                } else {
-                    JsonObject attachment = new JsonObject();
-                    attachment.addProperty("Name", part.getFileName());
-                    attachment.addProperty("Content", toBase64(part));
-                    attachment.addProperty("ContentType",
-                        stripContentType(part.getContentType()));
-                    attachments.add(attachment);
-                }
-            }
-            json.add("Attachments", attachments);
-        } else {
-            throw new UnsupportedOperationException(
-                "Don't know how to handle mime type: "
-                    + message.getContentType());
+        if (message.hasTextBody()) {
+            json.addProperty("TextBody", message.getTextBody());
         }
-        if (message.getReplyTo() != null && message.getReplyTo().length > 0) {
-            json.addProperty("ReplyTo", toString(message.getReplyTo()));
+        if (message.hasHtmlBody()) {
+            json.addProperty("HtmlBody", message.getSafeHtmlBody());
+        }
+
+        JsonArray attachments = new JsonArray();
+        for (MessageAttachment part : message.getAttachments()) {
+            JsonObject attachment = new JsonObject();
+            attachment.addProperty("Name", part.getFilename());
+            attachment.addProperty("Content", toBase64(part));
+            attachment.addProperty("ContentType",
+                stripContentType(part.getContentType()));
+            attachments.add(attachment);
+        }
+        if (attachments.size() > 0) {
+            json.add("Attachments", attachments);
+        }
+
+        if (message.getReplyTo() != null) {
+            json.addProperty("ReplyTo",
+                toString(Arrays.asList(message.getReplyTo())));
         }
         return json;
     }
@@ -139,22 +130,18 @@ public class PostmarkMailSender extends MailSender {
         return contentType.substring(0, semicolon).trim();
     }
 
-    private String toBase64(BodyPart part) throws IOException,
-        MessagingException {
-        InputStream in = (InputStream) part.getContent();
-        byte[] bytes = ByteStreams.toByteArray(in);
-        String encoded = new String(Base64.encodeBase64(bytes));
-        return encoded;
+    private String toBase64(MessageAttachment part) throws IOException {
+        return new String(Base64.encodeBase64(part.getContent()));
     }
 
-    private String toString(Address[] addresses) {
+    private String toString(Iterable<InternetAddress> addresses) {
         StringBuilder sb = new StringBuilder();
         if (addresses != null) {
-            for (Address address : addresses) {
+            for (InternetAddress address : addresses) {
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }
-                sb.append(((InternetAddress) address).getAddress());
+                sb.append(address.getAddress());
             }
         }
         return sb.toString();

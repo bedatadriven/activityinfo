@@ -22,15 +22,11 @@ package org.activityinfo.client.local.capability;
  * #L%
  */
 
-import org.activityinfo.client.Log;
-import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.offline.capability.FFPermissionsDialog;
-import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCache.Status;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
