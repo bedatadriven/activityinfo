@@ -29,7 +29,7 @@ import java.util.Set;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
-import org.activityinfo.server.util.date.DateRangeFormat;
+import org.activityinfo.server.util.date.DateFormatter;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetDimensionLabels;
 import org.activityinfo.shared.command.GetDimensionLabels.DimensionLabels;
@@ -88,7 +88,7 @@ public abstract class BaseGenerator<T extends ReportElement> implements
      */
     protected String resolveTemplate(String template, DateRange range, User user) {
         if (template.indexOf("${DATE_RANGE}") != -1) {
-            DateRangeFormat format = new DateRangeFormat(
+            DateFormatter format = new DateFormatter(
                 LocaleHelper.getLocaleObject(user));
             String rangeText = format.format(range);
 

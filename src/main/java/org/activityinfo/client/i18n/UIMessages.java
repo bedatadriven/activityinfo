@@ -231,4 +231,23 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("Removed attribute {0}")
     String siteHistoryAttrRemove(String attrName);
+
+    @DefaultMessage("ActivityInfo digest for {0,date,dd-MM-yyyy}")
+    String digestSubject(Date now);
+
+    @DefaultMessage("Hi {0},")
+    String digestGreeting(String userName);
+
+    @DefaultMessage("Here is the digest with information about your ActivityInfo databases for {0,date,EEEEE d MMMMM yyyy}.")
+    String digestIntro(Date now);
+
+    @DefaultMessage("{0} at {1} edited by {2} ({3}) on {4,date,dd-MM-yyyy 'at' HH:mm}.")
+    String digestSiteMsg(String activityName, String locationName, String userName, String userEmail, Date date);
+
+    @DefaultMessage("Unmapped Sites")
+    String digestUnmappedSites();
+
+    @DefaultMessage("Best regards,<br>The ActivityInfo Team")
+    String digestSignature();
+
 }

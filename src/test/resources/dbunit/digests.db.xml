@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!--
+  #%L
+  ActivityInfo Server
+  %%
+  Copyright (C) 2009 - 2013 UNICEF
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<dataset>
+  <country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
+  <partner partnerId="1" name="NRC" />
+  <locationType locationTypeId="1" countryId="1" name="localite" reuse="1" />
+  <location locationId="1" name="Penekusu Kivu" locationTypeId="1" X="1.532" Y="27.323" timeEdited="1" />
+
+
+  <!-- db owner: YES, view permission: NO, emailnotification: YES -->
+  <userLogin userId="1" firstname="Alex" name="Alex"
+    email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+    locale="fr" newUser="1" emailnotification="1" />
+  <!--  db owner: YES, view permission: NO, emailnotification: NO -->
+  <userLogin userId="2" firstname="Marlene" name="Marlene"
+    email="marlene@solidarites" password="xyz" locale="en" newUser="1"
+    emailnotification="0" />
+  <!-- db owner: NO, view permission: YES, emailnotification: YES -->
+  <userLogin userId="3" name="Bavon" email="bavon@nrc.org"
+    password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+    locale="fr" newUser="1" emailnotification="1" />
+  <!-- db owner: NO, view permission: YES, emailnotification: NO -->
+  <userLogin userId="4" firstname="Lisa" name="Lisa"
+    email="lisa@solidarites" password="xyz" locale="fr" newUser="1"
+    emailnotification="0" />
+  <!-- db owner: NO, design permission: YES, emailnotification: YES -->
+  <userLogin userId="5" name="Jack" email="jack@nrc.org"
+    password="xyz" locale="fr" newUser="1" emailnotification="1" />
+  <!-- db owner: NO, design permission: YES, emailnotification: NO -->
+  <userLogin userId="6" name="John" email="john@nrc.org"
+    password="xyz" locale="fr" newUser="1" emailnotification="0" />
+  <!-- db owner: NO, view or design permission: NO (does have permission record), emailnotification: YES -->
+  <userLogin userId="7" name="Spencer" email="spencer@nrc.org"
+    password="xyz" locale="fr" newUser="1" emailnotification="1" />
+  <!-- db owner: NO, view or design permission: NO, emailnotification: NO -->
+  <userLogin userId="8" name="Edward" email="edward@nrc.org"
+    password="xyz" locale="fr" newUser="1" emailnotification="0" />
+
+  <!-- db owner: YES, view permission: YES, design permission: YES, emailnotification: YES -->
+  <userLogin userId="100" firstname="Super" name="Super"
+    email="super@gmail.com" password="xyz"
+    locale="en" newUser="1" emailnotification="1" />
+
+  <userDatabase databaseId="1" name="PEAR" countryId="1"
+    ownerUserId="1" lastSchemaUpdate="2009-01-01" />
+  <userDatabase databaseId="2" name="PEAR Plus" countryId="1"
+    ownerUserId="1" lastSchemaUpdate="2009-01-01" />
+  <userDatabase databaseId="3" name="Public" countryId="1"
+    ownerUserId="2" lastSchemaUpdate="2009-01-01" />
+  <userDatabase databaseId="100" name="Public" countryId="1"
+    ownerUserId="100" lastSchemaUpdate="2009-01-01" />
+
+  <userPermission userPermissionId="1" databaseId="1"
+    userId="3" partnerId="1" allowView="1" allowViewAll="0" allowEdit="0"
+    allowEditAll="0" allowManageUsers="0" allowManageAllUsers="0"
+    allowDesign="0" lastSchemaUpdate="2009-01-01" />
+  <userPermission userPermissionId="2" databaseId="1"
+    userId="4" partnerId="1" allowView="1" allowViewAll="0" allowEdit="0"
+    allowEditAll="0" allowManageUsers="0" allowManageAllUsers="0"
+    allowDesign="0" lastSchemaUpdate="2009-01-01" />
+  <userPermission userPermissionId="3" databaseId="1"
+    userId="5" partnerId="1" allowView="0" allowViewAll="0" allowEdit="0"
+    allowEditAll="0" allowManageUsers="0" allowManageAllUsers="0"
+    allowDesign="1" lastSchemaUpdate="2009-01-01" />
+  <userPermission userPermissionId="4" databaseId="1"
+    userId="6" partnerId="1" allowView="0" allowViewAll="0" allowEdit="0"
+    allowEditAll="0" allowManageUsers="0" allowManageAllUsers="0"
+    allowDesign="1" lastSchemaUpdate="2009-01-01" />
+  <userPermission userPermissionId="5" databaseId="1"
+    userId="7" partnerId="1" allowView="0" allowViewAll="0" allowEdit="0"
+    allowEditAll="0" allowManageUsers="0" allowManageAllUsers="0"
+    allowDesign="0" lastSchemaUpdate="2009-01-01" />
+  <userPermission userPermissionId="100" databaseId="3"
+    userId="100" partnerId="1" allowView="1" allowViewAll="0" allowEdit="0"
+    allowEditAll="0" allowManageUsers="0" allowManageAllUsers="0"
+    allowDesign="1" lastSchemaUpdate="2009-01-01" />
+
+    
+  <activity activityId="1" databaseId="1" name="NFI" published="1" 
+    reportingFrequency="0" allowEdit="1" sortOrder="1" locationTypeId="1" />
+  <activity activityId="2" databaseId="1" name="NFI" published="1" 
+    reportingFrequency="0" allowEdit="1" sortOrder="1" locationTypeId="1" />
+
+  <project projectId="1" name="Project A" description="A Project" databaseId="1" />
+
+  <site siteId="1" activityId="1" locationId="1" partnerId="1" ProjectId="1"                           
+    Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2013-03-08" timeEdited="1362700800000" />
+  <site siteId="2" activityId="2" locationId="1" partnerId="1" ProjectId="1"
+    Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2013-01-01" timeEdited="1356998400000" />
+
+    
+</dataset>

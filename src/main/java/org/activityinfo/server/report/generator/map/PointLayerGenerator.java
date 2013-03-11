@@ -47,7 +47,6 @@ public abstract class PointLayerGenerator<T extends PointMapLayer> implements
 
         GetSites query = queryFor(effectiveFilter, layer);
         this.sites = dispatcher.execute(query).getData();
-
     }
 
     /**

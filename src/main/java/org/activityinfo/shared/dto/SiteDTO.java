@@ -167,6 +167,22 @@ public final class SiteDTO extends BaseModelData implements EntityDTO,
         }
     }
 
+    public long getTimeEdited() {
+        return (Long) get("timeEdited");
+    }
+
+    public Date getDateEdited() {
+        return new Date(getTimeEdited());
+    }
+
+    public void setTimeEdited(long timeEdited) {
+        set("timeEdited", timeEdited);
+    }
+
+    public void setTimeEdited(double timeEdited) {
+        setTimeEdited((long) timeEdited);
+    }
+
     public void setReportingPeriodId(int id) {
         set("reportingPeriodId", id);
     }

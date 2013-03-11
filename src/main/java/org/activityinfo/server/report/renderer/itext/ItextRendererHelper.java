@@ -24,7 +24,7 @@ package org.activityinfo.server.report.renderer.itext;
 
 import java.util.List;
 
-import org.activityinfo.server.util.date.DateRangeFormat;
+import org.activityinfo.server.util.date.DateFormatter;
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.model.DateRange;
 
@@ -59,7 +59,7 @@ final class ItextRendererHelper {
     public static void addDateFilterDescription(Document document,
         DateRange dateRange) throws DocumentException {
         if (dateRange.getMinDate() != null || dateRange.getMaxDate() != null) {
-            DateRangeFormat format = new DateRangeFormat(
+            DateFormatter format = new DateFormatter(
                 LocaleProxy.getLocale());
             document
                 .add(ThemeHelper.filterDescription(format.format(dateRange)));

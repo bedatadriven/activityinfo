@@ -190,6 +190,7 @@ public class GetSitesHandler implements
             .appendColumn("location.x", "x")
             .appendColumn("location.y", "y")
             .appendColumn("site.DateEdited")
+            .appendColumn("site.timeEdited", "TimeEdited")
             .from(Tables.SITE)
             .whereTrue("site.dateDeleted is null")
             .leftJoin(Tables.ACTIVITY)
@@ -234,7 +235,8 @@ public class GetSitesHandler implements
             .appendColumn("site.comments", "Comments")
             .appendColumn("location.x", "x")
             .appendColumn("location.y", "y")
-            .appendColumn("site.DateEdited");
+            .appendColumn("site.DateEdited")
+            .appendColumn("site.timeEdited", "TimeEdited");
 
         if (command.getFilter().isRestricted(DimensionType.Indicator)) {
             /*
@@ -628,6 +630,7 @@ public class GetSitesHandler implements
         model.setDate1(row.getDate("Date1"));
         model.setDate2(row.getDate("Date2"));
         model.setDateCreated(row.getDate("DateCreated"));
+        model.setTimeEdited(row.getDouble("TimeEdited"));
         model.setLocationId(row.getInt("LocationId"));
         model.setLocationName(row.getString("LocationName"));
         model.setLocationAxe(row.getString("LocationAxe"));

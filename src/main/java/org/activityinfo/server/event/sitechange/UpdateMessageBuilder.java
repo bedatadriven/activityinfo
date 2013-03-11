@@ -89,7 +89,6 @@ public class UpdateMessageBuilder {
         // create message, set recipient & bcc
         Message message = new Message();
         message.to(recipient.getEmail(), recipient.getName());
-        message.bcc("alex@bedatadriven.com");
 
         // set the subject
         String subject;

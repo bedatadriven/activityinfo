@@ -30,6 +30,7 @@ import org.activityinfo.server.attachment.AttachmentModule;
 import org.activityinfo.server.authentication.AuthenticationModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
+import org.activityinfo.server.digest.DigestModule;
 import org.activityinfo.server.endpoint.content.ContentModule;
 import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
@@ -90,6 +91,7 @@ public class StartupListener extends GuiceServletContextListener {
             new AttachmentModule(),
             new ReportModule(),
             new EventModule(),
+            new DigestModule(),
             new LoginModule(),
             new GwtRpcModule(),
             new HealthCheckModule(),
