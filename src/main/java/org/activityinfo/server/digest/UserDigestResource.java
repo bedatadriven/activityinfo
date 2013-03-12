@@ -84,8 +84,8 @@ public class UserDigestResource {
             + " and activity period: " + activityDays + " days."
             + " (sending email: " + sendEmail + ")");
 
-        UserDigestBuilder digest =
-            new UserDigestBuilder(geoDigestRenderer, activityDigestRenderer);
+        UserDigestMessageBuilder digest =
+            new UserDigestMessageBuilder(geoDigestRenderer, activityDigestRenderer);
         digest.setUser(user);
         digest.setDate(date);
         digest.setGeoDays(geoDays);

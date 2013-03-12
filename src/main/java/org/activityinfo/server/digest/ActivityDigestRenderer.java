@@ -1,6 +1,8 @@
 package org.activityinfo.server.digest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
@@ -33,8 +35,10 @@ public class ActivityDigestRenderer {
         this.storageProvider = storageProvider;
     }
 
-    public String render(User user, long from) throws IOException {
-        return "";
+    public List<String> render(User user, long from) throws IOException {
+        List<String> items = new ArrayList<String>();
+
+        return items;
     }
 
 }

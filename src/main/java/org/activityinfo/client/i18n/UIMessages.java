@@ -241,11 +241,17 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Here is the digest with information about your ActivityInfo databases for {0,date,EEEEE d MMMMM yyyy}.")
     String digestIntro(Date now);
 
+    @DefaultMessage("[GEO DIGEST INTRO]:")
+    String geoDigestIntro();
+
     @DefaultMessage("{0} at {1} edited by {2} ({3}) on {4,date,dd-MM-yyyy 'at' HH:mm}.")
     String digestSiteMsg(String activityName, String locationName, String userName, String userEmail, Date date);
 
     @DefaultMessage("Unmapped Sites")
     String digestUnmappedSites();
+
+    @DefaultMessage("[USER ACTIVITY DIGEST INTRO]:")
+    String activityDigestIntro();
 
     @DefaultMessage("Best regards,<br>The ActivityInfo Team")
     String digestSignature();

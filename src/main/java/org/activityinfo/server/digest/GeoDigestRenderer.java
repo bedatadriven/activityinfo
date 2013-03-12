@@ -71,7 +71,7 @@ public class GeoDigestRenderer {
      * @throws IOException
      */
     public List<String> render(User user, long from) throws IOException {
-        List<String> dbHtmls = new ArrayList<String>();
+        List<String> items = new ArrayList<String>();
 
         List<UserDatabase> databases = findDatabases(user);
         LOGGER.finest("found " + databases.size() + " database(s) for user " + user.getId());
@@ -80,14 +80,14 @@ public class GeoDigestRenderer {
             SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
 
             for (UserDatabase database : databases) {
-                String dbHtml = renderDatabase(schemaDTO, user, database, from);
-                if (StringUtils.isNotBlank(dbHtml)) {
-                    dbHtmls.add(dbHtml);
+                String item = renderDatabase(schemaDTO, user, database, from);
+                if (StringUtils.isNotBlank(item)) {
+                    items.add(item);
                 }
             }
         }
 
-        return dbHtmls;
+        return items;
     }
 
     /**
@@ -101,8 +101,6 @@ public class GeoDigestRenderer {
     public String renderDatabase(SchemaDTO schemaDTO, User user, UserDatabase database, long from)
         throws IOException {
 
-        String html = "";
-        
         List<Integer> siteIds = findSiteIds(database, from);
 
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -111,33 +109,33 @@ public class GeoDigestRenderer {
                 " site(s) that were edited since " + DateFormatter.formatDateTime(from));
         }
 
-        if (!siteIds.isEmpty()) {
-            MapReportElement model = new MapReportElement();
-
-            Filter filter = new Filter();
-            filter.addRestriction(DimensionType.Site, siteIds);
-
-            BubbleMapLayer layer = new BubbleMapLayer();
-            layer.setFilter(filter);
-            layer.setLabelSequence(new ArabicNumberSequence());
-            layer.setMinRadius(20);
-            layer.setClustering(new AutomaticClustering());
-
-            model.setLayers(layer);
-
-            MapContent content =
-                dispatcher.execute(new GenerateElement<MapContent>(model));
-            model.setContent(content);
-
-            TempStorage storage = storageProvider.allocateTemporaryFile(
-                "image/png", "geo");
-            imageMapRenderer.render(model, storage.getOutputStream());
-            storage.getOutputStream().close();
-            
-            html = renderHtml(schemaDTO, user, database, content, storage);
+        if (siteIds.isEmpty()) {
+            return null;
         }
 
-        return html;
+        MapReportElement model = new MapReportElement();
+
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Site, siteIds);
+
+        BubbleMapLayer layer = new BubbleMapLayer();
+        layer.setFilter(filter);
+        layer.setLabelSequence(new ArabicNumberSequence());
+        layer.setMinRadius(20);
+        layer.setClustering(new AutomaticClustering());
+
+        model.setLayers(layer);
+
+        MapContent content =
+            dispatcher.execute(new GenerateElement<MapContent>(model));
+        model.setContent(content);
+
+        TempStorage storage = storageProvider.allocateTemporaryFile(
+            "image/png", "geo");
+        imageMapRenderer.render(model, storage.getOutputStream());
+        storage.getOutputStream().close();
+
+        return renderHtml(schemaDTO, user, database, content, storage);
     }
 
     private String renderHtml(SchemaDTO schemaDTO, User user, UserDatabase database,
@@ -157,8 +155,8 @@ public class GeoDigestRenderer {
 
         if (!content.getUnmappedSites().isEmpty()) {
             LOGGER.finest(content.getUnmappedSites().size() + " unmapped sites");
-            html.append("<br><span style='color: red; font-weight:bold;'>" + I18N.MESSAGES.digestUnmappedSites()
-                + ":</span><br>");
+            html.append("<br><span style='color: red; font-weight:bold;'>" +
+                I18N.MESSAGES.digestUnmappedSites() + ":</span><br>");
             renderSiteMsgs(html, schemaDTO, user, content.getUnmappedSites());
         }
         

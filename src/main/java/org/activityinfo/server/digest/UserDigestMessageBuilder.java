@@ -34,14 +34,13 @@ import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.html.HtmlWriter;
-import org.apache.commons.lang.StringUtils;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
-public class UserDigestBuilder {
+public class UserDigestMessageBuilder {
 
     private static final Logger LOGGER =
-        Logger.getLogger(UserDigestBuilder.class.getName());
+        Logger.getLogger(UserDigestMessageBuilder.class.getName());
 
     private final GeoDigestRenderer geoDigestRenderer;
     private final ActivityDigestRenderer activityDigestRenderer;
@@ -51,7 +50,10 @@ public class UserDigestBuilder {
     private int geoDays;
     private int activityDays;
 
-    public UserDigestBuilder(GeoDigestRenderer geoDigestRenderer,
+    private List<String> geoDigests;
+    private List<String> activityDigests;
+
+    public UserDigestMessageBuilder(GeoDigestRenderer geoDigestRenderer,
         ActivityDigestRenderer activityDigestRenderer) {
         this.geoDigestRenderer = geoDigestRenderer;
         this.activityDigestRenderer = activityDigestRenderer;
@@ -77,16 +79,21 @@ public class UserDigestBuilder {
         // set the locale of the messages
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
-        List<String> geoDigests = geoDigestRenderer.render(user,
-            calcFrom(date, geoDays));
-        String activityDigest = activityDigestRenderer.render(user,
-            calcFrom(date, activityDays));
+        geoDigests = geoDigestRenderer.render(user, calcFrom(date, geoDays));
+        activityDigests = activityDigestRenderer.render(user, calcFrom(date, activityDays));
 
-        if (geoDigests.isEmpty()
-            && StringUtils.isBlank(activityDigest)) {
+        if (geoDigests.isEmpty() && activityDigests.isEmpty()) {
             return null;
         }
 
+        return buildMessage();
+    }
+
+    private long calcFrom(Date date, int days) {
+        return date.getTime() - (days * 24 * 60 * 60 * 1000L);
+    }
+
+    private Message buildMessage() throws MessagingException {
         // create message, set recipient & bcc
         Message message = new Message();
         message.to(user.getEmail(), user.getName());
@@ -105,17 +112,23 @@ public class UserDigestBuilder {
 
         htmlWriter.startDocumentBody();
 
-        String greeting = I18N.MESSAGES.digestGreeting(user.getName());
-        htmlWriter.paragraph(greeting);
+        htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(user.getName()));
 
-        String intro = I18N.MESSAGES.digestIntro(date);
-        htmlWriter.paragraph(intro);
+        htmlWriter.paragraph(I18N.MESSAGES.digestIntro(date));
 
-        for (String geoDigest : geoDigests) {
-            htmlWriter.paragraph(geoDigest);
+        if (!geoDigests.isEmpty()) {
+            htmlWriter.paragraph(I18N.MESSAGES.geoDigestIntro());
+            for (String geoDigest : geoDigests) {
+                htmlWriter.paragraph(geoDigest);
+            }
         }
 
-        // htmlWriter.paragraph(activityDigest);
+        if (!activityDigests.isEmpty()) {
+            htmlWriter.paragraph(I18N.MESSAGES.activityDigestIntro());
+            for (String activityDigest : activityDigests) {
+                htmlWriter.paragraph(activityDigest);
+            }
+        }
 
         String signature = I18N.MESSAGES.digestSignature();
         htmlWriter.paragraph(signature);
@@ -128,9 +141,5 @@ public class UserDigestBuilder {
         message.htmlBody(htmlWriter.toString());
 
         return message;
-    }
-
-    private long calcFrom(Date date, int days) {
-        return date.getTime() - (days * 24 * 60 * 60 * 1000L);
     }
 }
