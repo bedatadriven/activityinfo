@@ -51,7 +51,7 @@ import com.google.inject.Inject;
     MockHibernateModule.class,
     TestDigestModule.class
 })
-public class GeoDigestRendererTest {
+public class ActivityDigestRendererTest {
     @Inject
     private GeoDigestRenderer geoDigestRenderer;
     @Inject

@@ -43,7 +43,7 @@ import com.google.inject.Inject;
 @OnDataSet("/dbunit/digests.db.xml")
 @Modules({
     TestDatabaseModule.class,
-    MockHibernateModule.class,
+    MockHibernateModule.class
 })
 public class DigestResourceTest {
     @Inject

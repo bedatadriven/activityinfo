@@ -23,6 +23,7 @@ package org.activityinfo.server.digest;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -80,7 +81,7 @@ public class UserDigestMessageBuilder {
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
         geoDigests = geoDigestRenderer.render(user, calcFrom(date, geoDays));
-        activityDigests = activityDigestRenderer.render(user, calcFrom(date, activityDays));
+        activityDigests = new ArrayList<String>(); // activityDigestRenderer.render(user, calcFrom(date, activityDays));
 
         if (geoDigests.isEmpty() && activityDigests.isEmpty()) {
             return null;

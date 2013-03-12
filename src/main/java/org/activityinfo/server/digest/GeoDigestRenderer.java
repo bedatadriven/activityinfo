@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
@@ -66,8 +65,8 @@ public class GeoDigestRenderer {
     /**
      * @param user
      * @param from
-     * @return a list with geo digests for each database for the specified user,
-     *         starting from the specified timestamp (milliseconds).
+     * @return a list with geo digests for each database for the specified user, starting from the specified timestamp
+     *         (milliseconds).
      * @throws IOException
      */
     public List<String> render(User user, long from) throws IOException {
@@ -94,8 +93,7 @@ public class GeoDigestRenderer {
      * @param user
      * @param database
      * @param from
-     * @return the geo digest for the specified user and database, starting from
-     *         the specified timestamp (milliseconds).
+     * @return the geo digest for the specified user and database, starting from the specified timestamp (milliseconds).
      * @throws IOException
      */
     public String renderDatabase(SchemaDTO schemaDTO, User user, UserDatabase database, long from)
@@ -103,11 +101,8 @@ public class GeoDigestRenderer {
 
         List<Integer> siteIds = findSiteIds(database, from);
 
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("rendering geo digest for user " + user.getId() + 
-                " and database " + database.getId() + " - found " + siteIds.size() +
-                " site(s) that were edited since " + DateFormatter.formatDateTime(from));
-        }
+        LOGGER.finest("rendering geo digest for user " + user.getId() + " and database " + database.getId()
+            + " - found " + siteIds.size() + " site(s) that were edited since " + DateFormatter.formatDateTime(from));
 
         if (siteIds.isEmpty()) {
             return null;
@@ -126,12 +121,10 @@ public class GeoDigestRenderer {
 
         model.setLayers(layer);
 
-        MapContent content =
-            dispatcher.execute(new GenerateElement<MapContent>(model));
+        MapContent content = dispatcher.execute(new GenerateElement<MapContent>(model));
         model.setContent(content);
 
-        TempStorage storage = storageProvider.allocateTemporaryFile(
-            "image/png", "geo");
+        TempStorage storage = storageProvider.allocateTemporaryFile("image/png", "geo");
         imageMapRenderer.render(model, storage.getOutputStream());
         storage.getOutputStream().close();
 
@@ -179,14 +172,13 @@ public class GeoDigestRenderer {
             }
         }
     }
+
     /**
      * @param user
      *            the user to find the databases for
-     * @return all UserDatabases for the specified user where the user is the
-     *         database owner, or where the database has a UserPermission for
-     *         the specified user with allowView set to true. If the user
-     *         somehow has emailnotification set to false, an empty list is
-     *         returned.
+     * @return all UserDatabases for the specified user where the user is the database owner, or where the database has
+     *         a UserPermission for the specified user with allowView set to true. If the user happens to have his
+     *         emailnotification preference set to false, an empty list is returned.
      */
     @VisibleForTesting
     @SuppressWarnings("unchecked")
@@ -196,13 +188,11 @@ public class GeoDigestRenderer {
             return new ArrayList<UserDatabase>();
         }
 
-        // @formatter:off
         Query query = entityManager.get().createQuery(
             "select distinct d from UserDatabase d left join d.userPermissions p " +
                 "where d.owner = :user or (p.user = :user and p.allowView = true) " +
                 "order by d.name"
-        );
-        // @formatter:on
+            );
         query.setParameter("user", user);
 
         return query.getResultList();
@@ -212,20 +202,16 @@ public class GeoDigestRenderer {
      * @param database
      *            the database the sites should be linked to (via an activity)
      * @param from
-     *            the timestamp (millis) to start searching from for edited
-     *            sites
-     * @return the siteIds linked to the specified database that were edited
-     *         since the specified timestamp
+     *            the timestamp (millis) to start searching from for edited sites
+     * @return the siteIds linked to the specified database that were edited since the specified timestamp
      */
     @VisibleForTesting
     @SuppressWarnings("unchecked")
     List<Integer> findSiteIds(UserDatabase database, long from) {
 
-        // @formatter:off
         Query query = entityManager.get().createQuery(
             "select distinct s.id from Site s where s.activity.database = :database and s.timeEdited > :from"
             );
-        // @formatter:on
         query.setParameter("database", database);
         query.setParameter("from", from);
 
