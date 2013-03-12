@@ -28,9 +28,9 @@ public class UserDigestResource {
     public static final String PARAM_USER = "u";
     public static final String PARAM_NOW = "n";
     public static final String PARAM_GEO_DAYS = "g";
-    public static final String PARAM_GEO_DAYS_DEF = "1";
+    public static final String PARAM_GEO_DAYS_DEF = "0"; // today
     public static final String PARAM_ACTIVITY_DAYS = "a";
-    public static final String PARAM_ACTIVITY_DAYS_DEF = "7";
+    public static final String PARAM_ACTIVITY_DAYS_DEF = "6"; // one week when today is added
     public static final String PARAM_SENDEMAIL = "send";
     public static final String PARAM_SENDEMAIL_DEF = "true";
 

@@ -244,8 +244,14 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("[GEO DIGEST INTRO]:")
     String geoDigestIntro();
 
-    @DefaultMessage("{0} at {1} edited by {2} ({3}) on {4,date,dd-MM-yyyy 'at' HH:mm}.")
-    String digestSiteMsg(String activityName, String locationName, String userName, String userEmail, Date date);
+    @DefaultMessage("<a href=\"mailto:{0}\">{1}</a> edited the {2} at {3} ")
+    String digestSiteMsg(String userEmail, String userName, String activityName, String locationName);
+
+    @DefaultMessage("<span title=\"{0,date,dd-MM-yyyy 'at' HH:mm}\">today</span>.")
+    String digestSiteMsgDateToday(Date date);
+
+    @DefaultMessage("on <span title=\"{0,date,dd-MM-yyyy 'at' HH:mm}\">{0,date,dd-MM-yyyy 'at' HH:mm}</span>.")
+    String digestSiteMsgDateOther(Date date);
 
     @DefaultMessage("Unmapped Sites")
     String digestUnmappedSites();

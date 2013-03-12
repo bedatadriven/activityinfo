@@ -3,9 +3,8 @@ package org.activityinfo.server.digest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
@@ -13,7 +12,7 @@ import javax.persistence.Query;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.database.hibernate.entity.Site;
+import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.report.output.StorageProvider;
@@ -64,12 +63,13 @@ public class GeoDigestRenderer {
 
     /**
      * @param user
-     * @param from
-     * @return a list with geo digests for each database for the specified user, starting from the specified timestamp
-     *         (milliseconds).
+     * @param date
+     * @param days
+     * @return a list with geo digests for each database the specified user has access to by ownership or view
+     *         permission, starting the specified amount of days before the specified date.
      * @throws IOException
      */
-    public List<String> render(User user, long from) throws IOException {
+    public List<String> render(User user, Date date, int days) throws IOException {
         List<String> items = new ArrayList<String>();
 
         List<UserDatabase> databases = findDatabases(user);
@@ -79,7 +79,7 @@ public class GeoDigestRenderer {
             SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
 
             for (UserDatabase database : databases) {
-                String item = renderDatabase(schemaDTO, user, database, from);
+                String item = renderDatabase(schemaDTO, user, database, date, days);
                 if (StringUtils.isNotBlank(item)) {
                     items.add(item);
                 }
@@ -89,16 +89,10 @@ public class GeoDigestRenderer {
         return items;
     }
 
-    /**
-     * @param user
-     * @param database
-     * @param from
-     * @return the geo digest for the specified user and database, starting from the specified timestamp (milliseconds).
-     * @throws IOException
-     */
-    public String renderDatabase(SchemaDTO schemaDTO, User user, UserDatabase database, long from)
+    private String renderDatabase(SchemaDTO schemaDTO, User user, UserDatabase database, Date date, int days)
         throws IOException {
 
+        long from = DigestDateUtil.midnightMillisDaysAgo(date, days);
         List<Integer> siteIds = findSiteIds(database, from);
 
         LOGGER.finest("rendering geo digest for user " + user.getId() + " and database " + database.getId()
@@ -122,53 +116,74 @@ public class GeoDigestRenderer {
         model.setLayers(layer);
 
         MapContent content = dispatcher.execute(new GenerateElement<MapContent>(model));
+        if (content.getMarkers().isEmpty()) {
+            return null;
+        }
+
         model.setContent(content);
 
         TempStorage storage = storageProvider.allocateTemporaryFile("image/png", "geo");
         imageMapRenderer.render(model, storage.getOutputStream());
         storage.getOutputStream().close();
 
-        return renderHtml(schemaDTO, user, database, content, storage);
+        return renderHtml(schemaDTO, database, date, from, content, storage);
     }
 
-    private String renderHtml(SchemaDTO schemaDTO, User user, UserDatabase database,
-        MapContent content, TempStorage storage) {
+    private String renderHtml(SchemaDTO schemaDTO, UserDatabase database, Date date, long from, MapContent content,
+        TempStorage storage) {
 
         StringBuilder html = new StringBuilder();
         
-        html.append("<b>" + database.getName() + "</b><br>");
-        html.append("<img width=\"450px\" src=\"" + storage.getUrl() + "\" /><br>");
+        html.append("<span class='geo-header' style='font-weight:bold;'>");
+        html.append(database.getName());
+        html.append("</span><br>");
+
+        html.append("<img class='geo-graph' width=\"450px\" src=\"");
+        html.append(storage.getUrl());
+        html.append("\" /><br>");
 
         for (MapMarker marker : content.getMarkers()) {
             String label = ((BubbleMapMarker) marker).getLabel();
-            html.append("<span style='color: red; font-weight:bold;'>" + label + ":</span><br>");
+            html.append("<span class='geo-marker-header' style='color: red; font-weight:bold;'>");
+            html.append(label);
+            html.append(":</span><br>");
+
             LOGGER.finest(marker.getSiteIds().size() + " sites for marker " + label + ": " + marker.getSiteIds());
-            renderSiteMsgs(html, schemaDTO, user, marker.getSiteIds());
+            renderSites(html, schemaDTO, marker.getSiteIds(), date, from);
         }
 
         if (!content.getUnmappedSites().isEmpty()) {
+            html.append("<br><span class='geo-unmapped-header' style='color: red; font-weight:bold;'>");
+            html.append(I18N.MESSAGES.digestUnmappedSites());
+            html.append(":</span><br>");
+
             LOGGER.finest(content.getUnmappedSites().size() + " unmapped sites");
-            html.append("<br><span style='color: red; font-weight:bold;'>" +
-                I18N.MESSAGES.digestUnmappedSites() + ":</span><br>");
-            renderSiteMsgs(html, schemaDTO, user, content.getUnmappedSites());
+            renderSites(html, schemaDTO, content.getUnmappedSites(), date, from);
         }
         
         return html.toString();
     }
     
-    private void renderSiteMsgs(StringBuilder html, SchemaDTO schemaDTO, User user, Collection<Integer> siteIds) {
+    private void renderSites(StringBuilder html, SchemaDTO schemaDTO, Collection<Integer> siteIds, Date date, long from) {
         if (!siteIds.isEmpty()) {
             for (Integer siteId : siteIds) {
-                html.append("<span style='margin-left:10px;'><b>&bull;</b> ");
                 SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));
                 SiteDTO siteDTO = siteResult.getData().get(0);
                 ActivityDTO activityDTO = schemaDTO.getActivityById(siteDTO.getActivityId());
 
-                String siteMsg =
-                    I18N.MESSAGES.digestSiteMsg(activityDTO.getName(), siteDTO.getLocationName(),
-                        user.getName(), user.getEmail(), siteDTO.getDateEdited());
-                html.append(siteMsg);
-                html.append("</span><br>");
+                List<SiteHistory> histories = findSiteHistory(siteId, from);
+                for (SiteHistory history : histories) {
+                    html.append("<span class='geo-site' style='margin-left:10px;'>&bull; ");
+                    html.append(I18N.MESSAGES.digestSiteMsg(
+                        history.getUser().getEmail(), history.getUser().getName(),
+                        activityDTO.getName(), siteDTO.getLocationName()));
+                    if (DigestDateUtil.isOn(date, history.getTimeCreated())) {
+                        html.append(I18N.MESSAGES.digestSiteMsgDateToday(new Date(history.getTimeCreated())));
+                    } else {
+                        html.append(I18N.MESSAGES.digestSiteMsgDateOther(new Date(history.getTimeCreated())));
+                    }
+                    html.append("</span><br>");
+                }
             }
         }
     }
@@ -210,7 +225,8 @@ public class GeoDigestRenderer {
     List<Integer> findSiteIds(UserDatabase database, long from) {
 
         Query query = entityManager.get().createQuery(
-            "select distinct s.id from Site s where s.activity.database = :database and s.timeEdited > :from"
+            "select distinct s.id from Site s " +
+                "where s.activity.database = :database and s.timeEdited >= :from"
             );
         query.setParameter("database", database);
         query.setParameter("from", from);
@@ -218,11 +234,25 @@ public class GeoDigestRenderer {
         return query.getResultList();
     }
 
-    private Map<Integer, Site> toMap(List<Site> sites) {
-        Map<Integer, Site> siteMap = new HashMap<Integer, Site>();
-        for (Site s : sites) {
-            siteMap.put(s.getId(), s);
-        }
-        return siteMap;
+    /**
+     * @param database
+     * @param user
+     * @param from
+     * @return the sitehistory edited since the specified timestamp (milliseconds) and linked to the specified database
+     *         and user.
+     */
+    @VisibleForTesting
+    @SuppressWarnings("unchecked")
+    List<SiteHistory> findSiteHistory(Integer siteId, long from) {
+
+        Query query = entityManager.get().createQuery(
+            "select distinct h from SiteHistory h " +
+                "where h.site.id = :siteId and h.timeCreated >= :from " +
+                "order by h.timeCreated"
+            );
+        query.setParameter("siteId", siteId);
+        query.setParameter("from", from);
+
+        return query.getResultList();
     }
 }

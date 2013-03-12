@@ -23,7 +23,6 @@ package org.activityinfo.server.digest;
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -80,21 +79,14 @@ public class UserDigestMessageBuilder {
         // set the locale of the messages
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
-        geoDigests = geoDigestRenderer.render(user, calcFrom(date, geoDays));
-        activityDigests = new ArrayList<String>(); // activityDigestRenderer.render(user, calcFrom(date, activityDays));
+        geoDigests = geoDigestRenderer.render(user, date, geoDays);
+        activityDigests = activityDigestRenderer.render(user, date, activityDays);
 
         if (geoDigests.isEmpty() && activityDigests.isEmpty()) {
             return null;
         }
 
-        return buildMessage();
-    }
 
-    private long calcFrom(Date date, int days) {
-        return date.getTime() - (days * 24 * 60 * 60 * 1000L);
-    }
-
-    private Message buildMessage() throws MessagingException {
         // create message, set recipient & bcc
         Message message = new Message();
         message.to(user.getEmail(), user.getName());
