@@ -28,6 +28,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 
@@ -42,6 +43,16 @@ public class BubbleMapLayer extends CircledMapLayer {
     private String labelColor = "000000";
 
     public BubbleMapLayer() {
+    }
+
+    /**
+     * Creates a BubbleMapLayer, initialized with the specified filter
+     * 
+     * @param filter
+     */
+    public BubbleMapLayer(Filter filter) {
+        this();
+        setFilter(filter);
     }
 
     public void addIndicator(int id) {

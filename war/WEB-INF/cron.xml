@@ -6,11 +6,10 @@
     <schedule>every day 00:05</schedule>
   </cron>
   
-  <!-- 
   <cron>
     <url>/tasks/digests</url>
     <description>Mail Daily Digests</description>
     <schedule>every day 17:00</schedule>  
   </cron>
-  -->
+
 </cronentries>

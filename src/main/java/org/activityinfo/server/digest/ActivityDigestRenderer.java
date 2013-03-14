@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -23,101 +24,134 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 public class ActivityDigestRenderer {
-    private final Provider<EntityManager> entityManager;
-    private final DispatcherSync dispatcher;
-
     private static final Logger LOGGER =
         Logger.getLogger(ActivityDigestRenderer.class.getName());
 
+    private final Provider<EntityManager> entityManager;
+
+    private transient Context ctx;
+
     @Inject
-    public ActivityDigestRenderer(Provider<EntityManager> entityManager,
-        DispatcherSync dispatcher) {
+    public ActivityDigestRenderer(Provider<EntityManager> entityManager) {
         this.entityManager = entityManager;
-        this.dispatcher = dispatcher;
     }
 
     /**
-     * @param user
-     * @param date
-     * @param days
      * @return a list with user activity digests for each database the specified user has access to by ownership or
      *         design permission, with the activity calculated from the specified amount of days before the specified
      *         date
      * @throws IOException
      */
     public List<String> render(User user, Date date, int days) throws IOException {
+        this.ctx = new Context(user, date, days);
+
         List<String> items = new ArrayList<String>();
+        List<String> inactiveDatabases = new ArrayList<String>();
 
         List<UserDatabase> databases = findDatabases(user);
         LOGGER.finest("found " + databases.size() + " database(s) for user " + user.getId());
 
         if (!databases.isEmpty()) {
             for (UserDatabase database : databases) {
-                String item = renderDatabase(user, database, date, days);
-                if (StringUtils.isNotBlank(item)) {
-                    items.add(item);
+                String renderedDatabase = renderDatabase(database);
+                if (StringUtils.isNotBlank(renderedDatabase)) {
+                    items.add(renderedDatabase);
+                } else {
+                    inactiveDatabases.add(database.getName());
                 }
             }
+        }
+
+        if (!inactiveDatabases.isEmpty()) {
+            items.add(renderInactiveDatabasesMessage(inactiveDatabases));
         }
 
         return items;
     }
 
-    private String renderDatabase(User user, UserDatabase database, Date date, int days)
-        throws IOException {
+    private String renderDatabase(UserDatabase database) throws IOException {
 
         List<Partner> partners = findPartners(database);
-        LOGGER.finest("rendering user activity digest for user " + user.getId() +
+        LOGGER.finest("rendering user activity digest for user " + ctx.getUser().getId() +
             " and database " + database.getId() + " - found " + partners.size() + " partner(s)");
         if (partners.isEmpty()) {
             return null;
         }
 
-        StringBuilder html = new StringBuilder();
-        html.append("<span class='act-header' style='font-weight:bold;'>");
-        html.append(database.getName());
-        html.append("</span><br>");
+        boolean databaseIsActive = false;
 
-        long from = DigestDateUtil.midnightMillisDaysAgo(date, days);
+        List<SiteHistory> ownerHistories = findSiteHistory(database, database.getOwner());
+        ActivityMap ownerActivityMap =
+            new ActivityMap(database.getOwner(), ctx.getDate(), ctx.getDays(), ownerHistories);
+        databaseIsActive |= ownerActivityMap.hasActivity();
 
-        List<SiteHistory> ownerHistories = findSiteHistory(database, database.getOwner(), from);
-        ActivityMap ownerActivityMap = new ActivityMap(database.getOwner(), date, days, ownerHistories);
-        html.append(ownerActivityMap.getUser().getName());
-        html.append(" (");
-        html.append(ownerActivityMap.getUser().getEmail());
-        html.append(")<br>");
-        html.append(createGraph(ownerActivityMap.getMap()));
+        Map<Partner, List<ActivityMap>> partnerActivityMap = new HashMap<Partner, List<ActivityMap>>();
 
         for (Partner partner : partners) {
             List<User> partnerUsers = findUsers(database, partner);
             LOGGER.finest("found users " + partnerUsers + " for partner " + partner.getName());
             List<ActivityMap> activityMaps = new ArrayList<ActivityMap>();
             for (User partnerUser : partnerUsers) {
-                List<SiteHistory> histories = findSiteHistory(database, partnerUser, from);
-                ActivityMap activityMap = new ActivityMap(partnerUser, date, days, histories);
+                List<SiteHistory> histories = findSiteHistory(database, partnerUser);
+                ActivityMap activityMap = new ActivityMap(partnerUser, ctx.getDate(), ctx.getDays(), histories);
                 activityMaps.add(activityMap);
+                databaseIsActive |= activityMap.hasActivity();
             }
+            partnerActivityMap.put(partner, activityMaps);
+        }
+        
+        if (!databaseIsActive) {
+            return null;
+        }
 
-            html.append("<div class='act-partner' style='margin-top:15px;'>");
-            html.append("<span class='act-partner-header' style='margin-left:10px; font-weight:bold;'> ");
+        return renderActiveDatabase(database, ownerActivityMap, partnerActivityMap);
+    }
+    
+    private String renderActiveDatabase(UserDatabase database, ActivityMap ownerActivityMap,
+        Map<Partner, List<ActivityMap>> partnerActivityMap) {
+
+        StringBuilder html = new StringBuilder();
+        
+        html.append("<span class='act-header' style='font-weight:bold;'>");
+        html.append(database.getName());
+        html.append("</span><br>");
+        html.append("<div class='act-owner'>");
+        html.append("<span class='act-owner-header'>");
+        html.append("<a href=\"mailto:");
+        html.append(ownerActivityMap.getUser().getEmail());
+        html.append("\">");
+        html.append(ownerActivityMap.getUser().getName());
+        html.append("</a> (owner)</span><br>");
+        html.append("<div class='act-owner-graph'>");
+        html.append(createGraph(ownerActivityMap.getMap()));
+        html.append("</div><br>");
+        html.append("</div>");
+
+        for (Map.Entry<Partner, List<ActivityMap>> entry : partnerActivityMap.entrySet()) {
+            Partner partner = entry.getKey();
+            List<ActivityMap> activityMaps = entry.getValue();
+
+            html.append("<div class='act-partner' style='margin-left: 15px;'>");
+            html.append("<span class='act-partner-header' style='font-weight:bold;'>");
             html.append(partner.getName());
             html.append("</span><br>");
 
-            html.append("<span class='act-partner-graph' style='margin-left:12px;'> ");
-            html.append(createGraph(ActivityMap.getTotalActivityMap(activityMaps, days + 1)));
-            html.append("</span><br>");
+            html.append("<div class='act-partner-graph'>");
+            html.append(createGraph(ActivityMap.getTotalActivityMap(activityMaps, ctx.getDays())));
+            html.append("</div><br>");
 
-            html.append("<div class='act-user' style='margin-top:10px;'>");
+            html.append("<div class='act-user' style='margin-left: 10px;'>");
             for (ActivityMap activityMap : activityMaps) {
-                html.append("<span class='act-user-header' style='margin-left:20px;'>");
-                html.append(activityMap.getUser().getName());
-                html.append(" (");
+                html.append("<span class='act-user-header'>");
+                html.append("<a href=\"mailto:");
                 html.append(activityMap.getUser().getEmail());
-                html.append(")</span><br>");
+                html.append("\">");
+                html.append(activityMap.getUser().getName());
+                html.append("</a></span><br>");
 
-                html.append("<span class='act-user-graph' style='margin-left:22px;'> ");
+                html.append("<div class='act-user-graph'>");
                 html.append(createGraph(activityMap.getMap()));
-                html.append("</span><br>");
+                html.append("</div><br>");
             }
             html.append("</div>");
             html.append("</div>");
@@ -129,16 +163,64 @@ public class ActivityDigestRenderer {
     private String createGraph(Map<Integer, Integer> activityMap) {
         List<Integer> list = new ArrayList<Integer>(activityMap.values());
         Collections.reverse(list);
-
+        
         StringBuilder result = new StringBuilder();
-        for (Integer value : list) {
-            result.append(value);
-            result.append(", ");
+        result.append("<table cellspacing='0' cellpadding='0' style='width:");
+        result.append(list.size() * 15);
+        result.append("px; height: 10px; border: 1px solid black; border-collapse:collapse;'>");
+        result.append("<tr>");
+
+        for (int i = 0; i < list.size(); i++) {
+            int value = list.get(i);
+            result.append("<td style='width:13px; height: 10px; background-color:#");
+            result.append(determineColor(value));
+            result.append("; border: 1px solid black; text-align:center; vertical-align:middle' title='");
+            result.append(determineTitle(value, i));
+            result.append("'>");
+            result.append((value != 0) ? value : "&nbsp;");
+            result.append("</td>");
         }
-        result.setLength(result.length() - 2);
+
+        result.append("</tr>");
+        result.append("</table>");
         return result.toString();
     }
 
+    private String determineColor(int value) {
+        switch (value) {
+        case 0:
+            return "f0f0f0";
+        case 1:
+            return "67a639";
+        case 2:
+            return "67d839";
+        default:
+            return "67e939";
+        }
+    }
+    
+    private String determineTitle(int updates, int dayIndex) {
+        Date date = DigestDateUtil.daysAgo(ctx.getDate(), (ctx.getDays() - dayIndex - 1));
+        return I18N.MESSAGES.activityDigestGraphTooltip(updates, date);
+    }
+    
+    private String renderInactiveDatabasesMessage(List<String> inactiveDatabases) {
+        Collections.sort(inactiveDatabases);
+        StringBuilder sb = new StringBuilder();
+        for (String db : inactiveDatabases) {
+            sb.append(db);
+            sb.append(", ");
+        }
+        sb.setLength(sb.length() - 2);
+
+        StringBuilder html = new StringBuilder();
+        html.append("<div class='act-inactivedatabases'>");
+        html.append(I18N.MESSAGES.activityDigestInactiveDatabases(ctx.getDays()));
+        html.append("<br>");
+        html.append(sb.toString());
+        html.append("</div>");
+        return html.toString();
+    }
 
     /**
      * @param user
@@ -212,7 +294,7 @@ public class ActivityDigestRenderer {
      */
     @VisibleForTesting
     @SuppressWarnings("unchecked")
-    List<SiteHistory> findSiteHistory(UserDatabase database, User user, long from) {
+    List<SiteHistory> findSiteHistory(UserDatabase database, User siteEditor) {
 
         Query query = entityManager.get().createQuery(
             "select distinct h from SiteHistory h " +
@@ -220,9 +302,50 @@ public class ActivityDigestRenderer {
                 "order by h.timeCreated"
             );
         query.setParameter("database", database);
-        query.setParameter("user", user);
-        query.setParameter("from", from);
+        query.setParameter("user", siteEditor);
+        query.setParameter("from", ctx.getFrom());
 
         return query.getResultList();
+    }
+
+    public Context getContext() {
+        if (ctx == null) {
+            throw new IllegalStateException("context not set! call render first");
+        }
+        return ctx;
+    }
+
+    public class Context {
+        private final User user;
+        private final Date date;
+        private final int days;
+        private final long from;
+
+        Context(User user, Date date, int days) {
+            this.user = user;
+            this.date = date;
+            this.days = days;
+            this.from = DigestDateUtil.millisDaysAgo(date, days);
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public int getDays() {
+            return days;
+        }
+
+        public long getFrom() {
+            return from;
+        }
+
+        public Date getFromDate() {
+            return new Date(from);
+        }
     }
 }

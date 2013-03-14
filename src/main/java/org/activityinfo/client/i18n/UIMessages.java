@@ -238,11 +238,8 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Hi {0},")
     String digestGreeting(String userName);
 
-    @DefaultMessage("Here is the digest with information about your ActivityInfo databases for {0,date,EEEEE d MMMMM yyyy}.")
-    String digestIntro(Date now);
-
-    @DefaultMessage("[GEO DIGEST INTRO]:")
-    String geoDigestIntro();
+    @DefaultMessage("Here are the latest updates to your ActivityInfo databases since {0,date,EEEEE d MMMMM yyyy',' HH:mm}")
+    String geoDigestIntro(Date date);
 
     @DefaultMessage("<a href=\"mailto:{0}\">{1}</a> edited the {2} at {3} ")
     String digestSiteMsg(String userEmail, String userName, String activityName, String locationName);
@@ -256,8 +253,14 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Unmapped Sites")
     String digestUnmappedSites();
 
-    @DefaultMessage("[USER ACTIVITY DIGEST INTRO]:")
-    String activityDigestIntro();
+    @DefaultMessage("Here is the summary of the updates by user for the ActivityInfo databases you administer over the last {0} days.")
+    String activityDigestIntro(int days);
+
+    @DefaultMessage("The following ActivityInfo databases have not been actively used over the last {0} days:")
+    String activityDigestInactiveDatabases(int days);
+
+    @DefaultMessage("{0} update(s) on {1,date,dd-MM-yyyy}")
+    String activityDigestGraphTooltip(int updates, Date date);
 
     @DefaultMessage("Best regards,<br>The ActivityInfo Team")
     String digestSignature();
