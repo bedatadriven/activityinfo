@@ -34,8 +34,8 @@ import javax.servlet.ServletContext;
 
 import org.activityinfo.server.util.blob.BlobService;
 
-import com.google.appengine.labs.repackaged.com.google.common.io.Closeables;
 import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
 import com.google.common.io.InputSupplier;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
@@ -93,7 +93,7 @@ public class PersistentPolicyProvider {
 
         SerializationPolicy policy = readFromDeployment(moduleBaseURL, strongName);
 
-        if(policy == null) {
+        if (policy == null) {
             // try to fetch from storage
             try {
                 InputSupplier<? extends InputStream> inputSupplier = blobService.get("/gwt-rpc/" + strongName);
