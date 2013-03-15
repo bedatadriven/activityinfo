@@ -94,10 +94,10 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("GetSites: {\nfilter=").append(filter.toString());
+        sb.append("GetSites: {");
 
         if (seekToSiteId != null) {
-            sb.append(", seektoid=").append(seekToSiteId);
+            sb.append("seektoid=").append(seekToSiteId);
         }
         if (filter != null) {
             sb.append(", filter=").append(filter.toString());

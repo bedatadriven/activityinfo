@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
@@ -42,13 +44,18 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 public class GeoDigestRenderer {
+    private static final String BUBBLE_COLOR = "67a639";
+    private static final int BUBBLE_SIZE = 20;
+    
+    private static final Logger LOGGER =
+        Logger.getLogger(GeoDigestRenderer.class.getName());
+    
     private final Provider<EntityManager> entityManager;
     private final DispatcherSync dispatcher;
     private final ImageMapRenderer imageMapRenderer;
     private final StorageProvider storageProvider;
 
-    private static final Logger LOGGER =
-        Logger.getLogger(GeoDigestRenderer.class.getName());
+    private transient Context ctx;
 
     @Inject
     public GeoDigestRenderer(Provider<EntityManager> entityManager,
@@ -62,24 +69,23 @@ public class GeoDigestRenderer {
     }
 
     /**
-     * @param user
-     * @param date
-     * @param days
      * @return a list with geo digests for each database the specified user has access to by ownership or view
      *         permission, starting the specified amount of days before the specified date.
      * @throws IOException
      */
     public List<String> render(User user, Date date, int days) throws IOException {
+        this.ctx = new Context(user, date, days);
+        
         List<String> items = new ArrayList<String>();
 
         List<UserDatabase> databases = findDatabases(user);
         LOGGER.finest("found " + databases.size() + " database(s) for user " + user.getId());
 
         if (!databases.isEmpty()) {
-            SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
+            ctx.setSchemaDTO(dispatcher.execute(new GetSchema()));
 
             for (UserDatabase database : databases) {
-                String item = renderDatabase(schemaDTO, user, database, date, days);
+                String item = renderDatabase(database);
                 if (StringUtils.isNotBlank(item)) {
                     items.add(item);
                 }
@@ -89,14 +95,14 @@ public class GeoDigestRenderer {
         return items;
     }
 
-    private String renderDatabase(SchemaDTO schemaDTO, User user, UserDatabase database, Date date, int days)
+    private String renderDatabase(UserDatabase database)
         throws IOException {
 
-        long from = DigestDateUtil.midnightMillisDaysAgo(date, days);
-        List<Integer> siteIds = findSiteIds(database, from);
+        List<Integer> siteIds = findSiteIds(database, ctx.getFrom());
 
-        LOGGER.finest("rendering geo digest for user " + user.getId() + " and database " + database.getId()
-            + " - found " + siteIds.size() + " site(s) that were edited since " + DateFormatter.formatDateTime(from));
+        LOGGER.finest("rendering geo digest for user " + ctx.getUser().getId() + " and database " + database.getId()
+            + " - found " + siteIds.size() + " site(s) that were edited since "
+            + DateFormatter.formatDateTime(ctx.getFrom()));
 
         if (siteIds.isEmpty()) {
             return null;
@@ -104,15 +110,7 @@ public class GeoDigestRenderer {
 
         MapReportElement model = new MapReportElement();
 
-        Filter filter = new Filter();
-        filter.addRestriction(DimensionType.Site, siteIds);
-
-        BubbleMapLayer layer = new BubbleMapLayer();
-        layer.setFilter(filter);
-        layer.setLabelSequence(new ArabicNumberSequence());
-        layer.setMinRadius(20);
-        layer.setClustering(new AutomaticClustering());
-
+        BubbleMapLayer layer = createLayer(siteIds);
         model.setLayers(layer);
 
         MapContent content = dispatcher.execute(new GenerateElement<MapContent>(model));
@@ -126,11 +124,23 @@ public class GeoDigestRenderer {
         imageMapRenderer.render(model, storage.getOutputStream());
         storage.getOutputStream().close();
 
-        return renderHtml(schemaDTO, database, date, from, content, storage);
+        return renderHtml(database, content, storage);
     }
 
-    private String renderHtml(SchemaDTO schemaDTO, UserDatabase database, Date date, long from, MapContent content,
-        TempStorage storage) {
+    private BubbleMapLayer createLayer(List<Integer> siteIds) {
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Site, siteIds);
+
+        BubbleMapLayer layer = new BubbleMapLayer(filter);
+        layer.setLabelSequence(new ArabicNumberSequence());
+        layer.setClustering(new AutomaticClustering());
+        layer.setMinRadius(BUBBLE_SIZE);
+        layer.setMaxRadius(BUBBLE_SIZE);
+        layer.setBubbleColor(BUBBLE_COLOR);
+        return layer;
+    }
+
+    private String renderHtml(UserDatabase database, MapContent content, TempStorage storage) {
 
         StringBuilder html = new StringBuilder();
         
@@ -144,12 +154,12 @@ public class GeoDigestRenderer {
 
         for (MapMarker marker : content.getMarkers()) {
             String label = ((BubbleMapMarker) marker).getLabel();
-            html.append("<span class='geo-marker-header' style='color: red; font-weight:bold;'>");
+            html.append("<span class='geo-marker-header' style='color: #" + BUBBLE_COLOR + "; font-weight:bold;'>");
             html.append(label);
             html.append(":</span><br>");
 
             LOGGER.finest(marker.getSiteIds().size() + " sites for marker " + label + ": " + marker.getSiteIds());
-            renderSites(html, schemaDTO, marker.getSiteIds(), date, from);
+            renderSites(html, marker.getSiteIds());
         }
 
         if (!content.getUnmappedSites().isEmpty()) {
@@ -158,26 +168,26 @@ public class GeoDigestRenderer {
             html.append(":</span><br>");
 
             LOGGER.finest(content.getUnmappedSites().size() + " unmapped sites");
-            renderSites(html, schemaDTO, content.getUnmappedSites(), date, from);
+            renderSites(html, content.getUnmappedSites());
         }
         
         return html.toString();
     }
     
-    private void renderSites(StringBuilder html, SchemaDTO schemaDTO, Collection<Integer> siteIds, Date date, long from) {
+    private void renderSites(StringBuilder html, Collection<Integer> siteIds) {
         if (!siteIds.isEmpty()) {
             for (Integer siteId : siteIds) {
                 SiteResult siteResult = dispatcher.execute(GetSites.byId(siteId));
                 SiteDTO siteDTO = siteResult.getData().get(0);
-                ActivityDTO activityDTO = schemaDTO.getActivityById(siteDTO.getActivityId());
+                ActivityDTO activityDTO = ctx.getSchemaDTO().getActivityById(siteDTO.getActivityId());
 
-                List<SiteHistory> histories = findSiteHistory(siteId, from);
+                List<SiteHistory> histories = findSiteHistory(siteId, ctx.getFrom());
                 for (SiteHistory history : histories) {
                     html.append("<span class='geo-site' style='margin-left:10px;'>&bull; ");
                     html.append(I18N.MESSAGES.digestSiteMsg(
                         history.getUser().getEmail(), history.getUser().getName(),
                         activityDTO.getName(), siteDTO.getLocationName()));
-                    if (DigestDateUtil.isOn(date, history.getTimeCreated())) {
+                    if (DigestDateUtil.isOn(ctx.getDate(), history.getTimeCreated())) {
                         html.append(I18N.MESSAGES.digestSiteMsgDateToday(new Date(history.getTimeCreated())));
                     } else {
                         html.append(I18N.MESSAGES.digestSiteMsgDateOther(new Date(history.getTimeCreated())));
@@ -189,9 +199,7 @@ public class GeoDigestRenderer {
     }
 
     /**
-     * @param user
-     *            the user to find the databases for
-     * @return all UserDatabases for the specified user where the user is the database owner, or where the database has
+     * @return all UserDatabases for the contextual user where the user is the database owner, or where the database has
      *         a UserPermission for the specified user with allowView set to true. If the user happens to have his
      *         emailnotification preference set to false, an empty list is returned.
      */
@@ -239,7 +247,7 @@ public class GeoDigestRenderer {
      * @param user
      * @param from
      * @return the sitehistory edited since the specified timestamp (milliseconds) and linked to the specified database
-     *         and user.
+     *         and user. The resulting list is grouped by user, keeping the last created sitehistory entry per user.
      */
     @VisibleForTesting
     @SuppressWarnings("unchecked")
@@ -253,6 +261,69 @@ public class GeoDigestRenderer {
         query.setParameter("siteId", siteId);
         query.setParameter("from", from);
 
-        return query.getResultList();
+        List<SiteHistory> list = query.getResultList();
+
+        if (list.isEmpty()) {
+            return list;
+        }
+
+        Map<Integer, SiteHistory> map = new HashMap<Integer, SiteHistory>();
+        for (SiteHistory siteHistory : list) {
+            SiteHistory old = map.get(siteHistory.getUser().getId());
+            if (old == null || old.getTimeCreated() <= siteHistory.getTimeCreated()) {
+                map.put(siteHistory.getUser().getId(), siteHistory);
+            }
+        }
+        return new ArrayList<SiteHistory>(map.values());
+    }
+
+    public Context getContext() {
+        if (ctx == null) {
+            throw new IllegalStateException("context not set! call render first");
+        }
+        return ctx;
+    }
+
+    public class Context {
+        private final User user;
+        private final Date date;
+        private final int days;
+        private final long from;
+        private SchemaDTO schemaDTO;
+
+        Context(User user, Date date, int days) {
+            this.user = user;
+            this.date = date;
+            this.days = days;
+            this.from = DigestDateUtil.millisDaysAgo(date, days);
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public int getDays() {
+            return days;
+        }
+
+        public long getFrom() {
+            return from;
+        }
+
+        public Date getFromDate() {
+            return new Date(from);
+        }
+
+        private SchemaDTO getSchemaDTO() {
+            return schemaDTO;
+        }
+
+        private void setSchemaDTO(SchemaDTO schemaDTO) {
+            this.schemaDTO = schemaDTO;
+        }
     }
 }

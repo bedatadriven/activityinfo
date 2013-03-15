@@ -28,9 +28,9 @@ public class UserDigestResource {
     public static final String PARAM_USER = "u";
     public static final String PARAM_NOW = "n";
     public static final String PARAM_GEO_DAYS = "g";
-    public static final String PARAM_GEO_DAYS_DEF = "0"; // today
+    public static final String PARAM_GEO_DAYS_DEF = "1"; // today
     public static final String PARAM_ACTIVITY_DAYS = "a";
-    public static final String PARAM_ACTIVITY_DAYS_DEF = "6"; // one week when today is added
+    public static final String PARAM_ACTIVITY_DAYS_DEF = "7"; // one week
     public static final String PARAM_SENDEMAIL = "send";
     public static final String PARAM_SENDEMAIL_DEF = "true";
 
@@ -80,8 +80,8 @@ public class UserDigestResource {
 
         LOGGER.info("creating digest for " + user.getEmail()
             + " on " + DateFormatter.formatDateTime(date)
-            + " for geo period: " + geoDays + " days"
-            + " and activity period: " + activityDays + " days."
+            + " for geo period: " + geoDays + " day(s)"
+            + " and activity period: " + activityDays + " day(s)."
             + " (sending email: " + sendEmail + ")");
 
         UserDigestMessageBuilder digest =

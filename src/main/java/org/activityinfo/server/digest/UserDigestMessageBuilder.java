@@ -33,6 +33,7 @@ import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.mail.Message;
+import org.activityinfo.server.util.html.HtmlTag;
 import org.activityinfo.server.util.html.HtmlWriter;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
@@ -80,6 +81,7 @@ public class UserDigestMessageBuilder {
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
         geoDigests = geoDigestRenderer.render(user, date, geoDays);
+
         activityDigests = activityDigestRenderer.render(user, date, activityDays);
 
         if (geoDigests.isEmpty() && activityDigests.isEmpty()) {
@@ -101,23 +103,25 @@ public class UserDigestMessageBuilder {
 
         htmlWriter.startDocumentHeader();
         htmlWriter.documentTitle(subject);
+        htmlWriter.open(new HtmlTag("style")).at("type", "text/css").text("body { font-family:Helvetica; }").close();
         htmlWriter.endDocumentHeader();
 
         htmlWriter.startDocumentBody();
 
         htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(user.getName()));
 
-        htmlWriter.paragraph(I18N.MESSAGES.digestIntro(date));
-
         if (!geoDigests.isEmpty()) {
-            htmlWriter.paragraph(I18N.MESSAGES.geoDigestIntro());
+            htmlWriter.paragraph(I18N.MESSAGES.geoDigestIntro(geoDigestRenderer.getContext().getFromDate()));
             for (String geoDigest : geoDigests) {
                 htmlWriter.paragraph(geoDigest);
             }
         }
 
         if (!activityDigests.isEmpty()) {
-            htmlWriter.paragraph(I18N.MESSAGES.activityDigestIntro());
+            if (!geoDigests.isEmpty()) { // some artificial spacing, should be removed when using stylesheets..
+                htmlWriter.paragraph("<p>&nbsp;</p>");
+            }
+            htmlWriter.paragraph(I18N.MESSAGES.activityDigestIntro(activityDigestRenderer.getContext().getDays()));
             for (String activityDigest : activityDigests) {
                 htmlWriter.paragraph(activityDigest);
             }
