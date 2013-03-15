@@ -80,7 +80,7 @@ public class CommandServlet extends RemoteServiceServlet implements
     @Inject
     private ServerSideAuthProvider authProvider;
 
-    @Inject
+    @Inject(optional=true)
     private PersistentPolicyProvider policyProvider;
 
 
