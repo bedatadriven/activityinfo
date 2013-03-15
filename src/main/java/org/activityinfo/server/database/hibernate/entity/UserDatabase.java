@@ -61,10 +61,10 @@ import javax.persistence.Transient;
     @org.hibernate.annotations.Filter(name = "userVisible", condition = "(:currentUserId = OwnerUserId  "
         + "or :currentUserId in (select p.UserId from userpermission p "
         + "where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))"),
-    @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
+        @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 @NamedQuery(name = "queryAllUserDatabasesAlphabetically", query = "select db from UserDatabase db order by db.name")
 public class UserDatabase implements java.io.Serializable, Deleteable,
-    SchemaElement {
+SchemaElement {
 
     private static final long serialVersionUID = 7405094318163898712L;
 
@@ -431,5 +431,10 @@ public class UserDatabase implements java.io.Serializable, Deleteable,
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userDatabase")
     public Set<Target> getTargets() {
         return targets;
+    }
+
+    @Override
+    public String toString() {
+        return id + ": " + name;
     }
 }

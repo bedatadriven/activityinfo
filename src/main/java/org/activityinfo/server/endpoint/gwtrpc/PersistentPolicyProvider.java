@@ -27,23 +27,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
-import com.google.appengine.api.files.AppEngineFile;
-import com.google.appengine.api.files.FileReadChannel;
-import com.google.appengine.api.files.FileService;
-import com.google.appengine.api.files.FileServiceFactory;
-import com.google.appengine.api.files.FileWriteChannel;
-import com.google.appengine.api.files.GSFileOptions.GSFileOptionsBuilder;
+import org.activityinfo.server.util.blob.BlobService;
+
 import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
+import com.google.common.io.InputSupplier;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
+import com.google.inject.Inject;
 
 /**
  * Provides SerializationPolicy from archives in Google Cloud Storage.
@@ -78,36 +74,42 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * Google Cloud Storage, and then check this archive each time a gwt.rpc file is
  * requested. This way, even
  */
-public class AppEnginePolicyProvider {
+public class PersistentPolicyProvider {
 
     private static final Logger LOGGER = Logger
-        .getLogger(AppEnginePolicyProvider.class.getName());
+        .getLogger(PersistentPolicyProvider.class.getName());
 
     private ServletContext servletContext;
+    private BlobService blobService;
 
-    public AppEnginePolicyProvider(ServletContext servletContext) {
+    @Inject
+    public PersistentPolicyProvider(BlobService blobService, ServletContext servletContext) {
+        this.blobService = blobService;
         this.servletContext = servletContext;
     }
 
     public SerializationPolicy getSerializationPolicy(String moduleBaseURL,
         String strongName) {
 
-        // try to load first from cloud storage
-        FileService fileService = FileServiceFactory.getFileService();
-        AppEngineFile file = pathForStrongName(strongName);
-        FileReadChannel readChannel;
-        try {
-            readChannel = fileService.openReadChannel(file, false);
-            InputStream in = Channels.newInputStream(readChannel);
-            return SerializationPolicyLoader.loadFromStream(in, null);
-        } catch (IOException e) {
-            return readFromDeployment(moduleBaseURL, strongName);
+        SerializationPolicy policy = readFromDeployment(moduleBaseURL, strongName);
 
-        } catch (ParseException e) {
-            LOGGER.log(Level.SEVERE,
-                "Error parsing serialization policy from GCS cache", e);
-            return readFromDeployment(moduleBaseURL, strongName);
+        if (policy == null) {
+            // try to fetch from storage
+            try {
+                InputSupplier<? extends InputStream> inputSupplier = blobService.get("/gwt-rpc/" + strongName);
+                InputStream in = inputSupplier.getInput();
+                try {
+                    return SerializationPolicyLoader.loadFromStream(in, null);
+                } finally {
+                    Closeables.closeQuietly(in);
+                }
+
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Could not load serialization policy from cache", e);
+            }
         }
+        
+        return null;
     }
 
     private SerializationPolicy readFromDeployment(String moduleBaseURL,
@@ -131,43 +133,20 @@ public class AppEnginePolicyProvider {
             return null;
         }
 
-        // store to GCS
+        // cache to blob service for later
         try {
-            cacheToCloudStorage(strongName, bytes);
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING,
-                "Failed to cache serialization policy to cloud storage", e);
+            blobService.put("/gwt-rpc/" + strongName, ByteStreams.newInputStreamSupplier(bytes));
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Could not cache serialization policy", e);
         }
 
         return policy;
     }
 
-    private void cacheToCloudStorage(String strongName,
-        byte[] bytes) throws IOException {
-
-        GSFileOptionsBuilder optionsBuilder = new GSFileOptionsBuilder()
-            .setBucket("activityinfo-gwt-rpc")
-            .setKey(strongName + ".gwt.rpc")
-            .setMimeType("text/plain");
-
-        FileService fileService = FileServiceFactory.getFileService();
-        AppEngineFile writableFile = fileService.createNewGSFile(optionsBuilder
-            .build());
-        FileWriteChannel writeChannel = fileService.openWriteChannel(
-            writableFile, true);
-        writeChannel.write(ByteBuffer.wrap(bytes));
-        writeChannel.closeFinally();
-    }
 
     private String deploymentPath(String moduleBaseURL, String strongName)
         throws MalformedURLException {
         String modulePath = new URL(moduleBaseURL).getPath();
         return modulePath + strongName + ".gwt.rpc";
     }
-
-    private AppEngineFile pathForStrongName(String strongName) {
-        return new AppEngineFile("/gs/activityinfo-gwt-rpc/" + strongName
-            + ".gwt.rpc");
-    }
-
 }

@@ -231,4 +231,38 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("Removed attribute {0}")
     String siteHistoryAttrRemove(String attrName);
+
+    @DefaultMessage("ActivityInfo digest for {0,date,dd-MM-yyyy}")
+    String digestSubject(Date now);
+
+    @DefaultMessage("Hi {0},")
+    String digestGreeting(String userName);
+
+    @DefaultMessage("Here are the latest updates to your ActivityInfo databases since {0,date,EEEEE d MMMMM yyyy',' HH:mm}")
+    String geoDigestIntro(Date date);
+
+    @DefaultMessage("<a href=\"mailto:{0}\">{1}</a> edited the {2} at {3} ")
+    String digestSiteMsg(String userEmail, String userName, String activityName, String locationName);
+
+    @DefaultMessage("<span title=\"{0,date,dd-MM-yyyy 'at' HH:mm}\">today</span>.")
+    String digestSiteMsgDateToday(Date date);
+
+    @DefaultMessage("on <span title=\"{0,date,dd-MM-yyyy 'at' HH:mm}\">{0,date,dd-MM-yyyy 'at' HH:mm}</span>.")
+    String digestSiteMsgDateOther(Date date);
+
+    @DefaultMessage("Unmapped Sites")
+    String digestUnmappedSites();
+
+    @DefaultMessage("Here is the summary of the updates by user for the ActivityInfo databases you administer over the last {0} days.")
+    String activityDigestIntro(int days);
+
+    @DefaultMessage("The following ActivityInfo databases have not been actively used over the last {0} days:")
+    String activityDigestInactiveDatabases(int days);
+
+    @DefaultMessage("{0} update(s) on {1,date,dd-MM-yyyy}")
+    String activityDigestGraphTooltip(int updates, Date date);
+
+    @DefaultMessage("Best regards,<br>The ActivityInfo Team")
+    String digestSignature();
+
 }

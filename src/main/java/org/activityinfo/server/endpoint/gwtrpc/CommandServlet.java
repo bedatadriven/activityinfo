@@ -28,11 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -83,15 +80,9 @@ public class CommandServlet extends RemoteServiceServlet implements
     @Inject
     private ServerSideAuthProvider authProvider;
 
-    private AppEnginePolicyProvider policyProvider;
+    @Inject
+    private PersistentPolicyProvider policyProvider;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        if (DeploymentEnvironment.isAppEngine()) {
-            policyProvider = new AppEnginePolicyProvider(getServletContext());
-        }
-    }
 
     @Override
     @LogException

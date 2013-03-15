@@ -55,11 +55,14 @@ import org.activityinfo.shared.report.model.MapReportElement;
 
 import com.google.code.appengine.awt.BasicStroke;
 import com.google.code.appengine.awt.Color;
+import com.google.code.appengine.awt.Font;
 import com.google.code.appengine.awt.Graphics2D;
 import com.google.code.appengine.awt.Rectangle;
 import com.google.code.appengine.awt.color.ColorSpace;
+import com.google.code.appengine.awt.font.LineMetrics;
 import com.google.code.appengine.awt.geom.Ellipse2D;
 import com.google.code.appengine.awt.geom.GeneralPath;
+import com.google.code.appengine.awt.geom.Rectangle2D;
 import com.google.code.appengine.awt.image.BufferedImage;
 import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
@@ -80,7 +83,7 @@ public class ImageMapRenderer {
      * 
      */
     private final class RemoteTileProvider implements TileProvider {
-        private TileBaseMap baseMap;
+        private final TileBaseMap baseMap;
 
         private RemoteTileProvider(TileBaseMap baseMap) {
             this.baseMap = baseMap;
@@ -94,9 +97,9 @@ public class ImageMapRenderer {
 
     private final String mapIconRoot;
 
-    private Map<String, BufferedImage> iconImages = new HashMap<String, BufferedImage>();
+    private final Map<String, BufferedImage> iconImages = new HashMap<String, BufferedImage>();
 
-    private AdminGeometryProvider geometryProvider;
+    private final AdminGeometryProvider geometryProvider;
 
     @Inject
     public ImageMapRenderer(AdminGeometryProvider geometryProvider,
@@ -254,8 +257,8 @@ public class ImageMapRenderer {
     }
 
     private static void drawLabel(Graphics2D g2d, BubbleMapMarker marker) {
-        // Font font = new Font(Font.SANS_SERIF, Font.BOLD, (int)
-        // (marker.getRadius() * 2f * 0.8f));
+        Font font = new Font(Font.SANS_SERIF, Font.BOLD, (int)
+            (marker.getRadius() * 2f * 0.8f));
 
         // measure the bounds of the string so we can center it within
         // the bubble.
@@ -263,16 +266,16 @@ public class ImageMapRenderer {
         // QUICK FIX: labeling set inappropriately as default for new map layers
         // and no method in UI to turn them off.
 
-        // Rectangle2D rect = font.getStringBounds(marker.getLabel(),
-        // g2d.getFontRenderContext());
-        // LineMetrics lm = font.getLineMetrics(marker.getLabel(),
-        // g2d.getFontRenderContext());
-        //
-        // g2d.setColor(ColorUtil.colorFromString(marker.getLabelColor()));
-        // g2d.setFont(font);
-        // g2d.drawString(marker.getLabel(),
-        // (int)(marker.getX() - (rect.getWidth() / 2)),
-        // (int)(marker.getY() + (lm.getAscent() / 2)));
+        Rectangle2D rect = font.getStringBounds(marker.getLabel(),
+            g2d.getFontRenderContext());
+        LineMetrics lm = font.getLineMetrics(marker.getLabel(),
+            g2d.getFontRenderContext());
+
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(font);
+        g2d.drawString(marker.getLabel(),
+            (int) (marker.getX() - (rect.getWidth() / 2)),
+            (int) (marker.getY() + (lm.getAscent() * 1.25)));
     }
 
     protected void drawIcon(Graphics2D g2d, IconMapMarker marker) {

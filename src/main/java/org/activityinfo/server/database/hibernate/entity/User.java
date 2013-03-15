@@ -216,8 +216,10 @@ public class User implements java.io.Serializable {
     public String toString() {
         if (firstName != null && name != null) {
             return firstName + " " + name;
+        } else if (name != null) {
+            return name;
         } else {
-            return "(null user)";
+            return "user" + id;
         }
     }
 

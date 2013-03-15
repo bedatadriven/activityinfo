@@ -30,15 +30,15 @@ import java.util.Locale;
 
 import org.activityinfo.shared.report.model.DateRange;
 
-public final class DateRangeFormat {
-    private DateFormat medium;
-    private DateFormat month;
-    private DateFormat monthYear;
-    private String rangePattern;
-    private String afterPattern;
-    private String beforePattern;
+public final class DateFormatter {
+    private final DateFormat medium;
+    private final DateFormat month;
+    private final DateFormat monthYear;
+    private final String rangePattern;
+    private final String afterPattern;
+    private final String beforePattern;
 
-    public DateRangeFormat(Locale locale) {
+    public DateFormatter(Locale locale) {
 
         medium = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         month = getMonthFormat(locale);
@@ -158,5 +158,20 @@ public final class DateRangeFormat {
         format.applyPattern("MMM");
 
         return format;
+    }
+
+    public static String formatSimpleDate(Date date) {
+        Date toFormat = date == null ? new Date() : date;
+        return new SimpleDateFormat("dd-MM-yyyy").format(toFormat);
+    }
+
+    public static String formatDateTime(Date date) {
+        Date toFormat = date == null ? new Date() : date;
+        return new SimpleDateFormat("dd-MM-yyyy HH:mm").format(toFormat);
+    }
+
+    public static String formatDateTime(Long millis) {
+        Date date = millis == null ? new Date() : new Date(millis);
+        return new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date);
     }
 }
