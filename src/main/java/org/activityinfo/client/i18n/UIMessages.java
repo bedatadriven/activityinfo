@@ -238,16 +238,19 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Hi {0},")
     String digestGreeting(String userName);
 
-    @DefaultMessage("Here are the latest updates to your ActivityInfo databases since {0,date,EEEEE d MMMMM yyyy',' HH:mm}")
-    String geoDigestIntro(Date date);
+    @DefaultMessage("Here are the updates to your ActivityInfo databases for the last {0} hours.")
+    String geoDigestIntro(int hours);
 
     @DefaultMessage("<a href=\"mailto:{0}\">{1}</a> edited the {2} at {3} ")
     String digestSiteMsg(String userEmail, String userName, String activityName, String locationName);
 
-    @DefaultMessage("<span title=\"{0,date,dd-MM-yyyy 'at' HH:mm}\">today</span>.")
+    @DefaultMessage("<span title=\"{0,date,dd-MM-yyyy}\">today</span>.")
     String digestSiteMsgDateToday(Date date);
 
-    @DefaultMessage("on <span title=\"{0,date,dd-MM-yyyy 'at' HH:mm}\">{0,date,dd-MM-yyyy 'at' HH:mm}</span>.")
+    @DefaultMessage("<span title=\"{0,date,dd-MM-yyyy}\">yesterday</span>.")
+    String digestSiteMsgDateYesterday(Date date);
+
+    @DefaultMessage("on <span>{0,date,dd-MM-yyyy}</span>.")
     String digestSiteMsgDateOther(Date date);
 
     @DefaultMessage("Unmapped Sites")

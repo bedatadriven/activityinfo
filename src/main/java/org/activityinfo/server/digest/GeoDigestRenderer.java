@@ -163,7 +163,8 @@ public class GeoDigestRenderer {
         }
 
         if (!content.getUnmappedSites().isEmpty()) {
-            html.append("<br><span class='geo-unmapped-header' style='color: red; font-weight:bold;'>");
+            html.append("<br><span class='geo-unmapped-header' style='color: #" + BUBBLE_COLOR
+                + "; font-weight:bold;'>");
             html.append(I18N.MESSAGES.digestUnmappedSites());
             html.append(":</span><br>");
 
@@ -187,11 +188,16 @@ public class GeoDigestRenderer {
                     html.append(I18N.MESSAGES.digestSiteMsg(
                         history.getUser().getEmail(), history.getUser().getName(),
                         activityDTO.getName(), siteDTO.getLocationName()));
-                    if (DigestDateUtil.isOn(ctx.getDate(), history.getTimeCreated())) {
-                        html.append(I18N.MESSAGES.digestSiteMsgDateToday(new Date(history.getTimeCreated())));
+
+                    Date creationDate = new Date(history.getTimeCreated());
+                    if (DigestDateUtil.isOnToday(ctx.getDate(), creationDate)) {
+                        html.append(I18N.MESSAGES.digestSiteMsgDateToday(creationDate));
+                    } else if (DigestDateUtil.isOnYesterday(ctx.getDate(), creationDate)) {
+                        html.append(I18N.MESSAGES.digestSiteMsgDateYesterday(creationDate));
                     } else {
-                        html.append(I18N.MESSAGES.digestSiteMsgDateOther(new Date(history.getTimeCreated())));
+                        html.append(I18N.MESSAGES.digestSiteMsgDateOther(creationDate));
                     }
+
                     html.append("</span><br>");
                 }
             }
@@ -295,7 +301,7 @@ public class GeoDigestRenderer {
             this.user = user;
             this.date = date;
             this.days = days;
-            this.from = DigestDateUtil.millisDaysAgo(date, days);
+            this.from = DigestDateUtil.daysAgo(date, days).getTime();
         }
 
         public User getUser() {

@@ -27,6 +27,8 @@ public class ActivityDigestRenderer {
     private static final Logger LOGGER =
         Logger.getLogger(ActivityDigestRenderer.class.getName());
 
+    private static final String PARTNER_COLOR = "67a639";
+
     private final Provider<EntityManager> entityManager;
 
     private transient Context ctx;
@@ -115,7 +117,7 @@ public class ActivityDigestRenderer {
         html.append("<span class='act-header' style='font-weight:bold;'>");
         html.append(database.getName());
         html.append("</span><br>");
-        html.append("<div class='act-owner'>");
+        html.append("<div class='act-owner' style='margin-left: 25px;'>");
         html.append("<span class='act-owner-header'>");
         html.append("<a href=\"mailto:");
         html.append(ownerActivityMap.getUser().getEmail());
@@ -132,11 +134,13 @@ public class ActivityDigestRenderer {
             List<ActivityMap> activityMaps = entry.getValue();
 
             html.append("<div class='act-partner' style='margin-left: 15px;'>");
-            html.append("<span class='act-partner-header' style='font-weight:bold;'>");
+            html.append("<span class='act-partner-header' style='color: #");
+            html.append(PARTNER_COLOR);
+            html.append("'; font-weight:bold;'>");
             html.append(partner.getName());
             html.append("</span><br>");
 
-            html.append("<div class='act-partner-graph'>");
+            html.append("<div class='act-partner-graph' style='margin-left: 10px;'>");
             html.append(createGraph(ActivityMap.getTotalActivityMap(activityMaps, ctx.getDays())));
             html.append("</div><br>");
 
@@ -149,7 +153,7 @@ public class ActivityDigestRenderer {
                 html.append(activityMap.getUser().getName());
                 html.append("</a></span><br>");
 
-                html.append("<div class='act-user-graph'>");
+                html.append("<div class='act-user-graph' style='margin-top: 2px;'>");
                 html.append(createGraph(activityMap.getMap()));
                 html.append("</div><br>");
             }
@@ -165,14 +169,14 @@ public class ActivityDigestRenderer {
         Collections.reverse(list);
         
         StringBuilder result = new StringBuilder();
-        result.append("<table cellspacing='0' cellpadding='0' style='width:");
-        result.append(list.size() * 15);
-        result.append("px; height: 10px; border: 1px solid black; border-collapse:collapse;'>");
-        result.append("<tr>");
+        result.append("<table cellspacing='0' cellpadding='0' style='width: ");
+        result.append(21 * list.size());
+        result.append("px; height: 21px; border: 1px solid black; border-collapse:collapse;'>");
+        result.append("<tr style='height: 21px;'>");
 
         for (int i = 0; i < list.size(); i++) {
             int value = list.get(i);
-            result.append("<td style='width:13px; height: 10px; background-color:#");
+            result.append("<td style='width: 21px; height: 21px; background-color:#");
             result.append(determineColor(value));
             result.append("; border: 1px solid black; text-align:center; vertical-align:middle' title='");
             result.append(determineTitle(value, i));
@@ -195,7 +199,7 @@ public class ActivityDigestRenderer {
         case 2:
             return "67d839";
         default:
-            return "67e939";
+            return "67ff39";
         }
     }
     
@@ -325,7 +329,7 @@ public class ActivityDigestRenderer {
             this.user = user;
             this.date = date;
             this.days = days;
-            this.from = DigestDateUtil.millisDaysAgo(date, days);
+            this.from = DigestDateUtil.daysAgo(date, days).getTime();
         }
 
         public User getUser() {
