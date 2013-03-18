@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,10 @@ import javax.servlet.ServletContext;
 
 import org.activityinfo.server.util.blob.BlobService;
 
+import com.google.appengine.api.files.AppEngineFile;
+import com.google.appengine.api.files.FileReadChannel;
+import com.google.appengine.api.files.FileService;
+import com.google.appengine.api.files.FileServiceFactory;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.InputSupplier;
@@ -91,25 +96,48 @@ public class PersistentPolicyProvider {
     public SerializationPolicy getSerializationPolicy(String moduleBaseURL,
         String strongName) {
 
+        LOGGER.info("Loading serialization policy " + strongName);
+        
         SerializationPolicy policy = readFromDeployment(moduleBaseURL, strongName);
 
         if (policy == null) {
-            // try to fetch from storage
-            try {
-                InputSupplier<? extends InputStream> inputSupplier = blobService.get("/gwt-rpc/" + strongName);
-                InputStream in = inputSupplier.getInput();
-                try {
-                    return SerializationPolicyLoader.loadFromStream(in, null);
-                } finally {
-                    Closeables.closeQuietly(in);
-                }
-
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Could not load serialization policy from cache", e);
-            }
+            policy = tryFetchFromBlobService(keyName(strongName));
         }
         
+        if (policy == null) {
+            policy = tryFetchFromBlobService(legacyKeyName(strongName));
+        }
+        
+        return policy;
+    }
+
+    private String legacyKeyName(String strongName) {
+        return "/gs/activityinfo-gwt-rpc/" + strongName + ".gwt.rpc";
+    }
+
+    private SerializationPolicy tryFetchFromBlobService(String key) {
+        try {
+            LOGGER.fine("Trying to read serialization policy from blobservice at " + key);
+            InputSupplier<? extends InputStream> inputSupplier = blobService.get(key);
+            InputStream in = inputSupplier.getInput();
+            try {
+                SerializationPolicy policy = SerializationPolicyLoader.loadFromStream(in, null);
+                
+                LOGGER.info("Read serialization policy from blob service at " + key);
+                
+                return policy;
+            } finally {
+                Closeables.closeQuietly(in);
+            }
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Could not load serialization policy from cache", e);
+        }
         return null;
+    }
+
+    private String keyName(String strongName) {
+        return "/gwt-rpc/" + strongName;
     }
 
     private SerializationPolicy readFromDeployment(String moduleBaseURL,
@@ -121,12 +149,16 @@ public class PersistentPolicyProvider {
         SerializationPolicy policy;
 
         try {
+            
             String file = deploymentPath(moduleBaseURL, strongName);
             InputStream in = servletContext.getResourceAsStream(file);
             bytes = ByteStreams.toByteArray(in);
             in.close();
             policy = SerializationPolicyLoader.loadFromStream(
                 new ByteArrayInputStream(bytes), null);
+            
+            LOGGER.info("Read serialization policy " + strongName + " from deployment");
+            
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
                 "Failed to read serialization policy from deployment", e);
@@ -135,7 +167,9 @@ public class PersistentPolicyProvider {
 
         // cache to blob service for later
         try {
-            blobService.put("/gwt-rpc/" + strongName, ByteStreams.newInputStreamSupplier(bytes));
+            blobService.put(keyName(strongName), ByteStreams.newInputStreamSupplier(bytes));
+            LOGGER.info("Cached policy " + strongName + " to blob service");
+
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not cache serialization policy", e);
         }
