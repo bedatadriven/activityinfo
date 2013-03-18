@@ -23,6 +23,7 @@ package org.activityinfo.server.report.output;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
@@ -30,45 +31,43 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+import org.activityinfo.server.util.blob.BlobNotFoundException;
+import org.activityinfo.server.util.blob.BlobService;
+
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.InputSupplier;
+import com.google.inject.Inject;
 
 @Singleton
-public class AppEngineStorageServlet extends HttpServlet {
+public class TempStorageServlet extends HttpServlet {
 
-    private final DatastoreService datastore = DatastoreServiceFactory
-        .getDatastoreService();
-    private final BlobstoreService blobstore = BlobstoreServiceFactory
-        .getBlobstoreService();
+    private final BlobService blobService;
+
+    @Inject
+    public TempStorageServlet(BlobService blobService) {
+        super();
+        this.blobService = blobService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws ServletException, IOException {
 
         String keyName = parseBlobKey(req.getRequestURI());
-        Key key = KeyFactory.createKey("TempFile", keyName);
-
-        Entity entity;
+        
+        InputSupplier<? extends InputStream> inputSupplier;
         try {
-            entity = datastore.get(key);
-        } catch (EntityNotFoundException e) {
-            resp.sendError(404);
+            inputSupplier = blobService.get("/temp/" + keyName);
+        } catch(BlobNotFoundException e) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        BlobKey blobKey = (BlobKey) entity.getProperty("blobKey");
 
-        resp.setContentType((String) entity.getProperty("mimeType"));
-        resp.setHeader("Content-Disposition", "attachment");
-        blobstore.serve(blobKey, resp);
+        resp.setHeader("Content-Disposition", "attachment");   
+        ByteStreams.copy(inputSupplier, resp.getOutputStream());
     }
+
 
     @VisibleForTesting
     static String parseBlobKey(String uri) {

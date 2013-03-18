@@ -32,6 +32,8 @@ import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.util.TemplateModule;
+import org.activityinfo.server.util.blob.BlobServiceModuleStub;
+import org.activityinfo.server.util.config.ConfigModuleStub;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
@@ -53,7 +55,9 @@ import com.teklabs.gwt.i18n.server.LocaleProxy;
     MockHibernateModule.class,
     TemplateModule.class,
     GwtRpcModule.class,
-    AuthenticationModuleStub.class
+    AuthenticationModuleStub.class,
+    BlobServiceModuleStub.class,
+    ConfigModuleStub.class
 })
 public class CommandTestCase2 {
 

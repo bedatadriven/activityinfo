@@ -30,7 +30,7 @@ public class BlobServiceModule extends AbstractModule {
             if (blobRoot.exists() && !blobRoot.isDirectory()) {
                 throw new RuntimeException("blob.root must be a directory");
             }
-            return new LocalBlobService(blobRoot);
+            return new FsBlobService(blobRoot);
         }
     }
 }

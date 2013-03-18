@@ -103,7 +103,8 @@ public class UserDigestMessageBuilder {
 
         htmlWriter.startDocumentHeader();
         htmlWriter.documentTitle(subject);
-        htmlWriter.open(new HtmlTag("style")).at("type", "text/css").text("body { font-family:Helvetica; }").close();
+        htmlWriter.open(new HtmlTag("style")).at("type", "text/css")
+            .text("body { font-family:Helvetica; } a {color: black;} ").close();
         htmlWriter.endDocumentHeader();
 
         htmlWriter.startDocumentBody();
@@ -111,7 +112,7 @@ public class UserDigestMessageBuilder {
         htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(user.getName()));
 
         if (!geoDigests.isEmpty()) {
-            htmlWriter.paragraph(I18N.MESSAGES.geoDigestIntro(geoDigestRenderer.getContext().getFromDate()));
+            htmlWriter.paragraph(I18N.MESSAGES.geoDigestIntro(geoDigestRenderer.getContext().getDays() * 24));
             for (String geoDigest : geoDigests) {
                 htmlWriter.paragraph(geoDigest);
             }

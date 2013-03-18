@@ -2,20 +2,27 @@ package org.activityinfo.server.util.blob;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
 
-public class LocalBlobService implements BlobService {
+/**
+ * Simple implementation of the BlobService interface using 
+ * just the local file system.
+ *
+ */
+public class FsBlobService implements BlobService {
 
-    private static final Logger LOGGER = Logger.getLogger(LocalBlobService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FsBlobService.class.getName());
     
     private final String rootDir;
 
-    public LocalBlobService(File blobRoot) {
+    public FsBlobService(File blobRoot) {
         rootDir = blobRoot.getAbsolutePath();
     }
 
@@ -30,6 +37,11 @@ public class LocalBlobService implements BlobService {
         file.getParentFile().mkdirs();
         Files.copy(blob, file);
         LOGGER.info("Wrote blob '" +  key + "' to " + file.getAbsolutePath());
+    }
+    
+    @Override
+    public OutputStream put(String key) throws IOException {
+        return new FileOutputStream(getFile(key));
     }
 
     @Override
