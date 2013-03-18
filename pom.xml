@@ -27,7 +27,7 @@
     <display.version>${project.version}</display.version>
 
     <gae.version>1.7.4</gae.version>
-    
+    <gae.application.id>ai-staging</gae.application.id>
     <gae.application.version>2</gae.application.version>
 
     <jersey.version>1.17</jersey.version>
@@ -769,6 +769,7 @@
       <id>production</id>
       <properties>
         <display.version>2.7 Build ${BUILD_NUMBER}</display.version>
+        <gae.application.id>activityinfoeu</gae.application.id>
         <gae.application.version>build${BUILD_NUMBER}</gae.application.version>
       </properties>
       <build>
