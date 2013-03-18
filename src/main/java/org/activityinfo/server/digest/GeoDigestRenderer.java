@@ -120,7 +120,7 @@ public class GeoDigestRenderer {
 
         model.setContent(content);
 
-        TempStorage storage = storageProvider.allocateTemporaryFile("image/png", "geo");
+        TempStorage storage = storageProvider.allocateTemporaryFile("image/png", "map.png");
         imageMapRenderer.render(model, storage.getOutputStream());
         storage.getOutputStream().close();
 
