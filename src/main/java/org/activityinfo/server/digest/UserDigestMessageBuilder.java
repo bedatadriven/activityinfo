@@ -31,10 +31,15 @@ import javax.mail.MessagingException;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.digest.activity.ActivityDigestModel;
+import org.activityinfo.server.digest.activity.ActivityDigestModelBuilder;
+import org.activityinfo.server.digest.activity.ActivityDigestRenderer;
+import org.activityinfo.server.digest.geo.GeoDigestRenderer;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.html.HtmlTag;
 import org.activityinfo.server.util.html.HtmlWriter;
+import org.apache.commons.lang.StringUtils;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
@@ -44,6 +49,7 @@ public class UserDigestMessageBuilder {
         Logger.getLogger(UserDigestMessageBuilder.class.getName());
 
     private final GeoDigestRenderer geoDigestRenderer;
+    private final ActivityDigestModelBuilder activityDigestModelBuilder;
     private final ActivityDigestRenderer activityDigestRenderer;
 
     private User user;
@@ -51,12 +57,11 @@ public class UserDigestMessageBuilder {
     private int geoDays;
     private int activityDays;
 
-    private List<String> geoDigests;
-    private List<String> activityDigests;
-
     public UserDigestMessageBuilder(GeoDigestRenderer geoDigestRenderer,
+        ActivityDigestModelBuilder activityDigestModelBuilder,
         ActivityDigestRenderer activityDigestRenderer) {
         this.geoDigestRenderer = geoDigestRenderer;
+        this.activityDigestModelBuilder = activityDigestModelBuilder;
         this.activityDigestRenderer = activityDigestRenderer;
     }
 
@@ -80,11 +85,12 @@ public class UserDigestMessageBuilder {
         // set the locale of the messages
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
-        geoDigests = geoDigestRenderer.render(user, date, geoDays);
+        List<String> geoDigests = geoDigestRenderer.render(user, date, geoDays);
 
-        activityDigests = activityDigestRenderer.render(user, date, activityDays);
+        ActivityDigestModel activityModel = activityDigestModelBuilder.createModel(user, date, activityDays);
+        String activityDigest = activityDigestRenderer.renderHtml(activityModel);
 
-        if (geoDigests.isEmpty() && activityDigests.isEmpty()) {
+        if (geoDigests.isEmpty() && StringUtils.isBlank(activityDigest)) {
             return null;
         }
 
@@ -104,7 +110,7 @@ public class UserDigestMessageBuilder {
         htmlWriter.startDocumentHeader();
         htmlWriter.documentTitle(subject);
         htmlWriter.open(new HtmlTag("style")).at("type", "text/css")
-            .text("body { font-family:Helvetica; } a {color: black;} ").close();
+            .text("body { font-family:Helvetica; } a {color: black; text-decoration:none;} ").close();
         htmlWriter.endDocumentHeader();
 
         htmlWriter.startDocumentBody();
@@ -118,14 +124,8 @@ public class UserDigestMessageBuilder {
             }
         }
 
-        if (!activityDigests.isEmpty()) {
-            if (!geoDigests.isEmpty()) { // some artificial spacing, should be removed when using stylesheets..
-                htmlWriter.paragraph("<p>&nbsp;</p>");
-            }
-            htmlWriter.paragraph(I18N.MESSAGES.activityDigestIntro(activityDigestRenderer.getContext().getDays()));
-            for (String activityDigest : activityDigests) {
-                htmlWriter.paragraph(activityDigest);
-            }
+        if (StringUtils.isNotBlank(activityDigest)) {
+            htmlWriter.paragraph(activityDigest);
         }
 
         String signature = I18N.MESSAGES.digestSignature();

@@ -1,4 +1,4 @@
-package org.activityinfo.server.digest;
+package org.activityinfo.server.digest.geo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.server.digest.DigestDateUtil;
 import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.output.TempStorage;
 import org.activityinfo.server.report.renderer.image.ImageMapRenderer;

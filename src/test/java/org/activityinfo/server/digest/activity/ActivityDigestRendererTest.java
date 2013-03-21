@@ -1,4 +1,4 @@
-package org.activityinfo.server.digest;
+package org.activityinfo.server.digest.activity;
 
 /*
  * #%L
@@ -24,9 +24,11 @@ package org.activityinfo.server.digest;
 
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
+import org.activityinfo.server.digest.TestDigestModule;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(InjectionSupport.class)
@@ -42,8 +44,9 @@ public class ActivityDigestRendererTest {
     // @Inject
     // private EntityManager em;
     //
-    // @Test
-    // public void testFindDatabasesOwnerAndViewAndNotification() throws Exception {
+    @Test
+    public void testNill() throws Exception {
+    }
     // // owner & view & notification
     // User user = em.find(User.class, 100);
     // List<UserDatabase> dbs = geoDigestRenderer.findDatabases(user);

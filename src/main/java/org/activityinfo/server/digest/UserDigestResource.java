@@ -15,6 +15,9 @@ import javax.ws.rs.core.MediaType;
 
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.digest.activity.ActivityDigestModelBuilder;
+import org.activityinfo.server.digest.activity.ActivityDigestRenderer;
+import org.activityinfo.server.digest.geo.GeoDigestRenderer;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.date.DateFormatter;
@@ -44,6 +47,7 @@ public class UserDigestResource {
     private final ServerSideAuthProvider authProvider;
 
     private final GeoDigestRenderer geoDigestRenderer;
+    private final ActivityDigestModelBuilder activityDigestModelBuilder;
     private final ActivityDigestRenderer activityDigestRenderer;
 
     @Inject
@@ -51,11 +55,13 @@ public class UserDigestResource {
         Provider<MailSender> mailSender,
         ServerSideAuthProvider authProvider,
         GeoDigestRenderer geoDigestRenderer,
+        ActivityDigestModelBuilder activityDigestModelBuilder,
         ActivityDigestRenderer activityDigestRenderer) {
         this.entityManager = entityManager;
         this.mailSender = mailSender;
         this.authProvider = authProvider;
         this.geoDigestRenderer = geoDigestRenderer;
+        this.activityDigestModelBuilder = activityDigestModelBuilder;
         this.activityDigestRenderer = activityDigestRenderer;
     }
 
@@ -85,7 +91,7 @@ public class UserDigestResource {
             + " (sending email: " + sendEmail + ")");
 
         UserDigestMessageBuilder digest =
-            new UserDigestMessageBuilder(geoDigestRenderer, activityDigestRenderer);
+            new UserDigestMessageBuilder(geoDigestRenderer, activityDigestModelBuilder, activityDigestRenderer);
         digest.setUser(user);
         digest.setDate(date);
         digest.setGeoDays(geoDays);
