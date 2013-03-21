@@ -1,4 +1,4 @@
-package org.activityinfo.server.digest;
+package org.activityinfo.server.digest.geo;
 
 /*
  * #%L
@@ -36,6 +36,8 @@ import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.server.digest.TestDigestModule;
+import org.activityinfo.server.digest.geo.GeoDigestRenderer;
 import org.activityinfo.test.InjectionSupport;
 import org.activityinfo.test.MockHibernateModule;
 import org.activityinfo.test.Modules;
