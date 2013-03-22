@@ -34,6 +34,9 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.inject.Inject;
 
+/**
+ * regarded as too spammy for now, replaced by email digest
+ */
 public class SiteChangeListener extends CommandEventListener {
 
     @Inject

@@ -7,8 +7,14 @@
   </cron>
   
   <cron>
-    <url>/tasks/digests</url>
-    <description>Mail Daily Digests</description>
+    <url>/tasks/activitydigests</url>
+    <description>Mail Weekly Activity Digests</description>
+    <schedule>every saturday 17:00</schedule>  
+  </cron>
+
+  <cron>
+    <url>/tasks/geodigests</url>
+    <description>Mail Daily Geographic Digests</description>
     <schedule>every day 17:00</schedule>  
   </cron>
 
