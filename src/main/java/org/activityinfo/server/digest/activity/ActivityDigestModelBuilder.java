@@ -13,12 +13,16 @@ import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.server.digest.DigestModelBuilder;
+import org.activityinfo.server.digest.activity.ActivityDigestModel.ActivityMap;
+import org.activityinfo.server.digest.activity.ActivityDigestModel.DatabaseModel;
+import org.activityinfo.server.digest.activity.ActivityDigestModel.PartnerActivityModel;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class ActivityDigestModelBuilder {
+public class ActivityDigestModelBuilder implements DigestModelBuilder {
     private static final Logger LOGGER =
         Logger.getLogger(ActivityDigestModelBuilder.class.getName());
 
@@ -29,6 +33,7 @@ public class ActivityDigestModelBuilder {
         this.entityManager = entityManager;
     }
 
+    @Override
     public ActivityDigestModel createModel(User user, Date date, int days) throws IOException {
         ActivityDigestModel model = new ActivityDigestModel(user, date, days);
 

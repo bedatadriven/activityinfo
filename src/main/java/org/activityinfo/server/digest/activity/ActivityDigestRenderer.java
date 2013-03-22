@@ -2,6 +2,7 @@ package org.activityinfo.server.digest.activity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -9,27 +10,30 @@ import java.util.Map;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.digest.DigestDateUtil;
+import org.activityinfo.server.digest.DigestModel;
+import org.activityinfo.server.digest.DigestRenderer;
+import org.activityinfo.server.digest.activity.ActivityDigestModel.ActivityMap;
+import org.activityinfo.server.digest.activity.ActivityDigestModel.DatabaseModel;
+import org.activityinfo.server.digest.activity.ActivityDigestModel.PartnerActivityModel;
 
-public class ActivityDigestRenderer {
+public class ActivityDigestRenderer implements DigestRenderer {
     private static final int HEADERCELL_WIDTH = 230;
     private static final int SPACERCELL_WIDTH = 20;
     private static final int GRAPHCELL_WIDTH = 21;
     private static final int ROW_HEIGHT = 21;
 
-    /**
-     * @return the user activity digest for each database the specified user has access to by ownership or design
-     *         permission
-     * @throws IOException
-     */
-    public String renderHtml(ActivityDigestModel model) throws IOException {
+    @Override
+    public String renderHtml(DigestModel model) throws IOException {
+        assert (model instanceof ActivityDigestModel);
+
         StringBuilder html = new StringBuilder();
         html.append("<div id='act-digest' style='margin-top:20px'>");
 
-        renderHeader(html, model);
+        renderHeader(html, (ActivityDigestModel) model);
 
-        renderActiveDatabases(html, model);
+        renderActiveDatabases(html, (ActivityDigestModel) model);
 
-        renderInactiveDatabases(html, model);
+        renderInactiveDatabases(html, (ActivityDigestModel) model);
 
         html.append("</div>");
         return html.toString();
@@ -49,7 +53,7 @@ public class ActivityDigestRenderer {
 
         renderTableHeader(html, model);
 
-        List<DatabaseModel> activeDatabases = model.getActiveDatabases();
+        Collection<DatabaseModel> activeDatabases = model.getActiveDatabases();
         for (DatabaseModel activeDatabase : activeDatabases) {
             renderActiveDatabase(html, activeDatabase);
         }
@@ -189,7 +193,7 @@ public class ActivityDigestRenderer {
     }
     
     private void renderInactiveDatabases(StringBuilder html, ActivityDigestModel model) {
-        List<DatabaseModel> inactiveDatabases = model.getInactiveDatabases();
+        Collection<DatabaseModel> inactiveDatabases = model.getInactiveDatabases();
         if (!inactiveDatabases.isEmpty()) {
             html.append("<div class='act-inactive' style='margin-top:25px;'>");
             html.append(I18N.MESSAGES.activityDigestInactiveDatabases(model.getDays()));

@@ -24,45 +24,35 @@ package org.activityinfo.server.digest;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.digest.activity.ActivityDigestModel;
-import org.activityinfo.server.digest.activity.ActivityDigestModelBuilder;
-import org.activityinfo.server.digest.activity.ActivityDigestRenderer;
-import org.activityinfo.server.digest.geo.GeoDigestRenderer;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.html.HtmlTag;
 import org.activityinfo.server.util.html.HtmlWriter;
-import org.apache.commons.lang.StringUtils;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
-public class UserDigestMessageBuilder {
+public class DigestMessageBuilder {
 
     private static final Logger LOGGER =
-        Logger.getLogger(UserDigestMessageBuilder.class.getName());
+        Logger.getLogger(DigestMessageBuilder.class.getName());
 
-    private final GeoDigestRenderer geoDigestRenderer;
-    private final ActivityDigestModelBuilder activityDigestModelBuilder;
-    private final ActivityDigestRenderer activityDigestRenderer;
+    private final DigestModelBuilder digestModelBuilder;
+    private final DigestRenderer digestRenderer;
 
     private User user;
     private Date date;
-    private int geoDays;
-    private int activityDays;
+    private int days;
 
-    public UserDigestMessageBuilder(GeoDigestRenderer geoDigestRenderer,
-        ActivityDigestModelBuilder activityDigestModelBuilder,
-        ActivityDigestRenderer activityDigestRenderer) {
-        this.geoDigestRenderer = geoDigestRenderer;
-        this.activityDigestModelBuilder = activityDigestModelBuilder;
-        this.activityDigestRenderer = activityDigestRenderer;
+    public DigestMessageBuilder(DigestModelBuilder digestModelBuilder,
+        DigestRenderer digestRenderer) {
+        this.digestModelBuilder = digestModelBuilder;
+        this.digestRenderer = digestRenderer;
     }
 
     public void setUser(User user) {
@@ -73,27 +63,19 @@ public class UserDigestMessageBuilder {
         this.date = date;
     }
 
-    public void setGeoDays(int geoDays) {
-        this.geoDays = geoDays;
-    }
-
-    public void setActivityDays(int activityDays) {
-        this.activityDays = activityDays;
+    public void setDays(int days) {
+        this.days = days;
     }
 
     public Message build() throws IOException, MessagingException {
         // set the locale of the messages
         LocaleProxy.setLocale(LocaleHelper.getLocaleObject(user));
 
-        List<String> geoDigests = geoDigestRenderer.render(user, date, geoDays);
+        DigestModel model = digestModelBuilder.createModel(user, date, days);
 
-        ActivityDigestModel activityModel = activityDigestModelBuilder.createModel(user, date, activityDays);
-        String activityDigest = activityDigestRenderer.renderHtml(activityModel);
-
-        if (geoDigests.isEmpty() && StringUtils.isBlank(activityDigest)) {
+        if (!model.hasData()) {
             return null;
         }
-
 
         // create message, set recipient & bcc
         Message message = new Message();
@@ -117,16 +99,8 @@ public class UserDigestMessageBuilder {
 
         htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(user.getName()));
 
-        if (!geoDigests.isEmpty()) {
-            htmlWriter.paragraph(I18N.MESSAGES.geoDigestIntro(geoDigestRenderer.getContext().getDays() * 24));
-            for (String geoDigest : geoDigests) {
-                htmlWriter.paragraph(geoDigest);
-            }
-        }
-
-        if (StringUtils.isNotBlank(activityDigest)) {
-            htmlWriter.paragraph(activityDigest);
-        }
+        // the digest content
+        htmlWriter.paragraph(digestRenderer.renderHtml(model));
 
         String signature = I18N.MESSAGES.digestSignature();
         htmlWriter.paragraph(signature);
@@ -134,7 +108,7 @@ public class UserDigestMessageBuilder {
         htmlWriter.endDocumentBody();
         htmlWriter.endDocument();
 
-        LOGGER.fine("digest:\n" + htmlWriter.toString());
+        LOGGER.finest("digest:\n" + htmlWriter.toString());
 
         message.htmlBody(htmlWriter.toString());
 

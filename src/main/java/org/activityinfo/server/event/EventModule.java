@@ -22,7 +22,6 @@ package org.activityinfo.server.event;
  * #L%
  */
 
-import org.activityinfo.server.event.sitechange.SiteChangeListener;
 import org.activityinfo.server.event.sitechange.SiteChangeServlet;
 import org.activityinfo.server.event.sitehistory.SiteHistoryListener;
 
@@ -36,7 +35,6 @@ public class EventModule extends ServletModule {
         bind(ServerEventBus.class).asEagerSingleton();
 
         // listeners
-        bind(SiteChangeListener.class).asEagerSingleton();
         bind(SiteHistoryListener.class).asEagerSingleton();
 
         // define endpoints for async callbacks
