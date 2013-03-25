@@ -22,6 +22,13 @@ package org.activityinfo.server.digest;
  * #L%
  */
 
+import org.activityinfo.server.digest.activity.ActivityDigestResource;
+import org.activityinfo.server.digest.activity.ActivityUserDigestResource;
+import org.activityinfo.server.digest.activity.ActivityDigestModelBuilder;
+import org.activityinfo.server.digest.activity.ActivityDigestRenderer;
+import org.activityinfo.server.digest.geo.GeoDigestRenderer;
+import org.activityinfo.server.digest.geo.GeoDigestResource;
+import org.activityinfo.server.digest.geo.GeoUserDigestResource;
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
 public class DigestModule extends AbstractRestModule {
@@ -32,9 +39,13 @@ public class DigestModule extends AbstractRestModule {
 
     @Override
     protected void configureResources() {
-        bindResource(DigestResource.class);
-        bindResource(UserDigestResource.class);
-        bind(ActivityDigestRenderer.class);
+        bindResource(ActivityDigestResource.class);
+        bindResource(ActivityUserDigestResource.class);
+        bindResource(GeoDigestResource.class);
+        bindResource(GeoUserDigestResource.class);
+
         bind(GeoDigestRenderer.class);
+        bind(ActivityDigestModelBuilder.class);
+        bind(ActivityDigestRenderer.class);
     }
 }

@@ -2,6 +2,7 @@ package org.activityinfo.server.util.blob;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.google.common.io.InputSupplier;
 
@@ -13,6 +14,8 @@ import com.google.common.io.InputSupplier;
 public interface BlobService {
     
     void put(String key, InputSupplier<? extends InputStream> blob) throws IOException;
+    
+    OutputStream put(String key) throws IOException;
 
     InputSupplier<? extends InputStream> get(String key) throws BlobNotFoundException;
 }

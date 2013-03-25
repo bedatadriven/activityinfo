@@ -160,6 +160,11 @@ public final class DateFormatter {
         return format;
     }
 
+    public static String formatSimpleDate(Date date) {
+        Date toFormat = date == null ? new Date() : date;
+        return new SimpleDateFormat("dd-MM-yyyy").format(toFormat);
+    }
+
     public static String formatDateTime(Date date) {
         Date toFormat = date == null ? new Date() : date;
         return new SimpleDateFormat("dd-MM-yyyy HH:mm").format(toFormat);

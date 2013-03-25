@@ -238,20 +238,32 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Hi {0},")
     String digestGreeting(String userName);
 
-    @DefaultMessage("Here is the digest with information about your ActivityInfo databases for {0,date,EEEEE d MMMMM yyyy}.")
-    String digestIntro(Date now);
+    @DefaultMessage("Here are the updates to your ActivityInfo databases for the last {0} hours.")
+    String geoDigestIntro(int hours);
 
-    @DefaultMessage("[GEO DIGEST INTRO]:")
-    String geoDigestIntro();
+    @DefaultMessage("<a href=\"mailto:{0}\">{1}</a> edited the {2} at {3} ")
+    String geoDigestSiteMsg(String userEmail, String userName, String activityName, String locationName);
 
-    @DefaultMessage("{0} at {1} edited by {2} ({3}) on {4,date,dd-MM-yyyy 'at' HH:mm}.")
-    String digestSiteMsg(String activityName, String locationName, String userName, String userEmail, Date date);
+    @DefaultMessage("<span title=\"{0,date,dd-MM-yyyy}\">today</span>.")
+    String geoDigestSiteMsgDateToday(Date date);
+
+    @DefaultMessage("<span title=\"{0,date,dd-MM-yyyy}\">yesterday</span>.")
+    String geoDigestSiteMsgDateYesterday(Date date);
+
+    @DefaultMessage("on <span>{0,date,dd-MM-yyyy}</span>.")
+    String geoDigestSiteMsgDateOther(Date date);
 
     @DefaultMessage("Unmapped Sites")
-    String digestUnmappedSites();
+    String geoDigestUnmappedSites();
 
-    @DefaultMessage("[USER ACTIVITY DIGEST INTRO]:")
-    String activityDigestIntro();
+    @DefaultMessage("Here is the summary of the updates by user for the ActivityInfo databases you administer over the last {0} days.")
+    String activityDigestIntro(int days);
+
+    @DefaultMessage("The following ActivityInfo databases have not been actively used over the last {0} days:")
+    String activityDigestInactiveDatabases(int days);
+
+    @DefaultMessage("{0} update(s) on {1,date,dd-MM-yyyy}")
+    String activityDigestGraphTooltip(int updates, Date date);
 
     @DefaultMessage("Best regards,<br>The ActivityInfo Team")
     String digestSignature();
