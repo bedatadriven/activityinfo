@@ -60,7 +60,12 @@ public class GeoDigestModel implements DigestModel {
 
     @Override
     public boolean hasData() {
-        return !databases.isEmpty();
+        for (DatabaseModel db : databases) {
+            if (!db.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addDatabase(DatabaseModel databaseModel) {
@@ -114,6 +119,10 @@ public class GeoDigestModel implements DigestModel {
 
         public boolean isRenderable() {
             return content != null && !content.getMarkers().isEmpty() && StringUtils.isNotBlank(url);
+        }
+
+        public boolean isEmpty() {
+            return !isRenderable();
         }
 
         @Override
