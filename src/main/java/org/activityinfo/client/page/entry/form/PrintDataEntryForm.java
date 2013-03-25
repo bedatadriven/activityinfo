@@ -121,7 +121,7 @@ public class PrintDataEntryForm extends Window {
 
         if (iframe.contentDocument) {
             doc = iframe.contentDocument; // For NS6
-        } else if (iframe.contentWindow)
+        } else if (iframe.contentWindow) {
             doc = iframe.contentWindow.document; // For IE5.5 and IE6
         }
 
