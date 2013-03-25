@@ -126,4 +126,9 @@ public class RootResource {
             AdminLevel.class, id));
     }
     
+    @Path("/sites")
+    public SitesResources getSites() {
+        return new SitesResources(dispatcher);
+    }
+
 }

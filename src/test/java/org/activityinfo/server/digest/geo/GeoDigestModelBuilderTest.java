@@ -43,6 +43,7 @@ import org.activityinfo.test.Modules;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.inject.Inject;
 
 @RunWith(InjectionSupport.class)
@@ -104,6 +105,16 @@ public class GeoDigestModelBuilderTest {
         User user = em.find(User.class, 7);
         List<UserDatabase> dbs = geoDigestModelBuilder.findDatabases(user);
         assertThat(dbs.size(), is(equalTo(0)));
+    }
+
+    @Test
+    public void testEmptyDigestsAreNotSent() throws Exception {
+        // only notification
+        User user = em.find(User.class, 1);
+        LocalDate today = new LocalDate(2041, 1, 1);
+        GeoDigestModel model = geoDigestModelBuilder.createModel(user,
+            today.atMidnightInMyTimezone(), 1);
+        assertThat(model.hasData(), equalTo(false));
     }
 
     @Test

@@ -394,27 +394,13 @@ public class DataEntryPage extends LayoutContainer implements Page,
                 });
 
         } else if (UIActions.DELETE.equals(actionId)) {
-
             delete();
 
         } else if (UIActions.PRINT.equals(actionId)) {
-            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void onSuccess(SchemaDTO result) {
-                    ActivityDTO activity = result.getActivityById(
-                        currentPlace.getFilter().getRestrictedCategory(
-                            DimensionType.Activity));
-
-                    new PrintDataEntryForm(activity).print();
-                }
-            });
+            int activityId = currentPlace.getFilter().getRestrictedCategory(
+                DimensionType.Activity);
+            PrintDataEntryForm form = new PrintDataEntryForm(dispatcher);
+            form.print(activityId);
 
         } else if (UIActions.EXPORT.equals(actionId)) {
             Window.Location.assign(GWT.getModuleBaseURL() + "export?filter=" +
