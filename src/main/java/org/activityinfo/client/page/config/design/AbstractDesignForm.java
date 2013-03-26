@@ -23,6 +23,10 @@ package org.activityinfo.client.page.config.design;
  */
 
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.event.BindingEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 
 /**
@@ -39,5 +43,15 @@ abstract class AbstractDesignForm extends FormPanel {
 
     public int getPreferredDialogHeight() {
         return 300;
+    }
+
+    public void hideFieldWhenNull(final Field<?> field) {
+        getBinding().addListener(Events.Bind, new Listener<BindingEvent>() {
+
+            @Override
+            public void handleEvent(BindingEvent be) {
+                field.setVisible(field.getValue() != null);
+            }
+        });
     }
 }

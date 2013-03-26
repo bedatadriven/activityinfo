@@ -58,7 +58,7 @@ class ActivityForm extends AbstractDesignForm {
         this.setLabelWidth(150);
         this.setBorders(false);
 
-        NumberField idField = new NumberField();
+        final NumberField idField = new NumberField();
         idField.setFieldLabel("ID");
         idField.setReadOnly(true);
         binding.addFieldBinding(new FieldBinding(idField, "id"));
@@ -119,6 +119,8 @@ class ActivityForm extends AbstractDesignForm {
         });
 
         this.add(publishedCombo);
+
+        hideFieldWhenNull(idField);
     }
 
     @Override

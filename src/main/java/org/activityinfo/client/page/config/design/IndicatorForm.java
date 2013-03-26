@@ -96,6 +96,9 @@ class IndicatorForm extends AbstractDesignForm {
         descField.setFieldLabel(constants.description());
         binding.addFieldBinding(new FieldBinding(descField, "description"));
         this.add(descField);
+
+        hideFieldWhenNull(idField);
+
     }
 
     @Override

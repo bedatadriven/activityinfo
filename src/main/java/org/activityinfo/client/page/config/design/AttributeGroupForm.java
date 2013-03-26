@@ -60,6 +60,8 @@ class AttributeGroupForm extends AbstractDesignForm {
         binding.addFieldBinding(new MappingComboBoxBinding(typeField,
             "multipleAllowed"));
         add(typeField);
+
+        hideFieldWhenNull(idField);
     }
 
     @Override
