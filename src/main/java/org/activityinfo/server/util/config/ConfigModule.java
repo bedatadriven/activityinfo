@@ -77,7 +77,6 @@ public class ConfigModule extends ServletModule {
         if (DeploymentEnvironment.isAppEngine()) {
             tryToLoadFromAppEngineDatastore(properties);
         }
-        tryToLoadFrom(properties, versionSpecific(context));
 
         // specified at server start up with
         // -Dactivityinfo.config=/path/to/conf.properties
@@ -187,24 +186,7 @@ public class ConfigModule extends ServletModule {
         return new File(context.getRealPath("WEB-INF") + File.separator
             + "activityinfo.properties");
     }
-
-    /**
-     * Path to an override properties files for the current appEngine version.
-     * For example, if we have the appengine version staging, the path will be
-     * WEB-INF/activityinfo.staging.properties.
-     * 
-     */
-    private File versionSpecific(ServletContext context) {
-        String appVersion = Strings
-            .nullToEmpty(SystemProperty.applicationVersion.get());
-        int suffixStart = appVersion.lastIndexOf('.');
-        if (suffixStart != -1) {
-            appVersion = appVersion.substring(0, suffixStart);
-        }
-        return new File(context.getRealPath("WEB-INF") + File.separator
-            + "activityinfo." + appVersion + ".properties");
-    }
-
+    
     private File systemSettings() {
         return new File("/etc/activityinfo.properties");
     }
