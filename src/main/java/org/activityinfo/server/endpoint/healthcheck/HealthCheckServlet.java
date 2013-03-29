@@ -52,7 +52,7 @@ public class HealthCheckServlet extends HttpServlet {
 
         // verify connection with database
         Query query = entityManager.get().createNativeQuery(
-            "select count(*) from UserDatabase");
+            "select count(*) from userdatabase");
         query.getSingleResult();
     }
 }
