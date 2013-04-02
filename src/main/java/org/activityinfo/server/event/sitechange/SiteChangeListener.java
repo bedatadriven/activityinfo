@@ -28,6 +28,7 @@ import org.activityinfo.server.event.CommandEvent;
 import org.activityinfo.server.event.CommandEventListener;
 import org.activityinfo.server.event.ServerEventBus;
 import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.UpdateSite;
 
 import com.google.appengine.api.taskqueue.Queue;
@@ -42,7 +43,7 @@ public class SiteChangeListener extends CommandEventListener {
     @Inject
     @SuppressWarnings("unchecked")
     public SiteChangeListener(ServerEventBus serverEventBus) {
-        super(serverEventBus, CreateSite.class, UpdateSite.class);
+        super(serverEventBus, CreateSite.class, UpdateSite.class, DeleteSite.class);
     }
 
     @Override
@@ -58,16 +59,14 @@ public class SiteChangeListener extends CommandEventListener {
     }
 
     protected void onEvent(CommandEvent event, int userId, int siteId) {
-        boolean isNew = isNew(event);
-
         Queue queue = QueueFactory.getQueue("commandevent");
         queue.add(withUrl(SiteChangeServlet.ENDPOINT)
             .param(SiteChangeServlet.PARAM_SITE, String.valueOf(siteId))
             .param(SiteChangeServlet.PARAM_USER, String.valueOf(userId))
-            .param(SiteChangeServlet.PARAM_NEW, String.valueOf(isNew)));
+            .param(SiteChangeServlet.PARAM_TYPE, getType(event).toString()));
     }
 
-    protected boolean isNew(CommandEvent event) {
-        return (event.getCommand() instanceof CreateSite);
+    protected ChangeType getType(CommandEvent event) {
+        return ChangeType.getType(event);
     }
 }

@@ -35,19 +35,23 @@ import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.event.CommandEvent;
 import org.activityinfo.server.event.ServerEventBus;
+import org.activityinfo.server.event.sitechange.ChangeType;
 import org.activityinfo.server.event.sitechange.SiteChangeListener;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.util.JsonUtil;
+import org.apache.commons.lang.StringUtils;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 public class SiteHistoryListener extends SiteChangeListener {
 
-    private Provider<EntityManager> entityManager;
-    private DispatcherSync dispatcher;
+    private static final String JSON_DELETE = "{\"_DELETE\":{\"type\":\"Boolean\",\"value\":true}}";
+
+    private final Provider<EntityManager> entityManager;
+    private final DispatcherSync dispatcher;
 
     @Inject
     public SiteHistoryListener(ServerEventBus serverEventBus,
@@ -66,9 +70,9 @@ public class SiteHistoryListener extends SiteChangeListener {
 
         Site site = em.find(Site.class, siteId);
         User user = em.find(User.class, userId);
-        boolean isNew = super.isNew(event);
+        ChangeType type = getType(event);
 
-        if (!isNew) {
+        if (!type.isNew()) {
             Query q = em
                 .createQuery("select count(*) from SiteHistory where site = :site");
             q.setParameter("site", site);
@@ -95,20 +99,34 @@ public class SiteHistoryListener extends SiteChangeListener {
             }
         }
 
-        Map<String, Object> changeMap = event.getRpcMap().getTransientMap();
-        if (!changeMap.isEmpty()) {
-            String json = JsonUtil.encodeMap(changeMap).toString();
-
-            SiteHistory history = new SiteHistory();
-            history.setSite(site);
-            history.setUser(user);
-            history.setJson(json);
-            history.setTimeCreated(new Date().getTime());
-            history.setInitial(isNew);
-
-            persist(em, history);
+        
+        String json = null;
+        
+        if (type.isNewOrUpdate()) {
+            Map<String, Object> changeMap = event.getRpcMap().getTransientMap();
+            if (!changeMap.isEmpty()) {
+                json = JsonUtil.encodeMap(changeMap).toString();
+            }
+        } else if (type.isDelete()) {
+            json = JSON_DELETE;
+        }
+        
+        if (StringUtils.isNotBlank(json)) {
+            persistHistory(em, site, user, type, json);
         }
     }
+
+    private void persistHistory(EntityManager em, Site site, User user, ChangeType type, String json) {
+        SiteHistory history = new SiteHistory();
+        history.setSite(site);
+        history.setUser(user);
+        history.setJson(json);
+        history.setTimeCreated(new Date().getTime());
+        history.setInitial(type.isNew());
+
+        persist(em, history);
+    }
+
 
     private void persist(EntityManager em, SiteHistory history) {
         try {
