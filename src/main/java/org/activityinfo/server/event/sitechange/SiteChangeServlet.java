@@ -59,12 +59,12 @@ public class SiteChangeServlet extends HttpServlet {
     public static final String ENDPOINT = "/tasks/notifysitechange";
     public static final String PARAM_USER = "u";
     public static final String PARAM_SITE = "s";
-    public static final String PARAM_NEW = "n";
+    public static final String PARAM_TYPE = "t";
 
-    private Provider<EntityManager> entityManager;
-    private Provider<MailSender> mailSender;
-    private ServerSideAuthProvider authProvider;
-    private DispatcherSync dispatcher;
+    private final Provider<EntityManager> entityManager;
+    private final Provider<MailSender> mailSender;
+    private final ServerSideAuthProvider authProvider;
+    private final DispatcherSync dispatcher;
 
     @Inject
     public SiteChangeServlet(Provider<EntityManager> entityManager,
@@ -83,8 +83,10 @@ public class SiteChangeServlet extends HttpServlet {
         try {
             int userId = Integer.parseInt(req.getParameter(PARAM_USER));
             int siteId = Integer.parseInt(req.getParameter(PARAM_SITE));
-            boolean isNew = Boolean.parseBoolean(req.getParameter(PARAM_NEW));
-            sendNotifications(userId, siteId, isNew);
+            ChangeType type = ChangeType.valueOf(req.getParameter(PARAM_TYPE));
+            if (type.isKnown()) {
+                sendNotifications(userId, siteId, type);
+            }
 
         } catch (Throwable t) {
             LOGGER.warning("can't complete notify task: " + t.getMessage());
@@ -93,7 +95,7 @@ public class SiteChangeServlet extends HttpServlet {
     }
 
     @VisibleForTesting
-    void sendNotifications(int editorUserId, int siteId, boolean newSite) {
+    void sendNotifications(int editorUserId, int siteId, ChangeType type) {
         User user = entityManager.get().find(User.class, editorUserId);
 
         /*
@@ -129,7 +131,7 @@ public class SiteChangeServlet extends HttpServlet {
                     message.setUserDatabaseDTO(userDatabaseDTO);
                     message.setSiteDTO(siteDTO);
                     message.setActivityDTO(activityDTO);
-                    message.setNewSite(newSite);
+                    message.setChangeType(type);
 
                     mailSender.get().send(message.build());
                 }
