@@ -22,7 +22,9 @@ package org.activityinfo.shared.dto;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +49,8 @@ public final class SiteDTO extends BaseModelData implements EntityDTO,
 
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date;
+
+    private Map<String, List<String>> attributeDiplayMap;
 
     public SiteDTO() {
         set("name", " ");
@@ -535,5 +539,29 @@ public final class SiteDTO extends BaseModelData implements EntityDTO,
         SiteDTO copy = new SiteDTO();
         copy.setProperties(this.getProperties());
         return copy;
+    }
+
+    public void addDisplayAttribute(String groupName, String attributeName) {
+        if (groupName != null && attributeName != null) {
+            if (attributeDiplayMap == null) {
+                attributeDiplayMap = new HashMap<String, List<String>>();
+            }
+
+            List<String> groupValues = attributeDiplayMap.get(groupName);
+            if (groupValues == null) {
+                groupValues = new ArrayList<String>();
+                attributeDiplayMap.put(groupName, groupValues);
+            }
+
+            groupValues.add(attributeName);
+        }
+    }
+
+    public Map<String, List<String>> getAttributeDiplayMap() {
+        return attributeDiplayMap;
+    }
+
+    public boolean hasAttributeDiplayMap() {
+        return attributeDiplayMap != null && !attributeDiplayMap.isEmpty();
     }
 }
