@@ -22,12 +22,14 @@ package org.activityinfo.shared.command.handler;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activityinfo.shared.command.GetAdminLevels;
 import org.activityinfo.shared.command.result.AdminLevelResult;
 import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AdminLevelDTO;
+import org.activityinfo.shared.util.CollectionUtil;
 
 import com.bedatadriven.rebar.sql.client.SqlResultCallback;
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
@@ -44,6 +46,11 @@ public class GetAdminLevelsHandler implements
     public void execute(GetAdminLevels command, ExecutionContext context,
         final AsyncCallback<AdminLevelResult> callback) {
 
+        if (CollectionUtil.isEmpty(command.getIndicatorIds())) {
+            callback.onSuccess(new AdminLevelResult(new ArrayList<AdminLevelDTO>()));
+            return;
+        }
+        
         SqlQuery
             .select()
             .appendColumn("level.adminlevelId", "id")
@@ -81,7 +88,6 @@ public class GetAdminLevelsHandler implements
                     callback.onSuccess(new AdminLevelResult(levels));
                 }
             });
-
     }
 
 }

@@ -66,7 +66,6 @@ public class LoginController {
 
     @POST
     @Path("ajax")
-    @LogException(emailAlert = true)
     public Response ajaxLogin(
         @FormParam("email") String email,
         @FormParam("password") String password) throws Exception {
@@ -81,7 +80,6 @@ public class LoginController {
     }
 
     @POST
-    @LogException(emailAlert = true)
     public Response login(
         @Context UriInfo uri,
         @FormParam("email") String email,
@@ -91,7 +89,7 @@ public class LoginController {
         try {
             user = userDAO.get().findUserByEmail(email);
             checkPassword(password, user);
-        } catch (LoginException e) {
+        } catch (Exception e) {
             return Response.ok(LoginPageModel.unsuccessful().asViewable())
                 .type(MediaType.TEXT_HTML)
                 .build();
