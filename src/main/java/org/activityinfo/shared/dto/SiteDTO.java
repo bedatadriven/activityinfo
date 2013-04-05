@@ -50,7 +50,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO,
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date;
 
-    private Map<String, List<String>> attributeDiplayMap;
+    private Map<String, List<String>> attributeDisplayMap;
 
     public SiteDTO() {
         set("name", " ");
@@ -543,25 +543,25 @@ public final class SiteDTO extends BaseModelData implements EntityDTO,
 
     public void addDisplayAttribute(String groupName, String attributeName) {
         if (groupName != null && attributeName != null) {
-            if (attributeDiplayMap == null) {
-                attributeDiplayMap = new HashMap<String, List<String>>();
+            if (attributeDisplayMap == null) {
+                attributeDisplayMap = new HashMap<String, List<String>>();
             }
 
-            List<String> groupValues = attributeDiplayMap.get(groupName);
+            List<String> groupValues = attributeDisplayMap.get(groupName);
             if (groupValues == null) {
                 groupValues = new ArrayList<String>();
-                attributeDiplayMap.put(groupName, groupValues);
+                attributeDisplayMap.put(groupName, groupValues);
             }
 
             groupValues.add(attributeName);
         }
     }
 
-    public Map<String, List<String>> getAttributeDiplayMap() {
-        return attributeDiplayMap;
+    public Map<String, List<String>> getAttributeDisplayMap() {
+        return attributeDisplayMap;
     }
 
-    public boolean hasAttributeDiplayMap() {
-        return attributeDiplayMap != null && !attributeDiplayMap.isEmpty();
+    public boolean hasAttributeDisplayMap() {
+        return attributeDisplayMap != null && !attributeDisplayMap.isEmpty();
     }
 }

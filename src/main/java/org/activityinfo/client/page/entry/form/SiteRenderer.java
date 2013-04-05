@@ -169,8 +169,8 @@ public class SiteRenderer {
     }
 
     protected void renderAttributes(StringBuilder html, SiteDTO site, ActivityDTO activity) {
-        if (site.hasAttributeDiplayMap()) {
-            for (Entry<String, List<String>> entry : site.getAttributeDiplayMap().entrySet()) {
+        if (site.hasAttributeDisplayMap()) {
+            for (Entry<String, List<String>> entry : site.getAttributeDisplayMap().entrySet()) {
                 renderAttribute(html, entry.getKey(), entry.getValue());
             }
         } else {
