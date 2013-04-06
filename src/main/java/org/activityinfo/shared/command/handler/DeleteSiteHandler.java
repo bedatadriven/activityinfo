@@ -50,7 +50,8 @@ public class DeleteSiteHandler implements
                 new Object[] { command.getId() });
 
         SqlUpdate.delete(Tables.ATTRIBUTE_VALUE)
-            .where("siteId", command.getId());
+            .where("siteId", command.getId())
+            .execute(context.getTransaction());
 
         SqlUpdate.delete(Tables.REPORTING_PERIOD)
             .where("siteId", command.getId())

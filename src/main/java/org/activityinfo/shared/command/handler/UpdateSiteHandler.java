@@ -61,6 +61,7 @@ public class UpdateSiteHandler implements
 
     private void updateSiteProperties(SqlTransaction tx, UpdateSite command,
         Map<String, Object> changes) {
+        Date now = new Date();
         SqlUpdate.update("site")
             .where("SiteId", command.getSiteId())
             .value("date1", changes)
@@ -69,7 +70,8 @@ public class UpdateSiteHandler implements
             .value("projectId", changes)
             .value("partnerId", changes)
             .value("locationId", changes)
-            .value("timeEdited", new Date().getTime())
+            .value("dateEdited", now)
+            .value("timeEdited", now.getTime())
             .execute(tx);
     }
 
