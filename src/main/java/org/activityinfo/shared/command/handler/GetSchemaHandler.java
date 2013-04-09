@@ -472,7 +472,7 @@ public class GetSchemaHandler implements
         public void loadIndicators() {
             SqlQuery query = SqlQuery
                 .select("indicatorId", "name", "category", "listHeader",
-                    "description", "aggregation", "units", "activityId")
+                    "description", "aggregation", "units", "activityId", "mandatory")
                 .from("indicator").orderBy("SortOrder");
 
             if (context.isRemote()) {
@@ -495,6 +495,7 @@ public class GetSchemaHandler implements
                     indicator.setDescription(rs.getString("description"));
                     indicator.setAggregation(rs.getInt("aggregation"));
                     indicator.setUnits(rs.getString("units"));
+                    indicator.setMandatory(rs.getBoolean("mandatory"));
 
                     int activityId = rs.getInt("activityId");
                     ActivityDTO activity = activities.get(activityId);

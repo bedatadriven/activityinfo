@@ -86,7 +86,6 @@ public class IndicatorSection extends LayoutContainer implements
 
         Text indicatorLabel = new Text(Format.htmlEncode(indicator.getName()));
         indicatorLabel.setStyleAttribute("fontSize", "9pt");
-
         add(indicatorLabel);
 
         NumberField indicatorField = new NumberField();
@@ -94,6 +93,9 @@ public class IndicatorSection extends LayoutContainer implements
         indicatorField.setWidth(50);
         indicatorField.setFormat(IndicatorNumberFormat.INSTANCE);
         indicatorField.setStyleAttribute("textAlign", "right");
+        if (indicator.isMandatory()) {
+            indicatorField.setAllowBlank(false);
+        }
 
         if (indicator.getDescription() != null
             && !indicator.getDescription().isEmpty()) {

@@ -56,6 +56,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable,
     private String name;
     private String units;
     private String description;
+    private boolean mandatory;
 
     private String category;
 
@@ -139,6 +140,26 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable,
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * Checks if the indicator is mandatory in the new and edit site forms.
+     * 
+     * @return True if indicator is mandatory, false otherwise
+     */
+    @Column(name = "mandatory", nullable = false)
+    public boolean isMandatory() {
+        return this.mandatory;
+    }
+
+    /**
+     * Sets the mandatory flag
+     * 
+     * @param mandatory
+     *            True if the indicator mandatory in the new and edit site forms.
+     */
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
     }
 
     /**

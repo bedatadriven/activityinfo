@@ -162,6 +162,16 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO,
         return get("description");
     }
 
+    public void setMandatory(boolean mandatory) {
+        set("mandatory", mandatory);
+    }
+
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
+    public boolean isMandatory() {
+        return (Boolean) get("mandatory");
+    }
+
     /**
      * Sets the aggregation method for this indicator
      */
