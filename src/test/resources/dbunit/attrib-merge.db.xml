@@ -128,7 +128,7 @@
     name="Number of Beneficiares"
     units="menages" 
     aggregation="0" 
-    sortOrder="2" />
+    sortOrder="2" mandatory="0"/>
 
   <!-- Database: PEAR PLUS -->
 
@@ -157,7 +157,7 @@
     name="Number of Classrooms Constructed"
     units="classroooms" 
     aggregation="0" 
-    sortOrder="1" />
+    sortOrder="1" mandatory="0"/>
 
   <!-- Status Attribute  -->
   

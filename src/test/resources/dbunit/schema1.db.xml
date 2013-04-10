@@ -64,11 +64,11 @@
 
   <indicator indicatorId="1" activityId="1" name="beneficiaries"
     units="menages^2" aggregation="0" category="inputs" description="falling in lve"
-    listHeader="no header really" sortOrder="2" />
+    listHeader="no header really" sortOrder="2" mandatory="0" />
 
   <indicator indicatorId="2" activityId="1" name="kits" units="menages"
     aggregation="0" category="outputs" listHeader="header" description="desc"
-    sortOrder="1" />
+    sortOrder="1" mandatory="0" />
 
   <attributeGroupInActivity attributeGroupId="1"
     activityId="1" />

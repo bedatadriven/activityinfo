@@ -117,20 +117,20 @@
 
   <indicator indicatorId="1" activityId="1" name="beneficiaries"
     units="menages" aggregation="0" category="inputs" description="falling in lve"
-    listHeader="no header really" sortOrder="2" />
+    listHeader="no header really" sortOrder="2" mandatory="0"/>
 			
 			<!-- NFI Indicator 2: Bache  -->
 
   <indicator indicatorId="2" activityId="1" name="baches"
     units="menages" aggregation="0" category="outputs" listHeader="header"
-    description="desc" dateDeleted="2009-01-16" sortOrder="1" />
+    description="desc" dateDeleted="2009-01-16" sortOrder="1" mandatory="0"/>
 
             <!-- NFI Indicator 3: Number of Distributions -->
 
   <indicator indicatorId="103" activityId="1"
     name="Nb. of distributions" units="distributions" aggregation="2"
     category="outputs" listHeader="distribs" description="Nomber of distributions effectuees"
-    dateDeleted="2009-01-16" sortOrder="3" />
+    dateDeleted="2009-01-16" sortOrder="3" mandatory="0"/>
 
 							
 		<!--  PEAR Activity 2 :  Kits Scolaire -->
@@ -160,10 +160,10 @@
 
   <indicator indicatorId="5" activityId="3" name="Utilisaton rate"
     units="nc/hab/month" aggregation="1" category="outputs" listHeader="header"
-    description="desc" sortOrder="1" />
+    description="desc" sortOrder="1" mandatory="0"/>
 
   <indicator indicatorId="400" activityId="3" name="Indicator Name"
-    units="individuals" aggregation="0" sortOrder="2" />
+    units="individuals" aggregation="0" sortOrder="2" mandatory="0"/>
 
   <activity activityId="4" databaseId="2"
     name="Reunification of child soliders" reportingFrequency="1"
@@ -171,7 +171,7 @@
 
   <indicator indicatorId="6" activityId="4" name="Number of children"
     units="children" aggregation="1" listHeader="kids" description="desc"
-    sortOrder="1" />
+    sortOrder="1" mandatory="0"/>
 
 	<!--  Link target -->
 
@@ -187,7 +187,7 @@
 
 
   <indicator indicatorId="401" activityId="400" name="Total"
-    units="peeps" aggregation="0" description="desc" sortOrder="1" />
+    units="peeps" aggregation="0" description="desc" sortOrder="1" mandatory="0"/>
 
 	
 	<!--  PEAR Partners -->
