@@ -39,7 +39,7 @@
 
 
   <attributeGroup attributeGroupId="1" sortOrder="1"
-    multipleAllowed="1" name="Cause" />
+    multipleAllowed="1" name="Cause" mandatory="0"/>
 
 
   <attribute attributeId="1" attributeGroupId="1" name="Retour"
@@ -99,16 +99,16 @@
   <reportTemplate reportTemplateId="1" ownerUserId="1"
     visibility="1" title="Report 1"
     XML="
-		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
-			&lt;title&gt;Report 1&lt;/title&gt;
-		&lt;/report&gt;" />
+        &lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
+            &lt;title&gt;Report 1&lt;/title&gt;
+        &lt;/report&gt;" />
 
   <reportTemplate reportTemplateId="2" ownerUserId="2"
     visibility="1" title="Report 1"
     XML="
-		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
-			&lt;title&gt;Report 1&lt;/title&gt;
-		&lt;/report&gt;" />
+        &lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
+            &lt;title&gt;Report 1&lt;/title&gt;
+        &lt;/report&gt;" />
 
   <reportSubscription userId="1" reportId="1"
     subscribed="1" />

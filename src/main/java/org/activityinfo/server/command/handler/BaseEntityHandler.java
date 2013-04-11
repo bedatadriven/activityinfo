@@ -117,6 +117,9 @@ public class BaseEntityHandler {
         if (changes.containsKey("sortOrder")) {
             group.setSortOrder((Integer) changes.get("sortOrder"));
         }
+        if (changes.containsKey("mandatory")) {
+            group.setMandatory((Boolean) changes.get("mandatory"));
+        }
     }
 
     protected void updateLockedPeriodProperties(LockedPeriod lockedPeriod,

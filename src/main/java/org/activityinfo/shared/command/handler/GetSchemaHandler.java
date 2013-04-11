@@ -510,7 +510,9 @@ public class GetSchemaHandler implements
             SqlQuery query = SqlQuery.select()
                 .appendColumn("AttributeGroupId", "id")
                 .appendColumn("Name", "name")
-                .appendColumn("multipleAllowed").from("attributegroup")
+                .appendColumn("multipleAllowed")
+                .appendColumn("mandatory")
+                .from("attributegroup")
                 .orderBy("SortOrder");
 
             if (context.isRemote()) {
@@ -534,6 +536,7 @@ public class GetSchemaHandler implements
                     group.setId(rs.getInt("id"));
                     group.setName(rs.getString("name"));
                     group.setMultipleAllowed(rs.getBoolean("multipleAllowed"));
+                    group.setMandatory(rs.getBoolean("mandatory"));
 
                     attributeGroups.put(group.getId(), group);
                 }

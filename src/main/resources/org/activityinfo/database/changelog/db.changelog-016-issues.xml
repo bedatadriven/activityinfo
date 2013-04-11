@@ -36,4 +36,15 @@
     </addColumn>
   </changeSet>
 
+  <changeSet author="jasper" id="016-02">
+    <comment>
+      #47050153 - Adds 'mandatory' flag to the attributegroup table. 
+    </comment>
+    <addColumn tableName="attributegroup">
+      <column name="mandatory" type="BIT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+  
 </databaseChangeLog>
