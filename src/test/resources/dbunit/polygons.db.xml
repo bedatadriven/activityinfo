@@ -85,7 +85,7 @@
 	<!-- Our Indicator -->
 
   <indicator indicatorId="1" activityId="1" name="beneficiaries"
-    units="menages" aggregation="0" category="inputs" sortOrder="1" />
+    units="menages" aggregation="0" category="inputs" sortOrder="1" mandatory="0" />
 
 	<!-- Bamako -->
 

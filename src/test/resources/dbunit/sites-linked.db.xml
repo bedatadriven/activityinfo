@@ -25,7 +25,7 @@
 <dataset>
 
 
-	<!-- Country setup -->
+<!-- Country setup -->
 
   <country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
 
@@ -65,7 +65,7 @@
     adminEntityParentId="4" name="Irumu" code="203" x1="0" y1="0" x2="0"
     y2="0" />
 
-	<!-- User setup -->
+<!-- User setup -->
   <userLogin userId="1" name="Alex" email="akbertram@gmail.com"
     password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
     locale="fr" newUser="1" emailnotification="0" />
@@ -80,22 +80,22 @@
   <userLogin userId="4" name="Marlene" email="marlene@solidarites"
     password="xyz" locale="fr" newUser="1" emailnotification="0" />
 
-	<!-- Attributes -->
+<!-- Attributes -->
 
-	<!-- NFI Attribute 1: Cause -->
+<!-- NFI Attribute 1: Cause -->
 
   <attributeGroup attributeGroupId="1" name="cause"
-    multipleAllowed="1" sortOrder="2" />
+    multipleAllowed="1" sortOrder="2" mandatory="0" />
 
   <attribute attributeGroupId="1" attributeId="1" sortOrder="2"
     name="Catastrophe Naturelle" />
   <attribute attributeGroupId="1" attributeId="2" sortOrder="1"
     name="Deplacement" />
 
-	<!-- NFI Attribute 2: Contenu de Kit -->
+<!-- NFI Attribute 2: Contenu de Kit -->
 
   <attributeGroup attributeGroupId="2" name="contenu du kit"
-    multipleAllowed="1" sortOrder="1" />
+    multipleAllowed="1" sortOrder="1" mandatory="0" />
 
   <attribute attributeGroupId="2" attributeId="3" name="Casserole"
     sortOrder="1" />
@@ -104,12 +104,12 @@
     sortOrder="2" />
 
   <attributeGroup attributeGroupId="3" name="Something about Kivu"
-    multipleAllowed="1" sortOrder="1" />
+    multipleAllowed="1" sortOrder="1" mandatory="0" />
 
   <attributeGroup attributeGroupId="991" name="Deleted"
-    dateDeleted="2011-1-1" multipleAllowed="1" sortOrder="1" /> 
+    dateDeleted="2011-1-1" multipleAllowed="1" sortOrder="1" mandatory="0" /> 
 
-	<!-- Target Database: NFI Cluster -->
+<!-- Target Database: NFI Cluster -->
 
   <userDatabase databaseId="1" name="NFI Cluster"
     countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01" />
@@ -120,14 +120,14 @@
 
   <indicator indicatorId="1" activityId="1" name="Beneficiaries"
     units="menages" aggregation="0" category="inputs" description="falling in lve"
-    listHeader="no header really" sortOrder="1" />
+    listHeader="no header really" sortOrder="1" mandatory="0" />
 
   <indicator indicatorId="2" activityId="1" name="baches"
     units="menages" aggregation="0" category="outputs" listHeader="header"
-    description="desc" sortOrder="1" />
-		
-		
-	<!-- Source Database 1: RRMP -->
+    description="desc" sortOrder="1" mandatory="0" />
+
+
+<!-- Source Database 1: RRMP -->
 
   <userDatabase databaseId="2" name="NFI Cluster"
     countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01" />
@@ -137,23 +137,23 @@
 
   <indicator indicatorId="3" activityId="2" name="RRMP Beneficiaries"
     units="menages" aggregation="0" category="inputs" description="falling in lve"
-    listHeader="no header really" sortOrder="1" />
+    listHeader="no header really" sortOrder="1" mandatory="0" />
 
 
   <partner partnerId="1" name="NRC" />
   <partnerInDatabase partnerId="1" databaseId="1" />
   <partnerInDatabase partnerId="1" databaseId="2" />
-	
-	<!--  LINK Source DB to DEST db -->
+
+<!--  LINK Source DB to DEST db -->
 
   <indicatorlink SourceIndicatorId="3"
     DestinationIndicatorId="1" />
 
   <indicatorlink SourceIndicatorId="3"
     DestinationIndicatorId="2" />
-		
-	
-	<!-- Site in SOURCE -->
+
+
+<!-- Site in SOURCE -->
 
   <location locationId="1" name="Penekusu Kivu" locationTypeId="1"
     X="1.532" Y="27.323" timeEdited="3" />
@@ -171,7 +171,7 @@
     value="1500" />
 
 
-	<!-- Site in DESTINATION -->
+<!-- Site in DESTINATION -->
 
   <location locationId="2" name="Penekusu Kivu 2"
     locationTypeId="1" X="1.532" Y="27.323" timeEdited="2" />

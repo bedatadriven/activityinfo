@@ -14,6 +14,7 @@ org.activityinfo.server.database.hibernate.entity.SiteHistory
 org.activityinfo.server.database.hibernate.entity.Authentication
 org.activityinfo.server.database.hibernate.entity.UserDatabase
 org.activityinfo.server.database.hibernate.entity.Indicator
+org.activityinfo.server.database.hibernate.entity.IndicatorLinkEntity
 org.activityinfo.server.database.hibernate.entity.TargetValue
 org.activityinfo.server.database.hibernate.entity.SiteAttachment
 org.activityinfo.server.database.hibernate.entity.IndicatorValue

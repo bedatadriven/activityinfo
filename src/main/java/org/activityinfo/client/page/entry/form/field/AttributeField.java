@@ -30,4 +30,7 @@ public interface AttributeField {
 
     void updateModel(SiteDTO site);
 
+    boolean validate();
+
+    void setMandatory(boolean mandatory);
 }

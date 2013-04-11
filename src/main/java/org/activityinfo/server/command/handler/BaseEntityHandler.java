@@ -87,6 +87,10 @@ public class BaseEntityHandler {
             indicator.setSortOrder((Integer) changes.get("sortOrder"));
         }
 
+        if (changes.containsKey("mandatory")) {
+            indicator.setMandatory((Boolean) changes.get("mandatory"));
+        }
+
         indicator.getActivity().getDatabase().setLastSchemaUpdate(new Date());
     }
 
@@ -112,6 +116,9 @@ public class BaseEntityHandler {
         }
         if (changes.containsKey("sortOrder")) {
             group.setSortOrder((Integer) changes.get("sortOrder"));
+        }
+        if (changes.containsKey("mandatory")) {
+            group.setMandatory((Boolean) changes.get("mandatory"));
         }
     }
 

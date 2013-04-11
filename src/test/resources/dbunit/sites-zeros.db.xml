@@ -54,7 +54,7 @@
 
   <indicator indicatorId="5" activityId="3" name="Utilisaton rate"
     units="nc/hab/month" aggregation="1" category="outputs" listHeader="header"
-    description="desc" sortOrder="1" />
+    description="desc" sortOrder="1" mandatory="0"/>
 
   <activity activityId="4" databaseId="2"
     name="Reunification of child soliders" reportingFrequency="1"
@@ -62,7 +62,7 @@
 
   <indicator indicatorId="6" activityId="4" name="Number of children"
     units="children" aggregation="0" listHeader="kids" description="desc"
-    sortOrder="1" />
+    sortOrder="1" mandatory="0"/>
 
 
 	<!--  PEAR Partners -->

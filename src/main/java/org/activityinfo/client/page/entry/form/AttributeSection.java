@@ -41,29 +41,36 @@ public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
 
         for (AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
 
+            AttributeField field;
+
             if (attributeGroup.isMultipleAllowed()) {
 
-                AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(
-                    attributeGroup);
+                AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(attributeGroup);
                 boxGroup.setStyleAttribute("marginBottom", "10px");
                 boxGroup.setStyleAttribute("width", "100%"); // if the width is
                                                              // specified in px,
                                                              // IE6 flips out
-
                 add(boxGroup);
-                groups.add(boxGroup);
+                field = boxGroup;
 
             } else {
                 AttributeCombo combo = new AttributeCombo(attributeGroup);
                 add(combo);
-                groups.add(combo);
+                field = combo;
             }
+
+            field.setMandatory(attributeGroup.isMandatory());
+            groups.add(field);
         }
     }
 
     @Override
     public boolean validate() {
-        return true;
+        boolean valid = true;
+        for (AttributeField group : groups) {
+            valid &= group.validate();
+        }
+        return valid;
     }
 
     @Override

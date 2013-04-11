@@ -209,8 +209,7 @@ public class SiteDialog extends Window {
     }
 
     private boolean validateSections() {
-        for (FormSectionModel<SiteDTO> section : navigationListView.getStore()
-            .getModels()) {
+        for (FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
             if (!section.getSection().validate()) {
                 navigationListView.getSelectionModel().select(section, false);
                 MessageBox.alert(getHeading(),

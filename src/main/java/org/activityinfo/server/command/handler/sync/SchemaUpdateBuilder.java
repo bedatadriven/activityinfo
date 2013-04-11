@@ -40,6 +40,7 @@ import org.activityinfo.server.database.hibernate.entity.AttributeGroup;
 import org.activityinfo.server.database.hibernate.entity.Country;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
+import org.activityinfo.server.database.hibernate.entity.IndicatorLinkEntity;
 import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
@@ -71,6 +72,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
     private final List<Activity> activities = new ArrayList<Activity>();
     private final List<Indicator> indicators = new ArrayList<Indicator>();
+    private final Set<IndicatorLinkEntity> indicatorLinks = new HashSet<IndicatorLinkEntity>();
 
     private final Set<Integer> attributeGroupIds = new HashSet<Integer>();
     private final List<AttributeGroup> attributeGroups = new ArrayList<AttributeGroup>();
@@ -81,9 +83,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     private final List<LocationType> locationTypes = new ArrayList<LocationType>();
     private List<UserPermission> userPermissions;
 
-    private static final Logger LOGGER = Logger
-        .getLogger(SchemaUpdateBuilder.class
-            .getName());
+    private static final Logger LOGGER = Logger.getLogger(SchemaUpdateBuilder.class.getName());
 
     private final Class[] schemaClasses = new Class[] {
         Country.class,
@@ -107,9 +107,9 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     public SchemaUpdateBuilder(EntityManagerFactory entityManagerFactory) {
         // create a new, unfiltered entity manager so we can see deleted records
         this.entityManager = entityManagerFactory.createEntityManager();
-        this.userDatabaseDAO = HibernateDAOProvider.makeImplementation(
-            UserDatabaseDAO.class, UserDatabase.class,
-            entityManager);
+        this.userDatabaseDAO =
+            HibernateDAOProvider.makeImplementation(
+                UserDatabaseDAO.class, UserDatabase.class, entityManager);
     }
 
     @SuppressWarnings("unchecked")
@@ -121,8 +121,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             // get the permissions before we apply the filter
             // otherwise they will be excluded
             userPermissions = entityManager
-                .createQuery(
-                    "select p from UserPermission p where p.user.id = ?1")
+                .createQuery("select p from UserPermission p where p.user.id = ?1")
                 .setParameter(1, user.getId())
                 .getResultList();
 
@@ -130,12 +129,10 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
 
             databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
 
-            long localVersion = request.getLocalVersion() == null ? 0 : Long
-                .parseLong(request.getLocalVersion());
+            long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
             long serverVersion = getCurrentSchemaVersion(user);
 
-            LOGGER.info("Schema versions: local = " + localVersion
-                + ", server = " + serverVersion);
+            LOGGER.info("Schema versions: local = " + localVersion + ", server = " + serverVersion);
 
             SyncRegionUpdate update = new SyncRegionUpdate();
             update.setVersion(Long.toString(serverVersion));
@@ -157,8 +154,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         for (Class schemaClass : schemaClasses) {
             builder.createTableIfNotExists(schemaClass);
 
-            // special case: we never delete partners, only add them.
-            // this way we always have a label for Partners
+            // Special case: we never delete partners, only add them. This way we always have a label for Partners
             // See : LocalSiteCreateTest.siteRemovePartnerConflict
             if (!schemaClass.equals(Partner.class)) {
                 builder.deleteAll(schemaClass);
@@ -180,26 +176,49 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         builder.insert(LockedPeriod.class, allLockedPeriods);
 
         // TODO: this needs to be actually synchronized
-        builder
-            .executeStatement("CREATE TABLE IF NOT EXISTS  target (targetId int, name text, date1 text, date2 text, projectId int, partnerId int, adminEntityId int, databaseId int)");
-        builder
-            .executeStatement("CREATE TABLE IF NOT EXISTS  targetvalue (targetId int, IndicatorId int, value real)");
-
-        builder
-            .executeStatement("CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int) ");
-
-        builder
-            .executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
-        builder.executeStatement("delete from PartnerInDatabase");
-
+        builder.executeStatement(
+            "CREATE TABLE IF NOT EXISTS  target (targetId int, name text, date1 text, date2 text, projectId int, " +
+                "partnerId int, adminEntityId int, databaseId int)");
+        builder.executeStatement(
+            "CREATE TABLE IF NOT EXISTS  targetvalue (targetId int, IndicatorId int, value real)");
         builder.createTableIfNotExists(Location.class);
+        builder.executeStatement(
+            "create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
 
-        builder
-            .executeStatement("create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
+
+        createAndSyncIndicatorlinks(builder);
+        createAndSyncPartnerInDatabase(builder);
+        createAndSyncAttributeGroupInActivity(builder);
+
+
+        return builder.asJson();
+    }
+
+    private void createAndSyncIndicatorlinks(JpaUpdateBuilder builder) throws JSONException {
+        builder.executeStatement(
+            "create table if not exists IndicatorLink (SourceIndicatorId int, DestinationIndicatorId int) ");
+        builder.executeStatement(
+            "delete from IndicatorLink");
+
+        if (!indicatorLinks.isEmpty()) {
+            builder.beginPreparedStatement(
+                "insert into IndicatorLink (SourceIndicatorId, DestinationIndicatorId) values (?, ?) ");
+            for (IndicatorLinkEntity il : indicatorLinks) {
+                builder.addExecution(il.getId().getSourceIndicatorId(), il.getId().getDestinationIndicatorId());
+            }
+            builder.finishPreparedStatement();
+        }
+    }
+
+    private void createAndSyncPartnerInDatabase(JpaUpdateBuilder builder) throws JSONException {
+        builder.executeStatement(
+            "create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
+        builder.executeStatement(
+            "delete from PartnerInDatabase");
 
         if (anyPartners()) {
-            builder
-                .beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
+            builder.beginPreparedStatement(
+                "insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
             for (UserDatabase db : databases) {
                 for (Partner partner : db.getPartners()) {
                     builder.addExecution(db.getId(), partner.getId());
@@ -207,14 +226,17 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             }
             builder.finishPreparedStatement();
         }
+    }
 
-        builder
-            .executeStatement("create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
-        builder.executeStatement("delete from AttributeGroupInActivity");
+    private void createAndSyncAttributeGroupInActivity(JpaUpdateBuilder builder) throws JSONException {
+        builder.executeStatement(
+            "create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
+        builder.executeStatement(
+            "delete from AttributeGroupInActivity");
 
         if (anyAttributes()) {
-            builder
-                .beginPreparedStatement("insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
+            builder.beginPreparedStatement(
+                "insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
             for (UserDatabase db : databases) {
                 for (Activity activity : db.getActivities()) {
                     for (AttributeGroup group : activity.getAttributeGroups()) {
@@ -224,8 +246,6 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             }
             builder.finishPreparedStatement();
         }
-
-        return builder.asJson();
     }
 
     private boolean anyPartners() {
@@ -289,6 +309,11 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                 activities.add(activity);
                 for (Indicator indicator : activity.getIndicators()) {
                     indicators.add(indicator);
+
+                    List<IndicatorLinkEntity> links = findIndicatorLinks(indicator);
+                    if (links != null && !links.isEmpty()) {
+                        indicatorLinks.addAll(links);
+                    }
                 }
                 for (AttributeGroup g : activity.getAttributeGroups()) {
                     if (!attributeGroupIds.contains(g.getId())) {
@@ -301,6 +326,15 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
                 }
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<IndicatorLinkEntity> findIndicatorLinks(Indicator indicator) {
+        return entityManager.createQuery(
+                "select il from IndicatorLinkEntity il where il.id.sourceIndicatorId = ?1 or il.id.destinationIndicatorId = ?2")
+            .setParameter(1, indicator.getId())
+            .setParameter(2, indicator.getId())
+            .getResultList();
     }
 
     public long getCurrentSchemaVersion(User user) {
