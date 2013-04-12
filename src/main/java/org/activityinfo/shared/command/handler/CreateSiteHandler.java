@@ -76,6 +76,9 @@ public class CreateSiteHandler implements
         SqlUpdate.delete(Tables.REPORTING_PERIOD)
             .where("SiteId", cmd.getSiteId())
             .execute(tx);
+        SqlUpdate.delete(Tables.SITE_HISTORY)
+            .where("siteid", cmd.getSiteId())
+            .execute(tx);
         SqlUpdate.delete(Tables.SITE)
             .where("SiteId", cmd.getSiteId())
             .execute(tx);
