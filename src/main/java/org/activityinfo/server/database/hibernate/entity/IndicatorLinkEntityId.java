@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import com.google.common.base.Objects;
+
 @Embeddable
 public class IndicatorLinkEntityId implements Serializable {
     private static final long serialVersionUID = 6224197691532121470L;
@@ -36,5 +38,17 @@ public class IndicatorLinkEntityId implements Serializable {
 
     public void setDestinationIndicatorId(Integer destinationIndicatorId) {
         this.destinationIndicatorId = destinationIndicatorId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(sourceIndicatorId, destinationIndicatorId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        IndicatorLinkEntityId i = (IndicatorLinkEntityId) obj;
+        return Objects.equal(i.getSourceIndicatorId(), this.getSourceIndicatorId())
+            && Objects.equal(i.getDestinationIndicatorId(), this.getDestinationIndicatorId());
     }
 }
