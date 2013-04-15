@@ -68,7 +68,7 @@ public class BaseEntityHandler {
         }
 
         if (changes.containsKey("category")) {
-            indicator.setCategory((String) changes.get("category"));
+            indicator.setCategory(((String) changes.get("category")).trim());
         }
 
         if (changes.containsKey("listHeader")) {

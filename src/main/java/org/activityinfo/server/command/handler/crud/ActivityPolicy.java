@@ -112,7 +112,7 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
         }
 
         if (changes.containsKey("category")) {
-            activity.setCategory((String) changes.get("category"));
+            activity.setCategory(((String) changes.get("category")).trim());
         }
 
         if (changes.containsKey("mapIcon")) {
