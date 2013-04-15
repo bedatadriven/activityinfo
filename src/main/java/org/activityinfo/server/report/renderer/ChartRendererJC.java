@@ -82,7 +82,8 @@ import com.google.code.appengine.imageio.ImageIO;
  */
 public class ChartRendererJC {
 
-    private static final String SANS_SERIF = null;
+    // one of the available logical font families names from org.apache.harmony.awt.gl.font.FontManager
+    private static final String SANS_SERIF = "SansSerif";
 
     public String renderToUrl(PivotChartReportElement element,
         boolean includeTitle, StorageProvider istorageProvider,
