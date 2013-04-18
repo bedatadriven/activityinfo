@@ -267,7 +267,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Here is the summary of the updates by user for the ActivityInfo databases you administer over the last {0} days.")
     String activityDigestIntro(int days);
 
-    @DefaultMessage("The following ActivityInfo databases have not been actively used over the last {0} days:")
+    @DefaultMessage("The following ActivityInfo databases have not been updated in the last {0} days:")
     String activityDigestInactiveDatabases(int days);
 
     @DefaultMessage("{0} update(s) on {1,date,dd-MM-yyyy}")
