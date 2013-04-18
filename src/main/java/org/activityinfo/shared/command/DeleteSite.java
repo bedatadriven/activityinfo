@@ -24,7 +24,9 @@ package org.activityinfo.shared.command;
 
 import org.activityinfo.shared.command.result.VoidResult;
 
-public class DeleteSite implements MutatingCommand<VoidResult> {
+import com.extjs.gxt.ui.client.data.RpcMap;
+
+public class DeleteSite implements MutatingCommand<VoidResult>, SiteCommand {
     private int id;
 
     public DeleteSite(int id) {
@@ -41,6 +43,16 @@ public class DeleteSite implements MutatingCommand<VoidResult> {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public int getSiteId() {
+        return getId();
+    }
+
+    @Override
+    public RpcMap getProperties() {
+        return null;
     }
 
     @Override

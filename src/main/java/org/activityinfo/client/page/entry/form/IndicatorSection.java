@@ -42,8 +42,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.common.collect.Lists;
 
-public class IndicatorSection extends LayoutContainer implements
-    FormSection<SiteDTO> {
+public class IndicatorSection extends LayoutContainer implements FormSection<SiteDTO> {
 
     private List<NumberField> indicatorFields = Lists.newArrayList();
 
@@ -84,9 +83,12 @@ public class IndicatorSection extends LayoutContainer implements
 
     private void addIndicator(IndicatorDTO indicator) {
 
-        Text indicatorLabel = new Text(Format.htmlEncode(indicator.getName()));
+        String name = indicator.getName();
+        if (indicator.isMandatory()) {
+            name += " *";
+        }
+        Text indicatorLabel = new Text(Format.htmlEncode(name));
         indicatorLabel.setStyleAttribute("fontSize", "9pt");
-
         add(indicatorLabel);
 
         NumberField indicatorField = new NumberField();
@@ -94,6 +96,9 @@ public class IndicatorSection extends LayoutContainer implements
         indicatorField.setWidth(50);
         indicatorField.setFormat(IndicatorNumberFormat.INSTANCE);
         indicatorField.setStyleAttribute("textAlign", "right");
+        if (indicator.isMandatory()) {
+            indicatorField.setAllowBlank(false);
+        }
 
         if (indicator.getDescription() != null
             && !indicator.getDescription().isEmpty()) {

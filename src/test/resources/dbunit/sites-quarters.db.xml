@@ -51,7 +51,7 @@
 
   <indicator indicatorId="1" activityId="1" name="beneficiaries"
     units="menages" aggregation="0" category="inputs" description="falling in lve"
-    listHeader="no header really" sortOrder="2" />
+    listHeader="no header really" sortOrder="2" mandatory="0"/>
 
 	
 	<!--  PEAR Partners -->

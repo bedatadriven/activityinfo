@@ -29,19 +29,22 @@ import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.google.common.collect.Lists;
 
-public class AttributeCheckBoxGroup extends CheckBoxGroup implements
-    AttributeField {
-
+public class AttributeCheckBoxGroup extends CheckBoxGroup implements AttributeField {
+    private boolean mandatory = false;
     private List<CheckBox> checkBoxes;
 
     public AttributeCheckBoxGroup(AttributeGroupDTO group) {
         assert group != null;
-
-        this.setFieldLabel(group.getName());
+        String name = group.getName();
+        if (group.isMandatory()) {
+            name += "*";
+        }
+        this.setFieldLabel(Format.htmlEncode(name));
         this.setOrientation(Orientation.VERTICAL);
 
         checkBoxes = Lists.newArrayList();
@@ -68,5 +71,25 @@ public class AttributeCheckBoxGroup extends CheckBoxGroup implements
         for (CheckBox checkBox : checkBoxes) {
             site.set(checkBox.getName(), checkBox.getValue());
         }
+    }
+
+    @Override
+    public boolean validate() {
+        boolean result = true;
+        if (mandatory) {
+            boolean hasValue = false;
+            for (CheckBox box : checkBoxes) {
+                if (Boolean.TRUE.equals(box.getValue())) {
+                    hasValue = true;
+                }
+            }
+            result = hasValue;
+        }
+        return result;
+    }
+
+    @Override
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
     }
 }

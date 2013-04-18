@@ -38,6 +38,6 @@ abstract class AbstractDesignForm extends FormPanel {
     }
 
     public int getPreferredDialogHeight() {
-        return 300;
+        return 340;
     }
 }

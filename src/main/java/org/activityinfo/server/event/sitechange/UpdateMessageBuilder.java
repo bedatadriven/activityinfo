@@ -46,7 +46,7 @@ public class UpdateMessageBuilder {
     private static final Logger LOGGER = Logger.getLogger(UpdateMessageBuilder.class
         .getName());
 
-    private boolean newSite;
+    private ChangeType type;
     private User recipient;
     private User editor;
     private Date date;
@@ -54,8 +54,8 @@ public class UpdateMessageBuilder {
     private ActivityDTO activityDTO;
     private UserDatabaseDTO userDatabaseDTO;
 
-    public void setNewSite(boolean newSite) {
-        this.newSite = newSite;
+    public void setChangeType(ChangeType type) {
+        this.type = type;
     }
 
     public void setRecipient(User recipient) {
@@ -92,14 +92,22 @@ public class UpdateMessageBuilder {
 
         // set the subject
         String subject;
-        if (newSite) {
+        switch (type) {
+        case CREATE:
             subject = I18N.MESSAGES.newSiteSubject(userDatabaseDTO.getName(),
                 activityDTO.getName(), siteDTO.getLocationName(),
                 siteDTO.getPartnerName());
-        } else {
+            break;
+        case DELETE:
+            subject = I18N.MESSAGES.deletedSiteSubject(
+                userDatabaseDTO.getName(), activityDTO.getName(),
+                siteDTO.getLocationName());
+            break;
+        default: // UPDATE
             subject = I18N.MESSAGES.updatedSiteSubject(
                 userDatabaseDTO.getName(), activityDTO.getName(),
                 siteDTO.getLocationName());
+            break;
         }
         message.subject(subject);
 
@@ -118,31 +126,39 @@ public class UpdateMessageBuilder {
         htmlWriter.paragraph(greeting);
 
         String intro;
-        if (newSite) {
+        switch (type) {
+        case CREATE:
             intro = I18N.MESSAGES.siteCreateIntro(editor.getName(),
                 editor.getEmail(), activityDTO.getName(),
                 siteDTO.getLocationName(),
                 userDatabaseDTO.getName(), date);
-        } else {
+            break;
+        case DELETE:
+            intro = I18N.MESSAGES.siteDeleteIntro(editor.getName(),
+                editor.getEmail(), activityDTO.getName(),
+                siteDTO.getLocationName(),
+                userDatabaseDTO.getName(), date);
+            break;
+        default: // UPDATE
             intro = I18N.MESSAGES.siteChangeIntro(editor.getName(),
                 editor.getEmail(), activityDTO.getName(),
                 siteDTO.getLocationName(),
                 userDatabaseDTO.getName(), date);
         }
-
         htmlWriter.paragraph(intro);
 
-        SiteRenderer siteRenderer = new SiteRenderer();
-        siteRenderer.setIndicatorValueFormatter(new IndicatorValueFormatter() {
-            @Override
-            public String format(Double value) {
-                return new DecimalFormat("#,##0.####").format(value);
-            }
-        });
+        if (type.isNewOrUpdate()) {
+            SiteRenderer siteRenderer = new SiteRenderer();
+            siteRenderer.setIndicatorValueFormatter(new IndicatorValueFormatter() {
+                @Override
+                public String format(Double value) {
+                    return new DecimalFormat("#,##0.####").format(value);
+                }
+            });
 
-        htmlWriter.paragraph(siteRenderer.renderLocation(siteDTO, activityDTO));
-        htmlWriter.paragraph(siteRenderer.renderSite(siteDTO, activityDTO,
-            false, true));
+            htmlWriter.paragraph(siteRenderer.renderLocation(siteDTO, activityDTO));
+            htmlWriter.paragraph(siteRenderer.renderSite(siteDTO, activityDTO, false, true));
+        }
 
         String url = "http://www.activityinfo.org/#data-entry/Activity+"
             + activityDTO.getId();

@@ -472,7 +472,7 @@ public class GetSchemaHandler implements
         public void loadIndicators() {
             SqlQuery query = SqlQuery
                 .select("indicatorId", "name", "category", "listHeader",
-                    "description", "aggregation", "units", "activityId")
+                    "description", "aggregation", "units", "activityId", "mandatory")
                 .from("indicator").orderBy("SortOrder");
 
             if (context.isRemote()) {
@@ -495,6 +495,7 @@ public class GetSchemaHandler implements
                     indicator.setDescription(rs.getString("description"));
                     indicator.setAggregation(rs.getInt("aggregation"));
                     indicator.setUnits(rs.getString("units"));
+                    indicator.setMandatory(rs.getBoolean("mandatory"));
 
                     int activityId = rs.getInt("activityId");
                     ActivityDTO activity = activities.get(activityId);
@@ -509,7 +510,9 @@ public class GetSchemaHandler implements
             SqlQuery query = SqlQuery.select()
                 .appendColumn("AttributeGroupId", "id")
                 .appendColumn("Name", "name")
-                .appendColumn("multipleAllowed").from("attributegroup")
+                .appendColumn("multipleAllowed")
+                .appendColumn("mandatory")
+                .from("attributegroup")
                 .orderBy("SortOrder");
 
             if (context.isRemote()) {
@@ -533,6 +536,7 @@ public class GetSchemaHandler implements
                     group.setId(rs.getInt("id"));
                     group.setName(rs.getString("name"));
                     group.setMultipleAllowed(rs.getBoolean("multipleAllowed"));
+                    group.setMandatory(rs.getBoolean("mandatory"));
 
                     attributeGroups.put(group.getId(), group);
                 }

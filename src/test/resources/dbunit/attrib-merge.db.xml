@@ -92,7 +92,7 @@
   <!-- Status Attribute -->
 
   <attributeGroup attributeGroupId="1" name="Status"
-    multipleAllowed="0" sortOrder="2" />
+    multipleAllowed="0" sortOrder="2" mandatory="0" />
 
   <attribute attributeGroupId="1" attributeId="1" sortOrder="2"
     name="Planned" />
@@ -108,7 +108,7 @@
   <!-- Content of Kit Attribute -->
 
   <attributeGroup attributeGroupId="2" name="Contenu du Kit"
-    multipleAllowed="1" sortOrder="1" />
+    multipleAllowed="1" sortOrder="1" mandatory="0" />
 
   <attribute attributeGroupId="2" attributeId="4" name="Casserole"
     sortOrder="1" />
@@ -128,7 +128,7 @@
     name="Number of Beneficiares"
     units="menages" 
     aggregation="0" 
-    sortOrder="2" />
+    sortOrder="2" mandatory="0"/>
 
   <!-- Database: PEAR PLUS -->
 
@@ -157,12 +157,12 @@
     name="Number of Classrooms Constructed"
     units="classroooms" 
     aggregation="0" 
-    sortOrder="1" />
+    sortOrder="1" mandatory="0"/>
 
   <!-- Status Attribute  -->
   
   <attributeGroup attributeGroupId="3" name="Status"
-    multipleAllowed="0" sortOrder="2" />
+    multipleAllowed="0" sortOrder="2" mandatory="0" />
   <attribute attributeGroupId="3" attributeId="6" sortOrder="2"
     name="Planned" />
   <attribute attributeGroupId="3" attributeId="7" sortOrder="1"

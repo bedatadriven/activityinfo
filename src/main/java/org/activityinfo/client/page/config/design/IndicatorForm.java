@@ -29,6 +29,7 @@ import org.activityinfo.shared.dto.IndicatorDTO;
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -96,6 +97,11 @@ class IndicatorForm extends AbstractDesignForm {
         descField.setFieldLabel(constants.description());
         binding.addFieldBinding(new FieldBinding(descField, "description"));
         this.add(descField);
+
+        CheckBox mandatoryCB = new CheckBox();
+        mandatoryCB.setFieldLabel(constants.mandatory());
+        binding.addFieldBinding(new FieldBinding(mandatoryCB, "mandatory"));
+        this.add(mandatoryCB);
     }
 
     @Override
