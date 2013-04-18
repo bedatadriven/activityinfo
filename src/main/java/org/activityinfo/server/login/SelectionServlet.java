@@ -111,7 +111,7 @@ public class SelectionServlet extends DefaultSelectionServlet {
     protected void handleNoAvailablePermutation(Path path,
         HttpServletResponse resp) throws IOException {
         if (path.file.endsWith(".js")) {
-            resp.getWriter().println("window.location = 'browser.html';");
+            resp.getWriter().println("window.location = '/unsupportedBrowser';");
         } else {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
                 "Unsupported browser");
