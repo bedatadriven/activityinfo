@@ -47,6 +47,10 @@ public class IndicatorLinkEntityId implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof IndicatorLinkEntityId)) {
+            return false;
+        }
+
         IndicatorLinkEntityId i = (IndicatorLinkEntityId) obj;
         return Objects.equal(i.getSourceIndicatorId(), this.getSourceIndicatorId())
             && Objects.equal(i.getDestinationIndicatorId(), this.getDestinationIndicatorId());

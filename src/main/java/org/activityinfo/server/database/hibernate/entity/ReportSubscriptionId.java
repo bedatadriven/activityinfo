@@ -65,6 +65,10 @@ public class ReportSubscriptionId implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof ReportSubscriptionId)) {
+            return false;
+        }
+
         ReportSubscriptionId i = (ReportSubscriptionId) obj;
         return Objects.equal(i.getReportId(), this.getReportId())
             && Objects.equal(i.getUserId(), this.getUserId());
