@@ -64,7 +64,6 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
             deleteUpdated(updatedIds);
             insertUpdatedSites();
-            insertUpdatedSitehistory();
             insertUpdatedReportingPeriods();
             insertUpdatedAttributeValues();
             insertUpdatedIndicatorValues();
@@ -109,15 +108,6 @@ public class SiteUpdateBuilder implements UpdateBuilder {
             .execute(entityManager);
     }
 
-    private void insertUpdatedSitehistory() {
-        SqlQuery avQuery = updatedSitehistoryQuery();
-
-        batch.insert()
-            .into(Tables.SITE_HISTORY)
-            .from(avQuery)
-            .execute(entityManager);
-    }
-
     private void insertUpdatedSites() {
         SqlQuery siteQuery = updatedSitesQuery();
 
@@ -129,7 +119,6 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     }
 
     private void deleteUpdated(String updatedIds) throws IOException {
-        batch.addStatement("DELETE FROM sitehistory WHERE siteid IN " + updatedIds);
         batch.addStatement("DELETE FROM attributevalue WHERE siteId IN " + updatedIds);
         batch.addStatement("DELETE FROM indicatorvalue WHERE reportingperiodid IN " +
             "(SELECT reportingperiodid FROM reportingperiod WHERE siteId IN " + updatedIds + ")");
@@ -189,22 +178,6 @@ public class SiteUpdateBuilder implements UpdateBuilder {
             .appendColumn("av.AttributeId")
             .appendColumn("av.SiteId")
             .appendColumn("av.Value")
-            .where("a.DatabaseId").equalTo(databaseId)
-            .where("s.timeEdited").greaterThan(localVersion)
-            .whereTrue("s.dateDeleted IS NULL");
-    }
-
-    private SqlQuery updatedSitehistoryQuery() {
-        return SqlQuery.select()
-            .from(Tables.SITE_HISTORY, "sh")
-            .leftJoin(Tables.SITE, "s").on("sh.SiteId = s.SiteId")
-            .leftJoin(Tables.ACTIVITY, "a").on("s.ActivityId = a.ActivityId")
-            .appendColumn("sh.id")
-            .appendColumn("sh.siteid")
-            .appendColumn("sh.userid")
-            .appendColumn("sh.timecreated")
-            .appendColumn("sh.initial")
-            .appendColumn("sh.json")
             .where("a.DatabaseId").equalTo(databaseId)
             .where("s.timeEdited").greaterThan(localVersion)
             .whereTrue("s.dateDeleted IS NULL");
