@@ -62,14 +62,13 @@ class AttributeGroupForm extends AbstractDesignForm {
             "multipleAllowed"));
         add(typeField);
 
-<<<<<<< HEAD
-        hideFieldWhenNull(idField);
-=======
         CheckBox mandatoryCB = new CheckBox();
         mandatoryCB.setFieldLabel(I18N.CONSTANTS.mandatory());
         binding.addFieldBinding(new FieldBinding(mandatoryCB, "mandatory"));
         this.add(mandatoryCB);
->>>>>>> 6653ee158137cb98a8e53b72d335125dbe967b6e
+
+        hideFieldWhenNull(idField);
+
     }
 
     @Override
