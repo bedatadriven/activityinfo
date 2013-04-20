@@ -46,7 +46,8 @@ public class LoginModule extends ServletModule {
 
         Map<String, String> initParams = Maps.newHashMap();
         filter("/login*").through(GuiceContainer.class);
-
+        filter("/unsupportedBrowser").through(GuiceContainer.class);
+        
         filterContainer(initParams, HostController.class,
             LoginController.class, ConfirmInviteController.class,
             LogoutController.class, ResetPasswordController.class,

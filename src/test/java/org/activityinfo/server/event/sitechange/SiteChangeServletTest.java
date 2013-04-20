@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import javax.mail.Message.RecipientType;
 import javax.persistence.EntityManager;
 
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
@@ -82,7 +81,7 @@ public class SiteChangeServletTest extends CommandTestCase2 {
     @Test
     public void testSendNotifications() throws Exception {
         SiteChangeServlet underTest = createServlet();
-        underTest.sendNotifications(1, 1, true);
+        underTest.sendNotifications(1, 1, ChangeType.CREATE);
 
         List<Message> msgs = ((MailSenderStub) mailSender).sentMail;
         assertThat(msgs.size(), is(equalTo(1)));

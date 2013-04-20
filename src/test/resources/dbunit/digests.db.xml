@@ -110,5 +110,9 @@
   <site siteId="2" activityId="2" locationId="1" partnerId="1" ProjectId="1"
     Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01" DateEdited="2013-01-01" timeEdited="1356998400000" />
 
-    
+  <sitehistory id="1" siteid="1" userid="1" timecreated="1362700800000" initial="true"
+    json="{'id':{'type':'Integer','value':1},'I4925':{'type':'Double','value':54.0},'comments':{'type':'String','value':'site 1 my first comment'}}" />
+  <sitehistory id="2" siteid="2" userid="1" timecreated="1356998400000" initial="true"
+    json="{'id':{'type':'Integer','value':2},'I4925':{'type':'Double','value':54.0},'comments':{'type':'String','value':'site 2 my first comment'}}" />
+  
 </dataset>

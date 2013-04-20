@@ -42,7 +42,7 @@ abstract class AbstractDesignForm extends FormPanel {
     }
 
     public int getPreferredDialogHeight() {
-        return 300;
+        return 340;
     }
 
     public void hideFieldWhenNull(final Field<?> field) {

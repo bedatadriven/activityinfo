@@ -88,6 +88,17 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
         return get("name");
     }
 
+    public void setMandatory(boolean mandatory) {
+        set("mandatory", mandatory);
+    }
+
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
+    public boolean isMandatory() {
+        Object m = get("mandatory");
+        return m != null ? (Boolean) m : false;
+    }
+
     public List<AttributeDTO> getAttributes() {
         return attributes;
     }

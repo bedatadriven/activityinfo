@@ -26,6 +26,8 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+import com.google.common.base.Objects;
+
 @Embeddable
 public class ReportSubscriptionId implements Serializable {
 
@@ -54,5 +56,21 @@ public class ReportSubscriptionId implements Serializable {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getReportId(), getUserId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof ReportSubscriptionId)) {
+            return false;
+        }
+
+        ReportSubscriptionId i = (ReportSubscriptionId) obj;
+        return Objects.equal(i.getReportId(), this.getReportId())
+            && Objects.equal(i.getUserId(), this.getUserId());
     }
 }

@@ -68,6 +68,9 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable,
 
     private Date dateDeleted;
 
+    private boolean mandatory;
+
+
     public AttributeGroup() {
 
     }
@@ -146,6 +149,26 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable,
 
     public void setDateDeleted(Date date) {
         this.dateDeleted = date;
+    }
+
+    /**
+     * Indicates if the attributegroup is mandatory in the new and edit site forms.
+     * 
+     * @return True if attributegroup is mandatory, false otherwise
+     */
+    @Column(name = "mandatory", nullable = false)
+    public boolean isMandatory() {
+        return this.mandatory;
+    }
+
+    /**
+     * Sets the mandatory flag
+     * 
+     * @param mandatory
+     *            True if the attributegroup is mandatory in the new and edit site forms.
+     */
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
     }
 
     @Override

@@ -22,6 +22,9 @@ package org.activityinfo.client.page.entry.form;
  * #L%
  */
 
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
@@ -74,16 +77,14 @@ public class SiteRenderer {
         if (renderComments && site.getComments() != null) {
             String commentsHtml = site.getComments();
             commentsHtml = commentsHtml.replace("\n", "<br/>");
-            html.append("<p class='comments'><span class='groupName'>")
-                .append(I18N.CONSTANTS.comments())
-                .append(":</span> ")
-                .append(commentsHtml)
-                .append("</p>");
+            html.append("<p class='comments'><span class='groupName'>");
+            html.append(I18N.CONSTANTS.comments());
+            html.append(":</span> ");
+            html.append(commentsHtml);
+            html.append("</p>");
         }
 
-        for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-            renderAttribute(html, group, site);
-        }
+        renderAttributes(html, site, activity);
 
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
             html.append(renderIndicators(site, activity, showEmptyRows));
@@ -95,7 +96,7 @@ public class SiteRenderer {
     private String renderIndicators(SiteDTO site, ActivityDTO activity,
         boolean showEmptyRows) {
         StringBuilder html = new StringBuilder();
-        html.append("<p><span class='groupName'>");
+        html.append("<br/><p><span class='groupName'>");
         html.append(I18N.CONSTANTS.indicators());
         html.append(":</p>");
         html.append("<table class='indicatorTable' cellspacing='0'>");
@@ -167,18 +168,44 @@ public class SiteRenderer {
         }
     }
 
-    protected void renderAttribute(StringBuilder html, AttributeGroupDTO group,
-        SiteDTO site) {
+    protected void renderAttributes(StringBuilder html, SiteDTO site, ActivityDTO activity) {
+        if (site.hasAttributeDisplayMap()) {
+            for (Entry<String, List<String>> entry : site.getAttributeDisplayMap().entrySet()) {
+                renderAttribute(html, entry.getKey(), entry.getValue());
+            }
+        } else {
+            for (AttributeGroupDTO group : activity.getAttributeGroups()) {
+                renderAttribute(html, group, site);
+            }
+        }
+    }
+
+    protected void renderAttribute(StringBuilder html, String groupName, List<String> attributeNames) {
+        int count = 0;
+        for (String attributeName : attributeNames) {
+            if (count == 0) {
+                html.append("<p class='attribute'><span class='groupName'>");
+                html.append(groupName);
+                html.append(": </span><span class='attValues'>");
+            } else {
+                html.append(", ");
+            }
+            html.append(attributeName);
+            count++;
+        }
+        html.append("</span></p>");
+    }
+
+    protected void renderAttribute(StringBuilder html, AttributeGroupDTO group, SiteDTO site) {
         int count = 0;
         if (group != null) {
             for (AttributeDTO attribute : group.getAttributes()) {
                 Boolean value = site.getAttributeValue(attribute.getId());
                 if (value != null && value) {
                     if (count == 0) {
-                        html.append(
-                            "<p class='attribute'><span class='groupName'>")
-                            .append(group.getName())
-                            .append(": </span><span class='attValues'>");
+                        html.append("<p class='attribute'><span class='groupName'>");
+                        html.append(group.getName());
+                        html.append(": </span><span class='attValues'>");
                     } else {
                         html.append(", ");
                     }

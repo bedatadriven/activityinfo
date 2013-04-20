@@ -90,8 +90,8 @@ public class Site implements java.io.Serializable, Deleteable {
     private Date dateSynchronized;
 
     private Set<AttributeValue> attributeValues = new HashSet<AttributeValue>(0);
-    private Set<ReportingPeriod> reportingPeriods = new HashSet<ReportingPeriod>(
-        0);
+    private Set<ReportingPeriod> reportingPeriods = new HashSet<ReportingPeriod>(0);
+    private Set<SiteHistory> siteHistories = new HashSet<SiteHistory>(0);
 
     private String comments;
 
@@ -320,6 +320,21 @@ public class Site implements java.io.Serializable, Deleteable {
      */
     public void setAttributeValues(Set<AttributeValue> values) {
         attributeValues = values;
+    }
+
+    /**
+     * @return the list of SiteHistories for this Site
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "site")
+    public Set<SiteHistory> getSiteHistories() {
+        return siteHistories;
+    }
+
+    /**
+     * Sets the SiteHistories for this Site
+     */
+    public void setSiteHistories(Set<SiteHistory> siteHistories) {
+        this.siteHistories = siteHistories;
     }
 
     /**

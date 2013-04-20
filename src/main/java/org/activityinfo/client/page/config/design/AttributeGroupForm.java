@@ -29,6 +29,7 @@ import org.activityinfo.shared.dto.AttributeGroupDTO;
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 
@@ -61,7 +62,14 @@ class AttributeGroupForm extends AbstractDesignForm {
             "multipleAllowed"));
         add(typeField);
 
+<<<<<<< HEAD
         hideFieldWhenNull(idField);
+=======
+        CheckBox mandatoryCB = new CheckBox();
+        mandatoryCB.setFieldLabel(I18N.CONSTANTS.mandatory());
+        binding.addFieldBinding(new FieldBinding(mandatoryCB, "mandatory"));
+        this.add(mandatoryCB);
+>>>>>>> 6653ee158137cb98a8e53b72d335125dbe967b6e
     }
 
     @Override

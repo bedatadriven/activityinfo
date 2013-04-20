@@ -42,7 +42,6 @@ public class SchemaMigration {
     public static final String[] MIGRATION_DDL = new String[] {
         "ALTER TABLE Site ADD COLUMN timeEdited REAL",
         "ALTER TABLE Location ADD COLUMN timeEdited REAL",
-        "CREATE TABLE IF NOT EXISTS  indicatorlink (SourceIndicatorId int, DestinationIndicatorId int)",
         "CREATE TABLE IF NOT EXISTS  siteattachment (blobid TEXT, siteid INT, filename TEXT, uploadedBy INT, blobSize REAL, contentType TEXT)",
         "ALTER TABLE UserDatabase ADD COLUMN version REAL",
         "ALTER TABLE UserPermission ADD COLUMN version REAL",
@@ -50,7 +49,9 @@ public class SchemaMigration {
         "ALTER TABLE UserLogin ADD COLUMN emailnotification INT",
         "CREATE INDEX IF NOT EXISTS adminentity_pk on adminentity (adminentityid)",
         "CREATE INDEX IF NOT EXISTS location_link on locationadminlink (locationid)",
-        "CREATE INDEX IF NOT EXISTS location_entity on locationadminlink (adminentityid)"
+        "CREATE INDEX IF NOT EXISTS location_entity on locationadminlink (adminentityid)",
+        "ALTER TABLE indicator ADD COLUMN mandatory INT",
+        "ALTER TABLE attributeGroup ADD COLUMN mandatory INT"
     };
 
     @Inject

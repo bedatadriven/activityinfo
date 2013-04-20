@@ -597,13 +597,18 @@ public class GetSitesHandler implements
         Log.trace("Starting joinAttributeValues() ");
 
         SqlQuery.select()
-            .appendColumn("AttributeId", "attributeId")
-            .appendColumn("SiteId", "siteId")
-            .appendColumn("Value", "value")
-            .from(Tables.ATTRIBUTE_VALUE)
-            .where("SiteId").in(siteMap.keySet())
-            .execute(tx, new SqlResultCallback() {
+            .appendColumn("v.AttributeId", "attributeId")
+            .appendColumn("a.Name", "attributeName")
+            .appendColumn("v.Value", "value")
+            .appendColumn("v.SiteId", "siteId")
+            .appendColumn("g.name", "groupName")
+            .from(Tables.ATTRIBUTE_VALUE, "v")
+            .leftJoin(Tables.ATTRIBUTE, "a").on("v.AttributeId = a.AttributeId")
+            .leftJoin(Tables.ATTRIBUTE_GROUP, "g").on("a.AttributeGroupId=g.AttributeGroupId")
+            .where("v.SiteId").in(siteMap.keySet())
+            .orderBy("groupName, attributeName")
 
+            .execute(tx, new SqlResultCallback() {
                 @Override
                 public void onSuccess(SqlTransaction tx, SqlResultSet results) {
                     Log.trace("Received results for joinAttributeValues() ");
@@ -611,9 +616,15 @@ public class GetSitesHandler implements
                     for (SqlResultSetRow row : results.getRows()) {
                         int attributeId = row.getInt("attributeId");
                         boolean value = row.getBoolean("value");
+                        String groupName = row.getString("groupName");
+                        String attributeName = row.getString("attributeName");
 
                         for (SiteDTO site : siteMap.get(row.getInt("siteId"))) {
                             site.setAttributeValue(attributeId, value);
+
+                            if (value) {
+                                site.addDisplayAttribute(groupName, attributeName);
+                            }
                         }
                     }
 

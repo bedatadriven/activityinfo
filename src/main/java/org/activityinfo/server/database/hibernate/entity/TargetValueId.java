@@ -24,6 +24,8 @@ package org.activityinfo.server.database.hibernate.entity;
 
 import javax.persistence.Column;
 
+import com.google.common.base.Objects;
+
 public class TargetValueId implements java.io.Serializable {
 
     private int targetId;
@@ -56,4 +58,19 @@ public class TargetValueId implements java.io.Serializable {
         this.indicatorId = indicatorId;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTargetId(), getIndicatorId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof TargetValueId)) {
+            return false;
+        }
+
+        TargetValueId i = (TargetValueId) obj;
+        return Objects.equal(i.getTargetId(), this.getTargetId())
+            && Objects.equal(i.getIndicatorId(), this.getIndicatorId());
+    }
 }

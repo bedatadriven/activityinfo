@@ -55,6 +55,8 @@ public class SiteTableUpdateBuilder implements UpdateBuilder {
                 .executeStatement("create table if not exists AttributeValue (SiteId integer, AttributeId integer, Value integer)");
             builder
                 .executeStatement("create table if not exists IndicatorValue (ReportingPeriodId integer, IndicatorId integer, Value real)");
+            builder
+                .executeStatement("create table if not exists sitehistory (id integer, siteid integer, userid integer, timecreated real, initial integer, json text)");
             update.setSql(builder.asJson());
         }
 

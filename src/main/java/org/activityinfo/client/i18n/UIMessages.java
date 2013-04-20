@@ -194,16 +194,24 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     String updatedSiteSubject(String databaseName, String activityName,
         String locationName);
 
+    @DefaultMessage("{0}: Deleted {1} at {2}")
+    String deletedSiteSubject(String databaseName, String activityName,
+        String locationName);
+
     @DefaultMessage("Hi {0},")
     String sitechangeGreeting(String userName);
+
+    @DefaultMessage("{0} ({1}) created a new {2} at {3} in the {4} database on {5,date,dd-MM-yyyy 'at' HH:mm}. Here are the details:")
+    String siteCreateIntro(String userName, String userEmail,
+        String activityName, String locationName, String databaseName, Date date);
 
     @DefaultMessage("{0} ({1}) updated the {2} at {3} in the {4} database on {5,date,dd-MM-yyyy 'at' HH:mm}. Here are the details:")
     String siteChangeIntro(String userName, String userEmail,
         String activityName, String locationName, String database, Date date);
 
-    @DefaultMessage("{0} ({1}) created a new {2} at {3} in the {4} database on {5,date,dd-MM-yyyy 'at' HH:mm}. Here are the details:")
-    String siteCreateIntro(String userName, String userEmail,
-        String activityName, String locationName, String databaseName, Date date);
+    @DefaultMessage("{0} ({1}) deleted the {2} at {3} in the {4} database on {5,date,dd-MM-yyyy 'at' HH:mm}.")
+    String siteDeleteIntro(String userName, String userEmail,
+        String activityName, String locationName, String database, Date date);
 
     @DefaultMessage("Best regards,<br>The ActivityInfo Team")
     String sitechangeSignature();
@@ -259,7 +267,7 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Here is the summary of the updates by user for the ActivityInfo databases you administer over the last {0} days.")
     String activityDigestIntro(int days);
 
-    @DefaultMessage("The following ActivityInfo databases have not been actively used over the last {0} days:")
+    @DefaultMessage("The following ActivityInfo databases have not been updated in the last {0} days:")
     String activityDigestInactiveDatabases(int days);
 
     @DefaultMessage("{0} update(s) on {1,date,dd-MM-yyyy}")

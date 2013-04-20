@@ -3,16 +3,13 @@ package org.activityinfo.server.digest.geo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.digest.DigestModelBuilder;
@@ -135,7 +132,8 @@ public class GeoDigestModelBuilder implements DigestModelBuilder {
 
         Query query = entityManager.get().createQuery(
             "select distinct d from UserDatabase d left join d.userPermissions p " +
-                "where d.owner = :user or (p.user = :user and p.allowView = true) " +
+                "where (d.owner = :user or (p.user = :user and p.allowView = true)) " +
+                "and d.dateDeleted is null " +
                 "order by d.name"
             );
         query.setParameter("user", user);
@@ -156,46 +154,13 @@ public class GeoDigestModelBuilder implements DigestModelBuilder {
 
         Query query = entityManager.get().createQuery(
             "select distinct s.id from Site s " +
-                "where s.activity.database = :database and s.timeEdited >= :from"
+                "join s.siteHistories h " +
+                "where s.activity.database = :database " +
+                "and h.timeCreated >= :from"
             );
         query.setParameter("database", database);
         query.setParameter("from", from);
 
         return query.getResultList();
-    }
-
-    /**
-     * @param database
-     * @param user
-     * @param from
-     * @return the sitehistory edited since the specified timestamp (milliseconds) and linked to the specified database
-     *         and user. The resulting list is grouped by user, keeping the last created sitehistory entry per user.
-     */
-    @VisibleForTesting
-    @SuppressWarnings("unchecked")
-    List<SiteHistory> findSiteHistory(Integer siteId, long from) {
-
-        Query query = entityManager.get().createQuery(
-            "select distinct h from SiteHistory h " +
-                "where h.site.id = :siteId and h.timeCreated >= :from " +
-                "order by h.timeCreated"
-            );
-        query.setParameter("siteId", siteId);
-        query.setParameter("from", from);
-
-        List<SiteHistory> list = query.getResultList();
-
-        if (list.isEmpty()) {
-            return list;
-        }
-
-        Map<Integer, SiteHistory> map = new HashMap<Integer, SiteHistory>();
-        for (SiteHistory siteHistory : list) {
-            SiteHistory old = map.get(siteHistory.getUser().getId());
-            if (old == null || old.getTimeCreated() <= siteHistory.getTimeCreated()) {
-                map.put(siteHistory.getUser().getId(), siteHistory);
-            }
-        }
-        return new ArrayList<SiteHistory>(map.values());
     }
 }
