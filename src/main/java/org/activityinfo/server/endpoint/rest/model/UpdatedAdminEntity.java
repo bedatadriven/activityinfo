@@ -3,16 +3,18 @@ package org.activityinfo.server.endpoint.rest.model;
 import org.activityinfo.server.database.hibernate.entity.Bounds;
 
 public class UpdatedAdminEntity {
-    private int id;
+    private Integer id;
     private Integer parentId;
     private String name;
     private String code;
     private Bounds bounds;
+    private boolean deleted;
     
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
+
+    public void setId(Integer id) {
         this.id = id;
     }
     public Integer getParentId() {
@@ -39,7 +41,13 @@ public class UpdatedAdminEntity {
     public void setBounds(Bounds bounds) {
         this.bounds = bounds;
     }
-    
-    
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
     
 }

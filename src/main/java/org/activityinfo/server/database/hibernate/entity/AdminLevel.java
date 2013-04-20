@@ -53,6 +53,8 @@ public class AdminLevel implements java.io.Serializable {
     private Set<AdminEntity> entities = new HashSet<AdminEntity>(0);
     private Set<AdminLevel> childLevels = new HashSet<AdminLevel>(0);
     private Set<LocationType> boundLocationTypes = new HashSet<LocationType>(0);
+    private int version;
+    private boolean deleted;
 
     public AdminLevel() {
     }
@@ -151,4 +153,21 @@ public class AdminLevel implements java.io.Serializable {
     public void setChildLevels(Set<AdminLevel> childLevels) {
         this.childLevels = childLevels;
     }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 }

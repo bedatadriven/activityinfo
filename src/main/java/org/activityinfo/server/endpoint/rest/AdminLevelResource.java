@@ -23,12 +23,13 @@ package org.activityinfo.server.endpoint.rest;
  */
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -42,11 +43,14 @@ import javax.ws.rs.core.Response.Status;
 
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
+import org.activityinfo.server.database.hibernate.entity.AdminLevelVersion;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
+import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.rest.model.NewAdminEntity;
 import org.activityinfo.server.endpoint.rest.model.NewAdminLevel;
 import org.activityinfo.server.endpoint.rest.model.UpdatedAdminEntity;
 import org.activityinfo.server.endpoint.rest.model.UpdatedAdminLevel;
+import org.activityinfo.server.endpoint.rest.model.VersionMetadata;
 import org.activityinfo.server.util.blob.BlobNotFoundException;
 import org.activityinfo.server.util.blob.BlobService;
 import org.activityinfo.shared.auth.AuthenticatedUser;
@@ -56,10 +60,10 @@ import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.api.view.Viewable;
 
-public class AdminUnitLevelResource {
+public class AdminLevelResource {
 
     private static final Logger LOGGER = Logger
-        .getLogger(AdminUnitLevelResource.class.getName());
+        .getLogger(AdminLevelResource.class.getName());
 
     private Provider<EntityManager> entityManager;
     private AdminLevel level;
@@ -68,7 +72,7 @@ public class AdminUnitLevelResource {
     // TODO: create list of geoadmins per country
     private static final int SUPER_USER_ID = 3;
 
-    public AdminUnitLevelResource(Provider<EntityManager> entityManager,
+    public AdminLevelResource(Provider<EntityManager> entityManager,
         BlobService blobService, AdminLevel level) {
         super();
         this.entityManager = entityManager;
@@ -79,27 +83,13 @@ public class AdminUnitLevelResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Viewable get() {
-        return new Viewable("/resource/AdminUnitLevel.ftl", level);
+        return new Viewable("/resource/AdminLevel.ftl", level);
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@InjectParam AuthenticatedUser user,
-        UpdatedAdminLevel updatedLevel) {
-
-        assertAuthorized(user);
-
-        entityManager.get().getTransaction().begin();
-        AdminLevel level = entityManager.get().merge(this.level);
-        level.setName(updatedLevel.getName());
-
-        for (LocationType boundLocationType : level.getBoundLocationTypes()) {
-            boundLocationType.setName(updatedLevel.getName());
-        }
-
-        entityManager.get().getTransaction().commit();
-
-        return Response.ok().build();
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public AdminLevel getJson() {
+        return level;
     }
 
     private void assertAuthorized(AuthenticatedUser user) {
@@ -109,29 +99,81 @@ public class AdminUnitLevelResource {
     }
 
     @GET
-    @Path("/units")
+    @Path("/entities")
     @Produces(MediaType.APPLICATION_JSON)
-    public Set<AdminEntity> getUnits() {
-        return level.getEntities();
+    public List<AdminEntity> getEntities(@InjectParam EntityManager em) {
+        return em.createQuery("select e  from AdminEntity e where e.deleted = false and e.level = :level")
+            .setParameter("level", level)
+            .getResultList();
     }
 
     @PUT
-    @Path("/units")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUnits(@InjectParam AuthenticatedUser user,
-        List<UpdatedAdminEntity> units) {
+    public Response update(@InjectParam AuthenticatedUser user,
+        UpdatedAdminLevel updatedLevel) {
 
         assertAuthorized(user);
 
         EntityManager em = entityManager.get();
         em.getTransaction().begin();
-        for (UpdatedAdminEntity updatedEntity : units) {
-            AdminEntity entity = em.find(AdminEntity.class,
-                updatedEntity.getId());
-            entity.setName(updatedEntity.getName());
-            entity.setCode(updatedEntity.getCode());
-            entity.setBounds(updatedEntity.getBounds());
+        
+        AdminLevel level = entityManager.get().merge(this.level);
+
+        level.setName(updatedLevel.getName());
+
+        for (LocationType boundLocationType : level.getBoundLocationTypes()) {
+            boundLocationType.setName(updatedLevel.getName());
         }
+
+        if (updatedLevel.getEntities() != null) {
+            for (UpdatedAdminEntity updatedEntity : updatedLevel.getEntities()) {
+                AdminEntity entity;
+                if (updatedEntity.getId() != null && updatedEntity.getId() > 0) {
+                    // update existing entity
+                    entity = em.find(AdminEntity.class, updatedEntity.getId());
+                    if (updatedEntity.isDeleted()) {
+                        entity.setDeleted(true);
+                    } else {
+                        entity.setName(updatedEntity.getName());
+                        entity.setCode(updatedEntity.getCode());
+                        entity.setBounds(updatedEntity.getBounds());
+                    }
+                } else {
+                    // create new entity
+                    entity = new AdminEntity();
+                    entity.setLevel(level);
+                    entity.setName(updatedEntity.getName());
+                    entity.setCode(updatedEntity.getCode());
+                    entity.setBounds(updatedEntity.getBounds());
+                    if (updatedEntity.getParentId() != null) {
+                        entity.setParent(em.getReference(AdminEntity.class, updatedEntity.getParentId()));
+                    }
+                    entity.setDeleted(updatedEntity.isDeleted());
+                    em.persist(entity);
+                }
+            }
+        }
+        
+        int newVersion = level.getVersion() + 1;
+        level.setVersion(newVersion);
+        
+        AdminLevelVersion version = new AdminLevelVersion();
+        version.setLevel(level);
+        version.setVersion(newVersion);
+        version.setUser(em.getReference(User.class, user.getId()));
+        version.setTimeCreated(new Date().getTime());
+
+        VersionMetadata metadata = updatedLevel.getVersionMetadata();
+        if (metadata != null) {
+            version.setSourceUrl(metadata.getSourceUrl());
+            version.setSourceFilename(metadata.getSourceFilename());
+            version.setSourceHash(metadata.getSourceMD5());
+            version.setMessage(metadata.getMessage());
+            version.setSourceMetadata(metadata.getSourceMetadata());
+        }
+
+        em.persist(version);
+
         em.getTransaction().commit();
 
         return Response.ok().build();
@@ -173,6 +215,7 @@ public class AdminUnitLevelResource {
 
         EntityManager em = entityManager.get();
         em.getTransaction().begin();
+        em.setFlushMode(FlushModeType.COMMIT);
 
         AdminLevel child = new AdminLevel();
         child.setCountry(level.getCountry());

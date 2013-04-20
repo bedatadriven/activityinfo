@@ -24,14 +24,25 @@ package org.activityinfo.server.endpoint.rest;
 
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.Country;
+import org.activityinfo.server.database.hibernate.entity.LocationType;
+import org.activityinfo.server.endpoint.rest.model.NewAdminEntity;
+import org.activityinfo.server.endpoint.rest.model.NewAdminLevel;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
+import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("/country")
@@ -64,6 +75,47 @@ public class CountryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Set<AdminLevel> getAdminLevels() {
         return country.getAdminLevels();
+    }
+
+    @POST
+    @Path("adminLevels")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postNewLevel(
+        @InjectParam AuthenticatedUser user,
+        @InjectParam EntityManager em,
+        NewAdminLevel newLevel) {
+
+        // assertAuthorized(user);
+
+        em.getTransaction().begin();
+        em.setFlushMode(FlushModeType.COMMIT);
+
+        AdminLevel level = new AdminLevel();
+        level.setCountry(country);
+        level.setName(newLevel.getName());
+        level.setVersion(1);
+        em.persist(level);
+
+        for (NewAdminEntity newEntity : newLevel.getEntities()) {
+            AdminEntity entity = new AdminEntity();
+            entity.setName(newEntity.getName());
+            entity.setLevel(level);
+            entity.setCode(newEntity.getCode());
+            entity.setBounds(newEntity.getBounds());
+            level.getEntities().add(entity);
+            em.persist(entity);
+        }
+
+        // create bound location type
+        LocationType boundType = new LocationType();
+        boundType.setBoundAdminLevel(level);
+        boundType.setCountry(level.getCountry());
+        boundType.setName(level.getName());
+        em.persist(boundType);
+
+        em.getTransaction().commit();
+
+        return Response.ok().build();
     }
 
 }

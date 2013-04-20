@@ -5,6 +5,7 @@ org.activityinfo.server.database.hibernate.entity.Activity
 org.activityinfo.server.database.hibernate.entity.Partner
 org.activityinfo.server.database.hibernate.entity.LockedPeriod
 org.activityinfo.server.database.hibernate.entity.AdminLevel
+org.activityinfo.server.database.hibernate.entity.AdminLevelVersion
 org.activityinfo.server.database.hibernate.entity.Project
 org.activityinfo.server.database.hibernate.entity.ReportSubscription
 org.activityinfo.server.database.hibernate.entity.Attribute

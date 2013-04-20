@@ -63,9 +63,9 @@ public class RootResource {
         this.blobService = blobService;
     }
 
-    @Path("/adminUnit/{id}")
-    public AdminUnitResource getAdminUnit(@PathParam("id") int id) {
-        return new AdminUnitResource(entityManager.get().find(
+    @Path("/adminEntity/{id}")
+    public AdminEntityResource getAdminEntity(@PathParam("id") int id) {
+        return new AdminEntityResource(entityManager.get().find(
             AdminEntity.class, id));
     }
 
@@ -120,9 +120,9 @@ public class RootResource {
         return db;
     }
 
-    @Path("/adminUnitLevel/{id}")
-    public AdminUnitLevelResource getAdminUnitLevel(@PathParam("id") int id) {
-        return new AdminUnitLevelResource(entityManager, blobService, entityManager.get().find(
+    @Path("/adminLevel/{id}")
+    public AdminLevelResource getAdminLevel(@PathParam("id") int id) {
+        return new AdminLevelResource(entityManager, blobService, entityManager.get().find(
             AdminLevel.class, id));
     }
     
