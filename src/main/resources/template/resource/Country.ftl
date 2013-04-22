@@ -34,7 +34,7 @@
 <#macro showLevels children>
 	<ul>
 	<#list children as child>
-	<li><a href="/resources/adminUnitLevel/${child.id?c}">${child.name}</a></li>
+	<li><a href="/resources/adminLevel/${child.id?c}">${child.name}</a></li>
 	</#list>
 	</ul>
 </#macro>

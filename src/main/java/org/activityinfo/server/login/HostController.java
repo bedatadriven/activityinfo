@@ -22,6 +22,8 @@ package org.activityinfo.server.login;
  * #L%
  */
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -41,6 +43,7 @@ import org.activityinfo.server.util.logging.LogException;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;
+import com.sun.jersey.api.view.Viewable;
 
 @Path(HostController.ENDPOINT)
 public class HostController {
@@ -87,6 +90,19 @@ public class HostController {
             .type(MediaType.TEXT_HTML)
             .cacheControl(CacheControl.valueOf("no-cache"))
             .build();
+    }
+    
+    /**
+     * 
+     * @return a simple error page indicating that the GWT app does not support
+     *  the user's browser. This is necessary because user-agent based selection
+     *  is done server-side when the javascript is requested, so all we can do 
+     *  is redirect the user to this page.
+     */
+    @GET
+    @Path("/unsupportedBrowser")
+    public Viewable getUnsupportedBrowserMessage() {
+        return new Viewable("/page/UnsupportedBrowser.ftl", new HashMap());
     }
 
     private boolean checkAppCacheEnabled(HttpServletRequest req) {

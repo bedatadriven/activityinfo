@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.shared.command.Filter;
@@ -17,11 +19,13 @@ import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import com.sun.jersey.api.json.JSONWithPadding;
 
 public class SitesResources {
 
@@ -33,7 +37,7 @@ public class SitesResources {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String query(@QueryParam("activity") List<Integer> activityIds)
+    public String query(@QueryParam("activity") List<Integer> activityIds, @QueryParam("format") String format) 
         throws IOException {
 
         Filter filter = new Filter();
@@ -41,13 +45,50 @@ public class SitesResources {
         List<SiteDTO> sites = dispatcher.execute(new GetSites(filter))
             .getData();
 
-
-        JsonFactory jfactory = new JsonFactory();
-
         StringWriter writer = new StringWriter();
+        JsonGenerator json = createJsonFactory(writer);
+        
+        writeJson(sites, json);
+       
+        return writer.toString();
+    }
+
+    @GET
+    @Path("/points")
+    public Response queryPoints(
+        @QueryParam("activity") List<Integer> activityIds,
+        @QueryParam("callback") String callback) throws JsonGenerationException, IOException {
+
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, activityIds);
+        List<SiteDTO> sites = dispatcher.execute(new GetSites(filter))
+            .getData();
+        
+        StringWriter writer = new StringWriter();
+        JsonGenerator json = createJsonFactory(writer);
+        writeGeoJson(sites, json);
+       
+        if(Strings.isNullOrEmpty(callback)) {
+            return Response.ok(writer.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } else {
+            return Response
+                .ok(callback + "(" + writer.toString() + ");")
+                .type("application/javascript; charset=UTF-8")
+                .build();
+        }
+    }
+
+    
+    private JsonGenerator createJsonFactory(StringWriter writer) throws IOException {
+        JsonFactory jfactory = new JsonFactory();
         JsonGenerator json = jfactory.createJsonGenerator(writer);
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         json.setPrettyPrinter(prettyPrinter);
+        return json;
+    }
+    
+    private void writeJson(List<SiteDTO> sites, JsonGenerator json)
+        throws IOException, JsonGenerationException {
         json.writeStartArray();
 
         for (SiteDTO site : sites) {
@@ -56,12 +97,9 @@ public class SitesResources {
             json.writeNumber(site.getId());
 
             // write the location as a separate object
-            json.writeFieldName("location");
-            json.writeStartObject();
-            json.writeFieldName("id");
-            json.writeNumber(site.getLocationId());
-            json.writeFieldName("name");
-            json.writeString(site.getLocationName());
+            json.writeObjectFieldStart("location");
+            json.writeNumberField("id", site.getLocationId());
+            json.writeStringField("name", site.getLocationName());
 
             if (site.hasLatLong()) {
                 json.writeFieldName("latitude");
@@ -71,12 +109,9 @@ public class SitesResources {
             }
             json.writeEndObject();
 
-            json.writeFieldName("partner");
-            json.writeStartObject();
-            json.writeFieldName("id");
-            json.writeNumber(site.getPartnerId());
-            json.writeFieldName("name");
-            json.writeString(site.getPartnerName());
+            json.writeObjectFieldStart("partner");
+            json.writeNumberField("id", site.getPartnerId());
+            json.writeStringField("name", site.getPartnerName());
             json.writeEndObject();
 
             // write attributes as a series of ids
@@ -100,8 +135,40 @@ public class SitesResources {
         }
         json.writeEndArray();
         json.close();
+    }
+    
+    private void writeGeoJson(List<SiteDTO> sites, JsonGenerator json) throws JsonGenerationException, IOException {
+        json.writeStartArray();
 
-        return writer.toString();
+        for (SiteDTO site : sites) {
+            if(site.hasLatLong()) {
+                json.writeStartObject();
+                json.writeStringField("type", "Feature");
+                json.writeNumberField("id", site.getId());
+                
+                // write out the properties object
+                json.writeObjectFieldStart("properties");
+                json.writeStringField("locationName", site.getLocationName());
+                json.writeStringField("partnerName", site.getPartnerName());         
+                if(!Strings.isNullOrEmpty(site.getComments())) {
+                    json.writeStringField("comments", site.getComments());
+                }
+                json.writeEndObject();
+    
+                // write out the geometry object
+                json.writeObjectFieldStart("geometry");
+                json.writeStringField("type", "Point");
+                json.writeArrayFieldStart("coordinates");
+                json.writeNumber(site.getX());
+                json.writeNumber(site.getY());
+                json.writeEndArray();
+                json.writeEndObject();
+
+                json.writeEndObject();
+            }
+        }
+        json.writeEndArray();
+        json.close();   
     }
 
     private Set<Integer> getAttributeIds(SiteDTO site) {
@@ -118,6 +185,4 @@ public class SitesResources {
         }
         return ids;
     }
-
-
 }

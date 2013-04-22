@@ -66,6 +66,9 @@ class AttributeGroupForm extends AbstractDesignForm {
         mandatoryCB.setFieldLabel(I18N.CONSTANTS.mandatory());
         binding.addFieldBinding(new FieldBinding(mandatoryCB, "mandatory"));
         this.add(mandatoryCB);
+
+        hideFieldWhenNull(idField);
+
     }
 
     @Override

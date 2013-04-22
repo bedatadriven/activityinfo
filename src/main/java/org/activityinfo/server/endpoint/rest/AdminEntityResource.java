@@ -22,14 +22,31 @@ package org.activityinfo.server.endpoint.rest;
  * #L%
  */
 
-public class AdminUnit {
-    private String id;
-    private String name;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-    public AdminUnit(String id, String name) {
+import org.activityinfo.server.database.hibernate.entity.AdminEntity;
+import org.activityinfo.server.endpoint.refine.AdminEntityPreview;
+
+import com.sun.jersey.api.view.Viewable;
+
+@Path("/adminUnit")
+public class AdminEntityResource {
+
+    private AdminEntity unit;
+
+    public AdminEntityResource(AdminEntity unit) {
         super();
-        this.id = id;
-        this.name = name;
+        this.unit = unit;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable get() {
+        return new Viewable("/resource/AdminEntity.ftl", new AdminEntityPreview(
+            unit));
     }
 
 }

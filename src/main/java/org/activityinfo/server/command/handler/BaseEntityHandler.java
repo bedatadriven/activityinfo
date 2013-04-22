@@ -60,7 +60,7 @@ public class BaseEntityHandler {
     protected void updateIndicatorProperties(Indicator indicator,
         Map<String, Object> changes) {
         if (changes.containsKey("name")) {
-            indicator.setName((String) changes.get("name"));
+            indicator.setName(trim(changes.get("name")));
         }
 
         if (changes.containsKey("aggregation")) {
@@ -68,19 +68,19 @@ public class BaseEntityHandler {
         }
 
         if (changes.containsKey("category")) {
-            indicator.setCategory(((String) changes.get("category")).trim());
+            indicator.setCategory(trim(changes.get("category")));
         }
 
         if (changes.containsKey("listHeader")) {
-            indicator.setListHeader((String) changes.get("listHeader"));
+            indicator.setListHeader(trim(changes.get("listHeader")));
         }
 
         if (changes.containsKey("description")) {
-            indicator.setDescription((String) changes.get("description"));
+            indicator.setDescription(trim(changes.get("description")));
         }
 
         if (changes.containsKey("units")) {
-            indicator.setUnits((String) changes.get("units"));
+            indicator.setUnits(trim(changes.get("units")));
         }
 
         if (changes.containsKey("sortOrder")) {
@@ -97,7 +97,7 @@ public class BaseEntityHandler {
     protected void updateAttributeProperties(Map<String, Object> changes,
         Attribute attribute) {
         if (changes.containsKey("name")) {
-            attribute.setName((String) changes.get("name"));
+            attribute.setName(trim(changes.get("name")));
         }
         if (changes.containsKey("sortOrder")) {
             attribute.setSortOrder((Integer) changes.get("sortOrder"));
@@ -108,7 +108,7 @@ public class BaseEntityHandler {
     protected void updateAttributeGroupProperties(AttributeGroup group,
         Map<String, Object> changes) {
         if (changes.containsKey("name")) {
-            group.setName((String) changes.get("name"));
+            group.setName(trim(changes.get("name")));
         }
 
         if (changes.containsKey("multipleAllowed")) {
@@ -125,7 +125,7 @@ public class BaseEntityHandler {
     protected void updateLockedPeriodProperties(LockedPeriod lockedPeriod,
         Map<String, Object> changes) {
         if (changes.containsKey("name")) {
-            lockedPeriod.setName((String) changes.get("name"));
+            lockedPeriod.setName(trim(changes.get("name")));
         }
         if (changes.containsKey("toDate")) {
             lockedPeriod.setToDate((LocalDate) changes.get("toDate"));
@@ -144,7 +144,7 @@ public class BaseEntityHandler {
     protected void updateActivityProperties(Activity activity,
         Map<String, Object> changes) {
         if (changes.containsKey("name")) {
-            activity.setName((String) changes.get("name"));
+            activity.setName(trim(changes.get("name")));
         }
 
         if (changes.containsKey("locationType")) {
@@ -154,11 +154,11 @@ public class BaseEntityHandler {
         }
 
         if (changes.containsKey("category")) {
-            activity.setCategory((String) changes.get("category"));
+            activity.setCategory(trim(changes.get("category")));
         }
 
         if (changes.containsKey("mapIcon")) {
-            activity.setMapIcon((String) changes.get("mapIcon"));
+            activity.setMapIcon(trim(changes.get("mapIcon")));
         }
 
         if (changes.containsKey("reportingFrequency")) {
@@ -173,10 +173,18 @@ public class BaseEntityHandler {
         activity.getDatabase().setLastSchemaUpdate(new Date());
     }
 
+    private String trim(Object value) {
+        if(value instanceof String) {
+            return ((String)value).toString();
+        } else {
+            return null;
+        }
+    }
+
     protected void updateTargetProperties(Target target,
         Map<String, Object> changes) {
         if (changes.containsKey("name")) {
-            target.setName((String) changes.get("name"));
+            target.setName(trim(changes.get("name")));
         }
 
         if (changes.containsKey("date1")) {

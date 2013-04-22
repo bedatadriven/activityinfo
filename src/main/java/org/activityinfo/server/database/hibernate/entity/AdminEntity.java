@@ -39,6 +39,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
@@ -59,6 +60,7 @@ public class AdminEntity implements java.io.Serializable {
     private String soundex;
     private String code;
     private Bounds bounds;
+    private boolean deleted;
 
     private Set<Location> locations = new HashSet<Location>(0);
     private Set<AdminEntity> children = new HashSet<AdminEntity>(0);
@@ -118,6 +120,12 @@ public class AdminEntity implements java.io.Serializable {
 
     public void setParent(AdminEntity parent) {
         this.parent = parent;
+    }
+
+    @JsonProperty
+    @Transient
+    public Integer getParentId() {
+        return parent == null ? null : parent.getId();
     }
 
     @JsonProperty
@@ -185,6 +193,14 @@ public class AdminEntity implements java.io.Serializable {
 
     public void setTargets(Set<Target> targets) {
         this.targets = targets;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

@@ -38,7 +38,7 @@ class AttributeForm extends AbstractDesignForm {
 
         binding = new FormBinding(this);
 
-        NumberField idField = new NumberField();
+        final NumberField idField = new NumberField();
         idField.setFieldLabel("ID");
         idField.setReadOnly(true);
         binding.addFieldBinding(new FieldBinding(idField, "id"));
@@ -50,6 +50,9 @@ class AttributeForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
 
         add(nameField);
+
+        hideFieldWhenNull(idField);
+
 
     }
 

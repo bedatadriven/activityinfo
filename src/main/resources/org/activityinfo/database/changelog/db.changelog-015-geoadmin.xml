@@ -24,13 +24,6 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-
-  <changeSet author="alex" id="015-01">
-    <comment>
-      Removes AllowAdd column, was never used
-    </comment>
-    <dropColumn tableName="adminlevel" columnName="allowadd"/>
-  </changeSet>
   
   <changeSet author="alex" id="015-02">
     <comment>
@@ -44,7 +37,79 @@
       ALTER TABLE locationtype MODIFY locationtypeid INTEGER NOT NULL AUTO_INCREMENT;
       INSERT INTO locationtype (locationtypeid, name, reuse, boundadminlevelid, countryid) VALUES (0, 'Zone de Sante', 0, 7, 1);
     </sql>
+  </changeSet>
 
+  <changeSet author="alex" id="015-03">
+    <addColumn tableName="adminlevel">
+      <column name="version" type="int" defaultValueNumeric="1">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="alex" id="015-04">
+    <createTable tableName="adminlevelversion">
+      <column name="id" type="int" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" />
+      </column>
+      <column name="version" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="adminlevelid" type="int">
+        <constraints nullable="false" foreignKeyName="fk_adminlevelversion"
+          references="adminlevel(adminlevelid)" />
+      </column>
+      <column name="userid" type="int">
+        <constraints nullable="false" foreignKeyName="fk_adminlevelversion_userlogin"
+          references="userlogin(userid)" />
+      </column>
+      <column name="timecreated" type="bigint"
+        defaultValueNumeric="0">
+        <constraints nullable="false" />
+      </column>
+      <column name="json" type="longtext" />
+    </createTable>
+  </changeSet>
+
+  <changeSet author="alex" id="015-05">
+    <addColumn tableName="adminlevel">
+      <column name="deleted" type="boolean" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+    <addColumn tableName="adminentity">
+      <column name="deleted" type="boolean" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet author="alex" id="015-06">
+    <addColumn tableName="adminlevelversion">
+      <column name="sourceMetadata" type="longtext"/>
+    </addColumn>
+    <addColumn tableName="adminlevelversion">
+      <column name="sourceFilename" type="longtext"/>
+    </addColumn>
+    <addColumn tableName="adminlevelversion">
+      <column name="sourceUrl" type="longtext"/>
+    </addColumn>
+    <addColumn tableName="adminlevelversion">
+      <column name="sourceHash" type="char(32)"/>
+    </addColumn>
+    <addColumn tableName="adminlevelversion">
+      <column name="message" type="longtext"/>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet author="alex" id="015-07">
+    <addForeignKeyConstraint 
+      constraintName="fk_entity_parent" 
+      baseTableName="adminentity" 
+      baseColumnNames="adminentityparentid" 
+      referencedTableName="adminentity" 
+      referencedColumnNames="adminentityid"/>
+ 
   </changeSet>
 
 </databaseChangeLog>

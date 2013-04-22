@@ -8,12 +8,12 @@
 <body>
 	<h1>${entity.name}</h1>
 	
-	<p><a href="/resources/adminUnitLevel/${entity.level.id?c}">${entity.level.name}</a> in <a href="/resources/country/${entity.level.country.codeISO}">${entity.level.country.name}</a></p>
+	<p><a href="/resources/adminLevel/${entity.level.id?c}">${entity.level.name}</a> in <a href="/resources/country/${entity.level.country.codeISO}">${entity.level.country.name}</a></p>
 	<#if parents?has_content>
 	<h2>Parents</h2>
 	<ul>
 		<#list parents as parent>
-		<li>${parent.level.name}: <a href="/resources/adminUnit/${parent.id?c}">${parent.name}</a></li>
+		<li>${parent.level.name}: <a href="/resources/adminEntity/${parent.id?c}">${parent.name}</a></li>
 		</#list>
 	</ul>
 	</#if>
@@ -24,7 +24,7 @@
 		<ul>
 			<#list childLevel.entities?sort_by("name") as childEntity>
 			<#if childEntity.parent.id == entity.id>
-				<li><a href="/resources/adminUnit/${childEntity.id?c}">${childEntity.name}</a></li>
+				<li><a href="/resources/adminEntity/${childEntity.id?c}">${childEntity.name}</a></li>
 			</#if>
 			</#list>
 		</ul> 

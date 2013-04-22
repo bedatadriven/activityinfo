@@ -52,7 +52,7 @@ public final class TileMath {
     private static final double FORTPI = 0.78539816339744833;
     private static final double DEGREES_PER_RADIAN = 57.2957795;
 
-    private static final int TILE_SIZE = 256;
+    public static final int TILE_SIZE = 256;
 
     private TileMath() {
     }
@@ -115,6 +115,16 @@ public final class TileMath {
         return new AiLatLng(lat, lng);
     }
 
+    public static Extents tileBounds(int zoom, int x, int y) {
+        Point upperLeft = pointForTile(new Tile(x, y));
+        Point lowerRight = pointForTile(new Tile(x + 1, y + 1));
+        AiLatLng northWest = inverse(upperLeft, zoom);
+        AiLatLng southEast = inverse(lowerRight, zoom);
+        return new Extents(
+            southEast.getLat(), northWest.getLat(),
+            northWest.getLng(), southEast.getLng());
+    }
+
     /**
      * 
      * Returns the maximum zoom level at which the given extents will fit inside
@@ -167,5 +177,9 @@ public final class TileMath {
      */
     public static Tile tileForPoint(Point px) {
         return new Tile(px.getX() / TILE_SIZE, px.getY() / TILE_SIZE);
+    }
+
+    public static Point pointForTile(Tile tile) {
+        return new Point(tile.getX() * TILE_SIZE, tile.getY() * TILE_SIZE);
     }
 }

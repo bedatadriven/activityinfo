@@ -65,6 +65,10 @@ public class TargetValueId implements java.io.Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof TargetValueId)) {
+            return false;
+        }
+
         TargetValueId i = (TargetValueId) obj;
         return Objects.equal(i.getTargetId(), this.getTargetId())
             && Objects.equal(i.getIndicatorId(), this.getIndicatorId());

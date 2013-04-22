@@ -102,6 +102,9 @@ class IndicatorForm extends AbstractDesignForm {
         mandatoryCB.setFieldLabel(constants.mandatory());
         binding.addFieldBinding(new FieldBinding(mandatoryCB, "mandatory"));
         this.add(mandatoryCB);
+
+        hideFieldWhenNull(idField);
+
     }
 
     @Override
