@@ -9,11 +9,16 @@ public class UpdatedAdminEntity {
     private String code;
     private Bounds bounds;
     private boolean deleted;
+    private String geometryText;
     
     public Integer getId() {
         return id;
     }
 
+    public boolean isNew() {
+        return id == null || id == 0;
+    }
+    
     public void setId(Integer id) {
         this.id = id;
     }
@@ -48,6 +53,14 @@ public class UpdatedAdminEntity {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getGeometryText() {
+        return geometryText;
+    }
+
+    public void setGeometryText(String geometryText) {
+        this.geometryText = geometryText;
     }
     
 }

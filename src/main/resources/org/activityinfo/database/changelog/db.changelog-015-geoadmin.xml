@@ -109,7 +109,11 @@
       baseColumnNames="adminentityparentid" 
       referencedTableName="adminentity" 
       referencedColumnNames="adminentityid"/>
- 
   </changeSet>
 
+  <changeSet author="alex" id="015-08">
+    <addColumn tableName="adminentity">
+      <column name="geometry" type="geometry"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

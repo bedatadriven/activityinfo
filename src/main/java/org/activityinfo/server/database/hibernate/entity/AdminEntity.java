@@ -44,6 +44,9 @@ import javax.persistence.Transient;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.hibernate.annotations.Type;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * @author Alex Bertram
@@ -65,6 +68,8 @@ public class AdminEntity implements java.io.Serializable {
     private Set<Location> locations = new HashSet<Location>(0);
     private Set<AdminEntity> children = new HashSet<AdminEntity>(0);
     private Set<Target> targets = new HashSet<Target>(0);
+    
+    private Geometry geometry;
 
     public AdminEntity() {
     }
@@ -201,6 +206,15 @@ public class AdminEntity implements java.io.Serializable {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+    
+    @Type(type="org.hibernatespatial.GeometryUserType")
+    public Geometry getGeometry() {
+        return geometry;
+    }
+    
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 
     @Override

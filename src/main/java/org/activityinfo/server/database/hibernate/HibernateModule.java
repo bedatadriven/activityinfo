@@ -140,5 +140,4 @@ public class HibernateModule extends ServletModule {
         EntityManager entityManager) {
         return (HibernateEntityManager) entityManager;
     }
-
 }

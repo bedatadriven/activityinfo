@@ -154,6 +154,11 @@
       <version>3.4.0.GA</version>
     </dependency>
     <dependency>
+        <groupId>org.hibernatespatial</groupId>
+        <artifactId>hibernate-spatial-mysql</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
       <version>2.0.2-bdd</version>
@@ -342,6 +347,22 @@
       <version>${jersey.version}</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>OSGEO GeoTools repo</id>
+      <url>http://download.osgeo.org/webdav/geotools</url>
+    </repository>
+    <repository>
+      <id>Hibernate Spatial repo</id>
+      <url>http://www.hibernatespatial.org/repository</url>
+    </repository>
+    <!-- add JBOSS repository for easy access to Hibernate libraries -->
+    <repository>
+      <id>JBOSS</id>
+      <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+    </repository>
+  </repositories>
 
   <build>
     <resources>

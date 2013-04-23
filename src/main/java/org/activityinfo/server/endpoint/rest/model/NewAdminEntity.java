@@ -8,6 +8,7 @@ public class NewAdminEntity {
     private String code;
     private Bounds bounds;
     private Integer parentId;
+    private String geometryText;
    
     
     public Integer getParentId() {
@@ -33,6 +34,12 @@ public class NewAdminEntity {
     }
     public void setBounds(Bounds bounds) {
         this.bounds = bounds;
+    }
+    public String getGeometryText() {
+        return geometryText;
+    }
+    public void setGeometryText(String geometryText) {
+        this.geometryText = geometryText;
     }
     
     
