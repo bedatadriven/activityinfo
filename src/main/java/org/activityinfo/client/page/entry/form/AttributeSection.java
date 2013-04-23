@@ -35,7 +35,7 @@ import com.google.common.collect.Lists;
 
 public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
 
-    private List<AttributeField> groups = Lists.newArrayList();
+    private List<AttributeField> fields = Lists.newArrayList();
 
     public AttributeSection(ActivityDTO activity) {
 
@@ -47,9 +47,7 @@ public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
 
                 AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(attributeGroup);
                 boxGroup.setStyleAttribute("marginBottom", "10px");
-                boxGroup.setStyleAttribute("width", "100%"); // if the width is
-                                                             // specified in px,
-                                                             // IE6 flips out
+                boxGroup.setStyleAttribute("width", "100%"); // if the width is specified in px, IE6 flips out
                 add(boxGroup);
                 field = boxGroup;
 
@@ -59,31 +57,30 @@ public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
                 field = combo;
             }
 
-            field.setMandatory(attributeGroup.isMandatory());
-            groups.add(field);
+            fields.add(field);
         }
     }
 
     @Override
     public boolean validate() {
         boolean valid = true;
-        for (AttributeField group : groups) {
-            valid &= group.validate();
+        for (AttributeField field : fields) {
+            valid &= field.validate();
         }
         return valid;
     }
 
     @Override
     public void updateModel(SiteDTO site) {
-        for (AttributeField group : groups) {
-            group.updateModel(site);
+        for (AttributeField field : fields) {
+            field.updateModel(site);
         }
     }
 
     @Override
     public void updateForm(SiteDTO m) {
-        for (AttributeField group : groups) {
-            group.updateForm(m);
+        for (AttributeField field : fields) {
+            field.updateForm(m);
         }
     }
 }

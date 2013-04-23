@@ -212,8 +212,8 @@ public class SiteDialog extends Window {
         for (FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
             if (!section.getSection().validate()) {
                 navigationListView.getSelectionModel().select(section, false);
-                MessageBox.alert(getHeading(),
-                    I18N.CONSTANTS.pleaseCompleteForm(), null);
+                section.getSection().validate(); // validate after render to enable validation-error styling
+                MessageBox.alert(getHeading(), I18N.CONSTANTS.pleaseCompleteForm(), null);
                 return false;
             }
         }

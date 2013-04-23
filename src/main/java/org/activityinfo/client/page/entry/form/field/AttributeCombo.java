@@ -33,13 +33,12 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 public class AttributeCombo extends ComboBox<AttributeDTO> implements
     AttributeField {
 
-    private boolean mandatory = false;
-
     public AttributeCombo(AttributeGroupDTO attributeGroup) {
         super();
         String name = attributeGroup.getName();
         if (attributeGroup.isMandatory()) {
             name += "*";
+            this.setAllowBlank(false);
         }
         this.setFieldLabel(Format.htmlEncode(name));
         this.setDisplayField("name");
@@ -71,15 +70,5 @@ public class AttributeCombo extends ComboBox<AttributeDTO> implements
             site.setAttributeValue(attribute.getId(),
                 selected != null && selected.getId() == attribute.getId());
         }
-    }
-
-    @Override
-    public boolean validate() {
-        return !mandatory || getValue() != null;
-    }
-
-    @Override
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
     }
 }

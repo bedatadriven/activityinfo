@@ -32,24 +32,35 @@ import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.common.collect.Lists;
 
 public class AttributeCheckBoxGroup extends CheckBoxGroup implements AttributeField {
-    private boolean mandatory = false;
-    private List<CheckBox> checkBoxes;
+    private List<CheckBox> checkBoxes = Lists.newArrayList();
 
     public AttributeCheckBoxGroup(AttributeGroupDTO group) {
         assert group != null;
         String name = group.getName();
         if (group.isMandatory()) {
             name += "*";
+            this.setValidator(new Validator() {
+                @Override
+                public String validate(Field<?> field, String value) {
+                    for (CheckBox box : checkBoxes) {
+                        // return null (== no validation error) if at least one checkbox has been ticked
+                        if (Boolean.TRUE.equals(box.getValue())) {
+                            return null;
+                        }
+                    }
+                    return "invalid";
+                }
+            });
         }
         this.setFieldLabel(Format.htmlEncode(name));
         this.setOrientation(Orientation.VERTICAL);
 
-        checkBoxes = Lists.newArrayList();
         for (AttributeDTO attrib : group.getAttributes()) {
-
             CheckBox box = new CheckBox();
             box.setBoxLabel(attrib.getName());
             box.setName(attrib.getPropertyName());
@@ -71,25 +82,5 @@ public class AttributeCheckBoxGroup extends CheckBoxGroup implements AttributeFi
         for (CheckBox checkBox : checkBoxes) {
             site.set(checkBox.getName(), checkBox.getValue());
         }
-    }
-
-    @Override
-    public boolean validate() {
-        boolean result = true;
-        if (mandatory) {
-            boolean hasValue = false;
-            for (CheckBox box : checkBoxes) {
-                if (Boolean.TRUE.equals(box.getValue())) {
-                    hasValue = true;
-                }
-            }
-            result = hasValue;
-        }
-        return result;
-    }
-
-    @Override
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
     }
 }
