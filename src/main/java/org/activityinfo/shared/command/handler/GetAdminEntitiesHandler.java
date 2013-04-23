@@ -54,7 +54,7 @@ public class GetAdminEntitiesHandler implements
                 "AdminEntity.adminEntityParentId",
                 "x1", "y1", "x2", "y2")
                 .from(Tables.ADMIN_ENTITY, "AdminEntity")
-                .whereTrue("not adminentity.deleted");
+                .whereTrue("not AdminEntity.deleted");
 
         if (CollectionUtil.isNotEmpty(cmd.getCountryIds())) {
             query.leftJoin(Tables.ADMIN_LEVEL, "AdminLevel").on(
