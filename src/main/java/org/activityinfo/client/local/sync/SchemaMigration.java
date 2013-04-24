@@ -51,7 +51,10 @@ public class SchemaMigration {
         "CREATE INDEX IF NOT EXISTS location_link on locationadminlink (locationid)",
         "CREATE INDEX IF NOT EXISTS location_entity on locationadminlink (adminentityid)",
         "ALTER TABLE indicator ADD COLUMN mandatory INT",
-        "ALTER TABLE attributeGroup ADD COLUMN mandatory INT"
+        "ALTER TABLE attributeGroup ADD COLUMN mandatory INT",
+        "ALTER TABLE adminentity ADD COLUMN deleted INT",
+        "ALTER TABLE adminlevel ADD COLUMN deleted INT"
+
     };
 
     @Inject
