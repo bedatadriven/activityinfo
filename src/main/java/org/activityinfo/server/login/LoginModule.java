@@ -48,10 +48,15 @@ public class LoginModule extends ServletModule {
         filter("/login*").through(GuiceContainer.class);
         filter("/unsupportedBrowser").through(GuiceContainer.class);
         
-        filterContainer(initParams, HostController.class,
-            LoginController.class, ConfirmInviteController.class,
-            LogoutController.class, ResetPasswordController.class,
-            ChangePasswordController.class);
+        filterContainer(initParams,
+            HostController.class,
+            LoginController.class,
+            LogoutController.class,
+            ConfirmInviteController.class,
+            ResetPasswordController.class,
+            ChangePasswordController.class,
+            SignUpController.class,
+            SignUpConfirmationController.class);
     }
 
     private void filterContainer(Map<String, String> params,

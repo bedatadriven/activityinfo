@@ -27,6 +27,6 @@ votre adresse et connecter au système, visitez le lien suivante:
 
 http://www.activityinfo.org/confirm?${newUser.changePasswordKey}
 
-Best regards,
+Cordialement,
 
-L'équipe ActivityInfo	
+L'équipe ActivityInfo

@@ -23,30 +23,30 @@
 
 <dataset>
   <userLogin userId="1" name="Alex" email="user1@user.com"
-    locale="fr" newUser="1" emailnotification="0" />
+    locale="fr" organization="" jobtitle="" emailnotification="0" />
   <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org"
-    locale="fr" newUser="1" emailnotification="0" />
+    locale="fr" organization="" jobtitle="" emailnotification="0" />
 
   <reportTemplate reportTemplateId="1" ownerUserId="1"
     visibility="1" title="Report 1"
     XML="
-		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
-			&lt;title&gt;Report 1&lt;/title&gt;
-		&lt;/report&gt;" />
+        &lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
+            &lt;title&gt;Report 1&lt;/title&gt;
+        &lt;/report&gt;" />
 
   <reportTemplate reportTemplateId="2" ownerUserId="2"
     visibility="1" title="Report 1"
     XML="
-		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
-			&lt;title&gt;Report 1&lt;/title&gt;
-		&lt;/report&gt;" />
+        &lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
+            &lt;title&gt;Report 1&lt;/title&gt;
+        &lt;/report&gt;" />
 
   <reportTemplate reportTemplateId="3" ownerUserId="1"
     visibility="0" title="Report 3"
     XML="
-		&lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
-			&lt;title&gt;Report 3&lt;/title&gt;
-		&lt;/report&gt;" />
+        &lt;report frequency=&quot;Monthly&quot; day=&quot;28&quot;&gt;
+            &lt;title&gt;Report 3&lt;/title&gt;
+        &lt;/report&gt;" />
 
 
   <reportSubscription userId="1" reportId="1"

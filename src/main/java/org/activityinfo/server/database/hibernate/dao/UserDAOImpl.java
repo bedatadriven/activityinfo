@@ -66,10 +66,18 @@ public class UserDAOImpl extends GenericDAO<User, Integer> implements UserDAO {
      * Initializes this User as a new User with a secure changePasswordKey
      */
     public static User createNewUser(String email, String name, String locale) {
+        return createNewUser(email, name, "", "", locale);
+    }
+
+    /**
+     * Initializes this User as a new User with a secure changePasswordKey
+     */
+    public static User createNewUser(String email, String name, String organization, String jobtitle, String locale) {
         User user = new User();
         user.setEmail(email);
         user.setName(name);
-        user.setNewUser(true);
+        user.setOrganization(organization);
+        user.setJobtitle(jobtitle);
         user.setEmailNotification(false);
         user.setLocale(locale);
         user.setChangePasswordKey(SecureTokenGenerator.generate());

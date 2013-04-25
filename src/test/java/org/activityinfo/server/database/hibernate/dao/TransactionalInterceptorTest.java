@@ -45,6 +45,7 @@ public class TransactionalInterceptorTest {
         EntityTransaction tx = createMock(EntityTransaction.class);
         expect(tx.isActive()).andReturn(false);
         tx.begin();
+        expect(tx.isActive()).andReturn(true);
         tx.commit();
         replay(tx);
 
@@ -82,6 +83,7 @@ public class TransactionalInterceptorTest {
         EntityTransaction tx = createStrictMock(EntityTransaction.class);
         expect(tx.isActive()).andReturn(false);
         tx.begin();
+        expect(tx.isActive()).andReturn(true);
         expect(tx.isActive()).andReturn(true);
         tx.commit();
         replay(tx);

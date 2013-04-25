@@ -101,6 +101,5 @@ public class ChangePasswordController {
         throws IncompleteFormException {
         user.changePassword(newPassword);
         user.clearChangePasswordKey();
-        user.setNewUser(false);
     }
 }

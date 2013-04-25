@@ -30,38 +30,38 @@
 
 
   <!-- db owner: YES, view permission: NO, emailnotification: YES -->
-  <userLogin userId="1" firstname="Alex" name="Alex"
+  <userLogin userId="1" name="Alex"
     email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-    locale="fr" newUser="1" emailnotification="1" />
+    locale="fr" organization="" jobtitle="" emailnotification="1" />
   <!--  db owner: YES, view permission: NO, emailnotification: NO -->
-  <userLogin userId="2" firstname="Marlene" name="Marlene"
-    email="marlene@solidarites" password="xyz" locale="en" newUser="1"
+  <userLogin userId="2" name="Marlene"
+    email="marlene@solidarites" password="xyz" locale="en" organization="" jobtitle="" 
     emailnotification="0" />
   <!-- db owner: NO, view permission: YES, emailnotification: YES -->
   <userLogin userId="3" name="Bavon" email="bavon@nrc.org"
     password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-    locale="fr" newUser="1" emailnotification="1" />
+    locale="fr" organization="" jobtitle="" emailnotification="1" />
   <!-- db owner: NO, view permission: YES, emailnotification: NO -->
-  <userLogin userId="4" firstname="Lisa" name="Lisa"
-    email="lisa@solidarites" password="xyz" locale="fr" newUser="1"
+  <userLogin userId="4" name="Lisa"
+    email="lisa@solidarites" password="xyz" locale="fr" organization="" jobtitle="" 
     emailnotification="0" />
   <!-- db owner: NO, design permission: YES, emailnotification: YES -->
   <userLogin userId="5" name="Jack" email="jack@nrc.org"
-    password="xyz" locale="fr" newUser="1" emailnotification="1" />
+    password="xyz" locale="fr" organization="" jobtitle="" emailnotification="1" />
   <!-- db owner: NO, design permission: YES, emailnotification: NO -->
   <userLogin userId="6" name="John" email="john@nrc.org"
-    password="xyz" locale="fr" newUser="1" emailnotification="0" />
+    password="xyz" locale="fr" organization="" jobtitle="" emailnotification="0" />
   <!-- db owner: NO, view or design permission: NO (does have permission record), emailnotification: YES -->
   <userLogin userId="7" name="Spencer" email="spencer@nrc.org"
-    password="xyz" locale="fr" newUser="1" emailnotification="1" />
+    password="xyz" locale="fr" organization="" jobtitle="" emailnotification="1" />
   <!-- db owner: NO, view or design permission: NO, emailnotification: NO -->
   <userLogin userId="8" name="Edward" email="edward@nrc.org"
-    password="xyz" locale="fr" newUser="1" emailnotification="0" />
+    password="xyz" locale="fr" organization="" jobtitle="" emailnotification="0" />
 
   <!-- db owner: YES, view permission: YES, design permission: YES, emailnotification: YES -->
-  <userLogin userId="100" firstname="Super" name="Super"
+  <userLogin userId="100" name="Super"
     email="super@gmail.com" password="xyz"
-    locale="en" newUser="1" emailnotification="1" />
+    locale="en" organization="" jobtitle="" emailnotification="1" />
 
   <userDatabase databaseId="1" name="PEAR" countryId="1"
     ownerUserId="1" lastSchemaUpdate="2009-01-01" />

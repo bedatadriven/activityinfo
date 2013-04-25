@@ -67,11 +67,12 @@ public class TransactionalInterceptor implements MethodInterceptor {
         Object result = attemptInvocation(methodInvocation, tx);
 
         // everything was normal so commit the txn (do not move into try block
-        // as it interferes
-        // with the advised method's throwing semantics)
-        tx.commit();
+        // as it interferes with the advised method's throwing semantics)
+        if (tx.isActive()) {
+            tx.commit();
+            LOGGER.fine("[invoke] Committed the transaction.");
+        }
 
-        LOGGER.fine("[invoke] Committed the transaction.");
         return result;
     }
 

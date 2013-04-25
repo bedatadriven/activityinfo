@@ -19,15 +19,22 @@
  <http://www.gnu.org/licenses/gpl-3.0.html>.
  #L%
 -->
-<#-- @ftlvariable name="" type="org.activityinfo.server.mail.Invitation" -->
-Bonjour ${user.name},
+<#include "Scaffolding.ftl">
+<@scaffolding title="${label.signUpConfirmationInvalidTitle}">
 
-Quelqu'un (probablement vous) a demandé pour réinitialiser votre mot de passe ActivityInfo.
-
-http://www.activityinfo.org/changePassword?${user.changePasswordKey}
-
-Si vous n'avez pas demandé de réinitialiser votre mot de passe, vous pouvez ignorer ce message.
-
-Cordialement,
-
-L'équipe ActivityInfo
+    <@content>
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>${label.signUpConfirmationInvalidTitle}</h3>
+            
+            ${label.signUpConfirmationInvalidDetail}
+            
+            <p><a href="login" class="btn btn-primary">${label.loginNow}</a></p>
+         </div>
+    </div>
+    </@content>
+    
+    <@scripts>
+    </@scripts>
+    
+</@scaffolding>

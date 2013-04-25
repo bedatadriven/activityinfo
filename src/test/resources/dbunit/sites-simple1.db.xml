@@ -29,9 +29,9 @@
 
   <country countryId="1" name="Rdc" x1="0" y1="0" x2="0" y2="0" />
 
-  <adminLevel countryId="1" adminLevelId="1" name="Province" />
+  <adminLevel countryId="1" adminLevelId="1" name="Province" deleted="0"/>
   <adminLevel countryId="1" adminLevelId="2" name="Territoire"
-    ParentId="1" />
+    ParentId="1"  deleted="0"/>
 
   <locationType locationTypeId="1" countryId="1" name="localite"
     reuse="1" />
@@ -41,7 +41,7 @@
     reuse="1" BoundAdminLevelId="2" />
 
   <adminEntity adminLevelId="1" adminEntityId="1" name="Kinshasa"
-    code="10" x1="0" y1="0" x2="0" y2="0" />
+    code="10" x1="0" y1="0" x2="0" y2="0"/>
   <adminEntity adminLevelId="1" adminEntityId="2" name="Sud Kivu"
     code="20" x1="0" y1="0" x2="0" y2="0" />
   <adminEntity adminLevelId="1" adminEntityId="3" name="Nord Kivu"
@@ -66,20 +66,20 @@
     y2="0" />
 
 <!-- User setup -->
-  <userLogin userId="1" firstname="Alex" name="Alex"
+  <userLogin userId="1" name="Alex"
     email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-    locale="fr" newUser="1" emailnotification="1" />
+    locale="fr" organization="" jobtitle="" emailnotification="1" />
   <userLogin userId="2" name="Bavon" email="bavon@nrc.org"
     password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-    locale="fr" newUser="1" emailnotification="0" />
+    locale="fr" organization="" jobtitle="" emailnotification="0" />
   <userLogin userId="5" name="Christian" email="christian@nrc.org"
-    password="xyz" locale="fr" newUser="1" emailnotification="0" />
-  <userLogin userId="3" firstname="Lisa" name="Lisa"
-    email="lisa@solidarites" password="xyz" locale="fr" newUser="1"
+    password="xyz" locale="fr" organization="" jobtitle="" emailnotification="0" />
+  <userLogin userId="3" name="Lisa"
+    email="lisa@solidarites" password="xyz" locale="fr" organization="" jobtitle="" 
     emailnotification="0" />
 
-  <userLogin userId="4" firstname="Marlene" name="Marlene"
-    email="marlene@solidarites" password="xyz" locale="en" newUser="1"
+  <userLogin userId="4" name="Marlene"
+    email="marlene@solidarites" password="xyz" locale="en" organization="" jobtitle="" 
     emailnotification="1" />
 
 <!-- Attributes -->

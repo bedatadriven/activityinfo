@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -57,6 +58,7 @@ import freemarker.template.Configuration;
  *
  */
 public class SmtpMailSender extends MailSender {
+    private static final Logger LOGGER = Logger.getLogger(SmtpMailSender.class.getName());
 
     private final DeploymentConfiguration configuration;
 
@@ -87,13 +89,15 @@ public class SmtpMailSender extends MailSender {
                 mimeMessage.setReplyTo(new Address[] { message.getReplyTo() });
             }
 
+            String body;
             if (message.hasHtmlBody()) {
-                mimeMessage.setDataHandler(new DataHandler(new HTMLDataSource(
-                    message.getHtmlBody())));
+                body = message.getHtmlBody();
+                mimeMessage.setDataHandler(new DataHandler(new HTMLDataSource(body)));
             } else {
-                mimeMessage.setText(message.getTextBody(),
-                    Charsets.UTF_8.name());
+                body = message.getTextBody();
+                mimeMessage.setText(body, Charsets.UTF_8.name());
             }
+            LOGGER.finest("message to " + message.getTo() + ":\n" + body);
 
             if (!message.getAttachments().isEmpty()) {
                 Multipart multipart = new MimeMultipart();

@@ -26,13 +26,13 @@
 <dataset>
 
   <userLogin userId="2" name="Bavon" email="bavon@nrcdrc.org"
-    locale="fr" newUser="1"
+    locale="fr" organization="" jobtitle="" 
     password="$2a$10$/A6O/S4jDQMCXtP8dicJL.0LJmg9PjqKmrk1dn9F58kitlHQIzyRS"
     emailnotification="0" />
     <!-- "monday" -->
 
   <userLogin userId="3" name="Stefan" email="stefan@irc.org"
-    locale="fr" newUser="1"
+    locale="fr" organization="" jobtitle="" 
     password="$2a$10$EtQt1mcO7CXwBfIORjsN5OByNMzc48I2LfUjDa9iKfE2FVxaIBPwq"
     emailnotification="0" />
     <!-- tuesday -->
