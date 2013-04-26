@@ -30,4 +30,4 @@ http://www.activityinfo.org/confirm?${newUser.changePasswordKey}
 
 Best regards,
 
-L'équipe ActivityInfo
+The ActivityInfo Team

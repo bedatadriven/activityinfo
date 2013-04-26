@@ -19,15 +19,15 @@
  <http://www.gnu.org/licenses/gpl-3.0.html>.
  #L%
 -->
-<#-- @ftlvariable name="" type="org.activityinfo.server.mail.Invitation" -->
-Bonjour ${user.name},
+<#-- @ftlvariable name="" type="org.activityinfo.server.mail.SignUpConfirmation" -->
+Hi ${user.name},
 
-Quelqu'un (probablement vous) a demandé pour réinitialiser votre mot de passe ActivityInfo.
+Thank you for signing up to ActivityInfo!
 
-http://www.activityinfo.org/changePassword?${user.changePasswordKey}
+To complete your user registration, click on the following link:
 
-Si vous n'avez pas demandé de réinitialiser votre mot de passe, vous pouvez ignorer ce message.
+http://www.activityinfo.org/signUpConfirmation?${user.changePasswordKey}
 
-Cordialement,
+Best regards,
 
-L'équipe ActivityInfo
+The ActivityInfo Team

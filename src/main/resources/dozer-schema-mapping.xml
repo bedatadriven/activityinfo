@@ -98,8 +98,13 @@
     </field>
 
     <field>
-      <a>user.firstName</a>
-      <b>firstName</b>
+      <a>user.organization</a>
+      <b>organization</b>
+    </field>
+
+    <field>
+      <a>user.jobtitle</a>
+      <b>jobtitle</b>
     </field>
 
     <field>

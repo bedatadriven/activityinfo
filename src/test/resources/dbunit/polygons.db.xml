@@ -25,7 +25,7 @@
 <dataset>
 
 
-	<!-- Country setup -->
+    <!-- Country setup -->
   <country countryId="383" name="Mali" x1="-12.2426099777222"
     y1="10.1595134735107" x2="4.24496793746948" y2="25" />
 
@@ -62,13 +62,13 @@
     x2="-0.0130309266969562" y2="25" adminEntityId="1934" adminLevelId="1383" />  
 
 
-	<!-- User setup -->
+    <!-- User setup -->
   <userLogin userId="1" name="Alex" email="akbertram@gmail.com"
     password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-    locale="fr" newUser="1" emailnotification="0" />
-	
+    locale="fr" organization="" jobtitle="" emailnotification="0" />
+    
 
-	<!-- Database: PEAR -->
+    <!-- Database: PEAR -->
 
   <userDatabase databaseId="1" name="EHA" countryId="383"
     ownerUserId="1" lastSchemaUpdate="2009-01-01" />
@@ -82,12 +82,12 @@
     published="0" />
 
 
-	<!-- Our Indicator -->
+    <!-- Our Indicator -->
 
   <indicator indicatorId="1" activityId="1" name="beneficiaries"
     units="menages" aggregation="0" category="inputs" sortOrder="1" mandatory="0" />
 
-	<!-- Bamako -->
+    <!-- Bamako -->
 
   <location locationId="1" name="Bamako" locationTypeId="1"
     timeEdited="1" />

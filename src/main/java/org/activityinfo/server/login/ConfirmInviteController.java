@@ -90,7 +90,6 @@ public class ConfirmInviteController {
             user.setLocale(checkNonEmpty(locale));
             user.changePassword(checkNonEmpty(password));
             user.clearChangePasswordKey();
-            user.setNewUser(false);
             return Response
                 .seeOther(uri.getAbsolutePathBuilder().replacePath("/").build())
                 .cookie(authTokenProvider.createNewAuthCookies(user))

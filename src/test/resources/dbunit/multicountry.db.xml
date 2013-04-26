@@ -33,6 +33,6 @@
     y2="0" />
 
   <userLogin userId="1" name="Alex" email="user1@user.com"
-    locale="fr" newUser="1" emailnotification="0" />
+    locale="fr" organization="" jobtitle="" emailnotification="0" />
 
 </dataset>

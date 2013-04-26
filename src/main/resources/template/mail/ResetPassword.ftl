@@ -31,4 +31,4 @@ If you did not request a password change, you can safely ignore this message.
 
 Best regards,
 
-L'équipe ActivityInfo
+The ActivityInfo Team

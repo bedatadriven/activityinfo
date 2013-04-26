@@ -53,8 +53,11 @@ public class SchemaMigration {
         "ALTER TABLE indicator ADD COLUMN mandatory INT",
         "ALTER TABLE attributeGroup ADD COLUMN mandatory INT",
         "ALTER TABLE adminentity ADD COLUMN deleted INT",
-        "ALTER TABLE adminlevel ADD COLUMN deleted INT"
-
+        "ALTER TABLE adminlevel ADD COLUMN deleted INT",
+        "ALTER TABLE UserLogin DROP COLUMN NewUser",
+        "ALTER TABLE UserLogin DROP COLUMN FirstName",
+        "ALTER TABLE UserLogin ADD COLUMN organization TEXT",
+        "ALTER TABLE UserLogin ADD COLUMN jobtitle TEXT"
     };
 
     @Inject
