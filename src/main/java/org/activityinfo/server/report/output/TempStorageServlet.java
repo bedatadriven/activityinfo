@@ -39,6 +39,21 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.InputSupplier;
 import com.google.inject.Inject;
 
+/**
+ * Serves up temporary files created during the rendering process. The actual
+ * blob is identified by a secure hexadecimal id, but a friendly filename can be
+ * appended to the uri, which is the best cross-browser way to indicate the file
+ * name to be saved as. For example:
+ * 
+ * <blockquote>
+ * http://www.activityinfo.org/generated/1b391a99c2b49a2c/Untitled%20
+ * Report%2020130426_0446.rtf </blockquote>
+ * 
+ * In this URL, the text following the 1b391a99c2b49a2c/ is ignored, but used by
+ * all browsers to suggest the file name to save.
+ * 
+ * 
+ */
 @Singleton
 public class TempStorageServlet extends HttpServlet {
 
@@ -63,11 +78,28 @@ public class TempStorageServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
+        resp.setHeader("Content-Type", mimeTypeFromUri(req.getRequestURI().toLowerCase()));
         resp.setHeader("Content-Disposition", "attachment");   
         ByteStreams.copy(inputSupplier, resp.getOutputStream());
     }
 
+    private String mimeTypeFromUri(String uri) {
+        if (uri.endsWith(".rtf")) {
+            return "application/rtf";
+        } else if (uri.endsWith(".pdf")) {
+            return "application/pdf";
+        } else if (uri.endsWith(".png")) {
+            return "image/png";
+        } else if (uri.endsWith(".html")) {
+            return "text/html";
+        } else if (uri.endsWith(".ppt")) {
+            return "application/vnd.ms-powerpoint";
+        } else if (uri.endsWith(".xls")) {
+            return "application/vnd.ms-excel";
+        } else {
+            return "application/octet-stream";
+        }
+    }
 
     @VisibleForTesting
     static String parseBlobKey(String uri) {

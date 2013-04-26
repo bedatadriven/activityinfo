@@ -32,7 +32,6 @@ public class GwtRpcModule extends ServletModule {
     protected void configureServlets() {
         serve("/ActivityInfo/cmd").with(CommandServlet.class);
         serve("/Embed/cmd").with(CommandServlet.class);
-        serve("/ActivityInfo/download").with(DownloadServlet.class);
         serve("/ActivityInfo/attachment").with(AttachmentServlet.class);
     }
 }
