@@ -24,7 +24,7 @@
 
 <html>
 <head>
-  <title>ActivityInfo - Login</title>
+  <title>${title}</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   
   <!-- CSS Files -->

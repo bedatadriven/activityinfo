@@ -36,64 +36,66 @@
                 <div class="alert alert-success">               
                     ${label.signUpEmailSent}
                 </div>
-            </#if>
-        
-            <h3>${label.signUpTitle}</h3>
-            
-            <form action="" method="post" id="signUpForm">
-            
-                <div class="control-group" id="nameGroup">
-                    <label class="control-label" for="nameInput">${label.name}:</label>
-                    <div class="controls">
-                        <input type="text" name="name" id="nameInput" value="${name}">
-                        <span class="help-inline hide" id="nameHelp">${label.pleaseEnterYourFullName}</span>
-                    </div>
-                </div>
+           
+            <#else>
+                <h3>${label.signUpTitle}</h3>
                 
-                <div class="control-group">
-                    <label class="control-label" for="organizationInput">${label.organization}:</label>
-                    <div class="controls">
-                        <input type="text" name="organization" id="organizationInput" value="${organization}">
-                    </div>
-                </div>
+                <form action="" method="post" id="signUpForm">
                 
-                <div class="control-group">
-                    <label class="control-label" for="jobtitleInput">${label.jobtitle}:</label>
-                    <div class="controls">
-                        <input type="text" name="jobtitle" id="jobtitleInput" value="${jobtitle}">
+                    <div class="control-group" id="nameGroup">
+                        <label class="control-label" for="nameInput">${label.name}:</label>
+                        <div class="controls">
+                            <input type="text" name="name" id="nameInput" value="${name}">
+                            <span class="help-inline hide" id="nameHelp">${label.pleaseEnterYourFullName}</span>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="control-group" id="emailGroup">
-                    <label class="control-label" for="emailInput">${label.emailAddress}:</label>
-                    <div class="controls">
-                        <input type="text" name="email" id="emailInput" value="${email}">
-                        <span class="help-inline hide" id="emailHelp">${label.pleaseEnterAValidEmailAddress}</span>
-                    </div>
-                </div>
-                <#if emailExistsError == true>
-                    <div class="alert alert-error">
-                        ${label.signUpEmailExistsError}
-                    </div>
-                </#if>
                     
-                <div class="control-group">
-                    <label class="control-label" for="localeInput">${label.preferredLanguage}:</label>
-                    <div class="controls">
-                          <select name="locale" id="localeInput">
-                              <option value="en">${label.english}</option>
-                              <option value="fr">${label.francais}</option>
-                          </select>
+                    <div class="control-group">
+                        <label class="control-label" for="organizationInput">${label.organization}:</label>
+                        <div class="controls">
+                            <input type="text" name="organization" id="organizationInput" value="${organization}">
+                        </div>
                     </div>
-                </div>
-                
-                <div class="control-group">
-                    <label class="control-label">&nbsp;</label>
-                    <div class="controls">
-                        <button type="submit" class="btn btn-primary btn-large">${label.signUpButton}</button>
+                    
+                    <div class="control-group">
+                        <label class="control-label" for="jobtitleInput">${label.jobtitle}:</label>
+                        <div class="controls">
+                            <input type="text" name="jobtitle" id="jobtitleInput" value="${jobtitle}">
+                        </div>
                     </div>
-                </div>
-            </form>
+                    
+                    <div class="control-group" id="emailGroup">
+                        <label class="control-label" for="emailInput">${label.emailAddress}:</label>
+                        <div class="controls">
+                            <input type="text" name="email" id="emailInput" value="${email}">
+                            <span class="help-inline hide" id="emailHelp">${label.pleaseEnterAValidEmailAddress}</span>
+                        </div>
+                    </div>
+                    <#if emailExistsError == true>
+                        <div class="alert alert-error">
+                            ${label.signUpEmailExistsError}
+                        </div>
+                    </#if>
+                        
+                    <div class="control-group">
+                        <label class="control-label" for="localeInput">${label.preferredLanguage}:</label>
+                        <div class="controls">
+                              <select name="locale" id="localeInput">
+                                  <option value="en">${label.english}</option>
+                                  <option value="fr">${label.francais}</option>
+                              </select>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">&nbsp;</label>
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary btn-large">${label.signUpButton}</button>
+                        </div>
+                    </div>
+                </form>
+            </#if>
+            
         </div>
     </div>
     </@content>
