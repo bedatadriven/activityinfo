@@ -85,7 +85,8 @@ public class GeoDigestModelBuilder implements DigestModelBuilder {
 
         if (!siteIds.isEmpty()) {
             MapReportElement reportModel = new MapReportElement();
-
+            reportModel.setMaximumZoomLevel(9);
+            
             BubbleMapLayer layer = createLayer(siteIds);
             reportModel.setLayers(layer);
 

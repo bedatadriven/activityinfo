@@ -144,6 +144,9 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         if (zoom > baseMap.getMaxZoom()) {
             zoom = baseMap.getMaxZoom();
         }
+        if (zoom > element.getMaximumZoomLevel()) {
+            zoom = element.getMaximumZoomLevel();
+        }
 
         TiledMap map = new TiledMap(width, height, center, zoom);
         content.setBaseMap(baseMap);

@@ -48,12 +48,15 @@ import com.google.common.collect.Sets;
 public class MapReportElement extends ReportElement<MapContent> {
 
     public static final String AUTO_BASEMAP = "@AUTO@";
+    
 
     private String baseMapId = AUTO_BASEMAP;
     private int width = 640;
     private int height = 480;
     private AiLatLng center = null;
     private int zoomLevel = -1;
+    private int maximumZoomLevel = 18;
+    
     private List<MapLayer> layers = new ArrayList<MapLayer>(0);
 
     public MapReportElement() {
@@ -88,6 +91,21 @@ public class MapReportElement extends ReportElement<MapContent> {
 
     public void addLayer(MapLayer layer) {
         this.layers.add(layer);
+    }
+    
+    @XmlElement(defaultValue = "18")
+    public int getMaximumZoomLevel() {
+        return maximumZoomLevel;
+    }
+    
+    /** 
+     * Sets the maximum acceptable zoom level when using 
+     * automatic zoom level calculation.
+     * 
+     * @param maximumZoomLevel
+     */
+    public void setMaximumZoomLevel(int maximumZoomLevel) {
+        this.maximumZoomLevel = maximumZoomLevel;
     }
 
     @XmlElementWrapper(name = "layers")
