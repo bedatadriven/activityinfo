@@ -95,7 +95,7 @@ public class Bucket implements Serializable {
     public double doubleValue() {
         switch (aggregationMethod) {
         case IndicatorDTO.AGGREGATE_AVG:
-            return sum / count;
+            return sum / (double)count;
         case IndicatorDTO.AGGREGATE_SUM:
             return sum;
         case IndicatorDTO.AGGREGATE_SITE_COUNT:

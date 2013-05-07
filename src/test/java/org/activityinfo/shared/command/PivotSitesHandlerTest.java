@@ -204,6 +204,15 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
         assertThat().thereAre(2).buckets();
     }
+    
+    @Test
+    public void testFractions() {
+        filter.addRestriction(DimensionType.Indicator, 5);
+        
+        execute();
+     
+        assertThat().thereIsOneBucketWithValue(0.26666666);
+    }
 
     @Test
     public void testAttributePivot() {
@@ -683,10 +692,10 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             return this;
         }
 
-        public AssertionBuilder thereIsOneBucketWithValue(int expectedValue) {
+        public AssertionBuilder thereIsOneBucketWithValue(double expectedValue) {
             bucketCountIs(OWNER_USER_ID);
             assertEquals(description("value of only bucket"), expectedValue,
-                (int) matching.get(0).doubleValue());
+                matching.get(0).doubleValue(), 0.001);
             return this;
         }
 

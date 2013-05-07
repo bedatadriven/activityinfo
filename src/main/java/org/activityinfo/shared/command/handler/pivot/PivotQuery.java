@@ -155,7 +155,7 @@ public class PivotQuery {
                         .getInt(ValueFields.AGGREGATION));
                     bucket.setCount(row.getInt(ValueFields.COUNT));
                     if (!row.isNull(ValueFields.SUM)) {
-                        bucket.setSum(row.getInt(ValueFields.SUM));
+                        bucket.setSum(row.getDouble(ValueFields.SUM));
                     }
                     bucket.setCategory(new Dimension(DimensionType.Target),
                         baseTable.getTargetCategory());
