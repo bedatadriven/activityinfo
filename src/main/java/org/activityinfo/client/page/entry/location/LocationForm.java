@@ -33,6 +33,7 @@ import org.activityinfo.client.page.entry.admin.BoundsChangedEvent;
 import org.activityinfo.client.widget.CoordinateFields;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.LocationDTO;
+import org.activityinfo.shared.dto.LocationTypeDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -72,14 +73,14 @@ public class LocationForm extends LayoutContainer {
     private LayoutContainer newFormButtonContainer;
     private SearchAdminComboBoxSet comboBoxes;
 
-    private int locationTypeId;
+    private LocationTypeDTO locationType;
 
-    public LocationForm(Dispatcher dispatcher, int locationTypeId,
+    public LocationForm(Dispatcher dispatcher, LocationTypeDTO locationType,
         final LocationSearchPresenter searchPresenter,
         final NewLocationPresenter newLocationPresenter) {
         this.searchPresenter = searchPresenter;
         this.newLocationPresenter = newLocationPresenter;
-        this.locationTypeId = locationTypeId;
+        this.locationType = locationType;
 
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(LABEL_WIDTH);
@@ -132,7 +133,7 @@ public class LocationForm extends LayoutContainer {
 
     private void addNameField() {
         nameField = new TextField<String>();
-        nameField.setFieldLabel(I18N.CONSTANTS.searchLocation());
+        nameField.setFieldLabel(locationType.getName());
         nameField.setMaxLength(50);
         add(nameField);
 
@@ -242,7 +243,7 @@ public class LocationForm extends LayoutContainer {
         if (coordinateFields.validate() && nameField.validate()) {
             LocationDTO newLocation = new LocationDTO();
             newLocation.setId(new KeyGenerator().generateInt());
-            newLocation.setLocationTypeId(locationTypeId);
+            newLocation.setLocationTypeId(locationType.getId());
             newLocation.setName(nameField.getValue());
             newLocation.setAxe(axeField.getValue());
             newLocation.setLatitude(coordinateFields.getLatitudeField()
@@ -258,8 +259,6 @@ public class LocationForm extends LayoutContainer {
     }
 
     private void setNewFormActive(boolean active) {
-        nameField.setFieldLabel(active ? I18N.CONSTANTS.location()
-            : I18N.CONSTANTS.searchLocation());
         axeField.setVisible(active);
         coordinateFields.setVisible(active);
         newFormButtonContainer.setVisible(active);

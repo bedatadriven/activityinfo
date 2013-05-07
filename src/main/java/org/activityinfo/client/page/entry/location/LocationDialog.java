@@ -172,7 +172,7 @@ public class LocationDialog extends Window {
             .add(newExplanation(I18N.CONSTANTS.chooseLocationDescription()));
 
         container.add(formHeader = newHeader(I18N.CONSTANTS.searchLocations()));
-        container.add(new LocationForm(dispatcher, locationType.getId(),
+        container.add(new LocationForm(dispatcher, locationType,
             searchPresenter, newLocationPresenter));
 
         container.add(newHeader(I18N.CONSTANTS.searchResults()));
