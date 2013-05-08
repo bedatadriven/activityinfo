@@ -71,6 +71,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         final AppInjector injector = GWT.create(AppInjector.class);
 
+        injector.createAppLoader();
         injector.createDashboardLoader();
         injector.createDataEntryLoader();
         injector.createReportLoader();

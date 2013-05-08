@@ -99,6 +99,10 @@
         <span class="{style.email}" ui:field="emailLabel" />
       </div>
       <div class="{style.menuRow}">
+        <g:Label text="{constants.userProfile}" styleName="{style.action}"
+            ui:field="userProfileLink" />
+      </div>
+      <div class="{style.menuRow}">
         <g:Label text="{constants.logout}" styleName="{style.action}"
           ui:field="logoutLink" />
       </div>

@@ -28,6 +28,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Log;
 import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
+import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.local.LocalController;
 import org.activityinfo.client.local.LocalStateChangeEvent;
@@ -35,6 +36,7 @@ import org.activityinfo.client.local.LocalStateChangeEvent.State;
 import org.activityinfo.client.local.capability.LocalCapabilityProfile;
 import org.activityinfo.client.local.sync.SyncCompleteEvent;
 import org.activityinfo.client.local.sync.SyncStatusEvent;
+import org.activityinfo.client.page.NavigationHandler;
 
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -82,6 +84,9 @@ public class SettingsPopup extends PopupPanel {
 
     @UiField
     Label logoutLink;
+
+    @UiField
+    Label userProfileLink;
 
     @UiField
     Label offlineInstallLabel;
@@ -219,6 +224,13 @@ public class SettingsPopup extends PopupPanel {
     @UiHandler("logoutLink")
     public void onLogoutClicked(ClickEvent e) {
         SessionUtil.logout();
+    }
+
+    @UiHandler("userProfileLink")
+    public void onUserProfileLink(ClickEvent e) {
+        eventBus.fireEvent(new NavigationEvent(
+            NavigationHandler.NAVIGATION_REQUESTED, new UserProfilePage.State()));
+        super.hide();
     }
 
     @UiHandler("offlineInstallLabel")
