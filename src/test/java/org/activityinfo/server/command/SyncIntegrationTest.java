@@ -48,6 +48,7 @@ import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.shared.command.Delete;
+import org.activityinfo.shared.command.GetAdminEntities;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.LocalHandlerTestCase;
 import org.activityinfo.shared.command.UpdateSite;
@@ -220,6 +221,13 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         assertThat(queryString("select name from Location where LocationId = "
             + locationId),
             equalTo("Bukavu"));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void getAdminEntities() throws SQLException, InterruptedException {
+        synchronizeFirstTime();
+        executeLocally(new GetAdminEntities(1));
     }
 
     @Test

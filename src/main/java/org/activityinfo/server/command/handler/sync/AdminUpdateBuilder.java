@@ -66,6 +66,7 @@ public class AdminUpdateBuilder implements UpdateBuilder {
                 "Code TEXT," +
                 "AdminLevelId INT," +
                 "AdminEntityParentId INT," +
+                "Deleted INT," +
                 "X1 REAL, Y1 REAL, X2 REAL, Y2 REAL)");
             builder.addStatement("DELETE FROM AdminEntity WHERE AdminLevelId="
                 + levelId);
@@ -73,6 +74,7 @@ public class AdminUpdateBuilder implements UpdateBuilder {
             SqlQuery query = SqlQuery.select(
                 "AdminEntityId", "Name", "AdminLevelId", "AdminEntityParentId",
                 "Code", "AdminLevelId", "AdminEntityParentId",
+                "Deleted",
                 "X1", "Y1", "X2", "Y2")
                 .from(Tables.ADMIN_ENTITY)
                 .where("AdminLevelId").equalTo(levelId);
