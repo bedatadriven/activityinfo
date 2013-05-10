@@ -80,12 +80,12 @@
         <#include "Application.css">
     </style>
     <script type="text/javascript">
-		if(document.cookie.indexOf('authToken=') == -1 || 
-		   document.cookie.indexOf('userId') == -1 ||
-		   document.cookie.indexOf('email') == -1) {
-			window.location = "/login";
-		}
-		
+        if(document.cookie.indexOf('authToken=') == -1 || 
+            document.cookie.indexOf('userId') == -1 ||
+            document.cookie.indexOf('email') == -1) {
+            window.location = "/login" + window.location.hash;
+        }
+        
         var GoogleMapsAPI = {
             key: "${mapsApiKey}"
         };
@@ -93,35 +93,35 @@
             display: '$[display.version]',
             commitId: '$[git.commit.id]'
         };
-    </script>	
+    </script>    
 
     <script language='javascript' src='ActivityInfo/gxt224/flash/swfobject.js'></script>
     <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
-	<script type="text/javascript">
-	
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-11567120-1']);
-	  _gaq.push(['_trackPageview', '/login/success']);
-	
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	</script>
-	<script type="text/javascript">
-	    (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");
-	    b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+
-	    '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';d=c.getElementsByTagName("script")[0];
-	    d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){
-	    var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(
-	    Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:
-	    f="mixpanel";g.people=g.people||[];h=['disable','track','track_pageview','track_links',
-	    'track_forms','register','register_once','unregister','identify','alias','name_tag',
-	    'set_config','people.set','people.increment'];for(e=0;e<h.length;e++)d(g,h[e]);
-	    a._i.push([b,c,f])};a.__SV=1.2;})(document,window.mixpanel||[]);
-	    mixpanel.init("31eced8bff93159dfee3b10f8e3a0804");
-	</script>
+    <script type="text/javascript">
+    
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11567120-1']);
+      _gaq.push(['_trackPageview', '/login/success']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <script type="text/javascript">
+        (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");
+        b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+
+        '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';d=c.getElementsByTagName("script")[0];
+        d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){
+        var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(
+        Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:
+        f="mixpanel";g.people=g.people||[];h=['disable','track','track_pageview','track_links',
+        'track_forms','register','register_once','unregister','identify','alias','name_tag',
+        'set_config','people.set','people.increment'];for(e=0;e<h.length;e++)d(g,h[e]);
+        a._i.push([b,c,f])};a.__SV=1.2;})(document,window.mixpanel||[]);
+        mixpanel.init("31eced8bff93159dfee3b10f8e3a0804");
+    </script>
 </head>
 <body>
 <iframe id="__printingFrame" style="width:0;height:0;border:0"></iframe>

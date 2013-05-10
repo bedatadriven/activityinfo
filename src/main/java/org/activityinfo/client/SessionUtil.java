@@ -27,7 +27,7 @@ import com.google.gwt.user.client.Window;
 public class SessionUtil {
 
     public static void forceLogin() {
-        Window.Location.assign("/login");
+        Window.Location.assign("/login" + Window.Location.getHash());
     }
 
     public static void logout() {
