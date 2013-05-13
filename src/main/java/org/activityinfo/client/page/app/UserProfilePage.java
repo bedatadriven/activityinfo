@@ -45,6 +45,8 @@ public class UserProfilePage extends FormPanel implements Page {
         super();
         this.dispatcher = dispatcher;
 
+        this.hide();
+
         binding = new FormBinding(this);
 
         TextField<String> nameField = new TextField<String>();
@@ -92,6 +94,7 @@ public class UserProfilePage extends FormPanel implements Page {
                 public void onSuccess(UserProfileDTO userProfileDTO) {
                     userProfile = userProfileDTO;
                     binding.bind(userProfile);
+                    UserProfilePage.this.show();
                 }
             });
     }
