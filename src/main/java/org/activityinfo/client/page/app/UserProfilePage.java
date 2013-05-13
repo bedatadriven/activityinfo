@@ -19,12 +19,13 @@ import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.UserProfileDTO;
 import org.activityinfo.shared.util.ObjectUtil;
 
-import com.bedatadriven.rebar.async.NullCallback;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -85,8 +86,8 @@ public class UserProfilePage extends FormPanel implements Page {
                 @Override
                 public void onFailure(Throwable caught) {
                     Log.error("error binding profile", caught);
+                    MessageBox.alert(I18N.CONSTANTS.serverError(), caught.getMessage(), null);
                 }
-
                 @Override
                 public void onSuccess(UserProfileDTO userProfileDTO) {
                     userProfile = userProfileDTO;
@@ -98,7 +99,17 @@ public class UserProfilePage extends FormPanel implements Page {
     private void saveProfile() {
         AuthenticatedUser user = new ClientSideAuthProvider().get();
         if (user != null && user.getUserId() == userProfile.getUserId()) {
-            dispatcher.execute(new UpdateUserProfile(userProfile), new NullCallback<VoidResult>());
+            dispatcher.execute(new UpdateUserProfile(userProfile), new AsyncCallback<VoidResult>() {
+                @Override
+                public void onSuccess(final VoidResult result) {
+                    Info.display(I18N.CONSTANTS.saved(), I18N.CONSTANTS.savedChanges());
+                }
+                @Override
+                public final void onFailure(final Throwable caught) {
+                    Log.error("error saving profile", caught);
+                    MessageBox.alert(I18N.CONSTANTS.serverError(), caught.getMessage(), null);
+                }
+            });
         }
     }
 
