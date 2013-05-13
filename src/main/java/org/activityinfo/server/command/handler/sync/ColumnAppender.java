@@ -104,6 +104,8 @@ enum ColumnAppender {
             return ColumnAppender.STRING;
 
         case Types.BIT:
+        case Types.TINYINT:
+        case Types.SMALLINT:
         case Types.INTEGER:
         case Types.NUMERIC:
             return ColumnAppender.INTEGER;
