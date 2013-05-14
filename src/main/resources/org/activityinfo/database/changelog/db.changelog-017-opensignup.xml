@@ -41,4 +41,16 @@
     <dropColumn columnName="FirstName" tableName="userlogin" />
   </changeSet>
   
+  
+  <changeSet author="jasper" id="017-02">
+    <comment>
+      [#49384031] Record inviting user in UserLogin  
+    </comment>
+    <addColumn tableName="userlogin">
+      <column name="invitedBy" type="INT" >
+          <constraints nullable="true" foreignKeyName="fk_userlogin_invitedby" references="userlogin(userId)" />
+      </column>
+    </addColumn>
+  </changeSet>
+  
 </databaseChangeLog>

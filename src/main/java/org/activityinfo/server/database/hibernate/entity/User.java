@@ -26,9 +26,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -62,6 +65,7 @@ public class User implements java.io.Serializable {
     private Date dateChangePasswordKeyIssued;
     private String hashedPassword;
     private boolean emailNotification;
+    private User invitedBy;
 
     public User() {
     }
@@ -120,6 +124,16 @@ public class User implements java.io.Serializable {
 
     public void setEmailNotification(boolean emailNotification) {
         this.emailNotification = emailNotification;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "invitedBy", nullable = true)
+    public User getInvitedBy() {
+        return invitedBy;
+    }
+
+    public void setInvitedBy(User invitedBy) {
+        this.invitedBy = invitedBy;
     }
 
     @Column(name = "Locale", nullable = false, length = 10)

@@ -59,7 +59,8 @@ public class SchemaMigration {
         "ALTER TABLE UserLogin DROP COLUMN NewUser",
         "ALTER TABLE UserLogin DROP COLUMN FirstName",
         "ALTER TABLE UserLogin ADD COLUMN organization TEXT",
-        "ALTER TABLE UserLogin ADD COLUMN jobtitle TEXT"
+        "ALTER TABLE UserLogin ADD COLUMN jobtitle TEXT",
+        "ALTER TABLE UserLogin ADD COLUMN invitedBy INT"
     };
 
     @Inject

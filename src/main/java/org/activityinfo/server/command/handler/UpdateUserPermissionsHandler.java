@@ -120,16 +120,17 @@ public class UpdateUserPermissionsHandler implements
 
     private User createNewUser(User executingUser, UserPermissionDTO dto)
         throws CommandException {
-        User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(),
-            executingUser.getLocale());
-        userDAO.persist(user);
-
         if (executingUser.getId() == 0) {
             throw new AssertionError("executingUser.id == 0!");
         }
         if (executingUser.getName() == null) {
             throw new AssertionError("executingUser.name == null!");
         }
+
+        User user = UserDAOImpl.createNewUser(dto.getEmail(), dto.getName(),
+            executingUser.getLocale());
+        user.setInvitedBy(executingUser);
+        userDAO.persist(user);
 
         try {
             Message message = mailSender
