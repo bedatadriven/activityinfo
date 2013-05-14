@@ -54,6 +54,8 @@ public class SchemaMigration {
         "ALTER TABLE attributeGroup ADD COLUMN mandatory INT",
         "ALTER TABLE adminentity ADD COLUMN deleted INT",
         "ALTER TABLE adminlevel ADD COLUMN deleted INT",
+        "ALTER TABLE adminlevel ADD COLUMN version INT",
+        "ALTER TABLE adminlevel DROP COLUMN AllowAdd",
         "ALTER TABLE UserLogin DROP COLUMN NewUser",
         "ALTER TABLE UserLogin DROP COLUMN FirstName",
         "ALTER TABLE UserLogin ADD COLUMN organization TEXT",
