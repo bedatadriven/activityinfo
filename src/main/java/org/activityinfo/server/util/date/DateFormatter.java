@@ -161,13 +161,18 @@ public final class DateFormatter {
     }
 
     public static String formatSimpleDate(Date date) {
-        Date toFormat = date == null ? new Date() : date;
-        return new SimpleDateFormat("dd-MM-yyyy").format(toFormat);
+        Date d = date == null ? new Date() : date;
+        return formatSimpleDate(d);
+    }
+
+    public static String formatSimpleDate(Long millis) {
+        Date date = millis == null ? new Date() : new Date(millis);
+        return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
     public static String formatDateTime(Date date) {
-        Date toFormat = date == null ? new Date() : date;
-        return new SimpleDateFormat("dd-MM-yyyy HH:mm").format(toFormat);
+        Date d = date == null ? new Date() : date;
+        return formatDateTime(d.getTime());
     }
 
     public static String formatDateTime(Long millis) {

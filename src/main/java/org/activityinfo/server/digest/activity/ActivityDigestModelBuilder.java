@@ -52,6 +52,8 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     private void createDatabaseModel(ActivityDigestModel model, UserDatabase database) throws IOException {
 
         DatabaseModel databaseModel = new DatabaseModel(model, database);
+        SiteHistory lastEdit = findLastEdit(database);
+        databaseModel.setLastEdit(lastEdit);
 
         List<SiteHistory> ownerHistories = findSiteHistory(databaseModel, database.getOwner());
         ActivityMap ownerActivityMap = new ActivityMap(databaseModel, database.getOwner(), ownerHistories);
@@ -160,5 +162,21 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
         query.setParameter("from", databaseModel.getModel().getFrom());
 
         return query.getResultList();
+    }
+
+    @VisibleForTesting
+    @SuppressWarnings("unchecked")
+    SiteHistory findLastEdit(UserDatabase database) {
+
+        Query query = entityManager.get().createQuery(
+            "select h from SiteHistory h " +
+                "where h.site.activity.database = :database " +
+                "order by h.timeCreated desc"
+            );
+        query.setParameter("database", database);
+        query.setMaxResults(1);
+
+        List<SiteHistory> list = query.getResultList();
+        return (list != null && list.size() == 1) ? list.get(0) : null;
     }
 }

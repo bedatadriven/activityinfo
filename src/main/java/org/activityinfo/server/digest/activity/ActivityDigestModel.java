@@ -85,6 +85,7 @@ public class ActivityDigestModel implements DigestModel {
     public static class DatabaseModel implements Comparable<DatabaseModel> {
         private final ActivityDigestModel model;
         private final UserDatabase database;
+        private SiteHistory lastEdit;
 
         private ActivityMap ownerActivityMap;
         private final Set<PartnerActivityModel> partnerActivityModels;
@@ -109,6 +110,14 @@ public class ActivityDigestModel implements DigestModel {
             return database.getName();
         }
 
+        public void setLastEdit(SiteHistory lastEdit) {
+            this.lastEdit = lastEdit;
+        }
+
+        public SiteHistory getLastEdit() {
+            return lastEdit;
+        }
+
         public void setOwnerActivityMap(ActivityMap ownerActivityMap) {
             this.ownerActivityMap = ownerActivityMap;
         }
@@ -131,10 +140,8 @@ public class ActivityDigestModel implements DigestModel {
             }
 
             for (PartnerActivityModel partnerModel : partnerActivityModels) {
-                for (ActivityMap map : partnerModel.getActivityMaps()) {
-                    if (map.hasActivity()) {
-                        return true;
-                    }
+                if (partnerModel.hasActivity()) {
+                    return true;
                 }
             }
 
@@ -188,8 +195,8 @@ public class ActivityDigestModel implements DigestModel {
                 totals.put(i, 0);
             }
 
-            for (ActivityMap activity : activityMaps) {
-                for (Entry<Integer, Integer> act : activity.getMap().entrySet()) {
+            for (ActivityMap map : activityMaps) {
+                for (Entry<Integer, Integer> act : map.getMap().entrySet()) {
                     totals.put(act.getKey(), totals.get(act.getKey()) + act.getValue());
                 }
             }
@@ -200,6 +207,15 @@ public class ActivityDigestModel implements DigestModel {
         @Override
         public int compareTo(PartnerActivityModel o) {
             return partner.getName().compareTo(o.partner.getName());
+        }
+
+        public boolean hasActivity() {
+            for (ActivityMap map : activityMaps) {
+                if (map.hasActivity()) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
