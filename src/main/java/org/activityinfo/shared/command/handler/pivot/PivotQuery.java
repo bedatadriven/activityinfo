@@ -289,13 +289,14 @@ public class PivotQuery {
                 addEntityDimension(dimension, "AttributeValue.AttributeId", "Attribute.Name");
 
             } else if (dimension.getType() == DimensionType.AttributeGroup) {
-                // pivot on attributegroups, ordered by name
-                addOrderedEntityDimension(dimension,
+                if (dimension instanceof AttributeGroupDimension) {
+                    // specific attributegroup
+                    defineAttributeDimension((AttributeGroupDimension) dimension);
+                } else {
+                    // pivot on attributegroups, ordered by name
+                    addOrderedEntityDimension(dimension,
                     "Attribute.AttributeGroupId", "AttributeGroup.name", "AttributeGroup.sortOrder");
-
-            } else if (dimension instanceof AttributeGroupDimension) {
-                // specific attributegroup
-                defineAttributeDimension((AttributeGroupDimension)dimension);
+                }
             }
         }
     }
