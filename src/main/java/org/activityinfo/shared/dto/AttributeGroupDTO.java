@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  */
 @JsonAutoDetect(JsonMethod.NONE)
 public final class AttributeGroupDTO extends BaseModelData implements EntityDTO {
+    private static final long serialVersionUID = 7927425202152761370L;
 
     public static final int NAME_MAX_LENGTH = 255;
 
@@ -103,10 +104,27 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
         return attributes;
     }
 
+    public List<Integer> getAttributeIds() {
+        List<Integer> result = new ArrayList<Integer>();
+        for (AttributeDTO attr : getAttributes()) {
+            result.add(attr.getId());
+        }
+        return result;
+    }
+
     public void setAttributes(List<AttributeDTO> attributes) {
         this.attributes = attributes;
     }
 
+    public AttributeDTO getAttributeById(int id) {
+        for (AttributeDTO attr : getAttributes()) {
+            if (attr.getId() == id) {
+                return attr;
+            }
+        }
+        return null;
+    }
+    
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public boolean isMultipleAllowed() {
@@ -120,5 +138,10 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     @Override
     public String getEntityName() {
         return "AttributeGroup";
+    }
+
+    @Override
+    public String toString() {
+        return getName() + "-" + getAttributes();
     }
 }

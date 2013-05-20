@@ -24,6 +24,7 @@ package org.activityinfo.client.page.entry;
 
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.filter.AdminFilterPanel;
+import org.activityinfo.client.filter.AttributeFilterPanel;
 import org.activityinfo.client.filter.DateRangePanel;
 import org.activityinfo.client.filter.FilterPanelSet;
 import org.activityinfo.client.filter.PartnerFilterPanel;
@@ -45,15 +46,16 @@ public class FilterPane extends ContentPanel {
         AdminFilterPanel adminFilterPanel = new AdminFilterPanel(dispatcher);
         DateRangePanel datePanel = new DateRangePanel();
         PartnerFilterPanel partnerPanel = new PartnerFilterPanel(dispatcher);
+        AttributeFilterPanel attributePanel = new AttributeFilterPanel(dispatcher);
 
         add(activityFilterPanel);
         add(adminFilterPanel);
         add(datePanel);
         add(partnerPanel);
+        add(attributePanel);
 
         filterPanelSet = new FilterPanelSet(activityFilterPanel,
-            adminFilterPanel, datePanel, partnerPanel);
-
+            adminFilterPanel, datePanel, partnerPanel, attributePanel);
     }
 
     public FilterPanelSet getSet() {

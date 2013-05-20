@@ -1,4 +1,4 @@
-package org.activityinfo.client.report.editor.map.layerOptions;
+package org.activityinfo.client.filter;
 
 /*
  * #%L
@@ -25,14 +25,11 @@ package org.activityinfo.client.report.editor.map.layerOptions;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.filter.SelectionCallback;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.GetPartnersWithSites;
-import org.activityinfo.shared.command.result.PartnerResult;
-import org.activityinfo.shared.dto.PartnerDTO;
+import org.activityinfo.shared.dto.AttributeDTO;
+import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 
 import com.extjs.gxt.ui.client.Style;
@@ -41,37 +38,34 @@ import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class PartnerFilterDialog extends Dialog {
+public class AttributeGroupFilterDialog extends Dialog {
 
-    private final Dispatcher service;
-    private ListStore<PartnerDTO> store;
-    private CheckBoxListView<PartnerDTO> listView;
+    private AttributeGroupDTO group;
+    private ListStore<AttributeDTO> store;
+    private CheckBoxListView<AttributeDTO> listView;
 
     private SelectionCallback<Set<Integer>> callback;
 
-    public PartnerFilterDialog(Dispatcher service) {
-        this.service = service;
+    public AttributeGroupFilterDialog(AttributeGroupDTO group) {
+        this.group = group;
 
         initializeComponent();
         createList();
     }
 
     private void initializeComponent() {
-        setHeading(I18N.CONSTANTS.filterByPartner());
+        setHeading(I18N.MESSAGES.filterBy(group.getName()));
         setIcon(IconImageBundle.ICONS.filter());
         setWidth(250);
         setHeight(350);
         setLayout(new FitLayout());
         setScrollMode(Style.Scroll.NONE);
-        setHeading(I18N.CONSTANTS.filterByPartner());
-        setIcon(IconImageBundle.ICONS.filter());
     }
 
     private void createList() {
-        store = new ListStore<PartnerDTO>();
-        listView = new CheckBoxListView<PartnerDTO>();
+        store = new ListStore<AttributeDTO>();
+        listView = new CheckBoxListView<AttributeDTO>();
         listView.setStore(store);
         listView.setDisplayProperty("name");
         add(listView);
@@ -79,39 +73,23 @@ public class PartnerFilterDialog extends Dialog {
 
     public Set<Integer> getSelectedIds() {
         Set<Integer> set = new HashSet<Integer>();
-
-        for (PartnerDTO model : listView.getChecked()) {
+        for (AttributeDTO model : listView.getChecked()) {
             set.add(model.getId());
         }
         return set;
     }
 
-    public void show(Filter baseFilter, final Filter currentFilter,
-        SelectionCallback<Set<Integer>> callback) {
-        show();
+    public void show(Filter baseFilter, final Filter currentFilter, SelectionCallback<Set<Integer>> callback) {
         this.callback = callback;
-        service.execute(new GetPartnersWithSites(baseFilter),
-            new AsyncCallback<PartnerResult>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-
-                }
-
-                @Override
-                public void onSuccess(PartnerResult result) {
-                    Set<Integer> ids = currentFilter
-                        .getRestrictions(DimensionType.Partner);
-
-                    store.removeAll();
-                    store.add(result.getData());
-                    for (PartnerDTO partner : store.getModels()) {
-                        if (ids.contains(partner.getId())) {
-                            listView.setChecked(partner, true);
-                        }
-                    }
-                }
-            });
+        show();
+        Set<Integer> ids = currentFilter.getRestrictions(DimensionType.Attribute);
+        store.removeAll();
+        store.add(group.getAttributes());
+        for (AttributeDTO attr : store.getModels()) {
+            if (ids.contains(attr.getId())) {
+                listView.setChecked(attr, true);
+            }
+        }
     }
 
     @Override

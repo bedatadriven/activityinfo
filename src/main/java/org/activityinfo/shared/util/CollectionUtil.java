@@ -32,4 +32,24 @@ public class CollectionUtil {
     public static boolean isNotEmpty(Collection<?> col) {
         return col != null && col.size() > 0;
     }
+
+    public static <T> boolean containsEqual(Collection<T> c1, Collection<T> c2) {
+        if (c1 == null && c2 == null) {
+            return true;
+        }
+
+        if ((c1 == null && c2 != null) || (c1 != null && c2 == null)) {
+            return false;
+        }
+        
+        if (c1.size() != c2.size()) {
+            return false;
+        }
+        
+        return c1.containsAll(c2);
+    }
+
+    public static <T> boolean notContainsEqual(Collection<T> c1, Collection<T> c2) {
+        return !containsEqual(c1, c2);
+    }
 }

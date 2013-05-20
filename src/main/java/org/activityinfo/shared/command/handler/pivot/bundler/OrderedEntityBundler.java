@@ -44,9 +44,11 @@ public class OrderedEntityBundler implements Bundler {
 
     @Override
     public void bundle(SqlResultSetRow row, Bucket bucket) {
-        bucket.setCategory(dimension, new EntityCategory(
-            row.getInt(idAlias),
-            row.getString(labelAlias),
-            row.getInt(sortOrderAlias)));
+        if (!row.isNull(idAlias)) {
+            bucket.setCategory(dimension, new EntityCategory(
+                row.getInt(idAlias),
+                row.getString(labelAlias),
+                row.getInt(sortOrderAlias)));
+        }
     }
 }

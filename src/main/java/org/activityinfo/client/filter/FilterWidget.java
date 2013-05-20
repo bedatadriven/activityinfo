@@ -1,4 +1,4 @@
-package org.activityinfo.client.report.editor.map.layerOptions;
+package org.activityinfo.client.filter;
 
 /*
  * #%L
@@ -22,7 +22,6 @@ package org.activityinfo.client.report.editor.map.layerOptions;
  * #L%
  */
 
-import org.activityinfo.client.filter.FilterPanel;
 import org.activityinfo.shared.command.Filter;
 
 import com.google.gwt.core.client.GWT;
@@ -45,9 +44,9 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
     }
 
     @UiField
-    SpanElement dimensionSpan;
+    protected SpanElement dimensionSpan;
     @UiField
-    SpanElement stateSpan;
+    protected SpanElement stateSpan;
     // @UiField Element removeIcon;
 
     private Filter value = new Filter();
@@ -114,5 +113,10 @@ public abstract class FilterWidget extends Widget implements FilterPanel {
 
     protected Filter getBaseFilter() {
         return baseFilter;
+    }
+
+    @Override
+    public String toString() {
+        return dimensionSpan.getInnerText() + ": " + stateSpan.getInnerText();
     }
 }

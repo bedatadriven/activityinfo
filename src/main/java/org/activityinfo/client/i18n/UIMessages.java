@@ -115,12 +115,15 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     String recentlyEditedSites(String arg0);
 
     /**
-     * Translated
-     * "Nothing entered to search on: please enter something you want to search for"
-     * .
+     * @return translated "Filter by ''{0}''"
+     */
+    @DefaultMessage("Filter by ''{0}''")
+    String filterBy(String arg0);
+
+    /**
+     * Translated "Nothing entered to search on: please enter something you want to search for" .
      * 
-     * @return translated
-     *         "Nothing entered to search on: please enter something you want to search for"
+     * @return translated "Nothing entered to search on: please enter something you want to search for"
      */
     @DefaultMessage("Nothing entered to search on: please enter something you want to search for")
     String searchQueryEmpty();

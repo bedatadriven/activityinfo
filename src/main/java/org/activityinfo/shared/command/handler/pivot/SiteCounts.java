@@ -62,6 +62,13 @@ public class SiteCounts extends BaseTable {
         query.leftJoin(Tables.REPORTING_PERIOD, "Period").on(
             "Period.SiteId = Site.SiteId");
 
+        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on(
+            "Site.SiteId = AttributeValue.SiteId");
+        query.leftJoin(Tables.ATTRIBUTE, "Attribute").on(
+            "AttributeValue.AttributeId = Attribute.AttributeId");
+        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup").on(
+            "Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
+
         query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
         query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT),
             ValueFields.AGGREGATION);
@@ -85,6 +92,10 @@ public class SiteCounts extends BaseTable {
             return "Site.LocationId";
         case Indicator:
             return "V.IndicatorId";
+        case Attribute:
+            return "AttributeValue.AttributeId";
+        case AttributeGroup:
+            return "Attribute.AttributeGroupId";
         }
         throw new UnsupportedOperationException(type.name());
     }

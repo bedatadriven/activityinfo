@@ -285,7 +285,16 @@ public class PivotQuery {
                 addEntityDimension(dimension, tableAlias + ".AdminEntityId",
                     tableAlias + ".Name");
 
+            } else if (dimension.getType() == DimensionType.Attribute) {
+                addEntityDimension(dimension, "AttributeValue.AttributeId", "Attribute.Name");
+
+            } else if (dimension.getType() == DimensionType.AttributeGroup) {
+                // pivot on attributegroups, ordered by name
+                addOrderedEntityDimension(dimension,
+                    "Attribute.AttributeGroupId", "AttributeGroup.name", "AttributeGroup.sortOrder");
+
             } else if (dimension instanceof AttributeGroupDimension) {
+                // specific attributegroup
                 defineAttributeDimension((AttributeGroupDimension)dimension);
             }
         }

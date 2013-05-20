@@ -98,4 +98,9 @@ public final class AttributeDTO extends BaseModelData implements EntityDTO {
     public String getEntityName() {
         return "Attribute";
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

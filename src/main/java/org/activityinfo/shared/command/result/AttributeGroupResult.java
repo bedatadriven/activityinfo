@@ -1,4 +1,4 @@
-package org.activityinfo.client.report.editor.map.layerOptions;
+package org.activityinfo.shared.command.result;
 
 /*
  * #%L
@@ -22,7 +22,18 @@ package org.activityinfo.client.report.editor.map.layerOptions;
  * #L%
  */
 
-public interface SelectionCallback<T> {
+import java.util.List;
 
-    void onSelected(T selection);
+import org.activityinfo.shared.dto.AttributeGroupDTO;
+
+public class AttributeGroupResult extends ListResult<AttributeGroupDTO> {
+
+    public AttributeGroupResult() {
+        super();
+    }
+
+    public AttributeGroupResult(List<AttributeGroupDTO> data) {
+        super(data);
+    }
+
 }

@@ -399,8 +399,16 @@ public class GetSitesHandler implements
                     } else if (type == DimensionType.Site) {
                         query.onlyWhere("site.SiteId").in(
                             filter.getRestrictions(type));
+                    
+                    } else if (type == DimensionType.Attribute) {
+                        SqlQuery subQuery = new SqlQuery()
+                            .appendColumn("av.siteId")
+                            .from(Tables.ATTRIBUTE_VALUE, "av")
+                            .where("av.attributeid").in(filter.getRestrictions(type))
+                            .where("av.value").equalTo(true);
+                        query.onlyWhere("site.SiteId").in(subQuery);
                     }
-
+                    
                     if (isQueryableType(type) && isFirst) {
                         isFirst = false;
                     }
@@ -427,7 +435,8 @@ public class GetSitesHandler implements
             type == DimensionType.Database ||
             type == DimensionType.Partner ||
             type == DimensionType.Project ||
-            type == DimensionType.AdminLevel || type == DimensionType.Site);
+            type == DimensionType.AdminLevel ||
+            type == DimensionType.Attribute || type == DimensionType.Site);
     }
 
     private void addJoint(SqlQuery query, boolean lenient, boolean first) {

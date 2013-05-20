@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.filter.FilterResources;
+import org.activityinfo.client.filter.FilterWidget;
+import org.activityinfo.client.filter.SelectionCallback;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSchema;

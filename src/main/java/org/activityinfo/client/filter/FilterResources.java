@@ -1,4 +1,4 @@
-package org.activityinfo.client.report.editor.map.layerOptions;
+package org.activityinfo.client.filter;
 
 /*
  * #%L
@@ -65,5 +65,7 @@ public interface FilterResources extends ClientBundle {
         @DefaultMessage("{0,list}")
         String filteredPartnerList(List<String> names);
 
+        @DefaultMessage("{0,list}")
+        String filteredAttributeList(List<String> names);
     }
 }

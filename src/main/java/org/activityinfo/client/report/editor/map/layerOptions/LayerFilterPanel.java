@@ -24,6 +24,7 @@ package org.activityinfo.client.report.editor.map.layerOptions;
 
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.filter.FilterPanelSet;
+import org.activityinfo.client.filter.FilterResources;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;

@@ -22,6 +22,7 @@ package org.activityinfo.client.report.editor.map.layerOptions;
  * #L%
  */
 
+import org.activityinfo.client.filter.SelectionCallback;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.report.model.DateRange;
