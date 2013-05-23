@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.activityinfo.client.dispatch.Dispatcher;
-import org.activityinfo.client.filter.FilterToolBar.ApplyFilterEvent;
-import org.activityinfo.client.filter.FilterToolBar.ApplyFilterHandler;
 import org.activityinfo.client.filter.FilterToolBar.RemoveFilterEvent;
 import org.activityinfo.client.filter.FilterToolBar.RemoveFilterHandler;
 import org.activityinfo.client.i18n.I18N;
@@ -74,13 +72,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
     }
 
     private void createFilterToolBar() {
-        filterToolBar = new FilterToolBar();
-        filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
-            @Override
-            public void onApplyFilter(ApplyFilterEvent deleteEvent) {
-                applyFilter();
-            }
-        });
+        filterToolBar = new FilterToolBar(false, true);
         filterToolBar.addRemoveFilterHandler(new RemoveFilterHandler() {
             @Override
             public void onRemoveFilter(RemoveFilterEvent deleteEvent) {
@@ -90,13 +82,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
         setTopComponent(filterToolBar);
     }
 
-    FilterToolBar getFilterToolBar() {
-        return filterToolBar;
-    }
-
     @Override
     public void applyBaseFilter(Filter rawFilter) {
-        System.out.println("*** APPLYING BASEFILTER: " + rawFilter);
         final Filter filter = new Filter(rawFilter);
         filter.clearRestrictions(DimensionType.Attribute);
 
@@ -139,16 +126,25 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                         widgets = new ArrayList<AttributeGroupFilterWidget>();
                         for (AttributeGroupDTO group : groups) {
                             // create
-                            AttributeGroupFilterWidget widget =
-                                new AttributeGroupFilterWidget(AttributeFilterPanel.this, group);
+                            AttributeGroupFilterWidget widget = new AttributeGroupFilterWidget(group);
 
                             // set old selection
                             widget.setSelection(selection);
+
+                            // get sites when value changes
+                            widget.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+                                @Override
+                                public void onValueChange(ValueChangeEvent<Filter> event) {
+                                    applyFilter();
+                                }
+                            });
 
                             // add widget to panel
                             widgets.add(widget);
                             add(widget);
                         }
+
+                        layout();
                     }
                 });
             }
@@ -160,10 +156,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
         for (AttributeGroupFilterWidget widget : widgets) {
             widget.clear();
         }
-
         ValueChangeEvent.fire(this, value);
 
-        filterToolBar.setApplyFilterEnabled(false);
         filterToolBar.setRemoveFilterEnabled(false);
     }
 
@@ -175,10 +169,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                 value.addRestriction(DimensionType.Attribute, getSelectedIds());
             }
         }
-
         ValueChangeEvent.fire(this, value);
 
-        filterToolBar.setApplyFilterEnabled(false);
         filterToolBar.setRemoveFilterEnabled(true);
     }
 
@@ -207,20 +199,16 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
     public void setValue(Filter value, boolean fireEvents) {
         this.value = new Filter();
         this.value.addRestriction(DimensionType.Attribute, value.getRestrictions(DimensionType.Attribute));
-        applyInternalValue();
-        if (fireEvents) {
-            ValueChangeEvent.fire(this, value);
-        }
-    }
 
-    private void applyInternalValue() {
         if (getValue().isRestricted(DimensionType.Attribute)) {
             for (AttributeGroupFilterWidget widget : widgets) {
                 widget.setSelection(getValue().getRestrictions(DimensionType.Attribute));
             }
         }
-        filterToolBar.setApplyFilterEnabled(false);
-        filterToolBar.setRemoveFilterEnabled(getValue().isRestricted(DimensionType.Attribute));
+
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, value);
+        }
     }
 
     @Override

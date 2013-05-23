@@ -39,13 +39,11 @@ import com.google.gwt.user.client.Event;
 
 public class AttributeGroupFilterWidget extends FilterWidget {
 
-    private AttributeFilterPanel panel;
     private AttributeGroupFilterDialog dialog;
     private AttributeGroupDTO group;
 
-    public AttributeGroupFilterWidget(AttributeFilterPanel panel, AttributeGroupDTO group) {
+    public AttributeGroupFilterWidget(AttributeGroupDTO group) {
         super();
-        this.panel = panel;
         this.group = group;
         this.dimensionSpan.setInnerText(group.getName());
         this.stateSpan.setInnerText(I18N.CONSTANTS.all());
@@ -59,15 +57,16 @@ public class AttributeGroupFilterWidget extends FilterWidget {
         dialog.show(getBaseFilter(), getValue(), new SelectionCallback<Set<Integer>>() {
             @Override
             public void onSelected(Set<Integer> selection) {
-                Filter newValue = new Filter();
-                if (CollectionUtil.isNotEmpty(selection)) {
-                    newValue.addRestriction(DimensionType.Attribute, selection);
+                boolean selectionChanged =
+                    CollectionUtil.notContainsEqual(getValue().getRestrictions(DimensionType.Attribute), selection);
 
-                    if (CollectionUtil.notContainsEqual(getValue().getRestrictions(DimensionType.Attribute), selection)) {
-                        panel.getFilterToolBar().setApplyFilterEnabled(true);
+                if (selectionChanged) {
+                    Filter newValue = new Filter();
+                    if (CollectionUtil.isNotEmpty(selection)) {
+                        newValue.addRestriction(DimensionType.Attribute, selection);
                     }
+                    setValue(newValue);
                 }
-                setValue(newValue);
             }
         });
     }

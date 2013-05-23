@@ -36,7 +36,9 @@ import com.google.gwt.event.shared.HandlerRegistration;
 public final class FilterToolBar extends ToolBar {
 
     private Button applyButton;
+    private boolean renderApplyButton;
     private Button removeButton;
+    private boolean renderRemoveButton;
 
     public interface ApplyFilterHandler extends EventHandler {
         void onApplyFilter(ApplyFilterEvent deleteEvent);
@@ -75,7 +77,13 @@ public final class FilterToolBar extends ToolBar {
     }
 
     public FilterToolBar() {
+        this(true, true);
+    }
+
+    public FilterToolBar(boolean renderApplyButton, boolean renderRemoveButton) {
         super();
+        this.renderApplyButton = renderApplyButton;
+        this.renderRemoveButton = renderRemoveButton;
 
         initializeComponent();
 
@@ -87,35 +95,39 @@ public final class FilterToolBar extends ToolBar {
     }
 
     private void createRemoveButton() {
-        removeButton = new Button(
-            I18N.CONSTANTS.remove(),
-            IconImageBundle.ICONS.delete(),
+        if (renderRemoveButton) {
+            removeButton = new Button(
+                I18N.CONSTANTS.remove(),
+                IconImageBundle.ICONS.delete(),
 
-            new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    fireEvent(new RemoveFilterEvent());
-                }
-            });
+                new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        fireEvent(new RemoveFilterEvent());
+                    }
+                });
 
-        add(removeButton);
-        setRemoveFilterEnabled(false);
+            add(removeButton);
+            setRemoveFilterEnabled(false);
+        }
     }
 
     private void createApplyButton() {
-        applyButton = new Button(
-            I18N.CONSTANTS.apply(),
-            IconImageBundle.ICONS.applyFilter(),
+        if (renderApplyButton) {
+            applyButton = new Button(
+                I18N.CONSTANTS.apply(),
+                IconImageBundle.ICONS.applyFilter(),
 
-            new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    fireEvent(new ApplyFilterEvent());
-                }
-            });
+                new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        fireEvent(new ApplyFilterEvent());
+                    }
+                });
 
-        add(applyButton);
-        setApplyFilterEnabled(false);
+            add(applyButton);
+            setApplyFilterEnabled(false);
+        }
     }
 
     public HandlerRegistration addApplyFilterHandler(ApplyFilterHandler handler) {
