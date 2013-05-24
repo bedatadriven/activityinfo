@@ -49,13 +49,17 @@ import com.google.common.collect.Sets;
  */
 @XmlJavaTypeAdapter(FilterAdapter.class)
 public class Filter implements Serializable {
+    private static final long serialVersionUID = -9117480720562024905L;
 
     // TODO: should be restrictions on DIMENSIONS and not DimensionTypes!!
-
     private Map<DimensionType, Set<Integer>> restrictions = new HashMap<DimensionType, Set<Integer>>();
 
     private DateRange dateRange = new DateRange();
 
+    /**
+     * In short: when set to true, the where-clauses of the pivotquery are joined by 'OR' instead of 'AND' (which is the
+     * default).
+     */
     private boolean lenient = false;
 
     /**

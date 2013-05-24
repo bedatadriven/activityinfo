@@ -55,8 +55,8 @@ public class SiteCounts extends BaseTable {
             query.from(Tables.SITE, "Site");
         }
 
-        query.leftJoin(Tables.ACTIVITY, "Activity").on(
-            "Activity.ActivityId = Site.ActivityId");
+        addActivityJoin(query);
+
         query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
             "Activity.DatabaseId = UserDatabase.DatabaseId");
         query.leftJoin(Tables.REPORTING_PERIOD, "Period").on(
@@ -72,7 +72,12 @@ public class SiteCounts extends BaseTable {
         query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
         query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT),
             ValueFields.AGGREGATION);
+    }
 
+    protected void addActivityJoin(SqlQuery query) {
+        // select 'normal'/unlinked sites, directly related to the database or activity set in the filter
+        query.leftJoin(Tables.ACTIVITY, "Activity").on(
+            "Activity.ActivityId = Site.ActivityId");
     }
 
     @Override

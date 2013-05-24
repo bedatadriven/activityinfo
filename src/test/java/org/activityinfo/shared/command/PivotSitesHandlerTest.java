@@ -469,6 +469,16 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
 
     @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedPartnerSiteCount() {
+        withPartnerAsDimension();
+        forTotalSiteCounts();
+        execute();
+
+        assertThat().forPartner(1).thereIsOneBucketWithValue(3).andItsPartnerLabelIs("NRC");
+    }
+
+    @Test
     @OnDataSet("/dbunit/attrib-merge.db.xml")
     public void testAttributesAreMergedAcrossDbByName() {
         withIndicatorAsDimension();

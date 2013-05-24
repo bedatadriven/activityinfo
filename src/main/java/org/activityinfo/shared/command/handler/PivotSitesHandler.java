@@ -32,6 +32,7 @@ import org.activityinfo.shared.command.PivotSites.PivotResult;
 import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.handler.pivot.BaseTable;
 import org.activityinfo.shared.command.handler.pivot.CountIndicatorValues;
+import org.activityinfo.shared.command.handler.pivot.LinkedSiteCounts;
 import org.activityinfo.shared.command.handler.pivot.LinkedSumAvgIndicatorValues;
 import org.activityinfo.shared.command.handler.pivot.PivotQuery;
 import org.activityinfo.shared.command.handler.pivot.PivotQueryContext;
@@ -65,7 +66,7 @@ public class PivotSitesHandler implements
         baseTables.add(new LinkedSumAvgIndicatorValues());
         baseTables.add(new Targets());
         baseTables.add(new SiteCounts());
-
+        baseTables.add(new LinkedSiteCounts());
     }
 
     @Override

@@ -43,25 +43,25 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class GetAttributeGroupsWithSitesHandler implements
     CommandHandlerAsync<GetAttributeGroupsWithSites, AttributeGroupResult> {
 
+    private static final Dimension DIMENSION = new Dimension(DimensionType.AttributeGroup);
+
     @Override
-    public void execute(GetAttributeGroupsWithSites cmd, ExecutionContext context,
+    public void execute(GetAttributeGroupsWithSites cmd, final ExecutionContext context,
         final AsyncCallback<AttributeGroupResult> callback) {
 
-        final Dimension dimension = new Dimension(DimensionType.AttributeGroup);
-
-        PivotSites query = new PivotSites();
+        final PivotSites query = new PivotSites();
         query.setFilter(cmd.getFilter());
-        query.setDimensions(dimension);
+        query.setDimensions(DIMENSION);
         query.setValueType(ValueType.TOTAL_SITES);
-        context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
 
+        context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
             @Override
             public void onSuccess(PivotSites.PivotResult result) {
+                final List<AttributeGroupDTO> list = new ArrayList<AttributeGroupDTO>();
 
-                List<AttributeGroupDTO> list = new ArrayList<AttributeGroupDTO>();
-
+                // populate the resultlist
                 for (Bucket bucket : result.getBuckets()) {
-                    EntityCategory category = (EntityCategory) bucket.getCategory(dimension);
+                    EntityCategory category = (EntityCategory) bucket.getCategory(DIMENSION);
                     if (category == null) {
                         Log.debug("AttributeGroup is null: " + bucket.toString());
                     } else {
@@ -72,6 +72,7 @@ public class GetAttributeGroupsWithSitesHandler implements
                     }
                 }
 
+                // sort the groups in the list by name
                 Collections.sort(list, new Comparator<AttributeGroupDTO>() {
                     @Override
                     public int compare(AttributeGroupDTO g1, AttributeGroupDTO g2) {

@@ -470,6 +470,16 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
     // assertThat().forIndicator(3).thereIsOneBucketWithValue(1500);
     // }
 
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedPartnerSiteCount() {
+        withPartnerAsDimension();
+        forTotalSiteCounts();
+        execute();
+
+        assertThat().forPartner(1).thereIsOneBucketWithValue(3).andItsPartnerLabelIs("NRC");
+    }
+
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets,
         Dimension dim, DimensionCategory cat) {
         List<Bucket> matching = new ArrayList<Bucket>();

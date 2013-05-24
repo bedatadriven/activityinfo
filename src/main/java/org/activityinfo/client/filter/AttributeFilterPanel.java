@@ -144,6 +144,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                             add(widget);
                         }
 
+                        // call layout to show the new widgets!
                         layout();
                     }
                 });
