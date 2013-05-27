@@ -71,6 +71,10 @@ public class AttributeGroupFilterWidget extends FilterWidget {
         });
     }
 
+    public AttributeGroupDTO getGroup() {
+        return group;
+    }
+
     public void clear() {
         setValue(new Filter());
         updateView();
@@ -80,7 +84,16 @@ public class AttributeGroupFilterWidget extends FilterWidget {
     public void updateView() {
         if (getValue().isRestricted(DimensionType.Attribute)) {
             setState(I18N.CONSTANTS.loading());
-            List<String> attributeNames = new ArrayList<String>();
+            List<String> attributeNames = getSelectedAttributeNames();
+            setState(FilterResources.MESSAGES.filteredAttributeList(attributeNames));
+        } else {
+            setState(I18N.CONSTANTS.all());
+        }
+    }
+
+    public List<String> getSelectedAttributeNames() {
+        List<String> attributeNames = new ArrayList<String>();
+        if (getValue().isRestricted(DimensionType.Attribute)) {
             for (Integer id : getValue().getRestrictions(DimensionType.Attribute)) {
                 AttributeDTO attr = group.getAttributeById(id);
                 if (attr != null) {
@@ -88,10 +101,20 @@ public class AttributeGroupFilterWidget extends FilterWidget {
                 }
             }
             Collections.sort(attributeNames);
-            setState(FilterResources.MESSAGES.filteredAttributeList(attributeNames));
-        } else {
-            setState(I18N.CONSTANTS.all());
         }
+        return attributeNames;
+    }
+
+    public List<Integer> getAttributeIdsByName(List<String> attributeNames) {
+        List<Integer> ids = new ArrayList<Integer>();
+        for (String attributeName : attributeNames) {
+            for (AttributeDTO attr : getGroup().getAttributes()) {
+                if (attributeName.trim().equalsIgnoreCase(attr.getName().trim())) {
+                    ids.add(attr.getId());
+                }
+            }
+        }
+        return ids;
     }
 
     public void setSelection(Collection<Integer> selection) {

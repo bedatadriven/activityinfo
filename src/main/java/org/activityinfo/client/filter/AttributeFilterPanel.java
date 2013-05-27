@@ -23,6 +23,7 @@ package org.activityinfo.client.filter;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +45,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -58,6 +61,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
     private Filter value = new Filter();
     private List<AttributeGroupDTO> groups = new ArrayList<AttributeGroupDTO>();
     private List<AttributeGroupFilterWidget> widgets = new ArrayList<AttributeGroupFilterWidget>();
+    private Multimap<String, AttributeGroupFilterWidget> duplicates = ArrayListMultimap.create();
 
     @Inject
     public AttributeFilterPanel(Dispatcher service) {
@@ -99,6 +103,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                 service.execute(new GetAttributeGroupsWithSites(filter), new AsyncCallback<AttributeGroupResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
+                        GWT.log("Failed to load attributes", caught);
                     }
 
                     @Override
@@ -107,6 +112,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                         for (AttributeGroupFilterWidget widget : widgets) {
                             remove(widget);
                         }
+                        duplicates.clear();
 
                         // decorate resultlist from schema
                         List<AttributeGroupDTO> pivotData = result.getData();
@@ -120,7 +126,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                             }
                         }
 
-                        // create new widgets, one for each attributegroup
+                        // create new widgets, one for each attributegroup.
+                        // remember the old selection
                         List<Integer> selection = getSelectedIds();
 
                         widgets = new ArrayList<AttributeGroupFilterWidget>();
@@ -139,12 +146,17 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                                 }
                             });
 
-                            // add widget to panel
-                            widgets.add(widget);
-                            add(widget);
+                            // add widget to panel (if a widget with the same name hasn't already been added)
+                            if (isNoDuplicate(widget)) {
+                                widgets.add(widget);
+                                add(widget);
+                            } else {
+                                // otherwise add to collection of duplicates
+                                duplicates.put(group.getName(), widget);
+                            }
                         }
 
-                        // call layout to show the new widgets!
+                        // call layout to show the added widgets!
                         layout();
                     }
                 });
@@ -152,7 +164,16 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
         });
     }
 
-    protected void removeFilter() {
+    private boolean isNoDuplicate(AttributeGroupFilterWidget widget) {
+        for (AttributeGroupFilterWidget alreadyAdded : widgets) {
+            if (alreadyAdded.getGroup().getName().equals(widget.getGroup().getName())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void removeFilter() {
         value = new Filter();
         for (AttributeGroupFilterWidget widget : widgets) {
             widget.clear();
@@ -167,7 +188,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
         if (isRendered()) {
             List<Integer> selectedIds = getSelectedIds();
             if (selectedIds.size() > 0) {
-                value.addRestriction(DimensionType.Attribute, getSelectedIds());
+                value.addRestriction(DimensionType.Attribute, selectedIds);
             }
         }
         ValueChangeEvent.fire(this, value);
@@ -180,6 +201,21 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
         for (AttributeGroupFilterWidget widget : widgets) {
             Set<Integer> selection = widget.getValue().getRestrictions(DimensionType.Attribute);
             if (CollectionUtil.isNotEmpty(selection)) {
+
+                // if the widget has at least one selection, check the duplicates if we need to add some more ids
+                Collection<AttributeGroupFilterWidget> hiddenWidgets = duplicates.get(widget.getGroup().getName());
+                if (CollectionUtil.isNotEmpty(hiddenWidgets)) {
+                    // has duplicates, so collect the attribute-ids from the hidden widgets by the
+                    // selected attribute-names of the visible widget
+                    List<String> selectedAttributeNames = widget.getSelectedAttributeNames();
+                    for (AttributeGroupFilterWidget hiddenWidget : hiddenWidgets) {
+                        List<Integer> hiddenIds = hiddenWidget.getAttributeIdsByName(selectedAttributeNames);
+                        if (CollectionUtil.isNotEmpty(hiddenIds)) {
+                            selection.addAll(hiddenIds);
+                        }
+                    }
+                }
+
                 list.addAll(selection);
             }
         }

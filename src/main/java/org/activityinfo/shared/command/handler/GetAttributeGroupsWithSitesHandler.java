@@ -76,7 +76,12 @@ public class GetAttributeGroupsWithSitesHandler implements
                 Collections.sort(list, new Comparator<AttributeGroupDTO>() {
                     @Override
                     public int compare(AttributeGroupDTO g1, AttributeGroupDTO g2) {
-                        return g1.getName().compareToIgnoreCase(g2.getName());
+                        int result = g1.getName().compareToIgnoreCase(g2.getName());
+                        if (result != 0) {
+                            return result;
+                        } else {
+                            return ((Integer) g1.getId()).compareTo(g2.getId());
+                        }
                     }
                 });
 
