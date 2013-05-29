@@ -122,7 +122,7 @@ public class RootResource {
 
     @Path("/adminLevel/{id}")
     public AdminLevelResource getAdminLevel(@PathParam("id") int id) {
-        return new AdminLevelResource(entityManager, blobService, entityManager.get().find(
+        return new AdminLevelResource(entityManager, entityManager.get().find(
             AdminLevel.class, id));
     }
     
@@ -130,5 +130,4 @@ public class RootResource {
     public SitesResources getSites() {
         return new SitesResources(dispatcher);
     }
-
 }

@@ -24,6 +24,7 @@ package org.activityinfo.server.database.hibernate.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 /**
  * 
@@ -76,6 +77,16 @@ public class Bounds {
 
     public void setY2(double y2) {
         this.y2 = y2;
+    }
+
+    @Transient
+    public double getCenterLat() {
+        return (y1 + y2) / 2d;
+    }
+
+    @Transient
+    public double getCenterLon() {
+        return (x1 + x2) / 2d;
     }
 
     @Override

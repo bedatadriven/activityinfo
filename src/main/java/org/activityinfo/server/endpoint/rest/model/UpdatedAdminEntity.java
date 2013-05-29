@@ -2,6 +2,8 @@ package org.activityinfo.server.endpoint.rest.model;
 
 import org.activityinfo.server.database.hibernate.entity.Bounds;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 public class UpdatedAdminEntity {
     private Integer id;
     private Integer parentId;
@@ -9,7 +11,7 @@ public class UpdatedAdminEntity {
     private String code;
     private Bounds bounds;
     private boolean deleted;
-    private String geometryText;
+    private Geometry geometry;
     
     public Integer getId() {
         return id;
@@ -55,12 +57,12 @@ public class UpdatedAdminEntity {
         this.deleted = deleted;
     }
 
-    public String getGeometryText() {
-        return geometryText;
+    public Geometry getGeometry() {
+        return geometry;
     }
 
-    public void setGeometryText(String geometryText) {
-        this.geometryText = geometryText;
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
-    
+
 }

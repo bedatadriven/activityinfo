@@ -18,10 +18,8 @@ import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
@@ -46,7 +44,7 @@ public class SitesResources {
             .getData();
 
         StringWriter writer = new StringWriter();
-        JsonGenerator json = createJsonFactory(writer);
+        JsonGenerator json = Jackson.createJsonFactory(writer);
         
         writeJson(sites, json);
        
@@ -65,7 +63,7 @@ public class SitesResources {
             .getData();
         
         StringWriter writer = new StringWriter();
-        JsonGenerator json = createJsonFactory(writer);
+        JsonGenerator json = Jackson.createJsonFactory(writer);
         writeGeoJson(sites, json);
        
         if(Strings.isNullOrEmpty(callback)) {
@@ -78,14 +76,6 @@ public class SitesResources {
         }
     }
 
-    
-    private JsonGenerator createJsonFactory(StringWriter writer) throws IOException {
-        JsonFactory jfactory = new JsonFactory();
-        JsonGenerator json = jfactory.createJsonGenerator(writer);
-        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-        json.setPrettyPrinter(prettyPrinter);
-        return json;
-    }
     
     private void writeJson(List<SiteDTO> sites, JsonGenerator json)
         throws IOException, JsonGenerationException {

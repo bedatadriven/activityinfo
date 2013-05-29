@@ -2,13 +2,15 @@ package org.activityinfo.server.endpoint.rest.model;
 
 import org.activityinfo.server.database.hibernate.entity.Bounds;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 
 public class NewAdminEntity {
     private String name;
     private String code;
     private Bounds bounds;
     private Integer parentId;
-    private String geometryText;
+    private Geometry geometry;
    
     
     public Integer getParentId() {
@@ -35,11 +37,13 @@ public class NewAdminEntity {
     public void setBounds(Bounds bounds) {
         this.bounds = bounds;
     }
-    public String getGeometryText() {
-        return geometryText;
+
+    public Geometry getGeometry() {
+        return geometry;
     }
-    public void setGeometryText(String geometryText) {
-        this.geometryText = geometryText;
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
     
     

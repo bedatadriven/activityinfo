@@ -19,7 +19,7 @@
  <http://www.gnu.org/licenses/gpl-3.0.html>.
  #L%
 -->
-<#macro scaffolding title>
+<#macro scaffolding title leaflet=false>
 <!DOCTYPE html>
 
 <html>
@@ -31,6 +31,16 @@
   <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
   <link href="/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
   <link href="/css/style.css" rel="stylesheet" media="screen">
+  
+  <#if leaflet>
+  <script src="/js/leaflet-0.5.min.js"></script>
+  <link rel="stylesheet" href="/css/leaflet-0.5.css" />
+  <!--[if lte IE 8]>
+      <link rel="stylesheet" href="/css/leaflet-0.5.ie.css" />
+  <![endif]-->
+	 
+  </#if>
+  
 </head>
 <body>
     <header role="banner">

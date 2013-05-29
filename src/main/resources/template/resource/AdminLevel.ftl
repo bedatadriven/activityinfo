@@ -20,12 +20,14 @@
  #L%
 -->
 <#include "../page/Scaffolding.ftl">
-<@scaffolding title="${name}">
-
+<@scaffolding title="${name}" leaflet=true>
+	 
 	<@content>
 	<h1>${name}</h1>
 	
 	<p>Administrative Level in ${country.name}</p>
+	
+	<div id="map" style="height:350px;"></div>
 	
 	<#if parent?has_content >
 	<p>Subdivision of <a href="/resources/adminLevel/${parent.id?c}">${parent.name}</a></p>
@@ -48,5 +50,22 @@
 	</#if>
 	</#list>
 	</ul>
+	
+	<h2>Revision History</h2>
+	<dl>
+	<#list versions?sort_by("version") as version>
+	  <dt>Version ${version.version}</dt>
+	  <dd>${version.message!"No commit message"}</dd>
+	</#list>
+	</dl>
+	
+	
 	</@content>
+	<script type="application/javascript">
+	var map = L.map('map').setView([${country.bounds.centerLat}, ${country.bounds.centerLon}], 6);
+	L.tileLayer('/resources/adminLevel/${id?c}/tiles/{z}/{x}/{y}.png', {
+	    attribution: 'ActivityInfo',
+	    maxZoom: 10
+	}).addTo(map);
+	</script>
 </@scaffolding>

@@ -32,10 +32,13 @@ import org.activityinfo.server.database.hibernate.EntityManagerProvider;
 import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
+import org.hibernate.Session;
 import org.hibernate.ejb.Ejb3Configuration;
+import org.hibernate.ejb.HibernateEntityManager;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 public class MockHibernateModule extends AbstractModule {
@@ -54,6 +57,12 @@ public class MockHibernateModule extends AbstractModule {
         install(new TransactionModule());
     }
 
+    @Provides
+    public Session provideHibernateSession(EntityManager em) {
+        HibernateEntityManager hem = (HibernateEntityManager) em;
+        return hem.getSession();
+    }
+
     protected void configureEmf() {
         bind(EntityManagerFactory.class).toProvider(
             new Provider<EntityManagerFactory>() {
@@ -66,7 +75,7 @@ public class MockHibernateModule extends AbstractModule {
                     if (emf == null) {
                         Ejb3Configuration config = new Ejb3Configuration();
                         config.setProperty("hibernate.dialect",
-                            "org.hibernate.dialect.MySQLDialect");
+                            "org.hibernatespatial.mysql.MySQLSpatialDialect");
                         config.setProperty("hibernate.connection.driver_class",
                             "com.mysql.jdbc.Driver");
                         config.setProperty("hibernate.connection.url",

@@ -47,10 +47,6 @@ public class TiledMap {
      */
     private final int zoom;
 
-    /**
-     * The geographic center of the map
-     */
-    private final AiLatLng geoCenter;
 
     /**
      * The upper left hand corner of the image, in projected coordinate system
@@ -64,7 +60,6 @@ public class TiledMap {
         this.width = width;
         this.height = height;
         this.zoom = zoom;
-        this.geoCenter = geographicCenter;
 
         /*
          * Calculate the center in pixels
@@ -75,6 +70,14 @@ public class TiledMap {
         origin = center.translate(-(width / 2), -(height / 2));
 
         tileOrigin = TileMath.tileForPoint(origin);
+    }
+
+    public TiledMap(int zoom, Tile tile) {
+        this.width = TILE_SIZE;
+        this.height = TILE_SIZE;
+        this.zoom = zoom;
+        this.tileOrigin = tile;
+        this.origin = TileMath.pointForTile(tileOrigin);
     }
 
     public void drawLayer(TileHandler drawer, TileProvider source) {
@@ -105,6 +108,7 @@ public class TiledMap {
             .translate(-origin.getDoubleX(), -origin.getDoubleY());
     }
 
+
     public AiLatLng fromPixelToLatLng(Point px) {
         return TileMath.inverse(
             px.translate(origin.getDoubleX(), origin.getDoubleY()), this.zoom);
@@ -126,7 +130,4 @@ public class TiledMap {
         return zoom;
     }
 
-    public AiLatLng getGeoCenter() {
-        return geoCenter;
-    }
 }

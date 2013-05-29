@@ -172,16 +172,6 @@ public class AdminEntity implements java.io.Serializable {
         this.bounds = bounds;
     }
 
-    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy =
-    // "adminEntities")
-    // public Set<Location> getLocations() {
-    // return this.locations;
-    // }
-    //
-    // public void setLocations(Set<Location> locations) {
-    // this.locations = locations;
-    // }
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
     public Set<AdminEntity> getChildren() {
         return this.children;

@@ -50,7 +50,6 @@ import org.activityinfo.shared.report.content.BubbleMapMarker;
 import org.activityinfo.shared.report.content.IconMapMarker;
 import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.content.PieMapMarker;
-import org.activityinfo.shared.report.content.Point;
 import org.activityinfo.shared.report.model.MapReportElement;
 
 import com.google.code.appengine.awt.BasicStroke;
@@ -66,9 +65,6 @@ import com.google.code.appengine.awt.geom.Rectangle2D;
 import com.google.code.appengine.awt.image.BufferedImage;
 import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Renders a MapElement and its generated MapContent
@@ -172,7 +168,7 @@ public class ImageMapRenderer {
         for (AdminGeo adminGeo : geometry) {
             AdminMarker polygon = overlay.getPolygon(adminGeo.getId());
             if (polygon != null) {
-                GeneralPath path = toPath(map, adminGeo.getGeometry());
+                GeneralPath path = PathUtils.toPath(map, adminGeo.getGeometry());
                 g2d.setColor(bubbleFillColor(ColorUtil.colorFromString(polygon
                     .getColor())));
                 g2d.fill(path);
@@ -180,36 +176,6 @@ public class ImageMapRenderer {
                 g2d.draw(path);
             }
         }
-    }
-
-    private GeneralPath toPath(TiledMap map, Geometry geometry) {
-        GeneralPath path = new GeneralPath();
-        for (int i = 0; i != geometry.getNumGeometries(); ++i) {
-            Polygon polygon = (Polygon) geometry.getGeometryN(i);
-            addRingToPath(map, path, polygon.getExteriorRing().getCoordinates());
-            for (int j = 0; j != polygon.getNumInteriorRing(); ++j) {
-                addRingToPath(map, path, polygon.getInteriorRingN(j)
-                    .getCoordinates());
-            }
-            break;
-        }
-        return path;
-    }
-
-    private void addRingToPath(TiledMap map, GeneralPath path,
-        Coordinate[] coordinates) {
-        for (int j = 0; j != coordinates.length; ++j) {
-            Point point = map.fromLatLngToPixel(new AiLatLng(coordinates[j].y,
-                coordinates[j].x));
-            if (j == 0) {
-                path.moveTo((float) point.getDoubleX(),
-                    (float) point.getDoubleY());
-            } else {
-                path.lineTo((float) point.getDoubleX(),
-                    (float) point.getDoubleY());
-            }
-        }
-        path.closePath();
     }
 
     public static void drawPieMarker(Graphics2D g2d, PieMapMarker marker) {

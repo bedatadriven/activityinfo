@@ -31,22 +31,29 @@ import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.endpoint.refine.AdminEntityPreview;
 
 import com.sun.jersey.api.view.Viewable;
+import com.vividsolutions.jts.geom.Geometry;
 
-@Path("/adminUnit")
 public class AdminEntityResource {
 
-    private AdminEntity unit;
+    private AdminEntity entity;
 
     public AdminEntityResource(AdminEntity unit) {
         super();
-        this.unit = unit;
+        this.entity = unit;
     }
 
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Viewable get() {
         return new Viewable("/resource/AdminEntity.ftl", new AdminEntityPreview(
-            unit));
+            entity));
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/geometry")
+    public Geometry getGeometry() {
+        return entity.getGeometry();
     }
 
 }

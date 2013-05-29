@@ -31,6 +31,7 @@ import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Environment;
 import org.hibernate.ejb.Ejb3Configuration;
@@ -81,6 +82,12 @@ public class HibernateModule extends ServletModule {
             HibernateSessionScoped.class);
     }
 
+    @Provides
+    public Session provideSession(EntityManager em) {
+        HibernateEntityManager hem = (HibernateEntityManager) em;
+        return hem.getSession();
+    }
+
     protected static class EntityManagerFactoryProvider implements
         Provider<EntityManagerFactory> {
         private org.activityinfo.server.util.config.DeploymentConfiguration configProperties;
@@ -118,6 +125,7 @@ public class HibernateModule extends ServletModule {
         HibernateEntityManagerFactory hemf = (HibernateEntityManagerFactory) emf;
         return hemf.getSessionFactory();
     }
+
 
     public static List<Class> getPersistentClasses() {
         try {

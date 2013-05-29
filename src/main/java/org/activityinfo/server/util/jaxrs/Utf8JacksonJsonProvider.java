@@ -14,6 +14,8 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
+import com.bedatadriven.geojson.GeoJsonModule;
+
 
 /**
  * Wraps the JacksonJsonProvider to refine the ObjectMapper and 
@@ -43,8 +45,7 @@ public class Utf8JacksonJsonProvider extends JacksonJsonProvider {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // mapper.registerModule(new JsonDtoModule("dto",
-        // Version.unknownVersion()));
+        mapper.registerModule(new GeoJsonModule());
         return mapper;
     }
 

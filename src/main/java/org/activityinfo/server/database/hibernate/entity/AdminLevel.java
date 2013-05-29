@@ -53,6 +53,8 @@ public class AdminLevel implements java.io.Serializable {
     private Set<AdminEntity> entities = new HashSet<AdminEntity>(0);
     private Set<AdminLevel> childLevels = new HashSet<AdminLevel>(0);
     private Set<LocationType> boundLocationTypes = new HashSet<LocationType>(0);
+    private Set<AdminLevelVersion> versions = new HashSet<AdminLevelVersion>(0);
+
     private int version;
     private boolean deleted;
 
@@ -134,6 +136,15 @@ public class AdminLevel implements java.io.Serializable {
 
     public void setEntities(Set<AdminEntity> entities) {
         this.entities = entities;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "level")
+    public Set<AdminLevelVersion> getVersions() {
+        return this.versions;
+    }
+
+    public void setVersions(Set<AdminLevelVersion> versions) {
+        this.versions = versions;
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "boundAdminLevel")
