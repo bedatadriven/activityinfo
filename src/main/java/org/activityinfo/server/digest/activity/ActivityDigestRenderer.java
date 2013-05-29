@@ -51,6 +51,8 @@ public class ActivityDigestRenderer implements DigestRenderer {
     private void renderHeader(StringBuilder html, ActivityDigestModel model) {
         html.append("<div class='act-header'>");
         html.append(I18N.MESSAGES.activityDigestIntro(model.getDays()));
+        html.append("<br/>");
+        html.append(I18N.MESSAGES.digestUnsubscribe());
         html.append("</div>");
     }
 

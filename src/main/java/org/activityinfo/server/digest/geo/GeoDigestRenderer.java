@@ -64,7 +64,7 @@ public class GeoDigestRenderer implements DigestRenderer {
         html.append("<div class='geo-header'>");
         html.append(I18N.MESSAGES.geoDigestIntro(model.getDays() * 24));
         html.append("<br/>");
-        html.append(I18N.MESSAGES.geoDigestUnsubscribe());
+        html.append(I18N.MESSAGES.digestUnsubscribe());
         html.append("</div>");
     }
 
