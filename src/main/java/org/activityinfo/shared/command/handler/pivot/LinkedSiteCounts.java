@@ -22,7 +22,12 @@ package org.activityinfo.shared.command.handler.pivot;
  * #L%
  */
 
+import org.activityinfo.shared.command.PivotSites;
+import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.db.Tables;
+import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.report.content.TargetCategory;
+import org.activityinfo.shared.report.model.DimensionType;
 
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 
@@ -32,9 +37,27 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
  * indicator -> activity -> site) instead of the sites that are directly linked to the database or activity the filter
  * is set to (via database -> activity -> site).
  */
-public class LinkedSiteCounts extends SiteCounts {
+public class LinkedSiteCounts extends BaseTable {
+
     @Override
-    protected void addActivityJoin(SqlQuery query) {
+    public boolean accept(PivotSites command) {
+        return command.getValueType() == ValueType.TOTAL_SITES;
+    }
+
+    @Override
+    public void setupQuery(PivotSites command, SqlQuery query) {
+        if (command.getFilter().isRestricted(DimensionType.Indicator)) {
+            // we only need to pull in indicator values if there is a
+            // filter on indicators
+            query.from(Tables.INDICATOR_VALUE, "V");
+            query.leftJoin(Tables.REPORTING_PERIOD, "RP").on(
+                "V.ReportingPeriodId = RP.ReportingPeriodId");
+            query.leftJoin(Tables.SITE, "Site").on("RP.SiteId = Site.SiteId");
+
+        } else {
+            query.from(Tables.SITE, "Site");
+        }
+
         // select only the linked sites
         query.innerJoin(Tables.INDICATOR, "SrcInd").on(
             "SrcInd.ActivityId = Site.ActivityId");
@@ -44,5 +67,56 @@ public class LinkedSiteCounts extends SiteCounts {
             "IndLink.DestinationIndicatorId = DestInd.IndicatorId");
         query.leftJoin(Tables.ACTIVITY, "Activity").on(
             "Activity.ActivityId = DestInd.ActivityId");
+
+        query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
+            "Activity.DatabaseId = UserDatabase.DatabaseId");
+        query.leftJoin(Tables.REPORTING_PERIOD, "Period").on(
+            "Period.SiteId = Site.SiteId");
+
+        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on(
+            "Site.SiteId = AttributeValue.SiteId");
+        query.leftJoin(Tables.ATTRIBUTE, "Attribute").on(
+            "AttributeValue.AttributeId = Attribute.AttributeId");
+        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup").on(
+            "Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
+
+        query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
+        query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT),
+            ValueFields.AGGREGATION);
+    }
+
+    @Override
+    public String getDimensionIdColumn(DimensionType type) {
+        switch (type) {
+        case Partner:
+            return "Site.PartnerId";
+        case Activity:
+            return "Site.ActivityId";
+        case Database:
+            return "Activity.DatabaseId";
+        case Site:
+            return "Site.SiteId";
+        case Project:
+            return "Site.ProjectId";
+        case Location:
+            return "Site.LocationId";
+        case Indicator:
+            return "V.IndicatorId";
+        case Attribute:
+            return "AttributeValue.AttributeId";
+        case AttributeGroup:
+            return "Attribute.AttributeGroupId";
+        }
+        throw new UnsupportedOperationException(type.name());
+    }
+
+    @Override
+    public String getDateCompleteColumn() {
+        return "Period.Date2";
+    }
+
+    @Override
+    public TargetCategory getTargetCategory() {
+        return TargetCategory.REALIZED;
     }
 }

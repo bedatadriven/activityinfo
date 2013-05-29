@@ -91,7 +91,9 @@
     name="Catastrophe Naturelle" />
   <attribute attributeGroupId="1" attributeId="2" sortOrder="1"
     name="Deplacement" />
-
+  
+  <attributeValue siteId="1" attributeId="1" value="1" />
+    
 <!-- NFI Attribute 2: Contenu de Kit -->
 
   <attributeGroup attributeGroupId="2" name="contenu du kit"
@@ -102,6 +104,8 @@
 
   <attribute attributeGroupId="2" attributeId="4" name="Soap"
     sortOrder="2" />
+
+  <attributeValue siteId="2" attributeId="3" value="1" />
 
   <attributeGroup attributeGroupId="3" name="Something about Kivu"
     multipleAllowed="1" sortOrder="1" mandatory="0" />
@@ -143,6 +147,9 @@
   <partner partnerId="1" name="NRC" />
   <partnerInDatabase partnerId="1" databaseId="1" />
   <partnerInDatabase partnerId="1" databaseId="2" />
+  <partner partnerId="2" name="NRC2" />
+  <partnerInDatabase partnerId="2" databaseId="1" />
+  <partnerInDatabase partnerId="2" databaseId="2" />
 
 <!--  LINK Source DB to DEST db -->
 
@@ -178,7 +185,7 @@
   <locationAdminLink locationId="2" adminEntityId="2" />
   <locationAdminLink locationId="2" adminEntityId="12" />
 
-  <site siteId="2" activityId="1" locationId="2" partnerId="1"
+  <site siteId="2" activityId="1" locationId="2" partnerId="2"
     Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01"
     DateEdited="2009-02-01" timeEdited="3" ProjectId="1" />
 

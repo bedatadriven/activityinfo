@@ -475,7 +475,26 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         forTotalSiteCounts();
         execute();
 
-        assertThat().forPartner(1).thereIsOneBucketWithValue(3).andItsPartnerLabelIs("NRC");
+        assertThat().forPartner(1).thereIsOneBucketWithValue(2).andItsPartnerLabelIs("NRC");
+        assertThat().forPartner(2).thereIsOneBucketWithValue(1).andItsPartnerLabelIs("NRC2");
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedAttributegroupSiteCount() {
+        withAttributeGroupDim();
+        forTotalSiteCounts();
+        execute();
+
+        assertThat().thereAre(2).buckets();
+        Dimension dim = new Dimension(DimensionType.AttributeGroup);
+
+        Bucket causeBucket = findBucketsByCategory(buckets, dim, new EntityCategory(1)).get(0);
+        assertEquals(causeBucket.getCategory(dim).getLabel(), "cause");
+        assertEquals("Is LinkedSiteCounts query correct?", (int) causeBucket.doubleValue(), 2);
+
+        Bucket contenuBucket = findBucketsByCategory(buckets, dim, new EntityCategory(2)).get(0);
+        assertEquals(contenuBucket.getCategory(dim).getLabel(), "contenu du kit");
     }
 
     @Test
@@ -484,7 +503,6 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         withIndicatorAsDimension();
         withAttributeGroupDim(1);
         execute();
-        
     }
     
     
@@ -552,6 +570,10 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private void withPartnerAsDimension() {
         partnerDim = new Dimension(DimensionType.Partner);
         dimensions.add(partnerDim);
+    }
+
+    private void withAttributeGroupDim() {
+        dimensions.add(new Dimension(DimensionType.AttributeGroup));
     }
 
     private void withAttributeGroupDim(int groupId) {
