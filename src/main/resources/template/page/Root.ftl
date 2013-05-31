@@ -100,10 +100,15 @@
 
 	<@footer/>
 	<@scripts>
+	<script type="text/javascript">
 	<#if showLogin>
-		<script type="text/javascript">
 		$('#loginModal').modal('show');
-		</script>
+	<#else>
+		if(location.hash) {
+			$('#loginModal').modal('show');
+			$('#emailInput').focus();
+		}
 	</#if>
+	</script>
 	</@scripts>
 </@scaffolding>

@@ -24,7 +24,12 @@
 
     <@content>
     <div class="row-fluid">
-        <div class="span12">
+		<div class="span12">
+			<h3>${label.signUpTitle}</h3>
+		</div>
+	</div>
+    <div class="row-fluid">
+        <div class="span6">
                             
             <#if genericError == true || formError == true>
                 <div class="alert alert-error">
@@ -38,7 +43,6 @@
                 </div>
            
             <#else>
-                <h3>${label.signUpTitle}</h3>
                 
                 <form action="" method="post" id="signUpForm">
                 
@@ -95,7 +99,33 @@
                     </div>
                 </form>
             </#if>
-            
+        </div>
+        <div class="span6">
+
+        	
+        	<div class="well">
+        		<h4>Free for teams of ten or less</h4>
+        		
+        		<p>Please feel free to use ActivityInfo.org for 
+        		small field teams. If you plan to adopt the system
+        		across your organization, we'll ask to you to make
+        		an annual contribution to the system's running costs.<p>
+        		
+        		<p><a href="mailto:activityinfo@bedatadriven.com">Contact us</a>
+        		for more information.</p>
+        		
+        		<p>In any case, your welcome to evaluate the system without 
+        		restriction as long as needed!</p>
+        		
+        	</div>     
+        	<div class="alert">
+        		<h4>Looking for your Cluster's database?</h4>
+        		
+        		<p>Only your cluster lead can grant you access 
+        		to the cluster's database. Please contact your local
+        		focal point and request access.</p>
+        		
+        	</div>     
         </div>
     </div>
     </@content>
