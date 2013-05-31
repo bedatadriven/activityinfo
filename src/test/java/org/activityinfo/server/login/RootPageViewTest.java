@@ -1,4 +1,4 @@
-package org.activityinfo.server.login.model;
+package org.activityinfo.server.login;
 
 /*
  * #%L
@@ -22,19 +22,14 @@ package org.activityinfo.server.login.model;
  * #L%
  */
 
-public class LoginPageModel extends PageModel {
-    private boolean loginError;
+import org.activityinfo.server.login.model.RootPageModel;
+import org.junit.Test;
 
-    public LoginPageModel() {
+public class RootPageViewTest extends ViewTestCase {
+
+    @Test
+    public void templateProcesses() {
+        assertProcessable(new RootPageModel());
     }
 
-    public static LoginPageModel unsuccessful() {
-        LoginPageModel model = new LoginPageModel();
-        model.loginError = true;
-        return model;
-    }
-
-    public boolean isLoginError() {
-        return loginError;
-    }
 }

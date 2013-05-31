@@ -47,12 +47,26 @@
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
                 </a>
-               <div class="pull-right">
-		         <ul class="upper nav">
-		          <li  class="language <#if .lang="en">active</#if>"><a href="">en</a></li>
-		          <li  class="language <#if .lang="fr">active</#if>"><a href="">fr</a></li> 
-		         </ul>
-		        </div>	
+                <div class="pull-right">
+                 <ul class="upper nav">
+                  <li  class="language <#if .lang="en">active</#if>"><a href="">en</a></li>
+                  <li  class="language <#if .lang="fr">active</#if>"><a href="">fr</a></li>
+                  <li class="normal-header">
+                    <a data-toggle="modal" href="#loginModal" class="btn">${label.login}</a>
+                  </li>
+                  <li>
+                    <a href="/signUp" class="btn">${label.signUpButton}</a>
+                  </li>
+                 </ul>
+                </div>
+                <div class="nav-collapse pull-right normal-header">
+                  <ul id="menu-activity-info" class="nav">
+                    <li><a href="//about.activityinfo.org/">Home</a></li>
+                    <li><a href="//about.activityinfo.org/feature/flexible/">Features</a></li>
+                    <li><a href="//about.activityinfo.org/case-studies/">Who uses AI?</a></li>
+                    <li><a href="//about.activityinfo.org/learn/">Learning Center</a></li>
+                  </ul>
+                </div>
               </nav>
             </div>
           </div>
@@ -83,70 +97,132 @@
 
 <#macro scripts>
   <script src="/js/jquery-1.9.1.min.js"></script>
-  <script>
+  <script type="text/javascript" src="/js/bootstrap-modal-2.3.2-min.js"></script>
+	
+  <script type="text/javascript">
 	 
   		$('.language').click(function() {
   			var language = $(this).text();
   			var now = new Date();
    			now.setMonth( now.getMonth() + 1 );
    			document.cookie="locale" + "=" + language +";expires=" + now.toUTCString();
-			
 	 	});
 	 	
+	 	// login popup
+		 	
+		var enableForm = function(enabled) {
+			$('#loginButton').prop('disabled', !enabled);
+			$('#loginSpinner').toggleClass('hide', enabled);
+		}	
+	
+		$('#loginForm').submit(function() {
+			
+			$('#loginAlert').addClass('hide');
+		
+			enableForm(false);		
+			$.ajax({
+				url: '/login/ajax',
+				type: 'POST', 
+				data: {
+					email: $('#emailInput').val(),
+					password: $('#passwordInput').val(),
+					ajax: 'true'
+				},
+				success: function() {
+					if(window.location.pathname != '/') {
+						window.location = '/' + window.location.search + window.location.hash;
+					} else {
+						window.location.reload(true);
+					}
+				},
+				error: function(xhr) {
+					$('#loginAlert').toggleClass('hide', false);
+				},
+				complete: function() {
+					enableForm(true);
+				}
+			});
+			return false;
+		});
+		
+		$('#emailInput').focus();
 	 	
   </script>
   <#nested>
 </#macro>
 
 <#macro footer>
-	<footer role="contentinfo" class="navbar-inner">				
-		<div id="inner-footer" class="container clearfix  row">				  
-			<div id="widget-footer" class="clearfix row-fluid">
-		    	<div class="span3">
-			    	<div id="text-4" class="widget widget_text">
-			    		<h4>Developed by</h4>			
-			    		<div class="textwidget">
-			    			<p><a href="http://www.unicef.org" target="_blank">
-			    			<img src="http://about.activityinfo.org/wp-content/uploads/2011/10/unicef-logo.png"></a></p>
-							<p><a href="http://www.bedatadriven.com" target="_blank"><img src="http://about.activityinfo.org/wp-content/uploads/2011/10/bdd.png"></a></p>
-						</div>
-					</div>
-				</div>
-				<div class="span3">
-					<div id="text-5" class="widget widget_text">
-						<h4>Partners</h4>
-						<div class="textwidget"><p><a href="http://www.unocha.org" target="_blank">
-							<img src="http://about.activityinfo.org/content/wp-content/uploads/2011/10/OCHA-Logo.png"></a></p>
-						</div>
-					</div>
-				</div>
-			    <div class="span3">
-				</div>
-			    <div class="span3">
-					<div id="text-6" class="widget widget_text"><h4>Contact us</h4>
-						<div class="textwidget">
-							<table cellpadding="2" cellspacing="0" width="100%">
-							<tbody><tr>
-							<td valign="top">
-							<img src="http://activityinfo.dreamhosters.com/content/wp-content/uploads/2011/10/drc-flag-e1319539034502.gif" align="left" width="25" height="16"> </td>
-							<td> Cluster use within the DRC: <a href="mailto:pknguessan@unicef.org"> pknguessan@unicef.org</a></td>
-							</tr>
-							<tr>
-							<td valign="top"><img src="http://activityinfo.dreamhosters.com/content/wp-content/uploads/2011/10/globe-ico.png" align="left"></td>
-							<td> Using ActivityInfo within your cluster or for your organisation: <a href="mailto:cbarnhoorn@bedatadriven.com"> cbarnhoorn@bedatadriven.com</a></td>
-							</tr>
-							<tr>
-							<td valign="top"><img src="http://activityinfo.dreamhosters.com/content/wp-content/uploads/2011/10/help-icon.png" align="left"></td>
-							<td> For help and general questions: <a href="mailto:activityinfo@bedatadriven.com">activityinfo@bedatadriven.com</a></td>
-							</tr></tbody>
-							</table> 
-						</div>
-					</div>
-				</div>
-			</div>
-			<nav class="clearfix"></nav>
-													
-		</div> <!-- end #inner-footer -->
-					
-	</footer>
+
+  <div style="border-top: 1px solid #E3E3E3; padding-top: 10px; margin-top: 25px;">
+    <footer role="contentinfo" class="container-fluid">
+      <div id="inner-footer" class="row-fluid">
+        <div class="span3">
+          <div id="text-4" class="widget widget_text">
+            <h4>Developed by</h4>
+            <div class="textwidget">
+              <p><a href="http://www.unicef.org" target="_blank">
+                <img src="/img/unicef-logo.png"></a></p>
+              <p><a href="http://www.bedatadriven.com" target="_blank">
+                <img src="/img/bdd.png"></a></p>
+            </div>
+          </div>
+        </div>
+        <div class="span3">
+          <div id="text-5" class="widget widget_text">
+            <h4>Partners</h4>
+            <div class="textwidget">
+              <p><a href="http://www.unocha.org" target="_blank">
+                <img src="//about.activityinfo.org/wp-content/uploads/2011/10/OCHA-Logo.png"></a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="span3">
+          &nbsp;
+        </div>
+        <div class="span3">
+        </div>
+      </div>
+    </div>
+    </footer> <!-- end footer -->
+  </div>
+  
+  <div id="loginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
+          <h3 id="myModalLabel">Login</h3>
+      </div>
+      <div class="modal-body">
+          <div class="alert alert-error hide" id="loginAlert">
+          ${label.incorrectLogin}
+          </div>
+          <form class="form-horizontal" id="loginForm" action="/login" method="POST">
+              <div class="control-group" id="emailGroup">
+                  <label class="control-label" for="emailInput">${label.emailAddress}</label>
+                  <div class="controls">
+                      <input type="text" id="emailInput" name="email" placeholder="${label.emailAddress}">
+                      <span class="help-inline hide" id="emailHelp">Please enter your email address</span>
+                  </div>
+              </div>
+              <div class="control-group" id="passwordGroup">
+                  <label class="control-label" for="passwordInput">${label.password}</label>
+                  <div class="controls">
+                      <input type="password" name="password" id="passwordInput" placeholder="${label.password}">
+                      <span class="help-inline hide" id="passwordHelp">Please enter your password</span>
+                  </div>
+              </div>
+              <div class="control-group">
+                  <div class="controls">
+                      <button id="loginButton" type="submit" class="btn btn-primary btn-large">${label.login} &raquo;</button>
+                      <img src="/img/ajax-loader-spinner.gif" width="16" height="16" class="hide" id="loginSpinner">
+
+                      <div class="login-problem" style="margin-top:25px">
+                          <a href="loginProblem">${label.forgottenYourPassword}</a>
+                      </div>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+  
 </#macro>

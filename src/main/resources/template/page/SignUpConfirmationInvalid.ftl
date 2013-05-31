@@ -33,6 +33,9 @@
          </div>
     </div>
     </@content>
+
+    <@footer/>
+
     
     <@scripts>
     </@scripts>

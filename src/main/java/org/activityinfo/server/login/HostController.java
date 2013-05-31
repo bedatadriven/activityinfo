@@ -37,7 +37,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.login.model.HostPageModel;
-import org.activityinfo.server.login.model.LoginPageModel;
+import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.server.util.logging.LogException;
 
@@ -68,7 +68,7 @@ public class HostController {
         @QueryParam("redirect") boolean redirect) throws Exception {
         if (!authProvider.isAuthenticated()) {
             return Response
-                .ok(new LoginPageModel().asViewable())
+                .ok(new RootPageModel().asViewable())
                 .type(MediaType.TEXT_HTML)
                 .cacheControl(CacheControl.valueOf("no-cache"))
                 .build();

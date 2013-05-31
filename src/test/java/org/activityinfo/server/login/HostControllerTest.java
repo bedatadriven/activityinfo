@@ -34,9 +34,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
-import org.activityinfo.server.login.HostController;
 import org.activityinfo.server.login.model.HostPageModel;
-import org.activityinfo.server.login.model.LoginPageModel;
+import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.junit.Before;
@@ -74,7 +73,7 @@ public class HostControllerTest extends ControllerTestCase {
 
         assertThat(response.getEntity(), instanceOf(Viewable.class));
         assertThat(((Viewable) response.getEntity()).getModel(),
-            instanceOf(LoginPageModel.class));
+            instanceOf(RootPageModel.class));
 
     }
 
