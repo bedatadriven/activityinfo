@@ -114,7 +114,7 @@
         		<p><a href="mailto:activityinfo@bedatadriven.com">Contact us</a>
         		for more information.</p>
         		
-        		<p>In any case, your welcome to evaluate the system without 
+        		<p>In any case, you're welcome to evaluate the system without 
         		restriction as long as needed!</p>
         		
         	</div>     
