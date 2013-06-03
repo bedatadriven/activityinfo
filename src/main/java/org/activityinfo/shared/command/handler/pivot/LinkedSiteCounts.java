@@ -46,43 +46,30 @@ public class LinkedSiteCounts extends BaseTable {
 
     @Override
     public void setupQuery(PivotSites command, SqlQuery query) {
-        if (command.getFilter().isRestricted(DimensionType.Indicator)) {
-            // we only need to pull in indicator values if there is a
-            // filter on indicators
-            query.from(Tables.INDICATOR_VALUE, "V");
-            query.leftJoin(Tables.REPORTING_PERIOD, "RP").on(
-                "V.ReportingPeriodId = RP.ReportingPeriodId");
-            query.leftJoin(Tables.SITE, "Site").on("RP.SiteId = Site.SiteId");
+        query.from(Tables.INDICATOR_LINK, "IndicatorLink");
+        query.leftJoin(Tables.INDICATOR_VALUE, "V")
+            .on("IndicatorLink.SourceIndicatorId=V.IndicatorId");
+        query.leftJoin(Tables.INDICATOR, "Indicator")
+            .on("IndicatorLink.DestinationIndicatorId=Indicator.IndicatorId");
+        query.leftJoin(Tables.ACTIVITY, "Activity")
+            .on("Activity.ActivityId=Indicator.ActivityId");
+        query.leftJoin(Tables.USER_DATABASE, "UserDatabase")
+            .on("UserDatabase.DatabaseId=Activity.DatabaseId");
 
-        } else {
-            query.from(Tables.SITE, "Site");
-        }
+        query.leftJoin(Tables.REPORTING_PERIOD, "Period")
+            .on("Period.ReportingPeriodId=V.ReportingPeriodId");
+        query.leftJoin(Tables.SITE, "Site")
+            .on("Site.SiteId=Period.SiteId");
 
-        // select only the linked sites
-        query.innerJoin(Tables.INDICATOR, "SrcInd").on(
-            "SrcInd.ActivityId = Site.ActivityId");
-        query.innerJoin(Tables.INDICATOR_LINK, "IndLink").on(
-            "SrcInd.IndicatorId = IndLink.SourceIndicatorId");
-        query.innerJoin(Tables.INDICATOR, "DestInd").on(
-            "IndLink.DestinationIndicatorId = DestInd.IndicatorId");
-        query.leftJoin(Tables.ACTIVITY, "Activity").on(
-            "Activity.ActivityId = DestInd.ActivityId");
-
-        query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
-            "Activity.DatabaseId = UserDatabase.DatabaseId");
-        query.leftJoin(Tables.REPORTING_PERIOD, "Period").on(
-            "Period.SiteId = Site.SiteId");
-
-        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on(
-            "Site.SiteId = AttributeValue.SiteId");
-        query.leftJoin(Tables.ATTRIBUTE, "Attribute").on(
-            "AttributeValue.AttributeId = Attribute.AttributeId");
-        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup").on(
-            "Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
+        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue")
+            .on("Site.SiteId = AttributeValue.SiteId");
+        query.leftJoin(Tables.ATTRIBUTE, "Attribute")
+            .on("AttributeValue.AttributeId = Attribute.AttributeId");
+        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup")
+            .on("Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
 
         query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
-        query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT),
-            ValueFields.AGGREGATION);
+        query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT), ValueFields.AGGREGATION);
     }
 
     @Override
@@ -91,7 +78,7 @@ public class LinkedSiteCounts extends BaseTable {
         case Partner:
             return "Site.PartnerId";
         case Activity:
-            return "Site.ActivityId";
+            return "Indicator.ActivityId";
         case Database:
             return "Activity.DatabaseId";
         case Site:
@@ -101,7 +88,7 @@ public class LinkedSiteCounts extends BaseTable {
         case Location:
             return "Site.LocationId";
         case Indicator:
-            return "V.IndicatorId";
+            return "IndicatorLink.DestinationIndicatorId";
         case Attribute:
             return "AttributeValue.AttributeId";
         case AttributeGroup:

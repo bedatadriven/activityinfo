@@ -142,8 +142,7 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
     }
 
     /**
-     * year, quarter and month functions in SqliteDialect throw
-     * java.lang.UnsupportedOperationException
+     * year, quarter and month functions in SqliteDialect throw java.lang.UnsupportedOperationException
      */
     @Test(expected = RuntimeException.class)
     public void testYears() {
@@ -219,8 +218,7 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
     }
 
     /**
-     * year, quarter and month functions in SqliteDialect throw
-     * java.lang.UnsupportedOperationException
+     * year, quarter and month functions in SqliteDialect throw java.lang.UnsupportedOperationException
      */
     @Test(expected = RuntimeException.class)
     @OnDataSet("/dbunit/sites-simple-target.db.xml")
@@ -388,87 +386,85 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
 
     }
 
-    // @Test
-    // @OnDataSet("/dbunit/sites-deleted.db.xml")
-    // public void testDeletedNotIncluded() {
-    //
-    // withIndicatorAsDimension();
-    // filter.addRestriction(DimensionType.Indicator, 1);
-    //
-    // execute();
-    //
-    // assertEquals(1, buckets.size());
-    // assertEquals(13600, (int) buckets.get(0).doubleValue());
-    // }
-    //
-    // @Test
-    // @OnDataSet("/dbunit/sites-deleted.db.xml")
-    // public void testDeletedNotLinked() {
-    //
-    // withIndicatorAsDimension();
-    // filter.addRestriction(DimensionType.Indicator, Arrays.asList(400,401));
-    //
-    // execute();
-    //
-    // assertEquals(1, buckets.size());
-    // assertEquals(13600, (int) buckets.get(0).doubleValue());
-    // }
-    //
-    //
-    // @Test
-    // @OnDataSet("/dbunit/sites-zeros.db.xml")
-    // public void testZerosExcluded() {
-    //
-    // withIndicatorAsDimension();
-    // filter.addRestriction(DimensionType.Indicator, 5);
-    //
-    // execute();
-    //
-    // assertEquals(1, buckets.size());
-    // assertEquals(0, (int) buckets.get(0).doubleValue());
-    // assertEquals(5, ((EntityCategory)
-    // buckets.get(0).getCategory(this.indicatorDim)).getId());
-    // }
-    //
-    // @Test
-    // @OnDataSet("/dbunit/sites-weeks.db.xml")
-    // public void testWeeks() {
-    //
-    // final Dimension weekDim = new DateDimension(DateUnit.WEEK_MON);
-    // dimensions.add(weekDim);
-    //
-    // filter.addRestriction(DimensionType.Indicator, 1);
-    //
-    // execute();
-    //
-    // assertEquals(3, buckets.size());
-    // assertEquals(3600, (int) findBucketByWeek(buckets, 2011,
-    // 52).doubleValue());
-    // assertEquals(1500, (int) findBucketByWeek(buckets, 2012,
-    // 1).doubleValue());
-    // assertEquals(4142, (int) findBucketByWeek(buckets, 2012,
-    // 13).doubleValue());
-    //
-    // }
-    //
-    // @Test
-    // @OnDataSet("/dbunit/sites-linked.db.xml")
-    // public void testLinked() {
-    // withIndicatorAsDimension();
-    // filter.addRestriction(DimensionType.Indicator, 1);
-    // execute();
-    // assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
-    // }
-    //
-    // @Test
-    // @OnDataSet("/dbunit/sites-linked.db.xml")
-    // public void testLinkedValuesAreDuplicated() {
-    // withIndicatorAsDimension();
-    // filter.addRestriction(DimensionType.Indicator, Arrays.asList(1,3));
-    // execute();
-    // assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
-    // assertThat().forIndicator(3).thereIsOneBucketWithValue(1500);
-    // }
+    @Test
+    @OnDataSet("/dbunit/sites-deleted.db.xml")
+    public void testDeletedNotIncluded() {
+
+        withIndicatorAsDimension();
+        filter.addRestriction(DimensionType.Indicator, 1);
+
+        execute();
+
+        assertEquals(1, buckets.size());
+        assertEquals(13600, (int) buckets.get(0).doubleValue());
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-deleted.db.xml")
+    public void testDeletedNotLinked() {
+
+        withIndicatorAsDimension();
+        filter.addRestriction(DimensionType.Indicator, Arrays.asList(400, 401));
+
+        execute();
+
+        assertEquals(1, buckets.size());
+        assertEquals(13600, (int) buckets.get(0).doubleValue());
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-zeros.db.xml")
+    public void testZerosExcluded() {
+
+        withIndicatorAsDimension();
+        filter.addRestriction(DimensionType.Indicator, 5);
+
+        execute();
+
+        assertEquals(1, buckets.size());
+        assertEquals(0, (int) buckets.get(0).doubleValue());
+        assertEquals(5, ((EntityCategory)
+            buckets.get(0).getCategory(this.indicatorDim)).getId());
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-weeks.db.xml")
+    public void testWeeks() {
+
+        final Dimension weekDim = new DateDimension(DateUnit.WEEK_MON);
+        dimensions.add(weekDim);
+
+        filter.addRestriction(DimensionType.Indicator, 1);
+
+        execute();
+
+        assertEquals(3, buckets.size());
+        assertEquals(3600, (int) findBucketByWeek(buckets, 2011,
+            52).doubleValue());
+        assertEquals(1500, (int) findBucketByWeek(buckets, 2012,
+            1).doubleValue());
+        assertEquals(4142, (int) findBucketByWeek(buckets, 2012,
+            13).doubleValue());
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinked() {
+        withIndicatorAsDimension();
+        filter.addRestriction(DimensionType.Indicator, 1);
+        execute();
+        assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedValuesAreDuplicated() {
+        withIndicatorAsDimension();
+        filter.addRestriction(DimensionType.Indicator, Arrays.asList(1, 3));
+        execute();
+        assertThat().forIndicator(1).thereIsOneBucketWithValue(1900);
+        assertThat().forIndicator(3).thereIsOneBucketWithValue(1500);
+    }
 
     @Test
     @OnDataSet("/dbunit/sites-linked.db.xml")
@@ -481,25 +477,23 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
         assertThat().forPartner(2).thereIsOneBucketWithValue(1).andItsPartnerLabelIs("NRC2");
     }
 
-    // @Test
-    // @OnDataSet("/dbunit/sites-linked.db.xml")
-    // public void testLinkedAttributegroupSiteCount() {
-    // withAttributeGroupDim();
-    // forTotalSiteCounts();
-    // System.out.println("***A");
-    // execute();
-    //
-    // assertThat().thereAre(2).buckets();
-    // System.out.println("***B");
-    // Dimension dim = new Dimension(DimensionType.AttributeGroup);
-    //
-    // Bucket causeBucket = findBucketsByCategory(buckets, dim, new EntityCategory(1)).get(0);
-    // assertEquals(causeBucket.getCategory(dim).getLabel(), "cause");
-    // assertEquals("Is LinkedSiteCounts query correct?", (int) causeBucket.doubleValue(), 2);
-    //
-    // Bucket contenuBucket = findBucketsByCategory(buckets, dim, new EntityCategory(2)).get(0);
-    // assertEquals(contenuBucket.getCategory(dim).getLabel(), "contenu du kit");
-    // }
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedAttributegroupSiteCount() {
+        withAttributeGroupDim();
+        forTotalSiteCounts();
+        execute();
+        assertThat().thereAre(2).buckets();
+
+        Dimension dim = new Dimension(DimensionType.AttributeGroup);
+
+        Bucket causeBucket = findBucketsByCategory(buckets, dim, new EntityCategory(1)).get(0);
+        assertEquals("cause", causeBucket.getCategory(dim).getLabel());
+        assertEquals("Is LinkedSiteCounts query correct?", (int) causeBucket.doubleValue(), 2);
+
+        Bucket contenuBucket = findBucketsByCategory(buckets, dim, new EntityCategory(2)).get(0);
+        assertEquals("contenu du kit", contenuBucket.getCategory(dim).getLabel());
+    }
 
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets,
         Dimension dim, DimensionCategory cat) {
@@ -579,13 +573,7 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
 
         System.out.println("Buckets = [");
         for (Bucket bucket : buckets) {
-            System.out.print("  { Value: " + bucket.doubleValue());
-            for (Dimension dim : bucket.dimensions()) {
-                DimensionCategory cat = bucket.getCategory(dim);
-                System.out.print("\n    " + dim.toString() + ": ");
-                System.out.print(cat.toString());
-            }
-            System.out.println("\n  }");
+            System.out.print(bucket.toString());
         }
         System.out.print("]\n");
     }

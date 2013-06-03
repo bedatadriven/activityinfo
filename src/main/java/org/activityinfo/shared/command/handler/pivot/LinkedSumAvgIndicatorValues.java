@@ -69,16 +69,6 @@ public class LinkedSumAvgIndicatorValues extends BaseTable {
 
     }
 
-    private boolean requires(PivotSites command, DimensionType... types) {
-        for (DimensionType type : types) {
-            if (command.isPivotedBy(type)
-                || command.getFilter().isRestricted(type)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public String getDimensionIdColumn(DimensionType type) {
         switch (type) {

@@ -94,6 +94,8 @@
   
   <attributeValue siteId="1" attributeId="1" value="1" />
     
+  <attributeGroupInActivity activityId="2" attributeGroupId="1" />
+    
 <!-- NFI Attribute 2: Contenu de Kit -->
 
   <attributeGroup attributeGroupId="2" name="contenu du kit"
@@ -106,6 +108,8 @@
     sortOrder="2" />
 
   <attributeValue siteId="2" attributeId="3" value="1" />
+
+  <attributeGroupInActivity activityId="1" attributeGroupId="2" />
 
   <attributeGroup attributeGroupId="3" name="Something about Kivu"
     multipleAllowed="1" sortOrder="1" mandatory="0" />

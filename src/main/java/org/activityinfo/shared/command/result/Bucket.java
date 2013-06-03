@@ -95,7 +95,7 @@ public class Bucket implements Serializable {
     public double doubleValue() {
         switch (aggregationMethod) {
         case IndicatorDTO.AGGREGATE_AVG:
-            return sum / (double)count;
+            return sum / count;
         case IndicatorDTO.AGGREGATE_SUM:
             return sum;
         case IndicatorDTO.AGGREGATE_SITE_COUNT:
@@ -112,5 +112,18 @@ public class Bucket implements Serializable {
     public void add(Bucket bucket) {
         this.sum += bucket.getSum();
         this.count += bucket.getCount();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("  { Value: ").append(doubleValue());
+        for (Dimension dim : dimensions()) {
+            DimensionCategory cat = getCategory(dim);
+            sb.append("\n    ").append(dim.toString()).append(": ");
+            sb.append(cat.toString());
+        }
+        sb.append("\n  }");
+        return sb.toString();
     }
 }
