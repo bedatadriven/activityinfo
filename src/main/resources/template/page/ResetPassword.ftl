@@ -54,5 +54,6 @@
 		</div>
 	</div>
 	</@content>
-
+  <@footer/>
+  <@scripts/>
 </@scaffolding>

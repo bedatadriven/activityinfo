@@ -75,7 +75,8 @@
 		</div>
 	</div>
 	</@content>
-	<@scripts>
+  <@footer/>
+  <@scripts>
 	<script type="text/javascript">
 	
 		var validateName = function() {

@@ -63,6 +63,9 @@
         </div>
     </div>
     </@content>
+
+    <@footer/>
+
     <@scripts>
     <script type="text/javascript">
     

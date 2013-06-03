@@ -37,7 +37,7 @@ import org.activityinfo.server.authentication.Authenticator;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.exception.LoginException;
-import org.activityinfo.server.login.model.LoginPageModel;
+import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.server.util.logging.LogException;
 
 import com.google.inject.Inject;
@@ -61,7 +61,9 @@ public class LoginController {
     @LogException(emailAlert = true)
     @Produces(MediaType.TEXT_HTML)
     public Viewable getLoginPage(@Context UriInfo uri) throws Exception {
-        return new LoginPageModel().asViewable();
+        RootPageModel model = new RootPageModel();
+        model.setShowLogin(true);
+        return model.asViewable();
     }
 
     @POST
@@ -90,7 +92,10 @@ public class LoginController {
             user = userDAO.get().findUserByEmail(email);
             checkPassword(password, user);
         } catch (Exception e) {
-            return Response.ok(LoginPageModel.unsuccessful().asViewable())
+            RootPageModel model = new RootPageModel();
+            model.setShowLogin(true);
+
+            return Response.ok(model)
                 .type(MediaType.TEXT_HTML)
                 .build();
         }
