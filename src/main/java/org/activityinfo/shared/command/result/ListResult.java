@@ -63,4 +63,9 @@ public abstract class ListResult<D extends ModelData> implements CommandResult,
     public void setData(List<D> data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(data);
+    }
 }

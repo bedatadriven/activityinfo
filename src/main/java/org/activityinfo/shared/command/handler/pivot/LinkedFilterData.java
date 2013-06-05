@@ -32,16 +32,16 @@ import org.activityinfo.shared.report.model.DimensionType;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 
 /**
- * Base table for counting the number of sites that match a certain criteria. This class behaves just like the
- * SiteCounts query, but only selects the linked sites (via database -> activity -> indicator -> indicatorlink ->
- * indicator -> activity -> site) instead of the sites that are directly linked to the database or activity the filter
- * is set to (via database -> activity -> site).
+ * Base table for retrieving pivotfilter-data based on other pivot criteria. Examples are attributegroups, partners and
+ * daterange. This class behaves just like the FilterData query, but only selects the linked sites (via database ->
+ * activity -> indicator -> indicatorlink -> indicator -> activity -> site) instead of the sites that are directly
+ * linked to the database or activity the filter is set to (via database -> activity -> site).
  */
-public class LinkedSiteCounts extends BaseTable {
+public class LinkedFilterData extends BaseTable {
 
     @Override
     public boolean accept(PivotSites command) {
-        return command.getValueType() == ValueType.TOTAL_SITES;
+        return command.getValueType() == ValueType.FILTER_DATA;
     }
 
     @Override
@@ -68,7 +68,8 @@ public class LinkedSiteCounts extends BaseTable {
         query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup")
             .on("Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
 
-        query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
+        // dummy data
+        query.appendColumn("0", ValueFields.COUNT);
         query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT), ValueFields.AGGREGATION);
     }
 
@@ -105,5 +106,15 @@ public class LinkedSiteCounts extends BaseTable {
     @Override
     public TargetCategory getTargetCategory() {
         return TargetCategory.REALIZED;
+    }
+
+    @Override
+    public SqlQuery createSqlQuery() {
+        return SqlQuery.selectDistinct();
+    }
+
+    @Override
+    public boolean groupDimColumns() {
+        return false;
     }
 }

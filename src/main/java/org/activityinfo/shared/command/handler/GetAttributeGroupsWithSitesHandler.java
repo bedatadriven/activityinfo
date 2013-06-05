@@ -52,7 +52,7 @@ public class GetAttributeGroupsWithSitesHandler implements
         final PivotSites query = new PivotSites();
         query.setFilter(cmd.getFilter());
         query.setDimensions(DIMENSION);
-        query.setValueType(ValueType.TOTAL_SITES);
+        query.setValueType(ValueType.FILTER_DATA);
 
         context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
             @Override
@@ -72,7 +72,7 @@ public class GetAttributeGroupsWithSitesHandler implements
                     }
                 }
 
-                // sort the groups in the list by name
+                // sort the groups in the list by name (fallback on id)
                 Collections.sort(list, new Comparator<AttributeGroupDTO>() {
                     @Override
                     public int compare(AttributeGroupDTO g1, AttributeGroupDTO g2) {

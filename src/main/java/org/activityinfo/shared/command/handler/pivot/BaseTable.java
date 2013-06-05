@@ -56,4 +56,11 @@ public abstract class BaseTable {
 
     public abstract TargetCategory getTargetCategory();
 
+    public SqlQuery createSqlQuery() {
+        return new SqlQuery();
+    }
+
+    public boolean groupDimColumns() {
+        return true;
+    }
 }

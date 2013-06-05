@@ -54,7 +54,7 @@ public class GetPartnersWithSitesHandler implements
         PivotSites query = new PivotSites();
         query.setFilter(cmd.getFilter());
         query.setDimensions(dimension);
-        query.setValueType(ValueType.TOTAL_SITES);
+        query.setValueType(ValueType.FILTER_DATA);
         context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
 
             @Override
@@ -75,12 +75,17 @@ public class GetPartnersWithSitesHandler implements
                     }
                 }
 
+                // sort partners by name (fallback on id)
                 List<PartnerDTO> list = new ArrayList<PartnerDTO>(partners);
                 Collections.sort(list, new Comparator<PartnerDTO>() {
-
                     @Override
                     public int compare(PartnerDTO p1, PartnerDTO p2) {
-                        return p1.getName().compareToIgnoreCase(p2.getName());
+                        int result = p1.getName().compareToIgnoreCase(p2.getName());
+                        if (result != 0) {
+                            return result;
+                        } else {
+                            return ((Integer) p1.getId()).compareTo(p2.getId());
+                        }
                     }
                 });
                 callback.onSuccess(new PartnerResult(list));

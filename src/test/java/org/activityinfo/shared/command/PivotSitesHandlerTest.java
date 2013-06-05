@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,10 +82,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     @BeforeClass
     public static void setup() {
         Logger.getLogger("org.activityinfo").setLevel(Level.ALL);
-        Logger.getLogger("org.activityinfo").addHandler(new ConsoleHandler());
-
         Logger.getLogger("com.bedatadriven.rebar").setLevel(Level.ALL);
-
     }
 
     @Test
@@ -474,7 +470,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         withPartnerAsDimension();
         forTotalSiteCounts();
         execute();
-
+        assertThat().thereAre(2).buckets();
         assertThat().forPartner(1).thereIsOneBucketWithValue(2).andItsPartnerLabelIs("NRC");
         assertThat().forPartner(2).thereIsOneBucketWithValue(1).andItsPartnerLabelIs("NRC2");
     }
@@ -495,6 +491,37 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
         Bucket contenuBucket = findBucketsByCategory(buckets, dim, new EntityCategory(2)).get(0);
         assertEquals(contenuBucket.getCategory(dim).getLabel(), "contenu du kit");
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedPartnerFilterData() {
+        withPartnerAsDimension();
+        forFilterData();
+        execute();
+
+        assertThat().thereAre(2).buckets();
+        assertThat().forPartner(1).thereIsOneBucketWithValue(0).andItsPartnerLabelIs("NRC");
+        assertThat().forPartner(2).thereIsOneBucketWithValue(0).andItsPartnerLabelIs("NRC2");
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedAttributegroupFilterData() {
+        withAttributeGroupDim();
+        forFilterData();
+        execute();
+
+        assertThat().thereAre(2).buckets();
+
+        Dimension dim = new Dimension(DimensionType.AttributeGroup);
+        Bucket causeBucket = findBucketsByCategory(buckets, dim, new EntityCategory(1)).get(0);
+        assertEquals(causeBucket.getCategory(dim).getLabel(), "cause");
+        assertEquals(0, (int) causeBucket.doubleValue());
+
+        Bucket contenuBucket = findBucketsByCategory(buckets, dim, new EntityCategory(2)).get(0);
+        assertEquals(contenuBucket.getCategory(dim).getLabel(), "contenu du kit");
+        assertEquals(0, (int) contenuBucket.doubleValue());
     }
 
     @Test
@@ -552,6 +579,10 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
     private void forTotalSiteCounts() {
         valueType = valueType.TOTAL_SITES;
+    }
+
+    private void forFilterData() {
+        valueType = valueType.FILTER_DATA;
     }
 
     private void withIndicatorAsDimension() {

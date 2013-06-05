@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,8 +95,6 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
     @BeforeClass
     public static void setup() {
         Logger.getLogger("org.activityinfo").setLevel(Level.ALL);
-        Logger.getLogger("org.activityinfo").addHandler(new ConsoleHandler());
-
         Logger.getLogger("com.bedatadriven.rebar").setLevel(Level.ALL);
     }
 
@@ -495,6 +492,37 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
         assertEquals("contenu du kit", contenuBucket.getCategory(dim).getLabel());
     }
 
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedPartnerFilterData() {
+        withPartnerAsDimension();
+        forFilterData();
+        execute();
+
+        assertThat().forPartner(1).thereIsOneBucketWithValue(0).andItsPartnerLabelIs("NRC");
+        assertThat().forPartner(2).thereIsOneBucketWithValue(0).andItsPartnerLabelIs("NRC2");
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testLinkedAttributegroupFilterData() {
+        withAttributeGroupDim();
+        forFilterData();
+        execute();
+
+        assertThat().thereAre(2).buckets();
+
+        Dimension dim = new Dimension(DimensionType.AttributeGroup);
+
+        Bucket causeBucket = findBucketsByCategory(buckets, dim, new EntityCategory(1)).get(0);
+        assertEquals("cause", causeBucket.getCategory(dim).getLabel());
+        assertEquals(0, (int) causeBucket.doubleValue());
+
+        Bucket contenuBucket = findBucketsByCategory(buckets, dim, new EntityCategory(2)).get(0);
+        assertEquals("contenu du kit", contenuBucket.getCategory(dim).getLabel());
+        assertEquals(0, (int) contenuBucket.doubleValue());
+    }
+
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets,
         Dimension dim, DimensionCategory cat) {
         List<Bucket> matching = new ArrayList<Bucket>();
@@ -532,6 +560,10 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
 
     private void forTotalSiteCounts() {
         valueType = valueType.TOTAL_SITES;
+    }
+
+    private void forFilterData() {
+        valueType = valueType.FILTER_DATA;
     }
 
     private void withIndicatorAsDimension() {

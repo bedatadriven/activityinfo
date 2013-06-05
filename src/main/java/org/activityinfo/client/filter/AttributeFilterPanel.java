@@ -146,13 +146,14 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
                                 }
                             });
 
-                            // add widget to panel (if a widget with the same name hasn't already been added)
+                            // add widget to panel if a widget with the same name (ignoring case) hasn't already been
+                            // added
                             if (isNoDuplicate(widget)) {
                                 widgets.add(widget);
                                 add(widget);
                             } else {
                                 // otherwise add to collection of duplicates
-                                duplicates.put(group.getName(), widget);
+                                duplicates.put(group.getName().toLowerCase(), widget);
                             }
                         }
 
@@ -166,7 +167,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
 
     private boolean isNoDuplicate(AttributeGroupFilterWidget widget) {
         for (AttributeGroupFilterWidget alreadyAdded : widgets) {
-            if (alreadyAdded.getGroup().getName().equals(widget.getGroup().getName())) {
+            if (alreadyAdded.getGroup().getName().toLowerCase()
+                .equals(widget.getGroup().getName().toLowerCase())) {
                 return false;
             }
         }

@@ -37,7 +37,8 @@ public class PivotSites implements Command<PivotResult> {
 
     public enum ValueType {
         INDICATOR,
-        TOTAL_SITES
+        TOTAL_SITES,
+        FILTER_DATA
     }
 
     private Set<Dimension> dimensions;

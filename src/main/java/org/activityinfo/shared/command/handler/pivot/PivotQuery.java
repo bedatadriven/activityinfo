@@ -67,7 +67,7 @@ public class PivotQuery {
 
     private final SqlTransaction tx;
 
-    private final SqlQuery query = new SqlQuery();
+    private SqlQuery query;
     private final List<Bundler> bundlers = new ArrayList<Bundler>();
 
     private PivotSites command;
@@ -85,6 +85,8 @@ public class PivotQuery {
         this.userId = context.getExecutionContext().getUser().getUserId();
         this.tx = context.getExecutionContext().getTransaction();
         this.baseTable = baseTable;
+
+        this.query = baseTable.createSqlQuery();
     }
 
     private String appendDimColumn(String expr) {
@@ -94,7 +96,9 @@ public class PivotQuery {
 
     private String appendDimColumn(String alias, String expr) {
         if (!dimColumns.contains(alias)) {
-            query.groupBy(expr);
+            if (baseTable.groupDimColumns()) {
+                query.groupBy(expr);
+            }
             query.appendColumn(expr, alias);
             dimColumns.add(alias);
         }
@@ -151,8 +155,7 @@ public class PivotQuery {
             public void onSuccess(SqlTransaction tx, SqlResultSet results) {
                 for (SqlResultSetRow row : results.getRows()) {
                     Bucket bucket = new Bucket();
-                    bucket.setAggregationMethod(row
-                        .getInt(ValueFields.AGGREGATION));
+                    bucket.setAggregationMethod(row.getInt(ValueFields.AGGREGATION));
                     bucket.setCount(row.getInt(ValueFields.COUNT));
                     if (!row.isNull(ValueFields.SUM)) {
                         bucket.setSum(row.getDouble(ValueFields.SUM));
@@ -293,9 +296,8 @@ public class PivotQuery {
                     // specific attributegroup
                     defineAttributeDimension((AttributeGroupDimension) dimension);
                 } else {
-                    // pivot on attributegroups, ordered by name
-                    addOrderedEntityDimension(dimension,
-                    "Attribute.AttributeGroupId", "AttributeGroup.name", "AttributeGroup.sortOrder");
+                    // pivot on attributegroups
+                    addEntityDimension(dimension, "Attribute.AttributeGroupId", "AttributeGroup.name");
                 }
             }
         }

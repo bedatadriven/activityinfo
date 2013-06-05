@@ -32,43 +32,35 @@ import org.activityinfo.shared.report.model.DimensionType;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 
 /**
- * Base table for counting the number of sites that match a certain criteria. This class behaves just like the
- * SiteCounts query, but only selects the linked sites (via database -> activity -> indicator -> indicatorlink ->
- * indicator -> activity -> site) instead of the sites that are directly linked to the database or activity the filter
- * is set to (via database -> activity -> site).
+ * Base table for retrieving pivotfilter-data based on other pivot criteria. Examples are attributegroups, partners and
+ * daterange.
  */
-public class LinkedSiteCounts extends BaseTable {
+public class FilterData extends BaseTable {
 
     @Override
     public boolean accept(PivotSites command) {
-        return command.getValueType() == ValueType.TOTAL_SITES;
+        return command.getValueType() == ValueType.FILTER_DATA;
     }
 
     @Override
     public void setupQuery(PivotSites command, SqlQuery query) {
-        query.from(Tables.INDICATOR_LINK, "IndicatorLink");
-        query.leftJoin(Tables.INDICATOR_VALUE, "V")
-            .on("IndicatorLink.SourceIndicatorId=V.IndicatorId");
-        query.leftJoin(Tables.INDICATOR, "Indicator")
-            .on("IndicatorLink.DestinationIndicatorId=Indicator.IndicatorId");
-        query.leftJoin(Tables.ACTIVITY, "Activity")
-            .on("Activity.ActivityId=Indicator.ActivityId");
-        query.leftJoin(Tables.USER_DATABASE, "UserDatabase")
-            .on("UserDatabase.DatabaseId=Activity.DatabaseId");
 
-        query.leftJoin(Tables.REPORTING_PERIOD, "Period")
-            .on("Period.ReportingPeriodId=V.ReportingPeriodId");
-        query.leftJoin(Tables.SITE, "Site")
-            .on("Site.SiteId=Period.SiteId");
+        query.from(Tables.SITE, "Site");
+        query.leftJoin(Tables.ACTIVITY, "Activity").on(
+            "Activity.ActivityId = Site.ActivityId");
+        query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
+            "Activity.DatabaseId = UserDatabase.DatabaseId");
+        query.leftJoin(Tables.REPORTING_PERIOD, "Period").on(
+            "Period.SiteId = Site.SiteId");
+        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on(
+            "Site.SiteId = AttributeValue.SiteId");
+        query.leftJoin(Tables.ATTRIBUTE, "Attribute").on(
+            "AttributeValue.AttributeId = Attribute.AttributeId");
+        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup").on(
+            "Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
 
-        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue")
-            .on("Site.SiteId = AttributeValue.SiteId");
-        query.leftJoin(Tables.ATTRIBUTE, "Attribute")
-            .on("AttributeValue.AttributeId = Attribute.AttributeId");
-        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup")
-            .on("Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
-
-        query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
+        // dummy data
+        query.appendColumn("0", ValueFields.COUNT);
         query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT), ValueFields.AGGREGATION);
     }
 
@@ -78,7 +70,7 @@ public class LinkedSiteCounts extends BaseTable {
         case Partner:
             return "Site.PartnerId";
         case Activity:
-            return "Indicator.ActivityId";
+            return "Site.ActivityId";
         case Database:
             return "Activity.DatabaseId";
         case Site:
@@ -88,7 +80,7 @@ public class LinkedSiteCounts extends BaseTable {
         case Location:
             return "Site.LocationId";
         case Indicator:
-            return "IndicatorLink.DestinationIndicatorId";
+            return "V.IndicatorId";
         case Attribute:
             return "AttributeValue.AttributeId";
         case AttributeGroup:
@@ -105,5 +97,15 @@ public class LinkedSiteCounts extends BaseTable {
     @Override
     public TargetCategory getTargetCategory() {
         return TargetCategory.REALIZED;
+    }
+
+    @Override
+    public SqlQuery createSqlQuery() {
+        return SqlQuery.selectDistinct();
+    }
+
+    @Override
+    public boolean groupDimColumns() {
+        return false;
     }
 }
