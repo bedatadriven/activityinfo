@@ -205,7 +205,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
             if (CollectionUtil.isNotEmpty(selection)) {
 
                 // if the widget has at least one selection, check the duplicates if we need to add some more ids
-                Collection<AttributeGroupFilterWidget> hiddenWidgets = duplicates.get(widget.getGroup().getName());
+                Collection<AttributeGroupFilterWidget> hiddenWidgets =
+                    duplicates.get(widget.getGroup().getName().toLowerCase());
                 if (CollectionUtil.isNotEmpty(hiddenWidgets)) {
                     // has duplicates, so collect the attribute-ids from the hidden widgets by the
                     // selected attribute-names of the visible widget
