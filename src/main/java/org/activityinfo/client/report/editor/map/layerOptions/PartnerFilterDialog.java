@@ -30,7 +30,7 @@ import org.activityinfo.client.filter.SelectionCallback;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.GetPartnersWithSites;
+import org.activityinfo.shared.command.GetPartnersFilterData;
 import org.activityinfo.shared.command.result.PartnerResult;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -90,7 +90,7 @@ public class PartnerFilterDialog extends Dialog {
         SelectionCallback<Set<Integer>> callback) {
         show();
         this.callback = callback;
-        service.execute(new GetPartnersWithSites(baseFilter),
+        service.execute(new GetPartnersFilterData(baseFilter),
             new AsyncCallback<PartnerResult>() {
 
                 @Override

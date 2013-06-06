@@ -26,15 +26,16 @@ import org.activityinfo.shared.command.result.AttributeGroupResult;
 
 import com.google.common.base.Objects;
 
-public class GetAttributeGroupsWithSites implements Command<AttributeGroupResult> {
-
+public class GetAttributeGroupsFilterData implements Command<AttributeGroupResult> {
+    private static final long serialVersionUID = -2357140590656452128L;
+    
     private Filter filter;
 
-    public GetAttributeGroupsWithSites() {
+    public GetAttributeGroupsFilterData() {
 
     }
 
-    public GetAttributeGroupsWithSites(Filter filter) {
+    public GetAttributeGroupsFilterData(Filter filter) {
         this.filter = filter;
     }
 
@@ -65,7 +66,7 @@ public class GetAttributeGroupsWithSites implements Command<AttributeGroupResult
         if (getClass() != obj.getClass()) {
             return false;
         }
-        GetAttributeGroupsWithSites other = (GetAttributeGroupsWithSites) obj;
+        GetAttributeGroupsFilterData other = (GetAttributeGroupsFilterData) obj;
         return Objects.equal(other.filter, filter);
     }
 }

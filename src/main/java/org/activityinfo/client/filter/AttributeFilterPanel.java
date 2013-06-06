@@ -33,7 +33,7 @@ import org.activityinfo.client.filter.FilterToolBar.RemoveFilterHandler;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.GetAttributeGroupsWithSites;
+import org.activityinfo.shared.command.GetAttributeGroupsFilterData;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.AttributeGroupResult;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
@@ -100,7 +100,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
             @Override
             public void onSuccess(final SchemaDTO schema) {
                 // retrieve all attributegroups for the current filter
-                service.execute(new GetAttributeGroupsWithSites(filter), new AsyncCallback<AttributeGroupResult>() {
+                service.execute(new GetAttributeGroupsFilterData(filter), new AsyncCallback<AttributeGroupResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         GWT.log("Failed to load attributes", caught);

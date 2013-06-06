@@ -38,13 +38,13 @@ import org.junit.runner.RunWith;
 @RunWith(InjectionSupport.class)
 @Modules({ TestDatabaseModule.class })
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class GetAttributeGroupsWithSitesHandlerTest extends CommandTestCase2 {
+public class GetAttributeGroupsFilterDataHandlerTest extends CommandTestCase2 {
 
     @Test
     public void testSimple() throws CommandException {
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, 1);
-        AttributeGroupResult result = execute(new GetAttributeGroupsWithSites(filter));
+        AttributeGroupResult result = execute(new GetAttributeGroupsFilterData(filter));
         assertThat(result.getData().size(), equalTo(1));
         assertThat(result.getData().get(0).getName(), equalTo("cause"));
     }

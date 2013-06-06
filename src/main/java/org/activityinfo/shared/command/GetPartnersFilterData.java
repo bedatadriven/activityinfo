@@ -32,15 +32,15 @@ import com.google.common.base.Objects;
  * @author alex
  * 
  */
-public class GetPartnersWithSites implements Command<PartnerResult> {
+public class GetPartnersFilterData implements Command<PartnerResult> {
 
     private Filter filter;
 
-    public GetPartnersWithSites() {
+    public GetPartnersFilterData() {
 
     }
 
-    public GetPartnersWithSites(Filter filter) {
+    public GetPartnersFilterData(Filter filter) {
         this.filter = filter;
     }
 
@@ -71,7 +71,7 @@ public class GetPartnersWithSites implements Command<PartnerResult> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        GetPartnersWithSites other = (GetPartnersWithSites) obj;
+        GetPartnersFilterData other = (GetPartnersFilterData) obj;
         return Objects.equal(other.filter, filter);
     }
 }

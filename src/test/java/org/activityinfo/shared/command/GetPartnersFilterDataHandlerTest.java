@@ -39,13 +39,13 @@ import org.junit.runner.RunWith;
 @RunWith(InjectionSupport.class)
 @Modules({ TestDatabaseModule.class })
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class GetPartnersWithSitesHandlerTest extends CommandTestCase2 {
+public class GetPartnersFilterDataHandlerTest extends CommandTestCase2 {
 
     @Test
     public void testSimple() throws CommandException {
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, 1);
-        PartnerResult result = execute(new GetPartnersWithSites(filter));
+        PartnerResult result = execute(new GetPartnersFilterData(filter));
         assertThat(result.getData().size(), equalTo(2));
         assertThat(result.getData().get(0).getName(), equalTo("NRC"));
         assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));

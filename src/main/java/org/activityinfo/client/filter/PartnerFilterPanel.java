@@ -33,7 +33,7 @@ import org.activityinfo.client.filter.FilterToolBar.RemoveFilterHandler;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.GetPartnersWithSites;
+import org.activityinfo.shared.command.GetPartnersFilterData;
 import org.activityinfo.shared.command.result.PartnerResult;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -131,7 +131,7 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
         filter.clearRestrictions(DimensionType.Partner);
 
         if (baseFilter == null || !baseFilter.equals(filter)) {
-            service.execute(new GetPartnersWithSites(filter),
+            service.execute(new GetPartnersFilterData(filter),
                 new AsyncCallback<PartnerResult>() {
 
                     @Override

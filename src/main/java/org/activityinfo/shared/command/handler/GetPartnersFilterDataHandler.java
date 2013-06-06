@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activityinfo.client.Log;
-import org.activityinfo.shared.command.GetPartnersWithSites;
+import org.activityinfo.shared.command.GetPartnersFilterData;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.result.Bucket;
@@ -42,11 +42,11 @@ import org.activityinfo.shared.report.model.DimensionType;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GetPartnersWithSitesHandler implements
-    CommandHandlerAsync<GetPartnersWithSites, PartnerResult> {
+public class GetPartnersFilterDataHandler implements
+    CommandHandlerAsync<GetPartnersFilterData, PartnerResult> {
 
     @Override
-    public void execute(GetPartnersWithSites cmd, ExecutionContext context,
+    public void execute(GetPartnersFilterData cmd, ExecutionContext context,
         final AsyncCallback<PartnerResult> callback) {
 
         final Dimension dimension = new Dimension(DimensionType.Partner);
