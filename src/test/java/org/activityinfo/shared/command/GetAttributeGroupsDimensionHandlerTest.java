@@ -21,14 +21,13 @@ package org.activityinfo.shared.command;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
-import org.activityinfo.shared.command.result.PartnerResult;
+import org.activityinfo.shared.command.result.AttributeGroupResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.test.InjectionSupport;
@@ -39,15 +38,14 @@ import org.junit.runner.RunWith;
 @RunWith(InjectionSupport.class)
 @Modules({ TestDatabaseModule.class })
 @OnDataSet("/dbunit/sites-simple1.db.xml")
-public class GetPartnersFilterDataHandlerTest extends CommandTestCase2 {
+public class GetAttributeGroupsDimensionHandlerTest extends CommandTestCase2 {
 
     @Test
     public void testSimple() throws CommandException {
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, 1);
-        PartnerResult result = execute(new GetPartnersFilterData(filter));
-        assertThat(result.getData().size(), equalTo(2));
-        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
-        assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));
+        AttributeGroupResult result = execute(new GetAttributeGroupsDimension(filter));
+        assertThat(result.getData().size(), equalTo(1));
+        assertThat(result.getData().get(0).getName(), equalTo("cause"));
     }
 }

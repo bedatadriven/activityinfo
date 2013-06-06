@@ -582,7 +582,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
 
     private void forFilterData() {
-        valueType = valueType.FILTER_DATA;
+        valueType = valueType.DIMENSION;
     }
 
     private void withIndicatorAsDimension() {

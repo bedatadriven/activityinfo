@@ -34,11 +34,12 @@ import org.activityinfo.shared.report.model.DimensionType;
 import com.google.common.collect.Sets;
 
 public class PivotSites implements Command<PivotResult> {
+    private static final long serialVersionUID = 563469767187419658L;
 
     public enum ValueType {
         INDICATOR,
         TOTAL_SITES,
-        FILTER_DATA
+        DIMENSION
     }
 
     private Set<Dimension> dimensions;
@@ -106,6 +107,8 @@ public class PivotSites implements Command<PivotResult> {
     }
 
     public static class PivotResult implements CommandResult {
+        private static final long serialVersionUID = -7767105395264612561L;
+
         private List<Bucket> buckets;
 
         public PivotResult() {

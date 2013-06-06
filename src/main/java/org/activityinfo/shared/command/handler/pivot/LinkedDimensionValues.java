@@ -33,15 +33,15 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 
 /**
  * Base table for retrieving pivotfilter-data based on other pivot criteria. Examples are attributegroups, partners and
- * daterange. This class behaves just like the FilterData query, but only selects the linked sites (via database ->
+ * daterange. This class behaves just like the DimensionValues query, but only selects the linked sites (via database ->
  * activity -> indicator -> indicatorlink -> indicator -> activity -> site) instead of the sites that are directly
  * linked to the database or activity the filter is set to (via database -> activity -> site).
  */
-public class LinkedFilterData extends BaseTable {
+public class LinkedDimensionValues extends BaseTable {
 
     @Override
     public boolean accept(PivotSites command) {
-        return command.getValueType() == ValueType.FILTER_DATA;
+        return command.getValueType() == ValueType.DIMENSION;
     }
 
     @Override

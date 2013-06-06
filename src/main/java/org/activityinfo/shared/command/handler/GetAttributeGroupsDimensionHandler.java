@@ -28,7 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.activityinfo.client.Log;
-import org.activityinfo.shared.command.GetAttributeGroupsFilterData;
+import org.activityinfo.shared.command.GetAttributeGroupsDimension;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.command.result.AttributeGroupResult;
@@ -40,19 +40,19 @@ import org.activityinfo.shared.report.model.DimensionType;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class GetAttributeGroupsFilterDataHandler implements
-    CommandHandlerAsync<GetAttributeGroupsFilterData, AttributeGroupResult> {
+public class GetAttributeGroupsDimensionHandler implements
+    CommandHandlerAsync<GetAttributeGroupsDimension, AttributeGroupResult> {
 
     private static final Dimension DIMENSION = new Dimension(DimensionType.AttributeGroup);
 
     @Override
-    public void execute(GetAttributeGroupsFilterData cmd, final ExecutionContext context,
+    public void execute(GetAttributeGroupsDimension cmd, final ExecutionContext context,
         final AsyncCallback<AttributeGroupResult> callback) {
 
         final PivotSites query = new PivotSites();
         query.setFilter(cmd.getFilter());
         query.setDimensions(DIMENSION);
-        query.setValueType(ValueType.FILTER_DATA);
+        query.setValueType(ValueType.DIMENSION);
 
         context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
             @Override

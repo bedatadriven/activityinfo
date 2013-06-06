@@ -563,7 +563,7 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
     }
 
     private void forFilterData() {
-        valueType = valueType.FILTER_DATA;
+        valueType = valueType.DIMENSION;
     }
 
     private void withIndicatorAsDimension() {

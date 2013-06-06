@@ -22,25 +22,20 @@ package org.activityinfo.shared.command;
  * #L%
  */
 
-import org.activityinfo.shared.command.result.PartnerResult;
+import org.activityinfo.shared.command.result.AttributeGroupResult;
 
 import com.google.common.base.Objects;
 
-/**
- * Retrieves a list of partners
- * 
- * @author alex
- * 
- */
-public class GetPartnersFilterData implements Command<PartnerResult> {
-
+public class GetAttributeGroupsDimension implements Command<AttributeGroupResult> {
+    private static final long serialVersionUID = -2357140590656452128L;
+    
     private Filter filter;
 
-    public GetPartnersFilterData() {
+    public GetAttributeGroupsDimension() {
 
     }
 
-    public GetPartnersFilterData(Filter filter) {
+    public GetAttributeGroupsDimension(Filter filter) {
         this.filter = filter;
     }
 
@@ -71,7 +66,7 @@ public class GetPartnersFilterData implements Command<PartnerResult> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        GetPartnersFilterData other = (GetPartnersFilterData) obj;
+        GetAttributeGroupsDimension other = (GetAttributeGroupsDimension) obj;
         return Objects.equal(other.filter, filter);
     }
 }

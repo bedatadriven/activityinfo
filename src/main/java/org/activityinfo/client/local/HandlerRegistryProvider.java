@@ -28,9 +28,9 @@ import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.GeneratePivotTable;
 import org.activityinfo.shared.command.GetAdminEntities;
-import org.activityinfo.shared.command.GetAttributeGroupsFilterData;
+import org.activityinfo.shared.command.GetAttributeGroupsDimension;
 import org.activityinfo.shared.command.GetLocations;
-import org.activityinfo.shared.command.GetPartnersFilterData;
+import org.activityinfo.shared.command.GetPartnersDimension;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSiteAttachments;
 import org.activityinfo.shared.command.GetSites;
@@ -42,9 +42,9 @@ import org.activityinfo.shared.command.handler.CreateSiteHandler;
 import org.activityinfo.shared.command.handler.DeleteSiteHandler;
 import org.activityinfo.shared.command.handler.GeneratePivotTableHandler;
 import org.activityinfo.shared.command.handler.GetAdminEntitiesHandler;
-import org.activityinfo.shared.command.handler.GetAttributeGroupsFilterDataHandler;
+import org.activityinfo.shared.command.handler.GetAttributeGroupsDimensionHandler;
 import org.activityinfo.shared.command.handler.GetLocationsHandler;
-import org.activityinfo.shared.command.handler.GetPartnersFilterDataHandler;
+import org.activityinfo.shared.command.handler.GetPartnersDimensionHandler;
 import org.activityinfo.shared.command.handler.GetSchemaHandler;
 import org.activityinfo.shared.command.handler.GetSiteAttachmentsHandler;
 import org.activityinfo.shared.command.handler.GetSitesHandler;
@@ -64,8 +64,8 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
         GetSchemaHandler schemaHandler,
         GetSitesHandler sitesHandler,
         GetAdminEntitiesHandler adminHandler,
-        GetPartnersFilterDataHandler partnersFilterDataHandler,
-        GetAttributeGroupsFilterDataHandler attributeGroupsFilterDataHandler,
+        GetPartnersDimensionHandler partnersDimensionHandler,
+        GetAttributeGroupsDimensionHandler attributeGroupsDimensionHandler,
         CreateSiteHandler createSiteHandler,
         UpdateSiteHandler updateSiteHandler,
         CreateLocationHandler createLocationHandler,
@@ -81,22 +81,18 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
         registry.registerHandler(GetSchema.class, schemaHandler);
         registry.registerHandler(GetSites.class, sitesHandler);
         registry.registerHandler(GetAdminEntities.class, adminHandler);
-        registry.registerHandler(GetPartnersFilterData.class,
-            partnersFilterDataHandler);
-        registry.registerHandler(GetAttributeGroupsFilterData.class,
-            attributeGroupsFilterDataHandler);
+        registry.registerHandler(GetPartnersDimension.class, partnersDimensionHandler);
+        registry.registerHandler(GetAttributeGroupsDimension.class, attributeGroupsDimensionHandler);
         registry.registerHandler(CreateSite.class, createSiteHandler);
         registry.registerHandler(UpdateSite.class, updateSiteHandler);
         registry.registerHandler(CreateLocation.class, createLocationHandler);
         // registry.registerHandler(Search.class, searchHandler);
         registry.registerHandler(SearchLocations.class, searchLocationsHandler);
-        registry.registerHandler(GeneratePivotTable.class,
-            generatePivotTableHandler);
+        registry.registerHandler(GeneratePivotTable.class, generatePivotTableHandler);
         registry.registerHandler(PivotSites.class, pivotSitesHandler);
         registry.registerHandler(GetLocations.class, getLocationsHandler);
         registry.registerHandler(DeleteSite.class, deleteSiteHandler);
-        registry.registerHandler(GetSiteAttachments.class,
-            getSiteAttachmentsHandler);
+        registry.registerHandler(GetSiteAttachments.class, getSiteAttachmentsHandler);
     }
 
     @Override

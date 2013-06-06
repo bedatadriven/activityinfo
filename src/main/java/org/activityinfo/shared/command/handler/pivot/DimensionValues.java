@@ -35,11 +35,11 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
  * Base table for retrieving pivotfilter-data based on other pivot criteria. Examples are attributegroups, partners and
  * daterange.
  */
-public class FilterData extends BaseTable {
+public class DimensionValues extends BaseTable {
 
     @Override
     public boolean accept(PivotSites command) {
-        return command.getValueType() == ValueType.FILTER_DATA;
+        return command.getValueType() == ValueType.DIMENSION;
     }
 
     @Override
