@@ -69,14 +69,13 @@ public class ActivityFilterPanel extends ContentPanel implements FilterPanel {
 
                 @Override
                 public void selectionChanged(SelectionChangedEvent<Link> se) {
+
                     if (se.getSelectedItem() != null) {
                         PageState pageState = se.getSelectedItem()
                             .getPageState();
                         if (pageState instanceof DataEntryPlace) {
-                            currentFilter = ((DataEntryPlace) pageState)
-                                .getFilter();
-                            ValueChangeEvent.fire(ActivityFilterPanel.this,
-                                currentFilter);
+                            currentFilter = ((DataEntryPlace) pageState).getFilter();
+                            ValueChangeEvent.fire(ActivityFilterPanel.this, currentFilter);
                         }
                     }
                 }
