@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.activityinfo.client.page.entry.ActivityFilterPanel;
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.report.model.DimensionType;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -56,14 +55,12 @@ public class FilterPanelSet implements FilterPanel {
                     .addValueChangeHandler(new ValueChangeHandler<Filter>() {
                         @Override
                         public void onValueChange(ValueChangeEvent<Filter> event) {
-                            Filter value = composeFilter(new Filter(), null);
-                            
                             // reset attribute- and partner filters when a different activity or database is selected
                             if (event.getSource() instanceof ActivityFilterPanel) {
-                                value.clearRestrictions(DimensionType.Attribute);
-                                value.clearRestrictions(DimensionType.Partner);
+                                clearAttributeAndPartnerFilters();
                             }
 
+                            Filter value = composeFilter(new Filter(), null);
                             ValueChangeEvent.fire(FilterPanelSet.this, value);
                         }
                     });
@@ -71,6 +68,16 @@ public class FilterPanelSet implements FilterPanel {
             }
         }
         return manager;
+    }
+
+    private void clearAttributeAndPartnerFilters() {
+        for (FilterPanel panel : panels) {
+            if (panel instanceof AttributeFilterPanel) {
+                ((AttributeFilterPanel) panel).clearFilter();
+            } else if (panel instanceof PartnerFilterPanel) {
+                ((PartnerFilterPanel) panel).clearFilter();
+            }
+        }
     }
 
     @Override

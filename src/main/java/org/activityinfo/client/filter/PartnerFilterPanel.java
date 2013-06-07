@@ -99,7 +99,8 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
 
             @Override
             public void onRemoveFilter(RemoveFilterEvent deleteEvent) {
-                removeFilter();
+                clearFilter();
+                ValueChangeEvent.fire(PartnerFilterPanel.this, value);
             }
         });
         setTopComponent(filterToolBar);
@@ -158,18 +159,16 @@ public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
         }
     }
 
-    protected void removeFilter() {
+    protected void clearFilter() {
         for (PartnerDTO partner : listView.getStore().getModels()) {
             listView.setChecked(partner, false);
         }
         value = new Filter();
-        ValueChangeEvent.fire(this, value);
         filterToolBar.setApplyFilterEnabled(false);
         filterToolBar.setRemoveFilterEnabled(false);
     }
 
     protected void applyFilter() {
-
         value = new Filter();
         if (isRendered()) {
             List<Integer> selectedIds = getSelectedIds();

@@ -80,7 +80,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
         filterToolBar.addRemoveFilterHandler(new RemoveFilterHandler() {
             @Override
             public void onRemoveFilter(RemoveFilterEvent deleteEvent) {
-                removeFilter();
+                clearFilter();
+                ValueChangeEvent.fire(AttributeFilterPanel.this, value);
             }
         });
         setTopComponent(filterToolBar);
@@ -88,8 +89,8 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
 
     @Override
     public void applyBaseFilter(Filter rawFilter) {
-        final Filter filter = new Filter(rawFilter);
-        filter.clearRestrictions(DimensionType.Attribute);
+        value = new Filter(rawFilter);
+        value.clearRestrictions(DimensionType.Attribute);
 
         service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
             @Override
@@ -100,7 +101,7 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
             @Override
             public void onSuccess(final SchemaDTO schema) {
                 // retrieve all attributegroups for the current filter
-                service.execute(new GetAttributeGroupsDimension(filter), new AsyncCallback<AttributeGroupResult>() {
+                service.execute(new GetAttributeGroupsDimension(value), new AsyncCallback<AttributeGroupResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         GWT.log("Failed to load attributes", caught);
@@ -175,13 +176,11 @@ public class AttributeFilterPanel extends ContentPanel implements FilterPanel {
         return true;
     }
 
-    private void removeFilter() {
+    protected void clearFilter() {
         value = new Filter();
         for (AttributeGroupFilterWidget widget : widgets) {
             widget.clear();
         }
-        ValueChangeEvent.fire(this, value);
-
         filterToolBar.setRemoveFilterEnabled(false);
     }
 

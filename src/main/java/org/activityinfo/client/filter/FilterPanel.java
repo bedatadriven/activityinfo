@@ -34,5 +34,4 @@ public interface FilterPanel extends HasValue<Filter> {
      * @param filter
      */
     void applyBaseFilter(Filter filter);
-
 }
