@@ -25,6 +25,8 @@ package org.activityinfo.shared.command;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
@@ -38,16 +40,96 @@ import org.junit.runner.RunWith;
 
 @RunWith(InjectionSupport.class)
 @Modules({ TestDatabaseModule.class })
-@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetPartnersDimensionHandlerTest extends CommandTestCase2 {
 
+    // all
     @Test
-    public void testSimple() throws CommandException {
-        Filter filter = new Filter();
-        filter.addRestriction(DimensionType.Activity, 1);
-        PartnerResult result = execute(new GetPartnersDimension(filter));
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testAll() throws CommandException {
+        PartnerResult result = this.execute();
         assertThat(result.getData().size(), equalTo(2));
         assertThat(result.getData().get(0).getName(), equalTo("NRC"));
         assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));
+    }
+
+
+    // data entry filter population query
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testActivity() throws CommandException {
+        PartnerResult result = execute(DimensionType.Activity, 1);
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
+        assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));
+    }
+
+    // report filter population query
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testIndicatorEmpty() throws CommandException {
+        // empty
+        PartnerResult result = execute(DimensionType.Indicator, 103, 675);
+        assertThat(result.getData().size(), equalTo(0));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testIndicatorValues() throws CommandException {
+        // NRC, Solidarites
+        PartnerResult result = execute(DimensionType.Indicator, 1, 2);
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
+        assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked100() throws CommandException {
+        // empty
+        PartnerResult result = execute(DimensionType.Indicator, 100);
+        assertThat(result.getData().size(), equalTo(0));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked1() throws CommandException {
+        // NRC, NRC2
+        PartnerResult result = execute(DimensionType.Indicator, 1);
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
+        assertThat(result.getData().get(1).getName(), equalTo("NRC2"));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked2() throws CommandException {
+        // NRC
+        PartnerResult result = execute(DimensionType.Indicator, 2);
+        assertThat(result.getData().size(), equalTo(1));
+        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked12100() throws CommandException {
+        // NRC, NRC2
+        PartnerResult result = execute(DimensionType.Indicator, 1, 2, 100);
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
+        assertThat(result.getData().get(1).getName(), equalTo("NRC2"));
+    }
+
+
+    private PartnerResult execute() {
+        return this.execute(null, (Integer[]) null);
+    }
+
+    private PartnerResult execute(DimensionType type, Integer... params) {
+        setUser(1);
+        Filter filter = new Filter();
+        if (type != null) {
+            filter.addRestriction(type, Arrays.asList(params));
+        }
+        return execute(new GetPartnersDimension(filter));
     }
 }

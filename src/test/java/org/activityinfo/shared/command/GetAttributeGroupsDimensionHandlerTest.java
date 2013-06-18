@@ -24,6 +24,8 @@ package org.activityinfo.shared.command;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
@@ -37,15 +39,91 @@ import org.junit.runner.RunWith;
 
 @RunWith(InjectionSupport.class)
 @Modules({ TestDatabaseModule.class })
-@OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetAttributeGroupsDimensionHandlerTest extends CommandTestCase2 {
-
+    // all
     @Test
-    public void testSimple() throws CommandException {
-        Filter filter = new Filter();
-        filter.addRestriction(DimensionType.Activity, 1);
-        AttributeGroupResult result = execute(new GetAttributeGroupsDimension(filter));
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testAll() throws CommandException {
+        AttributeGroupResult result = this.execute();
         assertThat(result.getData().size(), equalTo(1));
         assertThat(result.getData().get(0).getName(), equalTo("cause"));
     }
+
+    // data entry filter population query
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testActivity() throws CommandException {
+        AttributeGroupResult result = execute(DimensionType.Activity, 1);
+        assertThat(result.getData().size(), equalTo(1));
+        assertThat(result.getData().get(0).getName(), equalTo("cause"));
+    }
+
+    // report filter population queries
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testIndicatorEmpty() throws CommandException {
+        // empty
+        AttributeGroupResult result = execute(DimensionType.Indicator, 103, 675, 5, 6);
+        assertThat(result.getData().size(), equalTo(0));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testIndicatorValue() throws CommandException {
+        // cause
+        AttributeGroupResult result = execute(DimensionType.Indicator, 1, 2);
+        assertThat(result.getData().size(), equalTo(1));
+        assertThat(result.getData().get(0).getName(), equalTo("cause"));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked100() throws CommandException {
+        // empty
+        AttributeGroupResult result = execute(DimensionType.Indicator, 100);
+        assertThat(result.getData().size(), equalTo(0));
+    }
+    
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked1() throws CommandException {
+        // cause, contenu du kit
+        AttributeGroupResult result = execute(DimensionType.Indicator, 1);
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().get(0).getName(), equalTo("cause"));
+        assertThat(result.getData().get(1).getName(), equalTo("contenu du kit"));
+    }
+    
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked2() throws CommandException {
+        // cause
+        AttributeGroupResult result = execute(DimensionType.Indicator, 2);
+        assertThat(result.getData().size(), equalTo(1));
+        assertThat(result.getData().get(0).getName(), equalTo("cause"));
+    }
+    
+    @Test
+    @OnDataSet("/dbunit/sites-linked.db.xml")
+    public void testIndicatorLinked12100() throws CommandException {
+        // cause, contenu du kit
+        AttributeGroupResult result = execute(DimensionType.Indicator, 1, 2, 100);
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().get(0).getName(), equalTo("cause"));
+        assertThat(result.getData().get(1).getName(), equalTo("contenu du kit"));
+    }
+
+    private AttributeGroupResult execute() {
+        return this.execute(null, (Integer[]) null);
+    }
+
+    private AttributeGroupResult execute(DimensionType type, Integer... params) {
+        setUser(1);
+        Filter filter = new Filter();
+        if (type != null) {
+            filter.addRestriction(type, Arrays.asList(params));
+        }
+        return execute(new GetAttributeGroupsDimension(filter));
+    }
+
 }

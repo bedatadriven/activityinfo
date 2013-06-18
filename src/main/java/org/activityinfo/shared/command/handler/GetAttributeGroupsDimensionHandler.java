@@ -43,15 +43,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class GetAttributeGroupsDimensionHandler implements
     CommandHandlerAsync<GetAttributeGroupsDimension, AttributeGroupResult> {
 
-    private static final Dimension DIMENSION = new Dimension(DimensionType.AttributeGroup);
-
     @Override
     public void execute(GetAttributeGroupsDimension cmd, final ExecutionContext context,
         final AsyncCallback<AttributeGroupResult> callback) {
 
+        final Dimension dimension = new Dimension(DimensionType.AttributeGroup);
+
         final PivotSites query = new PivotSites();
         query.setFilter(cmd.getFilter());
-        query.setDimensions(DIMENSION);
+        query.setDimensions(dimension);
         query.setValueType(ValueType.DIMENSION);
 
         context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
@@ -61,7 +61,8 @@ public class GetAttributeGroupsDimensionHandler implements
 
                 // populate the resultlist
                 for (Bucket bucket : result.getBuckets()) {
-                    EntityCategory category = (EntityCategory) bucket.getCategory(DIMENSION);
+                    EntityCategory category =
+                        (EntityCategory) bucket.getCategory(dimension);
                     if (category == null) {
                         Log.debug("AttributeGroup is null: " + bucket.toString());
                     } else {
