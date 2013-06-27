@@ -25,6 +25,7 @@ package org.activityinfo.client.report.editor.chart;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.filter.AdminFilterPanel;
+import org.activityinfo.client.filter.AttributeFilterPanel;
 import org.activityinfo.client.filter.DateRangePanel;
 import org.activityinfo.client.filter.FilterPanelSet;
 import org.activityinfo.client.filter.IndicatorFilterPanel;
@@ -54,8 +55,7 @@ public class PivotFilterPanel extends ContentPanel implements
         setLayout(new AccordionLayout());
         setHeading(I18N.CONSTANTS.filter());
 
-        IndicatorFilterPanel indicatorPanel = new IndicatorFilterPanel(
-            dispatcher, true);
+        IndicatorFilterPanel indicatorPanel = new IndicatorFilterPanel(dispatcher, true);
         indicatorPanel.setHeaderVisible(true);
         add(indicatorPanel);
 
@@ -65,14 +65,15 @@ public class PivotFilterPanel extends ContentPanel implements
         DateRangePanel dateFilterPanel = new DateRangePanel();
         add(dateFilterPanel);
 
-        PartnerFilterPanel partnerFilterPanel = new PartnerFilterPanel(
-            dispatcher);
+        PartnerFilterPanel partnerFilterPanel = new PartnerFilterPanel(dispatcher);
         add(partnerFilterPanel);
 
-        panelSet = new FilterPanelSet(indicatorPanel, adminFilterPanel,
-            dateFilterPanel, partnerFilterPanel);
-        panelSet.addValueChangeHandler(new ValueChangeHandler<Filter>() {
+        AttributeFilterPanel attributePanel = new AttributeFilterPanel(dispatcher);
+        add(attributePanel);
 
+        panelSet = new FilterPanelSet(indicatorPanel, adminFilterPanel,
+            dateFilterPanel, partnerFilterPanel, attributePanel);
+        panelSet.addValueChangeHandler(new ValueChangeHandler<Filter>() {
             @Override
             public void onValueChange(ValueChangeEvent<Filter> event) {
                 model.setFilter(event.getValue());
@@ -81,7 +82,6 @@ public class PivotFilterPanel extends ContentPanel implements
         });
 
         events.listen(new ReportChangeHandler() {
-
             @Override
             public void onChanged() {
                 panelSet.setValue(model.getFilter());

@@ -110,18 +110,17 @@ public class PivotQuery {
         baseTable.setupQuery(command, query);
 
         if (command.isPivotedBy(DimensionType.Location)) {
-            query.leftJoin(Tables.LOCATION, "Location").on(
-                "Location.LocationId=" +
-                    baseTable.getDimensionIdColumn(DimensionType.Location));
+            query.leftJoin(Tables.LOCATION, "Location")
+                .on("Location.LocationId=" + baseTable.getDimensionIdColumn(DimensionType.Location));
         }
         if (command.isPivotedBy(DimensionType.Partner)) {
-            query.leftJoin(Tables.PARTNER, "Partner").on("Partner.PartnerId=" +
-                baseTable.getDimensionIdColumn(DimensionType.Partner));
+            query.leftJoin(Tables.PARTNER, "Partner")
+                .on("Partner.PartnerId=" + baseTable.getDimensionIdColumn(DimensionType.Partner));
 
         }
         if (command.isPivotedBy(DimensionType.Project)) {
-            query.leftJoin(Tables.PROJECT, "Project").on("Project.ProjectId=" +
-                baseTable.getDimensionIdColumn(DimensionType.Project));
+            query.leftJoin(Tables.PROJECT, "Project")
+                .on("Project.ProjectId=" + baseTable.getDimensionIdColumn(DimensionType.Project));
         }
 
         addDimensionBundlers();

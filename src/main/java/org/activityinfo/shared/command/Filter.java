@@ -296,6 +296,8 @@ public class Filter implements Serializable {
         sb.append("lenient: ");
         sb.append(lenient);
 
+        sb.insert(0, "[");
+        sb.append("]");
         return sb.toString();
     }
 

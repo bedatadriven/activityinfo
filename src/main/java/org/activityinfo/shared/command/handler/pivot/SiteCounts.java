@@ -44,8 +44,7 @@ public class SiteCounts extends BaseTable {
     @Override
     public void setupQuery(PivotSites command, SqlQuery query) {
         if (command.getFilter().isRestricted(DimensionType.Indicator)) {
-            // we only need to pull in indicator values if there is a
-            // filter on indicators
+            // we only need to pull in indicator values if there is a filter on indicators
             query.from(Tables.INDICATOR_VALUE, "V");
             query.leftJoin(Tables.REPORTING_PERIOD, "RP").on(
                 "V.ReportingPeriodId = RP.ReportingPeriodId");

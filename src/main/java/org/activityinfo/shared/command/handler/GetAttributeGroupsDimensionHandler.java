@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.GetAttributeGroupsDimension;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
@@ -63,9 +62,7 @@ public class GetAttributeGroupsDimensionHandler implements
                 for (Bucket bucket : result.getBuckets()) {
                     EntityCategory category =
                         (EntityCategory) bucket.getCategory(dimension);
-                    if (category == null) {
-                        Log.debug("AttributeGroup is null: " + bucket.toString());
-                    } else {
+                    if (category != null) {
                         AttributeGroupDTO attributeGroup = new AttributeGroupDTO();
                         attributeGroup.setId(category.getId());
                         attributeGroup.setName(category.getLabel());

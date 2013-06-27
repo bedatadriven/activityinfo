@@ -38,6 +38,7 @@ import org.activityinfo.shared.util.CollectionUtil;
 import com.google.gwt.user.client.Event;
 
 public class AttributeGroupFilterWidget extends FilterWidget {
+    public static final DimensionType DIMENSION_TYPE = DimensionType.Attribute;
 
     private AttributeGroupFilterDialog dialog;
     private AttributeGroupDTO group;
@@ -128,6 +129,6 @@ public class AttributeGroupFilterWidget extends FilterWidget {
                 }
             }
         }
-        setValue(newValue);
+        setValue(newValue, false);
     }
 }

@@ -40,15 +40,24 @@ public class SumAvgIndicatorValues extends BaseTable {
     @Override
     public void setupQuery(PivotSites command, SqlQuery query) {
         query.from(Tables.INDICATOR_VALUE, "V");
-        query.leftJoin(Tables.REPORTING_PERIOD, "Period").on(
-            "Period.ReportingPeriodId = V.ReportingPeriodId");
-        query.leftJoin(Tables.SITE, "Site").on("Period.SiteId = Site.SiteId");
-        query.leftJoin(Tables.INDICATOR, "Indicator").on(
-            "Indicator.IndicatorId = V.IndicatorId");
-        query.leftJoin(Tables.ACTIVITY, "Activity").on(
-            "Indicator.ActivityId = Activity.ActivityId");
-        query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
-            "Activity.DatabaseId = UserDatabase.DatabaseId");
+        query.leftJoin(Tables.REPORTING_PERIOD, "Period")
+            .on("Period.ReportingPeriodId = V.ReportingPeriodId");
+        query.leftJoin(Tables.SITE, "Site")
+            .on("Period.SiteId = Site.SiteId");
+        query.leftJoin(Tables.INDICATOR, "Indicator")
+            .on("Indicator.IndicatorId = V.IndicatorId");
+        query.leftJoin(Tables.ACTIVITY, "Activity")
+            .on("Indicator.ActivityId = Activity.ActivityId");
+        query.leftJoin(Tables.USER_DATABASE, "UserDatabase")
+            .on("Activity.DatabaseId = UserDatabase.DatabaseId");
+
+        if (command.getFilter().isRestricted(DimensionType.Attribute)) {
+            // we only need to pull in attributevalues if there is a filter on attributes
+            query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue")
+                .on("Site.SiteId = AttributeValue.SiteId");
+            query.leftJoin(Tables.ATTRIBUTE, "Attribute")
+                .on("AttributeValue.AttributeId = Attribute.AttributeId");
+        }
 
         query.where("Indicator.DateDeleted is NULL");
         query.where("Site.dateDeleted").isNull();
@@ -65,8 +74,7 @@ public class SumAvgIndicatorValues extends BaseTable {
 
         query.groupBy("Indicator.IndicatorId");
         query.groupBy("Indicator.Aggregation");
-        query
-            .whereTrue(" ((V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
+        query.whereTrue(" ((V.value <> 0 and Indicator.Aggregation=0) or Indicator.Aggregation=1) ");
     }
 
     @Override
@@ -87,6 +95,8 @@ public class SumAvgIndicatorValues extends BaseTable {
             return "Site.ProjectId";
         case Location:
             return "Site.LocationId";
+        case Attribute:
+            return "AttributeValue.AttributeId";
         }
         throw new UnsupportedOperationException(type.name());
     }

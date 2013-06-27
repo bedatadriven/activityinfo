@@ -55,8 +55,10 @@ public class FilterPanelSet implements FilterPanel {
                     .addValueChangeHandler(new ValueChangeHandler<Filter>() {
                         @Override
                         public void onValueChange(ValueChangeEvent<Filter> event) {
-                            // reset attribute- and partner filters when a different activity or database is selected
-                            if (event.getSource() instanceof ActivityFilterPanel) {
+                            // reset attribute- and partner filters when a different activity, database (data entry)
+                            // or indicator (reports) is selected
+                            if (event.getSource() instanceof ActivityFilterPanel ||
+                                event.getSource() instanceof IndicatorFilterPanel) {
                                 clearAttributeAndPartnerFilters();
                             }
 
@@ -74,6 +76,8 @@ public class FilterPanelSet implements FilterPanel {
         for (FilterPanel panel : panels) {
             if (panel instanceof AttributeFilterPanel) {
                 ((AttributeFilterPanel) panel).clearFilter();
+            } else if (panel instanceof AttributeGroupFilterWidgets) {
+                ((AttributeGroupFilterWidgets) panel).clearFilter();
             } else if (panel instanceof PartnerFilterPanel) {
                 ((PartnerFilterPanel) panel).clearFilter();
             }

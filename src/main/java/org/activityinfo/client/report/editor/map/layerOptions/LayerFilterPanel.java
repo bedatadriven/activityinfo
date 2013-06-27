@@ -23,6 +23,9 @@ package org.activityinfo.client.report.editor.map.layerOptions;
  */
 
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.dispatch.callback.SuccessCallback;
+import org.activityinfo.client.filter.AttributeGroupFilterWidget;
+import org.activityinfo.client.filter.AttributeGroupFilterWidgets;
 import org.activityinfo.client.filter.FilterPanelSet;
 import org.activityinfo.client.filter.FilterResources;
 import org.activityinfo.client.i18n.I18N;
@@ -42,6 +45,7 @@ public class LayerFilterPanel extends ContentPanel implements HasValue<Filter> {
     private Filter filter;
     private DateFilterWidget dateWidget;
     private PartnerFilterWidget partnerFilterWidget;
+    private AttributeGroupFilterWidgets attributeGroupWidgets;
 
     public LayerFilterPanel(Dispatcher dispatcher) {
         FilterResources.INSTANCE.style().ensureInjected();
@@ -49,37 +53,58 @@ public class LayerFilterPanel extends ContentPanel implements HasValue<Filter> {
         initializeComponent();
 
         dateWidget = new DateFilterWidget();
-        partnerFilterWidget = new PartnerFilterWidget(dispatcher);
-
-        add(dateWidget);
-        add(partnerFilterWidget);
-
         dateWidget.addValueChangeHandler(new ValueChangeHandler<Filter>() {
             @Override
             public void onValueChange(ValueChangeEvent<Filter> event) {
                 createNewFilterAndFireEvent();
             }
         });
+        add(dateWidget);
 
+        partnerFilterWidget = new PartnerFilterWidget(dispatcher);
         partnerFilterWidget
             .addValueChangeHandler(new ValueChangeHandler<Filter>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Filter> event) {
+                createNewFilterAndFireEvent();
+            }
+        });
+        add(partnerFilterWidget);
+
+        attributeGroupWidgets = new AttributeGroupFilterWidgets(this, dispatcher,
+            new ValueChangeHandler<Filter>() {
                 @Override
                 public void onValueChange(ValueChangeEvent<Filter> event) {
                     createNewFilterAndFireEvent();
                 }
+            },
+            new SuccessCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    layout();
+                }
             });
 
-        filterPanelSet = new FilterPanelSet(dateWidget, partnerFilterWidget);
+        filterPanelSet = new FilterPanelSet(dateWidget, partnerFilterWidget, attributeGroupWidgets);
     }
 
     private void createNewFilterAndFireEvent() {
         Filter filter = new Filter();
+
+        filter.setDateRange(dateWidget.getValue().getDateRange());
+
         Filter partnerFilter = partnerFilterWidget.getValue();
         if (partnerFilter.hasRestrictions()) {
             filter.addRestriction(DimensionType.Partner,
                 partnerFilter.getRestrictions(DimensionType.Partner));
         }
-        filter.setDateRange(dateWidget.getValue().getDateRange());
+
+        Filter attributeGroupFilter = attributeGroupWidgets.getValue();
+        if (attributeGroupFilter.hasRestrictions()) {
+            filter.addRestriction(AttributeGroupFilterWidget.DIMENSION_TYPE,
+                attributeGroupFilter.getRestrictions(AttributeGroupFilterWidget.DIMENSION_TYPE));
+        }
+
         setValue(filter);
     }
 
