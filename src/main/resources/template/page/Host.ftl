@@ -99,10 +99,12 @@
     <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
     <script type="text/javascript">
     
+
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-11567120-1']);
-      _gaq.push(['_trackPageview', '/login/success']);
-    
+      _gaq.push(['_setDomainName', 'activityinfo.org']);
+      _gaq.push(['_setCustomVar', 2, 'Existing User', 'Yes', 1]);
+               
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
