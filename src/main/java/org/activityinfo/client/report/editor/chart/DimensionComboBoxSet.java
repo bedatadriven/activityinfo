@@ -59,6 +59,7 @@ public class DimensionComboBoxSet implements
     private final DimensionCombo seriesCombo;
 
     private PivotChartReportElement model;
+    private boolean fireEvents = true;
 
     public DimensionComboBoxSet(EventBus eventBus, Dispatcher dispatcher) {
         this.proxy = new DimensionProxy(dispatcher);
@@ -70,9 +71,10 @@ public class DimensionComboBoxSet implements
                 @Override
                 public void selectionChanged(
                     SelectionChangedEvent<DimensionModel> se) {
-                    model.setCategoryDimension(se.getSelectedItem()
-                        .getDimension());
-                    events.fireChange();
+                    model.setCategoryDimension(se.getSelectedItem().getDimension());
+                    if (fireEvents) {
+                        events.fireChange();
+                    }
                 }
             });
         this.seriesCombo = new DimensionCombo(store,
@@ -81,9 +83,10 @@ public class DimensionComboBoxSet implements
                 @Override
                 public void selectionChanged(
                     SelectionChangedEvent<DimensionModel> se) {
-                    model.setSeriesDimension(se.getSelectedItem()
-                        .getDimension());
-                    events.fireChange();
+                    model.setSeriesDimension(se.getSelectedItem().getDimension());
+                    if (fireEvents) {
+                        events.fireChange();
+                    }
                 }
             });
         this.categoryLabel = new LabelToolItem();
@@ -93,7 +96,7 @@ public class DimensionComboBoxSet implements
 
             @Override
             public void onChanged() {
-                updateSelection();
+                updateSelectionWithoutEvents();
             }
         });
     }
@@ -102,7 +105,7 @@ public class DimensionComboBoxSet implements
     public void bind(PivotChartReportElement model) {
         this.model = model;
         this.proxy.setModel(model);
-        updateSelection();
+        updateSelectionWithoutEvents();
     }
 
     @Override
@@ -113,6 +116,12 @@ public class DimensionComboBoxSet implements
     @Override
     public void disconnect() {
         events.disconnect();
+    }
+
+    private void updateSelectionWithoutEvents() {
+        fireEvents = false;
+        updateSelection();
+        fireEvents = true;
     }
 
     private void updateSelection() {

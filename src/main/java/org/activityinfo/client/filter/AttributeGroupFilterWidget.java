@@ -77,7 +77,7 @@ public class AttributeGroupFilterWidget extends FilterWidget {
     }
 
     public void clear() {
-        setValue(new Filter());
+        setValue(new Filter(), false);
         updateView();
     }
 

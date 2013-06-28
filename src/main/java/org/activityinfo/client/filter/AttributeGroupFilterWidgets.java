@@ -34,7 +34,7 @@ public class AttributeGroupFilterWidgets implements FilterPanel {
     private ValueChangeHandler<Filter> valueChangeHandler;
     private SuccessCallback<Void> drawCallback;
     
-    private Filter prevFilter;
+    private Filter prevFilter = new Filter();;
     private AttributeGroupResult prevResult;
 
     private List<AttributeGroupDTO> groups;

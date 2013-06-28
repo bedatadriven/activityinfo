@@ -73,18 +73,24 @@ public class PivotFilterPanel extends ContentPanel implements
 
         panelSet = new FilterPanelSet(indicatorPanel, adminFilterPanel,
             dateFilterPanel, partnerFilterPanel, attributePanel);
+
+        // if a nested filterpanel changed the filter
         panelSet.addValueChangeHandler(new ValueChangeHandler<Filter>() {
             @Override
             public void onValueChange(ValueChangeEvent<Filter> event) {
                 model.setFilter(event.getValue());
+                // notify other filterpanels
+                panelSet.setValue(model.getFilter(), false);
+                // notify other components
                 events.fireChange();
             }
         });
 
+        // if another component changed the model
         events.listen(new ReportChangeHandler() {
             @Override
             public void onChanged() {
-                panelSet.setValue(model.getFilter());
+                panelSet.setValue(model.getFilter(), false);
             }
         });
     }
