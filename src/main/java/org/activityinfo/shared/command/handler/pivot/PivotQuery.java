@@ -145,7 +145,7 @@ public class PivotQuery {
         appendDimensionRestrictions();
 
         if (Log.isDebugEnabled()) {
-            Log.debug("PivotQuery executing query: " + query.sql());
+            Log.debug("PivotQuery (" + baseTable.getClass().getSimpleName() + ") executing query: " + query.sql());
         }
 
         query.execute(tx, new SqlResultCallback() {
@@ -409,6 +409,10 @@ public class PivotQuery {
                                     .where("Link.AdminEntityId")
                                     .in(filter
                                         .getRestrictions(DimensionType.AdminLevel)));
+                    } else if (type == DimensionType.Attribute) {
+                        query.onlyWhere(baseTable.getDimensionIdColumn(type))
+                            .in(filter.getRestrictions(type));
+                        query.where("AttributeValue.value = 1");
                     } else {
                         query.onlyWhere(baseTable.getDimensionIdColumn(type))
                             .in(filter.getRestrictions(type));
