@@ -35,5 +35,4 @@ public class AttributeGroupResult extends ListResult<AttributeGroupDTO> {
     public AttributeGroupResult(List<AttributeGroupDTO> data) {
         super(data);
     }
-
 }

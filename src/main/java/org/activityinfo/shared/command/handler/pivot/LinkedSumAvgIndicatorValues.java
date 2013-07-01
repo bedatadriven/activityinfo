@@ -41,18 +41,28 @@ public class LinkedSumAvgIndicatorValues extends BaseTable {
     public void setupQuery(PivotSites command, SqlQuery query) {
 
         query.from(Tables.INDICATOR_LINK, "IndicatorLink");
-        query.leftJoin(Tables.INDICATOR_VALUE, "V").on(
-            "IndicatorLink.SourceIndicatorId=V.IndicatorId");
-        query.leftJoin(Tables.INDICATOR, "Indicator").on(
-            "IndicatorLink.DestinationIndicatorId=Indicator.IndicatorId");
-        query.leftJoin(Tables.ACTIVITY, "Activity").on(
-            "Activity.ActivityId=Indicator.ActivityId");
-        query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
-            "UserDatabase.DatabaseId=Activity.DatabaseId");
+        query.leftJoin(Tables.INDICATOR_VALUE, "V")
+            .on("IndicatorLink.SourceIndicatorId=V.IndicatorId");
+        query.leftJoin(Tables.INDICATOR, "Indicator")
+            .on("IndicatorLink.DestinationIndicatorId=Indicator.IndicatorId");
+        query.leftJoin(Tables.ACTIVITY, "Activity")
+            .on("Activity.ActivityId=Indicator.ActivityId");
+        query.leftJoin(Tables.USER_DATABASE, "UserDatabase")
+            .on("UserDatabase.DatabaseId=Activity.DatabaseId");
 
-        query.leftJoin(Tables.REPORTING_PERIOD, "Period").on(
-            "Period.ReportingPeriodId=V.ReportingPeriodId");
-        query.leftJoin(Tables.SITE, "Site").on("Site.SiteId=Period.SiteId");
+        query.leftJoin(Tables.REPORTING_PERIOD, "Period")
+            .on("Period.ReportingPeriodId=V.ReportingPeriodId");
+        query.leftJoin(Tables.SITE, "Site")
+            .on("Site.SiteId=Period.SiteId");
+
+        if (command.getFilter().isRestricted(DimensionType.Attribute)) {
+            // we only need to pull in attributevalues if there is a filter on attributes
+            query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue")
+                .on("Site.SiteId = AttributeValue.SiteId");
+            query.leftJoin(Tables.ATTRIBUTE, "Attribute")
+                .on("AttributeValue.AttributeId = Attribute.AttributeId");
+        }
+
 
         query.appendColumn("Indicator.Aggregation", ValueFields.AGGREGATION);
         query.appendColumn("SUM(V.Value)", ValueFields.SUM);
@@ -87,6 +97,8 @@ public class LinkedSumAvgIndicatorValues extends BaseTable {
             return "Site.ProjectId";
         case Location:
             return "Site.LocationId";
+        case Attribute:
+            return "AttributeValue.AttributeId";
         }
         throw new UnsupportedOperationException(type.name());
     }

@@ -110,26 +110,23 @@ public class PivotQuery {
         baseTable.setupQuery(command, query);
 
         if (command.isPivotedBy(DimensionType.Location)) {
-            query.leftJoin(Tables.LOCATION, "Location").on(
-                "Location.LocationId=" +
-                    baseTable.getDimensionIdColumn(DimensionType.Location));
+            query.leftJoin(Tables.LOCATION, "Location")
+                .on("Location.LocationId=" + baseTable.getDimensionIdColumn(DimensionType.Location));
         }
         if (command.isPivotedBy(DimensionType.Partner)) {
-            query.leftJoin(Tables.PARTNER, "Partner").on("Partner.PartnerId=" +
-                baseTable.getDimensionIdColumn(DimensionType.Partner));
+            query.leftJoin(Tables.PARTNER, "Partner")
+                .on("Partner.PartnerId=" + baseTable.getDimensionIdColumn(DimensionType.Partner));
 
         }
         if (command.isPivotedBy(DimensionType.Project)) {
-            query.leftJoin(Tables.PROJECT, "Project").on("Project.ProjectId=" +
-                baseTable.getDimensionIdColumn(DimensionType.Project));
+            query.leftJoin(Tables.PROJECT, "Project")
+                .on("Project.ProjectId=" + baseTable.getDimensionIdColumn(DimensionType.Project));
         }
 
         addDimensionBundlers();
 
-        // Only allow results that are visible to this user if we are on the
-        // server,
-        // otherwise permissions have already been taken into account during
-        // synchronization
+        // Only allow results that are visible to this user if we are on the server,
+        // otherwise permissions have already been taken into account during synchronization
         if (isRemote()) {
             appendVisibilityFilter();
         }
@@ -146,7 +143,7 @@ public class PivotQuery {
         appendDimensionRestrictions();
 
         if (Log.isDebugEnabled()) {
-            Log.debug("PivotQuery executing query: " + query.sql());
+            Log.debug("PivotQuery (" + baseTable.getClass() + ") executing query: " + query.sql());
         }
 
         query.execute(tx, new SqlResultCallback() {
@@ -374,14 +371,48 @@ public class PivotQuery {
 
     private void appendVisibilityFilter() {
         StringBuilder securityFilter = new StringBuilder();
-        securityFilter.append("(UserDatabase.OwnerUserId = ").append(userId)
-            .append(" OR ")
-            .append(userId)
-            .append(" in (select p.UserId from userpermission p " +
-                "where p.AllowView and " +
-                "p.UserId=").append(userId)
-            .append(" AND p.DatabaseId = UserDatabase.DatabaseId))");
+        securityFilter
+            .append("(")
 
+            // own databases
+            .append("UserDatabase.OwnerUserId = ").append(userId).append(" ")
+
+            // databases with allowviewall
+            .append("OR UserDatabase.DatabaseId IN (")
+            .append(" SELECT ")
+            .append("  p.DatabaseId ")
+            .append(" FROM ")
+            .append("  userpermission p ")
+            .append(" WHERE ")
+            .append("  p.UserId = ").append(userId)
+            .append("  AND p.AllowViewAll")
+            .append(") ")
+        
+            // sites of own partner
+            .append("OR UserDatabase.DatabaseId IN (")
+            .append(" SELECT ")
+            .append("  p.DatabaseId ")
+            .append(" FROM ")
+            .append("  userpermission p ")
+            .append(" WHERE ")
+            .append("  p.UserId = ").append(userId)
+            .append("  AND p.AllowView ")
+            .append("  AND p.PartnerId = Site.PartnerId ")
+            .append(") ")
+
+            // or sites of which one or more activities are published
+            .append("OR (")
+            .append(" SELECT ")
+            .append("  COUNT(*) ")
+            .append(" FROM ")
+            .append("  activity pa ")
+            .append(" WHERE ")
+            .append("  pa.published > 0 ")
+            .append("  AND pa.ActivityId = Site.ActivityId ")
+            .append(") > 0")
+            
+            .append(")");
+        
         query.whereTrue(securityFilter.toString());
     }
 
@@ -410,6 +441,10 @@ public class PivotQuery {
                                     .where("Link.AdminEntityId")
                                     .in(filter
                                         .getRestrictions(DimensionType.AdminLevel)));
+                    } else if (type == DimensionType.Attribute) {
+                        query.onlyWhere(baseTable.getDimensionIdColumn(type))
+                            .in(filter.getRestrictions(type));
+                        query.where("AttributeValue.value = 1");
                     } else {
                         query.onlyWhere(baseTable.getDimensionIdColumn(type))
                             .in(filter.getRestrictions(type));

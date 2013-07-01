@@ -25,6 +25,8 @@ package org.activityinfo.shared.command.result;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activityinfo.shared.util.CollectionUtil;
+
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 
@@ -67,5 +69,18 @@ public abstract class ListResult<D extends ModelData> implements CommandResult,
     @Override
     public String toString() {
         return String.valueOf(data);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || !(obj instanceof ListResult<?>)) {
+            return false;
+        }
+
+        return CollectionUtil.containsEqual(this.getData(), ((ListResult<D>) obj).getData());
     }
 }

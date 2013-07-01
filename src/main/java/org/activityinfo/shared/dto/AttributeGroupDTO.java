@@ -144,4 +144,17 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     public String toString() {
         return getName() + "-" + getAttributes();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || !(obj instanceof AttributeGroupDTO)) {
+            return false;
+        }
+
+        return getId() == ((AttributeGroupDTO) obj).getId();
+    }
 }

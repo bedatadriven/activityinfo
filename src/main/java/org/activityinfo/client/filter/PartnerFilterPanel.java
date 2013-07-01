@@ -59,7 +59,7 @@ import com.google.inject.Inject;
 public class PartnerFilterPanel extends ContentPanel implements FilterPanel {
     private final Dispatcher service;
     private FilterToolBar filterToolBar;
-    private Filter baseFilter = null;
+    private Filter baseFilter = new Filter();;
 
     private Filter value = new Filter();
 

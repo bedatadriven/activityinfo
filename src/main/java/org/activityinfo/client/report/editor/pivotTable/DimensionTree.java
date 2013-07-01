@@ -62,6 +62,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 
     private final Dispatcher dispatcher;
     private final ReportEventHelper events;
+    private boolean fireEvents = true;
 
     private final TreeStore<DimensionModel> store;
     private final TreePanel<DimensionModel> treePanel;
@@ -70,16 +71,16 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 
     private PivotTableReportElement model;
     private DimensionModel geographyRoot;
-    private final List<DimensionModel> attributeDimensions = Lists
-        .newArrayList();
+    private final List<DimensionModel> attributeDimensions = Lists.newArrayList();
 
     public DimensionTree(EventBus eventBus, Dispatcher dispatcher) {
         this.events = new ReportEventHelper(eventBus, this);
         this.events.listen(new ReportChangeHandler() {
-
             @Override
             public void onChanged() {
+                fireEvents = false;
                 onModelChanged();
+                fireEvents = true;
             }
         });
         this.dispatcher = dispatcher;
@@ -321,7 +322,9 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
             model.getColumnDimensions().remove(dim);
         }
 
-        events.fireChange();
+        if (fireEvents) {
+            events.fireChange();
+        }
     }
 
     public Component asComponent() {

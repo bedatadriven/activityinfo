@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.GetAttributeGroupsDimension;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
@@ -43,15 +42,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class GetAttributeGroupsDimensionHandler implements
     CommandHandlerAsync<GetAttributeGroupsDimension, AttributeGroupResult> {
 
-    private static final Dimension DIMENSION = new Dimension(DimensionType.AttributeGroup);
-
     @Override
     public void execute(GetAttributeGroupsDimension cmd, final ExecutionContext context,
         final AsyncCallback<AttributeGroupResult> callback) {
 
+        final Dimension dimension = new Dimension(DimensionType.AttributeGroup);
+
         final PivotSites query = new PivotSites();
         query.setFilter(cmd.getFilter());
-        query.setDimensions(DIMENSION);
+        query.setDimensions(dimension);
         query.setValueType(ValueType.DIMENSION);
 
         context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
@@ -61,10 +60,9 @@ public class GetAttributeGroupsDimensionHandler implements
 
                 // populate the resultlist
                 for (Bucket bucket : result.getBuckets()) {
-                    EntityCategory category = (EntityCategory) bucket.getCategory(DIMENSION);
-                    if (category == null) {
-                        Log.debug("AttributeGroup is null: " + bucket.toString());
-                    } else {
+                    EntityCategory category =
+                        (EntityCategory) bucket.getCategory(dimension);
+                    if (category != null) {
                         AttributeGroupDTO attributeGroup = new AttributeGroupDTO();
                         attributeGroup.setId(category.getId());
                         attributeGroup.setName(category.getLabel());
