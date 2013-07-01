@@ -145,7 +145,7 @@ public class PivotQuery {
         appendDimensionRestrictions();
 
         if (Log.isDebugEnabled()) {
-            Log.debug("PivotQuery (" + baseTable.getClass().getSimpleName() + ") executing query: " + query.sql());
+            Log.debug("PivotQuery (" + baseTable.getClass() + ") executing query: " + query.sql());
         }
 
         query.execute(tx, new SqlResultCallback() {
