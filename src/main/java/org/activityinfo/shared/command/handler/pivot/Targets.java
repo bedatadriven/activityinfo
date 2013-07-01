@@ -93,13 +93,15 @@ public class Targets extends BaseTable {
     public void setupQuery(PivotSites command, SqlQuery query) {
         query.from(Tables.TARGET_VALUE, "V");
         query.leftJoin(Tables.TARGET, "Target")
-            .on("V.TargetId=Target.TargetId");
-        query.leftJoin(Tables.INDICATOR, "Indicator").on(
-            "V.IndicatorId=Indicator.IndicatorId");
-        query.leftJoin(Tables.ACTIVITY, "Activity").on(
-            "Activity.ActivityId=Indicator.ActivityId");
-        query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
-            "UserDatabase.DatabaseId=Activity.DatabaseId");
+            .on("V.TargetId = Target.TargetId");
+        query.leftJoin(Tables.INDICATOR, "Indicator")
+            .on("V.IndicatorId = Indicator.IndicatorId");
+        query.leftJoin(Tables.ACTIVITY, "Activity")
+            .on("Activity.ActivityId = Indicator.ActivityId");
+        query.leftJoin(Tables.SITE, "Site")
+            .on("Site.ActivityId = Activity.ActivityId");
+        query.leftJoin(Tables.USER_DATABASE, "UserDatabase")
+            .on("UserDatabase.DatabaseId = Activity.DatabaseId");
 
         query.appendColumn("Indicator.Aggregation", ValueFields.AGGREGATION);
         query.appendColumn("SUM(V.Value)", ValueFields.SUM);
