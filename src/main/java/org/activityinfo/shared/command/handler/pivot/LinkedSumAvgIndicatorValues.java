@@ -55,15 +55,6 @@ public class LinkedSumAvgIndicatorValues extends BaseTable {
         query.leftJoin(Tables.SITE, "Site")
             .on("Site.SiteId=Period.SiteId");
 
-        if (command.getFilter().isRestricted(DimensionType.Attribute)) {
-            // we only need to pull in attributevalues if there is a filter on attributes
-            query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue")
-                .on("Site.SiteId = AttributeValue.SiteId");
-            query.leftJoin(Tables.ATTRIBUTE, "Attribute")
-                .on("AttributeValue.AttributeId = Attribute.AttributeId");
-        }
-
-
         query.appendColumn("Indicator.Aggregation", ValueFields.AGGREGATION);
         query.appendColumn("SUM(V.Value)", ValueFields.SUM);
         query.appendColumn("COUNT(V.Value)", ValueFields.COUNT);
@@ -97,8 +88,6 @@ public class LinkedSumAvgIndicatorValues extends BaseTable {
             return "Site.ProjectId";
         case Location:
             return "Site.LocationId";
-        case Attribute:
-            return "AttributeValue.AttributeId";
         }
         throw new UnsupportedOperationException(type.name());
     }

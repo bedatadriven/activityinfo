@@ -48,14 +48,6 @@ public class CountIndicatorValues extends BaseTable {
         query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on(
             "UserDatabase.DatabaseId=Activity.DatabaseId");
 
-        if (command.getFilter().isRestricted(DimensionType.Attribute)) {
-            // we only need to pull in attributevalues if there is a filter on attributes
-            query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue")
-                .on("Site.SiteId = AttributeValue.SiteId");
-            query.leftJoin(Tables.ATTRIBUTE, "Attribute")
-                .on("AttributeValue.AttributeId = Attribute.AttributeId");
-        }
-
         query.appendColumn("COUNT(DISTINCT Site.SiteId)", ValueFields.COUNT);
         query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT),
             ValueFields.AGGREGATION);
@@ -83,8 +75,6 @@ public class CountIndicatorValues extends BaseTable {
             return "Indicator.IndicatorId";
         case Database:
             return "Activity.DatabaseId";
-        case Attribute:
-            return "AttributeValue.AttributeId";
         }
         throw new UnsupportedOperationException(type.name());
     }

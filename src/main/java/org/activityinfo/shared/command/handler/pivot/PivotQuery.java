@@ -442,9 +442,20 @@ public class PivotQuery {
                                     .in(filter
                                         .getRestrictions(DimensionType.AdminLevel)));
                     } else if (type == DimensionType.Attribute) {
-                        query.onlyWhere(baseTable.getDimensionIdColumn(type))
-                            .in(filter.getRestrictions(type));
-                        query.where("AttributeValue.value = 1");
+                        SqlQuery attributefilter = SqlQuery
+                            .select()
+                            .appendColumn("1", "__VAL_EXISTS")
+                            .from("attributevalue", "v")
+                            .leftJoin("attribute", "a").on("v.AttributeId = a.AttributeId")
+                            .whereTrue("v.value=1")
+                            .and("v.SiteId = Site.SiteId")
+                            .where("v.AttributeId").in(filter.getRestrictions(type));
+                        
+                        query.onlyWhere("EXISTS (" + attributefilter.sql() + ") ");
+                        for (Object param : attributefilter.parameters()) {
+                            query.appendParameter(param);
+                        }
+                                                
                     } else {
                         query.onlyWhere(baseTable.getDimensionIdColumn(type))
                             .in(filter.getRestrictions(type));

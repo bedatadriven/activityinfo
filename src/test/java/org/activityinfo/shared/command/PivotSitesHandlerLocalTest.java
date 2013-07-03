@@ -476,24 +476,6 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
 
     @Test
     @OnDataSet("/dbunit/sites-linked.db.xml")
-    public void testLinkedAttributegroupSiteCount() {
-        withAttributeGroupDim();
-        forTotalSiteCounts();
-        execute();
-        assertThat().thereAre(2).buckets();
-
-        Dimension dim = new Dimension(DimensionType.AttributeGroup);
-
-        Bucket causeBucket = findBucketsByCategory(buckets, dim, new EntityCategory(1)).get(0);
-        assertEquals("cause", causeBucket.getCategory(dim).getLabel());
-        assertEquals("Is LinkedSiteCounts query correct?", (int) causeBucket.doubleValue(), 2);
-
-        Bucket contenuBucket = findBucketsByCategory(buckets, dim, new EntityCategory(2)).get(0);
-        assertEquals("contenu du kit", contenuBucket.getCategory(dim).getLabel());
-    }
-
-    @Test
-    @OnDataSet("/dbunit/sites-linked.db.xml")
     public void testLinkedPartnerFilterData() {
         withPartnerAsDimension();
         forFilterData();
