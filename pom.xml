@@ -629,7 +629,7 @@
 
         <configuration>
           <warSourceDirectory>${basedir}/war</warSourceDirectory>
-          <warSourceExcludes>WEB-INF/appengine-web.xml,ActivityInfo/compile-report,*.log,**/*.symbolMap</warSourceExcludes>
+          <warSourceExcludes>ActivityInfo/compile-report,*.log,**/*.symbolMap</warSourceExcludes>
           <webResources>
             <resource>
               <directory>src/main/webapp</directory>
