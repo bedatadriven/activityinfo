@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <!-- appengine configuration for DEVELOPMENT only, it is not deployed -->
-  <!-- the PRODUCTION appengine-web.xml is in src/main/webapp -->
 
-  <application>activityinfoeu</application>
-  <version>dev</version>
+  <application>ai-staging</application>
+  <version>staging</version>
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
     <property name="user.name" value="ActivityInfo" />
