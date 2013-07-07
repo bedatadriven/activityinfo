@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="$encoding"?>
 <jnlp
     spec="$jnlpspec"
-    codebase="$jnlpCodebase"
+    codebase="$$codebase"
     href="$outputFile">
   <information>
     <title>ActivityInfo Geographic Administrator</title>
