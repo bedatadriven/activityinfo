@@ -28,24 +28,24 @@
 		
 			<h3>${label.chooseNewPassword}</h3>
 			
-			<form class="form" method="post" id="loginForm" action="changePassword" method="post">
-		    	<input type="hidden" name="key" value="${user.changePasswordKey}"></input>
+			<form class="form" method="post" action="changePassword" method="post">
+		    		<input type="hidden" name="key" value="${user.changePasswordKey}"></input>
 		
 				<div class="control-group">
-				    <label class="control-label" for="inputEmail">${label.newPassword}</label>
+				    <label class="control-label" for="newPasswordInput">${label.newPassword}</label>
 				    <div class="controls">
-				      <input type="password" name="password" id="inputPassword">
+				      <input type="password" name="password" id="newPasswordInput">
 				    </div>
 				  </div>
 				  <div class="control-group">
-				    <label class="control-label" for="inputPassword">${label.confirmNewPassword}</label>
+				    <label class="control-label" for="newPasswordInput">${label.confirmNewPassword}</label>
 				    <div class="controls">
-				      <input type="password" id="inputPassword">
+				      <input type="password" id="newPasswordInput2">
 				    </div>
 				  </div>
 				</div>
 				<div class="control-group">
-			    <div class="controls">
+			       <div class="controls">
 
 			      <button type="submit" class="btn btn-primary btn-large">${label.continue}  &raquo;</button>
 			    </div>
