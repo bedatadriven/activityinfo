@@ -608,13 +608,13 @@
           <jnlpFiles>
             <jnlpFile>
               <templateFilename>geoadmin.vm</templateFilename>
+              <outputFilename>geoadmin.jnlp</outputFilename>
               <jarResources>
                 <jarResource>
                   <groupId>org.activityinfo</groupId>
                   <artifactId>geoadmin</artifactId>
                   <version>${project.version}</version>
                   <mainClass>org.activityinfo.geoadmin.GeoAdmin</mainClass>
-                  <outputFile>geoadmin.jnlp</outputFile>
                 </jarResource>
               </jarResources>
             </jnlpFile>
