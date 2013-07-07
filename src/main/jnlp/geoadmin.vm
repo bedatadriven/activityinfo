@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="$encoding"?>
+<jnlp
+    spec="$jnlpspec"
+    codebase="$jnlpCodebase"
+    href="$outputFile">
+  <information>
+    <title>ActivityInfo Geographic Administrator</title>
+    <vendor>BeDataDriven</vendor>
+    <homepage href="http://about.activity.org"/>
+    <offline-allowed/>
+  </information>
+  <security>
+     <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="$j2seVersion"/>
+     $dependencies
+     $extensions
+  </resources>
+  <application-desc main-class="$mainClass"/>
+</jnlp>
+
