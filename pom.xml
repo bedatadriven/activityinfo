@@ -27,9 +27,6 @@
     <display.version>${project.version}</display.version>
 
     <gae.version>1.7.4</gae.version>
-    <gae.application.id>ai-staging</gae.application.id>
-    <gae.application.version>2</gae.application.version>
-
     <jersey.version>1.17</jersey.version>
     <appengine.export.version>0.1.1-SNAPSHOT</appengine.export.version>
   </properties>
@@ -774,76 +771,12 @@
 
   <profiles>
     <profile>
-      <id>production</id>
+      <id>ci</id>
       <properties>
         <display.version>2.7 Build ${BUILD_NUMBER}</display.version>
-        <gae.application.id>activityinfoeu</gae.application.id>
-        <gae.application.version>build${BUILD_NUMBER}</gae.application.version>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>net.kindleit</groupId>
-            <artifactId>maven-gae-plugin</artifactId>
-            <version>0.9.5-bdd</version>
-            <configuration>
-              <serverId>appengine.google.com</serverId>
-            </configuration>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <phase>initialize</phase>
-              </execution>
-              <execution>
-                <id>deploy</id>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <phase>deploy</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
-    <profile>
-      <id>staging</id>
-      <properties>
-        <display.version>Staging b${BUILD_NUMBER}</display.version>
-        <gae.application.version>staging</gae.application.version>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>net.kindleit</groupId>
-            <artifactId>maven-gae-plugin</artifactId>
-            <version>0.9.5-bdd</version>
-            <configuration>
-              <serverId>appengine.google.com</serverId>
-            </configuration>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <phase>initialize</phase>
-              </execution>
-              <execution>
-                <id>deploy</id>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <phase>deploy</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
+
 
     <profile>
       <id>reset-test-db</id>
@@ -860,7 +793,6 @@
                   <goal>dropAll</goal>
                   <goal>update</goal>
                 </goals>
-
                 <phase>test-compile</phase>
                 <configuration>
                   <dropFirst>true</dropFirst>
@@ -870,140 +802,6 @@
                 </configuration>
               </execution>
             </executions>
-
-          </plugin>
-
-        </plugins>
-
-      </build>
-
-
-    </profile>
-        <!-- Build the Application Module with only permutations for FireFox 
-            and logging enabled for testing purposes -->
-    <profile>
-      <id>fftest</id>
-      <properties>
-        <maven.test.skip>true</maven.test.skip>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <version>2.3.0-1</version>
-            <configuration>
-              <module>org.activityinfo.ActivityInfoFFTest</module>
-              <soyc>false</soyc>
-            </configuration>
-            <executions>
-              <execution>
-                <id>activityinfo-compile</id>
-                <configuration>
-                  <draftCompile>true</draftCompile>
-                  <modules>
-                    <module>org.activityinfo.ActivityInfoFFTest</module>
-                  </modules>
-                  <style>pretty</style>
-                </configuration>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-        <!-- Build the Application Module with only permutations for IE6 
-            and logging enabled for testing purposes -->
-    <profile>
-      <id>ie6test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <version>1.2</version>
-            <configuration>
-              <module>org.activityinfo.ActivityInfoIE6Test</module>
-            </configuration>
-            <executions>
-              <execution>
-                <id>gwt-compile</id>
-                <configuration>
-                  <draftCompile>true</draftCompile>
-                  <module>org.activityinfo.ActivityInfoIE6Test</module>
-                </configuration>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-        <!-- Automatically engaged during maven release cycle -->
-    <profile>
-      <id>release-build</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <properties>
-        <display.version>${project.version}</display.version>
-      </properties>
-    </profile>
-
-
-        <!-- Build the Application Module with only permutations for Safari 
-            and logging enabled for testing purposes -->
-    <profile>
-      <id>safari</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-
-            <executions>
-              <execution>
-                <id>activityinfo-compile</id>
-                <configuration>
-                  <draftCompile>true</draftCompile>
-                  <modules>
-                    <module>org.activityinfo.ActivityInfoSafariTest</module>
-                  </modules>
-                </configuration>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <!-- Build the Application Module with a single permutation but with 
-        soyc enabled -->
-    <profile>
-      <id>ai-soyc</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <module>org.activityinfo.ActivityInfoSoyc</module>
-              <soyc>true</soyc>
-              <force>true</force>
-              <logLevel>INFO</logLevel>
-            </configuration>
           </plugin>
         </plugins>
       </build>
