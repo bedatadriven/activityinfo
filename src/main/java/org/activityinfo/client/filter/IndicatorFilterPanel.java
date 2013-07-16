@@ -31,22 +31,38 @@ import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 
-public class IndicatorFilterPanel extends IndicatorTreePanel implements
-    FilterPanel {
+public class IndicatorFilterPanel extends IndicatorTreePanel implements FilterPanel {
 
+    private static final int UPDATE_DELAY = 100;
+    
+    private Timer delayedEvent;
+
+    
     public IndicatorFilterPanel(Dispatcher service, boolean multipleSelection) {
         super(service, multipleSelection);
 
         addCheckChangedListener(new Listener<TreePanelEvent>() {
-
             @Override
             public void handleEvent(TreePanelEvent be) {
-                ValueChangeEvent.fire(IndicatorFilterPanel.this, getValue());
+                // aggregate events before re-throwing, to avoid cascading TreePanelEvents
+                delayedEvent.schedule(UPDATE_DELAY);
             }
         });
+
+        delayedEvent = new Timer() {
+            @Override
+            public void run() {
+                fireDelayedEvents();
+            }
+        };
     }
 
+    private void fireDelayedEvents() {
+        ValueChangeEvent.fire(IndicatorFilterPanel.this, getValue());
+    }
+    
     @Override
     public Filter getValue() {
         Filter filter = new Filter();
