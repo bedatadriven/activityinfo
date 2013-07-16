@@ -42,7 +42,6 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.exception.UnexpectedCommandException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
@@ -121,14 +120,7 @@ public class CommandServlet extends RemoteServiceServlet implements
             try {
                 results.add(handleCommand(command));
             } catch (CommandException e) {
-                // include this as an error-ful result and
-                // continue executing other commands in the list
                 results.add(e);
-            } catch (Exception e) {
-                // something when wrong while executing the command
-                // this is already logged by the logging interceptor
-                // so just pass a new UnexpectedCommandException to the client
-                results.add(new UnexpectedCommandException(e));
             }
         }
         return results;
@@ -141,26 +133,29 @@ public class CommandServlet extends RemoteServiceServlet implements
     }
 
     @LogException(emailAlert = true)
-    protected CommandResult handleCommand(Command command)
-        throws CommandException {
-        long timeStart = System.currentTimeMillis();
-        RemoteExecutionContext context = new RemoteExecutionContext(injector);
-        CommandResult result = context.startExecute(command);
+    protected CommandResult handleCommand(Command command) throws CommandException {
+        try {
+            long timeStart = System.currentTimeMillis();
+            RemoteExecutionContext context = new RemoteExecutionContext(injector);
+            CommandResult result = context.startExecute(command);
 
-        long timeElapsed = System.currentTimeMillis() - timeStart;
-        if (timeElapsed > 1000) {
-            LOGGER.warning("Command " + command.toString() + " completed in "
-                + timeElapsed + "ms");
+            long timeElapsed = System.currentTimeMillis() - timeStart;
+            if (timeElapsed > 1000) {
+                LOGGER.warning("Command " + command.toString() + " completed in "
+                    + timeElapsed + "ms");
+            }
+
+            if (!(result instanceof CommandException)) {
+                // if the command completed successfully, notify listeners
+                LOGGER.fine("notifying serverEventBus of completed command "
+                    + command.toString());
+                serverEventBus.post(new CommandEvent(command, result, context));
+            }
+
+            return result;
+        } catch (Exception e) {
+            throw new CommandException(command, e);
         }
-
-        if (!(result instanceof CommandException)) {
-            // if the command completed successfully, notify listeners
-            LOGGER.fine("notifying serverEventBus of completed command "
-                + command.toString());
-            serverEventBus.post(new CommandEvent(command, result, context));
-        }
-
-        return result;
     }
 
     @Override

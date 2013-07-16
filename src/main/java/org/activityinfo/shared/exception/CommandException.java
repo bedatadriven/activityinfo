@@ -22,18 +22,30 @@ package org.activityinfo.shared.exception;
  * #L%
  */
 
+import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
 
 public class CommandException extends RuntimeException implements CommandResult {
+    private static final long serialVersionUID = -127571117379851453L;
+
+    public CommandException() {
+    }
 
     public CommandException(String message) {
         super(message);
     }
 
-    public CommandException() {
-    }
-
     public CommandException(Throwable e) {
         super(e);
+    }
+
+    public CommandException(String message, Throwable e) {
+        super(message, e);
+    }
+
+    public CommandException(Command<?> command, Throwable e) {
+        super((command.getClass().getName().substring(command.getClass().getName().lastIndexOf(".") + 1))
+            + " - " + e.getMessage(), e);
+        this.setStackTrace(new StackTraceElement[] {});
     }
 }
