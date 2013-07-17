@@ -109,8 +109,8 @@ public class UsageTracker {
     }
 
     private native void doTrackPageView(String pageName) /*-{
-                                                         $wnd._gaq.push(['_trackPageview', 'pageName']);
-                                                         }-*/;
+        $wnd._gaq.push([ '_trackPageview', pageName ]);
+    }-*/;
 
     private void setCustomVar(int slot, String variableName, String value,
         int scope) {
@@ -123,6 +123,6 @@ public class UsageTracker {
 
     private native void doSetCustomVar(int slot, String variableName,
         String value, int scope) /*-{
-                                 $wnd._gaq.push(['_setCustomVar', slot, variableName, value, scope]);
-                                 }-*/;
+        $wnd._gaq.push([ '_setCustomVar', slot, variableName, value, scope ]);
+    }-*/;
 }
