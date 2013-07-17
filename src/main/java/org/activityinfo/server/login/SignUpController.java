@@ -53,7 +53,7 @@ import com.sun.jersey.api.view.Viewable;
 
 @Path(SignUpController.ENDPOINT)
 public class SignUpController {
-    public static final String ENDPOINT = "/signUp";
+    public static final String ENDPOINT = "/signUp*";
     
     private static final Logger LOGGER = Logger.getLogger(SignUpController.class.getName());
 
