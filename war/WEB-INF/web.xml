@@ -33,22 +33,4 @@
     </auth-constraint>
   </security-constraint>
 
-  <mime-mapping>
-    <extension>webapp</extension>
-    <mime-type>audio/x-mpeg</mime-type>
-  </mime-mapping>
-  <servlet>
-    <servlet-name>SystemServiceServlet</servlet-name>
-    <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
-    <init-param>
-      <param-name>services</param-name>
-      <param-value/>
-    </init-param>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>SystemServiceServlet</servlet-name>
-    <url-pattern>/_ah/spi/*</url-pattern>
-  </servlet-mapping>
-
 </web-app>

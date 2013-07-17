@@ -1,7 +1,9 @@
 package org.activityinfo.server.util;
 
-import com.google.inject.servlet.ServletModule;
 import jnlp.sample.servlet.JnlpDownloadServlet;
+
+import com.google.inject.Singleton;
+import com.google.inject.servlet.ServletModule;
 
 
 /**
@@ -11,6 +13,7 @@ import jnlp.sample.servlet.JnlpDownloadServlet;
 public class WebstartModule extends ServletModule {
     @Override
     protected void configureServlets() {
+        bind(JnlpDownloadServlet.class).in(Singleton.class);
         serve("/webstart/*").with(JnlpDownloadServlet.class);
     }
 }

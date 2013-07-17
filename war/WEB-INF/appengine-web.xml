@@ -24,7 +24,12 @@
     <include path="/Login/**.css" expiration="365d" />
     <include path="/Login/**.cache.html" expiration="365d" />
     <include path="/static/**.png" expiration="365d" />
+    <exclude path="/webstart/*"/>
   </static-files>
+  
+  <resource-files>
+    <include path="/webstart/*"/>
+  </resource-files>
 
   <admin-console>
     <page name="Appstats" url="/appstats" />
