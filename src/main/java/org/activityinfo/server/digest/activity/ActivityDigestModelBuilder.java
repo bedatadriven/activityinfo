@@ -51,28 +51,30 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
 
     private void createDatabaseModel(ActivityDigestModel model, UserDatabase database) throws IOException {
 
-        DatabaseModel databaseModel = new DatabaseModel(model, database);
         SiteHistory lastEdit = findLastEdit(database);
-        databaseModel.setLastEdit(lastEdit);
+        // only include databases that are known to be edited at least once
+        if (lastEdit != null) {
+            DatabaseModel databaseModel = new DatabaseModel(model, database, lastEdit);
 
-        List<SiteHistory> ownerHistories = findSiteHistory(databaseModel, database.getOwner());
-        ActivityMap ownerActivityMap = new ActivityMap(databaseModel, database.getOwner(), ownerHistories);
-        databaseModel.setOwnerActivityMap(ownerActivityMap);
+            List<SiteHistory> ownerHistories = findSiteHistory(databaseModel, database.getOwner());
+            ActivityMap ownerActivityMap = new ActivityMap(databaseModel, database.getOwner(), ownerHistories);
+            databaseModel.setOwnerActivityMap(ownerActivityMap);
 
-        List<Partner> partners = findPartners(databaseModel);
-        LOGGER.finest("building user activity digest for user " + model.getUser().getId() +
-            " and database " + database.getId() + " - found " + partners.size() + " partner(s)");
-        if (!partners.isEmpty()) {
-            for (Partner partner : partners) {
-                PartnerActivityModel partnerModel = new PartnerActivityModel(databaseModel, partner);
+            List<Partner> partners = findPartners(databaseModel);
+            LOGGER.finest("building user activity digest for user " + model.getUser().getId() +
+                " and database " + database.getId() + " - found " + partners.size() + " partner(s)");
+            if (!partners.isEmpty()) {
+                for (Partner partner : partners) {
+                    PartnerActivityModel partnerModel = new PartnerActivityModel(databaseModel, partner);
 
-                List<User> partnerUsers = findUsers(partnerModel);
-                LOGGER.finest("found users " + partnerUsers + " for partner " + partner.getName());
-                if (!partnerUsers.isEmpty()) {
-                    for (User partnerUser : partnerUsers) {
-                        List<SiteHistory> histories = findSiteHistory(databaseModel, partnerUser);
-                        ActivityMap activityMap = new ActivityMap(databaseModel, partnerUser, histories);
-                        partnerModel.addActivityMap(activityMap);
+                    List<User> partnerUsers = findUsers(partnerModel);
+                    LOGGER.finest("found users " + partnerUsers + " for partner " + partner.getName());
+                    if (!partnerUsers.isEmpty()) {
+                        for (User partnerUser : partnerUsers) {
+                            List<SiteHistory> histories = findSiteHistory(databaseModel, partnerUser);
+                            ActivityMap activityMap = new ActivityMap(databaseModel, partnerUser, histories);
+                            partnerModel.addActivityMap(activityMap);
+                        }
                     }
                 }
             }
@@ -95,7 +97,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
 
         Query query = entityManager.get().createQuery(
             "select distinct d from UserDatabase d left join d.userPermissions p " +
-                "where d.owner = :user or (p.user = :user and p.allowDesign = true) " +
+                "where (d.owner = :user or (p.user = :user and p.allowDesign = true)) and d.dateDeleted is null " +
                 "order by d.name"
             );
         query.setParameter("user", user);

@@ -85,14 +85,15 @@ public class ActivityDigestModel implements DigestModel {
     public static class DatabaseModel implements Comparable<DatabaseModel> {
         private final ActivityDigestModel model;
         private final UserDatabase database;
-        private SiteHistory lastEdit;
+        private final SiteHistory lastEdit;
 
         private ActivityMap ownerActivityMap;
         private final Set<PartnerActivityModel> partnerActivityModels;
 
-        public DatabaseModel(ActivityDigestModel model, UserDatabase database) {
+        public DatabaseModel(ActivityDigestModel model, UserDatabase database, SiteHistory lastEdit) {
             this.model = model;
             this.database = database;
+            this.lastEdit = lastEdit;
             this.partnerActivityModels = new HashSet<PartnerActivityModel>();
 
             model.addDatabase(this);
@@ -108,10 +109,6 @@ public class ActivityDigestModel implements DigestModel {
 
         public String getName() {
             return database.getName();
-        }
-
-        public void setLastEdit(SiteHistory lastEdit) {
-            this.lastEdit = lastEdit;
         }
 
         public SiteHistory getLastEdit() {
@@ -150,7 +147,13 @@ public class ActivityDigestModel implements DigestModel {
 
         @Override
         public int compareTo(DatabaseModel o) {
-            return database.getName().compareTo(o.database.getName());
+            int result = database.getName().compareTo(o.database.getName());
+            if (result == 0) {
+                // For some reason these databases have the same name. This is probably not correct,
+                // but let's compare on id anyway to make this situation visible.
+                result = ((Integer) database.getId()).compareTo(o.database.getId());
+            }
+            return result;
         }
     }
 
