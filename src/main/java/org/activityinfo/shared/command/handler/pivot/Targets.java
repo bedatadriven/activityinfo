@@ -28,6 +28,7 @@ import java.util.Set;
 import org.activityinfo.shared.command.PivotSites;
 import org.activityinfo.shared.command.PivotSites.ValueType;
 import org.activityinfo.shared.db.Tables;
+import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.report.content.TargetCategory;
 import org.activityinfo.shared.report.model.DimensionType;
 
@@ -103,10 +104,10 @@ public class Targets extends BaseTable {
         query.leftJoin(Tables.USER_DATABASE, "UserDatabase")
             .on("UserDatabase.DatabaseId = Activity.DatabaseId");
 
-        query.appendColumn("Indicator.Aggregation", ValueFields.AGGREGATION);
-        query.appendColumn("SUM(V.Value)", ValueFields.SUM);
+        // don't use an actual sum query, target value is the same regardless of the number of sites
+        query.appendColumn(String.valueOf(IndicatorDTO.AGGREGATE_SUM), ValueFields.AGGREGATION);
+        query.appendColumn("V.Value", ValueFields.SUM);
         query.appendColumn("COUNT(V.Value)", ValueFields.COUNT);
-
     }
 
     @Override
