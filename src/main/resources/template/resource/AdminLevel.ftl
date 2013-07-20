@@ -62,7 +62,7 @@
 	
 	</@content>
 	<script type="application/javascript">
-	var map = L.map('map').setView([${country.bounds.centerLat}, ${country.bounds.centerLon}], 6);
+	var map = L.map('map').setView([${country.bounds.centerLat?c}, ${country.bounds.centerLon?c}], 6);
 	L.tileLayer('/resources/adminLevel/${id?c}/tiles/{z}/{x}/{y}.png', {
 	    attribution: 'ActivityInfo',
 	    maxZoom: 10

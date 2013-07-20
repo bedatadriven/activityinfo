@@ -28,7 +28,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
-import org.activityinfo.server.endpoint.refine.AdminEntityPreview;
 
 import com.sun.jersey.api.view.Viewable;
 import com.vividsolutions.jts.geom.Geometry;
@@ -45,8 +44,7 @@ public class AdminEntityResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Viewable get() {
-        return new Viewable("/resource/AdminEntity.ftl", new AdminEntityPreview(
-            entity));
+        return new Viewable("/resource/AdminEntity.ftl", entity);
     }
 
     @GET

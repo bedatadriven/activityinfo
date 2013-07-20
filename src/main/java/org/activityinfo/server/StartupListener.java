@@ -36,7 +36,6 @@ import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.healthcheck.HealthCheckModule;
 import org.activityinfo.server.endpoint.kml.KmlModule;
-import org.activityinfo.server.endpoint.refine.RefineModule;
 import org.activityinfo.server.endpoint.rest.RestApiModule;
 import org.activityinfo.server.event.EventModule;
 import org.activityinfo.server.geo.GeometryModule;
@@ -99,7 +98,6 @@ public class StartupListener extends GuiceServletContextListener {
             new MonitoringModule(),
             new KmlModule(),
             new TrackingModule(),
-            new RefineModule(),
             new BlobServiceModule(),
             new LocaleModule(),
             new JaxRsModule(),

@@ -20,23 +20,21 @@
  #L%
 -->
 <#include "../page/Scaffolding.ftl">
-<@scaffolding title="${entity.name}">
+<@scaffolding title="${name}">
 
 	<@content>
 	<h1>${entity.name}</h1>
 	
-	<p><a href="/resources/adminLevel/${entity.level.id?c}">${entity.level.name}</a> in <a href="/resources/country/${entity.level.country.codeISO}">${entity.level.country.name}</a></p>
+	<p><a href="/resources/adminLevel/${level.id?c}">${level.name}</a> in <a href="/resources/country/${level.country.codeISO}">${level.country.name}</a></p>
 	<#if parents?has_content>
 	<h2>Parents</h2>
 	<ul>
-		<#list parents as parent>
 		<li>${parent.level.name}: <a href="/resources/adminEntity/${parent.id?c}">${parent.name}</a></li>
-		</#list>
 	</ul>
 	</#if>
-	<#if entity.level.childLevels?has_content>
+	<#if level.childLevels?has_content>
 		<h2>Child entities</h2>
-		<#list entity.level.childLevels as childLevel>
+		<#list level.childLevels as childLevel>
 		<h3>${childLevel.name}</h3>
 		<ul>
 			<#list childLevel.entities?sort_by("name") as childEntity>
