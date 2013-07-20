@@ -45,7 +45,6 @@ import org.activityinfo.server.login.LoginModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
 import org.activityinfo.server.util.TemplateModule;
-import org.activityinfo.server.util.WebstartModule;
 import org.activityinfo.server.util.beanMapping.BeanMappingModule;
 import org.activityinfo.server.util.blob.BlobServiceModule;
 import org.activityinfo.server.util.config.ConfigModule;
@@ -104,7 +103,6 @@ public class StartupListener extends GuiceServletContextListener {
             new BlobServiceModule(),
             new LocaleModule(),
             new JaxRsModule(),
-            new WebstartModule(),
             new RestApiModule());
     }
 

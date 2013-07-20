@@ -354,11 +354,6 @@
       <artifactId>jackson-geojson</artifactId>
       <version>0.7</version>
     </dependency>
-    <dependency>
-      <groupId>org.codehaus.mojo</groupId>
-      <artifactId>webstart-jnlp-servlet</artifactId>
-      <version>1.0-beta-3</version>
-    </dependency>
   </dependencies>
 
   <repositories>
@@ -588,38 +583,7 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>webstart-maven-plugin</artifactId>
-        <version>1.0-beta-3</version>
-        <executions>
-          <execution>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>jnlp-download-servlet</goal>
-            </goals>
-          </execution>
-        </executions>
-
-        <configuration>
-          <jnlpFiles>
-            <jnlpFile>
-              <templateFilename>geoadmin.vm</templateFilename>
-              <outputFilename>geoadmin.jnlp</outputFilename>
-              <jarResources>
-                <jarResource>
-                  <groupId>org.activityinfo</groupId>
-                  <artifactId>geoadmin</artifactId>
-                  <version>${project.version}</version>
-                  <mainClass>org.activityinfo.geoadmin.GeoAdmin</mainClass>
-                </jarResource>
-              </jarResources>
-            </jnlpFile>
-          </jnlpFiles>
-        </configuration>
-      </plugin>
-
+    
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
