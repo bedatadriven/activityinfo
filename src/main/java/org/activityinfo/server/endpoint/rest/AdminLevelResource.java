@@ -33,6 +33,7 @@ import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -42,6 +43,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
@@ -101,6 +103,21 @@ public class AdminLevelResource {
         return level;
     }
 
+    @DELETE
+    public Response deleteLevel(@InjectParam AuthenticatedUser user) {
+        assertAuthorized(user);
+        
+        EntityManager em = entityManager.get();
+        em.getTransaction().begin();
+        
+        AdminLevel level = entityManager.get().merge(this.level);
+        level.setDeleted(true);
+        
+        em.getTransaction().commit();
+      
+        return Response.ok().build();
+    }
+    
     private void assertAuthorized(AuthenticatedUser user) {
         if (user.getId() != SUPER_USER_ID) {
             throw new WebApplicationException(Status.FORBIDDEN);
@@ -115,6 +132,7 @@ public class AdminLevelResource {
             .setParameter("level", level)
             .getResultList();
     }
+    
     
     @GET
     @Path("/entities/polylines")
