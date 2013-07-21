@@ -35,13 +35,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.mindrot.bcrypt.BCrypt;
 
 /**
  * Describes a user
  * 
- * @author Alex Bertram
  */
 @Entity
 @Table(name = "UserLogin")
@@ -66,8 +67,11 @@ public class User implements java.io.Serializable {
     private String hashedPassword;
     private boolean emailNotification;
     private User invitedBy;
-
+    private Date dateCreated;
+  
+    
     public User() {
+        dateCreated = new Date();
     }
 
     @Id
@@ -131,7 +135,7 @@ public class User implements java.io.Serializable {
     public User getInvitedBy() {
         return invitedBy;
     }
-
+    
     public void setInvitedBy(User invitedBy) {
         this.invitedBy = invitedBy;
     }
@@ -210,6 +214,15 @@ public class User implements java.io.Serializable {
         }
         final User that = (User) other;
         return this.getEmail().equals(that.getEmail());
+    }
+    
+    @Temporal(TemporalType.DATE)
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     @Override

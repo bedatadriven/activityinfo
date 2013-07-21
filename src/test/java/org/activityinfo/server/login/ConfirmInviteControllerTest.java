@@ -44,11 +44,9 @@ import org.activityinfo.server.database.hibernate.dao.AuthenticationDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.login.AuthTokenProvider;
-import org.activityinfo.server.login.ConfirmInviteController;
 import org.activityinfo.server.login.model.ConfirmInvitePageModel;
 import org.activityinfo.server.login.model.InvalidInvitePageModel;
-import org.activityinfo.shared.util.MailingListClient   ;
+import org.activityinfo.shared.util.MailingListClient;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -137,5 +135,4 @@ public class ConfirmInviteControllerTest {
             .getModel();
         assertTrue("error message set", model.isFormIncomplete());
     }
-
 }

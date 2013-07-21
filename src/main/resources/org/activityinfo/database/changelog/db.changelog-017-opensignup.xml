@@ -53,4 +53,15 @@
     </addColumn>
   </changeSet>
   
+  <changeSet author="alex" id="017-03">
+    <comment>
+      Record account creation date
+    </comment>
+    <addColumn tableName="userlogin">
+      <column name="dateCreated" type="DATE" defaultValueDate="1970-01-01" >
+          <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
+  
 </databaseChangeLog>
