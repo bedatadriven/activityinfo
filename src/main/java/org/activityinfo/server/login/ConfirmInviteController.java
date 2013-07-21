@@ -40,6 +40,7 @@ import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.ConfirmInvitePageModel;
 import org.activityinfo.server.login.model.InvalidInvitePageModel;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.shared.util.MailingListClient;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -51,12 +52,15 @@ public class ConfirmInviteController {
 
     private final Provider<UserDAO> userDAO;
     private final AuthTokenProvider authTokenProvider;
+    private final MailingListClient mailingList;
 
     @Inject
     public ConfirmInviteController(Provider<UserDAO> userDAO,
-        AuthTokenProvider authTokenProvider) {
+        AuthTokenProvider authTokenProvider,
+        MailingListClient mailingList) {
         super();
         this.userDAO = userDAO;
+        this.mailingList = mailingList;
         this.authTokenProvider = authTokenProvider;
     }
 
@@ -81,7 +85,8 @@ public class ConfirmInviteController {
         @FormParam("key") String key,
         @FormParam("locale") String locale,
         @FormParam("password") String password,
-        @FormParam("name") String name) throws Exception {
+        @FormParam("name") String name,
+        @FormParam("newsletter") boolean newsletter) throws Exception {
 
         User user = null;
         try {
@@ -90,6 +95,11 @@ public class ConfirmInviteController {
             user.setLocale(checkNonEmpty(locale));
             user.changePassword(checkNonEmpty(password));
             user.clearChangePasswordKey();
+            
+            if(newsletter) {
+                mailingList.subscribe(user);
+            }
+            
             return Response
                 .seeOther(uri.getAbsolutePathBuilder().replacePath("/").build())
                 .cookie(authTokenProvider.createNewAuthCookies(user))

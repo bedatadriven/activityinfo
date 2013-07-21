@@ -2,6 +2,7 @@ package org.activityinfo.server.login.model;
 
 
 
+
 /*
  * #%L
  * ActivityInfo Server
@@ -29,6 +30,7 @@ public class SignUpConfirmationPageModel extends PageModel {
 
     // messages
     private boolean genericError;
+    
 
     public SignUpConfirmationPageModel(String key) {
         this.key = key;

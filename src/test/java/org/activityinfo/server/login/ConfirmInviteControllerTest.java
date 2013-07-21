@@ -23,6 +23,7 @@ package org.activityinfo.server.login;
  */
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -47,6 +48,7 @@ import org.activityinfo.server.login.AuthTokenProvider;
 import org.activityinfo.server.login.ConfirmInviteController;
 import org.activityinfo.server.login.model.ConfirmInvitePageModel;
 import org.activityinfo.server.login.model.InvalidInvitePageModel;
+import org.activityinfo.shared.util.MailingListClient   ;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,11 +79,14 @@ public class ConfirmInviteControllerTest {
         authDAO.persist(isA(Authentication.class));
         expectLastCall().anyTimes();
 
+        MailingListClient mailingListClient = createNiceMock(MailingListClient.class);
+        replay(mailingListClient);
+        
         AuthTokenProvider authTokenProvider = new AuthTokenProvider(
             Providers.of(authDAO));
 
         resource = new ConfirmInviteController(
-            Providers.of(userDAO), authTokenProvider);
+            Providers.of(userDAO), authTokenProvider, mailingListClient);
     }
 
     @Test
@@ -110,7 +115,7 @@ public class ConfirmInviteControllerTest {
 
         resource.confirm(
             RestMockUtils.mockUriInfo("http://www.activityinfo.org/confirm"),
-            VALID_KEY, "fr", "foobar", "Alex Bertram");
+            VALID_KEY, "fr", "foobar", "Alex Bertram", false);
 
         assertThat(user.getHashedPassword(), is(not(nullValue())));
         assertThat(user.getLocale(), equalTo("fr"));
@@ -122,7 +127,7 @@ public class ConfirmInviteControllerTest {
     public void emptyPasswordShouldNotBeAccepted() throws Exception {
         Response response = resource.confirm(
             RestMockUtils.mockUriInfo("http://www.activityinfo.org/confirm"),
-            VALID_KEY, "fr", null, "Alex Bertram");
+            VALID_KEY, "fr", null, "Alex Bertram", false);
 
         Viewable viewable = (Viewable) response.getEntity();
         assertThat(viewable.getModel(),

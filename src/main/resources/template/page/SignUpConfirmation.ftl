@@ -53,6 +53,13 @@
                       <span class="help-inline hide" id="confirmPasswordHelp">${label.passwordDoNotMatch}</span>                      
                     </div>
                 </div>
+                
+                <div class="control-group">
+	                <label class="checkbox">
+					  <input type="checkbox" checked="true" name="newsletter" value="true">
+					  ${label.newsletter}
+					</label>
+                </div>
 
                 <div class="control-group">
                     <div class="controls">

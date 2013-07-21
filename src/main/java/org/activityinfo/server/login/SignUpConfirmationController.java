@@ -23,6 +23,7 @@ package org.activityinfo.server.login;
  */
 
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Provider;
@@ -48,6 +49,7 @@ import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.server.login.model.SignUpConfirmationInvalidPageModel;
 import org.activityinfo.server.login.model.SignUpConfirmationPageModel;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.shared.util.MailingListClient;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -64,6 +66,8 @@ public class SignUpConfirmationController {
     private static final int DEFAULT_DATABASE_ID = 507; // training DB
     private static final int DEFAULT_PARTNER_ID = 274; // bedatadriven
 
+    private final MailingListClient mailingList;
+    
     private final Provider<UserDAO> userDAO;
     private final Provider<UserDatabaseDAO> databaseDAO;
     private final Provider<PartnerDAO> partnerDAO;
@@ -72,13 +76,16 @@ public class SignUpConfirmationController {
 
     @Inject
     public SignUpConfirmationController(Provider<UserDAO> userDAO, Provider<UserDatabaseDAO> databaseDAO,
-        Provider<PartnerDAO> partnerDAO, Provider<UserPermissionDAO> permissionDAO, AuthTokenProvider authTokenProvider) {
+        Provider<PartnerDAO> partnerDAO, Provider<UserPermissionDAO> permissionDAO,
+        MailingListClient mailChimp,
+        AuthTokenProvider authTokenProvider) {
         super();
         this.userDAO = userDAO;
         this.databaseDAO = databaseDAO;
         this.partnerDAO = partnerDAO;
         this.permissionDAO = permissionDAO;
         this.authTokenProvider = authTokenProvider;
+        this.mailingList = mailChimp;
     }
 
     @GET
@@ -98,7 +105,8 @@ public class SignUpConfirmationController {
     public Response confirm(
         @Context UriInfo uri,
         @FormParam("key") String key,
-        @FormParam("password") String password) {
+        @FormParam("password") String password,
+        @FormParam("newsletter") boolean newsletter) {
 
         try {
             // check params
@@ -111,23 +119,33 @@ public class SignUpConfirmationController {
             user.clearChangePasswordKey();
 
             // add user to default database
-            UserDatabase database = databaseDAO.get().findById(DEFAULT_DATABASE_ID);
-            Partner partner = partnerDAO.get().findById(DEFAULT_PARTNER_ID);
-            UserPermission permission = new UserPermission(database, user);
-            permission.setPartner(partner);
-            permission.setAllowView(true);
-            permission.setAllowViewAll(true);
-            permission.setLastSchemaUpdate(new Date());
-            permissionDAO.get().persist(permission);
+            addUserToDefaultDatabase(user);
 
+            if(newsletter) {
+                mailingList.subscribe(user);
+            }
+            
             // go to the homepage
             return Response.seeOther(uri.getAbsolutePathBuilder().replacePath("/").build())
                 .cookie(authTokenProvider.createNewAuthCookies(user)).build();
 
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Exception during signup process", e);
             return Response.ok(SignUpConfirmationPageModel.genericErrorModel(key).asViewable())
                 .type(MediaType.TEXT_HTML).build();
         }
+    }
+
+    @LogException(emailAlert=true)
+    protected void addUserToDefaultDatabase(User user) {
+        UserDatabase database = databaseDAO.get().findById(DEFAULT_DATABASE_ID);
+        Partner partner = partnerDAO.get().findById(DEFAULT_PARTNER_ID);
+        UserPermission permission = new UserPermission(database, user);
+        permission.setPartner(partner);
+        permission.setAllowView(true);
+        permission.setAllowViewAll(true);
+        permission.setLastSchemaUpdate(new Date());
+        permissionDAO.get().persist(permission);
     }
 
     private void checkParam(String value, boolean required) {
