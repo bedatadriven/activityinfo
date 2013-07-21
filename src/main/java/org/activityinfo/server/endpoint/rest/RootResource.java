@@ -29,13 +29,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.Country;
-import org.activityinfo.server.util.blob.BlobService;
 import org.activityinfo.shared.command.GetCountries;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.CountryDTO;
@@ -50,17 +51,13 @@ import com.google.inject.Provider;
 public class RootResource {
 
     private Provider<EntityManager> entityManager;
-    private BlobService blobService;
     private DispatcherSync dispatcher;
 
     @Inject
-    public RootResource(Provider<EntityManager> entityManager,
-        BlobService blobService,
-        DispatcherSync dispatcher) {
+    public RootResource(Provider<EntityManager> entityManager, DispatcherSync dispatcher) {
         super();
         this.entityManager = entityManager;
         this.dispatcher = dispatcher;
-        this.blobService = blobService;
     }
 
     @Path("/adminEntity/{id}")
@@ -68,15 +65,6 @@ public class RootResource {
         return new AdminEntityResource(entityManager.get().find(
             AdminEntity.class, id));
     }
-
-    // @Path("/country/{iso}")
-    // public CountryResource getCountry(@PathParam("iso") String isoCode) {
-    // Country country = (Country)
-    // entityManager.get().createQuery("select c from Country c where c.codeISO = :iso")
-    // .setParameter("iso", isoCode)
-    // .getSingleResult();
-    // return new CountryResource( country );
-    // }
 
     @GET
     @Path("/countries")
@@ -88,18 +76,27 @@ public class RootResource {
     
 
     @Path("/country/{id: [0-9]+}")
-    public CountryResource getCountryById(
-       @PathParam("id") int id) {
-        return new CountryResource((Country)entityManager.get().find(Country.class, id));
+    public CountryResource getCountryById(@PathParam("id") int id) {
+        Country result = (Country)entityManager.get().find(Country.class, id);
+        if(result == null) {
+            throw new WebApplicationException(Status.NOT_FOUND);
+        }
+        return new CountryResource(result);
     }
 
     @Path("/country/{code: [A-Z]+}")
     public CountryResource getCountryByCode(@PathParam("code") String code) {
 
-        return new CountryResource((Country) entityManager.get()
+        List<Country> results = entityManager.get()
             .createQuery("select c from Country c where c.codeISO = :iso")
             .setParameter("iso", code)
-            .getSingleResult());
+            .getResultList();
+        
+        if(results.isEmpty()) {
+            throw new WebApplicationException(Status.NOT_FOUND);
+        }
+        
+        return new CountryResource(results.get(0));
     }
 
     @GET

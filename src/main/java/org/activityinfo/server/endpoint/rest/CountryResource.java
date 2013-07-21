@@ -49,8 +49,6 @@ import com.sun.jersey.api.view.Viewable;
 @Produces(MediaType.APPLICATION_JSON)
 public class CountryResource {
 
-
-
     private Country country;
 
     public CountryResource(Country country) {
