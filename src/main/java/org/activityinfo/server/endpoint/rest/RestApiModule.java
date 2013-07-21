@@ -28,9 +28,8 @@ public class RestApiModule extends AbstractRestModule {
 
     @Override
     protected void configureResources() {
-
         bindResource(RootResource.class);
-
+        bindResource(TileResource.class, "/tile/*");
     }
 
 }

@@ -34,7 +34,9 @@
 <#macro showLevels children>
 	<ul>
 	<#list children as child>
-	<li><a href="/resources/adminLevel/${child.id?c}">${child.name}</a></li>
+		<#if !child.deleted>	
+		<li><a href="/resources/adminLevel/${child.id?c}">${child.name}</a></li>
+		</#if>
 	</#list>
 	</ul>
 </#macro>

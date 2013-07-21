@@ -37,6 +37,7 @@ import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.Country;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.shared.command.GetCountries;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.CountryDTO;
@@ -52,12 +53,15 @@ public class RootResource {
 
     private Provider<EntityManager> entityManager;
     private DispatcherSync dispatcher;
+    private DeploymentConfiguration config;
 
     @Inject
-    public RootResource(Provider<EntityManager> entityManager, DispatcherSync dispatcher) {
+    public RootResource(Provider<EntityManager> entityManager, DispatcherSync dispatcher,
+        DeploymentConfiguration config) {
         super();
         this.entityManager = entityManager;
         this.dispatcher = dispatcher;
+        this.config = config;
     }
 
     @Path("/adminEntity/{id}")
@@ -126,5 +130,10 @@ public class RootResource {
     @Path("/sites")
     public SitesResources getSites() {
         return new SitesResources(dispatcher);
+    }  
+    
+    @Path("/tile")
+    public TileResource getTile() {
+        return new TileResource(config);
     }
 }
