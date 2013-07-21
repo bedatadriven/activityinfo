@@ -23,16 +23,18 @@ package org.activityinfo.server.mail;
  */
 
 import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class MailModule extends AbstractModule {
+public class MailModule extends AbstractRestModule {
 
+    
     @Override
-    protected void configure() {
+    protected void configureResources() {
+        bindResource(BounceHook.class, "/bounceHook/*");
     }
 
     @Provides
