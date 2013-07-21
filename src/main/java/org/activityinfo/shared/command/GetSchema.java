@@ -33,52 +33,6 @@ import org.activityinfo.shared.dto.SchemaDTO;
  */
 public class GetSchema implements Command<SchemaDTO> {
 
-    private int newElement;
-    private String foobar;
-    private double thirdElement;
-    private double forthElement;
-    private int foofoo;
-
-    public int getFoofoo() {
-        return foofoo;
-    }
-
-    public void setFoofoo(int foofoo) {
-        this.foofoo = foofoo;
-    }
-
-    public double getForthElement() {
-        return forthElement;
-    }
-
-    public void setForthElement(double forthElement) {
-        this.forthElement = forthElement;
-    }
-
-    public double getThirdElement() {
-        return thirdElement;
-    }
-
-    public void setThirdElement(double thirdElement) {
-        this.thirdElement = thirdElement;
-    }
-
-    public int getNewElement() {
-        return newElement;
-    }
-
-    public void setNewElement(int newElement) {
-        this.newElement = newElement;
-    }
-
-    public String getFoobar() {
-        return foobar;
-    }
-
-    public void setFoobar(String foobar) {
-        this.foobar = foobar;
-    }
-
     @Override
     public String toString() {
         return "GetSchema";
