@@ -23,7 +23,7 @@
 <@scaffolding title="${name}">
 
 	<@content>
-	<h1>${entity.name}</h1>
+	<h1>${name}</h1>
 	
 	<p><a href="/resources/adminLevel/${level.id?c}">${level.name}</a> in <a href="/resources/country/${level.country.codeISO}">${level.country.name}</a></p>
 	<#if parents?has_content>

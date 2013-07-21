@@ -23,6 +23,7 @@ package org.activityinfo.server.login;
  */
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
@@ -47,11 +49,12 @@ import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.SignUpConfirmationMessage;
 import org.activityinfo.server.util.logging.LogException;
 
+import com.google.common.collect.Maps;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.sun.jersey.api.view.Viewable;
 
-@Path(SignUpController.ENDPOINT)
+@Path("/signUp")
 public class SignUpController {
     public static final String ENDPOINT = "/signUp*";
     
@@ -75,12 +78,19 @@ public class SignUpController {
         throws ServletException, IOException {
         return new SignUpPageModel().asViewable();
     }
+    
+    @GET
+    @Path("/sent")
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getPage() {
+        return new Viewable("/page/SignUpEmailSent.ftl", Maps.newHashMap());
+    }
 
     @POST
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
     @Transactional
-    public Viewable signUp(
+    public Response signUp(
         @FormParam("name") String name,
         @FormParam("organization") String organization,
         @FormParam("jobtitle") String jobtitle,
@@ -99,17 +109,17 @@ public class SignUpController {
             checkParam(locale, true);
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.INFO, "User " + name + " (" + email + ") failed to sign up", e);
-            return SignUpPageModel.formErrorModel()
+            return Response.ok(SignUpPageModel.formErrorModel()
                 .set(email, name, organization, jobtitle, locale)
-                .asViewable();
+                .asViewable()).build();
         }
 
         try {
             // check duplicate email
             if (userDAO.get().doesUserExist(email)) {
-                return SignUpPageModel.emailExistsErrorModel()
+                return Response.ok(SignUpPageModel.emailExistsErrorModel()
                     .set(email, name, organization, jobtitle, locale)
-                    .asViewable();
+                    .asViewable()).build();
             }
             
             // persist new user
@@ -120,14 +130,16 @@ public class SignUpController {
             mailer.send(new SignUpConfirmationMessage(user));
 
             // return to page with positive result
-            return SignUpPageModel.confirmationEmailSentModel().asViewable();
+            return Response.seeOther(new URI("/signUp/sent")).build();
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "User " + name + " (" + email + ") failed to sign up", e);
             entityManager.getTransaction().rollback();
-            return SignUpPageModel.genericErrorModel()
+            return Response
+                .ok(SignUpPageModel.genericErrorModel()
                 .set(email, name, organization, jobtitle, locale)
-                .asViewable();
+                .asViewable())
+                .build();
         }
     }
 
