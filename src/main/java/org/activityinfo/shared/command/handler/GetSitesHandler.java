@@ -25,6 +25,7 @@ package org.activityinfo.shared.command.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activityinfo.client.Log;
 import org.activityinfo.shared.command.Filter;
@@ -361,8 +362,7 @@ public class GetSitesHandler implements
 
     private void applyFilter(SqlQuery query, Filter filter) {
         if (filter != null) {
-            if (filter.getRestrictedDimensions() != null
-                && filter.getRestrictedDimensions().size() > 0) {
+            if (filter.getRestrictedDimensions() != null && filter.getRestrictedDimensions().size() > 0) {
                 query.onlyWhere(" AND (");
 
                 boolean isFirst = true;
@@ -401,12 +401,24 @@ public class GetSitesHandler implements
                             filter.getRestrictions(type));
                     
                     } else if (type == DimensionType.Attribute) {
-                        SqlQuery subQuery = new SqlQuery()
-                            .appendColumn("av.siteId")
-                            .from(Tables.ATTRIBUTE_VALUE, "av")
-                            .where("av.attributeid").in(filter.getRestrictions(type))
-                            .where("av.value").equalTo(true);
-                        query.onlyWhere("site.SiteId").in(subQuery);
+                        Set<Integer> attributes = filter.getRestrictions(DimensionType.Attribute);
+                        boolean isFirstAttr = true;
+                        for (Integer attribute : attributes) {
+                            SqlQuery attributefilter = SqlQuery
+                                .select()
+                                .appendColumn("1", "__VAL_EXISTS")
+                                .from("attributevalue", "av")
+                                .whereTrue("av.value=1")
+                                .and("av.SiteId = site.SiteId")
+                                .where("av.AttributeId").equalTo(attribute);
+
+                            addJoint(query, filter.isLenient(), isFirstAttr);
+                            if (isFirstAttr) {
+                                isFirstAttr = false;
+                            }
+                            query.onlyWhere("EXISTS (" + attributefilter.sql() + ") ");
+                            query.appendParameter(attribute);
+                        }
                     }
                     
                     if (isQueryableType(type) && isFirst) {

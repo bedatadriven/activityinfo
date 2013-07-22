@@ -442,18 +442,23 @@ public class PivotQuery {
                                     .in(filter
                                         .getRestrictions(DimensionType.AdminLevel)));
                     } else if (type == DimensionType.Attribute) {
-                        SqlQuery attributefilter = SqlQuery
-                            .select()
-                            .appendColumn("1", "__VAL_EXISTS")
-                            .from("attributevalue", "v")
-                            .leftJoin("attribute", "a").on("v.AttributeId = a.AttributeId")
-                            .whereTrue("v.value=1")
-                            .and("v.SiteId = Site.SiteId")
-                            .where("v.AttributeId").in(filter.getRestrictions(type));
-                        
-                        query.onlyWhere("EXISTS (" + attributefilter.sql() + ") ");
-                        for (Object param : attributefilter.parameters()) {
-                            query.appendParameter(param);
+                        Set<Integer> attributes = filter.getRestrictions(DimensionType.Attribute);
+                        boolean isFirstAttr = true;
+                        for (Integer attribute : attributes) {
+                            SqlQuery attributefilter = SqlQuery
+                                .select()
+                                .appendColumn("1", "__VAL_EXISTS")
+                                .from("attributevalue", "v")
+                                .whereTrue("v.value=1")
+                                .and("v.SiteId = Site.SiteId")
+                                .where("v.AttributeId").equalTo(attribute);
+
+                            addJoint(query, filter.isLenient(), isFirstAttr);
+                            if (isFirstAttr) {
+                                isFirstAttr = false;
+                            }
+                            query.onlyWhere("EXISTS (" + attributefilter.sql() + ") ");
+                            query.appendParameter(attribute);
                         }
                                                 
                     } else {
