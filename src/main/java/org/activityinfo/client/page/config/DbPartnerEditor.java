@@ -41,10 +41,10 @@ import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.RemovePartner;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.DuplicateCreateResult;
-import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.command.result.RemoveFailedResult;
+import org.activityinfo.shared.command.result.RemoveResult;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.exception.PartnerHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -121,17 +121,17 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO>
                     new AsyncCallback<CreateResult>() {
                         @Override
                         public void onFailure(Throwable caught) {
-                            Log.debug("caught executing addpartner: ", caught);
+                            Log.debug("DbPartnerEditor caught exception while executing command AddPartner: ", caught);
                         }
 
                         @Override
                         public void onSuccess(CreateResult result) {
                             if (result instanceof DuplicateCreateResult) {
-                                Log.debug("tried to add duplicate partner '" + newPartner.getName() +
-                                    "' to database " + db.getId());
+                                Log.debug("DbPartnerEditor tried to add partner '" + newPartner.getName() +
+                                    "' to database " + db.getId() + " but it already exists");
                                 MessageBox.alert(I18N.CONSTANTS.newPartner(), I18N.CONSTANTS.duplicatePartner(), null);
                             } else {
-                                Log.debug("added new partner '" + newPartner.getName() +
+                                Log.debug("DbPartnerEditor added new partner '" + newPartner.getName() +
                                     "' to database " + db.getId());
                                 newPartner.setId(result.getNewId());
                                 store.add(newPartner);
@@ -147,20 +147,25 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO>
     @Override
     protected void onDeleteConfirmed(final PartnerDTO model) {
         service.execute(new RemovePartner(db.getId(), model.getId()),
-            view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
+            view.getDeletingMonitor(), new AsyncCallback<RemoveResult>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    if (caught instanceof PartnerHasSitesException) {
-                        MessageBox.alert(
-                            I18N.CONSTANTS.removeItem(),
-                            I18N.MESSAGES.partnerHasDataWarning(model.getName()),
-                            null);
-                    }
+                    Log.debug("DbPartnerEditor caught exception while executing command RemovePartner: ", caught);
                 }
 
                 @Override
-                public void onSuccess(VoidResult result) {
-                    store.remove(model);
+                public void onSuccess(RemoveResult result) {
+                    if (result instanceof RemoveFailedResult) {
+                        Log.debug("DbPartnerEditor tried to remove partner '" + model.getName() +
+                            "' from database " + db.getId() + " but there's data associated with it");
+                        MessageBox.alert(I18N.CONSTANTS.removePartner(),
+                            I18N.MESSAGES.partnerHasDataWarning(model.getName()),
+                            null);
+                    } else {
+                        Log.debug("DbPartnerEditor removed partner '" + model.getName() +
+                            "' from database " + db.getId());
+                        store.remove(model);
+                    }
                 }
             });
 
