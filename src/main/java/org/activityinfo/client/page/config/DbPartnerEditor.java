@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.PageId;
@@ -39,10 +40,10 @@ import org.activityinfo.client.util.state.StateProvider;
 import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.RemovePartner;
 import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.command.result.DuplicateCreateResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
-import org.activityinfo.shared.exception.DuplicatePartnerException;
 import org.activityinfo.shared.exception.PartnerHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
@@ -120,18 +121,23 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO>
                     new AsyncCallback<CreateResult>() {
                         @Override
                         public void onFailure(Throwable caught) {
-                            if (caught instanceof DuplicatePartnerException) {
-                                MessageBox.alert(I18N.CONSTANTS.newPartner(),
-                                    I18N.CONSTANTS.duplicatePartner(), null);
-                            }
+                            Log.debug("caught executing addpartner: ", caught);
                         }
 
                         @Override
                         public void onSuccess(CreateResult result) {
-                            newPartner.setId(result.getNewId());
-                            store.add(newPartner);
-                            eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-                            dlg.hide();
+                            if (result instanceof DuplicateCreateResult) {
+                                Log.debug("tried to add duplicate partner '" + newPartner.getName() +
+                                    "' to database " + db.getId());
+                                MessageBox.alert(I18N.CONSTANTS.newPartner(), I18N.CONSTANTS.duplicatePartner(), null);
+                            } else {
+                                Log.debug("added new partner '" + newPartner.getName() +
+                                    "' to database " + db.getId());
+                                newPartner.setId(result.getNewId());
+                                store.add(newPartner);
+                                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                                dlg.hide();
+                            }
                         }
                     });
             }
