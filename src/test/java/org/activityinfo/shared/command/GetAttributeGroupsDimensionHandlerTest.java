@@ -43,10 +43,9 @@ public class GetAttributeGroupsDimensionHandlerTest extends CommandTestCase2 {
     // all
     @Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
-    public void testAll() throws CommandException {
+    public void testEmptyFilter() throws CommandException {
         AttributeGroupResult result = this.execute();
-        assertThat(result.getData().size(), equalTo(1));
-        assertThat(result.getData().get(0).getName(), equalTo("cause"));
+        assertThat(result.getData().size(), equalTo(0));
     }
 
     // data entry filter population query
