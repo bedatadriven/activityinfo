@@ -33,7 +33,6 @@ public class SignUpPageModel extends PageModel {
 
     // messages
     private boolean formError;
-    private boolean emailExistsError;
     private boolean genericError;
     private boolean confirmationEmailSent;
 
@@ -73,10 +72,6 @@ public class SignUpPageModel extends PageModel {
         return formError;
     }
 
-    public boolean isEmailExistsError() {
-        return emailExistsError;
-    }
-
     public boolean isGenericError() {
         return genericError;
     }
@@ -88,12 +83,6 @@ public class SignUpPageModel extends PageModel {
     public static SignUpPageModel formErrorModel() {
         SignUpPageModel model = new SignUpPageModel();
         model.formError = true;
-        return model;
-    }
-
-    public static SignUpPageModel emailExistsErrorModel() {
-        SignUpPageModel model = new SignUpPageModel();
-        model.emailExistsError = true;
         return model;
     }
 

@@ -56,7 +56,8 @@ public class LoginModule extends ServletModule {
             ResetPasswordController.class,
             ChangePasswordController.class,
             SignUpController.class,
-            SignUpConfirmationController.class);
+            SignUpConfirmationController.class,
+            SignUpAddressExistsController.class);
     }
 
     private void filterContainer(Map<String, String> params,
