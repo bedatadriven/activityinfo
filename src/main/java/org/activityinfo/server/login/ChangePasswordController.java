@@ -23,7 +23,6 @@ package org.activityinfo.server.login;
  */
 
 import java.io.IOException;
-import java.net.URI;
 
 import javax.inject.Provider;
 import javax.persistence.NoResultException;
@@ -54,11 +53,13 @@ public class ChangePasswordController {
     public static final String ENDPOINT = "/changePassword";
 
     private final Provider<UserDAO> userDAO;
+    private final AuthTokenProvider authTokenProvider;
 
     @Inject
-    public ChangePasswordController(Provider<UserDAO> userDAO) {
+    public ChangePasswordController(Provider<UserDAO> userDAO, AuthTokenProvider authTokenProvider) {
         super();
         this.userDAO = userDAO;
+        this.authTokenProvider = authTokenProvider;
     }
 
     @GET
@@ -90,10 +91,8 @@ public class ChangePasswordController {
 
         changePassword(user, password);
 
-        URI appUri = uri.getAbsolutePathBuilder().replacePath("/").build();
-
-        return Response.seeOther(appUri)
-            .build();
+        return Response.seeOther(uri.getAbsolutePathBuilder().replacePath("/").build())
+            .cookie(authTokenProvider.createNewAuthCookies(user)).build();
     }
 
     @Transactional
