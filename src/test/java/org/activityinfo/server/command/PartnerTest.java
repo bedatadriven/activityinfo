@@ -26,9 +26,9 @@ import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.command.result.DuplicateCreateResult;
 import org.activityinfo.shared.dto.PartnerDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
-import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
 import org.junit.Assert;
 import org.junit.Test;
@@ -75,13 +75,12 @@ public class PartnerTest extends CommandTestCase {
 
     }
 
-    // wrapped DuplicatePartnerException
-    @Test(expected = CommandException.class)
     public void testAddDuplicatePartner() throws Exception {
         PartnerDTO newPartner = new PartnerDTO();
         newPartner.setName("NRC");
         newPartner.setFullName("Norweigen Refugee Committe");
 
-        execute(new AddPartner(1, newPartner));
+        CreateResult cr = execute(new AddPartner(1, newPartner));
+        Assert.assertTrue(cr instanceof DuplicateCreateResult);
     }
 }
