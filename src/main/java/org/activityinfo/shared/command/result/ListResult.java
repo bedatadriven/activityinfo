@@ -54,7 +54,10 @@ public abstract class ListResult<D extends ModelData> implements CommandResult,
     }
 
     public ListResult(ListResult<D> result) {
-        this.data = new ArrayList<D>(result.getData());
+        this.data = new ArrayList<D>();
+        if (result != null) {
+            this.data.addAll(result.getData());
+        }
     }
 
     @Override

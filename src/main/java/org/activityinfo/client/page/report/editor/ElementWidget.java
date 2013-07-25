@@ -190,7 +190,7 @@ public class ElementWidget extends Composite {
 
     private void renderStaticHtml() {
         String text = ((TextReportElement) model).getText();
-        updateHtml(SafeHtmlUtils.htmlEscape(text));
+        updateHtml(text != null ? SafeHtmlUtils.htmlEscape(text) : "");
     }
 
     private void updateHtml(String html) {

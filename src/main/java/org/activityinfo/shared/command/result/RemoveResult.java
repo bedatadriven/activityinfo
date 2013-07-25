@@ -22,18 +22,6 @@ package org.activityinfo.shared.command.result;
  * #L%
  */
 
-import java.util.List;
-
-import org.activityinfo.shared.dto.AttributeGroupDTO;
-
-public class AttributeGroupResult extends ListResult<AttributeGroupDTO> {
-    private static final long serialVersionUID = -5976056843984599484L;
-
-    public AttributeGroupResult() {
-        super();
-    }
-
-    public AttributeGroupResult(List<AttributeGroupDTO> data) {
-        super(data);
-    }
+public class RemoveResult implements CommandResult {
+    private static final long serialVersionUID = 677003757191943713L;
 }

@@ -43,9 +43,17 @@ public class CommandException extends RuntimeException implements CommandResult 
         super(message, e);
     }
 
+    public CommandException(Command<?> command, String message) {
+        super(createMessage(command, message));
+    }
+
     public CommandException(Command<?> command, Throwable e) {
-        super((command.getClass().getName().substring(command.getClass().getName().lastIndexOf(".") + 1))
-            + " - " + e.getMessage(), e);
+        super(createMessage(command, e.getMessage()), e);
         this.setStackTrace(new StackTraceElement[] {});
+    }
+
+    private static String createMessage(Command<?> command, String message) {
+        String name = command.getClass().getName();
+        return (name.substring(name.lastIndexOf(".") + 1)) + " - " + message;
     }
 }

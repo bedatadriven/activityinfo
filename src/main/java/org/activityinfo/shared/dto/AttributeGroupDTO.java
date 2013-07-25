@@ -96,8 +96,7 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public boolean isMandatory() {
-        Object m = get("mandatory");
-        return m != null ? (Boolean) m : false;
+        return get("mandatory", false);
     }
 
     public List<AttributeDTO> getAttributes() {
@@ -128,7 +127,7 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public boolean isMultipleAllowed() {
-        return (Boolean) get("multipleAllowed");
+        return get("multipleAllowed", false);
     }
 
     public void setMultipleAllowed(boolean allowed) {

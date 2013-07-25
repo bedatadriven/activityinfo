@@ -32,10 +32,10 @@ import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.shared.command.RemovePartner;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.command.result.RemoveFailedResult;
+import org.activityinfo.shared.command.result.RemoveResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
-import org.activityinfo.shared.exception.PartnerHasSitesException;
 
 import com.google.inject.Inject;
 
@@ -65,29 +65,24 @@ public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
             }
         }
 
-        // check to see if there are already sites associated with this
-        // partner
-
-        int siteCount = ((Number) em
-            .createQuery(
-                "select count(s) from Site s where "
-                    +
-                    "s.activity.id in (select a.id from Activity a where a.database.id = :dbId) and "
-                    +
-                    "s.partner.id = :partnerId and " +
-                    "s.dateDeleted is null")
+        // check to see if there are already sites associated with this partner
+        int siteCount = ((Number) em.createQuery(
+            "select count(s) " +
+                "from Site s " +
+                "where s.activity.id in (select a.id from Activity a where a.database.id = :dbId) " +
+                "and s.partner.id = :partnerId " +
+                "and s.dateDeleted is null")
             .setParameter("dbId", cmd.getDatabaseId())
             .setParameter("partnerId", cmd.getPartnerId())
             .getSingleResult()).intValue();
 
         if (siteCount > 0) {
-            throw new PartnerHasSitesException();
+            return new RemoveFailedResult();
         }
 
-        db.getPartners().remove(
-            em.getReference(Partner.class, cmd.getPartnerId()));
+        db.getPartners().remove(em.getReference(Partner.class, cmd.getPartnerId()));
         db.setLastSchemaUpdate(new Date());
 
-        return new VoidResult();
+        return new RemoveResult();
     }
 }

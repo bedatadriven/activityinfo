@@ -45,7 +45,7 @@ public class ReportVisibilityDTO extends BaseModelData {
     }
 
     public boolean isVisible() {
-        return (Boolean) get("visible");
+        return get("visible", false);
     }
 
     public void setVisible(boolean visible) {

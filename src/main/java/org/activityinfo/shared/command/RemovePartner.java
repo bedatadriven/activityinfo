@@ -22,9 +22,10 @@ package org.activityinfo.shared.command;
  * #L%
  */
 
-import org.activityinfo.shared.command.result.VoidResult;
+import org.activityinfo.shared.command.result.RemoveResult;
 
-public class RemovePartner implements MutatingCommand<VoidResult> {
+public class RemovePartner implements MutatingCommand<RemoveResult> {
+    private static final long serialVersionUID = 7957071197370938097L;
 
     private int databaseId;
     private int partnerId;

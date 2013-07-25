@@ -169,8 +169,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO,
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public boolean isMandatory() {
-        Object m = get("mandatory");
-        return m != null ? (Boolean) m : false;
+        return get("mandatory", false);
     }
 
     /**

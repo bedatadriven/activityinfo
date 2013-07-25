@@ -24,10 +24,10 @@
 
     <@content>
     <div class="row-fluid">
-		<div class="span12">
-			<h3>${label.signUpTitle}</h3>
-		</div>
-	</div>
+        <div class="span12">
+            <h3>${label.signUpTitle}</h3>
+        </div>
+    </div>
     <div class="row-fluid">
         <div class="span6">
                             
@@ -75,11 +75,6 @@
                             <span class="help-inline hide" id="emailHelp">${label.pleaseEnterAValidEmailAddress}</span>
                         </div>
                     </div>
-                    <#if emailExistsError == true>
-                        <div class="alert alert-error">
-                            ${label.signUpEmailExistsError}
-                        </div>
-                    </#if>
                         
                     <div class="control-group">
                         <label class="control-label" for="localeInput">${label.preferredLanguage}:</label>
@@ -102,30 +97,30 @@
         </div>
         <div class="span6">
 
-        	
-        	<div class="well">
-        		<h4>Free for teams of ten or less</h4>
-        		
-        		<p>Please feel free to use ActivityInfo.org for 
-        		small field teams. If you plan to adopt the system
-        		across your organization, we'll ask to you to make
-        		an annual contribution to the system's running costs.<p>
-        		
-        		<p><a href="mailto:activityinfo@bedatadriven.com">Contact us</a>
-        		for more information.</p>
-        		
-        		<p>In any case, you're welcome to evaluate the system without 
-        		restriction as long as needed!</p>
-        		
-        	</div>     
-        	<div class="alert">
-        		<h4>Looking for your Cluster's database?</h4>
-        		
-        		<p>Only your cluster lead can grant you access 
-        		to the cluster's database. Please contact your local
-        		focal point and request access.</p>
-        		
-        	</div>     
+            
+            <div class="well">
+                <h4>Free for teams of ten or less</h4>
+                
+                <p>Please feel free to use ActivityInfo.org for 
+                small field teams. If you plan to adopt the system
+                across your organization, we'll ask to you to make
+                an annual contribution to the system's running costs.<p>
+                
+                <p><a href="mailto:activityinfo@bedatadriven.com">Contact us</a>
+                for more information.</p>
+                
+                <p>In any case, you're welcome to evaluate the system without 
+                restriction as long as needed!</p>
+                
+            </div>     
+            <div class="alert">
+                <h4>Looking for your Cluster's database?</h4>
+                
+                <p>Only your cluster lead can grant you access 
+                to the cluster's database. Please contact your local
+                focal point and request access.</p>
+                
+            </div>     
         </div>
     </div>
     </@content>
@@ -162,12 +157,7 @@
         
         $(document).ready(function () {
             $("#localeInput").val("${locale}");
-            
-            <#if emailExistsError == true>
-                $("#emailInput").focus();
-            <#else>  
-                $("#nameInput").focus();
-            </#if>
+            $("#nameInput").focus();
         });
     </script>
     </@scripts>

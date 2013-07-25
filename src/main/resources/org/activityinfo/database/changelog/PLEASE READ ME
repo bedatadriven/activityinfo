@@ -27,3 +27,4 @@ HOW TO UPDATE THE SCHEMA
 4. Run mvn:test to verify that your tests and all previous tests run with the schema changes.
 
 
+(sometimes you need to do 'mvn test -P reset-test-db' to force maven to pick up your changes).
