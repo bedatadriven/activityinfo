@@ -33,6 +33,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
@@ -62,7 +63,7 @@ public class AdminTileRenderer {
 
         Envelope envelope = new Envelope(
             extents.getMinLon(), extents.getMaxLon(),
-            extents.getMinLat(), extents.getMaxLon());
+            extents.getMinLat(), extents.getMaxLat());
         Geometry filter = gf.toGeometry(envelope);
 
         LOGGER.info("Creating Buffered Image...");
@@ -76,7 +77,7 @@ public class AdminTileRenderer {
         LOGGER.info("Querying geometry...");
 
         Criteria criteria = session.createCriteria(AdminEntity.class);
-        criteria.add(SpatialRestrictions.intersects("geometry", filter));
+        criteria.add(SpatialRestrictions.filter("geometry", filter));
         criteria.add(Restrictions.eq("level", level));
 
         TiledMap map = new TiledMap(zoom, new Tile(x, y));
@@ -97,6 +98,7 @@ public class AdminTileRenderer {
 
         Map<Integer, Geometry> projected = Maps.newHashMap();
         for (AdminEntity entity : entities) {
+            LOGGER.info(entity.getName());
             Geometry transformed = projector.transform(entity.getGeometry());
             Geometry simplified = DouglasPeuckerSimplifier.simplify(transformed, 1.25);
             projected.put(entity.getId(), simplified);
@@ -117,11 +119,11 @@ public class AdminTileRenderer {
         LOGGER.info("Drawing geometry...");
         for (AdminEntity entity : entities) {
             Geometry geom = projected.get(entity.getId());
-            Polygon polygon = largestPolygon(geom);
-
-            if (polygon != null) {
-                labelPolygon(g2d, polygon, entity.getName());
-            }
+//            Polygon polygon = largestPolygon(geom);
+//
+//            if (polygon != null) {
+//                labelPolygon(g2d, polygon, entity.getName());
+//            }
         }
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -180,15 +182,29 @@ public class AdminTileRenderer {
 
     public static GeneralPath toPath(Geometry geometry) {
         GeneralPath path = new GeneralPath();
+        addCollectionToPath(geometry, path);
+        return path;
+    }
+
+
+    private static void addCollectionToPath(Geometry geometry, GeneralPath path) {
         for (int i = 0; i != geometry.getNumGeometries(); ++i) {
-            Polygon polygon = (Polygon) geometry.getGeometryN(i);
-            addRingToPath(path, polygon.getExteriorRing().getCoordinateSequence());
-            for (int j = 0; j != polygon.getNumInteriorRing(); ++j) {
-                addRingToPath(path, polygon.getInteriorRingN(j)
-                    .getCoordinateSequence());
+            if(geometry.getGeometryN(i) instanceof Polygon) {
+                Polygon polygon = (Polygon) geometry.getGeometryN(i);
+                addPolygonToPath(path, polygon);
+            } else if(geometry.getGeometryN(i) instanceof GeometryCollection) {
+                addCollectionToPath(geometry.getGeometryN(i), path);
             }
         }
-        return path;
+    }
+
+
+    private static void addPolygonToPath(GeneralPath path, Polygon polygon) {
+        addRingToPath(path, polygon.getExteriorRing().getCoordinateSequence());
+        for (int j = 0; j != polygon.getNumInteriorRing(); ++j) {
+            addRingToPath(path, polygon.getInteriorRingN(j)
+                .getCoordinateSequence());
+        }
     }
 
     private static void addRingToPath(GeneralPath path,

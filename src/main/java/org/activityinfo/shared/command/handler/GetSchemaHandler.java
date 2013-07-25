@@ -126,8 +126,11 @@ public class GetSchemaHandler implements
         }
 
         public void loadAdminLevels() {
-            SqlQuery.select("adminLevelId", "name", "parentId", "countryId")
-                .from("adminlevel").execute(tx, new RowHandler() {
+            SqlQuery
+            .select("adminLevelId", "name", "parentId", "countryId")
+                .from("adminlevel")
+                .whereTrue("deleted=0")
+                .execute(tx, new RowHandler() {
 
                     @Override
                     public void handleRow(SqlResultSetRow row) {

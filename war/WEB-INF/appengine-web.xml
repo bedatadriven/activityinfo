@@ -33,4 +33,8 @@
   <sessions-enabled>false</sessions-enabled>
   <precompilation-enabled>false</precompilation-enabled>
   <threadsafe>true</threadsafe>
+  
+  <static-error-handlers>
+    <handler file="error.html"/>
+  </static-error-handlers>
 </appengine-web-app>

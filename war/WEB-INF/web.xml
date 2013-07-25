@@ -15,6 +15,12 @@
   </listener>
 
 
+  <error-page>
+    <error-code>404</error-code>
+    <location>/not_found.html</location>
+  </error-page>
+
+
   <security-constraint>
     <web-resource-collection>
       <url-pattern>/tasks/*</url-pattern>
