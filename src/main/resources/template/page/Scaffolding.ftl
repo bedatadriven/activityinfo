@@ -31,7 +31,7 @@
   <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
   <link href="/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
   <link href="/css/style.css" rel="stylesheet" media="screen">
-  
+  	
   <#if leaflet>
   <script src="/js/leaflet-0.5.min.js"></script>
   <link rel="stylesheet" href="/css/leaflet-0.5.css" />
@@ -73,7 +73,7 @@
                   <li  class="language <#if .lang="en">active</#if>"><a href="">en</a></li>
                   <li  class="language <#if .lang="fr">active</#if>"><a href="">fr</a></li>
                   <li class="normal-header">
-                    <a data-toggle="modal" href="#loginModal" class="btn">${label.login}</a>
+                    <a href="/login" class="btn">${label.login}</a>
                   </li>
                   <li>
                     <a href="/signUp" class="btn">${label.signUpButton}</a>
@@ -211,42 +211,5 @@
     </footer> <!-- end footer -->
   </div>
   
-  <div id="loginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
-          <h3 id="myModalLabel">Login</h3>
-      </div>
-      <div class="modal-body">
-          <div class="alert alert-error hide" id="loginAlert">
-          ${label.incorrectLogin}
-          </div>
-          <form class="form-horizontal" id="loginForm" action="/login" method="POST">
-              <div class="control-group" id="emailGroup">
-                  <label class="control-label" for="emailInput">${label.emailAddress}</label>
-                  <div class="controls">
-                      <input type="text" id="emailInput" name="email" placeholder="${label.emailAddress}">
-                      <span class="help-inline hide" id="emailHelp">Please enter your email address</span>
-                  </div>
-              </div>
-              <div class="control-group" id="passwordGroup">
-                  <label class="control-label" for="passwordInput">${label.password}</label>
-                  <div class="controls">
-                      <input type="password" name="password" id="passwordInput" placeholder="${label.password}">
-                      <span class="help-inline hide" id="passwordHelp">Please enter your password</span>
-                  </div>
-              </div>
-              <div class="control-group">
-                  <div class="controls">
-                      <button id="loginButton" type="submit" class="btn btn-primary btn-large">${label.login} &raquo;</button>
-                      <img src="/img/ajax-loader-spinner.gif" width="16" height="16" class="hide" id="loginSpinner">
-
-                      <div class="login-problem" style="margin-top:25px">
-                          <a href="loginProblem">${label.forgottenYourPassword}</a>
-                      </div>
-                  </div>
-              </div>
-          </form>
-      </div>
-  </div>
   
 </#macro>
