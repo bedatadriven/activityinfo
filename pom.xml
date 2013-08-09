@@ -28,7 +28,7 @@
 
     <gae.version>1.7.4</gae.version>
     <jersey.version>1.17</jersey.version>
-    <appengine.export.version>0.1.1-SNAPSHOT</appengine.export.version>
+    <appengine.export.version>0.1.1</appengine.export.version>
   </properties>
 
   <dependencies>
