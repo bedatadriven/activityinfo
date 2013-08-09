@@ -5,7 +5,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
-import org.activityinfo.shared.util.mapping.GooglePolylineEncoder;
+import org.activityinfo.server.util.mapping.GooglePolylineEncoder;
 import org.activityinfo.shared.util.mapping.PolylineEncoded;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;

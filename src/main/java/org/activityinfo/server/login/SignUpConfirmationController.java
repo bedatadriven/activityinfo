@@ -48,8 +48,8 @@ import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.server.login.model.SignUpConfirmationInvalidPageModel;
 import org.activityinfo.server.login.model.SignUpConfirmationPageModel;
+import org.activityinfo.server.util.MailingListClient;
 import org.activityinfo.server.util.logging.LogException;
-import org.activityinfo.shared.util.MailingListClient;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;

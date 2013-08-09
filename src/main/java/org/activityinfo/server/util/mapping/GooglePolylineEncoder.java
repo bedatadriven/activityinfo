@@ -1,8 +1,10 @@
-package org.activityinfo.shared.util.mapping;
+package org.activityinfo.server.util.mapping;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
+import org.activityinfo.shared.util.mapping.PolylineEncoded;
 
 import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Coordinate;
