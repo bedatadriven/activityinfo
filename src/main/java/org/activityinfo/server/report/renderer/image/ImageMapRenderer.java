@@ -87,7 +87,11 @@ public class ImageMapRenderer {
 
         @Override
         public String getImageUrl(int zoom, int tileX, int tileY) {
-            return baseMap.getTileUrl(zoom, tileX, tileY);
+            String tileUrl = baseMap.getTileUrl(zoom, tileX, tileY);
+            if(tileUrl.startsWith("//")) {
+                return "http:" + tileUrl;
+            }
+            return tileUrl;
         }
     }
 
