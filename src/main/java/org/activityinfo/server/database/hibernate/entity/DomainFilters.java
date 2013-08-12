@@ -37,9 +37,12 @@ public final class DomainFilters {
     }
 
     public static void applyUserFilter(User user, EntityManager em) {
-        applyDeletedFilter(em);
-        applyVisibleFilter(user, em);
+        applyUserFilter(user.getId(), em);
+    }
 
+    public static void applyUserFilter(int userId, EntityManager em) {
+        applyDeletedFilter(em);
+        applyVisibleFilter(userId, em);
     }
 
     public static void applyDeletedFilter(EntityManager em) {
@@ -51,11 +54,15 @@ public final class DomainFilters {
     }
 
     public static void applyVisibleFilter(User user, EntityManager em) {
+        applyVisibleFilter(user.getId(), em);
+    }
+
+    public static void applyVisibleFilter(int userId, EntityManager em) {
         /* Hide entities that this user does not have permission to view */
         org.hibernate.Session session = ((HibernateEntityManager) em)
             .getSession();
 
         Filter filter = session.enableFilter("userVisible");
-        filter.setParameter("currentUserId", user.getId());
+        filter.setParameter("currentUserId", userId);
     }
 }

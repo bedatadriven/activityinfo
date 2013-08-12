@@ -27,7 +27,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -67,8 +66,6 @@ public class GeoDigestModelBuilderTest {
         assertThat(dbs.size(), is(equalTo(2)));
         assertTrue(dbs.contains(em.find(UserDatabase.class, 3)));
         assertTrue(dbs.contains(em.find(UserDatabase.class, 100)));
-
-        System.out.println(new Date(1362700800000L));
     }
 
     @Test

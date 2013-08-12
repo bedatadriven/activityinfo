@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:ev="http://www.w3.org/2001/xml-events"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa">
+    <h:head>
+        <h:title>School reconstruction</h:title> 
+    
+        <model>
+            <instance>
+                <data id="siteform">
+                    <meta>
+                        <instanceID>uuid:23b56e39-ef50-4510-b85f-c454cd5465c1</instanceID>
+                    </meta>
+                    <activity>927</activity>
+          
+                    <partner>274</partner>
+                    <locationname>Some location</locationname>
+                    <gps></gps>
+                    <date1>2012-07-05</date1>
+                    <date2>2013-08-07</date2>
+
+                    <indicator-4410>1.1</indicator-4410>
+                    <indicator-4411>2.5</indicator-4411>
+          
+                    <attributeGroup-991>2419 2420</attributeGroup-991>
+          
+                    <comments>Some comment</comments>
+                </data>
+            </instance>
+
+            <bind nodeset="/data/meta/instanceID" type="string" readonly="true()" calculate="concat('uuid:',uuid())" />
+            <bind nodeset="/data/gps" type="geopoint" required="true()"/>
+            <bind nodeset="/data/date1" type="date" required="true()"/>
+            <bind nodeset="/data/date2" type="date" required="true()"
+                constraint=". >= /data/date1" jr:constraintMsg="date must be on or after /data/date1"/>
+      
+            <bind nodeset="/data/indicator-4410" type="decimal" />
+            <bind nodeset="/data/indicator-4411" type="decimal" />
+
+        </model>
+    </h:head>
+  
+    <h:body>
+        <select1 ref="/data/partner">
+            <label>Choose a partner</label>
+            <item>
+                <label>BeDataDriven</label>
+                <value>274</value>
+            </item>
+            <item>
+                <label>Codegap</label>
+                <value>691</value>
+            </item>
+            <item>
+                <label>TestPartner</label>
+                <value>692</value>
+            </item>
+        </select1>
+  
+        <group>
+            <label>Please specifiy the location</label>
+            <input ref="/data/locationname">
+                <label>Name</label>
+            </input>
+            <input ref="/data/gps">
+                <label>GPS</label>
+            </input>
+        </group>
+    
+        <group>
+            <input ref="/data/date1">
+                <label>Start Date</label>
+            </input>
+            <input ref="/data/date2">
+                <label>End Date</label>
+            </input>
+        </group>
+
+        <input ref="/data/indicator-4410">
+            <label>Nr of classrooms</label>
+            <hint>classroom</hint>
+        </input>
+
+        <input ref="/data/indicator-4411">
+            <label>Amount of chairs</label>
+            <hint>chairs</hint>
+        </input>
+
+        <select ref="/data/attributeGroup-991">
+            <label>Chair Color</label>
+            <item>
+                <label>Green</label>
+                <value>2419</value>
+            </item>
+            <item>
+                <label>Blue</label>
+                <value>2420</value>
+            </item>
+            <item>
+                <label>Red</label>
+                <value>2421</value>
+            </item>
+        </select>
+
+        <input ref="/data/comments">
+            <label>Comments</label>
+        </input>
+    </h:body>
+</h:html>

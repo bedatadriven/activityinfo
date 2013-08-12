@@ -92,10 +92,14 @@ public class FreemarkerViewProcessor implements ViewProcessor<Template> {
 
         // ensure that we set an content type and charset
         if (httpContext != null) {
-            httpContext
-                .getResponse()
-                .getHttpHeaders()
-                .putSingle(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
+            Object ct = httpContext.getResponse().getHttpHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
+            if (ct == null || "".equals(ct)) {
+                ct = "text/html; charset=UTF-8";
+            } else if (!String.valueOf(ct).contains("charset")) {
+                ct = ct + "; charset=UTF-8";
+            }
+            httpContext.getResponse().getHttpHeaders().putSingle(HttpHeaders.CONTENT_TYPE, ct);
+            httpContext.getResponse().getHttpHeaders().putSingle(HttpHeaders.CONTENT_ENCODING, "UTF-8");
         }
 
         Writer writer = new OutputStreamWriter(out, Charsets.UTF_8);
