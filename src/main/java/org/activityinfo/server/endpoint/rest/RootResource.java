@@ -136,4 +136,9 @@ public class RootResource {
     public TileResource getTile() {
         return new TileResource(config);
     }
+    
+    @Path("/geocode")
+    public GeocodingResource getGeocoder() {
+        return new GeocodingResource();
+    }
 }
