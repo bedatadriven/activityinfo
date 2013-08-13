@@ -22,10 +22,12 @@
                     <date1>${.now?string("yyyy-MM-dd")}</date1>
                     <date2>${.now?string("yyyy-MM-dd")}</date2>
 
+                    <#if reportingFrequency == 0> <#-- ActivityDTO.REPORT_ONCE -->
                     <#list indicators as indicator>
                     <indicator-${indicator.id?c} />
                     </#list>
-          
+                    </#if>
+                              
                     <#list attributeGroups as attributeGroup>
                     <attributeGroup-${attributeGroup.id?c} />
                     </#list>
@@ -42,9 +44,11 @@
             <bind nodeset="/data/date2" type="date" required="true()"
                 constraint=". >= /data/date1" jr:constraintMsg="date must be on or after /data/date1"/>
       
+            <#if reportingFrequency == 0>
             <#list indicators as indicator>
             <bind nodeset="/data/indicator-${indicator.id?c}" type="decimal" ${indicator.mandatory?string("required=\"true()\"", "")}/>
             </#list>
+            </#if>
 
             <#list attributeGroups as attributeGroup>
             <#if attributeGroup.mandatory>
@@ -86,12 +90,14 @@
             </input>
         </group>
 
+        <#if reportingFrequency == 0>
         <#list indicators as indicator>
         <input ref="/data/indicator-${indicator.id?c}">
             <label>${indicator.name}</label>
         </input>
         </#list>
-
+        </#if>
+        
         <#list attributeGroups as attributeGroup>
         <${attributeGroup.multipleAllowed?string("select", "select1")} ref="/data/attributeGroup-${attributeGroup.id?c}">
             <label>${attributeGroup.name}</label>
