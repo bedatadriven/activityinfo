@@ -2,11 +2,11 @@
 
 <formList>
 
-<#list databases as db>
+<#list schema.databases as db>
 <#if db.editAllowed>
     <#list db.activities as activity>
     
-    <form url="/form?id=${activity.id?c}">${db.name?xml} / ${activity.name?xml}</form>
+    <form url="${host}form?id=${activity.id?c}">${db.name?xml} / ${activity.name?xml}</form>
     
     </#list>
 </#if>

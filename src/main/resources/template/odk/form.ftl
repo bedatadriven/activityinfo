@@ -89,7 +89,6 @@
         <#list indicators as indicator>
         <input ref="/data/indicator-${indicator.id?c}">
             <label>${indicator.name}</label>
-            <hint>${indicator.units}</hint>
         </input>
         </#list>
 

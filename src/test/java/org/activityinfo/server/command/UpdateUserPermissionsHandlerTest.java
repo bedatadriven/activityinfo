@@ -209,7 +209,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
      * Verifies that a user with the manageUsers permission can add another user
      * to the UserDatabase
      * 
-     * @throws CommandException
+     * @throws RestException
      */
     @Test
     @OnDataSet("/dbunit/schema1.db.xml")
@@ -239,7 +239,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
      * Verifies that the owner of a database can update an existing users
      * permission
      * 
-     * @throws CommandException
+     * @throws RestException
      */
     @Test
     @OnDataSet("/dbunit/schema1.db.xml")

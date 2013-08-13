@@ -30,10 +30,10 @@ public class FormParserTest {
     @Test
     public void testParseSiteForm() throws Exception {
         URL url = this.getClass().getResource("/org/activityinfo/server/endpoint/odk/form-instance.xml");
-        // if it turns out the complete xform is send on submit, use this url
-        // URL url = this.getClass().getResource("/org/activityinfo/server/endpoint/odk/form.xml");
         String xml = Files.toString(new File(url.getPath()), Charsets.UTF_8);
+
         SiteFormData data = parser.parse(xml);
+
         assertEquals("uuid:23b56e39-ef50-4510-b85f-c454cd5465c1", data.getInstanceID());
         assertEquals(927, data.getActivity());
         assertEquals(274, data.getPartner());

@@ -26,7 +26,7 @@ package org.activityinfo.client.dispatch;
  * The <code>AsyncMonitor</code> provides a complement to the AsyncCallback
  * interface, allowing a division of responibility between application logic,
  * which is handled by classes implementing AsyncCallback, and which handle
- * command success or "expected" <code>CommandException</code> and the
+ * command success or "expected" <code>RestException</code> and the
  * AsyncMonitor which provides feedback to the user regarding progress,
  * completion, connection problems, general surver failures, and
  * <code>UnexpectedCommandException</code>s
@@ -40,7 +40,7 @@ public interface AsyncMonitor {
 
     /**
      * Called when the async command completes either sucessfully or with any
-     * CommandException except UnexpectedCommandException
+     * RestException except UnexpectedCommandException
      */
     void onCompleted();
 
