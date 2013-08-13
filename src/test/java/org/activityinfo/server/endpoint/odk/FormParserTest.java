@@ -46,16 +46,16 @@ public class FormParserTest {
         assertEquals(2, data.getIndicators().size());
         assertEquals(4410, data.getIndicators().get(0).getId());
         assertEquals("1.1", data.getIndicators().get(0).getValue());
-        assertEquals((Double) 1.1, data.getIndicators().get(0).getValueAsDouble());
+        assertEquals((Double) 1.1, data.getIndicators().get(0).getDoubleValue());
         assertEquals(4411, data.getIndicators().get(1).getId());
         assertEquals("2.5", data.getIndicators().get(1).getValue());
-        assertEquals((Double) 2.5, data.getIndicators().get(1).getValueAsDouble());
+        assertEquals((Double) 2.5, data.getIndicators().get(1).getDoubleValue());
 
         assertEquals(1, data.getAttributegroups().size());
         assertEquals(991, data.getAttributegroups().get(0).getId());
         assertEquals("2419 2420", data.getAttributegroups().get(0).getValue());
-        assertEquals(2, data.getAttributegroups().get(0).getValues().size());
-        assertEquals((Integer) 2419, data.getAttributegroups().get(0).getValues().get(0));
-        assertEquals((Integer) 2420, data.getAttributegroups().get(0).getValues().get(1));
+        assertEquals(2, data.getAttributegroups().get(0).getValueList().size());
+        assertEquals((Integer) 2419, data.getAttributegroups().get(0).getValueList().get(0));
+        assertEquals((Integer) 2420, data.getAttributegroups().get(0).getValueList().get(1));
     }
 }

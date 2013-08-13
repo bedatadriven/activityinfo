@@ -44,7 +44,12 @@ public abstract class ODKResource {
         auth.set(entityManager.get().find(User.class, authorizationUserId));
     }
 
-    protected Response error(String msg) {
+    protected Response badRequest(String msg) {
         return Response.status(Status.BAD_REQUEST).entity(msg).type(MediaType.TEXT_PLAIN).build();
     }
+
+    protected Response notFound(String msg) {
+        return Response.status(Status.NOT_FOUND).entity(msg).type(MediaType.TEXT_PLAIN).build();
+    }
+
 }

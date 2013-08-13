@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.activityinfo.shared.dto.AttributeGroupDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -18,7 +20,7 @@ public class FormParser {
 
         Element root = getRoot(xml);
         if (root != null) {
-            data = new SiteFormData();
+            data = new SiteFormData(xml);
             NodeList list = root.getElementsByTagName("*");
             for (int i = 0; i < list.getLength(); i++) {
                 Element element = (Element) list.item(i);
@@ -32,7 +34,8 @@ public class FormParser {
                 } else if ("locationname".equals(name)) {
                     data.setLocationname(string(element));
                 } else if ("gps".equals(name)) {
-                    data.setGps(string(element));
+                    data.setLatitude(gps(element, 0));
+                    data.setLongitude(gps(element, 1));
                 } else if ("date1".equals(name)) {
                     data.setDate1String(string(element));
                     data.setDate1(date(element));
@@ -41,10 +44,10 @@ public class FormParser {
                     data.setDate2(date(element));
                 } else if ("comments".equals(name)) {
                     data.setComments(string(element));
-                } else if (name.startsWith("indicator-")) {
-                    data.addIndicator(integer(name.substring(10)), element.getTextContent());
-                } else if (name.startsWith("attributeGroup-")) {
-                    data.addAttributeGroup(integer(name.substring(15)), element.getTextContent());
+                } else if (name.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
+                    data.addIndicator(name, element.getTextContent());
+                } else if (name.startsWith(AttributeGroupDTO.PROPERTY_PREFIX)) {
+                    data.addAttributeGroup(name, element.getTextContent());
                 }
             }
         }
@@ -72,13 +75,9 @@ public class FormParser {
     }
 
     private int integer(Element element) {
-        return integer(element.getTextContent());
-    }
-
-    private int integer(String s) {
         int result = 0;
         try {
-            result = Integer.parseInt(s);
+            result = Integer.parseInt(element.getTextContent());
         } catch (Exception e) {
             // just return 0;
         }
@@ -98,4 +97,18 @@ public class FormParser {
         }
         return result;
     }
+
+    private double gps(Element element, int ix) {
+        double result = 999;
+        try {
+            String[] coords = element.getTextContent().split("\\s+");
+            if (coords.length >= 2) {
+                result = Double.parseDouble(coords[ix]);
+            }
+        } catch (Exception e) {
+            // just return 999;
+        }
+        return result;
+    }
+
 }

@@ -24,12 +24,12 @@
 
                     <#if reportingFrequency == 0> <#-- ActivityDTO.REPORT_ONCE -->
                     <#list indicators as indicator>
-                    <indicator-${indicator.id?c} />
+                    <I${indicator.id?c} />
                     </#list>
                     </#if>
                               
                     <#list attributeGroups as attributeGroup>
-                    <attributeGroup-${attributeGroup.id?c} />
+                    <AG${attributeGroup.id?c} />
                     </#list>
           
                     <comments/>
@@ -46,13 +46,13 @@
       
             <#if reportingFrequency == 0>
             <#list indicators as indicator>
-            <bind nodeset="/data/indicator-${indicator.id?c}" type="decimal" ${indicator.mandatory?string("required=\"true()\"", "")}/>
+            <bind nodeset="/data/I${indicator.id?c}" type="decimal" ${indicator.mandatory?string("required=\"true()\"", "")}/>
             </#list>
             </#if>
 
             <#list attributeGroups as attributeGroup>
             <#if attributeGroup.mandatory>
-            <bind nodeset="/data/attributeGroup-${attributeGroup.id?c}" required="true()"/>
+            <bind nodeset="/data/AG${attributeGroup.id?c}" required="true()"/>
             </#if>
             </#list>
         </model>
@@ -92,21 +92,21 @@
 
         <#if reportingFrequency == 0>
         <#list indicators as indicator>
-        <input ref="/data/indicator-${indicator.id?c}">
+        <input ref="/data/I${indicator.id?c}">
             <label>${indicator.name}</label>
         </input>
         </#list>
         </#if>
         
         <#list attributeGroups as attributeGroup>
-        <${attributeGroup.multipleAllowed?string("select", "select1")} ref="/data/attributeGroup-${attributeGroup.id?c}">
+        <${attributeGroup.multipleAllowed?string("select", "select1")} ref="/data/AG${attributeGroup.id?c}">
             <label>${attributeGroup.name}</label>
             <#list attributeGroup.attributes as attribute>
             <item>
                 <label>${attribute.name}</label>
                 <value>${attribute.id?c}</value>
             </item>
-            </#list>            
+            </#list>
         </${attributeGroup.multipleAllowed?string("select", "select1")}>
         </#list>
 

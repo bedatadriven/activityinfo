@@ -1,16 +1,21 @@
 package org.activityinfo.server.endpoint.odk;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.activityinfo.shared.dto.AttributeGroupDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
+
 public class SiteFormData {
+    private String xml;
+
     private String instanceID;
     private int activity;
     private int partner;
     private String locationname;
-    private String gps;
+    private double latitude;
+    private double longitude;
     private Date date1;
     private String date1String;
     private Date date2;
@@ -19,6 +24,10 @@ public class SiteFormData {
     private List<FormIndicator> indicators = new ArrayList<FormIndicator>();
     private List<FormAttributeGroup> attributegroups = new ArrayList<FormAttributeGroup>();
     
+    public SiteFormData(String xml) {
+        this.xml = xml;
+    }
+
     public String getInstanceID() {
         return instanceID;
     }
@@ -83,33 +92,20 @@ public class SiteFormData {
         this.locationname = locationname;
     }
 
-    public String getGps() {
-        return gps;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setGps(String gps) {
-        this.gps = gps;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public BigDecimal getLatitude() {
-        return parseGps(0);
+    public double getLongitude() {
+        return longitude;
     }
 
-    public BigDecimal getLongitude() {
-        return parseGps(1);
-    }
-
-    private BigDecimal parseGps(int ix) {
-        BigDecimal result = null;
-        try {
-            String[] coords = gps.split("\\s+");
-            if (coords.length >= 2) {
-                result = new BigDecimal(coords[ix]);
-            }
-        } catch (Exception e) {
-            // just return null;
-        }
-        return result;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getComments() {
@@ -136,25 +132,43 @@ public class SiteFormData {
         this.attributegroups = attributegroups;
     }
 
-    public void addIndicator(int id, String value) {
-        getIndicators().add(new FormIndicator(id, value));
+    public void addIndicator(String name, String value) {
+        getIndicators().add(new FormIndicator(name, value));
     }
 
-    public void addAttributeGroup(int id, String value) {
-        getAttributegroups().add(new FormAttributeGroup(id, value));
+    public void addAttributeGroup(String name, String value) {
+        getAttributegroups().add(new FormAttributeGroup(name, value));
     }
 
     public class FormIndicator {
         private int id;
+        private String name;
         private String value;
+        private Double doubleValue;
 
-        public FormIndicator(int id, String value) {
-            this.id = id;
+        public FormIndicator(String name, String value) {
+            this.name = name;
             this.value = value;
+
+            deriveValues();
+        }
+
+        private void deriveValues() {
+            this.id = IndicatorDTO.indicatorIdForPropertyName(name);
+
+            try {
+                this.doubleValue = Double.valueOf(value);
+            } catch (NumberFormatException e) {
+                this.doubleValue = null;
+            }
         }
 
         public int getId() {
             return id;
+        }
+
+        public String getName() {
+            return name;
         }
 
         public String getValue() {
@@ -165,22 +179,45 @@ public class SiteFormData {
             return value != null && !value.isEmpty();
         }
         
-        public Double getValueAsDouble() {
-            return Double.valueOf(value);
+        // value as a double, or null if unparsable
+        public Double getDoubleValue() {
+            return doubleValue;
         }
     }
 
     public class FormAttributeGroup {
         private int id;
+        private String name;
         private String value;
+        private List<Integer> valueList;
 
-        public FormAttributeGroup(int id, String value) {
-            this.id = id;
+        public FormAttributeGroup(String name, String value) {
+            this.name = name;
             this.value = value;
+
+            deriveValues();
+        }
+
+        private void deriveValues() {
+            this.id = AttributeGroupDTO.idForPropertyName(name);
+
+            this.valueList = new ArrayList<Integer>();
+            String[] values = value.split("\\s+");
+            for (String val : values) {
+                try {
+                    valueList.add(Integer.valueOf(val));
+                } catch (NumberFormatException e) {
+                    // just don't add to the list
+                }
+            }
         }
 
         public int getId() {
             return id;
+        }
+
+        public String getName() {
+            return name;
         }
 
         public String getValue() {
@@ -191,13 +228,13 @@ public class SiteFormData {
             return value != null && !value.isEmpty();
         }
         
-        public List<Integer> getValues() {
-            String [] values = value.split("\\s+");
-            List<Integer> list = new ArrayList<Integer>();
-            for (String val : values) {
-                list.add(Integer.valueOf(val));
-            }
-            return list;
+        // list of all parseable integers in the value (space separated)
+        public List<Integer> getValueList() {
+            return valueList;
+        }
+
+        public boolean isSelected(int attributeId) {
+            return valueList.contains(attributeId);
         }
     }
 
@@ -214,14 +251,14 @@ public class SiteFormData {
         s.append(", comments: ").append(comments);
         s.append(", indicators: [");
         for (FormIndicator indicator : indicators) {
-            s.append(indicator.getId()).append(": ").append(indicator.getValue()).append(", ");
+            s.append(indicator.getName()).append(": ").append(indicator.getValue()).append(", ");
         }
         if (indicators.size() > 0) {
             s.setLength(s.length() - 2);
         }
         s.append("], attributeGroups: [");
         for (FormAttributeGroup attributegroup : attributegroups) {
-            s.append(attributegroup.getId()).append(": ").append(attributegroup.getValue()).append(", ");
+            s.append(attributegroup.getName()).append(": ").append(attributegroup.getValue()).append(", ");
         }
         if (attributegroups.size() > 0) {
             s.setLength(s.length() - 2);
