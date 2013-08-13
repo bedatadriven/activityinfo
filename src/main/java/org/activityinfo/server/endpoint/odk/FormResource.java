@@ -22,7 +22,13 @@ public class FormResource extends ODKResource {
     @GET
     @Produces(MediaType.TEXT_XML)
     public Response form(@InjectParam AuthenticatedUser user, @QueryParam("id") int id) throws Exception {
-        authorize();
+        if (AuthenticatedUser.isAnonymous(user)) {
+            if (bypassAuthorization()) {
+                setBypassUser();
+            } else {
+                return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
+            }
+        }
 
         LOGGER.finer("ODK form " + id + " requested by " + user.getEmail());
 

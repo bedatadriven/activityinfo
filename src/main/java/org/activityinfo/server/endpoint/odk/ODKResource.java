@@ -25,19 +25,23 @@ public abstract class ODKResource {
     @Inject
     protected final ServerSideAuthProvider auth = null;
 
-    private boolean authorizationDisabled = false;
-
-    protected void authorize() {
-        if (authorizationDisabled) {
-            auth.set(entityManager.get().find(User.class, 716));
-        }
-    }
+    protected int authorizationUserId = -1;
 
     @Inject(optional = true)
     public void setProperties(DeploymentConfiguration properties) {
-        String odkAuthorizationDisabled =
-            properties.getProperty("odk.authorization.disabled");
-        authorizationDisabled = Boolean.parseBoolean(odkAuthorizationDisabled);
+        String odkAuthorizationUserId =
+            properties.getProperty("odk.authorization.userid");
+        if (odkAuthorizationUserId != null) {
+            authorizationUserId = Integer.parseInt(odkAuthorizationUserId);
+        }
+    }
+
+    protected boolean bypassAuthorization() {
+        return authorizationUserId > 0;
+    }
+
+    protected void setBypassUser() {
+        auth.set(entityManager.get().find(User.class, authorizationUserId));
     }
 
     protected Response error(String msg) {

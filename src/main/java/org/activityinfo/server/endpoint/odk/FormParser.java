@@ -1,19 +1,15 @@
 package org.activityinfo.server.endpoint.odk;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 public class FormParser {
 
@@ -61,13 +57,7 @@ public class FormParser {
             InputSource source = new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8")));
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             root = builder.parse(source).getDocumentElement();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return root;

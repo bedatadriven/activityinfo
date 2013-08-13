@@ -22,10 +22,13 @@ public class FormListResource extends ODKResource {
     @GET
     @Produces(MediaType.TEXT_XML)
     public Response formList(@InjectParam AuthenticatedUser user, @Context UriInfo info) throws Exception {
-        // if (AuthenticatedUser.isAnonymous(user)) {
-        // return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
-        // }
-        authorize();
+        if (AuthenticatedUser.isAnonymous(user)) {
+            if (bypassAuthorization()) {
+                setBypassUser();
+            } else {
+                return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
+            }
+        }
         LOGGER.finer("ODK formlist requested by " + user.getEmail());
 
         Map<String, Object> map = Maps.newHashMap();

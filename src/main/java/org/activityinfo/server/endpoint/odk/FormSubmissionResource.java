@@ -31,7 +31,13 @@ public class FormSubmissionResource extends ODKResource {
     public Response submit(@InjectParam AuthenticatedUser user, @FormDataParam("xml_submission_file") String xml)
         throws Exception {
 
-        authorize();
+        if (AuthenticatedUser.isAnonymous(user)) {
+            if (bypassAuthorization()) {
+                setBypassUser();
+            } else {
+                return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
+            }
+        }
 
         LOGGER.finer("ODK form submitted by user " + user.getEmail());
 
