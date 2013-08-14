@@ -9,28 +9,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("/form")
 public class FormResource extends ODKResource {
     @GET
     @Produces(MediaType.TEXT_XML)
-    public Response form(@InjectParam AuthenticatedUser user, @QueryParam("id") int id) throws Exception {
-        if (AuthenticatedUser.isAnonymous(user)) {
-            if (bypassAuthorization()) {
-                setBypassUser();
-            } else {
-                return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
-            }
+    public Response form(@QueryParam("id") int id) throws Exception {
+        if (enforceAuthorization()) {
+            return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
         }
-
-        LOGGER.finer("ODK form " + id + " requested by " + user.getEmail());
+        LOGGER.finer("ODK form " + id + " requested by " + getUser().getEmail() + " (" + getUser().getId() + ")");
 
         SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
         ActivityDTO activity = schemaDTO.getActivityById(id);

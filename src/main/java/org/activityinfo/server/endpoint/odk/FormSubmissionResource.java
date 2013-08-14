@@ -15,48 +15,48 @@ import javax.ws.rs.core.Response.Status;
 import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.server.database.hibernate.dao.Geocoder;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
-import org.activityinfo.server.database.hibernate.entity.Location;
+import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormAttributeGroup;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormIndicator;
-import org.activityinfo.shared.auth.AuthenticatedUser;
+import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
+import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.GetSchema;
+import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
+import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
-import org.activityinfo.shared.util.CollectionUtil;
 
+import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.inject.Inject;
-import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/submission")
 public class FormSubmissionResource extends ODKResource {
     private final Provider<FormParser> formParser;
     private final Geocoder geocoder;
+    private final SiteHistoryProcessor siteHistoryProcessor;
 
     @Inject
-    public FormSubmissionResource(Provider<FormParser> formParser, Geocoder geocoder) {
+    public FormSubmissionResource(Provider<FormParser> formParser, Geocoder geocoder,
+        SiteHistoryProcessor siteHistoryProcessor) {
         this.formParser = formParser;
         this.geocoder = geocoder;
+        this.siteHistoryProcessor = siteHistoryProcessor;
     }
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_XML)
-    public Response submit(@InjectParam AuthenticatedUser user, @FormDataParam("xml_submission_file") String xml)
-        throws Exception {
-
-        if (AuthenticatedUser.isAnonymous(user)) {
-            if (bypassAuthorization()) {
-                setBypassUser();
-            } else {
-                return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
-            }
+    public Response submit(@FormDataParam("xml_submission_file") String xml) throws Exception {
+        if (enforceAuthorization()) {
+            return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
         }
-
-        LOGGER.finer("ODK form submitted by user " + user.getEmail());
+        LOGGER.fine("ODK form submitted by user " + getUser().getEmail() + " (" + getUser().getId() + ")");
 
         // parse
         SiteFormData data = formParser.get().parse(xml);
@@ -105,7 +105,7 @@ public class FormSubmissionResource extends ODKResource {
         site.setPartner(schemaDTO.getPartnerById(data.getPartner()));
 
         // set location
-        int locationId = findLocationId(data);
+        int locationId = createLocation(data, schemaDTO, activity);
         site.setLocationId(locationId);
 
         // set comments
@@ -126,32 +126,67 @@ public class FormSubmissionResource extends ODKResource {
             }
         }
 
-        dispatcher.execute(new CreateSite(site));
+        // save
+        Command<CreateResult> cmd = new CreateSite(site);
+        CreateResult createResult = dispatcher.execute(cmd);
+
+        // create sitehistory entry
+        siteHistoryProcessor.process(cmd, getUser().getId(), createResult.getNewId());
     }
 
-
-    // TODO this is one big hack right now. We need to come up with a better way to do this..
-    private int findLocationId(SiteFormData data) {
-        LOGGER.finest("finding location for coordinates " + data.getLatitude() + ", " + data.getLongitude());
+    private int createLocation(SiteFormData data, SchemaDTO schemaDTO, ActivityDTO activity) {
+        // get adminentities that contain the specified coordinates
         List<AdminEntity> adminentities =
             geocoder.geocode(data.getLatitude(), data.getLongitude());
+        entitySanityCheck(data, adminentities);
 
+        // create the dto
+        LocationDTO loc = new LocationDTO();
+        loc.setId(new KeyGenerator().generateInt());
+        loc.setLocationTypeId(activity.getLocationTypeId());
+        loc.setName(data.getLocationname());
+        loc.setLatitude(data.getLatitude());
+        loc.setLongitude(data.getLongitude());
+
+        CreateLocation cmd = new CreateLocation(loc);
+        RpcMap map = cmd.getProperties();
+        for (AdminEntity entity : adminentities) {
+            map.put(AdminLevelDTO.getPropertyName(entity.getLevel().getId()), entity.getId());
+        }
+
+        // save
+        dispatcher.execute(cmd);
+
+        return loc.getId();
+    }
+
+    private void entitySanityCheck(SiteFormData data, List<AdminEntity> adminentities) {
         if (adminentities.isEmpty()) {
             LOGGER.severe("shouldn't happen: no adminentities found for coordinates " +
-                data.getLatitude() + ", " + data.getLongitude() + " - using location 2301 (Boma) as a default");
-            return 2301;
-        }
-
-        // take the first if somehow all adminentities in the list have children
-        AdminEntity mostSpecific = adminentities.get(0);
-        for (AdminEntity adminentity : adminentities) {
-            if (CollectionUtil.isEmpty(adminentity.getChildren())) {
-                mostSpecific = adminentity;
-                break;
+                data.getLatitude() + ", " + data.getLongitude());
+            AdminEntity adminEntity = createDummyAdminEntity();
+            if (adminEntity != null) {
+                adminentities.add(adminEntity);
+            } else {
+                throw new IllegalArgumentException("no adminentities found for coordinates " +
+                    data.getLatitude() + ", " + data.getLongitude());
             }
         }
+    }
 
-        Location arbitraryLocation = mostSpecific.getLocations().iterator().next();
-        return arbitraryLocation.getId();
+    private AdminEntity createDummyAdminEntity() {
+        AdminEntity adminEntity = null;
+
+        String odkLocationEntityId = config.getProperty("odk.location.entity.id");
+        String odkLocationLevelId = config.getProperty("odk.location.level.id");
+
+        if (odkLocationEntityId != null && odkLocationLevelId != null) {
+            AdminLevel level = new AdminLevel();
+            level.setId(Integer.parseInt(odkLocationLevelId));
+            adminEntity = new AdminEntity();
+            adminEntity.setId(Integer.parseInt(odkLocationEntityId));
+            adminEntity.setLevel(level);
+        }
+        return adminEntity;
     }
 }

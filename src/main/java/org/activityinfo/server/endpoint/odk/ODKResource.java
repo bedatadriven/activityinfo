@@ -12,6 +12,7 @@ import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.shared.auth.AuthenticatedUser;
 
 import com.google.inject.Inject;
 
@@ -24,24 +25,31 @@ public abstract class ODKResource {
     protected final Provider<EntityManager> entityManager = null;
     @Inject
     protected final ServerSideAuthProvider auth = null;
+    @Inject
+    protected final DeploymentConfiguration config = null;
 
-    protected int authorizationUserId = -1;
-
-    @Inject(optional = true)
-    public void setProperties(DeploymentConfiguration properties) {
-        String odkAuthorizationUserId =
-            properties.getProperty("odk.authorization.userid");
-        if (odkAuthorizationUserId != null) {
-            authorizationUserId = Integer.parseInt(odkAuthorizationUserId);
+    protected boolean enforceAuthorization() {
+        if (getUser().isAnonymous()) {
+            // do we have a dummy userid configured?
+            String odkAuthorizationUserId = config.getProperty("odk.authorization.userid");
+            if (odkAuthorizationUserId != null) {
+                int authorizationUserId = Integer.parseInt(odkAuthorizationUserId);
+                if (authorizationUserId > 0) {
+                    // if so, we're assuming that user is authorized.
+                    auth.set(entityManager.get().find(User.class, authorizationUserId));
+                    return false;
+                }
+            }
+            // otherwise ask for (basic) authentication
+            return true;
+        } else {
+            // authorized user, continue
+            return false;
         }
     }
 
-    protected boolean bypassAuthorization() {
-        return authorizationUserId > 0;
-    }
-
-    protected void setBypassUser() {
-        auth.set(entityManager.get().find(User.class, authorizationUserId));
+    protected AuthenticatedUser getUser() {
+        return auth.get();
     }
 
     protected Response badRequest(String msg) {
