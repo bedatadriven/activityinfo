@@ -135,11 +135,6 @@ public class FormSubmissionResource extends ODKResource {
     }
 
     private int createLocation(SiteFormData data, SchemaDTO schemaDTO, ActivityDTO activity) {
-        // get adminentities that contain the specified coordinates
-        List<AdminEntity> adminentities =
-            geocoder.geocode(data.getLatitude(), data.getLongitude());
-        entitySanityCheck(data, adminentities);
-
         // create the dto
         LocationDTO loc = new LocationDTO();
         loc.setId(new KeyGenerator().generateInt());
@@ -149,29 +144,27 @@ public class FormSubmissionResource extends ODKResource {
         loc.setLongitude(data.getLongitude());
 
         CreateLocation cmd = new CreateLocation(loc);
-        RpcMap map = cmd.getProperties();
-        for (AdminEntity entity : adminentities) {
-            map.put(AdminLevelDTO.getPropertyName(entity.getLevel().getId()), entity.getId());
+
+        // get adminentities that contain the specified coordinates
+        List<AdminEntity> adminentities =
+            geocoder.geocode(data.getLatitude(), data.getLongitude());
+        if (adminentities.isEmpty()) {
+            AdminEntity adminEntity = createDebugAdminEntity();
+            if (adminEntity != null) {
+                adminentities.add(adminEntity);
+            }
+        }
+        if (!adminentities.isEmpty()) {
+            RpcMap map = cmd.getProperties();
+            for (AdminEntity entity : adminentities) {
+                map.put(AdminLevelDTO.getPropertyName(entity.getLevel().getId()), entity.getId());
+            }
         }
 
         // save
         dispatcher.execute(cmd);
 
         return loc.getId();
-    }
-
-    private void entitySanityCheck(SiteFormData data, List<AdminEntity> adminentities) {
-        if (adminentities.isEmpty()) {
-            LOGGER.severe("shouldn't happen: no adminentities found for coordinates " +
-                data.getLatitude() + ", " + data.getLongitude());
-            AdminEntity adminEntity = createDebugAdminEntity();
-            if (adminEntity != null) {
-                adminentities.add(adminEntity);
-            } else {
-                throw new IllegalArgumentException("no adminentities found for coordinates " +
-                    data.getLatitude() + ", " + data.getLongitude());
-            }
-        }
     }
 
     private AdminEntity createDebugAdminEntity() {
