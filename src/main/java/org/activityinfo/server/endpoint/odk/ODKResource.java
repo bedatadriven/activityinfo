@@ -31,12 +31,12 @@ public abstract class ODKResource {
     protected boolean enforceAuthorization() {
         if (getUser().isAnonymous()) {
             // do we have a dummy userid configured?
-            String odkAuthorizationUserId = config.getProperty("odk.authorization.userid");
-            if (odkAuthorizationUserId != null) {
-                int authorizationUserId = Integer.parseInt(odkAuthorizationUserId);
-                if (authorizationUserId > 0) {
+            String odkDebugAuthorizationUserId = config.getProperty("odk.debug.authorization.userid");
+            if (odkDebugAuthorizationUserId != null) {
+                int userId = Integer.parseInt(odkDebugAuthorizationUserId);
+                if (userId > 0) {
                     // if so, we're assuming that user is authorized.
-                    auth.set(entityManager.get().find(User.class, authorizationUserId));
+                    auth.set(entityManager.get().find(User.class, userId));
                     return false;
                 }
             }

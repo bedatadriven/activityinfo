@@ -29,7 +29,7 @@ public class FormParserTest {
 
     @Test
     public void testParseSiteForm() throws Exception {
-        URL url = this.getClass().getResource("/org/activityinfo/server/endpoint/odk/form-instance.xml");
+        URL url = FormParserTest.class.getResource("/org/activityinfo/server/endpoint/odk/form-instance.xml");
         String xml = Files.toString(new File(url.getPath()), Charsets.UTF_8);
 
         SiteFormData data = parser.parse(xml);

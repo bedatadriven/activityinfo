@@ -164,7 +164,7 @@ public class FormSubmissionResource extends ODKResource {
         if (adminentities.isEmpty()) {
             LOGGER.severe("shouldn't happen: no adminentities found for coordinates " +
                 data.getLatitude() + ", " + data.getLongitude());
-            AdminEntity adminEntity = createDummyAdminEntity();
+            AdminEntity adminEntity = createDebugAdminEntity();
             if (adminEntity != null) {
                 adminentities.add(adminEntity);
             } else {
@@ -174,17 +174,17 @@ public class FormSubmissionResource extends ODKResource {
         }
     }
 
-    private AdminEntity createDummyAdminEntity() {
+    private AdminEntity createDebugAdminEntity() {
         AdminEntity adminEntity = null;
 
-        String odkLocationEntityId = config.getProperty("odk.location.entity.id");
-        String odkLocationLevelId = config.getProperty("odk.location.level.id");
+        String odkDebugLocationEntityId = config.getProperty("odk.debug.location.entity.id");
+        String odkDebugLocationLevelId = config.getProperty("odk.debug.location.level.id");
 
-        if (odkLocationEntityId != null && odkLocationLevelId != null) {
+        if (odkDebugLocationEntityId != null && odkDebugLocationLevelId != null) {
             AdminLevel level = new AdminLevel();
-            level.setId(Integer.parseInt(odkLocationLevelId));
+            level.setId(Integer.parseInt(odkDebugLocationLevelId));
             adminEntity = new AdminEntity();
-            adminEntity.setId(Integer.parseInt(odkLocationEntityId));
+            adminEntity.setId(Integer.parseInt(odkDebugLocationEntityId));
             adminEntity.setLevel(level);
         }
         return adminEntity;
