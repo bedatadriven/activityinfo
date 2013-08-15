@@ -16,7 +16,7 @@ import com.google.inject.Inject;
 @RunWith(InjectionSupport.class)
 @Modules({
     TestDatabaseModule.class,
-    MockHibernateModule.class,
+    MockHibernateModule.class
 })
 public class FormParserTest {
 
