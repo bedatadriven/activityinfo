@@ -15,7 +15,7 @@ import org.activityinfo.shared.dto.SchemaDTO;
 
 import com.sun.jersey.api.view.Viewable;
 
-@Path("/formx")
+@Path("/activityForm")
 public class FormResource extends ODKResource {
     @GET
     @Produces(MediaType.TEXT_XML)
@@ -23,7 +23,8 @@ public class FormResource extends ODKResource {
         if (enforceAuthorization()) {
             return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
         }
-        LOGGER.finer("ODK form " + id + " requested by " + getUser().getEmail() + " (" + getUser().getId() + ")");
+        LOGGER.finer("ODK activityform " + id + " requested by " +
+            getUser().getEmail() + " (" + getUser().getId() + ")");
 
         SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
         ActivityDTO activity = schemaDTO.getActivityById(id);
