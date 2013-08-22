@@ -22,6 +22,9 @@ package org.activityinfo.server.util.jaxrs;
  * #L%
  */
 
+import java.lang.reflect.Method;
+import java.util.logging.Logger;
+
 import javax.ws.rs.Path;
 
 import com.google.inject.servlet.ServletModule;
@@ -34,6 +37,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
  * that are sent to GuiceContainer.
  */
 public abstract class AbstractRestModule extends ServletModule {
+    protected final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
     @Override
     protected final void configureServlets() {
@@ -47,10 +51,21 @@ public abstract class AbstractRestModule extends ServletModule {
 
         Path path = (Path) clazz.getAnnotation(Path.class);
         if (path == null) {
-            throw new IllegalStateException(clazz.getName()
-                + " must have @Path annotation");
+            throw new IllegalStateException(clazz.getName() + " must have @Path annotation");
         }
-        filter(path.value() + "*").through(GuiceContainer.class);
+        String pattern = path.value();
+
+        // only add the wildcard to the url pattern if the class contains at least
+        // one method with the Path annotation
+        for (Method method : clazz.getMethods()) {
+            if (method.isAnnotationPresent(Path.class)) {
+                pattern += "*";
+                break;
+            }
+        }
+
+        LOGGER.info("binding REST path '" + pattern + "'");
+        filter(pattern).through(GuiceContainer.class);
     }
 
     protected final void bindResource(Class clazz, String pattern,

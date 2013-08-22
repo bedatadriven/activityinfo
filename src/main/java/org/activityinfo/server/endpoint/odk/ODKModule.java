@@ -35,8 +35,8 @@ public class ODKModule extends AbstractRestModule {
         bind(FormParser.class);
 
         // in separate classes for now because of the prefix-less urls..
-        bindResource(FormListResource.class);
         bindResource(FormResource.class);
+        bindResource(FormListResource.class);
         bindResource(FormSubmissionResource.class);
     }
 }
