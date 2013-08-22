@@ -15,7 +15,7 @@ import org.activityinfo.shared.dto.SchemaDTO;
 
 import com.sun.jersey.api.view.Viewable;
 
-@Path("/form")
+@Path("/formx")
 public class FormResource extends ODKResource {
     @GET
     @Produces(MediaType.TEXT_XML)
