@@ -23,6 +23,7 @@ package org.activityinfo.shared.exception;
  */
 
 import org.activityinfo.shared.command.Command;
+import org.activityinfo.shared.command.handler.ExecutionContext;
 import org.activityinfo.shared.command.result.CommandResult;
 
 public class CommandException extends RuntimeException implements CommandResult {
@@ -44,16 +45,46 @@ public class CommandException extends RuntimeException implements CommandResult 
     }
 
     public CommandException(Command<?> command, String message) {
-        super(createMessage(command, message));
+        super(createMessage(command, null, message));
     }
 
     public CommandException(Command<?> command, Throwable e) {
-        super(createMessage(command, e.getMessage()), e);
+        super(createMessage(command, null, e), e);
         this.setStackTrace(new StackTraceElement[] {});
     }
 
-    private static String createMessage(Command<?> command, String message) {
+    public CommandException(Command<?> command, ExecutionContext context, Throwable e) {
+        super(createMessage(command, context, e), e);
+        this.setStackTrace(new StackTraceElement[] {});
+    }
+
+    private static String createMessage(Command<?> command, ExecutionContext context, Throwable e) {
+        String message = null;
+        if (e != null) {
+            message = e.getMessage();
+        }
+        return createMessage(command, context, message);
+    }
+
+    private static String createMessage(Command<?> command, ExecutionContext context, String message) {
         String name = command.getClass().getName();
-        return (name.substring(name.lastIndexOf(".") + 1)) + " - " + message;
+        StringBuilder s = new StringBuilder();
+        s.append(name.substring(name.lastIndexOf(".") + 1));
+
+        if (message != null && !"null".equalsIgnoreCase(message)) {
+            s.append(" - ");
+            s.append(message);
+        }
+
+        if (context != null && context.getUser() != null) {
+            String email = context.getUser().getEmail();
+            if (email != null && !"null".equalsIgnoreCase(email)) {
+                s.append(" (");
+                s.append(email);
+                s.append(")");
+            }
+        }
+
+        return s.toString();
     }
 }
