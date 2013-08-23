@@ -60,7 +60,7 @@ public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
         UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
         if (db.getOwner().getId() != user.getId()) {
             UserPermission perm = db.getPermissionByUser(user);
-            if (perm == null || perm.isAllowDesign()) {
+            if (perm == null || !perm.isAllowDesign()) {
                 throw new IllegalAccessCommandException();
             }
         }
