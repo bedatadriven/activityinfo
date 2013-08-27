@@ -51,14 +51,14 @@ public class GetAdminLevelsHandler implements
             return;
         }
         
+        String hasPolygonsSubQuery = "exists (select e.adminentityid from adminentity e " +
+        		"where e.adminlevelid=level.adminlevelid and geometry is not null)";
+        
         SqlQuery
             .select()
             .appendColumn("level.adminlevelId", "id")
             .appendColumn("level.name", "name")
-            .appendColumn("level.polygons", "polygons")
-            // .from(Tables.INDICATOR_LINK, "il")
-            // .leftJoin(Tables.INDICATOR_VALUE,
-            // "iv").on("il.destinationIndicatorId=iv.indicatorid")
+            .appendColumn(hasPolygonsSubQuery, "polygons")
             .from(Tables.INDICATOR_VALUE, "iv")
             .innerJoin(Tables.REPORTING_PERIOD, "rp")
             .on("rp.reportingperiodid=iv.reportingperiodid")

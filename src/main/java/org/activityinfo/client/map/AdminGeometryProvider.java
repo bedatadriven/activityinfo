@@ -50,7 +50,7 @@ public final class AdminGeometryProvider {
     private void fetchGeometry(final int levelId,
         final AsyncCallback<AdminGeometry> callback) {
         RequestBuilder request = new RequestBuilder(RequestBuilder.GET,
-            "//geometry.activityinfo.org/" + levelId + ".json");
+            "/resources/adminLevel/" + levelId + "/entities/polylines");
         request.setCallback(new RequestCallback() {
 
             @Override

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
+import javax.ws.rs.WebApplicationException;
+
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.util.mapping.GooglePolylineEncoder;
 import org.activityinfo.shared.util.mapping.PolylineEncoded;
@@ -33,11 +35,14 @@ public class GoogleMapsWriter  {
         writer.writeArrayFieldStart("entities");
         
         for(AdminEntity entity : entities) {
-            write(entity.getId(), entity.getGeometry());
+            if(!entity.isDeleted() && entity.getGeometry() != null) {
+                write(entity.getId(), entity.getGeometry());
+            }
         }
         
         writer.writeEndArray();
         writer.writeEndObject();
+        writer.flush();
         return stringWriter.toString();
     }
 

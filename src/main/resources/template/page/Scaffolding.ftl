@@ -98,8 +98,6 @@
     </header> <!-- end header -->
 
 	<#nested>
-
-
 	  
 </body>
 </html>
