@@ -65,6 +65,7 @@ public class HostControllerTest extends ControllerTestCase {
         throws Exception {
 
         HttpServletRequest req = createMock(HttpServletRequest.class);
+        expect(req.getHeader("User-Agent")).andReturn(CHROME_USER_AGENT);
         replay(req);
 
         Response response = resource.getHostPage(
