@@ -1,4 +1,4 @@
-<#--
+\<#--
  #%L
  ActivityInfo Server
  %%
@@ -26,7 +26,7 @@ ${invitingUser.name} (${invitingUser.email}) has invited you to access ActivityI
 
 complete your user registration, click on the following link:
 
-http://www.activityinfo.org/confirm?${newUser.changePasswordKey}
+https://www.activityinfo.org/confirm?${newUser.changePasswordKey}
 
 Best regards,
 

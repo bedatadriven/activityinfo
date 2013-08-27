@@ -26,7 +26,7 @@ Merci de vous inscrire à ActivityInfo!
 
 Pour confirmer votre adresse et connecter au système, visitez le lien suivante:
 
-http://www.activityinfo.org/confirm?${user.changePasswordKey}
+https://www.activityinfo.org/confirm?${user.changePasswordKey}
 
 Cordialement,
 

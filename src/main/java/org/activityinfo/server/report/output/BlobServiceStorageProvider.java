@@ -45,7 +45,7 @@ public class BlobServiceStorageProvider implements StorageProvider {
     @Inject
     public BlobServiceStorageProvider(DeploymentConfiguration config, BlobService blobService) {
         this.blobService = blobService;
-        this.baseUri = config.getProperty("base.uri", "http://www.activityinfo.org");
+        this.baseUri = config.getProperty("base.uri", "https://www.activityinfo.org");
     }
 
     @Override
