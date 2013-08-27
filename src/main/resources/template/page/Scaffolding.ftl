@@ -119,59 +119,6 @@
 <#macro scripts>
   <script src="/js/jquery-1.9.1.min.js"></script>
   <script type="text/javascript" src="/js/bootstrap-modal-2.3.2-min.js"></script>
-	
-  <script type="text/javascript">
-	 
-  		$('.language').click(function() {
-  			var language = $(this).text();
-  			var now = new Date();
-   			now.setMonth( now.getMonth() + 1 );
-   			document.cookie="locale" + "=" + language +";expires=" + now.toUTCString();
-
-   			_gaq.push(['_trackEvent', 'Login', 'Click']);
-
-	 	});
-	 	
-	 	// login popup
-		 	
-		var enableForm = function(enabled) {
-			$('#loginButton').prop('disabled', !enabled);
-			$('#loginSpinner').toggleClass('hide', enabled);
-		}	
-	
-		$('#loginForm').submit(function() {
-			
-			$('#loginAlert').addClass('hide');
-		
-			enableForm(false);		
-			$.ajax({
-				url: '/login/ajax',
-				type: 'POST', 
-				data: {
-					email: $('#emailInput').val(),
-					password: $('#passwordInput').val(),
-					ajax: 'true'
-				},
-				success: function() {
-					if(window.location.pathname != '/') {
-						window.location = '/' + window.location.search + window.location.hash;
-					} else {
-						window.location.reload(true);
-					}
-				},
-				error: function(xhr) {
-					$('#loginAlert').toggleClass('hide', false);
-				},
-				complete: function() {
-					enableForm(true);
-				}
-			});
-			return false;
-		});
-		
-		$('#emailInput').focus();
-	 	
-  </script>
   <#nested>
 </#macro>
 
