@@ -16,7 +16,7 @@
                     </meta>
                     <activity>${id?c}</activity>
           
-                    <partner><#if database.partners?size == 1>${database.partners[0].id}</#if></partner>
+                    <partner><#if database.partners?size == 1>${database.partners[0].id?c}</#if></partner>
                     <locationname />
                     <gps />
                     <date1>${.now?string("yyyy-MM-dd")}</date1>
@@ -61,10 +61,10 @@
     <h:body>
         <#if (database.partners?size > 1)>
         <select1 ref="/data/partner">
-            <label>${label.odkPartner}</label>
+            <label>${label.odkPartner?xml}</label>
             <#list database.partners as partner>
             <item>
-                <label>${partner.name}</label>
+                <label>${partner.name?xml}</label>
                 <value>${partner.id?c}</value>
             </item>
             </#list>
@@ -72,38 +72,38 @@
         </#if>
   
         <group>
-            <label>${label.odkLocation}</label>
+            <label>{locationType.name?xml}</label>
             <input ref="/data/locationname">
-                <label>${label.odkLocationName}</label>
+                <label>${label.odkLocationName?xml}</label>
             </input>
             <input ref="/data/gps">
-                <label>${label.odkLocationCoordinates}</label>
+                <label>${label.odkLocationCoordinates?xml}</label>
             </input>
         </group>
     
         <group>
             <input ref="/data/date1">
-                <label>${label.odkStartDate}</label>
+                <label>${label.odkStartDate?xml}</label>
             </input>
             <input ref="/data/date2">
-                <label>${label.odkEndDate}</label>
+                <label>${label.odkEndDate?xml}</label>
             </input>
         </group>
 
         <#if reportingFrequency == 0>
         <#list indicators as indicator>
         <input ref="/data/I${indicator.id?c}">
-            <label>${indicator.name}</label>
+            <label>${indicator.name?xml}</label>
         </input>
         </#list>
         </#if>
         
         <#list attributeGroups as attributeGroup>
         <${attributeGroup.multipleAllowed?string("select", "select1")} ref="/data/AG${attributeGroup.id?c}">
-            <label>${attributeGroup.name}</label>
+            <label>${attributeGroup.name?xml}</label>
             <#list attributeGroup.attributes as attribute>
             <item>
-                <label>${attribute.name}</label>
+                <label>${attribute.name?xml}</label>
                 <value>${attribute.id?c}</value>
             </item>
             </#list>
@@ -111,7 +111,7 @@
         </#list>
 
         <input ref="/data/comments">
-            <label>${label.odkComments}</label>
+            <label>${label.odkComments?xml}</label>
         </input>
     </h:body>
 </h:html>
