@@ -117,6 +117,7 @@ public class SignUpConfirmationController {
             User user = userDAO.get().findUserByChangePasswordKey(key);
             user.changePassword(password);
             user.clearChangePasswordKey();
+            user.setEmailNotification(true);
 
             // add user to default database
             addUserToDefaultDatabase(user);
@@ -125,7 +126,7 @@ public class SignUpConfirmationController {
                 mailingList.subscribe(user);
             }
             
-            // go to the homepage
+            // go to the home page
             return Response.seeOther(uri.getAbsolutePathBuilder().replacePath("/").build())
                 .cookie(authTokenProvider.createNewAuthCookies(user)).build();
 

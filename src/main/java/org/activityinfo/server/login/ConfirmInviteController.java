@@ -95,6 +95,7 @@ public class ConfirmInviteController {
             user.setLocale(checkNonEmpty(locale));
             user.changePassword(checkNonEmpty(password));
             user.clearChangePasswordKey();
+            user.setEmailNotification(true);
             
             if(newsletter) {
                 mailingList.subscribe(user);
