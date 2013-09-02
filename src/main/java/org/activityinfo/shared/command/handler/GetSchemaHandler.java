@@ -263,7 +263,7 @@ public class GetSchemaHandler implements
         protected void loadProjects() {
             SqlQuery.select("name", "projectId", "description", "databaseId")
                 .from("project")
-                .where("databaseId").in(databaseMap.keySet())
+                .where("databaseId").in(databaseMap.keySet())   
                 .execute(tx, new SqlResultCallback() {
                     @Override
                     public void onSuccess(SqlTransaction tx,
