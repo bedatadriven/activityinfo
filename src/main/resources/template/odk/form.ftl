@@ -72,7 +72,7 @@
         </#if>
   
         <group>
-            <label>{locationType.name?xml}</label>
+            <label>${locationType.name?xml}</label>
             <input ref="/data/locationname">
                 <label>${label.odkLocationName?xml}</label>
             </input>
