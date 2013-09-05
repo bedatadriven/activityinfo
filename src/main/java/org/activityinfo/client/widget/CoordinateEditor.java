@@ -86,6 +86,8 @@ public class CoordinateEditor implements PropertyEditor<Double>, Validator {
 
     private final NumberFormats formats;
 
+    private boolean requireSign = true;
+    
     CoordinateEditor(Axis axis, NumberFormats format) {
         this.formats = format;
         switch (axis) {
@@ -108,6 +110,10 @@ public class CoordinateEditor implements PropertyEditor<Double>, Validator {
 
     public CoordinateEditor(Axis axis) {
         this(axis, new CoordinateFormatter());
+    }
+    
+    public void setRequireSign(boolean requireSign) {
+        this.requireSign = requireSign;
     }
 
     public Double parse(String value) throws CoordinateFormatException {
@@ -154,7 +160,11 @@ public class CoordinateEditor implements PropertyEditor<Double>, Validator {
         }
 
         if (sign == 0) {
-            throw new CoordinateFormatException(noHemisphereMessage);
+            if(requireSign) {
+                throw new CoordinateFormatException(noHemisphereMessage);
+            } else {
+                sign = 1;
+            }
         }
 
         return parseCoordinate(numbers) * sign;

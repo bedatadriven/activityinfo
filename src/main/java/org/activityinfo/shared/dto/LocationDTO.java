@@ -32,6 +32,11 @@ import com.google.common.collect.Lists;
 public class LocationDTO extends BaseModelData implements EntityDTO,
     HasAdminEntityValues {
 
+    public static final String NAME_PROPERTY = "name";
+    public static final String LATITUDE_PROPERTY = "latitude";
+    public static final String LONGITUDE_PROPERTY = "longitude";
+    
+    
     public LocationDTO() {
         super();
     }
