@@ -137,7 +137,7 @@ public class GoogleChartsIconBuilder {
      */
     public Icon createMarkerIcon() {
 
-        String baseUrl = "http://chart.apis.google.com/chart?cht=mm";
+        String baseUrl = "//chart.googleapis.com/chart?cht=mm";
         String iconUrl = baseUrl + "&chs=" + width + "x" + height +
             "&chco=" + cornerColor.replace("#", "") + "," +
             primaryColor.replace("#", "") + "," +
@@ -174,7 +174,7 @@ public class GoogleChartsIconBuilder {
     }
 
     public String composePinUrl() {
-        return "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+        return "//chart.googleapis.com/chart?chst=d_map_pin_letter&chld="
             +
             label.charAt(0) + "|" +
             primaryColor.replace("#", "") + "|" +
@@ -234,7 +234,7 @@ public class GoogleChartsIconBuilder {
     }
 
     public String composeFlatIconUrl() {
-        String baseUrl = "http://chart.apis.google.com/chart?cht="
+        String baseUrl = "//chart.googleapis.com/chart?cht="
             + shapeCode();
         String iconUrl = baseUrl + "&chs=" + width + "x" + height +
             "&chco=" + primaryColor.replace("#", "") + "," +
