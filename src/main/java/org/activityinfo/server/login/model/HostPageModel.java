@@ -27,6 +27,11 @@ public class HostPageModel extends PageModel {
     private boolean appCacheEnabled;
     private String mapsApiKey;
 
+    // domain whitelabelling
+    private String host;
+    private String title;
+    private String resourceBasePath;
+
     public HostPageModel(String appUrl) {
         this.appUrl = appUrl;
     }
@@ -49,5 +54,29 @@ public class HostPageModel extends PageModel {
 
     public void setMapsApiKey(String mapsApiKey) {
         this.mapsApiKey = mapsApiKey;
+    }
+
+    public String getHost() {
+        return (host == null || host.isEmpty()) ? "activityinfo.org" : host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getTitle() {
+        return (title == null || title.isEmpty()) ? "ActivityInfo" : title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getResourceBasePath() {
+        return resourceBasePath;
+    }
+
+    public void setResourceBasePath(String resourceBasePath) {
+        this.resourceBasePath = resourceBasePath;
     }
 }

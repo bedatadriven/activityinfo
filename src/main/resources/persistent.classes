@@ -26,3 +26,4 @@ org.activityinfo.server.database.hibernate.entity.ReportingPeriod
 org.activityinfo.server.database.hibernate.entity.Target
 org.activityinfo.server.database.hibernate.entity.Location
 org.activityinfo.server.database.hibernate.entity.User
+org.activityinfo.server.database.hibernate.entity.Domain

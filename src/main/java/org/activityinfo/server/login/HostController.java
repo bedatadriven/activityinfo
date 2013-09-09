@@ -22,8 +22,13 @@ package org.activityinfo.server.login;
  * #L%
  */
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -36,12 +41,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.login.model.HostPageModel;
 import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.server.util.jaxrs.JaxRsIO;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.server.util.logging.LogSlow;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
+import com.google.appengine.api.files.FileService;
+import com.google.appengine.api.files.FileServiceFactory;
+import com.google.appengine.api.files.LockException;
 import com.google.inject.Inject;
 import com.sun.jersey.api.view.Viewable;
 
@@ -51,13 +62,18 @@ public class HostController {
 
     private final DeploymentConfiguration deployConfig;
     private final ServerSideAuthProvider authProvider;
+    private final EntityManager entityManager;
+
+    private FileService fileService = FileServiceFactory.getFileService();
 
     @Inject
     public HostController(DeploymentConfiguration deployConfig,
-        ServerSideAuthProvider authProvider) {
+        ServerSideAuthProvider authProvider,
+        EntityManager entityManager) {
         super();
         this.deployConfig = deployConfig;
         this.authProvider = authProvider;
+        this.entityManager = entityManager;
     }
 
     @GET
@@ -66,12 +82,22 @@ public class HostController {
     public Response getHostPage(@Context UriInfo uri,
         @Context HttpServletRequest req,
         @QueryParam("redirect") boolean redirect) throws Exception {
+
+        String host = req.getServerName();
+        Domain domain = entityManager.find(Domain.class, host);
+
         if (!authProvider.isAuthenticated()) {
-            return Response
-                .ok(new RootPageModel().asViewable())
-                .type(MediaType.TEXT_HTML)
-                .cacheControl(CacheControl.valueOf("no-cache"))
-                .build();
+            // If the request came from a branded domain, serve the custom welcome page.
+            if (domain != null) {
+                return brandedDomainPage(domain);
+            } else {
+                // Otherwise, go to the default ActivityInfo root page
+                return Response
+                    .ok(new RootPageModel().asViewable())
+                    .type(MediaType.TEXT_HTML)
+                    .cacheControl(CacheControl.valueOf("no-cache"))
+                    .build();
+            }
         }
 
         if (redirect) {
@@ -86,12 +112,26 @@ public class HostController {
         HostPageModel model = new HostPageModel(appUri);
         model.setAppCacheEnabled(checkAppCacheEnabled(req));
         model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
+        if (domain != null) {
+            model.setHost(host);
+            model.setTitle(domain.getTitle());
+            model.setResourceBasePath(domain.getResourceBasePath());
+        }
+
         return Response.ok(model.asViewable())
             .type(MediaType.TEXT_HTML)
             .cacheControl(CacheControl.valueOf("no-cache"))
             .build();
     }
     
+    @SuppressWarnings("deprecation")
+    @LogSlow(threshold = 100)
+    private Response brandedDomainPage(Domain domain) throws FileNotFoundException, LockException, IOException {
+        URL page = domain.getGCSPageURL();
+        final InputStream is = page.openStream();
+        return JaxRsIO.stream(is);
+    }
+
     /**
      * 
      * @return a simple error page indicating that the GWT app does not support
