@@ -42,6 +42,7 @@ import javax.ws.rs.core.MediaType;
 import org.activityinfo.server.authentication.SecureTokenGenerator;
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.ResetPasswordPageModel;
 import org.activityinfo.server.mail.MailSender;
@@ -63,6 +64,9 @@ public class ResetPasswordController {
     @Inject
     private Provider<UserDAO> userDAO;
 
+    @Inject
+    private DomainProvider domainProvider;
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
@@ -75,13 +79,16 @@ public class ResetPasswordController {
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
     @Transactional
-    public Viewable resetPassword(@FormParam("email") String email) {
+    public Viewable resetPassword(@FormParam("email") String email,
+        @Context HttpServletRequest req) {
         try {
             User user = userDAO.get().findUserByEmail(email);
             user.setChangePasswordKey(SecureTokenGenerator.generate());
             user.setDateChangePasswordKeyIssued(new Date());
 
-            mailer.send(new ResetPasswordMessage(user));
+            Domain domain = domainProvider.findDomain(req);
+
+            mailer.send(new ResetPasswordMessage(user, domain));
 
             ResetPasswordPageModel model = new ResetPasswordPageModel();
             model.setEmailSent(true);

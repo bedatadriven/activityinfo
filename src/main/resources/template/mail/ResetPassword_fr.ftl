@@ -24,7 +24,7 @@ Bonjour ${user.name},
 
 Quelqu'un (probablement vous) a demandé pour réinitialiser votre mot de passe ActivityInfo.
 
-https://www.activityinfo.org/changePassword?${user.changePasswordKey}
+https://${host}/changePassword?${user.changePasswordKey}
 
 Si vous n'avez pas demandé de réinitialiser votre mot de passe, vous pouvez ignorer ce message.
 

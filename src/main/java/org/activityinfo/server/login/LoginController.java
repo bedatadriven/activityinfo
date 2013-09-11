@@ -38,7 +38,6 @@ import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.exception.LoginException;
 import org.activityinfo.server.login.model.LoginPageModel;
-import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.server.util.logging.LogException;
 
 import com.google.inject.Inject;

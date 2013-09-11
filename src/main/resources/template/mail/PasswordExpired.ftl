@@ -25,7 +25,7 @@ Hi ${user.name},
 For security reasons, your ActivityInfo password has expired. Please follow the link
 below to choose a new password:
 
-https://www.activityinfo.org/changePassword?${user.changePasswordKey}
+https://${host}/changePassword?${user.changePasswordKey}
 
 Best regards,
 

@@ -31,9 +31,11 @@ import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAOImpl;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.dao.UserPermissionDAO;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
+import org.activityinfo.server.login.DomainProvider;
 import org.activityinfo.server.mail.InvitationMessage;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.Message;
@@ -61,6 +63,7 @@ public class UpdateUserPermissionsHandler implements
     private final UserPermissionDAO permDAO;
 
     private final MailSender mailSender;
+    private final DomainProvider domainProvider;
 
     private static final Logger logger = Logger
         .getLogger(UpdateUserPermissionsHandler.class.getName());
@@ -68,12 +71,14 @@ public class UpdateUserPermissionsHandler implements
     @Inject
     public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO,
         PartnerDAO partnerDAO, UserDAO userDAO,
-        UserPermissionDAO permDAO, MailSender mailSender) {
+        UserPermissionDAO permDAO, MailSender mailSender,
+        DomainProvider domainProvider) {
         this.userDAO = userDAO;
         this.partnerDAO = partnerDAO;
         this.permDAO = permDAO;
         this.mailSender = mailSender;
         this.databaseDAO = databaseDAO;
+        this.domainProvider = domainProvider;
     }
 
     @Override
@@ -82,7 +87,6 @@ public class UpdateUserPermissionsHandler implements
 
         UserDatabase database = databaseDAO.findById(cmd.getDatabaseId());
         UserPermissionDTO dto = cmd.getModel();
-
         /*
          * First check that the current user has permission to add users to to
          * the queries
@@ -98,7 +102,7 @@ public class UpdateUserPermissionsHandler implements
         }
 
         if (user == null) {
-            user = createNewUser(executingUser, dto);
+            user = createNewUser(executingUser, dto, cmd.getHost());
         }
 
         /*
@@ -118,7 +122,7 @@ public class UpdateUserPermissionsHandler implements
         return null;
     }
 
-    private User createNewUser(User executingUser, UserPermissionDTO dto)
+    private User createNewUser(User executingUser, UserPermissionDTO dto, String host)
         throws CommandException {
         if (executingUser.getId() == 0) {
             throw new AssertionError("executingUser.id == 0!");
@@ -133,8 +137,10 @@ public class UpdateUserPermissionsHandler implements
         userDAO.persist(user);
 
         try {
+            Domain domain = domainProvider.findDomain(host);
+
             Message message = mailSender
-                .createMessage(new InvitationMessage(user, executingUser));
+                .createMessage(new InvitationMessage(user, executingUser, domain));
             message.replyTo(executingUser.getEmail(), executingUser.getName());
             mailSender.send(message);
         } catch (Exception e) {

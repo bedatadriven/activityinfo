@@ -51,6 +51,7 @@ public class HostControllerTest extends ControllerTestCase {
 
     private HostController resource;
     private ServerSideAuthProvider authProvider;
+    private DomainProvider domainProvider;
 
     @Before
     public void setup() {
@@ -58,8 +59,8 @@ public class HostControllerTest extends ControllerTestCase {
             new Properties());
 
         authProvider = new ServerSideAuthProvider();
-        EntityManager entityManager = createMock(EntityManager.class);
-        resource = new HostController(deploymentConfig, authProvider, entityManager);
+        domainProvider = new DomainProvider(createMock(EntityManager.class));
+        resource = new HostController(deploymentConfig, authProvider, domainProvider);
     }
 
     @Test
@@ -67,6 +68,7 @@ public class HostControllerTest extends ControllerTestCase {
         throws Exception {
 
         HttpServletRequest req = createMock(HttpServletRequest.class);
+        expect(req.getServerName()).andReturn("www.activityinfo.org");
         expect(req.getHeader("User-Agent")).andReturn(CHROME_USER_AGENT);
         replay(req);
 
@@ -88,6 +90,7 @@ public class HostControllerTest extends ControllerTestCase {
             "akbertram@gmail.com"));
 
         HttpServletRequest req = createMock(HttpServletRequest.class);
+        expect(req.getServerName()).andReturn("www.activityinfo.org");
         expect(req.getHeader("User-Agent")).andReturn(CHROME_USER_AGENT);
         replay(req);
 

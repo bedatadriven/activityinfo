@@ -22,13 +22,16 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 
 public class ResetPasswordMessage extends MessageModel {
     private User user;
+    private Domain domain;
 
-    public ResetPasswordMessage(User user) {
+    public ResetPasswordMessage(User user, Domain domain) {
         this.user = user;
+        this.domain = domain;
     }
 
     public User getUser() {
@@ -44,4 +47,15 @@ public class ResetPasswordMessage extends MessageModel {
         return user;
     }
 
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
+
+    public String getHost() {
+        return domain == null ? Domain.DEFAULT_HOST : domain.getHost();
+    }
 }

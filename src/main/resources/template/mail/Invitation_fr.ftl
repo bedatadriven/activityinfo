@@ -25,7 +25,7 @@ Bonjour ${newUser.name},
 ${invitingUser.name} (${invitingUser.email}) vous invite à acceder au ActivityInfo. Pour confirmer
 votre adresse et connecter au système, visitez le lien suivante:
 
-https://www.activityinfo.org/confirm?${newUser.changePasswordKey}
+https://${host}/confirm?${newUser.changePasswordKey}
 
 Cordialement,
 

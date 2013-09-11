@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -50,8 +49,6 @@ import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.server.util.logging.LogSlow;
 
 import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
-import com.google.appengine.api.files.FileService;
-import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.LockException;
 import com.google.inject.Inject;
 import com.sun.jersey.api.view.Viewable;
@@ -62,18 +59,16 @@ public class HostController {
 
     private final DeploymentConfiguration deployConfig;
     private final ServerSideAuthProvider authProvider;
-    private final EntityManager entityManager;
-
-    private FileService fileService = FileServiceFactory.getFileService();
+    private final DomainProvider domainProvider;
 
     @Inject
     public HostController(DeploymentConfiguration deployConfig,
         ServerSideAuthProvider authProvider,
-        EntityManager entityManager) {
+        DomainProvider domainProvider) {
         super();
         this.deployConfig = deployConfig;
         this.authProvider = authProvider;
-        this.entityManager = entityManager;
+        this.domainProvider = domainProvider;
     }
 
     @GET
@@ -83,8 +78,7 @@ public class HostController {
         @Context HttpServletRequest req,
         @QueryParam("redirect") boolean redirect) throws Exception {
 
-        String host = req.getServerName();
-        Domain domain = entityManager.find(Domain.class, host);
+        Domain domain = domainProvider.findDomain(req);
 
         if (!authProvider.isAuthenticated()) {
             // If the request came from a branded domain, serve the custom welcome page.
@@ -106,17 +100,12 @@ public class HostController {
                 .build();
         }
 
-        String appUri = uri.getAbsolutePathBuilder().replaceQuery("").build()
-            .toString();
+        String appUri = uri.getAbsolutePathBuilder().replaceQuery("").build().toString();
 
         HostPageModel model = new HostPageModel(appUri);
         model.setAppCacheEnabled(checkAppCacheEnabled(req));
         model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
-        if (domain != null) {
-            model.setHost(host);
-            model.setTitle(domain.getTitle());
-            model.setResourceBasePath(domain.getResourceBasePath());
-        }
+        model.setDomain(domain);
 
         return Response.ok(model.asViewable())
             .type(MediaType.TEXT_HTML)

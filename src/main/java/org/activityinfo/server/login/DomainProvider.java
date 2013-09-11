@@ -1,4 +1,4 @@
-package org.activityinfo.server.mail;
+package org.activityinfo.server.login;
 
 /*
  * #%L
@@ -22,41 +22,29 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+
 import org.activityinfo.server.database.hibernate.entity.Domain;
-import org.activityinfo.server.database.hibernate.entity.User;
 
-public class PasswordExpiredMessage extends MessageModel {
-    private User user;
-    private Domain domain;
+import com.google.inject.Inject;
 
-    public PasswordExpiredMessage(User user, Domain domain) {
-        this.user = user;
-        this.domain = domain;
+public class DomainProvider {
+
+    private final EntityManager entityManager;
+
+    @Inject
+    public DomainProvider(EntityManager entityManager) {
+        super();
+        this.entityManager = entityManager;
     }
 
-    public User getUser() {
-        return user;
+    public Domain findDomain(HttpServletRequest req) {
+        String host = req.getServerName();
+        return findDomain(host);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public Domain findDomain(String host) {
+        return (host != null && !host.isEmpty()) ? entityManager.find(Domain.class, host) : null;
     }
-
-    @Override
-    public User getRecipient() {
-        return user;
-    }
-
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
-
-    public String getHost() {
-        return domain == null ? Domain.DEFAULT_HOST : domain.getHost();
-    }
-
 }

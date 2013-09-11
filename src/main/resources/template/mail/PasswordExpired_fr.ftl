@@ -25,7 +25,7 @@ Bonjour ${user.name},
 Pour des raisons sécuritaires, votre mot de passe ActivityInfo a expiré. Merci de définir un
 nouveau mot de passe en suivant le lien ci-dessous:
 
-https://www.activityinfo.org/changePassword?${user.changePasswordKey}
+https://${host}/changePassword?${user.changePasswordKey}
 
 Cordialement,
 

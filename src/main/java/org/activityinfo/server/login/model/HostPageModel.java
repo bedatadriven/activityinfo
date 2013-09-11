@@ -1,5 +1,7 @@
 package org.activityinfo.server.login.model;
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
+
 /*
  * #%L
  * ActivityInfo Server
@@ -26,11 +28,7 @@ public class HostPageModel extends PageModel {
     private String appUrl;
     private boolean appCacheEnabled;
     private String mapsApiKey;
-
-    // domain whitelabelling
-    private String host;
-    private String title;
-    private String resourceBasePath;
+    private Domain domain;
 
     public HostPageModel(String appUrl) {
         this.appUrl = appUrl;
@@ -56,27 +54,19 @@ public class HostPageModel extends PageModel {
         this.mapsApiKey = mapsApiKey;
     }
 
-    public String getHost() {
-        return (host == null || host.isEmpty()) ? "activityinfo.org" : host;
+    public Domain getDomain() {
+        return domain;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
+
+    public String getHost() {
+        return domain == null ? Domain.DEFAULT_HOST : domain.getHost();
     }
 
     public String getTitle() {
-        return (title == null || title.isEmpty()) ? "ActivityInfo" : title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getResourceBasePath() {
-        return resourceBasePath;
-    }
-
-    public void setResourceBasePath(String resourceBasePath) {
-        this.resourceBasePath = resourceBasePath;
+        return domain == null ? Domain.DEFAULT_TITLE : domain.getTitle();
     }
 }

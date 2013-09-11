@@ -22,6 +22,7 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import static org.easymock.EasyMock.createMock;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -36,6 +37,7 @@ import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
+import org.activityinfo.server.login.DomainProvider;
 import org.activityinfo.server.mail.MailSenderStub;
 import org.activityinfo.server.mail.MailSenderStubModule;
 import org.activityinfo.server.util.TemplateModule;
@@ -70,7 +72,6 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
     @Before
     public void setup() throws TemplateModelException {
-
         NRC = new Partner();
         NRC.setId(1);
         NRC.setName("NRC");
@@ -91,7 +92,8 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         handler = new UpdateUserPermissionsHandler(
             db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class),
             db.getDAO(UserDAO.class),
-            db.getDAO(UserPermissionDAO.class), mailer);
+            db.getDAO(UserPermissionDAO.class), mailer,
+            createMock(DomainProvider.class));
 
         owner = new User();
         owner.setId(99);
@@ -102,7 +104,6 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         UserDatabase udb = new UserDatabase(1, "PEAR");
         udb.setOwner(owner);
         db.persist(udb);
-
     }
 
     @Test

@@ -28,15 +28,18 @@ import java.util.logging.Logger;
 
 import javax.inject.Provider;
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.activityinfo.server.authentication.SecureTokenGenerator;
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.SignUpAddressExistsPageModel;
 import org.activityinfo.server.mail.MailSender;
@@ -58,17 +61,23 @@ public class SignUpAddressExistsController {
     @Inject
     private Provider<UserDAO> userDAO;
 
+    @Inject
+    private DomainProvider domainProvider;
+
     @POST
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
     @Transactional
-    public Viewable resetPassword(@FormParam("email") String email) {
+    public Viewable resetPassword(@FormParam("email") String email,
+        @Context HttpServletRequest req) {
         try {
             User user = userDAO.get().findUserByEmail(email);
             user.setChangePasswordKey(SecureTokenGenerator.generate());
             user.setDateChangePasswordKeyIssued(new Date());
 
-            mailer.send(new ResetPasswordMessage(user));
+            Domain domain = domainProvider.findDomain(req);
+
+            mailer.send(new ResetPasswordMessage(user, domain));
 
             return new SignUpAddressExistsPageModel(email).asEmailSent();
 

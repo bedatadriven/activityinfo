@@ -43,6 +43,7 @@ import javax.ws.rs.core.Response;
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAOImpl;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.SignUpAddressExistsPageModel;
 import org.activityinfo.server.login.model.SignUpPageModel;
@@ -72,6 +73,9 @@ public class SignUpController {
     @Inject
     private EntityManager entityManager;
 
+    @Inject
+    private DomainProvider domainProvider;
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
@@ -96,7 +100,8 @@ public class SignUpController {
         @FormParam("organization") String organization,
         @FormParam("jobtitle") String jobtitle,
         @FormParam("email") String email,
-        @FormParam("locale") String locale) {
+        @FormParam("locale") String locale,
+        @Context HttpServletRequest req) {
 
         LOGGER.info("New user signing up! [name: " + name + ", email: " + email
             + ", locale: " + locale + ", organization: " + organization + ", job title: " + jobtitle + "]");
@@ -126,8 +131,10 @@ public class SignUpController {
             User user = UserDAOImpl.createNewUser(email, name, organization, jobtitle, locale);
             userDAO.get().persist(user);
     
+            Domain domain = domainProvider.findDomain(req);
+
             // send confirmation email
-            mailer.send(new SignUpConfirmationMessage(user));
+            mailer.send(new SignUpConfirmationMessage(user, domain));
 
             // return to page with positive result
             return Response.seeOther(new URI("/signUp/sent")).build();

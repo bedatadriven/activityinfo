@@ -39,6 +39,9 @@ public class Domain implements Serializable {
     private static String GCS_PAGE_PROTOCOL = "http:";
     private static String GCS_PAGE_NAME = "/index.html";
 
+    public static final String DEFAULT_HOST = "www.activityinfo.org";
+    public static final String DEFAULT_TITLE = "ActivityInfo";
+
     private String host;
     private String title;
     private String bucket;

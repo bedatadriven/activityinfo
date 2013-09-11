@@ -22,15 +22,18 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 
 public class InvitationMessage extends MessageModel {
     private User newUser;
     private User invitingUser;
+    private Domain domain;
 
-    public InvitationMessage(User newUser, User invitingUser) {
+    public InvitationMessage(User newUser, User invitingUser, Domain domain) {
         this.newUser = newUser;
         this.invitingUser = invitingUser;
+        this.domain = domain;
     }
 
     public User getNewUser() {
@@ -46,4 +49,15 @@ public class InvitationMessage extends MessageModel {
         return newUser;
     }
 
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
+
+    public String getHost() {
+        return domain == null ? Domain.DEFAULT_HOST : domain.getHost();
+    }
 }

@@ -26,7 +26,7 @@ ${invitingUser.name} (${invitingUser.email}) has invited you to access ActivityI
 
 complete your user registration, click on the following link:
 
-https://www.activityinfo.org/confirm?${newUser.changePasswordKey}
+https://${host}/confirm?${newUser.changePasswordKey}
 
 Best regards,
 
