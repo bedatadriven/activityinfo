@@ -41,4 +41,24 @@
             </column>
 		</createTable>
 	</changeSet>
+  
+    <changeSet author="jasper" id="019-02">
+        <!-- cleanup bad data -->
+        <sql>
+            DELETE FROM userpermission
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM userlogin
+                WHERE userid = userpermission.userid
+            )
+        </sql>
+        <!-- add constraint -->
+        <addForeignKeyConstraint 
+            constraintName="fk_userpermission_userlogin" 
+            baseTableName="userpermission" 
+            baseColumnNames="userid" 
+            referencedTableName="userlogin" 
+            referencedColumnNames="userid"/>
+    </changeSet>
+ 
 </databaseChangeLog>
