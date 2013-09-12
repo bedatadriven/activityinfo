@@ -78,7 +78,7 @@ public class HostController {
         @Context HttpServletRequest req,
         @QueryParam("redirect") boolean redirect) throws Exception {
 
-        Domain domain = domainProvider.findDomain(req);
+        Domain domain = domainProvider.findDomain();
 
         if (!authProvider.isAuthenticated()) {
             // If the request came from a branded domain, serve the custom welcome page.

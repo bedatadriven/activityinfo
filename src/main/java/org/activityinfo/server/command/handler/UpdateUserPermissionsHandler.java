@@ -137,7 +137,7 @@ public class UpdateUserPermissionsHandler implements
         userDAO.persist(user);
 
         try {
-            Domain domain = domainProvider.findDomain(host);
+            Domain domain = domainProvider.findDomain();
 
             Message message = mailSender
                 .createMessage(new InvitationMessage(user, executingUser, domain));

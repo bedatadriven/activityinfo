@@ -22,30 +22,15 @@ package org.activityinfo.server.login;
  * #L%
  */
 
-import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.Domain;
-import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.login.model.HostPageModel;
-import org.junit.Test;
 
-public class HostViewTest extends ViewTestCase {
+public class MockDomainProvider implements DomainProvider {
 
-    @Test
-    public void templateProcesses() {
+    public MockDomainProvider() {
+    }
 
-        User user = new User();
-        user.setName("Alex");
-        user.setEmail("akbertram@gmail.com");
-        user.setLocale("fr");
-
-        Authentication auth = new Authentication(user);
-        auth.setId("XYZ12345");
-        auth.setUser(user);
-
-        HostPageModel pageModel = new HostPageModel(
-            "http://www.activityinfo.org");
-        pageModel.setMapsApiKey("XYZ123");
-        pageModel.setDomain(Domain.DEFAULT);
-        assertProcessable(pageModel);
+    @Override
+    public Domain findDomain() {
+        return Domain.DEFAULT;
     }
 }

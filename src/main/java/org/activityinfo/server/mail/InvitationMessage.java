@@ -58,6 +58,6 @@ public class InvitationMessage extends MessageModel {
     }
 
     public String getHost() {
-        return domain == null ? Domain.DEFAULT_HOST : domain.getHost();
+        return domain.getHost();
     }
 }

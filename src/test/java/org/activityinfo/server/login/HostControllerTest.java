@@ -30,7 +30,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
@@ -59,7 +58,7 @@ public class HostControllerTest extends ControllerTestCase {
             new Properties());
 
         authProvider = new ServerSideAuthProvider();
-        domainProvider = new DomainProvider(createMock(EntityManager.class));
+        domainProvider = createMock(MockDomainProvider.class);
         resource = new HostController(deploymentConfig, authProvider, domainProvider);
     }
 

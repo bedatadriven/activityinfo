@@ -56,6 +56,6 @@ public class ResetPasswordMessage extends MessageModel {
     }
 
     public String getHost() {
-        return domain == null ? Domain.DEFAULT_HOST : domain.getHost();
+        return domain.getHost();
     }
 }

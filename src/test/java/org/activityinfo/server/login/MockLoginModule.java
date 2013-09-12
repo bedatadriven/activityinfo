@@ -1,4 +1,4 @@
-package org.activityinfo.server.mail;
+package org.activityinfo.server.login;
 
 /*
  * #%L
@@ -22,36 +22,12 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
-import org.activityinfo.server.database.hibernate.entity.Domain;
-import org.activityinfo.server.database.hibernate.entity.User;
+import com.google.inject.AbstractModule;
 
-public class SignUpConfirmationMessage extends MessageModel {
-    private User user;
-    private Domain domain;
-
-    public SignUpConfirmationMessage(User user, Domain domain) {
-        this.user = user;
-        this.domain = domain;
-    }
-
-    public User getUser() {
-        return user;
-    }
+public class MockLoginModule extends AbstractModule {
 
     @Override
-    public User getRecipient() {
-        return user;
-    }
-
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
-
-    public String getHost() {
-        return domain.getHost();
+    protected void configure() {
+        bind(DomainProvider.class).to(MockDomainProvider.class);
     }
 }

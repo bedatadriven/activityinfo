@@ -63,10 +63,10 @@ public class HostPageModel extends PageModel {
     }
 
     public String getHost() {
-        return domain == null ? Domain.DEFAULT_HOST : domain.getHost();
+        return domain.getHost();
     }
 
     public String getTitle() {
-        return domain == null ? Domain.DEFAULT_TITLE : domain.getTitle();
+        return domain.getTitle();
     }
 }

@@ -79,14 +79,13 @@ public class ResetPasswordController {
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
     @Transactional
-    public Viewable resetPassword(@FormParam("email") String email,
-        @Context HttpServletRequest req) {
+    public Viewable resetPassword(@FormParam("email") String email) {
         try {
             User user = userDAO.get().findUserByEmail(email);
             user.setChangePasswordKey(SecureTokenGenerator.generate());
             user.setDateChangePasswordKeyIssued(new Date());
 
-            Domain domain = domainProvider.findDomain(req);
+            Domain domain = domainProvider.findDomain();
 
             mailer.send(new ResetPasswordMessage(user, domain));
 

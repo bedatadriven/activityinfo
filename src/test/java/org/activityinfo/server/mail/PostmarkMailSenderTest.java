@@ -2,6 +2,7 @@ package org.activityinfo.server.mail;
 
 import java.util.Properties;
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
@@ -32,7 +33,7 @@ public class PostmarkMailSenderTest {
         user.setName("Alex");
         user.setEmail("akbertram@gmail.com");
 
-        ResetPasswordMessage model = new ResetPasswordMessage(user, null);
+        ResetPasswordMessage model = new ResetPasswordMessage(user, Domain.DEFAULT);
         sender.send(model);
     }
     

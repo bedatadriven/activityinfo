@@ -22,7 +22,6 @@ package org.activityinfo.server.command;
  * #L%
  */
 
-import static org.easymock.EasyMock.createMock;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -38,6 +37,7 @@ import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.server.login.DomainProvider;
+import org.activityinfo.server.login.MockLoginModule;
 import org.activityinfo.server.mail.MailSenderStub;
 import org.activityinfo.server.mail.MailSenderStubModule;
 import org.activityinfo.server.util.TemplateModule;
@@ -55,10 +55,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.google.inject.Inject;
+
 import freemarker.template.TemplateModelException;
 
 @RunWith(InjectionSupport.class)
-@Modules({ MailSenderStubModule.class })
+@Modules({ MailSenderStubModule.class,
+    MockLoginModule.class })
 public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
     private Partner NRC;
@@ -69,6 +72,9 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
     private MailSenderStub mailer;
     private UpdateUserPermissionsHandler handler;
     private User owner;
+
+    @Inject
+    private DomainProvider mockDomainProvider;
 
     @Before
     public void setup() throws TemplateModelException {
@@ -93,7 +99,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
             db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class),
             db.getDAO(UserDAO.class),
             db.getDAO(UserPermissionDAO.class), mailer,
-            createMock(DomainProvider.class));
+            mockDomainProvider);
 
         owner = new User();
         owner.setId(99);

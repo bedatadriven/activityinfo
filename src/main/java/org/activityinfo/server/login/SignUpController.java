@@ -100,8 +100,7 @@ public class SignUpController {
         @FormParam("organization") String organization,
         @FormParam("jobtitle") String jobtitle,
         @FormParam("email") String email,
-        @FormParam("locale") String locale,
-        @Context HttpServletRequest req) {
+        @FormParam("locale") String locale) {
 
         LOGGER.info("New user signing up! [name: " + name + ", email: " + email
             + ", locale: " + locale + ", organization: " + organization + ", job title: " + jobtitle + "]");
@@ -131,7 +130,7 @@ public class SignUpController {
             User user = UserDAOImpl.createNewUser(email, name, organization, jobtitle, locale);
             userDAO.get().persist(user);
     
-            Domain domain = domainProvider.findDomain(req);
+            Domain domain = domainProvider.findDomain();
 
             // send confirmation email
             mailer.send(new SignUpConfirmationMessage(user, domain));

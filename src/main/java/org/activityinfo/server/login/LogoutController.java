@@ -25,7 +25,6 @@ package org.activityinfo.server.login;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
@@ -46,9 +45,9 @@ public class LogoutController {
     private DomainProvider domainProvider;
 
     @GET
-    public Response logout(@Context UriInfo uri, @Context HttpServletRequest req) throws ServletException, IOException {
-        Domain domain = domainProvider.findDomain(req);
-        String path = domain != null ? HostController.ENDPOINT : LoginController.ENDPOINT;
+    public Response logout(@Context UriInfo uri) throws ServletException, IOException {
+        Domain domain = domainProvider.findDomain();
+        String path = domain.isBranded() ? HostController.ENDPOINT : LoginController.ENDPOINT;
 
         return Response
             .seeOther(

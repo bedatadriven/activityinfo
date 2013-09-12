@@ -41,6 +41,7 @@ public class Domain implements Serializable {
 
     public static final String DEFAULT_HOST = "www.activityinfo.org";
     public static final String DEFAULT_TITLE = "ActivityInfo";
+    public static final Domain DEFAULT = new Domain(DEFAULT_HOST, DEFAULT_TITLE, null);
 
     private String host;
     private String title;
@@ -98,6 +99,16 @@ public class Domain implements Serializable {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Transient
+    public boolean isDefault() {
+        return DEFAULT_HOST.equals(host);
+    }
+
+    @Transient
+    public boolean isBranded() {
+        return !isDefault();
     }
 
     @Override
