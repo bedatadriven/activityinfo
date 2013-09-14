@@ -125,7 +125,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         handler.execute(cmd, owner);
 
-        assertThat(mailer.sentMail.size(), equalTo(1));
+        assertThat(mailer.sentMails.size(), equalTo(1));
     }
 
     /**

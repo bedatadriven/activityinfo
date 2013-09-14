@@ -31,7 +31,6 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.event.PivotCellEvent;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.page.report.ReportEventHelper;
 import org.activityinfo.client.page.report.editor.ReportElementEditor;
 import org.activityinfo.client.report.editor.chart.PivotFilterPanel;
 import org.activityinfo.client.report.view.DrillDownEditor;
@@ -59,8 +58,6 @@ public class PivotTableEditor extends LayoutContainer implements
     private final Dispatcher service;
     private final StateProvider stateMgr;
 
-    private final ReportEventHelper events;
-
     private PivotTrayPanel pivotPanel;
     private PivotFilterPanel filterPane;
     private ReportViewBinder<PivotContent, PivotTableReportElement> viewBinder;
@@ -86,8 +83,6 @@ public class PivotTableEditor extends LayoutContainer implements
         createGridContainer();
 
         this.pruner = new DimensionPruner(eventBus, service);
-
-        events = new ReportEventHelper(eventBus, this);
 
         // initialDrillDownListener = new Listener<PivotCellEvent>() {
         // @Override
@@ -158,7 +153,7 @@ public class PivotTableEditor extends LayoutContainer implements
         center.add(drilldownEditor.getGridPanel(), layout);
 
         // disconnect our initial drilldown listener;
-        // subsequent events will be handled by the DrillDownEditor's listener
+        // subsequent reportEventBus will be handled by the DrillDownEditor's listener
         // eventBus.removeListener(AppEvents.DRILL_DOWN,
         // initialDrillDownListener);
 

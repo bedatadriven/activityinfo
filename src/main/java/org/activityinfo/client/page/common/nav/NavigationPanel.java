@@ -103,14 +103,13 @@ public class NavigationPanel extends ContentPanel {
 
     private void onNavigated(PageState place) {
         for (Link link : tree.getStore().getAllItems()) {
-            if (link.getPageState() != null
-                && link.getPageState().equals(place)) {
-                ensureVisible(link);
+            if (link.getPageState() != null && link.getPageState().equals(place)) {
+                showLink(link);
             }
         }
     }
 
-    public void ensureVisible(final Link link) {
+    private void showLink(final Link link) {
         if (tree.isRendered()) {
             doExpandParents(link);
         } else {
@@ -119,7 +118,6 @@ public class NavigationPanel extends ContentPanel {
                 public void handleEvent(ComponentEvent be) {
                     doExpandParents(link);
                     tree.removeListener(Events.Render, this);
-
                 }
             });
         }

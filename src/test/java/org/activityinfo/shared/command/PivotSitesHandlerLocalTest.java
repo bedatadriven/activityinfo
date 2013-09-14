@@ -678,7 +678,7 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
     }
 
     private class AssertionBuilder {
-        List<Bucket> matching = new ArrayList<Bucket>(buckets);
+        List<Bucket> matchingBuckets = new ArrayList<Bucket>(buckets);
         StringBuilder criteria = new StringBuilder();
 
         Object predicate;
@@ -735,7 +735,7 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
         }
 
         private void filter(Dimension dim, String label) {
-            ListIterator<Bucket> it = matching.listIterator();
+            ListIterator<Bucket> it = matchingBuckets.listIterator();
             while (it.hasNext()) {
                 Bucket bucket = it.next();
                 DimensionCategory category = bucket.getCategory(dim);
@@ -746,7 +746,7 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
         }
 
         private void filter(Dimension dim, int id) {
-            ListIterator<Bucket> it = matching.listIterator();
+            ListIterator<Bucket> it = matchingBuckets.listIterator();
             while (it.hasNext()) {
                 Bucket bucket = it.next();
                 DimensionCategory category = bucket.getCategory(dim);
@@ -783,20 +783,20 @@ public class PivotSitesHandlerLocalTest extends LocalHandlerTestCase {
             Dimension dim = (Dimension) predicate;
             assertEquals(description(dim.toString() + " label of only bucket"),
                 label,
-                ((EntityCategory) matching.get(0).getCategory(dim)).getLabel());
+                ((EntityCategory) matchingBuckets.get(0).getCategory(dim)).getLabel());
             return this;
         }
 
         public AssertionBuilder bucketCountIs(int expectedCount) {
             assertEquals(description("count of buckets"), expectedCount,
-                matching.size());
+                matchingBuckets.size());
             return this;
         }
 
         public AssertionBuilder thereIsOneBucketWithValue(int expectedValue) {
             bucketCountIs(OWNER_USER_ID);
             assertEquals(description("value of only bucket"), expectedValue,
-                (int) matching.get(0).doubleValue());
+                (int) matchingBuckets.get(0).doubleValue());
             return this;
         }
 

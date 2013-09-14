@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.client.page.report.editor.ReportElementEditor;
 import org.activityinfo.shared.command.RenderElement.Format;
 import org.activityinfo.shared.report.model.TextReportElement;
@@ -45,7 +45,7 @@ public class TextElementEditor extends LayoutContainer implements
     ReportElementEditor<TextReportElement> {
 
     private TextArea textArea;
-    private ReportEventHelper events;
+    private ReportEventBus reportEventBus;
     private TextReportElement model = new TextReportElement();
 
     @Inject
@@ -61,8 +61,8 @@ public class TextElementEditor extends LayoutContainer implements
             }
         });
         add(textArea);
-        events = new ReportEventHelper(eventBus, this);
-        events.listen(new ReportChangeHandler() {
+        reportEventBus = new ReportEventBus(eventBus, this);
+        reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -74,7 +74,7 @@ public class TextElementEditor extends LayoutContainer implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 
     @Override

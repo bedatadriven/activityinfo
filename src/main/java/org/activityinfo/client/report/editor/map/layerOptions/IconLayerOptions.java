@@ -50,11 +50,11 @@ import com.google.gwt.user.client.ui.Image;
 public class IconLayerOptions extends LayoutContainer implements
     LayerOptionsWidget<IconMapLayer> {
     private IconMapLayer iconMapLayer;
-    private RadioGroup radiogroupIcons = new RadioGroup();
-    private HorizontalPanel contentpanelIcons = new HorizontalPanel();
+    private RadioGroup radioGroup = new RadioGroup();
+    private HorizontalPanel contentPanel = new HorizontalPanel();
     // Are Bidimaps from commons collections supported GWT clientside?
     private Map<Radio, Icon> radioIcons = new HashMap<Radio, Icon>();
-    private Map<Icon, Radio> iconsRadio = new HashMap<Icon, Radio>();
+    private Map<Icon, Radio> iconRadios = new HashMap<Icon, Radio>();
 
     public IconLayerOptions() {
         super();
@@ -63,10 +63,10 @@ public class IconLayerOptions extends LayoutContainer implements
 
         populateWithIcons();
 
-        radiogroupIcons.addListener(Events.Change, new Listener<FieldEvent>() {
+        radioGroup.addListener(Events.Change, new Listener<FieldEvent>() {
             @Override
             public void handleEvent(FieldEvent be) {
-                iconMapLayer.setIcon(radioIcons.get(radiogroupIcons.getValue())
+                iconMapLayer.setIcon(radioIcons.get(radioGroup.getValue())
                     .name());
                 ValueChangeEvent.fire(IconLayerOptions.this, iconMapLayer);
             }
@@ -74,8 +74,8 @@ public class IconLayerOptions extends LayoutContainer implements
     }
 
     private void initializeComponent() {
-        contentpanelIcons.setAutoWidth(true);
-        add(contentpanelIcons);
+        contentPanel.setAutoWidth(true);
+        add(contentPanel);
     }
 
     private void populateWithIcons() {
@@ -93,9 +93,9 @@ public class IconLayerOptions extends LayoutContainer implements
             iconPanel.add(new Image(MapIcon.fromEnum(mapIcon)));
 
             radioIcons.put(radiobuttonIcon, mapIcon);
-            iconsRadio.put(mapIcon, radiobuttonIcon);
-            radiogroupIcons.add(radiobuttonIcon);
-            contentpanelIcons.add(iconPanel);
+            iconRadios.put(mapIcon, radiobuttonIcon);
+            radioGroup.add(radiobuttonIcon);
+            contentPanel.add(iconPanel);
 
             if (isFirst) {
                 radiobuttonIcon.setValue(true);
@@ -116,7 +116,7 @@ public class IconLayerOptions extends LayoutContainer implements
     }
 
     private void updateUI() {
-        iconsRadio.get(Icon.valueOf(iconMapLayer.getIcon())).setValue(true);
+        iconRadios.get(Icon.valueOf(iconMapLayer.getIcon())).setValue(true);
     }
 
     @Override

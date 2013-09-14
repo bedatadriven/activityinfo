@@ -39,7 +39,7 @@ public final class PointValue {
     private Point px;
     private Rectangle iconRect;
     private List<PieMapMarker.SliceValue> slices;
-    private Map<Integer, Integer> adminMembership = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> adminMemberships = new HashMap<Integer, Integer>();
 
     public PointValue() {
     }
@@ -64,12 +64,12 @@ public final class PointValue {
         this.setValue(value);
     }
 
-    public void setAdminMembership(Map<Integer, Integer> adminMembership) {
-        this.adminMembership = adminMembership;
+    public void setAdminMemberships(Map<Integer, Integer> adminMemberships) {
+        this.adminMemberships = adminMemberships;
     }
 
-    public Map<Integer, Integer> getAdminMembership() {
-        return adminMembership;
+    public Map<Integer, Integer> getAdminMemberships() {
+        return adminMemberships;
     }
 
     public AiLatLng getLatLng() {

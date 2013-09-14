@@ -358,23 +358,20 @@ public class DataEntryPage extends LayoutContainer implements Page,
         // lookup to see whether it possible for this activity
         toolBar.setActionEnabled(UIActions.ADD, false);
         if (activities.size() == 1) {
-            checkWhetherEditingIsAllowed(activities.iterator().next());
+            enableToolbarButtons(activities.iterator().next());
         }
 
     }
 
-    private void checkWhetherEditingIsAllowed(final int activityId) {
+    private void enableToolbarButtons(final int activityId) {
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-
             @Override
             public void onFailure(Throwable caught) {
-
             }
 
             @Override
             public void onSuccess(SchemaDTO result) {
-                boolean isAllowed = result.getActivityById(activityId).getDatabase()
-                    .isEditAllowed();
+                boolean isAllowed = result.getActivityById(activityId).getDatabase().isEditAllowed();
                 toolBar.setActionEnabled(UIActions.ADD, isAllowed);
                 toolBar.setActionEnabled("IMPORT", isAllowed);
             }

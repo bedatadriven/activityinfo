@@ -32,7 +32,7 @@ import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.client.report.editor.map.layerOptions.LayerOptionsPanel;
 import org.activityinfo.client.widget.wizard.WizardCallback;
 import org.activityinfo.client.widget.wizard.WizardDialog;
@@ -75,7 +75,7 @@ public final class LayersWidget extends LayoutContainer implements
     public static final int WIDTH = 225;
 
     private static final int CONTEXT_MENU_WIDTH = 150;
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
 
     private Dispatcher service;
     private MapReportElement mapElement;
@@ -97,8 +97,8 @@ public final class LayersWidget extends LayoutContainer implements
         super();
 
         this.service = service;
-        this.events = new ReportEventHelper(eventBus, this);
-        this.events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -177,7 +177,7 @@ public final class LayersWidget extends LayoutContainer implements
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 mapElement.setBaseMapId(event.getValue());
-                events.fireChange();
+                reportEventBus.fireChange();
             }
         });
 
@@ -223,7 +223,7 @@ public final class LayersWidget extends LayoutContainer implements
                 boolean newSetting = !layerModel.isVisible();
                 layerModel.setVisible(newSetting);
                 layerModel.getMapLayer().setVisible(newSetting);
-                events.fireChange();
+                reportEventBus.fireChange();
                 store.update(layerModel);
             }
         } else {
@@ -311,7 +311,7 @@ public final class LayersWidget extends LayoutContainer implements
 
     private void removeLayer(MapLayer mapLayer) {
         mapElement.getLayers().remove(mapLayer);
-        events.fireChange();
+        reportEventBus.fireChange();
         updateStore();
 
         if (optionsPanel.getValue() == mapLayer) {
@@ -362,7 +362,7 @@ public final class LayersWidget extends LayoutContainer implements
             ((PointMapLayer) layer).setClustering(new NoClustering());
         }
         mapElement.getLayers().add(layer);
-        events.fireChange();
+        reportEventBus.fireChange();
         updateStore();
     }
 
@@ -397,7 +397,7 @@ public final class LayersWidget extends LayoutContainer implements
             }
             Collections.swap(mapElement.getLayers(), draggedItemIndexStart,
                 draggedItemIndexDrop);
-            events.fireChange();
+            reportEventBus.fireChange();
         }
     }
 
@@ -413,7 +413,7 @@ public final class LayersWidget extends LayoutContainer implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 
 }

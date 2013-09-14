@@ -42,7 +42,7 @@ import org.activityinfo.shared.util.mapping.Extents;
 public class PolygonLayerGenerator implements LayerGenerator {
 
     private PolygonMapLayer layer;
-    private PivotResult buckets;
+    private PivotResult pivotResult;
     private MagnitudeScaleBuilder.Scale colorScale;
     private AdminOverlay overlay;
     private Jenks breakBuilder = new Jenks();
@@ -87,8 +87,8 @@ public class PolygonLayerGenerator implements LayerGenerator {
 
         MagnitudeScaleBuilder scaleBuilder = new MagnitudeScaleBuilder(layer);
 
-        this.buckets = dispatcher.execute(query);
-        for (Bucket bucket : buckets.getBuckets()) {
+        this.pivotResult = dispatcher.execute(query);
+        for (Bucket bucket : pivotResult.getBuckets()) {
             EntityCategory category = (EntityCategory) bucket
                 .getCategory(adminDimension);
             if (category != null) {

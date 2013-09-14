@@ -57,7 +57,7 @@ public class WkbGeometryProvider implements AdminGeometryProvider {
 
     @Override
     @LogSlow(threshold = 200)
-    public List<AdminGeo> getGeometry(int adminLevelId) {
+    public List<AdminGeo> getGeometries(int adminLevelId) {
         try {
             List<AdminGeo> list = Lists.newArrayList();
             DataInputStream in = new DataInputStream(

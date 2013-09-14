@@ -28,7 +28,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.icon.IconImageBundle;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
 import org.activityinfo.shared.report.model.PivotChartReportElement.Type;
 
@@ -46,7 +46,7 @@ public class ChartTypeGroup extends BaseObservable implements
 
     private static final String TYPE_DATA = "chartType";
 
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
     private final List<ToggleButton> buttons = Lists.newArrayList();
 
     private PivotChartReportElement model = new PivotChartReportElement();
@@ -58,17 +58,17 @@ public class ChartTypeGroup extends BaseObservable implements
             fireEvent(Events.Select, new BaseEvent(Events.Select));
 
             model.setType((Type) ce.getButton().getData(TYPE_DATA));
-            events.fireChange();
+            reportEventBus.fireChange();
         }
     };
 
     public ChartTypeGroup(EventBus eventBus) {
-        this.events = new ReportEventHelper(eventBus, this);
+        this.reportEventBus = new ReportEventBus(eventBus, this);
         addButton(Type.ClusteredBar, IconImageBundle.ICONS.barChart());
         addButton(Type.Line, IconImageBundle.ICONS.curveChart());
         addButton(Type.Pie, IconImageBundle.ICONS.pieChart());
 
-        events.listen(new ReportChangeHandler() {
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -123,7 +123,7 @@ public class ChartTypeGroup extends BaseObservable implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 
 }

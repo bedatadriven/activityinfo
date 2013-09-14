@@ -83,7 +83,7 @@ public class SiteChangeServletTest extends CommandTestCase2 {
         SiteChangeServlet underTest = createServlet();
         underTest.sendNotifications(1, 1, ChangeType.CREATE);
 
-        List<Message> msgs = ((MailSenderStub) mailSender).sentMail;
+        List<Message> msgs = ((MailSenderStub) mailSender).sentMails;
         assertThat(msgs.size(), is(equalTo(1)));
 
         Message msgToMarlene = msgs.get(0);

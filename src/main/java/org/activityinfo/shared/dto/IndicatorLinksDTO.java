@@ -27,11 +27,11 @@ import java.util.HashMap;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Maps;
 
-public class IndicatorLinkDTO extends BaseModelData implements EntityDTO {
+public class IndicatorLinksDTO extends BaseModelData implements EntityDTO {
 
     public static final String ENTITY_NAME = "IndicatorLink";
 
-    public IndicatorLinkDTO() {
+    public IndicatorLinksDTO() {
 
     }
 
@@ -48,7 +48,7 @@ public class IndicatorLinkDTO extends BaseModelData implements EntityDTO {
         set("destinationIndicators", destinationIndicators);
     }
 
-    public HashMap<Integer, String> getDestinationIndicator() {
+    public HashMap<Integer, String> getDestinationIndicators() {
         HashMap<Integer, String> map = (HashMap<Integer, String>) get("destinationIndicators");
         if (map == null) {
             map = Maps.newHashMap();

@@ -225,7 +225,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
     @Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
-    public void getAdminEntities() throws SQLException, InterruptedException {
+    public void testGetAdminEntities() throws SQLException, InterruptedException {
         synchronizeFirstTime();
         executeLocally(new GetAdminEntities(1));
     }

@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 public class IndicatorLinksTest extends CommandTestCase2 {
 
     @Test
-    public void get() {
+    public void testGetIndicatorLinks() {
 
         execute(new GetIndicatorLinks());
 

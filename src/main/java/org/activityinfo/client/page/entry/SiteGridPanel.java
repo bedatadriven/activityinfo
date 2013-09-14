@@ -84,7 +84,7 @@ public final class SiteGridPanel extends ContentPanel {
         removeAll();
         add(new LoadingPlaceHolder());
         layout();
-        columnModelProvider.get(filter, grouping,
+        columnModelProvider.fetchColumnModels(filter, grouping,
             new SuccessCallback<ColumnModel>() {
                 @Override
                 public void onSuccess(ColumnModel columnModel) {

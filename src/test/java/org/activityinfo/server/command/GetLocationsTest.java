@@ -39,8 +39,7 @@ import org.junit.runner.RunWith;
 public class GetLocationsTest extends CommandTestCase2 {
 
     @Test
-    public void getLocation() {
-
+    public void testGetLocation() {
         setUser(1);
 
         LocationDTO location = execute(new GetLocations(1)).getLocation();

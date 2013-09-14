@@ -161,7 +161,7 @@ public class ImageMapRenderer {
     protected void drawAdminOverlay(TiledMap map, Graphics2D g2d,
         AdminOverlay overlay) {
 
-        List<AdminGeo> geometry = geometryProvider.getGeometry(overlay
+        List<AdminGeo> geometry = geometryProvider.getGeometries(overlay
             .getAdminLevelId());
 
         Color strokeColor = ColorUtil

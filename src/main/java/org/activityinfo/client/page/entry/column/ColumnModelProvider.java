@@ -30,7 +30,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ColumnModelProvider {
 
-    void get(Filter filter, GroupingModel grouping,
-        AsyncCallback<ColumnModel> callback);
+    void fetchColumnModels(Filter filter, GroupingModel grouping, AsyncCallback<ColumnModel> callback);
 
 }

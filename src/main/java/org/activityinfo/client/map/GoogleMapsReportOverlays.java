@@ -110,7 +110,7 @@ public class GoogleMapsReportOverlays {
     }
 
     public void addAdminLayer(final AdminOverlay adminOverlay) {
-        AdminGeometryProvider.INSTANCE.get(adminOverlay.getAdminLevelId(),
+        AdminGeometryProvider.INSTANCE.fetch(adminOverlay.getAdminLevelId(),
             new AsyncCallback<AdminGeometry>() {
 
                 @Override

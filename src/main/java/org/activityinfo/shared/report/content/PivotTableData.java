@@ -246,7 +246,7 @@ public class PivotTableData implements Serializable {
             return sb.toString();
         }
 
-        public void toString(int depth, StringBuilder sb) {
+        public void appendString(int depth, StringBuilder sb) {
             for (int i = 0; i != depth; ++i) {
                 sb.append("  ");
             }
@@ -259,7 +259,7 @@ public class PivotTableData implements Serializable {
             }
             sb.append("\n");
             for (Axis child : getChildren()) {
-                child.toString(depth + 1, sb);
+                child.appendString(depth + 1, sb);
             }
 
         }
@@ -354,11 +354,11 @@ public class PivotTableData implements Serializable {
 
         sb.append(" COLUMNS:\n");
         for (Axis col : rootColumn.getChildren()) {
-            col.toString(1, sb);
+            col.appendString(1, sb);
         }
         sb.append(" ROWS:\n");
         for (Axis row : rootRow.getChildren()) {
-            row.toString(1, sb);
+            row.appendString(1, sb);
         }
         return sb.toString();
     }

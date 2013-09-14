@@ -38,8 +38,7 @@ public final class AdminGeometryProvider {
 
     private Map<Integer, AdminGeometry> cache = Maps.newHashMap();
 
-    public void get(final int levelId,
-        final AsyncCallback<AdminGeometry> callback) {
+    public void fetch(final int levelId, final AsyncCallback<AdminGeometry> callback) {
         if (cache.containsKey(levelId)) {
             callback.onSuccess(cache.get(levelId));
         } else {
@@ -47,8 +46,7 @@ public final class AdminGeometryProvider {
         }
     }
 
-    private void fetchGeometry(final int levelId,
-        final AsyncCallback<AdminGeometry> callback) {
+    private void fetchGeometry(final int levelId, final AsyncCallback<AdminGeometry> callback) {
         RequestBuilder request = new RequestBuilder(RequestBuilder.GET,
             "/resources/adminLevel/" + levelId + "/entities/polylines");
         request.setCallback(new RequestCallback() {

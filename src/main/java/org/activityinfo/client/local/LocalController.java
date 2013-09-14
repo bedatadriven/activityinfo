@@ -320,7 +320,7 @@ public class LocalController implements Dispatcher {
         /**
          * Commands cannot be executed until everything is loaded...
          */
-        private List<CommandRequest> pending;
+        private List<CommandRequest> pendingRequests;
 
         @Override
         State getState() {
@@ -329,7 +329,7 @@ public class LocalController implements Dispatcher {
 
         @Override
         Strategy activate() {
-            pending = new ArrayList<CommandRequest>();
+            pendingRequests = new ArrayList<CommandRequest>();
             try {
                 historyTable.get().get(new AsyncCallback<Date>() {
 
@@ -368,7 +368,7 @@ public class LocalController implements Dispatcher {
                         @Override
                         public void onSuccess(Void result) {
                             activateStrategy(new LocalStrategy(gateway));
-                            doDispatch(pending);
+                            doDispatch(pendingRequests);
                         }
                     });
                 }
@@ -377,7 +377,7 @@ public class LocalController implements Dispatcher {
 
         @Override
         void dispatch(Command command, AsyncCallback callback) {
-            pending.add(new CommandRequest(command, callback));
+            pendingRequests.add(new CommandRequest(command, callback));
         }
 
         void abandonShip(Throwable caught) {
@@ -390,7 +390,7 @@ public class LocalController implements Dispatcher {
         // can always reinstall. (not ideal, obviously)
         void abandonShip() {
             activateStrategy(new NotInstalledStrategy());
-            doDispatch(pending);
+            doDispatch(pendingRequests);
         }
     }
 
@@ -419,9 +419,8 @@ public class LocalController implements Dispatcher {
         @Override
         public LocalStrategy activate() {
 
-            // ensure that's the user's authentication is persisted across
-            // sessions!
-            ClientSideAuthProvider.ensurePersisted();
+            // ensure that's the user's authentication is persisted across sessions!
+            ClientSideAuthProvider.persistAuthentication();
 
             localManager.getLastSyncTime(new AsyncCallback<Date>() {
 

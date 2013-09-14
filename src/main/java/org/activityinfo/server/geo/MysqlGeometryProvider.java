@@ -21,7 +21,7 @@ public class MysqlGeometryProvider implements AdminGeometryProvider {
     }
 
     @Override
-    public List<AdminGeo> getGeometry(int adminLevelId) {
+    public List<AdminGeo> getGeometries(int adminLevelId) {
         List<AdminEntity> entityList = em.get()
             .createQuery("select e from AdminEntity e where e.level.id = :levelId")
             .setParameter("levelId", adminLevelId)
