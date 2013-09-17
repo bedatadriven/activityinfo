@@ -23,22 +23,20 @@
 <@scaffolding title="${label.login}">
 
 	<@content>
-
-    <div id="main" class="span12 clearfix" role="main">
-      <br>
-      <div class="row-fluid">
+    <div id="main" class="row clearfix" role="main">
+      
       	<div class="span8">
           <h4 style="margin-top:50px">${label.whatIsActivityInfo}</h4>
           <p class="lead">${label.activityInfoIntro}</p>
 	
 		  <p>          
-          	<a href="http://about.activityinfo.org/<#if .lang="fr">fr</#if>" class="btn">${label.learnMore}&nbsp;&raquo;</a> 
-		    <a href="/signUp" class="btn">Sign Up&nbsp;&raquo;</a>
+          	<a href="/" class="btn">${label.learnMore}&nbsp;&raquo;</a> 
+		    <#if domain.signUpAllowed><a href="/signUp" class="btn">Sign Up&nbsp;&raquo;</a></#if>
 		  </p>
         </div>
       
  		<div class="span4">										
-			<form class="form-signin" id="loginForm" action="http://www.activityinfo.org/login" method="POST">
+			<form class="form-signin" id="loginForm" action="/login" method="POST">
 				<h3 class="form-signin-heading">${label.login}</h3>
 			   	<input type="text" name="email" id="emailInput" class="input-block-level" placeholder="${label.emailAddress}">
                	<input type="password" name="password" id="passwordInput" class="input-block-level" placeholder="${label.password}">
@@ -55,7 +53,7 @@
 			</form>
       	</div>
     
-      </div>	
+      
 	</div>
 	</@content>
 	<@footer/>

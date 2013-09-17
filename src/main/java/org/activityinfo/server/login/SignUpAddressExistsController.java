@@ -37,7 +37,6 @@ import javax.ws.rs.core.MediaType;
 import org.activityinfo.server.authentication.SecureTokenGenerator;
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
-import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.SignUpAddressExistsPageModel;
 import org.activityinfo.server.mail.MailSender;
@@ -59,8 +58,6 @@ public class SignUpAddressExistsController {
     @Inject
     private Provider<UserDAO> userDAO;
 
-    @Inject
-    private DomainProvider domainProvider;
 
     @POST
     @Produces(MediaType.TEXT_HTML)
@@ -72,9 +69,7 @@ public class SignUpAddressExistsController {
             user.setChangePasswordKey(SecureTokenGenerator.generate());
             user.setDateChangePasswordKeyIssued(new Date());
 
-            Domain domain = domainProvider.findDomain();
-
-            mailer.send(new ResetPasswordMessage(user, domain));
+            mailer.send(new ResetPasswordMessage(user));
 
             return new SignUpAddressExistsPageModel(email).asEmailSent();
 

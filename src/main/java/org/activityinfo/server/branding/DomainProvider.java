@@ -1,4 +1,4 @@
-package org.activityinfo.server.login;
+package org.activityinfo.server.branding;
 
 /*
  * #%L
@@ -30,31 +30,34 @@ import org.activityinfo.server.database.hibernate.entity.Domain;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class HttpDomainProvider implements DomainProvider {
+/**
+ * Provides information on the domain branding to use based 
+ * on this thread's current request.
+ */
+public class DomainProvider implements Provider<Domain> {
 
     private final Provider<HttpServletRequest> request;
     private final Provider<EntityManager> entityManager;
 
-    protected HttpDomainProvider() {
+    protected DomainProvider() {
         request = null;
         entityManager = null;
     }
   
     @Inject
-    public HttpDomainProvider(Provider<HttpServletRequest> request, Provider<EntityManager> entityManager) {
+    public DomainProvider(Provider<HttpServletRequest> request, Provider<EntityManager> entityManager) {
         super();
         this.request = request;
         this.entityManager = entityManager;
     }
 
-    /* (non-Javadoc)
-     * @see org.activityinfo.server.login.DomainProvider#findDomain()
-     */
     @Override
-    public Domain findDomain() {
+    public Domain get() {
         Domain result = entityManager.get().find(Domain.class, request.get().getServerName());
         if (result == null) {
-            result = Domain.DEFAULT;
+        	result = new Domain();
+        	result.setTitle("ActivityInfo");
+        	result.setHost(request.get().getServerName());
         }
         return result;
     }

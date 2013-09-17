@@ -59,7 +59,6 @@ public class LoginModule extends ServletModule {
             SignUpConfirmationController.class,
             SignUpAddressExistsController.class);
 
-        bind(DomainProvider.class).to(HttpDomainProvider.class);
     }
 
     private void filterContainer(Map<String, String> params,

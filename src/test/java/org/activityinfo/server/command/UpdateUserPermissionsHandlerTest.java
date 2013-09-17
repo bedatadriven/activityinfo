@@ -32,11 +32,11 @@ import org.activityinfo.server.database.hibernate.dao.PartnerDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.dao.UserPermissionDAO;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
-import org.activityinfo.server.login.DomainProvider;
 import org.activityinfo.server.login.MockLoginModule;
 import org.activityinfo.server.mail.MailSenderStub;
 import org.activityinfo.server.mail.MailSenderStubModule;
@@ -55,13 +55,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.inject.Inject;
+import com.google.inject.util.Providers;
 
 import freemarker.template.TemplateModelException;
 
 @RunWith(InjectionSupport.class)
-@Modules({ MailSenderStubModule.class,
-    MockLoginModule.class })
+@Modules({ MailSenderStubModule.class })
 public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
     private Partner NRC;
@@ -72,9 +71,6 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
     private MailSenderStub mailer;
     private UpdateUserPermissionsHandler handler;
     private User owner;
-
-    @Inject
-    private DomainProvider mockDomainProvider;
 
     @Before
     public void setup() throws TemplateModelException {
@@ -93,13 +89,12 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         NRC_DTO = new PartnerDTO(1, "NRC");
 
         TemplateModule templateModule = new TemplateModule();
-        mailer = new MailSenderStub(templateModule.provideConfiguration());
+        mailer = new MailSenderStub(templateModule.provideConfiguration(Providers.of(Domain.DEFAULT)));
 
         handler = new UpdateUserPermissionsHandler(
             db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class),
             db.getDAO(UserDAO.class),
-            db.getDAO(UserPermissionDAO.class), mailer,
-            mockDomainProvider);
+            db.getDAO(UserPermissionDAO.class), mailer);
 
         owner = new User();
         owner.setId(99);

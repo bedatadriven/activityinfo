@@ -9,6 +9,8 @@ import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.inject.util.Providers;
+
 import freemarker.template.TemplateModelException;
 
 public class PostmarkMailSenderTest {
@@ -23,7 +25,7 @@ public class PostmarkMailSenderTest {
         
         TemplateModule templateModule = new TemplateModule();
         
-        sender = new PostmarkMailSender(config, templateModule.provideConfiguration());
+        sender = new PostmarkMailSender(config, templateModule.provideConfiguration(Providers.of(Domain.DEFAULT)));
     }
     
     @Test
@@ -33,7 +35,7 @@ public class PostmarkMailSenderTest {
         user.setName("Alex");
         user.setEmail("akbertram@gmail.com");
 
-        ResetPasswordMessage model = new ResetPasswordMessage(user, Domain.DEFAULT);
+        ResetPasswordMessage model = new ResetPasswordMessage(user);
         sender.send(model);
     }
     

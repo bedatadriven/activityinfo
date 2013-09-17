@@ -27,9 +27,6 @@ import javax.persistence.EntityManager;
 import org.hibernate.Filter;
 import org.hibernate.ejb.HibernateEntityManager;
 
-/*
- * @author Alex Bertram
- */
 
 public final class DomainFilters {
 

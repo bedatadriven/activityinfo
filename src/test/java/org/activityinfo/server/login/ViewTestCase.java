@@ -26,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+import org.activityinfo.server.branding.ScaffoldingDirective;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.login.model.PageModel;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.jaxrs.FreemarkerViewProcessor;
@@ -49,13 +51,13 @@ public abstract class ViewTestCase {
     @BeforeClass
     public static void setUpTemplateConfig() throws TemplateModelException {
         TemplateModule module = new TemplateModule();
-        templateCfg = module.provideConfiguration();
+        templateCfg = module.provideConfiguration(Providers.of(Domain.DEFAULT));
     }
 
     protected String process(PageModel model) throws IOException,
         TemplateException {
         FreemarkerViewProcessor processor = new FreemarkerViewProcessor(
-            templateCfg, Providers.of(Locale.ENGLISH));
+            templateCfg, Providers.of(Locale.ENGLISH), new ScaffoldingDirective(Providers.of(Domain.DEFAULT), templateCfg));
         Template template = processor.resolve(model.asViewable()
             .getTemplateName());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

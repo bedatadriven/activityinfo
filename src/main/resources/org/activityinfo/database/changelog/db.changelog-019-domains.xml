@@ -60,5 +60,30 @@
             referencedTableName="userlogin" 
             referencedColumnNames="userid"/>
     </changeSet>
- 
+
+    <changeSet id="019-04" author="alex">
+      <addColumn tableName="domain">
+        <column name="scaffolding" type="longtext"/>
+      </addColumn>
+    </changeSet>
+    
+    <changeSet id="019-05" author="alex">
+      <addColumn tableName="domain">
+        <column name="homePageBody" type="longtext"/>
+      </addColumn>
+    </changeSet>
+    
+    <changeSet id="019-06" author="alex">
+      <comment>Precursor to dropping the column</comment>
+      <dropNotNullConstraint tableName="domain" columnName="bucket" columnDataType="VARCHAR(100)"/>
+    </changeSet>
+    
+    <changeSet id="019-07" author="alex">
+      <addColumn tableName="domain">
+        <column name="signUpAllowed" type="bit" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+        </column>
+      </addColumn>
+    </changeSet>
+    
 </databaseChangeLog>

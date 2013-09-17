@@ -28,6 +28,5 @@ public class MockLoginModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(DomainProvider.class).to(MockDomainProvider.class);
     }
 }

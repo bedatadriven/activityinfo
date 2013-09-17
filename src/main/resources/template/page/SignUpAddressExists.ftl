@@ -23,7 +23,7 @@
 <@scaffolding title="${label.signUpAddressExistsHeader}">
 
     <@content>
-    <div class="row-fluid">
+    <div class="row">
         <div class="span12">
         
             <h3>${label.signUpAddressExistsHeader}</h3>

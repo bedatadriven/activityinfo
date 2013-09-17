@@ -28,6 +28,7 @@ import javax.servlet.ServletContextEvent;
 
 import org.activityinfo.server.attachment.AttachmentModule;
 import org.activityinfo.server.authentication.AuthenticationModule;
+import org.activityinfo.server.branding.BrandingModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.digest.DigestModule;
@@ -78,13 +79,13 @@ public class StartupListener extends GuiceServletContextListener {
     protected Injector getInjector() {
 
         return Guice.createInjector(
+            new HibernateModule(),
             new ConfigModule(),
             new LoggingModule(),
             new TemplateModule(),
             new BeanMappingModule(),
             new MailModule(),
             new ServerDatabaseModule(),
-            new HibernateModule(),
             new ContentModule(),
             new GeometryModule(),
             new AuthenticationModule(),
@@ -98,6 +99,7 @@ public class StartupListener extends GuiceServletContextListener {
             new ExportModule(),
             new MonitoringModule(),
             new KmlModule(),
+            new BrandingModule(),
             new TrackingModule(),
             new BlobServiceModule(),
             new LocaleModule(),

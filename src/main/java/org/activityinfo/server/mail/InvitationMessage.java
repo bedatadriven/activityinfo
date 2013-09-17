@@ -28,12 +28,10 @@ import org.activityinfo.server.database.hibernate.entity.User;
 public class InvitationMessage extends MessageModel {
     private User newUser;
     private User invitingUser;
-    private Domain domain;
 
-    public InvitationMessage(User newUser, User invitingUser, Domain domain) {
+    public InvitationMessage(User newUser, User invitingUser) {
         this.newUser = newUser;
         this.invitingUser = invitingUser;
-        this.domain = domain;
     }
 
     public User getNewUser() {
@@ -47,17 +45,5 @@ public class InvitationMessage extends MessageModel {
     @Override
     public User getRecipient() {
         return newUser;
-    }
-
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
-
-    public String getHost() {
-        return domain.getHost();
     }
 }

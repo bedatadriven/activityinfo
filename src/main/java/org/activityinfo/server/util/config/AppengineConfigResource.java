@@ -2,7 +2,6 @@ package org.activityinfo.server.util.config;
 
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,8 +14,6 @@ import javax.ws.rs.core.UriInfo;
 
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.view.Viewable;
-
-import freemarker.template.Configuration;
 
 /**
  * Simple servlet to allow AppEngine administrators to define the configuration
@@ -32,14 +29,6 @@ public class AppengineConfigResource {
 
     public static final String END_POINT = "/admin/config";
 
-    private final Configuration templateCfg;
-
-    @Inject
-    public AppengineConfigResource(Configuration templateCfg) {
-        super();
-        this.templateCfg = templateCfg;
-    }
-
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Viewable getPage() {
@@ -48,7 +37,7 @@ public class AppengineConfigResource {
 
         return new Viewable("/page/Config.ftl", model);
     }
-
+            
     @POST
     public Response update(@Context UriInfo uri,
         @FormParam("config") String config) {

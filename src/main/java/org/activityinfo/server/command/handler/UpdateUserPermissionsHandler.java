@@ -31,11 +31,9 @@ import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAOImpl;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.dao.UserPermissionDAO;
-import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
-import org.activityinfo.server.login.DomainProvider;
 import org.activityinfo.server.mail.InvitationMessage;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.Message;
@@ -63,7 +61,6 @@ public class UpdateUserPermissionsHandler implements
     private final UserPermissionDAO permDAO;
 
     private final MailSender mailSender;
-    private final DomainProvider domainProvider;
 
     private static final Logger logger = Logger
         .getLogger(UpdateUserPermissionsHandler.class.getName());
@@ -71,14 +68,12 @@ public class UpdateUserPermissionsHandler implements
     @Inject
     public UpdateUserPermissionsHandler(UserDatabaseDAO databaseDAO,
         PartnerDAO partnerDAO, UserDAO userDAO,
-        UserPermissionDAO permDAO, MailSender mailSender,
-        DomainProvider domainProvider) {
+        UserPermissionDAO permDAO, MailSender mailSender) {
         this.userDAO = userDAO;
         this.partnerDAO = partnerDAO;
         this.permDAO = permDAO;
         this.mailSender = mailSender;
         this.databaseDAO = databaseDAO;
-        this.domainProvider = domainProvider;
     }
 
     @Override
@@ -137,10 +132,8 @@ public class UpdateUserPermissionsHandler implements
         userDAO.persist(user);
 
         try {
-            Domain domain = domainProvider.findDomain();
-
             Message message = mailSender
-                .createMessage(new InvitationMessage(user, executingUser, domain));
+                .createMessage(new InvitationMessage(user, executingUser));
             message.replyTo(executingUser.getEmail(), executingUser.getName());
             mailSender.send(message);
         } catch (Exception e) {

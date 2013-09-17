@@ -45,7 +45,6 @@ public class HostViewTest extends ViewTestCase {
         HostPageModel pageModel = new HostPageModel(
             "http://www.activityinfo.org");
         pageModel.setMapsApiKey("XYZ123");
-        pageModel.setDomain(Domain.DEFAULT);
         assertProcessable(pageModel);
     }
 }

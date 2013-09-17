@@ -32,27 +32,19 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.shared.auth.AuthenticatedUser;
-
-import com.google.inject.Inject;
 
 @Path(LogoutController.ENDPOINT)
 public class LogoutController {
     public static final String ENDPOINT = "/logout";
 
-    @Inject
-    private DomainProvider domainProvider;
 
     @GET
     public Response logout(@Context UriInfo uri) throws ServletException, IOException {
-        Domain domain = domainProvider.findDomain();
-        String path = domain.isBranded() ? HostController.ENDPOINT : LoginController.ENDPOINT;
-
         return Response
             .seeOther(
                 uri.getAbsolutePathBuilder()
-                    .replacePath(path).build())
+                    .replacePath(LoginController.ENDPOINT).build())
             .cookie(emptyCookies())
             .build();
     }

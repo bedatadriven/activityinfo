@@ -50,7 +50,6 @@ public class HostControllerTest extends ControllerTestCase {
 
     private HostController resource;
     private ServerSideAuthProvider authProvider;
-    private DomainProvider domainProvider;
 
     @Before
     public void setup() {
@@ -58,8 +57,7 @@ public class HostControllerTest extends ControllerTestCase {
             new Properties());
 
         authProvider = new ServerSideAuthProvider();
-        domainProvider = createMock(MockDomainProvider.class);
-        resource = new HostController(deploymentConfig, authProvider, domainProvider);
+        resource = new HostController(deploymentConfig, authProvider);
     }
 
     @Test

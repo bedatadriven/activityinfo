@@ -23,38 +23,40 @@ package org.activityinfo.server.database.hibernate.entity;
  */
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Transient;
 
+/**
+ * Defines a custom domain for ActivityInfo that has its own branding, titles,
+ * and scaffolding template.
+ */
 @Entity
 public class Domain implements Serializable {
     private static final long serialVersionUID = 241542892559897521L;
 
-    private static String GCS_BASEPATH = "//commondatastorage.googleapis.com/";
-    private static String GCS_PAGE_PROTOCOL = "http:";
-    private static String GCS_PAGE_NAME = "/index.html";
 
     public static final String DEFAULT_HOST = "www.activityinfo.org";
     public static final String DEFAULT_TITLE = "ActivityInfo";
-    public static final Domain DEFAULT = new Domain(DEFAULT_HOST, DEFAULT_TITLE, null);
+    public static final Domain DEFAULT = new Domain(DEFAULT_HOST, DEFAULT_TITLE);
 
     private String host;
     private String title;
-    private String bucket;
 
+    private String scaffolding;
+    private String homePageBody;
+    private boolean signUpAllowed;
+    
     public Domain() {
     }
 
-    public Domain(String host, String title, String bucket) {
+    public Domain(String host, String title) {
         super();
         this.host = host;
         this.title = title;
-        this.bucket = bucket;
     }
 
     @Id
@@ -75,44 +77,34 @@ public class Domain implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+    
+    @Lob
+	public String getScaffolding() {
+		return scaffolding;
+	}
 
-    @Column(name = "bucket", nullable = false, length = 100)
-    public String getBucket() {
-        return bucket;
-    }
+	public void setScaffolding(String scaffolding) {
+		this.scaffolding = scaffolding;
+	}
+	
+	public String getHomePageBody() {
+		return homePageBody;
+	}
 
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
+	public void setHomePageBody(String homePageBody) {
+		this.homePageBody = homePageBody;
+	}
 
-    @Transient
-    public String getResourceBasePath() {
-        return GCS_BASEPATH + bucket;
-    }
+	public boolean isSignUpAllowed() {
+		return signUpAllowed;
+	}
 
-    @Transient
-    public URL getGCSPageURL() {
-        URL result = null;
-        try {
-            result = new URL(GCS_PAGE_PROTOCOL + getResourceBasePath() + GCS_PAGE_NAME);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+	public void setSignUpAllowed(boolean signUpAllowed) {
+		this.signUpAllowed = signUpAllowed;
+	}
 
-    @Transient
-    public boolean isDefault() {
-        return DEFAULT_HOST.equals(host);
-    }
-
-    @Transient
-    public boolean isBranded() {
-        return !isDefault();
-    }
-
-    @Override
+	@Override
     public String toString() {
-        return host + ": '" + title + "' [" + bucket + "]";
+        return host;
     }
 }

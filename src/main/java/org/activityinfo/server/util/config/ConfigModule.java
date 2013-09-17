@@ -59,7 +59,7 @@ public class ConfigModule extends ServletModule {
     protected void configureServlets() {
         if (DeploymentEnvironment.isAppEngine()) {
             bind(AppengineConfigResource.class);
-            filter("/admin/config").through(GuiceContainer.class);
+            filter("/admin/config*").through(GuiceContainer.class);
         }
     }
 

@@ -23,7 +23,7 @@
 <@scaffolding title="${label.signUpConfirmationInvalidTitle}">
 
     <@content>
-    <div class="row-fluid">
+    <div class="row">
         <div class="span12">
             <h3>${label.signUpConfirmationInvalidTitle}</h3>
             

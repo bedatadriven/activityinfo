@@ -34,6 +34,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 
+import org.activityinfo.server.branding.ScaffoldingDirective;
+
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -62,15 +64,17 @@ public class FreemarkerViewProcessor implements ViewProcessor<Template> {
     private final Configuration templateConfig;
     private final javax.inject.Provider<Locale> localeProvider;
 
-    private @Context
-    HttpContext httpContext;
+    private @Context HttpContext httpContext;
+    private ScaffoldingDirective scaffoldingDirective;
 
     @Inject
     public FreemarkerViewProcessor(Configuration templateConfig,
-        javax.inject.Provider<Locale> localeProvider) {
+        javax.inject.Provider<Locale> localeProvider,
+        ScaffoldingDirective scaffoldingDirective) {
         super();
         this.templateConfig = templateConfig;
         this.localeProvider = localeProvider;
+        this.scaffoldingDirective = scaffoldingDirective;
 
     }
 
@@ -108,6 +112,7 @@ public class FreemarkerViewProcessor implements ViewProcessor<Template> {
                 viewable.getModel(), writer);
             env.setLocale(localeProvider.get());
             env.setVariable("label", getResourceBundle(localeProvider.get()));
+            env.setVariable("scaffolding", scaffoldingDirective);
             env.process();
             writer.flush();
         } catch (TemplateException e) {

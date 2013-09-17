@@ -28,7 +28,6 @@ public class HostPageModel extends PageModel {
     private String appUrl;
     private boolean appCacheEnabled;
     private String mapsApiKey;
-    private Domain domain;
 
     public HostPageModel(String appUrl) {
         this.appUrl = appUrl;
@@ -52,21 +51,5 @@ public class HostPageModel extends PageModel {
 
     public void setMapsApiKey(String mapsApiKey) {
         this.mapsApiKey = mapsApiKey;
-    }
-
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
-
-    public String getHost() {
-        return domain.getHost();
-    }
-
-    public String getTitle() {
-        return domain.getTitle();
     }
 }
