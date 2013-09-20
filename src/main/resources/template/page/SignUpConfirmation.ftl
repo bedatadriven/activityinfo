@@ -23,7 +23,7 @@
 <@scaffolding title="${label.signUpConfirmationTitle}">
 
     <@content>
-    <div class="row-fluid">
+    <div class="row">
         <div class="span12">
             
             <#if genericError == true>

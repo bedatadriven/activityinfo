@@ -87,7 +87,11 @@ public class ImageMapRenderer {
 
         @Override
         public String getImageUrl(int zoom, int tileX, int tileY) {
-            return baseMap.getTileUrl(zoom, tileX, tileY);
+            String tileUrl = baseMap.getTileUrl(zoom, tileX, tileY);
+            if(tileUrl.startsWith("//")) {
+                return "http:" + tileUrl;
+            }
+            return tileUrl;
         }
     }
 
@@ -157,7 +161,7 @@ public class ImageMapRenderer {
     protected void drawAdminOverlay(TiledMap map, Graphics2D g2d,
         AdminOverlay overlay) {
 
-        List<AdminGeo> geometry = geometryProvider.getGeometry(overlay
+        List<AdminGeo> geometry = geometryProvider.getGeometries(overlay
             .getAdminLevelId());
 
         Color strokeColor = ColorUtil

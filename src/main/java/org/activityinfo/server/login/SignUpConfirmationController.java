@@ -48,8 +48,8 @@ import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.server.login.model.SignUpConfirmationInvalidPageModel;
 import org.activityinfo.server.login.model.SignUpConfirmationPageModel;
+import org.activityinfo.server.util.MailingListClient;
 import org.activityinfo.server.util.logging.LogException;
-import org.activityinfo.shared.util.MailingListClient;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -117,6 +117,7 @@ public class SignUpConfirmationController {
             User user = userDAO.get().findUserByChangePasswordKey(key);
             user.changePassword(password);
             user.clearChangePasswordKey();
+            user.setEmailNotification(true);
 
             // add user to default database
             addUserToDefaultDatabase(user);
@@ -125,7 +126,7 @@ public class SignUpConfirmationController {
                 mailingList.subscribe(user);
             }
             
-            // go to the homepage
+            // go to the home page
             return Response.seeOther(uri.getAbsolutePathBuilder().replacePath("/").build())
                 .cookie(authTokenProvider.createNewAuthCookies(user)).build();
 

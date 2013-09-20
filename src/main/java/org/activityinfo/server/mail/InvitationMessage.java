@@ -22,6 +22,7 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 
 public class InvitationMessage extends MessageModel {
@@ -45,5 +46,4 @@ public class InvitationMessage extends MessageModel {
     public User getRecipient() {
         return newUser;
     }
-
 }

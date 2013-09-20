@@ -29,7 +29,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.client.report.editor.pivotTable.DimensionModel;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.PivotChartReportElement;
@@ -49,7 +49,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 public class DimensionComboBoxSet implements
     HasReportElement<PivotChartReportElement> {
 
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
     private final DimensionProxy proxy;
     private final ListStore<DimensionModel> store;
     private final ListLoader<ListLoadResult<DimensionModel>> loader;
@@ -73,7 +73,7 @@ public class DimensionComboBoxSet implements
                     SelectionChangedEvent<DimensionModel> se) {
                     model.setCategoryDimension(se.getSelectedItem().getDimension());
                     if (fireEvents) {
-                        events.fireChange();
+                        DimensionComboBoxSet.this.reportEventBus.fireChange();
                     }
                 }
             });
@@ -85,14 +85,14 @@ public class DimensionComboBoxSet implements
                     SelectionChangedEvent<DimensionModel> se) {
                     model.setSeriesDimension(se.getSelectedItem().getDimension());
                     if (fireEvents) {
-                        events.fireChange();
+                        DimensionComboBoxSet.this.reportEventBus.fireChange();
                     }
                 }
             });
         this.categoryLabel = new LabelToolItem();
         this.seriesLabel = new LabelToolItem();
-        this.events = new ReportEventHelper(eventBus, this);
-        this.events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -115,7 +115,7 @@ public class DimensionComboBoxSet implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 
     private void updateSelectionWithoutEvents() {
@@ -126,7 +126,7 @@ public class DimensionComboBoxSet implements
 
     private void updateSelection() {
         loader.load();
-        seriesCombo.setValue(firstOrNull(model.getSeriesDimension()));
+        seriesCombo.setValue(firstOrNull(model.getSeriesDimensions()));
         categoryCombo.setValue(firstOrNull(model.getCategoryDimensions()));
         updateLabels();
     }

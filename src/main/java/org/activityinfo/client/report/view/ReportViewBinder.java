@@ -26,7 +26,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.report.content.Content;
 import org.activityinfo.shared.report.model.DimensionType;
@@ -44,7 +44,7 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>>
 
     private static final int UPDATE_DELAY = 100;
 
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
     private final Dispatcher dispatcher;
     private final ReportView<R> view;
 
@@ -61,11 +61,11 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>>
 
     public ReportViewBinder(EventBus eventBus, Dispatcher dispatcher,
         ReportView<R> view) {
-        this.events = new ReportEventHelper(eventBus, this);
+        this.reportEventBus = new ReportEventBus(eventBus, this);
         this.dispatcher = dispatcher;
         this.view = view;
 
-        events.listen(new ReportChangeHandler() {
+        reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -122,6 +122,6 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>>
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 }

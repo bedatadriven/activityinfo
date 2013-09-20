@@ -39,10 +39,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAOImpl;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.SignUpAddressExistsPageModel;
 import org.activityinfo.server.login.model.SignUpPageModel;
@@ -72,6 +74,9 @@ public class SignUpController {
     @Inject
     private EntityManager entityManager;
 
+    @Inject
+    private Provider<Domain> domainProvider;
+    
     @GET
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)
@@ -97,10 +102,15 @@ public class SignUpController {
         @FormParam("jobtitle") String jobtitle,
         @FormParam("email") String email,
         @FormParam("locale") String locale) {
-
+    	
         LOGGER.info("New user signing up! [name: " + name + ", email: " + email
             + ", locale: " + locale + ", organization: " + organization + ", job title: " + jobtitle + "]");
 
+        if(!domainProvider.get().isSignUpAllowed()) {
+        	LOGGER.severe("Blocked attempt to signup via " + domainProvider.get().getHost());
+        	return Response.status(Status.FORBIDDEN).build();
+        }
+        
         // checking parameter values
         try {
             checkParam(name, true);
@@ -125,7 +135,7 @@ public class SignUpController {
             // persist new user
             User user = UserDAOImpl.createNewUser(email, name, organization, jobtitle, locale);
             userDAO.get().persist(user);
-    
+
             // send confirmation email
             mailer.send(new SignUpConfirmationMessage(user));
 

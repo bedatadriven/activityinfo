@@ -26,7 +26,20 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 
 public abstract class WizardPage extends LayoutContainer {
 
+    /**
+     * Called immediately before the page is shown
+     */
+    public void beforeShow() {
+        
+        
+    }
+
+    public void beforeHide() {
+        
+    }
+    
     public boolean isNextEnabled() {
         return true;
     }
+
 }

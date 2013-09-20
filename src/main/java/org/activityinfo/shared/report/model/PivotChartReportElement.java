@@ -48,7 +48,7 @@ public class PivotChartReportElement extends
 
     private Type type = Type.ClusteredBar;
     private List<Dimension> categoryDimensions = new ArrayList<Dimension>();
-    private List<Dimension> seriesDimension = new ArrayList<Dimension>();
+    private List<Dimension> seriesDimensions = new ArrayList<Dimension>();
     private String categoryAxisTitle;
     private String valueAxisTitle;
 
@@ -64,7 +64,7 @@ public class PivotChartReportElement extends
     public Set<Dimension> allDimensions() {
         Set<Dimension> set = new HashSet<Dimension>();
         set.addAll(categoryDimensions);
-        set.addAll(seriesDimension);
+        set.addAll(seriesDimensions);
         return set;
     }
 
@@ -92,20 +92,20 @@ public class PivotChartReportElement extends
 
     @XmlElement(name = "dimension")
     @XmlElementWrapper(name = "series")
-    public List<Dimension> getSeriesDimension() {
-        return seriesDimension;
+    public List<Dimension> getSeriesDimensions() {
+        return seriesDimensions;
     }
 
-    public void setSeriesDimension(List<Dimension> seriesDimension) {
-        this.seriesDimension = seriesDimension;
+    public void setSeriesDimensions(List<Dimension> seriesDimensions) {
+        this.seriesDimensions = seriesDimensions;
     }
 
     public void addSeriesDimension(Dimension dimension) {
-        this.seriesDimension.add(dimension);
+        this.seriesDimensions.add(dimension);
     }
 
     public void setSeriesDimension(Dimension dimension) {
-        this.seriesDimension = Lists.newArrayList(dimension);
+        this.seriesDimensions = Lists.newArrayList(dimension);
     }
 
     @XmlElement(name = "dimension")

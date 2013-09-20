@@ -38,9 +38,9 @@ import org.activityinfo.shared.auth.AuthenticatedUser;
 public class LogoutController {
     public static final String ENDPOINT = "/logout";
 
+
     @GET
-    public Response logout(@Context UriInfo uri) throws ServletException,
-        IOException {
+    public Response logout(@Context UriInfo uri) throws ServletException, IOException {
         return Response
             .seeOther(
                 uri.getAbsolutePathBuilder()

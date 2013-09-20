@@ -49,7 +49,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO,
     public static final int MAX_LIST_HEADER_LENGTH = 29;
     public static final int MAX_CATEGORY_LENGTH = 50;
 
-    private IndicatorLinkDTO indicatorLinks;
+    private IndicatorLinksDTO indicatorLinks;
 
     public IndicatorDTO() {
         super();
@@ -169,8 +169,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO,
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public boolean isMandatory() {
-        Object m = get("mandatory");
-        return m != null ? (Boolean) m : false;
+        return get("mandatory", false);
     }
 
     /**
@@ -216,11 +215,11 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO,
         return getPropertyName(this.getId());
     }
 
-    public IndicatorLinkDTO getIndicatorLinks() {
+    public IndicatorLinksDTO getIndicatorLinks() {
         return indicatorLinks;
     }
 
-    public void setIndicatorLinks(IndicatorLinkDTO indicatorLinks) {
+    public void setIndicatorLinks(IndicatorLinksDTO indicatorLinks) {
         this.indicatorLinks = indicatorLinks;
     }
 

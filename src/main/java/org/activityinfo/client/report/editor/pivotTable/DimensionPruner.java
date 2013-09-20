@@ -29,7 +29,7 @@ import org.activityinfo.client.EventBus;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
@@ -58,7 +58,7 @@ public class DimensionPruner implements
     private static final Logger LOGGER = Logger.getLogger(DimensionPruner.class
         .getName());
 
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
     private PivotTableReportElement model;
     private Dispatcher dispatcher;
 
@@ -66,8 +66,8 @@ public class DimensionPruner implements
     public DimensionPruner(EventBus eventBus, Dispatcher dispatcher) {
         super();
         this.dispatcher = dispatcher;
-        this.events = new ReportEventHelper(eventBus, this);
-        this.events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -105,7 +105,7 @@ public class DimensionPruner implements
             }
         }
         if (dirty) {
-            events.fireChange();
+            reportEventBus.fireChange();
         }
     }
 
@@ -160,6 +160,6 @@ public class DimensionPruner implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 }

@@ -89,7 +89,6 @@ public final class UserProfileDTO extends BaseModelData implements DTO {
     }
 
     public boolean isEmailNotification() {
-        Object b = get("emailNotification");
-        return b != null ? (Boolean) b : false;
+        return get("emailNotification", false);
     }
 }

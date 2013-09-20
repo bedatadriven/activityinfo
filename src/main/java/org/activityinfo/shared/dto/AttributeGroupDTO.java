@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 @JsonAutoDetect(JsonMethod.NONE)
 public final class AttributeGroupDTO extends BaseModelData implements EntityDTO {
     private static final long serialVersionUID = 7927425202152761370L;
+    public static final String PROPERTY_PREFIX = "AG";
 
     public static final int NAME_MAX_LENGTH = 255;
 
@@ -96,8 +97,7 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public boolean isMandatory() {
-        Object m = get("mandatory");
-        return m != null ? (Boolean) m : false;
+        return get("mandatory", false);
     }
 
     public List<AttributeDTO> getAttributes() {
@@ -128,7 +128,7 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     @JsonProperty
     @JsonView(DTOViews.Schema.class)
     public boolean isMultipleAllowed() {
-        return (Boolean) get("multipleAllowed");
+        return get("multipleAllowed", false);
     }
 
     public void setMultipleAllowed(boolean allowed) {
@@ -138,6 +138,18 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     @Override
     public String getEntityName() {
         return "AttributeGroup";
+    }
+
+    public static String getPropertyName(int attributeGroupId) {
+        return PROPERTY_PREFIX + attributeGroupId;
+    }
+
+    public String getPropertyName() {
+        return getPropertyName(getId());
+    }
+
+    public static int idForPropertyName(String property) {
+        return Integer.parseInt(property.substring(PROPERTY_PREFIX.length()));
     }
 
     @Override

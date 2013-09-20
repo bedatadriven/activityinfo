@@ -165,7 +165,7 @@ public class SettingsPopup extends PopupPanel {
 
     @Override
     public void show() {
-        checkForUpdates();
+        sendUpdateRequest();
         updateLastSyncLabel();
         if (!syncing) {
             offlineStatusLabel.setText("");
@@ -176,42 +176,36 @@ public class SettingsPopup extends PopupPanel {
     /**
      * Queries the server for the latest deployed version.
      */
-    private void checkForUpdates() {
+    private void sendUpdateRequest() {
         versionStatus.setInnerText(I18N.CONSTANTS.versionChecking());
         appCacheStatus.setInnerText("");
         refreshLink.setVisible(false);
-        RequestBuilder request = new RequestBuilder(RequestBuilder.GET,
-            "/commit.id");
+        RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/commit.id");
         request.setCallback(new RequestCallback() {
 
             @Override
             public void onResponseReceived(Request request, Response response) {
                 if (response.getStatusCode() != 200) {
-                    versionStatus.setInnerText(I18N.CONSTANTS
-                        .versionConnectionProblem());
+                    versionStatus.setInnerText(I18N.CONSTANTS.versionConnectionProblem());
 
-                } else if (response.getText().startsWith(
-                    VersionInfo.getCommitId())) {
+                } else if (response.getText().startsWith(VersionInfo.getCommitId())) {
                     versionStatus.setInnerText(I18N.CONSTANTS.versionLatest());
 
                 } else {
-                    versionStatus.setInnerText(I18N.CONSTANTS
-                        .versionUpdateAvailable());
+                    versionStatus.setInnerText(I18N.CONSTANTS.versionUpdateAvailable());
                     refreshLink.setVisible(true);
                 }
             }
 
             @Override
             public void onError(Request request, Throwable exception) {
-                versionStatus.setInnerText(I18N.CONSTANTS
-                    .versionConnectionProblem());
+                versionStatus.setInnerText(I18N.CONSTANTS.versionConnectionProblem());
             }
         });
         try {
             request.send();
         } catch (RequestException e) {
-            versionStatus.setInnerText(I18N.CONSTANTS
-                .versionConnectionProblem());
+            versionStatus.setInnerText(I18N.CONSTANTS.versionConnectionProblem());
             Log.debug("Problem fetching latest version", e);
         }
     }

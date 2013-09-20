@@ -39,7 +39,7 @@
     <link rel="icon" href="ActivityInfo/desktopicons/64x64.png" sizes="64x64"/>
     <link rel="icon" href="ActivityInfo/desktopicons/128x128.png" sizes="128x128"/>
 
-    <title>ActivityInfo</title>
+    <title>${domain.title}</title>
     <style type="text/css">
         #loading-box {
             position: absolute;
@@ -102,7 +102,7 @@
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-11567120-1']);
-      _gaq.push(['_setDomainName', 'activityinfo.org']);
+      _gaq.push(['_setDomainName', '${domain.host}');
       _gaq.push(['_setCustomVar', 2, 'Existing User', 'Yes', 1]);
                
       (function() {

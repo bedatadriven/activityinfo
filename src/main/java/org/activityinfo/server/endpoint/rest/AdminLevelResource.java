@@ -164,24 +164,32 @@ public class AdminLevelResource {
         JsonGenerator json = jfactory.createJsonGenerator(writer);
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         json.setPrettyPrinter(prettyPrinter);
+        json.writeStartObject();
+        json.writeStringField("type", "FeatureCollection");
+        json.writeFieldName("features");
         json.writeStartArray();
         GeometrySerializer geometrySerializer = new GeometrySerializer();
 
         for (AdminEntity entity : entities) {
-
-            json.writeStartObject();
-            json.writeStringField("type", "Feature");
-            json.writeNumberField("id", entity.getId());
-            json.writeObjectFieldStart("properties");
-            json.writeStringField("name", entity.getName());
-            json.writeEndObject();
-
-            json.writeFieldName("geometry");
-            geometrySerializer.writeGeometry(json, entity.getGeometry());
-            json.writeEndObject();
+        	if(entity.getGeometry() != null) {
+	            json.writeStartObject();
+	            json.writeStringField("type", "Feature");
+	            json.writeNumberField("id", entity.getId());
+	            json.writeObjectFieldStart("properties");
+	            json.writeStringField("name", entity.getName());
+	            if(entity.getParentId() != null) {
+	            	json.writeNumberField("parentId", entity.getParentId());
+	            }
+	            json.writeEndObject();
+	
+	            json.writeFieldName("geometry");
+	            geometrySerializer.writeGeometry(json, entity.getGeometry());
+	            json.writeEndObject();
+        	}
         }
 
         json.writeEndArray();
+        json.writeEndObject();
         json.close();
 
         return Response.ok()

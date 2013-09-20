@@ -62,7 +62,7 @@ public class ResetPasswordController {
 
     @Inject
     private Provider<UserDAO> userDAO;
-
+    
     @GET
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)

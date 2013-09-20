@@ -118,9 +118,13 @@ public class Jenks {
 
     private Breaks computeBreaks(double[] list, int numclass,
         DoubleFunction transform) {
-
+        
         int numdata = list.length;
-
+        
+        if(numdata == 0) {
+            return new Breaks(new double[0], new int[0]);
+        }
+        
         double[][] mat1 = new double[numdata + 1][numclass + 1];
         double[][] mat2 = new double[numdata + 1][numclass + 1];
 
@@ -198,12 +202,16 @@ public class Jenks {
 
     public static class Breaks {
 
-        private double[] dataList;
+        private double[] sortedValues;
         private int[] breaks;
 
-        private Breaks(double[] list, int[] kclass) {
-            this.dataList = list;
-            this.breaks = kclass;
+        /**
+         * @param sortedValues the complete array of sorted data values
+         * @param breaks the indexes of the values within the sorted array that begin new classes
+         */
+        private Breaks(double[] sortedValues, int[] breaks) {
+            this.sortedValues = sortedValues;
+            this.breaks = breaks;
         }
 
         /**
@@ -215,7 +223,7 @@ public class Jenks {
          * @return
          */
         public double gvf() {
-            double sdam = sumOfSquareDeviations(dataList);
+            double sdam = sumOfSquareDeviations(sortedValues);
             double sdcm = 0.0;
             for (int i = 0; i != numClassses(); ++i) {
                 sdcm += sumOfSquareDeviations(classList(i));
@@ -234,7 +242,7 @@ public class Jenks {
         }
 
         public double[] getValues() {
-            return dataList;
+            return sortedValues;
         }
 
         private double[] classList(int i) {
@@ -242,7 +250,7 @@ public class Jenks {
             int classEnd = breaks[i];
             double list[] = new double[classEnd - classStart + 1];
             for (int j = classStart; j <= classEnd; ++j) {
-                list[j - classStart] = dataList[j];
+                list[j - classStart] = sortedValues[j];
             }
             return list;
         }
@@ -253,9 +261,9 @@ public class Jenks {
          */
         public double getClassMin(int classIndex) {
             if (classIndex == 0) {
-                return dataList[0];
+                return sortedValues[0];
             } else {
-                return dataList[breaks[classIndex - 1] + 1];
+                return sortedValues[breaks[classIndex - 1] + 1];
             }
         }
 
@@ -264,7 +272,7 @@ public class Jenks {
          * @return the maximum value (inclusive) of the given class
          */
         public double getClassMax(int classIndex) {
-            return dataList[breaks[classIndex]];
+            return sortedValues[breaks[classIndex]];
         }
 
         public int getClassCount(int classIndex) {

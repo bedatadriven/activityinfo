@@ -30,7 +30,7 @@ public class GeometryModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        bind(AdminGeometryProvider.class).to(WkbGeometryProvider.class);
+        bind(AdminGeometryProvider.class).to(MysqlGeometryProvider.class);
         serve(GeometryServlet.END_POINT).with(GeometryServlet.class);
 
         if (DeploymentEnvironment.isAppEngineProduction()) {

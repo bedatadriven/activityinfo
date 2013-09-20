@@ -22,6 +22,7 @@ package org.activityinfo.client.widget.wizard;
  * #L%
  */
 
+import org.activityinfo.client.Log;
 import org.activityinfo.client.i18n.I18N;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -29,6 +30,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
@@ -43,7 +45,7 @@ public class WizardDialog extends Window {
     private WizardPage[] pages;
     private Wizard wizard;
     private CardLayout cardLayout;
-    private int currentPageIndex;
+    private int currentPageIndex = -1;
     private WizardCallback callback = new WizardCallback();
 
     public WizardDialog(Wizard wizard) {
@@ -121,20 +123,37 @@ public class WizardDialog extends Window {
 
     protected void onFinish() {
         enableForm(false);
-        this.callback.finish(new AsyncCallback<Void>() {
-
-            @Override
-            public void onSuccess(Void result) {
-                enableForm(true);
-                WizardDialog.this.hide();
-                callback.onFinished();
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                enableForm(true);
-            }
-        });
+        try {
+            wizard.finish(new AsyncCallback<Void>() {
+                
+                @Override
+                public void onSuccess(Void result) {
+                    callback.finish(new AsyncCallback<Void>() {
+    
+                        @Override
+                        public void onSuccess(Void result) {
+                            enableForm(true);
+                            WizardDialog.this.hide();
+                            callback.onFinished();
+                        }
+    
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            enableForm(true);
+                        }
+                    });
+                }
+                
+                @Override
+                public void onFailure(Throwable caught) {
+                    enableForm(true);
+                }
+            });
+        } catch(Exception e) {
+            Log.error("Finish failed", e);
+            MessageBox.alert("Error importing data", e.getMessage(), null);
+            enableForm(true);
+        }
     }
 
     protected void onNext() {
@@ -155,6 +174,12 @@ public class WizardDialog extends Window {
     }
 
     private void setPage(int pageIndex) {
+        
+        if(currentPageIndex >= 0) {
+            pages[currentPageIndex].beforeHide();
+        }
+        
+        pages[pageIndex].beforeShow();
         cardLayout.setActiveItem(pages[pageIndex]);
 
         currentPageIndex = pageIndex;

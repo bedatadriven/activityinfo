@@ -23,12 +23,17 @@
 <@scaffolding title="${label.signUpTitle}">
 
     <@content>
-    <div class="row-fluid">
+    
+    <#if !domain.signUpAllowed>
+    	<p>Please contact your local focal point to connect to this
+    	ActivityInfo database.</p>
+    <#else>
+    <div class="row">
         <div class="span12">
             <h3>${label.signUpTitle}</h3>
         </div>
     </div>
-    <div class="row-fluid">
+    <div class="row">
         <div class="span6">
                             
             <#if genericError == true || formError == true>
@@ -123,6 +128,7 @@
             </div>     
         </div>
     </div>
+    </#if>
     </@content>
 
     <@footer/>

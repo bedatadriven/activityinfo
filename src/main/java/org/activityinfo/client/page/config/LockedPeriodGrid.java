@@ -75,7 +75,7 @@ public class LockedPeriodGrid extends ContentPanel implements
 
     // UI stuff
     private ListStore<LockedPeriodDTO> lockedPeriodStore;
-    private EditorGrid<LockedPeriodDTO> gridLockedPeriods;
+    private EditorGrid<LockedPeriodDTO> lockedPeriodGrid;
     private AsyncMonitor deletingMonitor = new NullAsyncMonitor();
     private AsyncMonitor creatingMonitor = new NullAsyncMonitor();
     private AsyncMonitor loadingMonitor = new NullAsyncMonitor();
@@ -87,7 +87,7 @@ public class LockedPeriodGrid extends ContentPanel implements
 
     // Nested views
     private AddLockedPeriodDialog addLockedPeriod;
-    private ActionToolBar toolbarActions;
+    private ActionToolBar actionToolbar;
     private FormDialogImpl<AddLockedPeriodDialog> form;
 
     public LockedPeriodGrid() {
@@ -121,21 +121,21 @@ public class LockedPeriodGrid extends ContentPanel implements
         configs.add(new EditableLocalDateColumn("toDate", I18N.CONSTANTS
             .toDate(), 100));
 
-        gridLockedPeriods = new EditorGrid<LockedPeriodDTO>(
+        lockedPeriodGrid = new EditorGrid<LockedPeriodDTO>(
             lockedPeriodStore, new ColumnModel(configs));
 
-        gridLockedPeriods.addListener(Events.OnClick,
+        lockedPeriodGrid.addListener(Events.OnClick,
             new Listener<ComponentEvent>() {
                 @Override
                 public void handleEvent(ComponentEvent be) {
-                    lockedPeriod = gridLockedPeriods.getSelectionModel()
+                    lockedPeriod = lockedPeriodGrid.getSelectionModel()
                         .getSelectedItem();
-                    setDeleteEnabled(gridLockedPeriods.getSelectionModel()
+                    setDeleteEnabled(lockedPeriodGrid.getSelectionModel()
                         .getSelectedItem() != null);
                 }
             });
 
-        add(gridLockedPeriods);
+        add(lockedPeriodGrid);
     }
 
     private void initializeComponent() {
@@ -149,13 +149,13 @@ public class LockedPeriodGrid extends ContentPanel implements
             new Listener<StoreEvent>() {
                 @Override
                 public void handleEvent(StoreEvent be) {
-                    toolbarActions.setUpdateEnabled(true);
+                    actionToolbar.setUpdateEnabled(true);
                 }
             });
     }
 
     private void createActionToolbar() {
-        toolbarActions = new ActionToolBar(new ActionListener() {
+        actionToolbar = new ActionToolBar(new ActionListener() {
             @Override
             public void onUIAction(String actionId) {
                 if (actionId.equals(UIActions.ADD)) {
@@ -171,13 +171,13 @@ public class LockedPeriodGrid extends ContentPanel implements
                 }
             }
         });
-        toolbarActions.addDeleteButton();
-        toolbarActions.addCreateButton();
-        toolbarActions.addSaveSplitButton();
-        // toolbarActions.addRefreshButton();
-        toolbarActions.setDeleteEnabled(false);
-        toolbarActions.setUpdateEnabled(false);
-        this.setTopComponent(toolbarActions);
+        actionToolbar.addDeleteButton();
+        actionToolbar.addCreateButton();
+        actionToolbar.addSaveSplitButton();
+        // actionToolbar.addRefreshButton();
+        actionToolbar.setDeleteEnabled(false);
+        actionToolbar.setUpdateEnabled(false);
+        this.setTopComponent(actionToolbar);
     }
 
     private void createAddLockedPeriodDialog() {
@@ -218,17 +218,17 @@ public class LockedPeriodGrid extends ContentPanel implements
 
     @Override
     public void setCreateEnabled(boolean createEnabled) {
-        toolbarActions.setAddEnabled(createEnabled);
+        actionToolbar.setAddEnabled(createEnabled);
     }
 
     @Override
     public void setUpdateEnabled(boolean updateEnabled) {
-        toolbarActions.setUpdateEnabled(updateEnabled);
+        actionToolbar.setUpdateEnabled(updateEnabled);
     }
 
     @Override
     public final void setDeleteEnabled(boolean deleteEnabled) {
-        toolbarActions.setDeleteEnabled(deleteEnabled);
+        actionToolbar.setDeleteEnabled(deleteEnabled);
     }
 
     @Override
@@ -254,7 +254,7 @@ public class LockedPeriodGrid extends ContentPanel implements
 
     @Override
     public void cancelUpdate(LockedPeriodDTO item) {
-        gridLockedPeriods.stopEditing(true);
+        lockedPeriodGrid.stopEditing(true);
     }
 
     @Override
@@ -500,7 +500,7 @@ public class LockedPeriodGrid extends ContentPanel implements
 
     @Override
     public void setValue(LockedPeriodDTO value) {
-        // gridLockedPeriods.getSelectionModel().select(vgetActivityalue,
+        // lockedPeriodGrid.getSelectionModel().select(vgetActivityalue,
         // false);
     }
 
@@ -514,7 +514,7 @@ public class LockedPeriodGrid extends ContentPanel implements
 
     public void setReadOnly(boolean isReadOnly) {
         if (isReadOnly) {
-            remove(toolbarActions);
+            remove(actionToolbar);
         }
     }
 

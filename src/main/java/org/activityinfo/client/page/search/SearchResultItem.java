@@ -40,8 +40,8 @@ import com.google.gwt.user.client.ui.Image;
 
 public class SearchResultItem extends LayoutContainer {
     private LabelField labelDatabaseName;
-    private HorizontalPanel panelTop = new HorizontalPanel();
-    private VerticalPanel panelChilds = new VerticalPanel();
+    private HorizontalPanel topPanel = new HorizontalPanel();
+    private VerticalPanel childPanel = new VerticalPanel();
     private int activityCount = 0;
     private int indicatorCount = 0;
 
@@ -54,8 +54,8 @@ public class SearchResultItem extends LayoutContainer {
         addDatabaseIcon();
         addDatabaseLabel();
 
-        add(panelTop);
-        add(panelChilds);
+        add(topPanel);
+        add(childPanel);
     }
 
     public int getActivityCount() {
@@ -68,7 +68,7 @@ public class SearchResultItem extends LayoutContainer {
 
     private void addDatabaseIcon() {
         Image imageDatabase = IconImageBundle.ICONS.database().createImage();
-        panelTop.add(imageDatabase);
+        topPanel.add(imageDatabase);
     }
 
     private void initializeComponent() {
@@ -76,7 +76,7 @@ public class SearchResultItem extends LayoutContainer {
 
     private void addDatabaseLabel() {
         labelDatabaseName = new LabelField();
-        panelTop.add(labelDatabaseName);
+        topPanel.add(labelDatabaseName);
     }
 
     public void setDabaseName(String databaseName) {
@@ -125,7 +125,7 @@ public class SearchResultItem extends LayoutContainer {
             }
 
             activityCount++;
-            panelChilds.add(panelAll);
+            childPanel.add(panelAll);
         }
     }
 }

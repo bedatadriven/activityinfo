@@ -30,7 +30,7 @@ import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.map.GoogleMapsReportOverlays;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.client.widget.GoogleMapsPanel;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.map.BaseMap;
@@ -69,7 +69,7 @@ public class MapEditorMapView extends GoogleMapsPanel implements
     private static final int RDC_CENTER_LAT = -1;
 
     private final Dispatcher dispatcher;
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
 
     private BaseMap currentBaseMap = null;
 
@@ -91,8 +91,8 @@ public class MapEditorMapView extends GoogleMapsPanel implements
 
     public MapEditorMapView(Dispatcher dispatcher, EventBus eventBus) {
         this.dispatcher = dispatcher;
-        this.events = new ReportEventHelper(eventBus, this);
-        this.events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -169,7 +169,7 @@ public class MapEditorMapView extends GoogleMapsPanel implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 
     @Override

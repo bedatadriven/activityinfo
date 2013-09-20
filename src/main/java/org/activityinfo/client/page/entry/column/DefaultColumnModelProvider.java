@@ -47,7 +47,7 @@ public class DefaultColumnModelProvider implements ColumnModelProvider {
     }
 
     @Override
-    public void get(final Filter filter, final GroupingModel grouping,
+    public void fetchColumnModels(final Filter filter, final GroupingModel grouping,
         final AsyncCallback<ColumnModel> callback) {
 
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {

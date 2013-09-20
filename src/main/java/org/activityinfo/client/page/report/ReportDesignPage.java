@@ -170,7 +170,7 @@ public class ReportDesignPage extends ContentPanel implements Page,
 
                 @Override
                 public void componentSelected(final ButtonEvent ce) {
-                    ensureTitledThenSave(null, new SaveCallback());
+                    saveTitled(null, new SaveCallback());
                 }
             });
 
@@ -275,7 +275,7 @@ public class ReportDesignPage extends ContentPanel implements Page,
     }
 
     private void pinToDashboard(final boolean pressed) {
-        ensureTitled(new SaveCallback() {
+        saveTitled(new SaveCallback() {
             @Override
             public void onSaved() {
                 final UpdateReportSubscription update = new UpdateReportSubscription();
@@ -301,8 +301,7 @@ public class ReportDesignPage extends ContentPanel implements Page,
         });
     }
 
-    private void ensureTitledThenSave(final AsyncMonitor monitor,
-        final SaveCallback callback) {
+    private void saveTitled(final AsyncMonitor monitor, final SaveCallback callback) {
         if (untitled()) {
             promptForTitle(callback);
         } else {
@@ -310,7 +309,7 @@ public class ReportDesignPage extends ContentPanel implements Page,
         }
     }
 
-    private void ensureTitled(final SaveCallback callback) {
+    private void saveTitled(final SaveCallback callback) {
         if (untitled()) {
             promptForTitle(callback);
         } else {
@@ -437,7 +436,7 @@ public class ReportDesignPage extends ContentPanel implements Page,
 
                 @Override
                 public void save(final AsyncMonitor monitor) {
-                    ensureTitledThenSave(monitor, new SaveCallback() {
+                    saveTitled(monitor, new SaveCallback() {
 
                         @Override
                         public void onSaved() {
@@ -467,7 +466,7 @@ public class ReportDesignPage extends ContentPanel implements Page,
     }
 
     public void showShareForm() {
-        ensureTitled(new SaveCallback() {
+        saveTitled(new SaveCallback() {
 
             @Override
             public void onSaved() {

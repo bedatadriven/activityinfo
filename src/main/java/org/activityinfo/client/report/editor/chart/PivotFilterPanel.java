@@ -33,7 +33,7 @@ import org.activityinfo.client.filter.PartnerFilterPanel;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.report.model.PivotReportElement;
 
@@ -45,12 +45,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 public class PivotFilterPanel extends ContentPanel implements
     HasReportElement<PivotReportElement> {
     private final FilterPanelSet panelSet;
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
 
     private PivotReportElement model;
 
     public PivotFilterPanel(EventBus eventBus, Dispatcher dispatcher) {
-        this.events = new ReportEventHelper(eventBus, this);
+        this.reportEventBus = new ReportEventBus(eventBus, this);
 
         setLayout(new AccordionLayout());
         setHeading(I18N.CONSTANTS.filter());
@@ -82,12 +82,12 @@ public class PivotFilterPanel extends ContentPanel implements
                 // notify other filterpanels
                 panelSet.setValue(model.getFilter(), false);
                 // notify other components
-                events.fireChange();
+                PivotFilterPanel.this.reportEventBus.fireChange();
             }
         });
 
         // if another component changed the model
-        events.listen(new ReportChangeHandler() {
+        this.reportEventBus.listen(new ReportChangeHandler() {
             @Override
             public void onChanged() {
                 panelSet.setValue(model.getFilter(), false);
@@ -112,6 +112,6 @@ public class PivotFilterPanel extends ContentPanel implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 }

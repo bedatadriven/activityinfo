@@ -1,5 +1,7 @@
 package org.activityinfo.server.login.model;
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
+
 /*
  * #%L
  * ActivityInfo Server

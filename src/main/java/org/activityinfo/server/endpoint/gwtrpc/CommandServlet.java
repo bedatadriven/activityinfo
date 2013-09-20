@@ -42,6 +42,7 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.RemoteCommandService;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
@@ -85,9 +86,10 @@ public class CommandServlet extends RemoteServiceServlet implements
 
     @Override
     @LogException
-    public List<CommandResult> execute(String authToken, List<Command> commands)
-        throws CommandException {
-        checkAuthentication(authToken);
+    public List<CommandResult> execute(String authToken, List<Command> commands) throws CommandException {
+        if (!checkAuthentication(authToken)) {
+            throw new InvalidAuthTokenException("Auth Tokens do not match, possible XSRF attack");
+        }
 
         try {
             return handleCommands(commands);
@@ -97,9 +99,11 @@ public class CommandServlet extends RemoteServiceServlet implements
         }
     }
 
-    public CommandResult execute(String authToken, Command command)
-        throws CommandException {
-        checkAuthentication(authToken);
+    public CommandResult execute(String authToken, Command command) throws CommandException {
+        if (!checkAuthentication(authToken)) {
+            throw new InvalidAuthTokenException("Auth Tokens do not match, possible XSRF attack");
+        }
+
         applyUserFilters();
         return handleCommand(command);
     }
@@ -134,9 +138,10 @@ public class CommandServlet extends RemoteServiceServlet implements
 
     @LogException(emailAlert = true)
     protected CommandResult handleCommand(Command command) throws CommandException {
+        RemoteExecutionContext context = null;
         try {
             long timeStart = System.currentTimeMillis();
-            RemoteExecutionContext context = new RemoteExecutionContext(injector);
+            context = new RemoteExecutionContext(injector);
             CommandResult result = context.startExecute(command);
 
             long timeElapsed = System.currentTimeMillis() - timeStart;
@@ -147,14 +152,13 @@ public class CommandServlet extends RemoteServiceServlet implements
 
             if (!(result instanceof CommandException)) {
                 // if the command completed successfully, notify listeners
-                LOGGER.fine("notifying serverEventBus of completed command "
-                    + command.toString());
+                LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
                 serverEventBus.post(new CommandEvent(command, result, context));
             }
 
             return result;
         } catch (Exception e) {
-            throw new CommandException(command, e);
+            throw new CommandException(command, context, e);
         }
     }
 
@@ -182,21 +186,19 @@ public class CommandServlet extends RemoteServiceServlet implements
         }
     }
 
-    private void checkAuthentication(String authToken) {
+    private boolean checkAuthentication(String authToken) {
         if (authToken.equals(AnonymousUser.AUTHTOKEN)) {
             authProvider.set(AuthenticatedUser.getAnonymous());
         } else {
 
             // TODO(alex): renable this check once the authToken has been
-            // removed from the host
-            // page
+            // removed from the host page
 
-            // // user is already authenticated, but ensure that the authTokens
-            // match
+            // user is already authenticated, but ensure that the authTokens match
             // if(!authToken.equals(authProvider.get().getAuthToken())) {
-            // throw new
-            // InvalidAuthTokenException("Auth Tokens do not match, possible XSRF attack");
+            // throw new InvalidAuthTokenException("Auth Tokens do not match, possible XSRF attack");
             // }
         }
+        return true;
     }
 }

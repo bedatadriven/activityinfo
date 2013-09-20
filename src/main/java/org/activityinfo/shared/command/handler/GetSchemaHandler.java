@@ -36,7 +36,7 @@ import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
-import org.activityinfo.shared.dto.IndicatorLinkDTO;
+import org.activityinfo.shared.dto.IndicatorLinksDTO;
 import org.activityinfo.shared.dto.LocationTypeDTO;
 import org.activityinfo.shared.dto.LockedPeriodDTO;
 import org.activityinfo.shared.dto.PartnerDTO;
@@ -126,8 +126,11 @@ public class GetSchemaHandler implements
         }
 
         public void loadAdminLevels() {
-            SqlQuery.select("adminLevelId", "name", "parentId", "countryId")
-                .from("adminlevel").execute(tx, new RowHandler() {
+            SqlQuery
+            .select("adminLevelId", "name", "parentId", "countryId")
+                .from("adminlevel")
+                .whereTrue("deleted=0")
+                .execute(tx, new RowHandler() {
 
                     @Override
                     public void handleRow(SqlResultSetRow row) {
@@ -260,7 +263,7 @@ public class GetSchemaHandler implements
         protected void loadProjects() {
             SqlQuery.select("name", "projectId", "description", "databaseId")
                 .from("project")
-                .where("databaseId").in(databaseMap.keySet())
+                .where("databaseId").in(databaseMap.keySet())   
                 .execute(tx, new SqlResultCallback() {
                     @Override
                     public void onSuccess(SqlTransaction tx,
@@ -362,22 +365,22 @@ public class GetSchemaHandler implements
                     public void onSuccess(SqlTransaction tx,
                         SqlResultSet results) {
 
-                        HashMap<Integer, IndicatorLinkDTO> linksMap = new HashMap<Integer, IndicatorLinkDTO>();
+                        HashMap<Integer, IndicatorLinksDTO> linksMap = new HashMap<Integer, IndicatorLinksDTO>();
 
                         for (SqlResultSetRow row : results.getRows()) {
-                            IndicatorLinkDTO destinations = linksMap.get(row
+                            IndicatorLinksDTO destinations = linksMap.get(row
                                 .getInt("SourceIndicatorId"));
                             if (destinations == null
-                                || destinations.getDestinationIndicator() == null) {
-                                destinations = new IndicatorLinkDTO();
+                                || destinations.getDestinationIndicators() == null) {
+                                destinations = new IndicatorLinksDTO();
                             }
                             destinations.setSourceIndicator(row
                                 .getInt("SourceIndicatorId"));
-                            if (destinations.getDestinationIndicator() == null) {
+                            if (destinations.getDestinationIndicators() == null) {
                                 destinations
                                     .setDestinationIndicator(new HashMap<Integer, String>());
                             }
-                            destinations.getDestinationIndicator().put(
+                            destinations.getDestinationIndicators().put(
                                 row.getInt("DestinationIndicatorId"),
                                 row.getString("name"));
                             linksMap.put(row.getInt("SourceIndicatorId"),

@@ -58,6 +58,7 @@ public class SignUpAddressExistsController {
     @Inject
     private Provider<UserDAO> userDAO;
 
+
     @POST
     @Produces(MediaType.TEXT_HTML)
     @LogException(emailAlert = true)

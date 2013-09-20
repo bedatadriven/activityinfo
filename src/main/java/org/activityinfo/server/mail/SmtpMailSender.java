@@ -82,8 +82,8 @@ public class SmtpMailSender extends MailSender {
             mimeMessage.addRecipients(RecipientType.BCC,
                 toArray(message.getBcc()));
             mimeMessage.setFrom(new InternetAddress(
-                configuration.getProperty("smtp.from"),
-                configuration.getProperty("smtp.from.name")));
+                configuration.getProperty("smtp.from", "activityinfo@configure-me.com"),
+                configuration.getProperty("smtp.from.name", "ActivityInfo")));
 
             if (message.getReplyTo() != null) {
                 mimeMessage.setReplyTo(new Address[] { message.getReplyTo() });

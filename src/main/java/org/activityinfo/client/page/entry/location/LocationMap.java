@@ -155,7 +155,7 @@ public class LocationMap extends GoogleMapsPanel {
             @Override
             public void onZoomEnd(MapZoomEndEvent event) {
                 if (newLocationPresenter.isActive()) {
-                    ensureNewLocationMarkerIsVisible();
+                    panToNewLocation();
                 }
             }
         });
@@ -228,7 +228,7 @@ public class LocationMap extends GoogleMapsPanel {
                 createNewLocationMarker();
             }
             newLocationMarker.setVisible(true);
-            ensureNewLocationMarkerIsVisible();
+            panToNewLocation();
         } else if (newLocationMarker != null) {
             newLocationMarker.setVisible(false);
         }
@@ -266,7 +266,7 @@ public class LocationMap extends GoogleMapsPanel {
         }
     }
 
-    private void ensureNewLocationMarkerIsVisible() {
+    private void panToNewLocation() {
         if (!getMapWidget().getBounds().containsLatLng(
             newLocationMarker.getLatLng())) {
             getMapWidget().panTo(newLocationMarker.getLatLng());

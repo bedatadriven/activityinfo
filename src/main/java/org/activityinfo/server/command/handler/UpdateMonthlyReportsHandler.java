@@ -64,6 +64,9 @@ public class UpdateMonthlyReportsHandler implements
         throws CommandException {
 
         Site site = em.find(Site.class, cmd.getSiteId());
+        if (site == null) {
+            throw new CommandException(cmd, "site " + cmd.getSiteId() + " not found for user " + user.getEmail());
+        }
 
         Map<Month, ReportingPeriod> periods = new HashMap<Month, ReportingPeriod>();
 

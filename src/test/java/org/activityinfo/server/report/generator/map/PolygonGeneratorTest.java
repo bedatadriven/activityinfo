@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
@@ -52,6 +53,7 @@ import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 @RunWith(InjectionSupport.class)
 @Modules({ TestDatabaseModule.class })
@@ -64,6 +66,8 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
     @Before
     public void setUpDirs() {
         new File("target/report-tests").mkdirs();
+    
+        LocaleProxy.setLocale(Locale.ENGLISH);
     }
 
     @Test

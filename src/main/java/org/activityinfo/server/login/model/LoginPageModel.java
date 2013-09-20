@@ -1,4 +1,4 @@
-package org.activityinfo.server.command.handler;
+package org.activityinfo.server.login.model;
 
 /*
  * #%L
@@ -22,6 +22,19 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
-public class S3OutputHandler extends RendererOutputHandler {
+public class LoginPageModel extends PageModel {
+    private boolean loginError;
 
+    public LoginPageModel() {
+    }
+
+    public static LoginPageModel unsuccessful() {
+        LoginPageModel model = new LoginPageModel();
+        model.loginError = true;
+        return model;
+    }
+
+    public boolean isLoginError() {
+        return loginError;
+    }
 }

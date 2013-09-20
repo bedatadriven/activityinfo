@@ -31,6 +31,6 @@ import java.util.List;
  */
 public interface AdminGeometryProvider {
 
-    List<AdminGeo> getGeometry(int adminLevelId);
+    List<AdminGeo> getGeometries(int adminLevelId);
 
 }

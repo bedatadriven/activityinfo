@@ -32,7 +32,7 @@ import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.CountryDTO;
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class DimensionTree implements HasReportElement<PivotTableReportElement> {
 
     private final Dispatcher dispatcher;
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
     private boolean fireEvents = true;
 
     private final TreeStore<DimensionModel> store;
@@ -74,8 +74,8 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
     private final List<DimensionModel> attributeDimensions = Lists.newArrayList();
 
     public DimensionTree(EventBus eventBus, Dispatcher dispatcher) {
-        this.events = new ReportEventHelper(eventBus, this);
-        this.events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
             @Override
             public void onChanged() {
                 fireEvents = false;
@@ -323,7 +323,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
         }
 
         if (fireEvents) {
-            events.fireChange();
+            reportEventBus.fireChange();
         }
     }
 
@@ -333,6 +333,6 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 }

@@ -64,7 +64,7 @@ public class PiechartLayerOptions extends LayoutContainer implements
     private Dispatcher service;
     private PiechartMapLayer piechartMapLayer;
     private SchemaDTO schema;
-    private EditorGrid<NamedSlice> gridIndicatorOptions;
+    private EditorGrid<NamedSlice> indicatorOptionGrid;
     private ListStore<NamedSlice> indicatorsStore = new ListStore<NamedSlice>();
     private SliderField sliderfieldMinSize;
     private SliderField sliderfieldMaxSize;
@@ -165,16 +165,16 @@ public class PiechartLayerOptions extends LayoutContainer implements
 
         ColumnModel columnmodelIndicators = new ColumnModel(columnConfigs);
 
-        gridIndicatorOptions = new EditorGrid<NamedSlice>(indicatorsStore,
+        indicatorOptionGrid = new EditorGrid<NamedSlice>(indicatorsStore,
             columnmodelIndicators);
-        gridIndicatorOptions.setBorders(false);
-        gridIndicatorOptions.setAutoExpandColumn("name");
-        gridIndicatorOptions.setAutoWidth(true);
-        gridIndicatorOptions.setHeight(100);
-        gridIndicatorOptions.getView().setShowDirtyCells(false);
-        gridIndicatorOptions
+        indicatorOptionGrid.setBorders(false);
+        indicatorOptionGrid.setAutoExpandColumn("name");
+        indicatorOptionGrid.setAutoWidth(true);
+        indicatorOptionGrid.setHeight(100);
+        indicatorOptionGrid.getView().setShowDirtyCells(false);
+        indicatorOptionGrid
             .setSelectionModel(new CellSelectionModel<PiechartLayerOptions.NamedSlice>());
-        gridIndicatorOptions.addListener(Events.AfterEdit,
+        indicatorOptionGrid.addListener(Events.AfterEdit,
             new Listener<GridEvent<NamedSlice>>() {
                 @Override
                 public void handleEvent(GridEvent<NamedSlice> be) {
@@ -187,7 +187,7 @@ public class PiechartLayerOptions extends LayoutContainer implements
         VBoxLayoutData vbld = new VBoxLayoutData();
         vbld.setFlex(1);
 
-        panel.add(gridIndicatorOptions);
+        panel.add(indicatorOptionGrid);
     }
 
     private void loadData() {

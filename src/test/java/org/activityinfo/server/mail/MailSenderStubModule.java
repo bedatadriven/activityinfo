@@ -22,6 +22,8 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
+
 import com.google.inject.AbstractModule;
 
 public class MailSenderStubModule extends AbstractModule {
@@ -29,6 +31,7 @@ public class MailSenderStubModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(MailSender.class).to(MailSenderStub.class);
+        bind(Domain.class).toInstance(Domain.DEFAULT);
     }
 
 }

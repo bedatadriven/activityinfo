@@ -37,6 +37,7 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.SyncRegion;
 import org.activityinfo.shared.command.result.SyncRegions;
 import org.activityinfo.shared.exception.CommandException;
+import org.activityinfo.shared.util.CollectionUtil;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -52,15 +53,17 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult execute(GetSyncRegions cmd, User user)
         throws CommandException {
 
-        List<Object[]> databases = entityManager.createQuery("SELECT " +
-            "db.id, db.country.id, db.version, " +
-            "MAX(p.version) " +
-            "FROM UserDatabase db " +
-            "LEFT JOIN db.userPermissions p " +
-            "GROUP BY db.id")
+        List<Object[]> databases = entityManager.createQuery(
+            "SELECT " +
+                "db.id, db.country.id, db.version, " +
+                "MAX(p.version) " +
+                "FROM UserDatabase db " +
+                "LEFT JOIN db.userPermissions p " +
+                "GROUP BY db.id")
             .getResultList();
 
         List<Integer> databaseIds = Lists.newArrayList();
@@ -85,40 +88,50 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         return new SyncRegions(regions);
     }
 
+    @SuppressWarnings("unchecked")
     private Collection<? extends SyncRegion> listLocations(
         List<Integer> databases) {
-        List<Object[]> regions = entityManager.createQuery("SELECT " +
-            "a.locationType.id, " +
-            "MAX(loc.timeEdited) " +
-            "FROM Activity a INNER JOIN a.locationType.locations loc " +
-            "WHERE a.database.id in (:dbs) " +
-            "GROUP BY a.locationType")
-            .setParameter("dbs", databases)
-            .getResultList();
 
         List<SyncRegion> locationRegions = new ArrayList<SyncRegion>();
-        for (Object[] region : regions) {
-            locationRegions.add(new SyncRegion("location/" + region[0],
-                region[1].toString()));
+
+        if (CollectionUtil.isNotEmpty(databases)) {
+            List<Object[]> regions = entityManager.createQuery(
+                "SELECT " +
+                    "a.locationType.id, " +
+                    "MAX(loc.timeEdited) " +
+                    "FROM Activity a " +
+                    "INNER JOIN a.locationType.locations loc " +
+                    "WHERE a.database.id in (:dbs) " +
+                    "GROUP BY a.locationType")
+                .setParameter("dbs", databases)
+                .getResultList();
+
+            for (Object[] region : regions) {
+                locationRegions.add(new SyncRegion("location/" + region[0], region[1].toString()));
+            }
         }
         return locationRegions;
     }
 
+    @SuppressWarnings("unchecked")
     private Collection<? extends SyncRegion> listAdminRegions(
         Set<Integer> countryIds) {
-
-        List<Integer> levels = entityManager.createQuery("SELECT " +
-            "level.id " +
-            "FROM AdminLevel level " +
-            "WHERE level.country.id in (:countries) ")
-            .setParameter("countries", countryIds)
-            .getResultList();
-
+        
         List<SyncRegion> adminRegions = new ArrayList<SyncRegion>();
-        for (Integer level : levels) {
-
-            adminRegions.add(new SyncRegion("admin/" + level,
-                Integer.toString(AdminUpdateBuilder.LAST_VERSION_NUMBER)));
+        
+        if (CollectionUtil.isNotEmpty(countryIds)) {
+            List<Integer> levels = entityManager.createQuery(
+                "SELECT " +
+                    "level.id " +
+                    "FROM AdminLevel level " +
+                    "WHERE level.country.id in (:countries) ")
+                .setParameter("countries", countryIds)
+                .getResultList();
+            
+            for (Integer level : levels) {
+                adminRegions.add(new SyncRegion("admin/" + level,
+                    Integer.toString(AdminUpdateBuilder.LAST_VERSION_NUMBER)));
+            }
         }
         return adminRegions;
     }
@@ -126,34 +139,31 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
     /**
      * We need a separate sync region for each Partner/UserDatabase combination
      * because we may be given permission to view data at different times.
-     * 
      */
+    @SuppressWarnings("unchecked")
     private Collection<? extends SyncRegion> listSiteRegions(
         List<Integer> databases) {
         List<SyncRegion> siteRegions = new ArrayList<SyncRegion>();
 
         // our initial sync region manages the table schema
-        siteRegions.add(new SyncRegion("site-tables",
-            SiteTableUpdateBuilder.CURRENT_VERSION));
+        siteRegions.add(new SyncRegion("site-tables", SiteTableUpdateBuilder.CURRENT_VERSION));
 
-        // do one sync region per database
-        List<Object[]> regions = entityManager
-            .createQuery(
-                "SELECT "
-                    +
-                    "s.activity.database.id, "
-                    +
-                    "MAX(s.timeEdited) "
-                    +
-                    " FROM Site s WHERE s.activity.database.id in (:dbs) GROUP BY s.activity.database.id")
-            .setParameter("dbs", databases)
-            .getResultList();
+        if (CollectionUtil.isNotEmpty(databases)) {
+            // do one sync region per database
+            List<Object[]> regions = entityManager.createQuery(
+                "SELECT " +
+                    "s.activity.database.id, " +
+                    "MAX(s.timeEdited) " +
+                    "FROM Site s " +
+                    "WHERE s.activity.database.id in (:dbs) " +
+                    "GROUP BY s.activity.database.id")
+                .setParameter("dbs", databases)
+                .getResultList();
 
-        for (Object[] region : regions) {
-            siteRegions.add(new SyncRegion("site/" + region[0], region[1]
-                .toString()));
+            for (Object[] region : regions) {
+                siteRegions.add(new SyncRegion("site/" + region[0], region[1].toString()));
+            }
         }
-
         return siteRegions;
     }
 }

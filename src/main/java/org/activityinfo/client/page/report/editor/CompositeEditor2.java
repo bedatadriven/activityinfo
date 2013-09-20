@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.client.page.report.editor.AddElementPanel.AddCallback;
 import org.activityinfo.client.page.report.resources.ReportResources;
 import org.activityinfo.shared.command.RenderElement.Format;
@@ -55,7 +55,7 @@ public class CompositeEditor2 extends LayoutContainer implements
     private LayoutContainer page;
     private AddElementPanel addPanel;
 
-    private ReportEventHelper events;
+    private ReportEventBus reportEventBus;
 
     @Inject
     public CompositeEditor2(EventBus eventBus, AddElementPanel addPanel,
@@ -76,7 +76,7 @@ public class CompositeEditor2 extends LayoutContainer implements
         setScrollMode(Scroll.AUTOY);
         setMonitorWindowResize(true);
 
-        this.events = new ReportEventHelper(eventBus, this);
+        this.reportEventBus = new ReportEventBus(eventBus, this);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class CompositeEditor2 extends LayoutContainer implements
                         model.getElements().remove(widget.getModel());
                         page.remove(widget);
                         page.layout();
-                        events.fireChange();
+                        reportEventBus.fireChange();
                     }
                 }
             });
@@ -153,6 +153,6 @@ public class CompositeEditor2 extends LayoutContainer implements
 
     @Override
     public void onElementChanged(ElementWidget widget) {
-        events.fireChange();
+        reportEventBus.fireChange();
     }
 }

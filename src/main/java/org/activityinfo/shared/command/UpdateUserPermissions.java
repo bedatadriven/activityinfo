@@ -40,19 +40,28 @@ public class UpdateUserPermissions implements MutatingCommand<VoidResult> {
 
     private int databaseId;
     private UserPermissionDTO model;
+    private String host;
 
     protected UpdateUserPermissions() {
-
     }
 
     public UpdateUserPermissions(UserDatabaseDTO db, UserPermissionDTO model) {
         this(db.getId(), model);
     }
 
+    public UpdateUserPermissions(UserDatabaseDTO db, UserPermissionDTO model, String host) {
+        this(db.getId(), model, host);
+    }
+
     public UpdateUserPermissions(int databaseId, UserPermissionDTO model) {
         this.databaseId = databaseId;
         this.model = model;
+    }
 
+    public UpdateUserPermissions(int databaseId, UserPermissionDTO model, String host) {
+        this.databaseId = databaseId;
+        this.model = model;
+        this.host = host;
     }
 
     public int getDatabaseId() {
@@ -69,5 +78,13 @@ public class UpdateUserPermissions implements MutatingCommand<VoidResult> {
 
     public void setModel(UserPermissionDTO model) {
         this.model = model;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 }

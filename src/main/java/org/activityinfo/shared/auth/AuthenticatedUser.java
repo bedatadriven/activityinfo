@@ -37,6 +37,7 @@ public class AuthenticatedUser implements IsSerializable {
     private int userId;
     private String userEmail;
     private String userLocale;
+
     /**
      * Authentication token.
      */
@@ -44,6 +45,8 @@ public class AuthenticatedUser implements IsSerializable {
     public static final String EMAIL_COOKIE = "email";
     public static final String USER_ID_COOKIE = "userId";
     public static final String USER_LOCAL_COOKIE = "locale";
+
+    public static final int ANONYMOUS_ID = 0;
 
     public AuthenticatedUser() {
 
@@ -95,16 +98,25 @@ public class AuthenticatedUser implements IsSerializable {
     }
 
     public static AuthenticatedUser getAnonymous() {
-        return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0,
+        return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, ANONYMOUS_ID,
             AnonymousUser.USER_EMAIL);
     }
 
     public static AuthenticatedUser getAnonymous(LocaleInfo currentLocale) {
-        return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, 0,
+        return new AuthenticatedUser(AnonymousUser.AUTHTOKEN, ANONYMOUS_ID,
             AnonymousUser.USER_EMAIL, currentLocale.getLocaleName());
     }
 
     public boolean isAnonymous() {
         return AnonymousUser.AUTHTOKEN.equals(authToken);
     }
+
+    public static boolean isAnonymous(int userId) {
+        return ANONYMOUS_ID == userId;
+    }
+
+    public static boolean isAnonymous(AuthenticatedUser user) {
+        return user == null || ANONYMOUS_ID == user.getId();
+    }
+
 }

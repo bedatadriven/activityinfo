@@ -67,14 +67,13 @@ public class ClientSideAuthProvider implements Provider<AuthenticatedUser> {
         return LocaleInfo.getCurrentLocale().getLocaleName();
     }
 
-    public static void ensurePersisted() {
-        // unless the user requests to stay logged in, the authToken is
-        // set to expire at the end of the user's session, which
-        // means that it won't be available if the user opens the app via
-        // the appcache later on.
-        // Since BootstrapScriptServlet relies on the token to select the
-        // appropriate locale, without the cookie set, trying to retrieve
-        // the latest manifest will fail
+    /**
+     * unless the user requests to stay logged in, the authToken is set to expire at the end of the user's session,
+     * which means that it won't be available if the user opens the app via the appcache later on. Since
+     * BootstrapScriptServlet relies on the token to select the appropriate locale, without the cookie set, trying to
+     * retrieve the latest manifest will fail
+     */
+    public static void persistAuthentication() {
 
         AuthenticatedUser user = new ClientSideAuthProvider().get();
 

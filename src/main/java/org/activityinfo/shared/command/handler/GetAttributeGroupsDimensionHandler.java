@@ -46,6 +46,15 @@ public class GetAttributeGroupsDimensionHandler implements
     public void execute(GetAttributeGroupsDimension cmd, final ExecutionContext context,
         final AsyncCallback<AttributeGroupResult> callback) {
 
+        // if the filter doesn't contain any activity, database or indicator values, just return an empty list
+        if (!cmd.getFilter().isRestricted(DimensionType.Database) &&
+            !cmd.getFilter().isRestricted(DimensionType.Activity) &&
+            !cmd.getFilter().isRestricted(DimensionType.Indicator)) {
+
+            callback.onSuccess(new AttributeGroupResult());
+            return;
+        }
+
         final Dimension dimension = new Dimension(DimensionType.AttributeGroup);
 
         final PivotSites query = new PivotSites();

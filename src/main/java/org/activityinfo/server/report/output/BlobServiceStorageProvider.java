@@ -30,22 +30,24 @@ import java.security.SecureRandom;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.util.blob.BlobService;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class BlobServiceStorageProvider implements StorageProvider {
 
     private final SecureRandom random = new SecureRandom();
     private final BlobService blobService;
-    private final String baseUri;
+    private final Provider<Domain> domainProvider;
 
     @Inject
-    public BlobServiceStorageProvider(DeploymentConfiguration config, BlobService blobService) {
+    public BlobServiceStorageProvider(BlobService blobService,
+    		Provider<Domain> domainProvider) {
         this.blobService = blobService;
-        this.baseUri = config.getProperty("base.uri", "http://www.activityinfo.org");
+        this.domainProvider = domainProvider;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class BlobServiceStorageProvider implements StorageProvider {
 
         String id = Long.toString(Math.abs(random.nextLong()), 16);
         
-        URI uri = UriBuilder.fromUri(baseUri)
+        URI uri = UriBuilder.fromUri("https://" + domainProvider.get().getHost())
         .path("generated")
         .path(id)
         .path(filename)

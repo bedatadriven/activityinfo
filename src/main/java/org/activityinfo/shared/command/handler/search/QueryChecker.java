@@ -33,7 +33,7 @@ import com.google.common.base.Strings;
 
 /** Checks a search query for failure and obvious stuff a user can do wrong */
 public class QueryChecker {
-    private List<QueryFail> fails = new ArrayList<QueryFail>();
+    private List<QueryFail> failures = new ArrayList<QueryFail>();
     private String query;
 
     /** True when query is OK */
@@ -42,17 +42,19 @@ public class QueryChecker {
 
         checkIsEmpty();
 
-        return fails.isEmpty();
+        return failures.isEmpty();
     }
 
-    private void checkIsEmpty() {
+    private boolean checkIsEmpty() {
         if (Strings.isNullOrEmpty(query)) {
-            fails.add(new EmptyQuery());
+            failures.add(new EmptyQuery());
+            return true;
         }
+        return false;
     }
 
     public List<QueryFail> getFails() {
-        return fails;
+        return failures;
     }
 
     public interface QueryFail extends Serializable {

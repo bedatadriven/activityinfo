@@ -82,7 +82,6 @@ public class UpdateUserPermissionsHandler implements
 
         UserDatabase database = databaseDAO.findById(cmd.getDatabaseId());
         UserPermissionDTO dto = cmd.getModel();
-
         /*
          * First check that the current user has permission to add users to to
          * the queries
@@ -98,7 +97,7 @@ public class UpdateUserPermissionsHandler implements
         }
 
         if (user == null) {
-            user = createNewUser(executingUser, dto);
+            user = createNewUser(executingUser, dto, cmd.getHost());
         }
 
         /*
@@ -118,7 +117,7 @@ public class UpdateUserPermissionsHandler implements
         return null;
     }
 
-    private User createNewUser(User executingUser, UserPermissionDTO dto)
+    private User createNewUser(User executingUser, UserPermissionDTO dto, String host)
         throws CommandException {
         if (executingUser.getId() == 0) {
             throw new AssertionError("executingUser.id == 0!");

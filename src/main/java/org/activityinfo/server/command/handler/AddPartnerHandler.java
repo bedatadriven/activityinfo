@@ -35,8 +35,8 @@ import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.shared.command.AddPartner;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.command.result.DuplicateCreateResult;
 import org.activityinfo.shared.exception.CommandException;
-import org.activityinfo.shared.exception.DuplicatePartnerException;
 import org.activityinfo.shared.exception.IllegalAccessCommandException;
 
 import com.google.inject.Inject;
@@ -55,6 +55,7 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult execute(AddPartner cmd, User user)
         throws CommandException {
 
@@ -69,11 +70,10 @@ public class AddPartnerHandler implements CommandHandler<AddPartner> {
 
         // first check to see if an organization by this name is already
         // a partner
-
         Set<Partner> dbPartners = db.getPartners();
         for (Partner partner : dbPartners) {
             if (partner.getName().equals(cmd.getPartner().getName())) {
-                throw new DuplicatePartnerException();
+                return new DuplicateCreateResult();
             }
         }
 

@@ -33,6 +33,7 @@ import com.google.common.base.Objects;
  * 
  */
 public class GetPartnersDimension implements Command<PartnerResult> {
+    private static final long serialVersionUID = -4825543626906245972L;
 
     private Filter filter;
 

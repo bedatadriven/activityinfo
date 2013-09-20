@@ -219,7 +219,7 @@ public class ReportJsonFactory implements ReportSerializer {
         }
         element.add("seriesDimensions",
             encodeDimensionList(rp
-                .getSeriesDimension()));
+                .getSeriesDimensions()));
 
         return element;
     }
@@ -543,7 +543,7 @@ public class ReportJsonFactory implements ReportSerializer {
             .getAsJsonArray();
         if (seriesDimensions.size() > 0) {
             pivotChartElement
-                .setSeriesDimension(decodeDimensionList(seriesDimensions));
+                .setSeriesDimensions(decodeDimensionList(seriesDimensions));
         }
 
         return pivotChartElement;

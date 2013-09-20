@@ -96,6 +96,7 @@ public class DownSynchronizer implements AsyncCommand {
         retrieveSyncRegions();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void retrieveSyncRegions() {
         dispatch.execute(new GetSyncRegions(),
             new AsyncCallback<SyncRegions>() {
@@ -106,8 +107,7 @@ public class DownSynchronizer implements AsyncCommand {
 
                 @Override
                 public void onSuccess(SyncRegions syncRegions) {
-                    DownSynchronizer.this.regionIt = new ProgressTrackingIterator(
-                        syncRegions.getList());
+                    DownSynchronizer.this.regionIt = new ProgressTrackingIterator(syncRegions.getList());
                     fireStatusEvent("Received sync regions...", 0);
                     doNextUpdate();
                 }
@@ -126,20 +126,21 @@ public class DownSynchronizer implements AsyncCommand {
         }
         if (regionIt.hasNext()) {
             final SyncRegion region = regionIt.next();
-            checkLocalVersion(region);
+            updateLocalVersion(region);
         } else {
             onSynchronizationComplete();
         }
     }
 
-    private void checkLocalVersion(final SyncRegion region) {
+    private void updateLocalVersion(final SyncRegion region) {
         localVerisonTable.get(region.getId(), new DefaultCallback<String>() {
 
             @Override
             public void onSuccess(String localVersion) {
-                if (localVersion == null || region.getCurrentVersion() == null
-                    ||
+                if (localVersion == null ||
+                    region.getCurrentVersion() == null ||
                     !localVersion.equals(region.getCurrentVersion())) {
+
                     doUpdate(region, localVersion);
                 } else {
                     Log.debug("Region " + region.getId() + " is up to date");
@@ -270,23 +271,23 @@ public class DownSynchronizer implements AsyncCommand {
         Iterator<T> {
         private double total;
         private double completed;
-        private Iterator<T> inner;
+        private Iterator<T> delegateIterator;
 
         private ProgressTrackingIterator(Collection<T> collection) {
             total = collection.size();
             completed = 0;
-            inner = collection.iterator();
+            delegateIterator = collection.iterator();
         }
 
         @Override
         public boolean hasNext() {
             completed++;
-            return inner.hasNext();
+            return delegateIterator.hasNext();
         }
 
         @Override
         public T next() {
-            return inner.next();
+            return delegateIterator.next();
         }
 
         @Override

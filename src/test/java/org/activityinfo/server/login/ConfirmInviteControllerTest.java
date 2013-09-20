@@ -46,7 +46,7 @@ import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.ConfirmInvitePageModel;
 import org.activityinfo.server.login.model.InvalidInvitePageModel;
-import org.activityinfo.shared.util.MailingListClient;
+import org.activityinfo.server.util.MailingListClient;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;

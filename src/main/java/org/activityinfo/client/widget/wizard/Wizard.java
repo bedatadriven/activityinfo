@@ -23,6 +23,7 @@ package org.activityinfo.client.widget.wizard;
  */
 
 import com.extjs.gxt.ui.client.event.BaseObservable;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class Wizard extends BaseObservable {
 
@@ -36,6 +37,10 @@ public abstract class Wizard extends BaseObservable {
 
     public boolean isFinishEnabled() {
         return true;
+    }
+    
+    public void finish(AsyncCallback<Void> callback) {
+        callback.onSuccess(null);
     }
 
 }

@@ -39,8 +39,8 @@ import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.model.ConfirmInvitePageModel;
 import org.activityinfo.server.login.model.InvalidInvitePageModel;
+import org.activityinfo.server.util.MailingListClient;
 import org.activityinfo.server.util.logging.LogException;
-import org.activityinfo.shared.util.MailingListClient;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -95,6 +95,7 @@ public class ConfirmInviteController {
             user.setLocale(checkNonEmpty(locale));
             user.changePassword(checkNonEmpty(password));
             user.clearChangePasswordKey();
+            user.setEmailNotification(true);
             
             if(newsletter) {
                 mailingList.subscribe(user);

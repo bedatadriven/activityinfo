@@ -32,10 +32,12 @@ import org.activityinfo.server.database.hibernate.dao.PartnerDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.dao.UserPermissionDAO;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
+import org.activityinfo.server.login.MockLoginModule;
 import org.activityinfo.server.mail.MailSenderStub;
 import org.activityinfo.server.mail.MailSenderStubModule;
 import org.activityinfo.server.util.TemplateModule;
@@ -52,6 +54,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.google.inject.util.Providers;
 
 import freemarker.template.TemplateModelException;
 
@@ -70,7 +74,6 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
     @Before
     public void setup() throws TemplateModelException {
-
         NRC = new Partner();
         NRC.setId(1);
         NRC.setName("NRC");
@@ -86,7 +89,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         NRC_DTO = new PartnerDTO(1, "NRC");
 
         TemplateModule templateModule = new TemplateModule();
-        mailer = new MailSenderStub(templateModule.provideConfiguration());
+        mailer = new MailSenderStub(templateModule.provideConfiguration(Providers.of(Domain.DEFAULT)));
 
         handler = new UpdateUserPermissionsHandler(
             db.getDAO(UserDatabaseDAO.class), db.getDAO(PartnerDAO.class),
@@ -102,7 +105,6 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
         UserDatabase udb = new UserDatabase(1, "PEAR");
         udb.setOwner(owner);
         db.persist(udb);
-
     }
 
     @Test
@@ -118,7 +120,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
 
         handler.execute(cmd, owner);
 
-        assertThat(mailer.sentMail.size(), equalTo(1));
+        assertThat(mailer.sentMails.size(), equalTo(1));
     }
 
     /**
@@ -206,8 +208,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
     }
 
     /**
-     * Verifies that a user with the manageUsers permission can add another user
-     * to the UserDatabase
+     * Verifies that a user with the manageUsers permission can add another user to the UserDatabase
      * 
      * @throws CommandException
      */
@@ -236,8 +237,7 @@ public class UpdateUserPermissionsHandlerTest extends CommandTestCase {
     }
 
     /**
-     * Verifies that the owner of a database can update an existing users
-     * permission
+     * Verifies that the owner of a database can update an existing users permission
      * 
      * @throws CommandException
      */

@@ -29,7 +29,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.AttributeGroupDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
@@ -58,7 +58,7 @@ public class DimensionSelectionListView implements
         COLUMN
     }
 
-    private ReportEventHelper events;
+    private ReportEventBus reportEventBus;
     private Dispatcher dispatcher;
     private Axis axis;
 
@@ -69,8 +69,8 @@ public class DimensionSelectionListView implements
 
     public DimensionSelectionListView(EventBus eventBus, Dispatcher dispatcher,
         Axis axis) {
-        this.events = new ReportEventHelper(eventBus, this);
-        this.events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -116,7 +116,7 @@ public class DimensionSelectionListView implements
         case COLUMN:
             model.setColumnDimensions(dims);
         }
-        events.fireChange();
+        reportEventBus.fireChange();
     }
 
     @Override
@@ -127,7 +127,7 @@ public class DimensionSelectionListView implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 
     private void onModelChanged() {

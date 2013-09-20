@@ -35,8 +35,7 @@ public class SchemaMigration {
 
     private final SqlDatabase database;
 
-    // This should be generated automatically from the liquibase change set
-    // logs.
+    // This should be generated automatically from the liquibase change set logs.
     // This will do until then:
 
     public static final String[] MIGRATION_DDL = new String[] {
@@ -60,7 +59,8 @@ public class SchemaMigration {
         "ALTER TABLE UserLogin DROP COLUMN FirstName",
         "ALTER TABLE UserLogin ADD COLUMN organization TEXT",
         "ALTER TABLE UserLogin ADD COLUMN jobtitle TEXT",
-        "ALTER TABLE UserLogin ADD COLUMN invitedBy INT"
+        "ALTER TABLE UserLogin ADD COLUMN invitedBy INT",
+        "ALTER TABLE UserLogin ADD COLUMN dateCreated REAL"
     };
 
     @Inject

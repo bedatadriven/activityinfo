@@ -23,7 +23,7 @@
 <@scaffolding title="${label.chooseNewPassword}">
 
 	<@content>
-	<div class="row-fluid">
+	<div class="row">
 		<div class="span12">
 		
 			<h3>${label.chooseNewPassword}</h3>
@@ -43,12 +43,12 @@
 				      <input type="password" id="newPasswordInput2">
 				    </div>
 				  </div>
-				</div>
-				<div class="control-group">
-			       <div class="controls">
-
-			      <button type="submit" class="btn btn-primary btn-large">${label.continue}  &raquo;</button>
-			    </div>
+				
+					<div class="control-group">
+				       <div class="controls">
+	
+				      <button type="submit" class="btn btn-primary btn-large">${label.continue}  &raquo;</button>
+				    </div>
 			  </div>
 			</form>
 		</div>

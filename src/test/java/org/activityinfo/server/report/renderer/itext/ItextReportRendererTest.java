@@ -130,7 +130,7 @@ public class ItextReportRendererTest {
         PivotChartReportElement chart = new PivotChartReportElement(Type.Pie);
         chart.setTitle("My Pie Chart");
         chart.setCategoryDimensions(data.colDims);
-        chart.setSeriesDimension(data.rowDims);
+        chart.setSeriesDimensions(data.rowDims);
         chart.setContent(chartContent);
 
         PivotContent tableContent = new PivotContent();
@@ -195,7 +195,7 @@ public class ItextReportRendererTest {
         PivotChartReportElement chart = new PivotChartReportElement(Type.Pie);
         chart.setTitle("My Pie Chart");
         chart.setCategoryDimensions(data.colDims);
-        chart.setSeriesDimension(data.rowDims);
+        chart.setSeriesDimensions(data.rowDims);
         chart.setContent(chartContent);
 
         ReportContent content = new ReportContent();

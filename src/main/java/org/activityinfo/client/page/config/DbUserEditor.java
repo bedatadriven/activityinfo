@@ -353,10 +353,8 @@ public class DbUserEditor extends ContentPanel implements DbPage,
 
     private void save() {
         BatchCommand batch = new BatchCommand();
-
         for (Record record : store.getModifiedRecords()) {
-            batch.add(new UpdateUserPermissions(db.getId(),
-                (UserPermissionDTO) record.getModel()));
+            batch.add(new UpdateUserPermissions(db.getId(), (UserPermissionDTO) record.getModel()));
         }
 
         dispatcher.execute(batch,
@@ -387,12 +385,14 @@ public class DbUserEditor extends ContentPanel implements DbPage,
         dlg.setWidth(400);
         dlg.setHeight(300);
 
+        final String host = Window.Location.getHostName();
+
         dlg.show(new FormDialogCallback() {
 
             @Override
             public void onValidated() {
                 dispatcher.execute(
-                    new UpdateUserPermissions(db, form.getUser()), dlg,
+                    new UpdateUserPermissions(db, form.getUser(), host), dlg,
                     new AsyncCallback<VoidResult>() {
 
                         @Override

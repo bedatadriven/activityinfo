@@ -30,6 +30,7 @@ import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.event.NavigationEvent;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.icon.IconImageBundle;
+import org.activityinfo.client.importer.ImporterWizard;
 import org.activityinfo.client.page.NavigationCallback;
 import org.activityinfo.client.page.NavigationHandler;
 import org.activityinfo.client.page.Page;
@@ -46,6 +47,9 @@ import org.activityinfo.client.page.entry.grouping.GroupingComboBox;
 import org.activityinfo.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.client.page.entry.sitehistory.SiteHistoryTab;
 import org.activityinfo.client.widget.CollapsibleTabPanel;
+import org.activityinfo.client.widget.wizard.Wizard;
+import org.activityinfo.client.widget.wizard.WizardCallback;
+import org.activityinfo.client.widget.wizard.WizardDialog;
 import org.activityinfo.shared.command.DeleteSite;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.FilterUrlSerializer;
@@ -208,11 +212,15 @@ public class DataEntryPage extends LayoutContainer implements Page,
 
         toolBar.add(new SeparatorToolItem());
 
+        toolBar.addButton("IMPORT", "Import", IconImageBundle.ICONS.importIcon());
         toolBar.addExcelExportButton();
+
         toolBar.addPrintButton();
         toolBar.addButton("EMBED", I18N.CONSTANTS.embed(),
             IconImageBundle.ICONS.embed());
 
+        
+        
         return toolBar;
     }
 
@@ -343,32 +351,33 @@ public class DataEntryPage extends LayoutContainer implements Page,
 
         // also embedding is only implemented for one activity
         toolBar.setActionEnabled("EMBED", activities.size() == 1);
+        toolBar.setActionEnabled("IMPORT", activities.size() == 1);
+        
 
         // adding is also only enabled for one activity, but we have to
         // lookup to see whether it possible for this activity
         toolBar.setActionEnabled(UIActions.ADD, false);
         if (activities.size() == 1) {
-            checkWhetherEditingIsAllowed(activities.iterator().next());
+            enableToolbarButtons(activities.iterator().next());
         }
 
     }
 
-    private void checkWhetherEditingIsAllowed(final int activityId) {
+    private void enableToolbarButtons(final int activityId) {
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-
             @Override
             public void onFailure(Throwable caught) {
-
             }
 
             @Override
             public void onSuccess(SchemaDTO result) {
-                toolBar.setActionEnabled(UIActions.ADD,
-                    result.getActivityById(activityId).getDatabase()
-                        .isEditAllowed());
+                boolean isAllowed = result.getActivityById(activityId).getDatabase().isEditAllowed();
+                toolBar.setActionEnabled(UIActions.ADD, isAllowed);
+                toolBar.setActionEnabled("IMPORT", isAllowed);
             }
         });
     }
+    
 
     @Override
     public void onUIAction(String actionId) {
@@ -409,7 +418,37 @@ public class DataEntryPage extends LayoutContainer implements Page,
         } else if ("EMBED".equals(actionId)) {
             EmbedDialog dialog = new EmbedDialog(dispatcher);
             dialog.show(currentPlace);
+        
+        } else if("IMPORT".equals(actionId)) {
+            doImport();
+            
         }
+        
+    }
+
+    protected void doImport() {
+        final int activityId = currentPlace.getFilter().getRestrictedCategory(
+            DimensionType.Activity);
+        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                Wizard wizard = new ImporterWizard(dispatcher, result.getActivityById(activityId));
+                WizardDialog dialog = new WizardDialog(wizard);
+                dialog.show(new WizardCallback() {
+                    
+                    
+                });
+            }
+            
+        });
+      
     }
 
     private void delete() {

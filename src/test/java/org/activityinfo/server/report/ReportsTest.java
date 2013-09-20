@@ -75,7 +75,7 @@ public class ReportsTest {
 
     @Before
     public void setup() {
-        user = getUser();
+        user = createUser();
         createDirectoriesIfNecessary();
     }
 
@@ -156,7 +156,7 @@ public class ReportsTest {
         file.mkdirs();
     }
 
-    private User getUser() {
+    private User createUser() {
         User u = new User();
         u.setId(3); // akbertram
         return u;

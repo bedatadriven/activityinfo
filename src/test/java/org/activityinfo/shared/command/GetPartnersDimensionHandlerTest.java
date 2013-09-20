@@ -42,14 +42,12 @@ import org.junit.runner.RunWith;
 @Modules({ TestDatabaseModule.class })
 public class GetPartnersDimensionHandlerTest extends CommandTestCase2 {
 
-    // all
+    // empty
     @Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")
-    public void testAll() throws CommandException {
+    public void testEmptyFilter() throws CommandException {
         PartnerResult result = this.execute();
-        assertThat(result.getData().size(), equalTo(2));
-        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
-        assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));
+        assertThat(result.getData().size(), equalTo(0));
     }
 
 

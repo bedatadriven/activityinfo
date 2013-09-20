@@ -1,4 +1,4 @@
-package org.activityinfo.server.command.handler;
+package org.activityinfo.server.login;
 
 /*
  * #%L
@@ -22,6 +22,11 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
-public class RendererOutputHandler {
+import com.google.inject.AbstractModule;
 
+public class MockLoginModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+    }
 }

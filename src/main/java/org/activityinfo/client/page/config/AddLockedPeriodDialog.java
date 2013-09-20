@@ -53,8 +53,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class AddLockedPeriodDialog extends FormPanel implements
     AddLockedPeriodView {
 
-    private FieldSet fieldsetParentType;
-    private RadioGroup radiogroupParentType;
+    private FieldSet fieldsetContainer;
+    private RadioGroup radiogroupContainer;
     private Radio radioDatabase;
     private Radio radioActivity;
     private Radio radioProject;
@@ -71,7 +71,7 @@ public class AddLockedPeriodDialog extends FormPanel implements
 
     private ComboBox<ProjectDTO> comboboxProjects;
     private ListStore<ProjectDTO> storeProjects;
-    private ComboBox<ActivityDTO> comboboxactivities;
+    private ComboBox<ActivityDTO> comboboxActivities;
     private ListStore<ActivityDTO> storeActivities;
 
     private TextField<String> textfieldName;
@@ -108,8 +108,8 @@ public class AddLockedPeriodDialog extends FormPanel implements
 
         setHeaderVisible(false);
 
-        fieldsetParentType = new FieldSet();
-        fieldsetParentType.setHeading(I18N.CONSTANTS.type());
+        fieldsetContainer = new FieldSet();
+        fieldsetContainer.setHeading(I18N.CONSTANTS.type());
 
         comboboxProjects = new ComboBox<ProjectDTO>();
         storeProjects = new ListStore<ProjectDTO>();
@@ -119,16 +119,16 @@ public class AddLockedPeriodDialog extends FormPanel implements
         comboboxProjects.setTriggerAction(TriggerAction.ALL);
         comboboxProjects.setEditable(false);
 
-        comboboxactivities = new ComboBox<ActivityDTO>();
+        comboboxActivities = new ComboBox<ActivityDTO>();
         storeActivities = new ListStore<ActivityDTO>();
-        comboboxactivities.setStore(storeActivities);
-        comboboxactivities.setDisplayField("name");
-        comboboxactivities.setForceSelection(true);
-        comboboxactivities.setTriggerAction(TriggerAction.ALL);
-        comboboxactivities.setEditable(false);
+        comboboxActivities.setStore(storeActivities);
+        comboboxActivities.setDisplayField("name");
+        comboboxActivities.setForceSelection(true);
+        comboboxActivities.setTriggerAction(TriggerAction.ALL);
+        comboboxActivities.setEditable(false);
 
-        radiogroupParentType = new RadioGroup();
-        radiogroupParentType.setFieldLabel(I18N.CONSTANTS.type());
+        radiogroupContainer = new RadioGroup();
+        radiogroupContainer.setFieldLabel(I18N.CONSTANTS.type());
 
         labelDatabase = new LabelField(I18N.CONSTANTS.database());
         labelDatabase.setWidth(100);
@@ -143,12 +143,12 @@ public class AddLockedPeriodDialog extends FormPanel implements
 
             }
         });
-        radiogroupParentType.add(radioDatabase);
+        radiogroupContainer.add(radioDatabase);
         panelDatabase = new HorizontalPanel();
         panelDatabase.add(labelDatabase);
         panelDatabase.add(radioDatabase);
         panelDatabase.add(labelDatabaseName);
-        fieldsetParentType.add(panelDatabase);
+        fieldsetContainer.add(panelDatabase);
 
         radioActivity = new Radio();
         radioActivity.setFieldLabel(I18N.CONSTANTS.activity());
@@ -159,9 +159,9 @@ public class AddLockedPeriodDialog extends FormPanel implements
         panelActivity = new HorizontalPanel();
         panelActivity.add(labelActivity);
         panelActivity.add(radioActivity);
-        panelActivity.add(comboboxactivities);
-        fieldsetParentType.add(panelActivity);
-        radiogroupParentType.add(radioActivity);
+        panelActivity.add(comboboxActivities);
+        fieldsetContainer.add(panelActivity);
+        radiogroupContainer.add(radioActivity);
 
         radioProject = new Radio();
         radioProject.setFieldLabel(I18N.CONSTANTS.project());
@@ -179,10 +179,10 @@ public class AddLockedPeriodDialog extends FormPanel implements
         panelProject.add(labelProject);
         panelProject.add(radioProject);
         panelProject.add(comboboxProjects);
-        fieldsetParentType.add(panelProject);
-        radiogroupParentType.add(radioProject);
+        fieldsetContainer.add(panelProject);
+        radiogroupContainer.add(radioProject);
 
-        add(fieldsetParentType);
+        add(fieldsetContainer);
 
         textfieldName = new TextField<String>();
         textfieldName.setFieldLabel(I18N.CONSTANTS.name());
@@ -203,14 +203,14 @@ public class AddLockedPeriodDialog extends FormPanel implements
         datefieldFromDate.setAllowBlank(false);
         add(datefieldToDate);
 
-        radiogroupParentType.addListener(Events.Change,
+        radiogroupContainer.addListener(Events.Change,
             new Listener<FieldEvent>() {
 
                 @Override
                 public void handleEvent(FieldEvent be) {
-                    comboboxactivities.setAllowBlank(!radioActivity.getValue());
+                    comboboxActivities.setAllowBlank(!radioActivity.getValue());
                     comboboxProjects.setAllowBlank(!radioProject.getValue());
-                    comboboxactivities.clearInvalid();
+                    comboboxActivities.clearInvalid();
                     comboboxProjects.clearInvalid();
                 }
             });
@@ -245,8 +245,8 @@ public class AddLockedPeriodDialog extends FormPanel implements
         newLockedPeriod.setEnabled(checkboxEnabled.getValue());
         newLockedPeriod.setFromDate(datefieldFromDate.getValue());
         newLockedPeriod.setToDate(datefieldToDate.getValue());
-        if (radioActivity.getValue() && comboboxactivities.getValue() != null) {
-            newLockedPeriod.setParent(comboboxactivities.getValue());
+        if (radioActivity.getValue() && comboboxActivities.getValue() != null) {
+            newLockedPeriod.setParent(comboboxActivities.getValue());
         }
         if (radioProject.getValue() && comboboxProjects.getValue() != null) {
             newLockedPeriod.setParent(comboboxProjects.getValue());

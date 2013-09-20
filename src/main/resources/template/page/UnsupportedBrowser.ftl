@@ -2,7 +2,7 @@
 <@scaffolding title="Unsupported Browser">
 
 	<@content>
-	<div class="row-fluid">
+	<div class="row">
 		<div class="span12">
 		
 			<h3>${label.unsupportedBrowserHeading}</h3>

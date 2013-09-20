@@ -23,7 +23,7 @@
 <@scaffolding title="${label.invalidOrExpiredInvite}">
 
 	<@content>
-	<div class="row-fluid">
+	<div class="row">
 		<div class="span12">
 			<div class="page-header"><h1 class="page-title">${label.invalidInvitation}</h1></div>
 			

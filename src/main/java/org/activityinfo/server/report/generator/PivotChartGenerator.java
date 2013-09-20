@@ -63,7 +63,7 @@ public class PivotChartGenerator extends
             element,
             effectiveFilter,
             element.getCategoryDimensions(),
-            element.getSeriesDimension());
+            element.getSeriesDimensions());
 
         ScaleUtil.Scale scale = computeScale(element, data);
 

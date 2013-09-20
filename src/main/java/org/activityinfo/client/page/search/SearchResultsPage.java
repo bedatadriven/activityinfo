@@ -56,7 +56,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class SearchResultsPage extends ContentPanel implements SearchView {
-    private VerticalPanel panelSearchResults;
+    private VerticalPanel searchResultsPanel;
     private LayoutContainer containerFilterAndResult;
     private PivotContent pivotContent;
     // private SearchFilterView filterView;
@@ -101,9 +101,9 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
     }
 
     private void createSearchResultsPanel() {
-        panelSearchResults = new VerticalPanel();
-        panelSearchResults.setScrollMode(Scroll.AUTO);
-        containerFilterAndResult.add(panelSearchResults);
+        searchResultsPanel = new VerticalPanel();
+        searchResultsPanel.setScrollMode(Scroll.AUTO);
+        containerFilterAndResult.add(searchResultsPanel);
     }
 
     private void createCompleteResultPanel() {
@@ -233,7 +233,7 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
     }
 
     private void showSearchResults() {
-        panelSearchResults.removeAll();
+        searchResultsPanel.removeAll();
         clearErrorsIfShowing();
 
         int activities = 0;
@@ -241,20 +241,20 @@ public class SearchResultsPage extends ContentPanel implements SearchView {
         int indicators = 0;
 
         LabelField labelResults = new LabelField();
-        panelSearchResults.add(labelResults);
+        searchResultsPanel.add(labelResults);
 
         if (pivotContent != null) {
             VerticalPanel panelSpacer = new VerticalPanel();
             panelSpacer.setHeight(16);
-            panelSearchResults.add(panelSpacer);
-            panelSearchResults.setStylePrimaryName("searchResults");
+            searchResultsPanel.add(panelSpacer);
+            searchResultsPanel.setStylePrimaryName("searchResults");
 
             for (Axis axis : pivotContent.getData().getRootRow().getChildren()) {
                 SearchResultItem itemWidget = new SearchResultItem();
                 itemWidget.setDabaseName(axis.getLabel());
                 itemWidget.setChilds(axis.getChildList());
 
-                panelSearchResults.add(itemWidget);
+                searchResultsPanel.add(itemWidget);
                 databases++;
                 activities += itemWidget.getActivityCount();
                 indicators += itemWidget.getIndicatorCount();

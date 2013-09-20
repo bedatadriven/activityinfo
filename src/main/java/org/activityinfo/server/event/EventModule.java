@@ -24,6 +24,7 @@ package org.activityinfo.server.event;
 
 import org.activityinfo.server.event.sitechange.SiteChangeServlet;
 import org.activityinfo.server.event.sitehistory.SiteHistoryListener;
+import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
 
 import com.google.inject.servlet.ServletModule;
 
@@ -35,6 +36,7 @@ public class EventModule extends ServletModule {
         bind(ServerEventBus.class).asEagerSingleton();
 
         // listeners
+        bind(SiteHistoryProcessor.class);
         bind(SiteHistoryListener.class).asEagerSingleton();
 
         // define endpoints for async callbacks

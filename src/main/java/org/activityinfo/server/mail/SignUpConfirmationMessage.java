@@ -26,7 +26,7 @@ import org.activityinfo.server.database.hibernate.entity.User;
 
 public class SignUpConfirmationMessage extends MessageModel {
     private User user;
-
+    
     public SignUpConfirmationMessage(User user) {
         this.user = user;
     }

@@ -40,10 +40,10 @@ public class MailSenderStub extends MailSender {
         super(templateCfg);
     }
 
-    public List<Message> sentMail = Lists.newArrayList();
+    public List<Message> sentMails = Lists.newArrayList();
 
     @Override
     public void send(Message message) {
-        sentMail.add(message);
+        sentMails.add(message);
     }
 }

@@ -1,14 +1,15 @@
 package org.activityinfo.server.mail;
 
-import java.util.Date;
 import java.util.Properties;
 
-import org.activityinfo.server.authentication.SecureTokenGenerator;
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.inject.util.Providers;
 
 import freemarker.template.TemplateModelException;
 
@@ -24,7 +25,7 @@ public class PostmarkMailSenderTest {
         
         TemplateModule templateModule = new TemplateModule();
         
-        sender = new PostmarkMailSender(config, templateModule.provideConfiguration());
+        sender = new PostmarkMailSender(config, templateModule.provideConfiguration(Providers.of(Domain.DEFAULT)));
     }
     
     @Test

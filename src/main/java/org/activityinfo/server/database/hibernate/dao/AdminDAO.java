@@ -48,16 +48,13 @@ public interface AdminDAO extends DAO<AdminEntity, Integer> {
     List<AdminEntity> findRootEntities(int levelId);
 
     /**
-     * Returns
-     * 
      * @param levelId
      *            id of the {@link AdminLevel} to search
-     * @param parentEntityId
-     *            the entity parent
-     * @return A list of the children of a given admin entity for at a given
-     *         level.
+     * @param entityId
+     *            the entity
+     * @return A list of the children of a given admin entity for a given level.
      */
-    List<AdminEntity> findChildEntities(int levelId, int parentEntityId);
+    List<AdminEntity> findChildEntities(int levelId, int entityId);
 
     /**
      * Returns

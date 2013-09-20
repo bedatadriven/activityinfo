@@ -47,6 +47,9 @@ public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype save();
 
+    @Resource("arrow_merge.png")
+    AbstractImagePrototype importIcon();
+    
     AbstractImagePrototype database();
 
     AbstractImagePrototype design();

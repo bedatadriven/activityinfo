@@ -73,13 +73,11 @@ public class HibernateModule extends ServletModule {
     }
 
     protected void configureEmf() {
-        bind(EntityManagerFactory.class).toProvider(
-            EntityManagerFactoryProvider.class).in(Singleton.class);
+        bind(EntityManagerFactory.class).toProvider(EntityManagerFactoryProvider.class).in(Singleton.class);
     }
 
     protected void configureEm() {
-        bind(EntityManager.class).toProvider(EntityManagerProvider.class).in(
-            HibernateSessionScoped.class);
+        bind(EntityManager.class).toProvider(EntityManagerProvider.class).in(HibernateSessionScoped.class);
     }
 
     @Provides
@@ -88,20 +86,18 @@ public class HibernateModule extends ServletModule {
         return hem.getSession();
     }
 
-    protected static class EntityManagerFactoryProvider implements
-        Provider<EntityManagerFactory> {
-        private org.activityinfo.server.util.config.DeploymentConfiguration configProperties;
+    protected static class EntityManagerFactoryProvider implements Provider<EntityManagerFactory> {
+        private org.activityinfo.server.util.config.DeploymentConfiguration deploymentConfig;
 
         @Inject
-        public EntityManagerFactoryProvider(
-            DeploymentConfiguration configProperties) {
-            this.configProperties = configProperties;
+        public EntityManagerFactoryProvider(DeploymentConfiguration deploymentConfig) {
+            this.deploymentConfig = deploymentConfig;
         }
 
         @Override
         public EntityManagerFactory get() {
             Ejb3Configuration config = new Ejb3Configuration();
-            config.addProperties(configProperties.asProperties());
+            config.addProperties(deploymentConfig.asProperties());
             for (Class clazz : getPersistentClasses()) {
                 config.addAnnotatedClass(clazz);
             }
@@ -112,8 +108,7 @@ public class HibernateModule extends ServletModule {
             EntityManagerFactory emf = config.buildEntityManagerFactory();
 
             if (DeploymentEnvironment.isAppEngineDevelopment()) {
-                SchemaServlet.performMigration((HibernateEntityManager) emf
-                    .createEntityManager());
+                SchemaServlet.performMigration((HibernateEntityManager) emf.createEntityManager());
             }
 
             return emf;
@@ -130,22 +125,19 @@ public class HibernateModule extends ServletModule {
     public static List<Class> getPersistentClasses() {
         try {
             List<Class> list = Lists.newArrayList();
-            List<String> lines = Resources.readLines(
-                HibernateModule.class.getResource("/persistent.classes"),
-                Charsets.UTF_8);
+            List<String> lines =
+                Resources.readLines(HibernateModule.class.getResource("/persistent.classes"), Charsets.UTF_8);
             for (String line : lines) {
                 list.add(Class.forName(line));
             }
             return list;
         } catch (Exception e) {
-            throw new RuntimeException(
-                "Exception loading list of persistent classes", e);
+            throw new RuntimeException("Exception loading list of persistent classes", e);
         }
     }
 
     @Provides
-    protected HibernateEntityManager provideHibernateEntityManager(
-        EntityManager entityManager) {
+    protected HibernateEntityManager provideHibernateEntityManager(EntityManager entityManager) {
         return (HibernateEntityManager) entityManager;
     }
 }

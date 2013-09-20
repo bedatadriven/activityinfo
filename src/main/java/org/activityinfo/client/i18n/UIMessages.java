@@ -63,11 +63,9 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     String lastSynced(String arg0);
 
     /**
-     * Translated
-     * "There is already data entered for the partner {0}. Before deleting this partner, you must delete the partner''s data."
-     * .
+     * Translated "There is already data entered for partner {0}. Delete this partner''s data first.
      */
-    @DefaultMessage("There is already data entered for the partner {0}. Before deleting this partner, you must delete the partner''s data.")
+    @DefaultMessage("There is already data entered for partner {0}. Delete this partner''s data first.")
     String partnerHasDataWarning(String arg0);
 
     /**

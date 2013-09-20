@@ -24,6 +24,7 @@
     <include path="/Login/**.css" expiration="365d" />
     <include path="/Login/**.cache.html" expiration="365d" />
     <include path="/static/**.png" expiration="365d" />
+    <include path="/error.html"/>
   </static-files>
   
   <admin-console>
@@ -33,4 +34,9 @@
   <sessions-enabled>false</sessions-enabled>
   <precompilation-enabled>false</precompilation-enabled>
   <threadsafe>true</threadsafe>
+  
+  <static-error-handlers>
+    <handler file="error.html"/>
+  </static-error-handlers>
+ 
 </appengine-web-app>

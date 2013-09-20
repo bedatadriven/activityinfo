@@ -23,7 +23,7 @@
 <@scaffolding title="${label.resetYourPassword}">
 
 	<@content>
-	<div class="row-fluid">
+	<div class="row">
 		<div class="span12">
 		
 			<h3>${label.resetYourPassword}</h3>

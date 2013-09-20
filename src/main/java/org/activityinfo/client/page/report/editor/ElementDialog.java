@@ -25,7 +25,7 @@ package org.activityinfo.client.page.report.editor;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.shared.report.model.ReportElement;
 
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -41,7 +41,7 @@ public class ElementDialog extends Dialog implements
     private EditorProvider editorProvider;
     private Callback callback;
 
-    private ReportEventHelper events;
+    private ReportEventBus reportEventBus;
     private boolean dirty;
 
     public interface Callback {
@@ -56,8 +56,8 @@ public class ElementDialog extends Dialog implements
         setLayout(new FitLayout());
         setButtons(OKCANCEL);
 
-        events = new ReportEventHelper(eventBus, this);
-        events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -129,6 +129,6 @@ public class ElementDialog extends Dialog implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
     }
 }

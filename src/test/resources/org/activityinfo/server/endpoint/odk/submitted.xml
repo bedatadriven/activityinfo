@@ -1,0 +1,15 @@
+<?xml version='1.0' ?>
+<data id="siteform">
+    <meta>
+        <instanceID>uuid:ffaebd53-1142-444b-8e6a-72e6a77c5a11</instanceID>
+    </meta>
+    <activity>927</activity>
+    <partner>274</partner>
+    <locationname>Myloc</locationname>
+    <gps>52.07421722 4.33448396 0.0 50.0</gps>
+    <date1>2013-08-10</date1>
+    <date2>2013-09-12</date2>
+    <indicator-4410>5.0</indicator-4410>
+    <attributeGroup-991>2419 2421</attributeGroup-991>
+    <comments>No comment</comments>
+</data>

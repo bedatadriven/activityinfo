@@ -46,10 +46,10 @@ public interface CanCreate<M extends DTO> {
     // The user signals the presenter it wants to add a new item
     HandlerRegistration addCreateHandler(CreateHandler handler);
 
-    // The user signals the presenter it wants to add a new item
+    // The user signals the presenter it wants to cancel creating a new item
     HandlerRegistration addCancelCreateHandler(CancelCreateHandler handler);
 
-    // The user signals the presenter it wants to add a new item
+    // The user signals the presenter it wants to start creating a new item
     HandlerRegistration addStartCreateHandler(StartCreateHandler handler);
 
     // An item is created by the presenter, this method adds the item to the

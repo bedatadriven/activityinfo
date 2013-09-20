@@ -36,11 +36,11 @@ import com.extjs.gxt.ui.client.event.EventType;
  */
 public class MockEventBus extends BaseObservable implements EventBus {
 
-    public List<BaseEvent> eventLog = new ArrayList<BaseEvent>();
+    public List<BaseEvent> loggedEvents = new ArrayList<BaseEvent>();
 
     @Override
     public boolean fireEvent(EventType eventType, BaseEvent be) {
-        eventLog.add(be);
+        loggedEvents.add(be);
         return super.fireEvent(eventType, be);
     }
 
@@ -50,14 +50,14 @@ public class MockEventBus extends BaseObservable implements EventBus {
     }
 
     public void assertEventFired(BaseEvent event) {
-        if (!eventLog.contains(event)) {
+        if (!loggedEvents.contains(event)) {
             throw new AssertionError();
         }
     }
 
     public int getEventCount(EventType type) {
         int count = 0;
-        for (BaseEvent event : eventLog) {
+        for (BaseEvent event : loggedEvents) {
 
             if (event.getType() == type) {
                 count++;
@@ -67,8 +67,8 @@ public class MockEventBus extends BaseObservable implements EventBus {
     }
 
     public <T> T getLastNavigationEvent(Class<T> placeClass) {
-        for (int i = eventLog.size() - 1; i >= 0; i--) {
-            BaseEvent event = eventLog.get(i);
+        for (int i = loggedEvents.size() - 1; i >= 0; i--) {
+            BaseEvent event = loggedEvents.get(i);
             if (event instanceof NavigationEvent) {
                 NavigationEvent nevent = (NavigationEvent) event;
                 if (placeClass.isAssignableFrom(nevent.getPlace().getClass())) {

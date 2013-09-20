@@ -22,14 +22,16 @@ package org.activityinfo.server.mail;
  * #L%
  */
 
+import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.database.hibernate.entity.User;
 
 public class PasswordExpiredMessage extends MessageModel {
-
     private User user;
+    private Domain domain;
 
-    public PasswordExpiredMessage(User user) {
+    public PasswordExpiredMessage(User user, Domain domain) {
         this.user = user;
+        this.domain = domain;
     }
 
     public User getUser() {
@@ -43,6 +45,18 @@ public class PasswordExpiredMessage extends MessageModel {
     @Override
     public User getRecipient() {
         return user;
+    }
+
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
+
+    public String getHost() {
+        return domain.getHost();
     }
 
 }

@@ -21,7 +21,7 @@ package org.activityinfo.server.login;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
+    
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +66,9 @@ public class HostController {
     public Response getHostPage(@Context UriInfo uri,
         @Context HttpServletRequest req,
         @QueryParam("redirect") boolean redirect) throws Exception {
+
         if (!authProvider.isAuthenticated()) {
+            // Otherwise, go to the default ActivityInfo root page
             return Response
                 .ok(new RootPageModel().asViewable())
                 .type(MediaType.TEXT_HTML)
@@ -80,18 +82,18 @@ public class HostController {
                 .build();
         }
 
-        String appUri = uri.getAbsolutePathBuilder().replaceQuery("").build()
-            .toString();
+        String appUri = uri.getAbsolutePathBuilder().replaceQuery("").build().toString();
 
         HostPageModel model = new HostPageModel(appUri);
         model.setAppCacheEnabled(checkAppCacheEnabled(req));
         model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
+
         return Response.ok(model.asViewable())
             .type(MediaType.TEXT_HTML)
             .cacheControl(CacheControl.valueOf("no-cache"))
             .build();
     }
-    
+
     /**
      * 
      * @return a simple error page indicating that the GWT app does not support

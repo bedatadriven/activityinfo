@@ -12,9 +12,12 @@ public enum ChangeType {
     DELETE,
     UNKNOWN;
 
-    @SuppressWarnings("rawtypes")
     public static ChangeType getType(CommandEvent event) {
-        Command cmd = event.getCommand();
+        return ChangeType.getType(event.getCommand());
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static ChangeType getType(Command cmd) {
         if (cmd instanceof CreateSite) {
             return CREATE;
         }

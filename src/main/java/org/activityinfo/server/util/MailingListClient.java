@@ -1,4 +1,4 @@
-package org.activityinfo.shared.util;
+package org.activityinfo.server.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

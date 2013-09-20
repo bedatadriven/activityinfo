@@ -31,7 +31,7 @@ import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.report.ReportChangeHandler;
-import org.activityinfo.client.page.report.ReportEventHelper;
+import org.activityinfo.client.page.report.ReportEventBus;
 import org.activityinfo.client.page.report.editor.ReportElementEditor;
 import org.activityinfo.client.report.editor.map.layerOptions.LayerOptionsPanel;
 import org.activityinfo.shared.command.RenderElement.Format;
@@ -58,7 +58,7 @@ public class MapEditor extends ContentPanel implements
     private static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
 
     private final Dispatcher dispatcher;
-    private final ReportEventHelper events;
+    private final ReportEventBus reportEventBus;
     private final EventBus eventBus;
 
     // Contained widgets
@@ -72,8 +72,8 @@ public class MapEditor extends ContentPanel implements
     public MapEditor(Dispatcher dispatcher, EventBus eventBus) {
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
-        this.events = new ReportEventHelper(eventBus, this);
-        this.events.listen(new ReportChangeHandler() {
+        this.reportEventBus = new ReportEventBus(eventBus, this);
+        this.reportEventBus.listen(new ReportChangeHandler() {
 
             @Override
             public void onChanged() {
@@ -120,7 +120,7 @@ public class MapEditor extends ContentPanel implements
 
             @Override
             public void onValueChange(ValueChangeEvent<MapLayer> event) {
-                events.fireChange();
+                reportEventBus.fireChange();
             }
         });
 
@@ -179,7 +179,7 @@ public class MapEditor extends ContentPanel implements
 
     @Override
     public void disconnect() {
-        events.disconnect();
+        reportEventBus.disconnect();
         layersWidget.disconnect();
         mapPanel.disconnect();
     }

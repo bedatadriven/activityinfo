@@ -83,8 +83,7 @@ public class EmbedDialog extends Dialog {
 
     public void show(String url) {
         urlText.setValue(url);
-        embedText.setValue("<iframe src=\"" + url
-            + "\" width=\"400\" height=\"200\"></iframe>");
+        embedText.setValue("<iframe src=\"" + url + "\" width=\"400\" height=\"200\"></iframe>");
         super.show();
     }
 
@@ -93,48 +92,38 @@ public class EmbedDialog extends Dialog {
             + FilterUrlSerializer.toUrlFragment(place.getFilter());
 
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-
             @Override
             public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-
             }
 
             @Override
             public void onSuccess(SchemaDTO result) {
                 Filter filter = place.getFilter();
-                if (filter
-                    .isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
-                    ActivityDTO singleActivity = result.getActivityById(filter
-                        .getRestrictedCategory(DimensionType.Activity));
-                    checkPublication(singleActivity, url);
-                } else if (filter
-                    .isDimensionRestrictedToSingleCategory(DimensionType.Database)) {
+                if (filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
+                    ActivityDTO singleActivity =
+                        result.getActivityById(filter.getRestrictedCategory(DimensionType.Activity));
+                    showPublished(singleActivity, url);
+                } else if (filter.isDimensionRestrictedToSingleCategory(DimensionType.Database)) {
                     MessageBox.alert("foo", "not impl", null);
                 }
             }
         });
     }
 
-    private void checkPublication(final ActivityDTO activity, final String url) {
+    private void showPublished(final ActivityDTO activity, final String url) {
         if (activity.getPublished() != Published.ALL_ARE_PUBLISHED.getIndex()) {
             if (activity.getDatabase().isDesignAllowed()) {
                 MessageBox.confirm(I18N.CONSTANTS.embed(),
-                    I18N.MESSAGES.promptPublishActivity(activity.getName()),
-                    new Listener<MessageBoxEvent>() {
-
+                    I18N.MESSAGES.promptPublishActivity(activity.getName()), new Listener<MessageBoxEvent>() {
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
-                            if (be.getButtonClicked().getItemId()
-                                .equals(Dialog.YES)) {
+                            if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
                                 publishActivity(activity, url);
                             }
                         }
-
                     });
             } else {
-                MessageBox.alert(I18N.CONSTANTS.embed(),
-                    I18N.MESSAGES.activityNotPublic(activity.getName()), null);
+                MessageBox.alert(I18N.CONSTANTS.embed(), I18N.MESSAGES.activityNotPublic(activity.getName()), null);
             }
         } else {
             show(url);

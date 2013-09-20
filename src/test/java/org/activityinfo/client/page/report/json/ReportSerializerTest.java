@@ -58,7 +58,7 @@ public class ReportSerializerTest {
         reportSerializer = new ReportJsonFactory(new JsonParser());
         factory = new ReportJsonFactory(new JsonParser());
 
-        report = getReport();
+        report = createReport();
 
     }
 
@@ -104,7 +104,7 @@ public class ReportSerializerTest {
 
     @Test
     public void dimensionsTest() {
-        getReport();
+        createReport();
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ReportSerializerTest {
 
     }
 
-    private Report getReport() {
+    private Report createReport() {
         Report report = new Report();
 
         report.setTitle("apple report");

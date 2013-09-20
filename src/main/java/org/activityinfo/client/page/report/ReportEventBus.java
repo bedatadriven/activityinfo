@@ -26,13 +26,13 @@ import org.activityinfo.client.EventBus;
 
 import com.extjs.gxt.ui.client.event.Listener;
 
-public class ReportEventHelper {
+public class ReportEventBus {
 
     private EventBus eventBus;
     private HasReportElement source;
     private Listener<ReportChangeEvent> innerListener;
 
-    public ReportEventHelper(EventBus eventBus, HasReportElement source) {
+    public ReportEventBus(EventBus eventBus, HasReportElement source) {
         this.eventBus = eventBus;
         this.source = source;
     }

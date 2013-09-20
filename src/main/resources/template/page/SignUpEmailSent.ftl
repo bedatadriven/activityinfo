@@ -23,12 +23,12 @@
 <@scaffolding title="${label.signUpTitle}">
 
     <@content>
-    <div class="row-fluid">
+    <div class="row">
 		<div class="span12">
 			<h3>${label.signUpEmailSentHeader}</h3>
 		</div>
 	</div>
-    <div class="row-fluid">
+    <div class="row">
         <div class="span12">
                         
             <p class="lead">               

@@ -2,7 +2,7 @@
 <@scaffolding title="AppEngine Configuration">
 
 	<@content>
-	<div class="row-fluid">
+	<div class="row">
 		<div class="span12">
 		
 			<h3>Application Configuration</h3>
@@ -14,10 +14,10 @@
 				<div>
 					<button type="submit" class="btn btn-primary">Update</button>
 				</div>
-			    
 			</form>
 		</div>
 	</div>
+
 	</@content>
 	<@footer/>
 	<@scripts/>

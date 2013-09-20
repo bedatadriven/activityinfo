@@ -28,6 +28,7 @@ import javax.servlet.ServletContextEvent;
 
 import org.activityinfo.server.attachment.AttachmentModule;
 import org.activityinfo.server.authentication.AuthenticationModule;
+import org.activityinfo.server.branding.BrandingModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.digest.DigestModule;
@@ -36,6 +37,7 @@ import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.healthcheck.HealthCheckModule;
 import org.activityinfo.server.endpoint.kml.KmlModule;
+import org.activityinfo.server.endpoint.odk.ODKModule;
 import org.activityinfo.server.endpoint.rest.RestApiModule;
 import org.activityinfo.server.event.EventModule;
 import org.activityinfo.server.geo.GeometryModule;
@@ -77,13 +79,13 @@ public class StartupListener extends GuiceServletContextListener {
     protected Injector getInjector() {
 
         return Guice.createInjector(
+            new HibernateModule(),
             new ConfigModule(),
             new LoggingModule(),
             new TemplateModule(),
             new BeanMappingModule(),
             new MailModule(),
             new ServerDatabaseModule(),
-            new HibernateModule(),
             new ContentModule(),
             new GeometryModule(),
             new AuthenticationModule(),
@@ -97,11 +99,13 @@ public class StartupListener extends GuiceServletContextListener {
             new ExportModule(),
             new MonitoringModule(),
             new KmlModule(),
+            new BrandingModule(),
             new TrackingModule(),
             new BlobServiceModule(),
             new LocaleModule(),
             new JaxRsModule(),
-            new RestApiModule());
+            new RestApiModule(),
+            new ODKModule());
     }
 
 }
