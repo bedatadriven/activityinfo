@@ -65,7 +65,18 @@ public class MatchLocationHandler implements CommandHandler<MatchLocation> {
                 location.setAdminEntity(entity.getLevel().getId(), dto);
             }
         } else {
-            LocationDTO
+            location.setId(matchedLocation.getId());
+            location.setName(matchedLocation.getName());
+            location.setLatitude(matchedLocation.getY());
+            location.setLongitude(matchedLocation.getX());
+            
+            for(AdminEntity entity : matchedLocation.getAdminEntities()) {
+                AdminEntityDTO dto = new AdminEntityDTO();
+                dto.setId(entity.getId());
+                dto.setName(entity.getName());
+                dto.setLevelId(entity.getLevel().getId());
+                location.setAdminEntity(entity.getLevel().getId(), dto);
+            }
         }
 
         return location;
