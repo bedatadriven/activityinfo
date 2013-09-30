@@ -25,10 +25,16 @@ package org.activityinfo.shared.dto;
 import java.util.Date;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /** A period where 'normal users' cannot add, update or remove data */
+@JsonAutoDetect(JsonMethod.NONE)
 public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
 
     /** An object supporting locks */
@@ -51,6 +57,8 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
     }
 
     @Override
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public String getName() {
         return (String) get("name");
     }
@@ -60,6 +68,8 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
     }
 
     @Override
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public int getId() {
         return (Integer) get("id");
     }
@@ -76,6 +86,8 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
         }
     }
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public LocalDate getToDate() {
         return get("toDate");
     }
@@ -92,6 +104,8 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
         set("fromDate", fromDate);
     }
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public LocalDate getFromDate() {
         return get("fromDate");
     }
@@ -110,6 +124,8 @@ public class LockedPeriodDTO extends BaseModelData implements EntityDTO {
         set("enabled", enabled);
     }
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public boolean isEnabled() {
         return (Boolean) get("enabled");
     }

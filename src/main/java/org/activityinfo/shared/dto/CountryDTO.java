@@ -60,19 +60,17 @@ public final class CountryDTO extends BaseModelData implements DTO {
     }
 
     @JsonProperty
-    @JsonView(DTOViews.List.class)
+    @JsonView({ DTOViews.List.class, DTOViews.Schema.class })
     public int getId() {
         return (Integer) get("id");
     }
 
     @JsonProperty
-    @JsonView(DTOViews.List.class)
+    @JsonView({ DTOViews.List.class, DTOViews.Schema.class })
     public String getName() {
         return get("name");
     }
 
-    @JsonProperty
-    @JsonView(DTOViews.List.class)
     public void setName(String value) {
         set("name", value);
     }
@@ -104,7 +102,7 @@ public final class CountryDTO extends BaseModelData implements DTO {
     }
 
     @JsonProperty("code")
-    @JsonView(DTOViews.List.class)
+    @JsonView({ DTOViews.List.class, DTOViews.Schema.class })
     public String getCodeISO() {
         return get("codeISO");
     }

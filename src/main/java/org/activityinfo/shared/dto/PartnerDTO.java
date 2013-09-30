@@ -22,6 +22,11 @@ package org.activityinfo.shared.dto;
  * #L%
  */
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -31,6 +36,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * 
  * @author Alex Bertram
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class PartnerDTO extends BaseModelData implements DTO, ProvidesKey {
 
     public PartnerDTO() {
@@ -46,10 +52,14 @@ public final class PartnerDTO extends BaseModelData implements DTO, ProvidesKey 
         set("id", id);
     }
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public int getId() {
         return (Integer) get("id");
     }
-
+    
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public String getName() {
         return get("name");
     }
@@ -62,6 +72,8 @@ public final class PartnerDTO extends BaseModelData implements DTO, ProvidesKey 
         set("fullName", value);
     }
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public String getFullName() {
         return get("fullName");
     }

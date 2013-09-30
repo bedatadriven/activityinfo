@@ -22,6 +22,8 @@ package org.activityinfo.shared.dto;
  * #L%
  */
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -34,6 +36,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * 
  * @author Alex Bertram
  */
+@JsonAutoDetect(JsonMethod.NONE)
 public final class LocationTypeDTO extends BaseModelData implements DTO {
 
     public LocationTypeDTO() {
@@ -77,5 +80,4 @@ public final class LocationTypeDTO extends BaseModelData implements DTO {
     public boolean isAdminLevel() {
         return getBoundAdminLevelId() != null;
     }
-
 }

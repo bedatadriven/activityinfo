@@ -26,9 +26,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.activityinfo.shared.dto.LockedPeriodDTO.HasLockedPeriod;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
+@JsonAutoDetect(JsonMethod.NONE)
 public final class ProjectDTO
     extends
     BaseModelData
@@ -53,6 +58,8 @@ public final class ProjectDTO
     }
 
     @Override
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public int getId() {
         return (Integer) get("id");
     }
@@ -62,6 +69,8 @@ public final class ProjectDTO
     }
 
     @Override
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public String getName() {
         return (String) get("name");
     }
@@ -74,6 +83,8 @@ public final class ProjectDTO
         set("description", description);
     }
 
+    @JsonProperty
+    @JsonView(DTOViews.Schema.class)
     public String getDescription() {
         return (String) get("description");
     }
