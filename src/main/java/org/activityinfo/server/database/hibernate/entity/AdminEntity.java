@@ -45,6 +45,7 @@ import javax.persistence.Transient;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.annotations.Type;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -83,6 +84,7 @@ public class AdminEntity implements java.io.Serializable {
 
     @Id
     @JsonProperty
+    @JsonView(AdminEntityViews.GeocodeView.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AdminEntityId", unique = true, nullable = false)
     public int getId() {
@@ -97,6 +99,12 @@ public class AdminEntity implements java.io.Serializable {
     @JoinColumn(name = "AdminLevelId", nullable = false)
     public AdminLevel getLevel() {
         return this.level;
+    }
+    
+    @Transient
+    @JsonView(AdminEntityViews.GeocodeView.class)
+    public int getLevelId() {
+        return getLevel().getId();
     }
 
     public void setLevel(AdminLevel level) {

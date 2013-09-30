@@ -28,6 +28,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.activityinfo.server.DeploymentEnvironment;
+import org.activityinfo.server.database.hibernate.dao.FixGeometryTask;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
@@ -46,6 +47,7 @@ import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 /**
  * Guice module that provides Hibernate-based implementations for the DAO-layer
@@ -65,11 +67,16 @@ public class HibernateModule extends ServletModule {
 
         filter("/*").through(HibernateSessionFilter.class);
         serve(SchemaServlet.ENDPOINT).with(SchemaServlet.class);
-
+        
         configureEmf();
         configureEm();
         install(new HibernateDAOModule());
         install(new TransactionModule());
+        
+        // temporary fix for geometry types
+        bind(FixGeometryTask.class);
+        filter("/tasks/fixGeometry").through(GuiceContainer.class);
+
     }
 
     protected void configureEmf() {

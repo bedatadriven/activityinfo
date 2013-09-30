@@ -22,6 +22,7 @@ package org.activityinfo.server.endpoint.rest;
  * #L%
  */
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -42,6 +43,7 @@ import org.activityinfo.server.endpoint.rest.model.NewAdminEntity;
 import org.activityinfo.server.endpoint.rest.model.NewAdminLevel;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
+import com.google.common.collect.Lists;
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.api.view.Viewable;
 
@@ -65,6 +67,19 @@ public class CountryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Country getJson() {
         return country;
+    }
+    
+    @GET
+    @Path("locationTypes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<LocationType> getLocationTypes() {
+        List<LocationType> types = Lists.newArrayList();
+        for(LocationType type : country.getLocationTypes()) {
+            if(type.getBoundAdminLevel() == null) {
+                types.add(type);
+            }
+        }
+        return types;
     }
 
     

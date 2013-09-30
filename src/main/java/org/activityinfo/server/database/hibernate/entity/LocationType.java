@@ -35,12 +35,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * 
  * @author Alex Bertram
  * 
  */
 @Entity
+@JsonAutoDetect(JsonMethod.NONE)
 public class LocationType implements Serializable, SchemaElement {
     
     private int id;
@@ -56,6 +61,7 @@ public class LocationType implements Serializable, SchemaElement {
     }
 
     @Id
+    @JsonProperty
     @Column(name = "LocationTypeId", unique = true, nullable = false)
     public int getId() {
         return this.id;
@@ -74,6 +80,7 @@ public class LocationType implements Serializable, SchemaElement {
         this.reuse = reuse;
     }
 
+    @JsonProperty
     @Column(name = "Name", nullable = false, length = 50)
     public String getName() {
         return this.name;
@@ -120,5 +127,4 @@ public class LocationType implements Serializable, SchemaElement {
     public void setBoundAdminLevel(AdminLevel boundAdminLevel) {
         this.boundAdminLevel = boundAdminLevel;
     }
-
 }

@@ -92,7 +92,7 @@ public class SchemaServlet extends HttpServlet {
     }
 
     private static class CloudSqlConnection extends JdbcConnection {
-
+        
         public CloudSqlConnection(Connection connection) {
             super(connection);
         }
@@ -101,7 +101,5 @@ public class SchemaServlet extends HttpServlet {
         public String getDatabaseProductName() throws DatabaseException {
             return "MySQL";
         }
-
     }
-
 }

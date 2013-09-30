@@ -23,7 +23,6 @@ import org.codehaus.jackson.JsonGenerator;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.sun.jersey.api.json.JSONWithPadding;
 
 public class SitesResources {
 

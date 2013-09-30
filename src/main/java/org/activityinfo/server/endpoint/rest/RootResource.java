@@ -141,4 +141,9 @@ public class RootResource {
     public GeocodingResource getGeocoder() {
         return new GeocodingResource();
     }
+    
+    @Path("/locations")
+    public LocationsResource getLocations() {
+        return new LocationsResource();
+    }
 }

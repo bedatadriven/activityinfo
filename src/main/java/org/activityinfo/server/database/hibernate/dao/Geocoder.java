@@ -3,6 +3,8 @@ package org.activityinfo.server.database.hibernate.dao;
 import java.util.List;
 
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
+import org.activityinfo.server.util.mapping.JtsUtil;
+import org.activityinfo.shared.report.content.AiLatLng;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernatespatial.criterion.SpatialRestrictions;
@@ -11,8 +13,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
@@ -30,6 +30,13 @@ public class Geocoder {
         this.sessionProvider = sessionProvider;
     }
 
+    /**
+     * Geocode a single point to a list of admin entities
+     * 
+     * @param latitude
+     * @param longitude
+     * @return
+     */
     public List<AdminEntity> geocode(double latitude, double longitude) {
 
         Point point = gf.createPoint(new Coordinate(longitude, latitude));
@@ -44,27 +51,19 @@ public class Geocoder {
         List<AdminEntity> containedByMbr = criteria.list();
         List<AdminEntity> contains = Lists.newArrayList();
         for(AdminEntity entity : containedByMbr) {
-            if(contains(entity.getGeometry(), point)) {
+            if(JtsUtil.contains(entity.getGeometry(), point)) {
                 contains.add(entity);
             }
         }
         return contains;
     }
-
-    private boolean contains(Geometry geometry, Point point) {
-        // MySQL seems to store all of our multipolygons as GeometryCollections
-        
-        if(geometry instanceof GeometryCollection) {
-            GeometryCollection collection = (GeometryCollection) geometry;
-            for(int i=0;i!=collection.getNumGeometries();++i) {
-                if(contains(collection.getGeometryN(i), point)) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            return geometry.contains(point);
+    
+    public List<List<AdminEntity>> gecodeBatch(List<AiLatLng> points) {
+        BatchGeocoder batchGeocoder = new BatchGeocoder(sessionProvider.get());
+        for(AiLatLng latLng : points) {
+            batchGeocoder.addPoint(latLng.getLng(), latLng.getLat());
         }
+        return batchGeocoder.geocode();   
     }
 
 }
