@@ -26,7 +26,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.Map;
 
+import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
@@ -34,6 +36,8 @@ import org.activityinfo.shared.report.content.PieMapMarker;
 import org.activityinfo.shared.report.model.clustering.NoClustering;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.junit.Test;
+
+import com.google.common.collect.Maps;
 
 public class PiechartMapLayerGeneratorTest {
 
@@ -58,8 +62,14 @@ public class PiechartMapLayerGeneratorTest {
         pcml.setClustering(new NoClustering());
 
         TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
+        
+        Map<Integer, Indicator> indicators = Maps.newHashMap();
+        indicators.put(1, new Indicator());
+        indicators.put(2, new Indicator());
+        indicators.put(3, new Indicator());
+        indicators.put(4, new Indicator());
 
-        PiechartLayerGenerator gen = new PiechartLayerGenerator(pcml);
+        PiechartLayerGenerator gen = new PiechartLayerGenerator(pcml, indicators);
         gen.setSites(Arrays.asList(siteData));
 
         MapContent mc = new MapContent();

@@ -24,9 +24,11 @@ package org.activityinfo.server.report.generator.map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
@@ -36,6 +38,8 @@ import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.MapReportElement;
 import org.activityinfo.shared.report.model.layers.PiechartMapLayer;
 import org.junit.Test;
+
+import com.google.common.collect.Maps;
 
 public class PieMapMarkerTest {
 
@@ -71,7 +75,13 @@ public class PieMapMarkerTest {
 
         TiledMap map = new TiledMap(640, 480, new AiLatLng(0, 0), 6);
 
-        PiechartLayerGenerator generator = new PiechartLayerGenerator(layer);
+        
+        Map<Integer, Indicator> indicators = Maps.newHashMap();
+        indicators.put(101, new Indicator());
+        indicators.put(102, new Indicator());
+        indicators.put(103, new Indicator());
+        
+        PiechartLayerGenerator generator = new PiechartLayerGenerator(layer, indicators);
         generator.setSites(sites);
         generator.generate(map, content);
 
