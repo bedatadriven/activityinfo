@@ -2,8 +2,10 @@ package org.activityinfo.client.importer;
 
 import java.util.List;
 
+import org.activityinfo.client.importer.column.BindingChangedEvent;
 import org.activityinfo.client.importer.column.ColumnBindingFactory;
 import org.activityinfo.client.importer.column.ColumnBindingForm;
+import org.activityinfo.client.importer.column.Ignore;
 import org.activityinfo.client.widget.wizard.WizardPage;
 
 import com.extjs.gxt.ui.client.event.Events;
@@ -31,7 +33,15 @@ public class PreviewGridPage extends WizardPage {
         
         setLayout(layout);
         
+        model.addListener(ImportModel.COLUMNS_CHANGED, new Listener<BindingChangedEvent>() {
+
+            @Override
+            public void handleEvent(BindingChangedEvent be) {
+                columnBindingChanged(be.getColumnModel());
+            }
+        });
     }
+
 
     @Override
     public void beforeShow() {
@@ -43,17 +53,16 @@ public class PreviewGridPage extends WizardPage {
 
         for(ImportColumnModel column : data.getColumns()) {
             ColumnConfig config = new ColumnConfig(column.getId(), column.getHeader(), 100);
-          //  config.setRenderer(new ImportGridCellRenderer(column));
             columns.add(config);
         }
         ColumnModel columnModel = new ColumnModel(columns);
        
-        
         if(grid == null) {
             createGrid(data, columnModel);
         } else {
             grid.reconfigure(data.getRowStore(), columnModel);
         }
+        
         
     }
 
@@ -71,7 +80,7 @@ public class PreviewGridPage extends WizardPage {
         gridLayout.setFlex(1);
         
         add(grid, gridLayout);
-        
+            
         bindingPopup = new ColumnBindingForm(model, ColumnBindingFactory.forActivity(model.getActivity()));
         add(bindingPopup);
     }
@@ -79,5 +88,16 @@ public class PreviewGridPage extends WizardPage {
 
     private void columnClicked(GridEvent<ImportRowModel> event) {
         bindingPopup.showColumnConfig(event.getColIndex());
+    }
+    
+
+    private void columnBindingChanged(ImportColumnModel columnModel) {
+        ColumnConfig gridColumnModel = grid.getColumnModel().getColumn(columnModel.getColumnIndex());
+        StringBuilder header = new StringBuilder(columnModel.getHeader());
+        header.append("<br><b>");
+        header.append(columnModel.getBinding().getLabel());
+        header.append("</b>");
+        gridColumnModel.setHeader(header.toString());
+        grid.getView().getHeader().refresh();
     }
 }

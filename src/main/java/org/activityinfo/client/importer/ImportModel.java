@@ -5,7 +5,12 @@ import java.util.List;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.LocationDTO;
 
-public class ImportModel {
+import com.extjs.gxt.ui.client.event.BaseObservable;
+import com.extjs.gxt.ui.client.event.EventType;
+
+public class ImportModel extends BaseObservable {
+    
+    public static final EventType COLUMNS_CHANGED = new EventType();
     
     private ActivityDTO activity;
     private String text = "";

@@ -157,7 +157,7 @@ public class UpdateMessageBuilder {
 
         htmlWriter
             .paragraph("<a href=\"" + url + "\">Open in ActivityInfo</a>");
-
+        
         String signature = I18N.MESSAGES.sitechangeSignature();
         htmlWriter.paragraph(signature);
 

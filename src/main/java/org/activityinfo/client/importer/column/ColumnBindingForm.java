@@ -61,15 +61,14 @@ public class ColumnBindingForm extends ContentPanel {
 
     private void onBindingChanged(ColumnBinding binding) {
         selectedColumn.setBinding(binding);
+        model.fireEvent(ImportModel.COLUMNS_CHANGED, new BindingChangedEvent(selectedColumn));
     }
 
     public void showColumnConfig(int columnIndex) {
-    
         selectedColumn = model.getData().getColumns().get(columnIndex);
         
         setHeading(selectedColumn.getHeader());
         
         radioGroup.setValue( radioMap.get(selectedColumn.getBinding()) );
-        
     }
 }

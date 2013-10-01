@@ -39,6 +39,5 @@ public class ImportColumnModel extends BaseModelData {
     public void setBinding(ColumnBinding binding) {
         this.binding = binding;
     }
-
 }
 
