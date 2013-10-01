@@ -22,7 +22,6 @@ package org.activityinfo.server.event.sitechange;
  * #L%
  */
 
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -30,7 +29,6 @@ import javax.mail.MessagingException;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.entry.form.SiteRenderer;
-import org.activityinfo.client.page.entry.form.SiteRenderer.IndicatorValueFormatter;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.i18n.LocaleHelper;
 import org.activityinfo.server.mail.Message;
@@ -148,13 +146,7 @@ public class UpdateMessageBuilder {
         htmlWriter.paragraph(intro);
 
         if (type.isNewOrUpdate()) {
-            SiteRenderer siteRenderer = new SiteRenderer();
-            siteRenderer.setIndicatorValueFormatter(new IndicatorValueFormatter() {
-                @Override
-                public String format(Double value) {
-                    return new DecimalFormat("#,##0.####").format(value);
-                }
-            });
+            SiteRenderer siteRenderer = new SiteRenderer(new JreIndicatorValueFormatter());
 
             htmlWriter.paragraph(siteRenderer.renderLocation(siteDTO, activityDTO));
             htmlWriter.paragraph(siteRenderer.renderSite(siteDTO, activityDTO, false, true));

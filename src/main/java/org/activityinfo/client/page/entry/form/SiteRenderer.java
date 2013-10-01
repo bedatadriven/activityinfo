@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminEntityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
@@ -40,7 +39,12 @@ import com.google.common.base.Strings;
 
 public class SiteRenderer {
 
-    private IndicatorValueFormatter indicatorValueFormatter;
+    private final IndicatorValueFormatter indicatorValueFormatter;
+    
+    public SiteRenderer(IndicatorValueFormatter indicatorValueFormatter) {
+        super();
+        this.indicatorValueFormatter = indicatorValueFormatter;
+    }
 
     public String renderLocation(SiteDTO site, ActivityDTO activity) {
         StringBuilder html = new StringBuilder();
@@ -160,11 +164,7 @@ public class SiteRenderer {
         if (value == null) {
             return "-";
         } else {
-            if (indicatorValueFormatter != null) {
-                return indicatorValueFormatter.format(value);
-            } else {
-                return IndicatorNumberFormat.INSTANCE.format(value);
-            }
+            return indicatorValueFormatter.format(value);
         }
     }
 
@@ -217,14 +217,5 @@ public class SiteRenderer {
                 html.append("</span></p>");
             }
         }
-    }
-
-    public void setIndicatorValueFormatter(
-        IndicatorValueFormatter indicatorValueFormatter2) {
-        this.indicatorValueFormatter = indicatorValueFormatter2;
-    }
-
-    public static interface IndicatorValueFormatter {
-        String format(Double value);
     }
 }

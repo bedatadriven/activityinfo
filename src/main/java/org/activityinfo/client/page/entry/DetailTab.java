@@ -25,6 +25,7 @@ package org.activityinfo.client.page.entry;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.entry.form.SiteRenderer;
+import org.activityinfo.client.util.IndicatorNumberFormat;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
@@ -70,7 +71,7 @@ public class DetailTab extends TabItem {
     }
 
     private void render(SchemaDTO schema, SiteDTO site) {
-        SiteRenderer renderer = new SiteRenderer();
+        SiteRenderer renderer = new SiteRenderer(new IndicatorNumberFormat());
         content.setHtml(renderer.renderSite(site,
             schema.getActivityById(site.getActivityId()), false, true));
     }

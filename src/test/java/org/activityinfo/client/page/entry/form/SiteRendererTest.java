@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
-import org.activityinfo.client.page.entry.form.SiteRenderer.IndicatorValueFormatter;
+import org.activityinfo.server.event.sitechange.JreIndicatorValueFormatter;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SiteDTO;
@@ -22,13 +22,7 @@ public class SiteRendererTest {
     public void setup() {
         LocaleProxy.setLocale(Locale.ENGLISH);
 
-        siteRenderer = new SiteRenderer();
-        siteRenderer.setIndicatorValueFormatter(new IndicatorValueFormatter() {
-            @Override
-            public String format(Double value) {
-                return new DecimalFormat("#,##0.####").format(value);
-            }
-        });
+        siteRenderer = new SiteRenderer(new JreIndicatorValueFormatter());
 
     }
 

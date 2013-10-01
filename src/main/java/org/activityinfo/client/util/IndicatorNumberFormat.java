@@ -22,10 +22,21 @@ package org.activityinfo.client.util;
  * #L%
  */
 
+import org.activityinfo.client.page.entry.form.IndicatorValueFormatter;
+
 import com.google.gwt.i18n.client.NumberFormat;
 
-public class IndicatorNumberFormat {
+public class IndicatorNumberFormat implements IndicatorValueFormatter {
 
     public static final NumberFormat INSTANCE = NumberFormat
         .getFormat("#,##0.####");
+
+    @Override
+    public String format(Double value) {
+        if(value == null) {
+            return "";
+        }
+        return INSTANCE.format(value);
+    }
+
 }

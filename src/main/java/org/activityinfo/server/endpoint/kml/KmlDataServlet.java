@@ -33,16 +33,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 
+import org.activityinfo.client.page.entry.form.SiteRenderer;
 import org.activityinfo.server.authentication.BasicAuthentication;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.event.sitechange.JreIndicatorValueFormatter;
 import org.activityinfo.server.util.html.HtmlWriter;
 import org.activityinfo.server.util.xml.XmlBuilder;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.dto.ActivityDTO;
+import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
@@ -69,6 +72,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     private final DispatcherSync dispatcher;
     private final BasicAuthentication authenticator;
+    private final SiteRenderer siteRenderer;
 
     private final Provider<EntityManager> entityManager;
 
@@ -81,6 +85,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         this.entityManager = entityManager;
         this.authenticator = authenticator;
         this.dispatcher = dispatcher;
+        this.siteRenderer = new SiteRenderer(new JreIndicatorValueFormatter());
     }
 
     @Override
@@ -197,25 +202,11 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         return dispatcher.execute(new GetSites(filter)).getData();
     }
 
-    private String renderDescription(ActivityDTO activity, SiteDTO data) {
-        HtmlWriter html = new HtmlWriter();
-
-        html.startTable();
-
-        for (IndicatorDTO indicator : activity.getIndicators()) {
-            if (data.getIndicatorValue(indicator.getId()) != null) {
-                html.startTableRow();
-
-                html.tableCell(indicator.getName());
-                html.tableCell(Double.toString(data.getIndicatorValue(indicator
-                    .getId())));
-                html.tableCell(indicator.getUnits());
-
-                html.endTableRow();
-            }
-        }
-
-        html.endTable();
+    private String renderDescription(ActivityDTO activity, SiteDTO site) {
+        
+        StringBuilder html = new StringBuilder();
+        html.append(siteRenderer.renderLocation(site,activity));
+        html.append(siteRenderer.renderSite(site, activity, false, true));
         return html.toString();
     }
 
