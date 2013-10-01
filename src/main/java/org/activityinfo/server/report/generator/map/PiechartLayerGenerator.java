@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.Clusterer;
 import org.activityinfo.server.report.generator.map.cluster.ClustererFactory;
@@ -53,8 +54,8 @@ import org.activityinfo.shared.util.mapping.Extents;
 public class PiechartLayerGenerator extends
     PointLayerGenerator<PiechartMapLayer> {
 
-    public PiechartLayerGenerator(PiechartMapLayer layer) {
-        super(layer);
+    public PiechartLayerGenerator(PiechartMapLayer layer, Map<Integer, Indicator> indicators) {
+        super(layer, indicators);
     }
 
     @Override

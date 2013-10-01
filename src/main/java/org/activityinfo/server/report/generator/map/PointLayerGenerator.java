@@ -23,28 +23,34 @@ package org.activityinfo.server.report.generator.map;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSites;
+import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.clustering.AdministrativeLevelClustering;
 import org.activityinfo.shared.report.model.layers.PointMapLayer;
+
+import com.google.common.collect.Lists;
 
 public abstract class PointLayerGenerator<T extends PointMapLayer> implements
     LayerGenerator {
 
     protected T layer;
     protected List<SiteDTO> sites;
+    private Map<Integer, Indicator> indicators;
 
-    protected PointLayerGenerator(T layer) {
+    protected PointLayerGenerator(T layer, Map<Integer, Indicator> indicators) {
         this.layer = layer;
+        this.indicators = indicators;
     }
 
     @Override
     public void query(DispatcherSync dispatcher, Filter effectiveFilter) {
-
         GetSites query = queryFor(effectiveFilter, layer);
         this.sites = dispatcher.execute(query).getData();
     }
@@ -60,17 +66,36 @@ public abstract class PointLayerGenerator<T extends PointMapLayer> implements
 
     private GetSites queryFor(Filter effectiveFilter, PointMapLayer layer) {
         Filter layerFilter = new Filter(effectiveFilter, layer.getFilter());
-        layerFilter.addRestriction(DimensionType.Indicator,
-            layer.getIndicatorIds());
+        for(int id : layer.getIndicatorIds()) {
+            Indicator indicator = indicators.get(id);
+            if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
+                layerFilter.addRestriction(DimensionType.Activity, indicator.getActivity().getId());
+            } else {
+                layerFilter.addRestriction(DimensionType.Indicator, indicator.getId());
+            }
+        }
+        
+        layerFilter.addRestriction(DimensionType.Indicator, physicalIndicators(layer));
+        
         GetSites query = new GetSites();
         query.setFilter(layerFilter);
         query.setFetchAttributes(false);
-        query
-            .setFetchAdminEntities(layer.getClustering() instanceof AdministrativeLevelClustering);
+        query.setFetchAdminEntities(layer.getClustering() instanceof AdministrativeLevelClustering);
         query.setFetchAllIndicators(false);
-        query.setFetchIndicators(layer.getIndicatorIds());
+        query.setFetchIndicators(physicalIndicators(layer));
 
         return query;
+    }
+
+    protected List<Integer> physicalIndicators(PointMapLayer layer) {
+        List<Integer> ids = Lists.newArrayList();
+        for(int id : layer.getIndicatorIds()) {
+            Indicator indicator = indicators.get(id);
+            if(indicator.getAggregation() != IndicatorDTO.AGGREGATE_SITE_COUNT) {
+                ids.add(id);
+            }
+        }
+        return ids;
     }
 
     protected boolean hasValue(SiteDTO site, List<Integer> indicatorIds) {
@@ -79,14 +104,22 @@ public abstract class PointLayerGenerator<T extends PointMapLayer> implements
         if (indicatorIds.size() == 0) {
             return true;
         }
-
+     
         for (Integer indicatorId : indicatorIds) {
-            Double indicatorValue = site.getIndicatorValue(indicatorId);
+            Double indicatorValue = indicatorValue(site, indicatorId);
             if (indicatorValue != null) {
                 return true;
             }
         }
         return false;
+    }
+
+    protected Double indicatorValue(SiteDTO site, Integer indicatorId) {
+        Indicator indicator = indicators.get(indicatorId);
+        if(indicator != null && indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
+            return 1d;
+        }
+        return site.getIndicatorValue(indicatorId);
     }
 
     protected Double getValue(SiteDTO site, List<Integer> indicatorIds) {
@@ -98,7 +131,7 @@ public abstract class PointLayerGenerator<T extends PointMapLayer> implements
 
         Double value = null;
         for (Integer indicatorId : indicatorIds) {
-            Double indicatorValue = site.getIndicatorValue(indicatorId);
+            Double indicatorValue = indicatorValue(site, indicatorId);
             if (indicatorValue != null) {
                 if (value == null) {
                     value = indicatorValue;

@@ -63,7 +63,9 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             }
 
             for (IndicatorDTO indicator : group.getIndicators()) {
-                addIndicator(indicator);
+                if(indicator.getAggregation() != IndicatorDTO.AGGREGATE_SITE_COUNT) {
+                    addIndicator(indicator);
+                }
             }
         }
     }

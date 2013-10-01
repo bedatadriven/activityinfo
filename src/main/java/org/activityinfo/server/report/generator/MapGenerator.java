@@ -23,9 +23,11 @@ package org.activityinfo.server.report.generator;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,7 +65,7 @@ import org.activityinfo.shared.report.model.layers.PolygonMapLayer;
 import org.activityinfo.shared.util.mapping.Extents;
 import org.activityinfo.shared.util.mapping.TileMath;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -94,12 +96,14 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         MapContent content = new MapContent();
         content.setFilterDescriptions(generateFilterDescriptions(filter,
             Collections.<DimensionType>emptySet(), user));
+        
+        Map<Integer, Indicator> indicators = queryIndicators(element);
 
         // Set up layer generators
         List<LayerGenerator> layerGenerators = new ArrayList<LayerGenerator>();
         for (MapLayer layer : element.getLayers()) {
             if (layer.isVisible()) {
-                LayerGenerator layerGtor = createGenerator(layer);
+                LayerGenerator layerGtor = createGenerator(layer, indicators);
                 layerGtor.query(getDispatcher(), effectiveFilter);
                 layerGenerators.add(layerGtor);
             }
@@ -133,10 +137,9 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
 
         content.setCenter(center);
 
-        List<Indicator> indicators = queryIndicators(element);
 
         // Retrieve the basemap and clamp zoom level
-        BaseMap baseMap = findBaseMap(element, indicators);
+        BaseMap baseMap = findBaseMap(element, indicators.values());
 
         if (zoom < baseMap.getMinZoom()) {
             zoom = baseMap.getMinZoom();
@@ -162,18 +165,18 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             layerGtor.generate(map, content);
         }
 
-        content.setIndicators(toDTOs(indicators));
+        content.setIndicators(toDTOs(indicators.values()));
         element.setContent(content);
 
     }
 
-    private LayerGenerator createGenerator(MapLayer layer) {
+    private LayerGenerator createGenerator(MapLayer layer, Map<Integer, Indicator> indicators) {
         if (layer instanceof BubbleMapLayer) {
-            return new BubbleLayerGenerator((BubbleMapLayer) layer);
+            return new BubbleLayerGenerator((BubbleMapLayer) layer, indicators);
         } else if (layer instanceof IconMapLayer) {
-            return new IconLayerGenerator((IconMapLayer) layer);
+            return new IconLayerGenerator((IconMapLayer) layer, indicators);
         } else if (layer instanceof PiechartMapLayer) {
-            return new PiechartLayerGenerator((PiechartMapLayer) layer);
+            return new PiechartLayerGenerator((PiechartMapLayer) layer, indicators);
         } else if (layer instanceof PolygonMapLayer) {
             return new PolygonLayerGenerator((PolygonMapLayer) layer);
         } else {
@@ -181,7 +184,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         }
     }
 
-    private List<Indicator> queryIndicators(MapReportElement element) {
+    private Map<Integer, Indicator> queryIndicators(MapReportElement element) {
 
         // Get relevant indicators for the map markers
         Set<Integer> indicatorIds = new HashSet<Integer>();
@@ -189,14 +192,14 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             indicatorIds.addAll(maplayer.getIndicatorIds());
         }
 
-        List<Indicator> indicators = Lists.newArrayList();
+        Map<Integer, Indicator> indicators = Maps.newHashMap();
         for (Integer indicatorId : indicatorIds) {
-            indicators.add(indicatorDAO.findById(indicatorId));
+            indicators.put(indicatorId, indicatorDAO.findById(indicatorId));
         }
         return indicators;
     }
 
-    private Set<IndicatorDTO> toDTOs(List<Indicator> indicators) {
+    private Set<IndicatorDTO> toDTOs(Collection<Indicator> indicators) {
         Set<IndicatorDTO> indicatorDTOs = new HashSet<IndicatorDTO>();
         for (Indicator indicator : indicators) {
             IndicatorDTO indicatorDTO = new IndicatorDTO();
@@ -209,7 +212,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
     }
 
     private BaseMap findBaseMap(MapReportElement element,
-        List<Indicator> indicators) {
+        Collection<Indicator> indicators) {
         BaseMap baseMap = null;
         String baseMapId = element.getBaseMapId();
         if (element.getBaseMapId() == null
@@ -224,7 +227,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         return baseMap;
     }
 
-    private String defaultBaseMap(List<Indicator> indicators) {
+    private String defaultBaseMap(Collection<Indicator> indicators) {
         Set<Country> countries = queryCountries(indicators);
         if (countries.size() == 1) {
             Country country = countries.iterator().next();
@@ -235,7 +238,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         return GoogleBaseMap.ROADMAP.getId();
     }
 
-    private Set<Country> queryCountries(List<Indicator> indicators) {
+    private Set<Country> queryCountries(Collection<Indicator> indicators) {
         Set<Country> country = Sets.newHashSet();
         for (Indicator indicator : indicators) {
             country.add(indicator.getActivity().getDatabase().getCountry());

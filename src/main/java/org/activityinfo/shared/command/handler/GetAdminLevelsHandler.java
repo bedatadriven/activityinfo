@@ -50,26 +50,23 @@ public class GetAdminLevelsHandler implements
             callback.onSuccess(new AdminLevelResult(new ArrayList<AdminLevelDTO>()));
             return;
         }
+       
         
         String hasPolygonsSubQuery = "exists (select e.adminentityid from adminentity e " +
         		"where e.adminlevelid=level.adminlevelid and geometry is not null)";
+        
         
         SqlQuery
             .select()
             .appendColumn("level.adminlevelId", "id")
             .appendColumn("level.name", "name")
             .appendColumn(hasPolygonsSubQuery, "polygons")
-            .from(Tables.INDICATOR_VALUE, "iv")
-            .innerJoin(Tables.REPORTING_PERIOD, "rp")
-            .on("rp.reportingperiodid=iv.reportingperiodid")
-            .innerJoin(Tables.SITE, "s").on("s.siteId=rp.siteid")
-            .innerJoin(Tables.LOCATION_ADMIN_LINK, "la")
-            .on("s.locationid=la.locationid")
-            .innerJoin(Tables.ADMIN_ENTITY, "e")
-            .on("e.adminentityid=la.adminentityid")
-            .innerJoin(Tables.ADMIN_LEVEL, "level")
-            .on("e.adminlevelid=level.adminlevelid")
-            .where("iv.indicatorId").in(command.getIndicatorIds())
+            .from(Tables.INDICATOR, "i")
+            .innerJoin(Tables.ACTIVITY, "a").on("i.activityId=a.activityId")
+            .innerJoin(Tables.USER_DATABASE, "db").on("a.databaseid=db.databaseid")
+            .innerJoin(Tables.COUNTRY, "c").on("db.countryid=c.countryid")
+            .innerJoin(Tables.ADMIN_LEVEL, "level").on("level.countryid=c.countryid")
+            .where("i.indicatorId").in(command.getIndicatorIds())
             .groupBy("level.adminlevelid")
             .groupBy("level.name")
             .execute(context.getTransaction(), new SqlResultCallback() {
@@ -89,5 +86,4 @@ public class GetAdminLevelsHandler implements
                 }
             });
     }
-
 }

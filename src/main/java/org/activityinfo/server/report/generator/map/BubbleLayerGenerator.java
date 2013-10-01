@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.Clusterer;
 import org.activityinfo.server.report.generator.map.cluster.ClustererFactory;
@@ -49,8 +51,8 @@ import org.activityinfo.shared.util.mapping.Extents;
 
 public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
 
-    public BubbleLayerGenerator(BubbleMapLayer layer) {
-        super(layer);
+    public BubbleLayerGenerator(BubbleMapLayer layer, Map<Integer, Indicator> indicators) {
+        super(layer, indicators);
     }
 
     @Override

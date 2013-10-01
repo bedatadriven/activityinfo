@@ -24,7 +24,9 @@ package org.activityinfo.server.report.generator.map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.Clusterer;
 import org.activityinfo.server.report.generator.map.cluster.ClustererFactory;
@@ -45,8 +47,8 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
 
     private MapIcon icon;
 
-    public IconLayerGenerator(IconMapLayer layer) {
-        super(layer);
+    public IconLayerGenerator(IconMapLayer layer, Map<Integer, Indicator> indicators) {
+        super(layer, indicators);
         this.icon = new MapIcon(layer.getIcon(), 32, 37, 16, 35);
     }
 
