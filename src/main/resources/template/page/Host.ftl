@@ -102,7 +102,7 @@
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-11567120-1']);
-      _gaq.push(['_setDomainName', '${domain.host}');
+      _gaq.push(['_setDomainName', '${domain.host}']);
       _gaq.push(['_setCustomVar', 2, 'Existing User', 'Yes', 1]);
                
       (function() {
