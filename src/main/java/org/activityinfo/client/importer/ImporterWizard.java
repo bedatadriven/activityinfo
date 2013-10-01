@@ -3,6 +3,7 @@ package org.activityinfo.client.importer;
 import java.util.List;
 
 import org.activityinfo.client.dispatch.Dispatcher;
+import org.activityinfo.client.importer.column.ColumnBinding;
 import org.activityinfo.client.local.command.handler.KeyGenerator;
 import org.activityinfo.client.widget.wizard.Wizard;
 import org.activityinfo.client.widget.wizard.WizardPage;
@@ -10,11 +11,14 @@ import org.activityinfo.shared.command.BatchCommand;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
+import org.activityinfo.shared.command.MatchLocation;
 import org.activityinfo.shared.command.result.BatchResult;
 import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.LocationDTO;
 import org.activityinfo.shared.dto.SiteDTO;
+import org.bouncycastle.jce.provider.symmetric.AES.KeyGen;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -22,10 +26,6 @@ public class ImporterWizard extends Wizard {
     private ImportModel model;
     private PasteDataPage pastePage;
     private PreviewGridPage previewPage;
-    private LocationColumnPage locationPage;
-    private LocationMatchPage locationMatchPage;
-    private DataColumnPage datePage;
-    private IndicatorColumnPage indicatorPage;
     private ActivityDTO activity;
     private Dispatcher dispatcher;
     
@@ -37,18 +37,12 @@ public class ImporterWizard extends Wizard {
         model.setActivity(activity);
         pastePage = new PasteDataPage(model);
         previewPage = new PreviewGridPage(model);
-        locationPage = new LocationColumnPage(activity, model);
-        locationMatchPage = new LocationMatchPage(dispatcher, model, locationPage);
-        datePage = new DataColumnPage(model);
-        indicatorPage = new IndicatorColumnPage(activity, model);
         
     }
     
     @Override
     public WizardPage[] getPages() {
-        return new WizardPage[] { pastePage, previewPage, 
-            locationPage, locationMatchPage, 
-            datePage, indicatorPage };
+        return new WizardPage[] { pastePage, previewPage };
     }
 
     @Override
@@ -61,49 +55,96 @@ public class ImporterWizard extends Wizard {
     public void finish(final AsyncCallback<Void> callback) {
         
         final KeyGenerator keyGenerator = new KeyGenerator();
-        
-        final List<Command> commands = Lists.newArrayList();
-        
    
-        // now create the corresponding sites
-        final List<ColumnBinder<SiteDTO>> siteBinders = Lists.newArrayList();
-        siteBinders.addAll(datePage.getSiteBinders());
-        siteBinders.addAll(indicatorPage.getBinders());
+        int numColums = model.getData().getNumColumns();
+        ColumnBinding[] bindings = bindingsArray();
         
-        model.getData().getRowStore().forEachRow(new ImportRowProcessor() {
+        
+        // do a first pass to match the location
+        List<Command> matchBatch = Lists.newArrayList();
+        for(ImportRowModel row : model.getData().getRowStore().getModels()) {
+            MatchLocation location = new MatchLocation();
+            location.setLocationType(model.getActivity().getLocationTypeId());
             
-            @Override
-            public void process(int rowIndex, String[] columns) {
-                LocationDTO location = model.getLocations().get(rowIndex);
-                location.setLocationTypeId(activity.getLocationTypeId());
-
-                SiteDTO site = new SiteDTO();
-                site.setId(keyGenerator.generateInt());
-                site.setReportingPeriodId(keyGenerator.generateInt());
-                site.setLocationId(location.getId());
-                site.setActivityId(activity.getId());
-                site.setPartner(activity.getDatabase().getPartners().get(0));
-                
-                ColumnBinders.bind(siteBinders, columns, site);
-                
-                commands.add(new CreateLocation(location));
-                commands.add(new CreateSite(site));
+            for(int i=0;i!=numColums;++i) {
+                bindings[i].bindLocation(row.get(i), location);
             }
-        });
+            matchBatch.add(location);
+        }
         
-        // let'er rip
-        dispatcher.execute(new BatchCommand(commands), new AsyncCallback<BatchResult>() {
+        dispatcher.execute(new BatchCommand(matchBatch), new AsyncCallback<BatchResult>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
+                MessageBox.alert("Match locations failed", "Exception", null);
+                
             }
 
             @Override
             public void onSuccess(BatchResult result) {
+                submitSites((List)result.getResults(), callback);
+            }
+
+            
+        });
+        
+    }
+
+    protected ColumnBinding[] bindingsArray() {
+        int numColumns = model.getData().getNumColumns();
+        ColumnBinding[] bindings = new ColumnBinding[numColumns];
+        for(int i=0;i!=numColumns;++i) {
+            bindings[i] = model.getData().getColumns().get(i).getBinding();
+        }
+        return bindings;
+    }
+
+    private void submitSites(List<LocationDTO> results, final AsyncCallback<Void> callback) {
+        
+        int numColums = model.getData().getNumColumns();
+        ColumnBinding[] bindings = bindingsArray();
+        
+        
+        KeyGenerator keyGenerator = new KeyGenerator();
+        
+        // do a first pass to match the location
+        List<Command> siteBatch = Lists.newArrayList();
+        int rowIndex = 0;
+        for(ImportRowModel row : model.getData().getRowStore().getModels()) {
+            
+            LocationDTO location = results.get(rowIndex);
+            if(location.isNew()) {
+                siteBatch.add(new CreateLocation(location));
+            }
+            SiteDTO site = new SiteDTO();
+            site.setId(keyGenerator.generateInt());
+            site.setReportingPeriodId(keyGenerator.generateInt());
+            site.setActivityId(model.getActivity().getId());
+            site.setLocationId(location.getId());
+            site.setPartner(model.getActivity().getDatabase().getPartners().get(0));
+            
+            for(int i=0;i!=numColums;++i) {
+                bindings[i].bindSite(row.get(i), site);
+            }
+            siteBatch.add(new CreateSite(site));
+            rowIndex++;
+        } 
+        
+        dispatcher.execute(new BatchCommand(siteBatch), new AsyncCallback<BatchResult>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+              
+               MessageBox.alert("Import failed", "Exception: " + caught.getMessage(), null);
+               callback.onFailure(null);
+            }
+
+            @Override
+            public void onSuccess(BatchResult result) {
+                MessageBox.alert("Import succeeded!", "Refresh the data grid to see your new sites", null);
                 callback.onSuccess(null);
             }
         });
+        
     }
-
-}
+ }

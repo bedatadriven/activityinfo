@@ -45,7 +45,7 @@ public class MatchLocationHandler implements CommandHandler<MatchLocation> {
             matchEntity(matched, cmd.getAdminLevels(), em.find(AdminLevel.class, levelId));
         }
         
-        Location matchedLocation = matchLocation(cmd.getName(), matched.values());
+        Location matchedLocation = matchLocation(cmd.getLocationType(), cmd.getName(), matched.values());
 
         LocationDTO location = new LocationDTO();
 
@@ -56,6 +56,8 @@ public class MatchLocationHandler implements CommandHandler<MatchLocation> {
             location.setName(cmd.getName());
             location.setLatitude(cmd.getLatitude());
             location.setLongitude(cmd.getLongitude());
+            location.setNew(true);
+            location.setLocationTypeId(cmd.getLocationType());
             
             for(AdminEntity entity : matched.values()) {
                 AdminEntityDTO dto = new AdminEntityDTO();
@@ -65,10 +67,12 @@ public class MatchLocationHandler implements CommandHandler<MatchLocation> {
                 location.setAdminEntity(entity.getLevel().getId(), dto);
             }
         } else {
+            location.setNew(false);
             location.setId(matchedLocation.getId());
             location.setName(matchedLocation.getName());
             location.setLatitude(matchedLocation.getY());
             location.setLongitude(matchedLocation.getX());
+            location.setLocationTypeId(matchedLocation.getLocationType().getId());
             
             for(AdminEntity entity : matchedLocation.getAdminEntities()) {
                 AdminEntityDTO dto = new AdminEntityDTO();
@@ -83,9 +87,9 @@ public class MatchLocationHandler implements CommandHandler<MatchLocation> {
     }
         
     /* try to match to an existing location, based on administrative entity
-     * membership and approximate name matc
+     * membership and approximate name match
      */
-    private Location matchLocation(String name, Collection<AdminEntity> entities) {
+    private Location matchLocation(int locationTypeId, String name, Collection<AdminEntity> entities) {
         
         // find the set of locations that is present in all matched admin
         // entities
@@ -98,14 +102,21 @@ public class MatchLocationHandler implements CommandHandler<MatchLocation> {
             }
         }
         
+        // anything?
+        if(locations == null) {
+            return null;
+        }
+        
         // now find the best matching location by name among this set
         Location bestMatch = null;
         double bestScore = 0;
         for(Location location : locations) {
-            double score = similarity(location.getName(), name);
-            if(score > bestScore) {
-                bestScore  = score;
-                bestMatch = location;
+            if(location.getLocationType().getId() == locationTypeId) {
+                double score = similarity(location.getName(), name);
+                if(score > bestScore) {
+                    bestScore  = score;
+                    bestMatch = location;
+                }
             }
         }
         

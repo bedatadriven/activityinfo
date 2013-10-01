@@ -88,6 +88,14 @@ public class LocationDTO extends BaseModelData implements EntityDTO,
         return this;
     }
 
+    public boolean isNew() {
+        return get("new", false);
+    }
+    
+    public void setNew(boolean isNew) {
+        set("new", isNew);
+    }
+    
     public Double getLongitude() {
         return (Double) get("longitude");
     }

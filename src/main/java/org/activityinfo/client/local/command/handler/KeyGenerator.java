@@ -34,7 +34,7 @@ public class KeyGenerator {
 
     private final Random random = new Random();
 
-    private static final int MIN_KEY = 2 ^ 14;
+    private static final int MIN_KEY = 2 ^ 13;
 
     /**
      * 
