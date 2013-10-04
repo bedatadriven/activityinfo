@@ -32,6 +32,7 @@ import org.activityinfo.server.branding.BrandingModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.digest.DigestModule;
+import org.activityinfo.server.endpoint.adminreport.AdminReportModule;
 import org.activityinfo.server.endpoint.content.ContentModule;
 import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
@@ -105,7 +106,8 @@ public class StartupListener extends GuiceServletContextListener {
             new LocaleModule(),
             new JaxRsModule(),
             new RestApiModule(),
-            new ODKModule());
+            new ODKModule(),
+            new AdminReportModule());
     }
 
 }

@@ -28,7 +28,8 @@
   
   <!-- CSS Files -->
   <link href="/css/style.css" rel="stylesheet" media="screen">
-  	
+  <link href="/js/datatables-1.9.4/jquery.dataTables.css" rel="stylesheet" media="screen">
+  
   <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-11567120-1']);
