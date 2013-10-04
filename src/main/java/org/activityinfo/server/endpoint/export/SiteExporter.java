@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSites;
@@ -39,13 +40,10 @@ import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.IndicatorGroup;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
@@ -55,9 +53,10 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.common.base.Strings;
 
 /**
- * @author Alex Bertram
+ * Exports sites in Excel format
  */
 public class SiteExporter {
 
@@ -98,9 +97,6 @@ public class SiteExporter {
     private CellStyle indicatorHeaderStyle;
 
     private CellStyle attribValueStyle;
-
-    // private HSSFConditionalFormattingRule attribFalseRule;
-    // private HSSFConditionalFormattingRule attribTrueRule;
 
     private List<Integer> indicators;
     private List<Integer> attributes;
@@ -173,28 +169,6 @@ public class SiteExporter {
 
     }
 
-    //
-    // private void initConditionalFormatting(HSSFSheet sheet) {
-    // HSSFSheetConditionalFormatting cf =
-    // sheet.getSheetConditionalFormatting();
-    //
-    // attribFalseRule =
-    // cf.createConditionalFormattingRule(CFRuleRecord.ComparisonOperator.EQUAL,
-    // "FALSE", null);
-    // HSSFFontFormatting grayFont = attribFalseRule.createFontFormatting();
-    // grayFont.setFontColorIndex(HSSFColor.GREY_25_PERCENT.index);
-    //
-    // attribTrueRule =
-    // cf.createConditionalFormattingRule(CFRuleRecord.ComparisonOperator.EQUAL,
-    // "TRUE", null);
-    // HSSFPatternFormatting grayFill =
-    // attribTrueRule.createPatternFormatting();
-    // grayFill.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
-    // HSSFFontFormatting boldFont = attribTrueRule.createFontFormatting();
-    // boldFont.setFontStyle(false,true);
-    //
-    // }
-
     private String composeUniqueSheetName(ActivityDTO activity) {
         String sheetName = activity.getDatabase().getName() + " - "
             + activity.getName();
@@ -213,7 +187,6 @@ public class SiteExporter {
             sheetNames.put(shortenedName, index + 1);
             return shortenedName + " (" + index + ")";
         }
-
     }
 
     private void createHeaders(ActivityDTO activity, HSSFSheet sheet) {
@@ -284,11 +257,16 @@ public class SiteExporter {
             createHeaderCell(headerRow2, column++, level.getName());
             levels.add(level.getId());
         }
-        createHeaderCell(headerRow2, column, "Longitude", CellStyle.ALIGN_RIGHT);
-        createHeaderCell(headerRow2, column + 1, "Latitude",
+        int latColumn = column++;
+        int lngColumn = column++;
+        
+        createHeaderCell(headerRow2, lngColumn, I18N.CONSTANTS.longitude(), CellStyle.ALIGN_RIGHT);
+        createHeaderCell(headerRow2, latColumn, I18N.CONSTANTS.latitude(),
             CellStyle.ALIGN_RIGHT);
-        sheet.setColumnWidth(column, characters(COORD_COLUMN_WIDTH));
-        sheet.setColumnWidth(column + 1, characters(COORD_COLUMN_WIDTH));
+        sheet.setColumnWidth(lngColumn, characters(COORD_COLUMN_WIDTH));
+        sheet.setColumnWidth(latColumn, characters(COORD_COLUMN_WIDTH));
+        
+        createHeaderCell(headerRow2, column++, I18N.CONSTANTS.comments());
 
     }
 
@@ -307,11 +285,6 @@ public class SiteExporter {
 
     private void createDataRows(ActivityDTO activity, Filter filter, Sheet sheet) {
 
-        // Create the drawing patriarch. This is the top level container for all
-        // shapes including
-        // cell comments.
-        HSSFPatriarch patr = ((HSSFSheet) sheet).createDrawingPatriarch();
-
         int rowIndex = 2;
         for (SiteDTO site : querySites(activity, filter)) {
 
@@ -322,17 +295,8 @@ public class SiteExporter {
             createCell(row, column++, site.getDate2());
             createCell(row, column++, site.getPartnerName());
 
-            Cell locationCell = createCell(row, column++,
-                site.getLocationName());
-            if (site.getComments() != null) {
-                Comment comment = patr.createComment(new HSSFClientAnchor(0, 0,
-                    0, 0, (short) 4, 2, (short) 8, 10));
-                comment.setString(creationHelper.createRichTextString(site
-                    .getComments()));
-
-                locationCell.setCellComment(comment);
-            }
-
+            createCell(row, column++, site.getLocationName());
+            
             createCell(row, column++, site.getLocationAxe());
 
             for (Integer indicatorId : indicators) {
@@ -360,9 +324,15 @@ public class SiteExporter {
             }
 
             if (site.hasLatLong()) {
-                createCoordCell(row, column++, site.getLongitude());
-                createCoordCell(row, column++, site.getLatitude());
+                createCoordCell(row, column, site.getLongitude());
+                createCoordCell(row, column+1, site.getLatitude());
             }
+            column+= 2;
+            
+            if (!Strings.isNullOrEmpty(site.getComments())) {
+                createCell(row, column, site.getComments());
+            }
+            column++;
         }
     }
 
