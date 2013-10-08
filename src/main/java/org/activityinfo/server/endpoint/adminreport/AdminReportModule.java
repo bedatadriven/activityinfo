@@ -22,6 +22,9 @@ package org.activityinfo.server.endpoint.adminreport;
  * #L%
  */
 
+import org.activityinfo.server.endpoint.adminreport.resource.ActivitiesResource;
+import org.activityinfo.server.endpoint.adminreport.resource.DatabasesResource;
+import org.activityinfo.server.endpoint.adminreport.resource.UsersResource;
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
 public class AdminReportModule extends AbstractRestModule {
@@ -32,7 +35,12 @@ public class AdminReportModule extends AbstractRestModule {
 
     @Override
     protected void configureResources() {
-        bind(AdminReport.class);
+        bind(Grid.class);
+
+        bind(UsersResource.class);
+        bind(ActivitiesResource.class);
+        bind(DatabasesResource.class);
+
         bindResource(AdminReportsResource.class);
     }
 }

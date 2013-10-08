@@ -15,10 +15,10 @@ import javax.persistence.Query;
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.SiteHistory;
-import org.activityinfo.server.digest.DigestDateUtil;
 import org.activityinfo.server.digest.DigestModel;
 import org.activityinfo.server.digest.DigestRenderer;
 import org.activityinfo.server.digest.geo.GeoDigestModel.DatabaseModel;
+import org.activityinfo.server.util.date.DateCalc;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.command.result.SiteResult;
 import org.activityinfo.shared.dto.ActivityDTO;
@@ -129,9 +129,9 @@ public class GeoDigestRenderer implements DigestRenderer {
 
                     Date targetDate = databaseModel.getModel().getDate();
                     Date creationDate = new Date(history.getTimeCreated());
-                    if (DigestDateUtil.isOnToday(targetDate, creationDate)) {
+                    if (DateCalc.isOnToday(targetDate, creationDate)) {
                         html.append(I18N.MESSAGES.geoDigestSiteMsgDateToday(creationDate));
-                    } else if (DigestDateUtil.isOnYesterday(targetDate, creationDate)) {
+                    } else if (DateCalc.isOnYesterday(targetDate, creationDate)) {
                         html.append(I18N.MESSAGES.geoDigestSiteMsgDateYesterday(creationDate));
                     } else {
                         html.append(I18N.MESSAGES.geoDigestSiteMsgDateOther(creationDate));

@@ -7,8 +7,8 @@ import java.util.TreeSet;
 
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
-import org.activityinfo.server.digest.DigestDateUtil;
 import org.activityinfo.server.digest.DigestModel;
+import org.activityinfo.server.util.date.DateCalc;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.report.content.MapContent;
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +26,7 @@ public class GeoDigestModel implements DigestModel {
         this.user = user;
         this.date = date;
         this.days = days;
-        this.from = DigestDateUtil.daysAgo(date, days).getTime();
+        this.from = DateCalc.daysAgo(date, days).getTime();
         this.databases = new TreeSet<DatabaseModel>();
     }
 

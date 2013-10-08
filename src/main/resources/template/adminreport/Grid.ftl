@@ -24,9 +24,13 @@
 
     <@content>
         <h5>&#171; <a href="/admin/reports">Administrative Reports</a></h5>
-        
+      
         <h3>${title}</h3>
-        
+
+        <#if hint??>
+        <em>${hint}</em>
+        </#if>
+                
         <table id="report" class="display">
             <thead>
                 <tr>
@@ -39,7 +43,7 @@
                 <#list rows as row>
                 <tr>
                     <#list row as field> 
-                    <td>${field}</td>
+                    <td>${field!'unknown'}</td>
                     </#list>
                 </tr>
                 </#list>

@@ -1,9 +1,9 @@
-package org.activityinfo.server.digest;
+package org.activityinfo.server.util.date;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class DigestDateUtil {
+public class DateCalc {
 
     public static boolean isOnToday(Date date, Date compare) {
         return isOnToday(date, compare.getTime());
@@ -47,7 +47,7 @@ public class DigestDateUtil {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DATE, 1);
-        midnight(c);
+        setMidnight(c);
         return c.getTimeInMillis();
     }
 
@@ -74,10 +74,46 @@ public class DigestDateUtil {
      * 
      * @param c
      */
-    public static void midnight(Calendar c) {
+    public static void setMidnight(Calendar c) {
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
+    }
+
+    public static Calendar getMidnight(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        setMidnight(c);
+        return c;
+    }
+
+    public static int quarter(Calendar c) {
+        int month = c.get(Calendar.MONTH);
+        return month / 3 + 1;
+    }
+
+    public static Calendar getMonthStart(Date date) {
+        Calendar c = getMidnight(date);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        return c;
+    }
+
+    public static Calendar getQuarterStart(Date date) {
+        Calendar c = getMidnight(date);
+        setQuarterStart(c);
+        return c;
+    }
+
+    public static void setQuarterStart(Calendar c) {
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.MONTH, (quarter(c) - 1) * 3);
+    }
+
+    public static Calendar getYearStart(Date date) {
+        Calendar c = getMidnight(date);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.MONTH, Calendar.JANUARY);
+        return c;
     }
 }

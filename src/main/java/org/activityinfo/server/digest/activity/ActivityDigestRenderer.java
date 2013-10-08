@@ -10,12 +10,12 @@ import java.util.Map;
 
 import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.server.database.hibernate.entity.SiteHistory;
-import org.activityinfo.server.digest.DigestDateUtil;
 import org.activityinfo.server.digest.DigestModel;
 import org.activityinfo.server.digest.DigestRenderer;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.ActivityMap;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.DatabaseModel;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.PartnerActivityModel;
+import org.activityinfo.server.util.date.DateCalc;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
@@ -190,7 +190,7 @@ public class ActivityDigestRenderer implements DigestRenderer {
     private String determineTitle(DatabaseModel databaseModel, int updates, int dayIndex) {
         Date today = databaseModel.getModel().getDate();
         int totalDays = databaseModel.getModel().getDays();
-        Date date = DigestDateUtil.daysAgo(today, (totalDays - dayIndex - 1));
+        Date date = DateCalc.daysAgo(today, (totalDays - dayIndex - 1));
         return I18N.MESSAGES.activityDigestGraphTooltip(updates, date);
     }
     
@@ -233,7 +233,7 @@ public class ActivityDigestRenderer implements DigestRenderer {
         } else {
             return I18N.CONSTANTS.lastEdit() + " " +
                 new PrettyTime(LocaleProxy.getLocale()).format(new Date(lastEdit.getTimeCreated()));
-            // return DigestDateUtil.daysBeforeMidnight(new Date(), lastEdit.getTimeCreated()) + " day(s) ago";
+            // return DateCalc.daysBeforeMidnight(new Date(), lastEdit.getTimeCreated()) + " day(s) ago";
         }
     }
 

@@ -15,8 +15,8 @@ import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
-import org.activityinfo.server.digest.DigestDateUtil;
 import org.activityinfo.server.digest.DigestModel;
+import org.activityinfo.server.util.date.DateCalc;
 
 public class ActivityDigestModel implements DigestModel {
     private final User user;
@@ -29,7 +29,7 @@ public class ActivityDigestModel implements DigestModel {
         this.user = user;
         this.date = date;
         this.days = days;
-        this.from = DigestDateUtil.daysAgo(date, days).getTime();
+        this.from = DateCalc.daysAgo(date, days).getTime();
         this.databases = new TreeSet<DatabaseModel>();
     }
 
@@ -237,7 +237,7 @@ public class ActivityDigestModel implements DigestModel {
 
             if (histories != null && !histories.isEmpty()) {
                 for (SiteHistory history : histories) {
-                    int daysBetween = DigestDateUtil.absoluteDaysBetween(databaseModel.getModel().getDate(),
+                    int daysBetween = DateCalc.absoluteDaysBetween(databaseModel.getModel().getDate(),
                         history.getTimeCreated());
                     Integer old = map.get(daysBetween);
                     map.put(daysBetween, old + 1);

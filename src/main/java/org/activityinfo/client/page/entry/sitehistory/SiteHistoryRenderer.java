@@ -37,8 +37,8 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 
 public class SiteHistoryRenderer {
 
-    private static final LocalDate HISTORY_AVAILABLE_FROM = new LocalDate(2012,
-        12, 20);
+    private static final LocalDate HISTORY_AVAILABLE_FROM =
+        new LocalDate(2012, 12, 20);
 
     public String renderLoading() {
         return new Item(I18N.CONSTANTS.loading()).toString();
