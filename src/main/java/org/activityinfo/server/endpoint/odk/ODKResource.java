@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.server.database.hibernate.dao.UserPermissionDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.shared.auth.AuthenticatedUser;
@@ -23,6 +24,8 @@ public abstract class ODKResource {
     protected final DispatcherSync dispatcher = null;
     @Inject
     protected final Provider<EntityManager> entityManager = null;
+    @Inject
+    protected final Provider<UserPermissionDAO> userPermissionDAO = null;
     @Inject
     protected final ServerSideAuthProvider auth = null;
     @Inject
@@ -50,6 +53,10 @@ public abstract class ODKResource {
 
     protected AuthenticatedUser getUser() {
         return auth.get();
+    }
+
+    protected Response askAuthentication() {
+        return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
     }
 
     protected Response badRequest(String msg) {

@@ -54,7 +54,7 @@ public class FormSubmissionResource extends ODKResource {
     @Produces(MediaType.TEXT_XML)
     public Response submit(@FormDataParam("xml_submission_file") String xml) throws Exception {
         if (enforceAuthorization()) {
-            return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
+            return askAuthentication();
         }
         LOGGER.fine("ODK form submitted by user " + getUser().getEmail() + " (" + getUser().getId() + ")");
 

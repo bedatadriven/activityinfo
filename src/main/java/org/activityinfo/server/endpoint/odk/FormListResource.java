@@ -21,7 +21,7 @@ public class FormListResource extends ODKResource {
     @Produces(MediaType.TEXT_XML)
     public Response formList(@Context UriInfo info) throws Exception {
         if (enforceAuthorization()) {
-            return Response.status(401).header("WWW-Authenticate", "Basic realm=\"Activityinfo\"").build();
+            return askAuthentication();
         }
         LOGGER.finer("ODK formlist requested by " + getUser().getEmail() + " (" + getUser().getId() + ")");
 

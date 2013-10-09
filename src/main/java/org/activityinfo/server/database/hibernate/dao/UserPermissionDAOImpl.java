@@ -22,18 +22,29 @@ package org.activityinfo.server.database.hibernate.dao;
  * #L%
  */
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.activityinfo.server.database.hibernate.entity.UserPermission;
 
-/**
- * Data Access Object for the
- * {@link org.activityinfo.server.database.hibernate.entity.UserPermission}
- * domain class. Implemented by
- * {@link org.activityinfo.server.database.hibernate.dao.DAOInvocationHandler
- * proxy}
- * 
- * @author Alex Bertram
- */
-public interface UserPermissionDAO extends DAO<UserPermission, Integer> {
+import com.google.inject.Inject;
 
-    UserPermission findUserPermissionByUserIdAndDatabaseId(int userId, int databaseId);
+public class UserPermissionDAOImpl extends GenericDAO<UserPermission, Integer> implements UserPermissionDAO {
+
+    @Inject
+    public UserPermissionDAOImpl(EntityManager em) {
+        super(em);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public UserPermission findUserPermissionByUserIdAndDatabaseId(int userId, int databaseId) {
+        List<UserPermission> result = getEntityManager()
+            .createNamedQuery("findUserPermissionByUserIdAndDatabaseId")
+            .setParameter("databaseId", databaseId)
+            .setParameter("userId", userId)
+            .getResultList();
+        return (result != null && !result.isEmpty()) ? result.get(0) : null;
+    }
 }
