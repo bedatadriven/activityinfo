@@ -25,6 +25,7 @@ package org.activityinfo.client.page.entry.sitehistory;
 import java.util.Map;
 
 import org.activityinfo.client.i18n.I18N;
+import org.activityinfo.shared.command.Month;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SchemaDTO;
@@ -83,7 +84,14 @@ class ItemDetail {
             // custom
             int id = IndicatorDTO.indicatorIdForPropertyName(key);
             IndicatorDTO dto = schema.getIndicatorById(id);
-            addValues(sb, dto.getName(), oldValue, newValue, dto.getUnits());
+            String name = dto.getName();
+
+            Month m = IndicatorDTO.monthForPropertyName(key);
+            if (m != null) {
+                name = I18N.MESSAGES.siteHistoryIndicatorName(name, m.toLocalDate().atMidnightInMyTimezone());
+            }
+
+            addValues(sb, name, oldValue, newValue, dto.getUnits());
 
         } else if (key.startsWith(AttributeDTO.PROPERTY_PREFIX)) {
             int id = AttributeDTO.idForPropertyName(key);
@@ -109,8 +117,7 @@ class ItemDetail {
         addValues(sb, key, oldValue, newValue, null);
     }
 
-    private static void addValues(StringBuilder sb, String key,
-        Object oldValue, Object newValue, String units) {
+    private static void addValues(StringBuilder sb, String key, Object oldValue, Object newValue, String units) {
         sb.append(key);
         sb.append(": ");
         sb.append(newValue);

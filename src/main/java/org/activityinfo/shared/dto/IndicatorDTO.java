@@ -22,6 +22,7 @@ package org.activityinfo.shared.dto;
  * #L%
  */
 
+import org.activityinfo.shared.command.Month;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -238,15 +239,39 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO,
         return PROPERTY_PREFIX + id;
     }
 
+    public static String getPropertyName(int id, Month m) {
+        return getPropertyName(id) + m.getPropertyName();
+    }
+
     /**
-     * Parses an Indicator property name, for example "I432" or "I565" for the
-     * referenced indicator Id.
+     * Parses an Indicator property name, for example "I432", "I565" or "I309M2013-7" (in case of a monthly reported
+     * indicator that was stored in the sitehistory) for the referenced indicator Id.
      * 
      * @return the id of referenced Indicator
      */
     public static int indicatorIdForPropertyName(String propertyName) {
-        return Integer
-            .parseInt(propertyName.substring(PROPERTY_PREFIX.length()));
+        int monthInfix = propertyName.indexOf(Month.PROPERTY_PREFIX);
+        if (monthInfix > -1) {
+            return Integer.parseInt(propertyName.substring(PROPERTY_PREFIX.length(), monthInfix));
+        } else {
+            return Integer.parseInt(propertyName.substring(PROPERTY_PREFIX.length()));
+        }
+    }
+
+    /**
+     * Parses an Indicator property name, for example "I432", "I565" or "I309M2013-7" (in case of a monthly reported
+     * indicator that was stored in the sitehistory) for the Month part ("M2013-7" in above case). Returns null if there
+     * is none.
+     * 
+     * @return the Month of the referenced Indicator
+     */
+    public static Month monthForPropertyName(String propertyName) {
+        int monthInfix = propertyName.indexOf(Month.PROPERTY_PREFIX);
+        if (monthInfix > -1) {
+            return Month.parseMonth(propertyName.substring(monthInfix + 1));
+        } else {
+            return null;
+        }
     }
 
     @Override

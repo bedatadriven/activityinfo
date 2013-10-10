@@ -24,6 +24,8 @@ package org.activityinfo.shared.command;
 
 import java.io.Serializable;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
+
 /**
  * Encapsulates a Gregorian month
  * 
@@ -34,6 +36,8 @@ public class Month implements Serializable, Comparable<Month> {
     private static final int MONTHS_PER_YEAR = 12;
     private int year;
     private int month;
+
+    public static final String PROPERTY_PREFIX = "M";
 
     /**
      * Constructs an uninitialized <code>Month</code>
@@ -147,6 +151,13 @@ public class Month implements Serializable, Comparable<Month> {
     }
 
     /**
+     * @return a string representation of this Month in the format M2009-1, M2009-12
+     */
+    public String getPropertyName() {
+        return PROPERTY_PREFIX + toString();
+    }
+
+    /**
      * Parses a string in the format 2009-1, 2009-03, 2009-12 and returns the
      * value as a <code>Month</code>
      * 
@@ -202,5 +213,12 @@ public class Month implements Serializable, Comparable<Month> {
 
     public Month previous() {
         return plus(-1);
+    }
+
+    /**
+     * Returns midnight of the first day of the month
+     */
+    public LocalDate toLocalDate() {
+        return new LocalDate(year, month, 1);
     }
 }

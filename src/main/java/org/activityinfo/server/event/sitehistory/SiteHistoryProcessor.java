@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import org.activityinfo.server.command.DispatcherSync;
@@ -94,7 +95,7 @@ public class SiteHistoryProcessor {
                 baseline.setTimeCreated(new Date().getTime());
                 baseline.setInitial(false);
 
-                persist(em, baseline);
+                persist(baseline);
             }
         }
 
@@ -111,11 +112,19 @@ public class SiteHistoryProcessor {
         }
         
         if (StringUtils.isNotBlank(json)) {
-            persistHistory(em, site, user, type, json);
+            persistHistory(site, user, type, json);
         }
     }
 
-    private void persistHistory(EntityManager em, Site site, User user, ChangeType type, String json) {
+    public void persistHistory(Site site, User user, ChangeType type, Map<String, Object> changeMap) {
+        String json = "{}";
+        if (changeMap != null && !changeMap.isEmpty()) {
+            json = JsonUtil.encodeMap(changeMap).toString();
+        }
+        persistHistory(site, user, type, json);
+    }
+
+    public void persistHistory(Site site, User user, ChangeType type, String json) {
         SiteHistory history = new SiteHistory();
         history.setSite(site);
         history.setUser(user);
@@ -123,25 +132,32 @@ public class SiteHistoryProcessor {
         history.setTimeCreated(new Date().getTime());
         history.setInitial(type.isNew());
 
-        persist(em, history);
+        persist(history);
     }
 
+    private void persist(SiteHistory history) {
+        EntityManager em = entityManager.get();
+        EntityTransaction tx = em.getTransaction();
+        boolean manageManually = !tx.isActive();
 
-    private void persist(EntityManager em, SiteHistory history) {
         try {
-            em.getTransaction().begin();
+            if (manageManually) {
+                tx.begin();
+            }
 
             em.persist(history);
 
-            em.getTransaction().commit();
+            if (manageManually) {
+                tx.commit();
+            }
 
         } catch (Exception e) {
             try {
-                em.getTransaction().rollback();
+                if (manageManually) {
+                    tx.rollback();
+                }
             } catch (Exception rollbackException) {
-                LOGGER.log(Level.SEVERE,
-                    "Exception rolling back failed transaction",
-                    rollbackException);
+                LOGGER.log(Level.SEVERE, "Exception rolling back failed transaction", rollbackException);
             }
             throw new RuntimeException(e);
         }

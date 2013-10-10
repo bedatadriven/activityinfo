@@ -111,7 +111,7 @@ public final class IndicatorRowDTO extends BaseModelData implements DTO {
     }
 
     public static String propertyName(int year, int month) {
-        return "M" + year + "-" + month;
+        return new Month(year, month).getPropertyName();
     }
 
     public static String propertyName(Month month) {

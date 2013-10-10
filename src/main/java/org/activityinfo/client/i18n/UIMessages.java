@@ -235,6 +235,9 @@ public interface UIMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("was: blank")
     String siteHistoryOldValueBlank();
 
+    @DefaultMessage("{0}, {1,date,MMMM yyyy}")
+    String siteHistoryIndicatorName(String name, Date date);
+
     @DefaultMessage("Added attribute {0}")
     String siteHistoryAttrAdd(String attrName);
 

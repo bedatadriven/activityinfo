@@ -97,8 +97,7 @@ public class SiteHistoryRenderer {
 
     private List<ItemDetail> details(RenderContext ctx) {
         List<ItemDetail> details = new ArrayList<ItemDetail>();
-        for (Map.Entry<String, Object> entry : ctx.getHistory().getJsonMap()
-            .entrySet()) {
+        for (Map.Entry<String, Object> entry : ctx.getHistory().getJsonMap().entrySet()) {
             details.add(ItemDetail.create(ctx, entry));
         }
         return details;
