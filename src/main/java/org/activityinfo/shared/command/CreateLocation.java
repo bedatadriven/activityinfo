@@ -67,4 +67,8 @@ public class CreateLocation implements MutatingCommand<VoidResult> {
         this.properties = properties;
     }
 
+    public int getLocationId() {
+        return (Integer) properties.get("id");
+    }
+
 }

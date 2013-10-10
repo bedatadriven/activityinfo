@@ -27,9 +27,11 @@ import java.util.Map.Entry;
 
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.result.CreateResult;
+import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.db.Tables;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.exception.CommandException;
 
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
@@ -50,6 +52,10 @@ public class CreateSiteHandler implements
     @Override
     public void execute(final CreateSite cmd, final ExecutionContext context,
         final AsyncCallback<CreateResult> callback) {
+
+        if (cmd.hasNestedCommand()) {
+            executeNestedCommand(cmd, context);
+        }
 
         insertSite(context.getTransaction(), cmd);
 
@@ -119,9 +125,7 @@ public class CreateSiteHandler implements
         }
     }
 
-    private int insertReportingPeriod(
-        SqlTransaction tx,
-        CreateSite cmd) {
+    private int insertReportingPeriod(SqlTransaction tx, CreateSite cmd) {
 
         int reportingPeriodId = cmd.getReportingPeriodId();
         SqlInsert.insertInto(Tables.REPORTING_PERIOD)
@@ -155,5 +159,19 @@ public class CreateSiteHandler implements
                     .execute(tx);
             }
         }
+    }
+
+    private void executeNestedCommand(final CreateSite cmd, final ExecutionContext context) {
+        context.execute(cmd.getNestedCommand(), new AsyncCallback<VoidResult>() {
+            @Override
+            public void onSuccess(VoidResult result) {
+                // continue creating the site
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new CommandException("can't execute nested command while creating site", caught);
+            }
+        });
     }
 }

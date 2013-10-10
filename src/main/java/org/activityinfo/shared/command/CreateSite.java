@@ -36,6 +36,8 @@ public class CreateSite implements MutatingCommand<CreateResult>, SiteCommand {
 
     private RpcMap properties;
 
+    private CreateLocation nestedCommand;
+
     // ensure this class is cleared for deserialization
     private LocalDate date;
 
@@ -88,6 +90,19 @@ public class CreateSite implements MutatingCommand<CreateResult>, SiteCommand {
 
     public Integer getReportingPeriodId() {
         return (Integer) properties.get("reportingPeriodId");
+    }
+
+    public CreateLocation getNestedCommand() {
+        return nestedCommand;
+    }
+
+    public void setNestedCommand(CreateLocation nestedCommand) {
+        this.nestedCommand = nestedCommand;
+        this.properties.put("locationId", nestedCommand.getLocationId());
+    }
+
+    public boolean hasNestedCommand() {
+        return nestedCommand != null;
     }
 
     @Override

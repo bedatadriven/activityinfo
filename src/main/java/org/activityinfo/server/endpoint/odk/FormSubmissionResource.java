@@ -19,7 +19,6 @@ import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormAttributeGroup;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormIndicator;
 import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
-import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateLocation;
 import org.activityinfo.shared.command.CreateSite;
 import org.activityinfo.shared.command.GetSchema;
@@ -104,10 +103,6 @@ public class FormSubmissionResource extends ODKResource {
         }
         site.setPartner(schemaDTO.getPartnerById(data.getPartner()));
 
-        // set location
-        int locationId = createLocation(data, schemaDTO, activity);
-        site.setLocationId(locationId);
-
         // set comments
         site.setComments(data.getComments());
 
@@ -126,15 +121,18 @@ public class FormSubmissionResource extends ODKResource {
             }
         }
 
+        // create command(s)
+        CreateSite cmd = new CreateSite(site);
+        cmd.setNestedCommand(createCreateLocationCommand(data, schemaDTO, activity));
+
         // save
-        Command<CreateResult> cmd = new CreateSite(site);
         CreateResult createResult = dispatcher.execute(cmd);
 
         // create sitehistory entry
         siteHistoryProcessor.process(cmd, getUser().getId(), createResult.getNewId());
     }
 
-    private int createLocation(SiteFormData data, SchemaDTO schemaDTO, ActivityDTO activity) {
+    private CreateLocation createCreateLocationCommand(SiteFormData data, SchemaDTO schemaDTO, ActivityDTO activity) {
         // create the dto
         LocationDTO loc = new LocationDTO();
         loc.setId(new KeyGenerator().generateInt());
@@ -161,10 +159,7 @@ public class FormSubmissionResource extends ODKResource {
             }
         }
 
-        // save
-        dispatcher.execute(cmd);
-
-        return loc.getId();
+        return cmd;
     }
 
     private AdminEntity createDebugAdminEntity() {
