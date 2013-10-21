@@ -1,11 +1,10 @@
 package org.activityinfo.server.endpoint.rest;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
 import java.util.List;
-
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
@@ -15,12 +14,10 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
@@ -49,11 +46,19 @@ public class SitesResourcesTest extends CommandTestCase2 {
         
         assertThat(array.size(), equalTo(3));
         
-        ObjectNode site6 = (ObjectNode)array.get(1);
+        JsonNode site6 = getSiteById(array, 6);
         assertThat(site6.path("id").asInt(), equalTo(6));
         assertThat(site6.path("activity").asInt(), equalTo(4));
-        assertThat(site6.path("indicatorValues").path("6").asInt(), equalTo(70));
+        assertThat(site6.path("indicatorValues").path("6").path("value").asInt(), equalTo(70));
         
     }
 
+    protected JsonNode getSiteById(ArrayNode array, int siteId) {
+        for(JsonNode node : array) {
+            if(node.get("id").asInt() == siteId) {
+                return node;
+            }
+        }
+        throw new AssertionError("No site json object with id " + siteId);
+    }
 }

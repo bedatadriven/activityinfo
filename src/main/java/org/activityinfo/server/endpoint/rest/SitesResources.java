@@ -14,9 +14,11 @@ import javax.ws.rs.core.Response;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.shared.command.Filter;
+import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.codehaus.jackson.JsonGenerationException;
@@ -44,13 +46,14 @@ public class SitesResources {
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, activityIds);
         filter.addRestriction(DimensionType.Database, databaseIds);
-        List<SiteDTO> sites = dispatcher.execute(new GetSites(filter))
-            .getData();
+        
+        List<SiteDTO> sites = dispatcher.execute(new GetSites(filter)).getData();
+        SchemaDTO schema = dispatcher.execute(new GetSchema());
 
         StringWriter writer = new StringWriter();
         JsonGenerator json = Jackson.createJsonFactory(writer);
         
-        writeJson(sites, json);
+        writeJson(schema, sites, json);
        
         return writer.toString();
     }
@@ -66,8 +69,7 @@ public class SitesResources {
         filter.addRestriction(DimensionType.Activity, activityIds);
         filter.addRestriction(DimensionType.Database, databaseIds);
         
-        List<SiteDTO> sites = dispatcher.execute(new GetSites(filter))
-            .getData();
+        List<SiteDTO> sites = dispatcher.execute(new GetSites(filter)).getData();
         
         StringWriter writer = new StringWriter();
         JsonGenerator json = Jackson.createJsonFactory(writer);
@@ -84,7 +86,7 @@ public class SitesResources {
     }
 
     
-    private void writeJson(List<SiteDTO> sites, JsonGenerator json)
+    private void writeJson(SchemaDTO schema, List<SiteDTO> sites, JsonGenerator json)
         throws IOException, JsonGenerationException {
         json.writeStartArray();
 
@@ -127,8 +129,11 @@ public class SitesResources {
             if(!indicatorIds.isEmpty()) {
                 json.writeObjectFieldStart("indicatorValues");
                 for(Integer indicatorId : indicatorIds) {
-                    json.writeNumberField(Integer.toString(indicatorId), 
-                        site.getIndicatorValue(indicatorId));
+                    IndicatorDTO indicator = schema.getIndicatorById(indicatorId);
+                    json.writeObjectFieldStart(Integer.toString(indicatorId));
+                    json.writeStringField("name", indicator.getName());
+                    json.writeNumberField("value", site.getIndicatorValue(indicatorId));
+                    json.writeEndObject();
                 }
                 json.writeEndObject();
             }
