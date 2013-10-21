@@ -83,9 +83,11 @@ public class ExportSitesServlet extends HttpServlet {
                     filter.getRestrictions(DimensionType.Activity).contains(
                         activity.getId())) {
                     export.export(activity, filter);
+                
                 }
             }
         }
+        export.done();
 
         resp.setContentType("application/vnd.ms-excel");
         if (req.getHeader("User-Agent").indexOf("MSIE") != -1) {
