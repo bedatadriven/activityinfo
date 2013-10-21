@@ -413,4 +413,13 @@ public class SiteExporter {
     private int characters(int numberOfCharacters) {
         return numberOfCharacters * CHARACTERS_PER_WIDTH_UNIT;
     }
+    
+    public void done() {
+        // an Excel workbook can't have zero sheets, so we need to
+        // add something here for it to be valid
+        if(book.getNumberOfSheets() == 0) {
+            HSSFSheet sheet = book.createSheet("Sheet1");
+            sheet.createRow(0).createCell(0).setCellValue("No matching sites.");
+        }   
+    }
 }
