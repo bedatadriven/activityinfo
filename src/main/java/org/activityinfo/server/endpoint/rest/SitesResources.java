@@ -16,6 +16,7 @@ import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.dto.AttributeDTO;
+import org.activityinfo.shared.dto.IndicatorDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.codehaus.jackson.JsonGenerationException;
@@ -34,11 +35,15 @@ public class SitesResources {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String query(@QueryParam("activity") List<Integer> activityIds, @QueryParam("format") String format) 
+    public String query(
+        @QueryParam("activity") List<Integer> activityIds, 
+        @QueryParam("database") List<Integer> databaseIds,
+        @QueryParam("format") String format) 
         throws IOException {
 
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, activityIds);
+        filter.addRestriction(DimensionType.Database, databaseIds);
         List<SiteDTO> sites = dispatcher.execute(new GetSites(filter))
             .getData();
 
@@ -54,10 +59,13 @@ public class SitesResources {
     @Path("/points")
     public Response queryPoints(
         @QueryParam("activity") List<Integer> activityIds,
+        @QueryParam("database") List<Integer> databaseIds,
         @QueryParam("callback") String callback) throws JsonGenerationException, IOException {
 
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, activityIds);
+        filter.addRestriction(DimensionType.Database, databaseIds);
+        
         List<SiteDTO> sites = dispatcher.execute(new GetSites(filter))
             .getData();
         
@@ -82,9 +90,9 @@ public class SitesResources {
 
         for (SiteDTO site : sites) {
             json.writeStartObject();
-            json.writeFieldName("id");
-            json.writeNumber(site.getId());
-
+            json.writeNumberField("id", site.getId());
+            json.writeNumberField("activity", site.getActivityId());
+            
             // write the location as a separate object
             json.writeObjectFieldStart("location");
             json.writeNumberField("id", site.getLocationId());
@@ -112,6 +120,17 @@ public class SitesResources {
                     json.writeNumber(attributeId);
                 }
                 json.writeEndArray();
+            }
+            
+            // write indicators
+            Set<Integer> indicatorIds = getIndicatorIds(site);
+            if(!indicatorIds.isEmpty()) {
+                json.writeObjectFieldStart("indicatorValues");
+                for(Integer indicatorId : indicatorIds) {
+                    json.writeNumberField(Integer.toString(indicatorId), 
+                        site.getIndicatorValue(indicatorId));
+                }
+                json.writeEndObject();
             }
 
             // comments
@@ -160,6 +179,17 @@ public class SitesResources {
         json.close();   
     }
 
+    private Set<Integer> getIndicatorIds(SiteDTO site) {
+        Set<Integer> ids = Sets.newHashSet();
+        for(String propertyName : site.getPropertyNames()) {
+            if(propertyName.startsWith(IndicatorDTO.PROPERTY_PREFIX) && 
+                site.get(propertyName) != null) {
+                ids.add(IndicatorDTO.indicatorIdForPropertyName(propertyName));
+            }
+        }
+        return ids;
+    }
+    
     private Set<Integer> getAttributeIds(SiteDTO site) {
         Set<Integer> ids = Sets.newHashSet();
         for (String propertyName : site.getPropertyNames()) {
