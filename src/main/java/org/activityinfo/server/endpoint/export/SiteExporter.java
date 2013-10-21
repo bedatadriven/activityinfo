@@ -260,9 +260,8 @@ public class SiteExporter {
         int latColumn = column++;
         int lngColumn = column++;
         
-        createHeaderCell(headerRow2, lngColumn, I18N.CONSTANTS.longitude(), CellStyle.ALIGN_RIGHT);
-        createHeaderCell(headerRow2, latColumn, I18N.CONSTANTS.latitude(),
-            CellStyle.ALIGN_RIGHT);
+        createHeaderCell(headerRow2, latColumn, I18N.CONSTANTS.longitude(), CellStyle.ALIGN_RIGHT);
+        createHeaderCell(headerRow2, lngColumn, I18N.CONSTANTS.latitude(), CellStyle.ALIGN_RIGHT);
         sheet.setColumnWidth(lngColumn, characters(COORD_COLUMN_WIDTH));
         sheet.setColumnWidth(latColumn, characters(COORD_COLUMN_WIDTH));
         
