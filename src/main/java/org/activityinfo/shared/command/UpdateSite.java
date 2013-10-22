@@ -38,7 +38,7 @@ public class UpdateSite implements MutatingCommand<VoidResult>, SiteCommand {
     private RpcMap changes;
 
     public UpdateSite() {
-
+        changes = new RpcMap();
     }
 
     public UpdateSite(int siteId, RpcMap changes) {
@@ -51,7 +51,7 @@ public class UpdateSite implements MutatingCommand<VoidResult>, SiteCommand {
         this.changes = new RpcMap();
         this.changes.putAll(changes);
     }
-
+    
     public UpdateSite(SiteDTO original, SiteDTO updated) {
         assert original.getId() == updated.getId();
         this.siteId = updated.getId();

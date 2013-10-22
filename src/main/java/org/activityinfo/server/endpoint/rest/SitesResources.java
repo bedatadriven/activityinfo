@@ -14,11 +14,9 @@ import javax.ws.rs.core.Response;
 
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.shared.command.Filter;
-import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
-import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.dto.SiteDTO;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.codehaus.jackson.JsonGenerationException;
@@ -34,7 +32,7 @@ public class SitesResources {
     public SitesResources(DispatcherSync dispatcher) {
         this.dispatcher = dispatcher;
     }
-
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String query(
@@ -48,12 +46,11 @@ public class SitesResources {
         filter.addRestriction(DimensionType.Database, databaseIds);
         
         List<SiteDTO> sites = dispatcher.execute(new GetSites(filter)).getData();
-        SchemaDTO schema = dispatcher.execute(new GetSchema());
 
         StringWriter writer = new StringWriter();
         JsonGenerator json = Jackson.createJsonFactory(writer);
         
-        writeJson(schema, sites, json);
+        writeJson(sites, json);
        
         return writer.toString();
     }
@@ -86,7 +83,7 @@ public class SitesResources {
     }
 
     
-    private void writeJson(SchemaDTO schema, List<SiteDTO> sites, JsonGenerator json)
+    private void writeJson(List<SiteDTO> sites, JsonGenerator json)
         throws IOException, JsonGenerationException {
         json.writeStartArray();
 
@@ -129,11 +126,7 @@ public class SitesResources {
             if(!indicatorIds.isEmpty()) {
                 json.writeObjectFieldStart("indicatorValues");
                 for(Integer indicatorId : indicatorIds) {
-                    IndicatorDTO indicator = schema.getIndicatorById(indicatorId);
-                    json.writeObjectFieldStart(Integer.toString(indicatorId));
-                    json.writeStringField("name", indicator.getName());
-                    json.writeNumberField("value", site.getIndicatorValue(indicatorId));
-                    json.writeEndObject();
+                    json.writeNumberField(Integer.toString(indicatorId), site.getIndicatorValue(indicatorId));
                 }
                 json.writeEndObject();
             }
