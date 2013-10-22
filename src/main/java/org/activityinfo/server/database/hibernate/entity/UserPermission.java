@@ -76,7 +76,7 @@ import javax.persistence.Transient;
 })
 @NamedQueries({
     @NamedQuery(name = "findUserPermissionByUserIdAndDatabaseId",
-        query = "select p from UserPermission p where p.database.id = :databaseId and p.user.id = :userId"),
+        query = "select p from UserPermission p where p.database.id = :databaseId and p.user.id = :userId")
 })
 public class UserPermission implements Serializable, SchemaElement {
 

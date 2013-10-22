@@ -30,7 +30,7 @@ public class CommandDeserializer extends StdDeserializer<Command> {
     String typeName = root.path("type").asText();
     Class commandClass = lookupCommandClass(typeName);
     
-    return mapper.readValue(root.path("command"), commandClass);  
+    return (Command)mapper.readValue(root.path("command"), commandClass);  
   }
 
 protected Class<?> lookupCommandClass(String type)  {
