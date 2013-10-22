@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.server.database.hibernate.entity.IndicatorValue;
 import org.activityinfo.test.InjectionSupport;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
@@ -49,7 +50,9 @@ public class SitesResourcesTest extends CommandTestCase2 {
         JsonNode site6 = getSiteById(array, 6);
         assertThat(site6.path("id").asInt(), equalTo(6));
         assertThat(site6.path("activity").asInt(), equalTo(4));
-        assertThat(site6.path("indicatorValues").path("6").path("value").asInt(), equalTo(70));
+        
+        double indicatorValue = site6.path("indicatorValues").path("6").asDouble();
+        assertThat(indicatorValue, equalTo(70d));
         
     }
 
