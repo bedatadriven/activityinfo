@@ -49,10 +49,12 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.WorkbookUtil;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 /**
@@ -170,13 +172,8 @@ public class SiteExporter {
     }
 
     private String composeUniqueSheetName(ActivityDTO activity) {
-        String sheetName = activity.getDatabase().getName() + " - "
-            + activity.getName();
-        // replace invalid chars: / \ [ ] * ?
-        sheetName = sheetName.replaceAll("[\\Q/\\*?[]\\E]", " ");
-
-        String shortenedName = sheetName.substring(0,
-            Math.min(MAX_SHEET_NAME_LENGTH, sheetName.length()));
+        String sheetName = activity.getDatabase().getName() + " - " + activity.getName();
+        String shortenedName = WorkbookUtil.createSafeSheetName(sheetName);
 
         // assure that the sheet name is unique
         if (!sheetNames.containsKey(shortenedName)) {
@@ -188,7 +185,7 @@ public class SiteExporter {
             return shortenedName + " (" + index + ")";
         }
     }
-
+    
     private void createHeaders(ActivityDTO activity, HSSFSheet sheet) {
 
         // / The HEADER rows
