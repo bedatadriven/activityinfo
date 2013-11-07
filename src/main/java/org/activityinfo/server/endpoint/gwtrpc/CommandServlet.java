@@ -75,9 +75,6 @@ public class CommandServlet extends RemoteServiceServlet implements
     private Injector injector;
 
     @Inject
-    private ServerEventBus serverEventBus;
-
-    @Inject
     private ServerSideAuthProvider authProvider;
 
     @Inject(optional = true)
@@ -148,12 +145,6 @@ public class CommandServlet extends RemoteServiceServlet implements
             if (timeElapsed > 1000) {
                 LOGGER.warning("Command " + command.toString() + " completed in "
                     + timeElapsed + "ms");
-            }
-
-            if (!(result instanceof CommandException)) {
-                // if the command completed successfully, notify listeners
-                LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
-                serverEventBus.post(new CommandEvent(command, result, context));
             }
 
             return result;

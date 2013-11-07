@@ -31,6 +31,8 @@ import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.database.hibernate.HibernateExecutor;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.event.CommandEvent;
+import org.activityinfo.server.event.ServerEventBus;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.MutatingCommand;
@@ -62,6 +64,8 @@ public class RemoteExecutionContext implements ExecutionContext {
     private HibernateEntityManager entityManager;
     private JdbcScheduler scheduler;
 
+    private ServerEventBus serverEventBus;
+
     public RemoteExecutionContext(Injector injector) {
         super();
         this.injector = injector;
@@ -70,6 +74,7 @@ public class RemoteExecutionContext implements ExecutionContext {
             .getInstance(EntityManager.class);
         this.scheduler = new JdbcScheduler();
         this.scheduler.allowNestedProcessing();
+        this.serverEventBus = injector.getInstance(ServerEventBus.class);
     }
 
     @Override
@@ -235,7 +240,11 @@ public class RemoteExecutionContext implements ExecutionContext {
     }
 
     private <C extends Command<R>, R extends CommandResult> void onAuthorized(
-        C command, final AsyncCallback<R> callback) {
+        final C command, AsyncCallback<R> outerCallback) {
+        
+        AsyncCallback<R> callback = new FiringCallback<R>(command, outerCallback);
+        
+        
         Object handler = injector.getInstance(HandlerUtil
             .asyncHandlerForCommand(command));
 
@@ -243,15 +252,15 @@ public class RemoteExecutionContext implements ExecutionContext {
             /**
              * Execute Asynchronously
              */
-            ((CommandHandlerAsync<C, R>) handler).execute(command, this,
-                callback);
+            ((CommandHandlerAsync<C, R>) handler).execute(command, this, callback);
+            
         } else if (handler instanceof CommandHandler) {
             /**
              * Executes Synchronously
              */
             try {
-                callback.onSuccess((R) ((CommandHandler) handler).execute(
-                    command, retrieveUserEntity()));
+                callback.onSuccess((R) ((CommandHandler) handler)
+                    .execute(command, retrieveUserEntity()));
             } catch (Exception e) {
                 callback.onFailure(e);
             }
@@ -262,6 +271,11 @@ public class RemoteExecutionContext implements ExecutionContext {
         return entityManager.find(User.class, user.getId());
     }
 
+    private void fireEvent(Command command, CommandResult result) {
+        LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
+        serverEventBus.post(new CommandEvent(command, result, this));
+    }
+    
     private static RuntimeException wrapException(Throwable t) {
         if (t instanceof RuntimeException) {
             return (RuntimeException) t;
@@ -286,6 +300,28 @@ public class RemoteExecutionContext implements ExecutionContext {
         }
     }
 
+    private class FiringCallback<R extends CommandResult> implements AsyncCallback<R> {
+        private final Command command;
+        private final AsyncCallback<R> callback;
+        
+        public FiringCallback(Command command, AsyncCallback<R> callback) {
+            super();
+            this.command = command;
+            this.callback = callback;
+        }
+
+        @Override
+        public void onFailure(Throwable caught) {
+            callback.onFailure(caught);
+        }
+
+        @Override
+        public void onSuccess(R result) {
+            LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
+            serverEventBus.post(new CommandEvent(command, result, RemoteExecutionContext.this));
+        }
+    }
+    
     private static class ResultCollector<R> implements AsyncCallback<R> {
 
         private String name;
