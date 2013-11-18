@@ -318,7 +318,12 @@ public class RemoteExecutionContext implements ExecutionContext {
         @Override
         public void onSuccess(R result) {
             LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
-            serverEventBus.post(new CommandEvent(command, result, RemoteExecutionContext.this));
+            try {
+                serverEventBus.post(new CommandEvent(command, result, RemoteExecutionContext.this));
+            } catch(Exception e) {
+                LOGGER.log(Level.SEVERE, "Exception while posting via server event bus: " + e.getMessage(), e);
+            }
+            callback.onSuccess(result);
         }
     }
     
