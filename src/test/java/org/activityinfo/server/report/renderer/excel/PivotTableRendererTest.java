@@ -26,14 +26,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 import org.activityinfo.server.report.DummyPivotTableData;
 import org.activityinfo.server.report.DummyPivotTableData2;
+import org.activityinfo.shared.report.content.FilterDescription;
+import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.shared.report.model.PivotTableReportElement;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)
@@ -115,6 +120,34 @@ public class PivotTableRendererTest {
         Assert.assertEquals(100, (int) sheet.getRow(5).getCell(1)
             .getNumericCellValue());
 
+    }
+    
+    @Test
+    public void veryLongFilter() {
+
+
+        // input test data : element + content
+        DummyPivotTableData2 testData = new DummyPivotTableData2();
+        PivotTableReportElement element = testData.testElement();
+        
+        // Filtering on 4000 indicators....
+        Map<Integer, String> labelMap = Maps.newHashMap();
+        for(int i=1;i!=10000;++i) {
+            element.getFilter().addRestriction(DimensionType.Indicator, i);
+            labelMap.put(i, "Very long indicator name " + i);
+        }
+
+        element.getContent().getFilterDescriptions().add(
+            new FilterDescription(DimensionType.Indicator, labelMap));
+        
+
+        // Destination book
+        HSSFWorkbook book = new HSSFWorkbook();
+
+        // CLASS under test
+
+        ExcelPivotTableRenderer renderer = new ExcelPivotTableRenderer();
+        renderer.render(book, element);
     }
 
 }

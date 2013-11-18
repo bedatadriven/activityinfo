@@ -23,6 +23,7 @@ package org.activityinfo.server.report.renderer.excel;
  */
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.activityinfo.shared.report.content.FilterDescription;
 import org.activityinfo.shared.report.model.ReportElement;
@@ -35,10 +36,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public abstract class BaseExcelRenderer<ElementT extends ReportElement> {
 
+    private static final int MAX_CELL_CONTENT_LENGTH = 32700;
     protected final ElementT element;
     protected final Workbook book;
     protected final Sheet sheet;
     protected final CreationHelper factory;
+    
+    private static final Logger LOGGER = Logger.getLogger(BaseExcelRenderer.class.getName());
 
     protected int rowIndex;
 
@@ -53,8 +57,7 @@ public abstract class BaseExcelRenderer<ElementT extends ReportElement> {
 
         Row titleRow = sheet.createRow(0);
         Cell titleCell = titleRow.createCell(0);
-        titleCell
-            .setCellValue(factory.createRichTextString(element.getTitle()));
+        titleCell.setCellValue(factory.createRichTextString(element.getTitle()));
 
         /* Create filter descriptors */
 
@@ -67,8 +70,12 @@ public abstract class BaseExcelRenderer<ElementT extends ReportElement> {
             Row filterRow = sheet.createRow(rowIndex++);
             Cell filterCell = filterRow.createCell(0);
 
-            filterCell.setCellValue(factory.createRichTextString(desc
-                .joinLabels(", ")));
+            String label = desc.joinLabels(", ");
+            if(label.length() > MAX_CELL_CONTENT_LENGTH) {
+                LOGGER.severe("Huge filter label string: " + label);
+                label = label.substring(0, MAX_CELL_CONTENT_LENGTH) + "...";
+            }
+            filterCell.setCellValue(factory.createRichTextString(label));
         }
 
         rowIndex++;
