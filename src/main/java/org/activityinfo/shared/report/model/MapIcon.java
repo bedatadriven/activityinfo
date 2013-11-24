@@ -25,6 +25,8 @@ package org.activityinfo.shared.report.model;
 import java.io.Serializable;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.safehtml.shared.UriUtils;
 
 /**
  * A generic bitmap icon that can be used on the client or server side, in tiled
@@ -140,6 +142,12 @@ public final class MapIcon implements Serializable, ImageResource {
     public String getURL() {
         return url;
     }
+    
+
+    @Override
+    public SafeUri getSafeUri() {
+        return UriUtils.fromTrustedString(getURL());
+    }
 
     @Override
     public boolean isAnimated() {
@@ -157,4 +165,5 @@ public final class MapIcon implements Serializable, ImageResource {
         Food,
         Water
     }
+
 }

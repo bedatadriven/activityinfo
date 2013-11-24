@@ -15,10 +15,6 @@
 
 
   <properties>
-    <!-- tell the compiler we can use 1.6 -->
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
-
     <gwt.output.directory>${basedir}/war</gwt.output.directory>
 
     <!-- Allow the build to continue even if there are test failures -->
@@ -26,14 +22,14 @@
 
     <display.version>${project.version}</display.version>
 
+    <gwtVersion>2.5.1</gwtVersion>
+    <rebarVersion>2.3.4-SNAPSHOT</rebarVersion>
     <gae.version>1.8.3</gae.version>
     <jersey.version>1.17</jersey.version>
     <appengine.export.version>0.1.1</appengine.export.version>
   </properties>
 
   <dependencies>
-
-
     <!-- GWT deps (from central repo) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
