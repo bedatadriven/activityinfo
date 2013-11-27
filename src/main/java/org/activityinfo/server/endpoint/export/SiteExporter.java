@@ -54,7 +54,6 @@ import org.apache.poi.ss.util.WorkbookUtil;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 /**
@@ -62,13 +61,9 @@ import com.google.common.base.Strings;
  */
 public class SiteExporter {
 
-    private static final short FONT_SIZE = 8;
+    private static final int MAX_WORKSHEET_LENGTH = 31;
 
-    /**
-     * sheet names can only be 31 characters long, plus we need about 4-6 chars
-     * for disambiguation
-     */
-    private static final int MAX_SHEET_NAME_LENGTH = 25;
+    private static final short FONT_SIZE = 8;
 
     private static final short DIAGONAL = 45;
 
@@ -173,16 +168,28 @@ public class SiteExporter {
 
     private String composeUniqueSheetName(ActivityDTO activity) {
         String sheetName = activity.getDatabase().getName() + " - " + activity.getName();
-        String shortenedName = WorkbookUtil.createSafeSheetName(sheetName);
-
+        
+        // to avoid conflict with our own disambiguation scheme, remove any trailing "(n)" 
+        // from sheet names
+        sheetName = sheetName.replaceFirst("\\((\\d+)\\)$", "$1");
+       
+        // shorten and translate the name to meet excel requirements
+        String safeName = WorkbookUtil.createSafeSheetName(sheetName);
+        
         // assure that the sheet name is unique
-        if (!sheetNames.containsKey(shortenedName)) {
-            sheetNames.put(shortenedName, 1);
-            return sheetName;
+        if (!sheetNames.containsKey(safeName)) {
+            sheetNames.put(safeName, 1);
+            return safeName;
         } else {
-            int index = sheetNames.get(shortenedName);
-            sheetNames.put(shortenedName, index + 1);
-            return shortenedName + " (" + index + ")";
+            int index = sheetNames.get(safeName) + 1;
+            sheetNames.put(safeName, index);
+            
+            String disambiguatedNamed = safeName + " (" + index + ")";
+            if(disambiguatedNamed.length() > MAX_WORKSHEET_LENGTH) {
+                int toTrim = disambiguatedNamed.length() - MAX_WORKSHEET_LENGTH;
+                disambiguatedNamed = safeName.substring(0, safeName.length() - toTrim) + " (" + index + ")";
+            }
+            return disambiguatedNamed;
         }
     }
     

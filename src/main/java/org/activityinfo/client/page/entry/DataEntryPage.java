@@ -347,7 +347,6 @@ public class DataEntryPage extends LayoutContainer implements Page,
         Set<Integer> activities = filter
             .getRestrictions(DimensionType.Activity);
         toolBar.setActionEnabled(UIActions.PRINT, activities.size() == 1);
-        toolBar.setActionEnabled(UIActions.EXPORT, activities.size() == 1);
 
         // also embedding is only implemented for one activity
         toolBar.setActionEnabled("EMBED", activities.size() == 1);
