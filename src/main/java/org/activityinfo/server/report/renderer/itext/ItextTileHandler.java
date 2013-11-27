@@ -35,6 +35,10 @@ public class ItextTileHandler implements TileHandler {
 
     @Override
     public void addTile(String tileUrl, int x, int y, int width, int height) {
-        template.addImage(tileUrl, x, y, width, height);
+        try {
+            template.addImage(tileUrl, x, y, width, height);
+        } catch(Exception e) {
+            throw new RuntimeException("Erorr adding " + tileUrl + " to map", e);
+        }
     }
 }

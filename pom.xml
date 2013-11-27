@@ -23,8 +23,8 @@
     <display.version>${project.version}</display.version>
 
     <gwtVersion>2.5.1</gwtVersion>
-    <rebarVersion>2.3.4-SNAPSHOT</rebarVersion>
-    <gae.version>1.8.3</gae.version>
+    <rebarVersion>2.4.1-SNAPSHOT</rebarVersion>
+    <gae.version>1.7.2</gae.version>
     <jersey.version>1.17</jersey.version>
     <appengine.export.version>0.1.1</appengine.export.version>
   </properties>
@@ -53,13 +53,6 @@
     <dependency>
       <groupId>com.google.code.gaxb</groupId>
       <artifactId>gaxb</artifactId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.ebessette.maps</groupId>
-      <artifactId>overlaymanager</artifactId>
       <version>1.0</version>
       <scope>provided</scope>
     </dependency>
@@ -207,11 +200,10 @@
       <classifier>gwt22</classifier>
     </dependency>
     <dependency>
-      <groupId>com.google.gwt.google-apis</groupId>
-      <artifactId>gwt-maps</artifactId>
-      <version>1.1.0</version>
-      <classifier>gwt23</classifier>
-    </dependency>
+      <groupId>org.discotools.gwt.leaflet</groupId>
+      <artifactId>gwtl-core</artifactId>
+      <version>0.3-SNAPSHOT</version>
+    </dependency>    
     <dependency>
       <groupId>com.google.gwt.google-apis</groupId>
       <artifactId>gwt-gears</artifactId>
@@ -497,6 +489,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
+        <version>${gwtVersion}</version>
         <configuration>
           <runTarget>/</runTarget>
           <logLevel>TRACE</logLevel>

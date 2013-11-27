@@ -86,7 +86,6 @@ public class HostController {
 
         HostPageModel model = new HostPageModel(appUri);
         model.setAppCacheEnabled(checkAppCacheEnabled(req));
-        model.setMapsApiKey(deployConfig.getProperty("mapsApiKey"));
 
         return Response.ok(model.asViewable())
             .type(MediaType.TEXT_HTML)

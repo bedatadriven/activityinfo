@@ -42,6 +42,7 @@ import org.activityinfo.server.util.logging.LogSlow;
 import org.activityinfo.server.util.mapping.GoogleStaticMapsApi;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.map.GoogleBaseMap;
+import org.activityinfo.shared.map.MapboxLayers;
 import org.activityinfo.shared.map.TileBaseMap;
 import org.activityinfo.shared.report.content.AdminMarker;
 import org.activityinfo.shared.report.content.AdminOverlay;
@@ -314,7 +315,7 @@ public class ImageMapRenderer {
             if (baseMap instanceof TileBaseMap) {
                 drawTiledBaseMap(tileHandler, map, baseMap);
             } else if (baseMap instanceof GoogleBaseMap) {
-                drawGoogleBaseMap(tileHandler, map, (GoogleBaseMap) baseMap);
+                drawTiledBaseMap(tileHandler, map, MapboxLayers.toTileBaseMap(baseMap));
             }
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Exception drawing basemap", e);

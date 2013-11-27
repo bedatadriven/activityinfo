@@ -30,8 +30,9 @@
   <inherits name="com.google.gwt.i18n.I18N" />
   <inherits name="com.google.gson.Gson" />
   <inherits name='com.extjs.gxt.ui.GXT' />
-  <inherits name="com.google.gwt.maps.GoogleMaps" />
-  <inherits name="com.ebessette.maps.core.OverlayManager" />
+  
+  <inherits name="org.discotools.gwt.leaflet.Core"/>
+  
   <inherits name="com.google.gwt.gears.Gears" />
   <inherits name="com.google.gwt.inject.Inject" />
   <inherits name="com.extjs.gxt.charts.Chart" />

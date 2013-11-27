@@ -22,40 +22,77 @@ package org.activityinfo.client.report.view;
  * #L%
  */
 
-import org.activityinfo.client.map.GoogleMapsReportOverlays;
-import org.activityinfo.client.widget.GoogleMapsPanel;
+import org.activityinfo.client.map.LeafletReportOverlays;
+import org.activityinfo.client.report.editor.map.LeafletMap;
+import org.activityinfo.client.util.LeafletUtil;
 import org.activityinfo.shared.report.model.MapReportElement;
+import org.discotools.gwt.leaflet.client.LeafletResourceInjector;
+import org.discotools.gwt.leaflet.client.map.MapOptions;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 
-public class MapReportView extends GoogleMapsPanel implements
+public class MapReportView extends ContentPanel implements
     ReportView<MapReportElement> {
-
-    private GoogleMapsReportOverlays overlays;
+    
+    private LeafletMap map;
+    private LeafletReportOverlays overlays;
     private MapReportElement element;
 
     public MapReportView() {
+        LeafletResourceInjector.ensureInjected();
+        
         setHeaderVisible(false);
-    }
-
-    @Override
-    protected void onMapInitialized() {
-        overlays = new GoogleMapsReportOverlays(getMapWidget());
-        if (element != null) {
-            addContent();
-        }
     }
 
     @Override
     public void show(MapReportElement element) {
         this.element = element;
-        if (isMapLoaded()) {
-            addContent();
-        }
+        addContent();
     }
 
     private void addContent() {
+        if(map == null) {
+            MapOptions options = new MapOptions();
+            options.setZoom(element.getContent().getZoomLevel());
+            options.setCenter(LeafletUtil.to(element.getContent().getCenter()));
+            options.setProperty("zoomControl", false);
+            options.setProperty("attributionControl", false);
+            
+            map = new LeafletMap(options);
+            add(map);
+            layout();            
+        }
+        if(map.isRendered()) {
+            syncContent();
+        } else {
+            map.addListener(Events.Render, new Listener<BaseEvent>() {
+
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    syncContent();
+                }
+            });
+        }
+    }
+
+    private void syncContent() {
+        if(overlays == null) {
+            overlays = new LeafletReportOverlays(map.getMap());
+        }
         overlays.syncWith(element);
+    }
+    
+    @Override
+    public void afterRender() {
+        super.afterRender();
+        
+        if(element != null) {
+            addContent();
+        }
     }
 
     @Override

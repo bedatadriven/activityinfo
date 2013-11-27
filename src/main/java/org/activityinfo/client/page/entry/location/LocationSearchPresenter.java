@@ -94,8 +94,7 @@ public class LocationSearchPresenter extends BaseObservable {
         return searchBounds;
     }
 
-    public void search(String name, Collection<Integer> collection,
-        Extents bounds) {
+    public void search(String name, Collection<Integer> collection, Extents bounds) {
         searchBounds = bounds;
         currentSearch = new SearchLocations()
             .setName(name)

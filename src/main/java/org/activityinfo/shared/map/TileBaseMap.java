@@ -61,7 +61,7 @@ public class TileBaseMap extends BaseMap {
 
     public String getTileUrl(int zoom, int x, int y) {
         return tileUrlPattern
-            .replace("{s}", Integer.toString(x % 2 + y % 2))
+            .replace("{s}", Character.toString((char)( 'a' +(x % 2 + y % 2) )))
             .replace("{x}", Integer.toString(x))
             .replace("{y}", Integer.toString(y))
             .replace("{z}", Integer.toString(zoom));

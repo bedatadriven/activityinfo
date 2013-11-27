@@ -1,6 +1,5 @@
 package org.activityinfo.server.login.model;
 
-import org.activityinfo.server.database.hibernate.entity.Domain;
 
 /*
  * #%L
@@ -27,7 +26,6 @@ import org.activityinfo.server.database.hibernate.entity.Domain;
 public class HostPageModel extends PageModel {
     private String appUrl;
     private boolean appCacheEnabled;
-    private String mapsApiKey;
 
     public HostPageModel(String appUrl) {
         this.appUrl = appUrl;
@@ -43,13 +41,5 @@ public class HostPageModel extends PageModel {
 
     public void setAppCacheEnabled(boolean appCacheEnabled) {
         this.appCacheEnabled = appCacheEnabled;
-    }
-
-    public String getMapsApiKey() {
-        return mapsApiKey;
-    }
-
-    public void setMapsApiKey(String mapsApiKey) {
-        this.mapsApiKey = mapsApiKey;
     }
 }

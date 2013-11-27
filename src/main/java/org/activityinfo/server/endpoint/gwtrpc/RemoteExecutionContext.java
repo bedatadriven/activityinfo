@@ -48,6 +48,7 @@ import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.sql.shared.adapter.SyncTransactionAdapter;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 
@@ -316,13 +317,26 @@ public class RemoteExecutionContext implements ExecutionContext {
         }
 
         @Override
-        public void onSuccess(R result) {
-            LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
-            try {
-                serverEventBus.post(new CommandEvent(command, result, RemoteExecutionContext.this));
-            } catch(Exception e) {
-                LOGGER.log(Level.SEVERE, "Exception while posting via server event bus: " + e.getMessage(), e);
-            }
+        public void onSuccess(final R result) {
+            // *only* enqueue the event notification --
+            // unfortunately, many async command handlers are written
+            // to only submit their update statements to the queue
+            // before returning, which breaks terribly when 
+            // subsequent nested commands rely on their having inserted
+            // something
+            scheduler.scheduleDeferred(new ScheduledCommand() {
+                
+                @Override
+                public void execute() {
+
+                    LOGGER.fine("notifying serverEventBus of completed command " + command.toString());
+                    try {
+                        serverEventBus.post(new CommandEvent(command, result, RemoteExecutionContext.this));
+                    } catch(Exception e) {
+                        LOGGER.log(Level.SEVERE, "Exception while posting via server event bus: " + e.getMessage(), e);
+                    }     
+                }
+            });
             callback.onSuccess(result);
         }
     }

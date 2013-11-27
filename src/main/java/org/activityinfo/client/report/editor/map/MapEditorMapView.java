@@ -27,39 +27,35 @@ import org.activityinfo.client.Log;
 import org.activityinfo.client.dispatch.Dispatcher;
 import org.activityinfo.client.dispatch.monitor.MaskingAsyncMonitor;
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.map.GoogleMapsReportOverlays;
+import org.activityinfo.client.map.LeafletReportOverlays;
 import org.activityinfo.client.page.report.HasReportElement;
 import org.activityinfo.client.page.report.ReportChangeHandler;
 import org.activityinfo.client.page.report.ReportEventBus;
-import org.activityinfo.client.widget.GoogleMapsPanel;
 import org.activityinfo.shared.command.GenerateElement;
 import org.activityinfo.shared.map.BaseMap;
 import org.activityinfo.shared.report.content.AdminOverlay;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.MapContent;
-import org.activityinfo.shared.report.content.MapMarker;
 import org.activityinfo.shared.report.model.MapReportElement;
+import org.discotools.gwt.leaflet.client.LeafletResourceInjector;
+import org.discotools.gwt.leaflet.client.controls.zoom.Zoom;
+import org.discotools.gwt.leaflet.client.crs.epsg.EPSG3857;
+import org.discotools.gwt.leaflet.client.map.MapOptions;
+import org.discotools.gwt.leaflet.client.types.LatLng;
 
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.maps.client.InfoWindowContent;
-import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.ControlAnchor;
-import com.google.gwt.maps.client.control.ControlPosition;
-import com.google.gwt.maps.client.control.LargeMapControl;
-import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
-import com.google.gwt.maps.client.event.MapMoveEndHandler;
-import com.google.gwt.maps.client.event.MapZoomEndHandler;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Displays the content of a MapElement using Google Maps.
  */
-public class MapEditorMapView extends GoogleMapsPanel implements
+public class MapEditorMapView extends ContentPanel implements
     HasReportElement<MapReportElement> {
 
     private static final int DEFAULT_ZOOM_CONTROL_OFFSET_X = 5;
@@ -76,7 +72,7 @@ public class MapEditorMapView extends GoogleMapsPanel implements
     private final Status statusWidget;
 
     private MapReportElement model = new MapReportElement();
-    private GoogleMapsReportOverlays overlays;
+    private LeafletReportOverlays overlays;
 
     // Model of a the map
     private MapContent content;
@@ -86,9 +82,11 @@ public class MapEditorMapView extends GoogleMapsPanel implements
     // True when the first layer is just put on the map
     private boolean isFirstLayerUpdate = true;
 
-    private LargeMapControl zoomControl;
+    //private LargeMapControl zoomControl;
     private int zoomControlOffsetX = DEFAULT_ZOOM_CONTROL_OFFSET_X;
 
+    private LeafletMap map;
+    
     public MapEditorMapView(Dispatcher dispatcher, EventBus eventBus) {
         this.dispatcher = dispatcher;
         this.reportEventBus = new ReportEventBus(eventBus, this);
@@ -100,64 +98,60 @@ public class MapEditorMapView extends GoogleMapsPanel implements
             }
         });
 
+        setLayout(new FitLayout());
         setHeaderVisible(false);
 
         statusWidget = new Status();
         ToolBar toolBar = new ToolBar();
         toolBar.add(statusWidget);
         setBottomComponent(toolBar);
+        
+        LeafletResourceInjector.ensureInjected();
+        
     }
 
-    @Override
-    protected void configureMap(MapWidget map) {
-        zoomControl = new LargeMapControl();
-        map.addControl(zoomControl, zoomControlPosition());
-
-        // TODO: generalize
-        map.panTo(LatLng.newInstance(RDC_CENTER_LAT, RDC_CENTER_LONG));
-
-        map.addMapClickHandler(new MapClickHandler() {
-            @Override
-            public void onClick(MapClickEvent event) {
-                onMapClick(event);
-            }
-        });
-
-        map.addMapZoomEndHandler(new MapZoomEndHandler() {
-
-            @Override
-            public void onZoomEnd(MapZoomEndEvent event) {
-                updateModelFromMap();
-            }
-        });
-
-        map.addMapMoveEndHandler(new MapMoveEndHandler() {
-
-            @Override
-            public void onMoveEnd(MapMoveEndEvent event) {
-                updateModelFromMap();
-            }
-        });
-    }
-
-    @Override
-    protected void onMapInitialized() {
-
-        // initialize our overlay manager
-        this.overlays = new GoogleMapsReportOverlays(getMapWidget());
-
-        loadContent();
-    }
+//    @Override
+//    protected void configureMap(MapWidget map) {
+//        //zoomControl = new LargeMapControl();
+//        map.addControl(zoomControl, zoomControlPosition());
+//
+//        // TODO: generalize
+//        map.panTo(LatLng.newInstance(RDC_CENTER_LAT, RDC_CENTER_LONG));
+//
+//        map.addMapClickHandler(new MapClickHandler() {
+//            @Override
+//            public void onClick(MapClickEvent event) {
+//                onMapClick(event);
+//            }
+//        });
+//
+//        map.addMapZoomEndHandler(new MapZoomEndHandler() {
+//
+//            @Override
+//            public void onZoomEnd(MapZoomEndEvent event) {
+//                updateModelFromMap();
+//            }
+//        });
+//
+//        map.addMapMoveEndHandler(new MapMoveEndHandler() {
+//
+//            @Override
+//            public void onMoveEnd(MapMoveEndEvent event) {
+//                updateModelFromMap();
+//            }
+//        });
+//    }
 
     public void setZoomControlOffsetX(int offset) {
         zoomControlOffsetX = offset;
-        try {
-            if (zoomControl != null) {
-                getMapWidget().removeControl(zoomControl);
-                getMapWidget().addControl(zoomControl, zoomControlPosition());
+        if(map != null) {
+            try {
+                Zoom zoomControl = map.getMap().getZoomControl();
+                Element container = zoomControl.getContainer();
+                container.getStyle().setMarginLeft(zoomControlOffsetX, Unit.PX);
+            } catch (Exception e) {
+                Log.error("Exception thrown while setting zoom control", e);
             }
-        } catch (Exception e) {
-            Log.error("Exception thrown while setting zoom control", e);
         }
     }
 
@@ -176,11 +170,11 @@ public class MapEditorMapView extends GoogleMapsPanel implements
     public MapReportElement getModel() {
         return model;
     }
-
-    private ControlPosition zoomControlPosition() {
-        return new ControlPosition(ControlAnchor.TOP_LEFT, zoomControlOffsetX,
-            ZOOM_CONTROL_OFFSET_Y);
-    }
+//
+//    private ControlPosition zoomControlPosition() {
+//        return new ControlPosition(ControlAnchor.TOP_LEFT, zoomControlOffsetX,
+//            ZOOM_CONTROL_OFFSET_Y);
+//    }
 
     /**
      * Updates the size of the map and adds Overlays to reflect the content of
@@ -188,11 +182,6 @@ public class MapEditorMapView extends GoogleMapsPanel implements
      */
     private void loadContent() {
 
-        if (!isMapLoaded()) {
-            return;
-        }
-
-        overlays.clear();
 
         // Don't update when no layers are present
         if (model.getLayers().isEmpty()) {
@@ -229,6 +218,14 @@ public class MapEditorMapView extends GoogleMapsPanel implements
         statusWidget.setStatus(result.getUnmappedSites().size() + " "
             + I18N.CONSTANTS.siteLackCoordiantes(), null);
 
+        if(!isRendered()) {
+            return;
+        }
+        
+        if(map == null) {
+            createMap();
+        }
+        overlays.clear();
         overlays.setBaseMap(result.getBaseMap());
         overlays.addMarkers(result.getMarkers());
         for (AdminOverlay overlay : result.getAdminOverlays()) {
@@ -236,27 +233,40 @@ public class MapEditorMapView extends GoogleMapsPanel implements
         }
 
         if (!zoomSet) {
-            zoomToBounds(result.getExtents());
+            map.fitBounds(result.getExtents());
             zoomSet = true;
         }
-
     }
 
-    private void onMapClick(MapClickEvent event) {
-        if (event.getOverlay() != null) {
-            MapMarker marker = overlays.getMapMarker(event.getOverlay());
-            if (marker != null) {
-                getMapWidget().getInfoWindow().open(
-                    (Marker) event.getOverlay(),
-                    new InfoWindowContent(I18N.CONSTANTS.loading()));
-            }
-        }
+    private void createMap() {
+        MapOptions mapOptions = new MapOptions();
+        mapOptions.setCenter(new LatLng(content.getExtents().getCenterY(), content.getExtents().getCenterX()));
+        mapOptions.setZoom(6);
+        mapOptions.setProperty("crs", new EPSG3857());
+        
+        map = new LeafletMap(mapOptions);
+        
+        
+        add(map);
+        layout();
+        
+        overlays = new LeafletReportOverlays(map.getMap());
     }
+//
+//    private void onMapClick(MapClickEvent event) {
+//        if (event.getOverlay() != null) {
+//            MapMarker marker = overlays.getMapMarker(event.getOverlay());
+//            if (marker != null) {
+//                getMapWidget().getInfoWindow().open(
+//                    (Marker) event.getOverlay(),
+//                    new InfoWindowContent(I18N.CONSTANTS.loading()));
+//            }
+//        }
+//    }
 
     private void updateModelFromMap() {
-        model.setZoomLevel(getMapWidget().getZoomLevel());
-        model.setCenter(new AiLatLng(
-            getMapWidget().getCenter().getLatitude(),
-            getMapWidget().getCenter().getLongitude()));
+        model.setZoomLevel(map.getMap().getZoom());
+        LatLng center = map.getMap().getBounds().getCenter();
+        model.setCenter(new AiLatLng(center.lat(), center.lng()));
     }
 }

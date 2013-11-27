@@ -220,7 +220,7 @@ public class ItextReportRendererTest {
 
         TileBaseMap referenceBaseMap = new TileBaseMap();
         referenceBaseMap
-            .setTileUrlPattern("http://mt{s}.aimaps.net/admin/v1/z{z}/{x}x{y}.png");
+            .setTileUrlPattern("http://www.activityinfo.org/resources/tile/admin.cd/{z}/{x}/{y}.png");
         referenceBaseMap.setName("Administrative Map");
 
         BaseMap[] baseMaps = new BaseMap[] {
@@ -270,7 +270,7 @@ public class ItextReportRendererTest {
 
         TileBaseMap baseMap = new TileBaseMap();
         baseMap
-            .setTileUrlPattern("http://mt{s}.aimaps.net/nordkivu.cd/v1/z{z}/{x}x{y}.png");
+            .setTileUrlPattern("//www.activityinfo.org/resources/tile/nordkivu.cd/{z}/{x}/{y}.png");
 
         IconMapLayer layer3 = new IconMapLayer();
         layer3.setIcon(MapIcon.Icon.Default.name());
@@ -315,7 +315,7 @@ public class ItextReportRendererTest {
 
         TileBaseMap baseMap = new TileBaseMap();
         baseMap
-            .setTileUrlPattern("http://mt{s}.aimaps.net/nordkivu.cd/v1/z{z}/{x}x{y}.png");
+            .setTileUrlPattern("//www.activityinfo.org/resources/tile/nordkivu.cd/{z}/{x}/{y}.png");
 
         BubbleMapLayer layer1 = new BubbleMapLayer();
         layer1.addIndicatorId(101);

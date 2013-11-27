@@ -47,8 +47,8 @@ public interface SiteFormResources extends ClientBundle {
     @NotStrict
     FormStyle style();
 
-    @Source("marker.png")
-    ImageResource marker();
+    @Source("blankMarker.png")
+    ImageResource blankMarker();
 
     interface FormStyle extends CssResource {
 
@@ -64,5 +64,7 @@ public interface SiteFormResources extends ClientBundle {
 
         String locationSearchResults();
 
+        String locationMarker();
+        
     }
 }

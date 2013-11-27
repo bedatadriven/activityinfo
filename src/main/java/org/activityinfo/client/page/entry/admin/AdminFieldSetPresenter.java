@@ -184,7 +184,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements
     private List<AdminLevelDTO> levels;
     private Map<Integer, Level> levelMap;
 
-    private Extents bounds = Extents.maxGeoBounds();
+    private Extents bounds;
     private String boundsName = "";
 
     public AdminFieldSetPresenter(Dispatcher dispatcher, CountryDTO country,
@@ -192,6 +192,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements
         this.dispatcher = dispatcher;
         this.levels = Lists.newArrayList(levels);
         this.levelMap = Maps.newHashMap();
+        this.bounds = country.getBounds();
 
         for (AdminLevelDTO level : levels) {
             levelMap.put(level.getId(), new Level(level));

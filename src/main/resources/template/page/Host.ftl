@@ -85,10 +85,6 @@
             document.cookie.indexOf('email') == -1) {
             window.location = "/login" + window.location.hash;
         }
-        
-        var GoogleMapsAPI = {
-            key: "${mapsApiKey}"
-        };
         var VersionInfo = {
             display: '$[display.version]',
             commitId: '$[git.commit.id]'

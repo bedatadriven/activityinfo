@@ -25,18 +25,15 @@ package org.activityinfo.client.page.entry.location;
 import java.util.Arrays;
 
 import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.map.GoogleChartsIconBuilder;
 import org.activityinfo.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.shared.dto.LocationDTO;
 
-import com.extjs.gxt.ui.client.data.ModelProcessor;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.google.common.base.Strings;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -55,13 +52,7 @@ public class SearchListView extends ListView<LocationDTO> {
         setBorders(false);
         setStyleAttribute("overflow", "visible");
         setLoadingText(I18N.CONSTANTS.loading());
-        setModelProcessor(new ModelProcessor<LocationDTO>() {
 
-            @Override
-            public LocationDTO prepareData(LocationDTO model) {
-                return prepareUrl(model);
-            }
-        });
 
         getSelectionModel().addSelectionChangedListener(
             new SelectionChangedListener<LocationDTO>() {
@@ -92,20 +83,6 @@ public class SearchListView extends ListView<LocationDTO> {
         });
 
         SiteFormResources.INSTANCE.style().ensureInjected();
-    }
-
-    private LocationDTO prepareUrl(LocationDTO model) {
-        if (Strings.isNullOrEmpty(model.getMarker())) {
-            GoogleChartsIconBuilder builder = new GoogleChartsIconBuilder();
-            builder.setLabel("?");
-            builder.setPrimaryColor("BBBBBB");
-            model.set("markerUrl", builder.composePinUrl());
-        } else {
-            GoogleChartsIconBuilder builder = new GoogleChartsIconBuilder();
-            builder.setLabel(model.getMarker());
-            model.set("markerUrl", builder.composePinUrl());
-        }
-        return model;
     }
 
     /**

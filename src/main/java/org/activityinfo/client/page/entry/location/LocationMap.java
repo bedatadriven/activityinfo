@@ -22,73 +22,95 @@ package org.activityinfo.client.page.entry.location;
  * #L%
  */
 
+import java.util.List;
+
 import org.activityinfo.client.Log;
-import org.activityinfo.client.i18n.I18N;
-import org.activityinfo.client.map.GoogleChartsIconBuilder;
-import org.activityinfo.client.map.MapTypeFactory;
-import org.activityinfo.client.widget.CoordinateEditor;
-import org.activityinfo.client.widget.CoordinateField.Axis;
-import org.activityinfo.client.widget.GoogleMapsPanel;
+import org.activityinfo.client.page.entry.form.resources.SiteFormResources;
+import org.activityinfo.client.util.LeafletUtil;
 import org.activityinfo.shared.dto.LocationDTO;
+import org.activityinfo.shared.map.MapboxLayers;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.util.mapping.Extents;
+import org.discotools.gwt.leaflet.client.LeafletResourceInjector;
+import org.discotools.gwt.leaflet.client.Options;
+import org.discotools.gwt.leaflet.client.crs.epsg.EPSG3857;
+import org.discotools.gwt.leaflet.client.events.Event;
+import org.discotools.gwt.leaflet.client.events.MouseEvent;
+import org.discotools.gwt.leaflet.client.events.handler.EventHandler;
+import org.discotools.gwt.leaflet.client.events.handler.EventHandlerManager;
+import org.discotools.gwt.leaflet.client.layers.ILayer;
+import org.discotools.gwt.leaflet.client.layers.others.LayerGroup;
+import org.discotools.gwt.leaflet.client.layers.raster.TileLayer;
+import org.discotools.gwt.leaflet.client.map.Map;
+import org.discotools.gwt.leaflet.client.map.MapOptions;
+import org.discotools.gwt.leaflet.client.marker.Marker;
+import org.discotools.gwt.leaflet.client.types.DivIcon;
+import org.discotools.gwt.leaflet.client.types.DivIconOptions;
+import org.discotools.gwt.leaflet.client.types.LatLng;
+import org.discotools.gwt.leaflet.client.types.LatLngBounds;
+import org.discotools.gwt.leaflet.client.types.Point;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.google.common.collect.Lists;
-import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.maps.client.InfoWindowContent;
-import com.google.gwt.maps.client.MapType;
-import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.SmallMapControl;
-import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.maps.client.event.MapZoomEndHandler;
-import com.google.gwt.maps.client.event.MarkerDragEndHandler;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.LatLngBounds;
-import com.google.gwt.maps.client.overlay.Icon;
-import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.MarkerOptions;
+import com.google.gwt.resources.client.ImageResource;
 
-public class LocationMap extends GoogleMapsPanel {
+
+public class LocationMap extends Html {
 
     private final LocationSearchPresenter searchPresenter;
     private final NewLocationPresenter newLocationPresenter;
 
-    private final BiMap<LocationDTO, Marker> searchMarkers = HashBiMap.create();
+    private LayerGroup markerLayer;
     private Marker newLocationMarker;
+    
+    private Map map;
 
     public LocationMap(LocationSearchPresenter presenter,
         NewLocationPresenter newLocationPresenter) {
         super();
         this.searchPresenter = presenter;
         this.newLocationPresenter = newLocationPresenter;
+        
+        LeafletResourceInjector.ensureInjected();
+        
+        setStyleName("gwt-Map");   
+        setHtml("<div style=\"width:100%; height: 100%; position: relative;\"></div>");
+    }
+    
+    @Override
+    protected void afterRender() {
+    	super.afterRender();
 
-        setHeaderVisible(false);
+    	Extents countryBounds = searchPresenter.getCountry().getBounds();
+
+    	MapOptions mapOptions = new MapOptions();
+    	mapOptions.setCenter(new LatLng(countryBounds.getCenterY(), countryBounds.getCenterX()));
+    	mapOptions.setZoom(6);
+    	mapOptions.setProperty("crs", new EPSG3857());
+
+        TileLayer baseLayer = new TileLayer(MapboxLayers.MAPBOX_STREETS, new Options());
+        
+        markerLayer = new LayerGroup(new ILayer[0]);
+        
+        map = new Map(getElement().getElementsByTagName("div").getItem(0), mapOptions);
+        map.addLayer(baseLayer);
+        map.addLayer(markerLayer);
+    		
+    	bindEvents();
     }
 
     @Override
-    protected void configureMap(MapWidget map) {
-        Extents countryBounds = searchPresenter.getCountry().getBounds();
-        map.addControl(new SmallMapControl());
-        map.setCenter(LatLng.newInstance(
-            countryBounds.getCenterY(),
-            countryBounds.getCenterX()));
-        map.setZoomLevel(6);
-
-        MapType adminMap = MapTypeFactory
-            .createLocalisationMapType(searchPresenter.getCountry());
-        map.addMapType(adminMap);
-        map.setCurrentMapType(adminMap);
+    protected void onResize(int width, int height) {
+        super.onResize(width, height);
+        map.invalidateSize(false);
     }
-
-    @Override
-    protected void onMapInitialized() {
+    
+    private void bindEvents() {
 
         searchPresenter.getStore().addStoreListener(
             new StoreListener<LocationDTO>() {
@@ -133,92 +155,90 @@ public class LocationMap extends GoogleMapsPanel {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     if (newLocationPresenter.isActive()) {
-                        LatLngBounds newBounds = newLatLngBounds(newLocationPresenter
-                            .getBounds());
-                        zoomToBounds(newBounds);
+                        LatLngBounds newBounds = LeafletUtil.newLatLngBounds(newLocationPresenter.getBounds());
+                        map.fitBounds(newBounds);
                     }
                 }
             });
-
-        getMapWidget().addMapClickHandler(new MapClickHandler() {
-
-            @Override
-            public void onClick(MapClickEvent event) {
-                if (event.getOverlay() instanceof Marker) {
-                    onMarkerClicked((Marker) event.getOverlay());
-                }
-            }
-        });
-
-        getMapWidget().addMapZoomEndHandler(new MapZoomEndHandler() {
-
-            @Override
-            public void onZoomEnd(MapZoomEndEvent event) {
-                if (newLocationPresenter.isActive()) {
-                    panToNewLocation();
-                }
-            }
-        });
+        
     }
 
     private void updateSearchMarkers() {
-        clearSearchMarkers();
 
-        GoogleChartsIconBuilder iconBuilder = new GoogleChartsIconBuilder();
+        markerLayer.clearLayers();
+        
+        List<LocationDTO> locations = Lists.reverse(searchPresenter.getStore().getModels());
+        LatLngBounds bounds = new LatLngBounds();
 
-        Extents bounds = Extents.empty();
-
-        for (LocationDTO location : Lists.reverse(searchPresenter.getStore()
-            .getModels())) {
+        boolean empty = true;        
+        for (LocationDTO location : locations) {
             if (location.hasCoordinates()) {
-                iconBuilder.setLabel(location.getMarker());
-                Icon icon = iconBuilder.createPinUrl();
-
-                MarkerOptions options = MarkerOptions.newInstance(icon);
-                Marker marker = new Marker(LatLng.newInstance(
-                    location.getLatitude(), location.getLongitude()),
-                    options);
-                getMapWidget().addOverlay(marker);
-
-                bounds.grow(location.getLongitude(), location.getLatitude());
-
-                searchMarkers.put(location, marker);
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    
+                Marker marker = createMarker(latLng, location.getMarker());
+                markerLayer.addLayer(marker);
+                
+                bounds.extend(latLng);    
+                bindClickEvent(location, marker);   
+                
+                empty = false;
             }
         }
-
-        if (searchMarkers.isEmpty()) {
-            if (searchPresenter.getBounds() == null) {
-                Log.debug("searchPresenter.getBounds() is null");
+        
+        if (empty) {
+            if(searchPresenter.getBounds() != null) {
+                bounds = LeafletUtil.newLatLngBounds(searchPresenter.getBounds());
             } else {
-                zoomToBounds(newLatLngBounds(searchPresenter.getBounds()));
+                bounds = LeafletUtil.newLatLngBounds(searchPresenter.getCountry().getBounds());
             }
-        } else {
-            zoomToBounds(newLatLngBounds(bounds));
-        }
+        } 
+        int effectiveZoom = Math.min(8, map.getBoundsZoom(bounds, false));
+        map.setView(bounds.getCenter(), effectiveZoom, false);
+        map.fitBounds(bounds);
+        
     }
 
-    private void clearSearchMarkers() {
-        for (Marker marker : searchMarkers.values()) {
-            getMapWidget().removeOverlay(marker);
-        }
-        searchMarkers.clear();
+    private void bindClickEvent(final LocationDTO location, Marker marker) {
+        EventHandlerManager.addEventHandler(marker, 
+        org.discotools.gwt.leaflet.client.events.handler.EventHandler.Events.click, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                searchPresenter.select(this, location);
+            }
+        });
+    }
+
+    private Marker createMarker(LatLng latLng, String label) {
+        DivIcon icon = createIcon(label);
+        
+        Options markerOptions = new Options();
+        markerOptions.setProperty("icon", icon);
+        
+        Marker marker = new Marker(latLng, markerOptions);
+        return marker;
+    }
+
+    private DivIcon createIcon(String label) {
+        ImageResource markerImage = SiteFormResources.INSTANCE.blankMarker();
+
+        DivIconOptions iconOptions = new DivIconOptions();
+        iconOptions.setClassName(SiteFormResources.INSTANCE.style().locationMarker());
+        iconOptions.setIconSize(new Point(
+            markerImage.getWidth(),
+            markerImage.getHeight()));
+        iconOptions.setIconAnchor(new Point(
+            markerImage.getWidth()/2, 
+            markerImage.getHeight()));
+        iconOptions.setHtml(label);
+        
+        DivIcon icon = new DivIcon(iconOptions);
+        return icon;
     }
 
     private void onLocationSelected(LocationDTO location) {
-        if (location.hasCoordinates()) {
-            getMapWidget().panTo(
-                LatLng.newInstance(location.getLatitude(),
-                    location.getLongitude()));
-        }
-    }
-
-    private void onMarkerClicked(Marker overlay) {
-        LocationDTO location = searchMarkers.inverse().get(overlay);
-        if (location != null) {
-            searchPresenter.select(this, location);
-            getMapWidget().getInfoWindow().open(overlay,
-                createContent(location));
-
+        if (location != null && location.hasCoordinates()) {
+            map.panTo(new LatLng(location.getLatitude(), location.getLongitude()));
         }
     }
 
@@ -227,76 +247,51 @@ public class LocationMap extends GoogleMapsPanel {
             if (newLocationMarker == null) {
                 createNewLocationMarker();
             }
-            newLocationMarker.setVisible(true);
+            newLocationMarker.setOpacity(1);
             panToNewLocation();
         } else if (newLocationMarker != null) {
-            newLocationMarker.setVisible(false);
+            newLocationMarker.setOpacity(0);
         }
     }
 
     private void createNewLocationMarker() {
-        GoogleChartsIconBuilder iconBuilder = new GoogleChartsIconBuilder();
-        iconBuilder.setPrimaryColor("#0000FF");
-        iconBuilder.setLabel("+");
-        Icon icon = iconBuilder.createPinUrl();
+        DivIcon icon = createIcon("");
+        
+        Options markerOptions = new Options();
+        markerOptions.setProperty("icon", icon);
+        markerOptions.setProperty("draggable", true);
+       
+        newLocationMarker = new Marker(newLatLng(newLocationPresenter.getLatLng()), markerOptions);
+        
+        EventHandlerManager.addEventHandler(newLocationMarker, 
+            org.discotools.gwt.leaflet.client.events.handler.EventHandler.Events.dragend, new EventHandler<Event>() {
 
-        MarkerOptions options = MarkerOptions.newInstance(icon);
-        options.setDraggable(true);
-
-        newLocationMarker = new Marker(
-            newLatLng(newLocationPresenter.getLatLng()),
-            options);
-        newLocationMarker.addMarkerDragEndHandler(new MarkerDragEndHandler() {
-
-            @Override
-            public void onDragEnd(MarkerDragEndEvent event) {
-                newLocationPresenter.setLatLng(new AiLatLng(
-                    newLocationMarker.getLatLng().getLatitude(),
-                    newLocationMarker.getLatLng().getLongitude()));
-            }
+                @Override
+                public void handle(Event event) {
+                    newLocationPresenter.setLatLng(new AiLatLng(
+                        newLocationMarker.getLatLng().lat(),
+                        newLocationMarker.getLatLng().lng()));
+                }
         });
+        
+        map.addLayer(newLocationMarker);
+    }
 
-        getMapWidget().addOverlay(newLocationMarker);
+    private LatLng newLatLng(AiLatLng latLng) {
+        return new LatLng(latLng.getLat(), latLng.getLng());
     }
 
     private void onNewLocationPosChanged() {
         if (newLocationMarker != null) {
-            newLocationMarker.setLatLng(newLatLng(newLocationPresenter
-                .getLatLng()));
+            Log.debug("New marker pos: " + newLocationPresenter.getLatLng());
+            newLocationMarker.setLatLng(newLatLng(newLocationPresenter.getLatLng()));
         }
     }
 
     private void panToNewLocation() {
-        if (!getMapWidget().getBounds().containsLatLng(
+        if (!map.getBounds().contains(
             newLocationMarker.getLatLng())) {
-            getMapWidget().panTo(newLocationMarker.getLatLng());
+            map.panTo(newLocationMarker.getLatLng());
         }
-    }
-
-    private InfoWindowContent createContent(LocationDTO dto) {
-
-        NumberFormat decimalFormat = NumberFormat.getFormat("0.00000");
-        CoordinateEditor longEditor = new CoordinateEditor(Axis.LONGITUDE);
-        CoordinateEditor latEditor = new CoordinateEditor(Axis.LATITUDE);
-
-        StringBuilder html = new StringBuilder();
-        html.append("<b>")
-            .append(dto.getName())
-            .append("</b><br>");
-        html.append(I18N.CONSTANTS.latitude())
-            .append(": ")
-            .append(latEditor.formatAsDMS(dto.getLatitude()))
-            .append(" (")
-            .append(decimalFormat.format(dto.getLatitude()))
-            .append(")<br>");
-
-        html.append(I18N.CONSTANTS.longitude())
-            .append(": ")
-            .append(longEditor.formatAsDMS(dto.getLongitude()))
-            .append(" (")
-            .append(decimalFormat.format(dto.getLongitude()))
-            .append(")");
-
-        return new InfoWindowContent(html.toString());
     }
 }

@@ -63,13 +63,18 @@ public class SiteHistoryProcessor {
 
     public void process(Command<?> cmd, final int userId, final int siteId) {
         assert(cmd instanceof SiteCommand);
+        
 
         LOGGER.fine("persisting site history (site: " + siteId + ", user: "
             + userId + ")");
         EntityManager em = entityManager.get();
-
-        Site site = em.find(Site.class, siteId);
-        User user = em.find(User.class, userId);
+        
+        
+        // It's important to use getReference() here rather
+        // than find() becuase the site might not actually have
+        // been sent to the database at this point
+        Site site = em.getReference(Site.class, siteId);
+        User user = em.getReference(User.class, userId);
         ChangeType type = ChangeType.getType(cmd);
 
         if (!type.isNew()) {
