@@ -24,7 +24,7 @@
 
     <gwtVersion>2.5.1</gwtVersion>
     <rebarVersion>2.4.1-SNAPSHOT</rebarVersion>
-    <gae.version>1.7.2</gae.version>
+    <gae.version>1.8.8</gae.version>
     <jersey.version>1.17</jersey.version>
     <appengine.export.version>0.1.1</appengine.export.version>
   </properties>
@@ -142,22 +142,27 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-spatial</artifactId>
         <version>4.0</version>
+        <exclusions>
+        	<exclusion>
+        		<groupId>postgresql</groupId>
+        		<artifactId>postgresql</artifactId>
+        	</exclusion>
+        	<exclusion>
+        		<groupId>org.postgis</groupId>
+        		<artifactId>postgis-jdbc</artifactId>
+        	</exclusion>
+        </exclusions>
     </dependency>
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
       <version>2.0.2-bdd</version>
     </dependency>
-    <dependency>
-      <groupId>geronimo-spec</groupId>
-      <artifactId>geronimo-spec-jta</artifactId>
-      <version>1.0.1B-rc4</version>
-    </dependency>
 
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.21</version>
+      <version>5.1.27</version>
     </dependency>
 
     <!-- Bean Mapping and XML -->
@@ -228,15 +233,27 @@
       <artifactId>rebar-time</artifactId>
       <version>${rebarVersion}</version>
     </dependency>
-    <dependency>
+    <dependency>	
       <groupId>com.bedatadriven.rebar</groupId>
       <artifactId>rebar-sql</artifactId>
       <version>${rebarVersion}</version>
+      <exclusions>
+      	<exclusion>
+      		<groupId>javax.persistence</groupId>
+      		<artifactId>persistence-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.bedatadriven.rebar</groupId>
       <artifactId>rebar-sync</artifactId>
       <version>${rebarVersion}</version>
+      <exclusions>
+      	<exclusion>
+      		<groupId>javax.persistence</groupId>
+      		<artifactId>persistence-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.bedatadriven.rebar</groupId>

@@ -86,6 +86,7 @@ public class MockHibernateModule extends AbstractModule {
                             TestConnectionProvider.PASSWORD);
                         config.setProperty("hibernate.hbm2ddl.auto", "none");
                         config.setProperty("hibernate.show_sql", "true");
+                        config.setProperty("hibernate.connection.pool_size", "0");
                         config.setNamingStrategy(new AINamingStrategy());
                         for (Class clazz : HibernateModule
                             .getPersistentClasses()) {
