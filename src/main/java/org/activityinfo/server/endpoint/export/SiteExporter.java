@@ -64,6 +64,7 @@ public class SiteExporter {
     private static final int MAX_WORKSHEET_LENGTH = 31;
 
     private static final short FONT_SIZE = 8;
+    private static final short TITLE_FONT_SIZE = 12;
 
     private static final short DIAGONAL = 45;
 
@@ -82,6 +83,8 @@ public class SiteExporter {
 
     private Map<String, Integer> sheetNames;
 
+    private CellStyle titleStyle;
+    
     private CellStyle dateStyle;
     private CellStyle coordStyle;
     private CellStyle indicatorValueStyle;
@@ -129,6 +132,13 @@ public class SiteExporter {
         Font smallFont = book.createFont();
         smallFont.setFontHeightInPoints(FONT_SIZE);
 
+        Font titleFont = book.createFont();
+        titleFont.setFontHeightInPoints(TITLE_FONT_SIZE);
+        titleFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        
+        titleStyle = book.createCellStyle();
+        titleStyle.setFont(titleFont);
+        
         headerStyle = book.createCellStyle();
         headerStyle.setFont(headerFont);
 
@@ -201,6 +211,12 @@ public class SiteExporter {
         Row headerRow2 = sheet.createRow(1);
         headerRow2.setHeightInPoints(HEADER_CELL_HEIGHT);
 
+        // Create a title cell with the complete database + activity name
+        Cell titleCell = headerRow1.createCell(0);
+        titleCell.setCellValue(creationHelper.createRichTextString(
+            activity.getDatabase().getName() + " - " + activity.getName()));
+        titleCell.setCellStyle(titleStyle);
+        
         int column = 0;
         createHeaderCell(headerRow2, column++, "Date1", CellStyle.ALIGN_RIGHT);
         createHeaderCell(headerRow2, column++, "Date2", CellStyle.ALIGN_RIGHT);
