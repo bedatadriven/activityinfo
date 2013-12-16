@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.engine.jdbc.internal.FormatStyle;
 import org.hibernate.jdbc.Work;
-import org.hibernate.jdbc.util.FormatStyle;
 
 import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcExecutor;

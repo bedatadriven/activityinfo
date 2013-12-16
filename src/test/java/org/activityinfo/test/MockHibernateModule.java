@@ -75,7 +75,7 @@ public class MockHibernateModule extends AbstractModule {
                     if (emf == null) {
                         Ejb3Configuration config = new Ejb3Configuration();
                         config.setProperty("hibernate.dialect",
-                            "org.hibernatespatial.mysql.MySQLSpatialDialect");
+                            "org.hibernate.spatial.dialect.mysql.MySQLSpatialInnoDBDialect");
                         config.setProperty("hibernate.connection.driver_class",
                             "com.mysql.jdbc.Driver");
                         config.setProperty("hibernate.connection.url",

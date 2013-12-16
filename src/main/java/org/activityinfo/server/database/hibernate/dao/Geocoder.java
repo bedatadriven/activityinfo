@@ -7,7 +7,7 @@ import org.activityinfo.server.util.mapping.JtsUtil;
 import org.activityinfo.shared.report.content.AiLatLng;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernatespatial.criterion.SpatialRestrictions;
+import org.hibernate.spatial.criterion.SpatialRestrictions;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;

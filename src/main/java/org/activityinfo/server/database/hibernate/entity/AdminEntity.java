@@ -209,7 +209,7 @@ public class AdminEntity implements java.io.Serializable {
     
   
     @Basic(fetch=FetchType.LAZY)
-    @Type(type="org.hibernatespatial.GeometryUserType")
+    @Type(type="org.hibernate.spatial.GeometryType")
     public Geometry getGeometry() {
         return geometry;
     }

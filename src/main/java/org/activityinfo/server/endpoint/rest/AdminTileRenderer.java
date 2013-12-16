@@ -15,7 +15,7 @@ import org.activityinfo.shared.util.mapping.TileMath;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.hibernatespatial.criterion.SpatialRestrictions;
+import org.hibernate.spatial.criterion.SpatialRestrictions;
 
 import com.google.code.appengine.awt.BasicStroke;
 import com.google.code.appengine.awt.Color;
@@ -33,7 +33,6 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;

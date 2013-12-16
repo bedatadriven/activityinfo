@@ -124,11 +124,6 @@
     <!-- Database dependencies -->
 
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <exclusions>
@@ -141,12 +136,12 @@
           <artifactId>xml-apis</artifactId>
         </exclusion>
       </exclusions>
-      <version>3.4.0.GA</version>
+      <version>4.2.8.Final</version>
     </dependency>
     <dependency>
-        <groupId>org.hibernatespatial</groupId>
-        <artifactId>hibernate-spatial-mysql</artifactId>
-        <version>1.0</version>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-spatial</artifactId>
+        <version>4.0</version>
     </dependency>
     <dependency>
       <groupId>org.liquibase</groupId>
@@ -401,8 +396,8 @@
         <version>2.0.2</version>
         <configuration>
 
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <encoding>UTF-8</encoding>
           <excludes>
             <exclude>**/emul/**/*.java</exclude>

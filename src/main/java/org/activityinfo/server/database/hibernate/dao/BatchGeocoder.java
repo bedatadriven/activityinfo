@@ -7,7 +7,7 @@ import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.util.mapping.JtsUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernatespatial.criterion.SpatialRestrictions;
+import org.hibernate.spatial.criterion.SpatialRestrictions;
 
 import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Coordinate;
