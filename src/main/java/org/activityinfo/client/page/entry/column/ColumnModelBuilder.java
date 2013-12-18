@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.common.collect.Lists;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
 /**
  * Builder class for constructing a ColumnModel for site grids
@@ -157,7 +158,7 @@ public class ColumnModelBuilder {
             IndicatorNumberFormat.INSTANCE);
 
         ColumnConfig indicatorColumn = new ColumnConfig(
-            indicator.getPropertyName(), header, 50);
+            indicator.getPropertyName(), SafeHtmlUtils.fromString(header).asString(), 50);
 
         indicatorColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
         indicatorColumn.setEditor(new CellEditor(indicatorField));
