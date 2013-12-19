@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -135,7 +136,7 @@ public class MapReportElement extends ReportElement<MapContent> {
      * the center by the set of locations on the map
      * AdministrativeLevelClustering
      */
-    @XmlTransient
+    @XmlElement(name = "center")
     public AiLatLng getCenter() {
         return center;
     }
@@ -150,7 +151,7 @@ public class MapReportElement extends ReportElement<MapContent> {
      * When null, ignored by the generator. Instead, the generator calculates
      * the zoomlevel by the set of locations on the map and the size of the map
      */
-    @XmlTransient
+    @XmlAttribute(name = "zoomLevel")
     public int getZoomLevel() {
         return zoomLevel;
     }

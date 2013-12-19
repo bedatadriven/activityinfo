@@ -40,6 +40,10 @@ import org.activityinfo.shared.report.model.MapReportElement;
 import org.discotools.gwt.leaflet.client.LeafletResourceInjector;
 import org.discotools.gwt.leaflet.client.controls.zoom.Zoom;
 import org.discotools.gwt.leaflet.client.crs.epsg.EPSG3857;
+import org.discotools.gwt.leaflet.client.events.Event;
+import org.discotools.gwt.leaflet.client.events.handler.EventHandler;
+import org.discotools.gwt.leaflet.client.events.handler.EventHandler.Events;
+import org.discotools.gwt.leaflet.client.events.handler.EventHandlerManager;
 import org.discotools.gwt.leaflet.client.map.MapOptions;
 import org.discotools.gwt.leaflet.client.types.LatLng;
 
@@ -106,41 +110,8 @@ public class MapEditorMapView extends ContentPanel implements
         toolBar.add(statusWidget);
         setBottomComponent(toolBar);
         
-        LeafletResourceInjector.ensureInjected();
-        
+        LeafletResourceInjector.ensureInjected();        
     }
-
-//    @Override
-//    protected void configureMap(MapWidget map) {
-//        //zoomControl = new LargeMapControl();
-//        map.addControl(zoomControl, zoomControlPosition());
-//
-//        // TODO: generalize
-//        map.panTo(LatLng.newInstance(RDC_CENTER_LAT, RDC_CENTER_LONG));
-//
-//        map.addMapClickHandler(new MapClickHandler() {
-//            @Override
-//            public void onClick(MapClickEvent event) {
-//                onMapClick(event);
-//            }
-//        });
-//
-//        map.addMapZoomEndHandler(new MapZoomEndHandler() {
-//
-//            @Override
-//            public void onZoomEnd(MapZoomEndEvent event) {
-//                updateModelFromMap();
-//            }
-//        });
-//
-//        map.addMapMoveEndHandler(new MapMoveEndHandler() {
-//
-//            @Override
-//            public void onMoveEnd(MapMoveEndEvent event) {
-//                updateModelFromMap();
-//            }
-//        });
-//    }
 
     public void setZoomControlOffsetX(int offset) {
         zoomControlOffsetX = offset;
@@ -231,9 +202,15 @@ public class MapEditorMapView extends ContentPanel implements
         for (AdminOverlay overlay : result.getAdminOverlays()) {
             overlays.addAdminLayer(overlay);
         }
+        
 
         if (!zoomSet) {
-            map.fitBounds(result.getExtents());
+            if(model.getZoomLevel() != -1 && model.getCenter() != null) {
+            	map.getMap().setView(new LatLng(model.getCenter().getLat(), model.getCenter().getLng()),
+            			model.getZoomLevel(), true);
+            } else {
+            	map.fitBounds(result.getExtents());
+            }
             zoomSet = true;
         }
     }
@@ -245,24 +222,28 @@ public class MapEditorMapView extends ContentPanel implements
         mapOptions.setProperty("crs", new EPSG3857());
         
         map = new LeafletMap(mapOptions);
-        
-        
+ 
         add(map);
         layout();
         
+        EventHandlerManager.addEventHandler(map.getMap(), Events.moveend, new EventHandler() {
+
+			@Override
+			public void handle(Event event) {
+				updateModelFromMap();
+			}
+        });
+        EventHandlerManager.addEventHandler(map.getMap(), Events.zoomend, new EventHandler() {
+
+			@Override
+			public void handle(Event event) {
+				updateModelFromMap();
+			}
+        });
+        
         overlays = new LeafletReportOverlays(map.getMap());
     }
-//
-//    private void onMapClick(MapClickEvent event) {
-//        if (event.getOverlay() != null) {
-//            MapMarker marker = overlays.getMapMarker(event.getOverlay());
-//            if (marker != null) {
-//                getMapWidget().getInfoWindow().open(
-//                    (Marker) event.getOverlay(),
-//                    new InfoWindowContent(I18N.CONSTANTS.loading()));
-//            }
-//        }
-//    }
+
 
     private void updateModelFromMap() {
         model.setZoomLevel(map.getMap().getZoom());

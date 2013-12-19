@@ -24,6 +24,8 @@ package org.activityinfo.shared.report.content;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 /**
  * LatLng is a point in geographical coordinates longitude and latitude
  * 
@@ -51,14 +53,32 @@ public class AiLatLng implements Serializable {
      * 
      * @return The latitude of the point (y-axis)
      */
+    @XmlAttribute(name = "y")
     public double getLat() {
         return lat;
     }
+    
+    /**
+     * Required for XML serializaiton
+     * @param lat
+     */
+    private void setLat(double lat) {
+		this.lat = lat;
+	}
 
     /**
+     * REquired for XML serialization
+     * @param lng
+     */
+	private void setLng(double lng) {
+		this.lng = lng;
+	}
+
+	/**
      * 
      * @return The longitude of the point (x-axis)
      */
+    @XmlAttribute(name = "x")
     public double getLng() {
         return lng;
     }
