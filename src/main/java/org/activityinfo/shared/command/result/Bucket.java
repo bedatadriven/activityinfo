@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.report.content.AiLatLng;
 import org.activityinfo.shared.report.content.DimensionCategory;
 import org.activityinfo.shared.report.model.Dimension;
 
@@ -38,6 +39,7 @@ public class Bucket implements Serializable {
     private double sum;
     private int count;
     private int aggregationMethod;
+    private AiLatLng point;
 
     private Map<Dimension, DimensionCategory> categories = new HashMap<Dimension, DimensionCategory>();
 
@@ -83,8 +85,16 @@ public class Bucket implements Serializable {
     public void setCount(int count) {
         this.count = count;
     }
+    
+    public AiLatLng getPoint() {
+		return point;
+	}
 
-    public int getAggregationMethod() {
+	public void setPoint(AiLatLng point) {
+		this.point = point;
+	}
+
+	public int getAggregationMethod() {
         return aggregationMethod;
     }
 

@@ -75,6 +75,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private final Dimension projectDim = new Dimension(DimensionType.Project);
     private Dimension partnerDim;
     private ValueType valueType = ValueType.INDICATOR;
+    private boolean pointsRequested;
 
     private static final int OWNER_USER_ID = 1;
     private static final int NB_BENEFICIARIES_ID = 1;
@@ -604,6 +605,20 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         execute();
     }
     
+    @Test
+    @OnDataSet("/dbunit/sites-points.db.xml")
+    public void testPointsInferred() {
+    	dimensions.add(new Dimension(DimensionType.Location));
+    	withPoints();
+    	execute();
+    	
+    	assertThat().forLocation(1).thereIsOneBucketWithValue(1500).at(
+    			(26.8106418+28.37725848)/2.0,
+    			(-4.022388142 + -1.991221064)/2.0);
+    	assertThat().forLocation(2).thereIsOneBucketWithValue(3600).at(
+    			27.328491, -2.712609);
+    }
+    
     
     private List<Bucket> findBucketsByCategory(List<Bucket> buckets,
         Dimension dim, DimensionCategory cat) {
@@ -666,6 +681,10 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         dimensions.add(partnerDim);
     }
 
+    private void withPoints() {
+    	pointsRequested = true;
+    }
+    
     private void withAttributeGroupDim() {
         dimensions.add(new Dimension(DimensionType.AttributeGroup));
     }
@@ -680,6 +699,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         try {
             PivotSites pivot = new PivotSites(dimensions, filter);
             pivot.setValueType(valueType);
+            pivot.setPointRequested(pointsRequested);
             buckets = execute(pivot).getBuckets();
         } catch (CommandException e) {
             throw new RuntimeException(e);
@@ -748,6 +768,12 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         public AssertionBuilder forTerritoire(int territoireId) {
             criteria.append(" with territoire ").append(territoireId);
             filter(territoireDim, territoireId);
+            return this;
+        }
+        
+        public AssertionBuilder forLocation(int locationId) {
+            criteria.append(" with location id=").append(locationId);
+            filter(new Dimension(DimensionType.Location), locationId);
             return this;
         }
 
@@ -825,6 +851,16 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             return this;
         }
 
+        public AssertionBuilder at(double x, double y) {
+        	if(matchingBuckets.get(0).getPoint() == null) {
+        		throw new AssertionError(description("non-null point for "));
+        	}
+            assertEquals(description("x"), x, matchingBuckets.get(0).getPoint().getLng(), 0.001);
+            assertEquals(description("y"), y, matchingBuckets.get(0).getPoint().getLat(), 0.001);            
+            
+            return this;
+        }
+        
         public AssertionBuilder andItsPartnerLabelIs(String label) {
             bucketCountIs(OWNER_USER_ID);
             with(partnerDim).label(label);

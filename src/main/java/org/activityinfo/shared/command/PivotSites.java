@@ -45,6 +45,8 @@ public class PivotSites implements Command<PivotResult> {
     private Set<Dimension> dimensions;
     private Filter filter;
     private ValueType valueType = ValueType.INDICATOR;
+    
+    private boolean pointRequested;
 
     public PivotSites() {
     }
@@ -106,7 +108,20 @@ public class PivotSites implements Command<PivotResult> {
         return false;
     }
 
-    public static class PivotResult implements CommandResult {
+    /**
+     * 
+     * @return true if we want the lat/lng associated with each bucket
+     */
+    public boolean isPointRequested() {
+		return pointRequested;
+	}
+
+	public void setPointRequested(boolean pointRequested) {
+		this.pointRequested = pointRequested;
+	}
+
+
+	public static class PivotResult implements CommandResult {
         private static final long serialVersionUID = -7767105395264612561L;
 
         private List<Bucket> buckets;

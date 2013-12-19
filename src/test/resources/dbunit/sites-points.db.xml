@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!--
+  #%L
+  ActivityInfo Server
+  %%
+  Copyright (C) 2009 - 2013 UNICEF
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<dataset>
+
+
+<!-- Country setup -->
+
+  <country countryId="1" name="Rdc" x1="12.18794184" y1="-13.45599996" x2="31.306" y2="5.386098154" />
+
+  <adminLevel countryId="1" adminLevelId="1" name="Province" deleted="0"/>
+  <adminLevel countryId="1" adminLevelId="2" name="Territoire"
+    ParentId="1"  deleted="0"/>
+
+  <locationType locationTypeId="1" countryId="1" name="localite"
+    reuse="1" />
+  <locationType locationTypeId="2" countryId="1"
+    name="Health Center" reuse="1" />
+  <locationType locationTypeId="3" countryId="1" name="Territorie"
+    reuse="1" BoundAdminLevelId="2" />
+
+  <adminEntity adminLevelId="1" adminEntityId="1" name="Kinshasa"
+    code="10" x1="15.13586844" y1="-5.025401885" x2="16.55381016" y2="-3.936842005"/> 
+  <adminEntity adminLevelId="1" adminEntityId="2" name="Sud Kivu"
+    code="20" x1="26.8106418" y1="-5.010345265" x2="29.38909608" y2="-1.588550087"/>
+  <adminEntity adminLevelId="1" adminEntityId="3" name="Nord Kivu"
+    code="30" x1="27.22714452" y1="-2.065770178" x2="29.99270376" y2="0.954199109"/>
+  <adminEntity adminLevelId="1" adminEntityId="4" name="Ituri"
+    code="40" x1="0" y1="0" x2="0" y2="0" />
+
+  <adminEntity adminLevelId="2" adminEntityId="10"
+    adminEntityParentId="4" name="Bukavu" code="203" x1="0" y1="0" x2="0"
+    y2="0" />
+  <adminEntity adminLevelId="2" adminEntityId="11"
+    adminEntityParentId="2" name="Walungu" code="201" x1="0" y1="0" x2="0"
+    y2="0" />
+  <adminEntity adminLevelId="2" adminEntityId="12"
+    adminEntityParentId="2" name="Shabunda" code="202" x1="26.8106418" y1="-4.022388142"
+     x2="28.37725848" y2="-1.991221064" />
+  <adminEntity adminLevelId="2" adminEntityId="13"
+    adminEntityParentId="2" name="Kalehe" code="203" x1="-44" y1="-22"
+    x2="33.5" y2="40" />
+  <adminEntity adminLevelId="2" adminEntityId="21"
+    adminEntityParentId="4" name="Irumu" code="203" x1="0" y1="0" x2="0"
+    y2="0" />
+
+<!-- User setup -->
+  <userLogin userId="1" name="Alex"
+    email="akbertram@gmail.com" password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+    locale="fr" organization="" jobtitle="" emailnotification="1" />
+
+
+
+<!-- Database: PEAR -->
+
+  <userDatabase databaseId="1" name="PEAR" countryId="1"
+    ownerUserId="1" lastSchemaUpdate="2009-01-01" />
+
+
+<!-- PEAR Activity 1 : NFI Distribution -->
+
+  <activity activityId="1" databaseId="1" name="NFI"
+    reportingFrequency="0" allowEdit="1" sortOrder="1" locationTypeId="1"
+    published="0" />
+
+
+<!-- NFI Indicator 1: Beneficiaries -->
+
+  <indicator indicatorId="1" activityId="1" name="beneficiaries"
+    units="menages" aggregation="0" category="inputs" description="falling in lve"
+    listHeader="no header really" sortOrder="2" mandatory="0"/>
+
+
+  <!-- Location 1- coords to come from admin bounds  -->
+  <location locationId="1" name="Penekusu Kivu" locationTypeId="1"
+    timeEdited="1" />
+  <locationAdminLink locationId="1" adminEntityId="2" />
+  <locationAdminLink locationId="1" adminEntityId="12" />
+  
+  <!-- Location 2- coords to come from location bounds  -->
+  <location locationId="2" name="Penekusu Kivu" locationTypeId="1"
+    x="27.328491" y="-2.712609" timeEdited="1" />
+    
+  <!-- Location 2- coords to come from country bounds  -->
+  <location locationId="3" name="Bukavu" locationTypeId="1" timeEdited="1" />
+    
+      
+    
+  <site siteId="1" activityId="1" locationId="1" partnerId="1"
+    Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01"
+    DateEdited="2009-02-01" timeEdited="3" ProjectId="1" Comments="He said 'booyah'" />
+  
+  <reportingPeriod reportingPeriodId="1" siteId="1"
+    date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01"
+    DateEdited="2009-02-01" />
+  <indicatorValue reportingPeriodId="1" indicatorId="1" value="1500" />
+
+  <site siteId="2" activityId="1" locationId="2" partnerId="1"
+    Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01"
+    DateEdited="2009-02-01" timeEdited="3" ProjectId="1" />
+
+  <reportingPeriod reportingPeriodId="2" siteId="2"
+    date1="2009-01-15" date2="2009-01-16" DateCreated="2009-02-01"
+    DateEdited="2009-02-01" />
+  <indicatorValue reportingPeriodId="2" indicatorId="1" value="3600" />
+
+
+  <site siteId="3" activityId="1" locationId="3" partnerId="2"
+    Date1="2008-10-05" Date2="2008-10-06" timeEdited="330" DateCreated="2009-02-01"
+    DateEdited="2009-02-01" ProjectId="2" />
+
+  <reportingPeriod reportingPeriodId="3" siteId="3"
+    date1="2008-10-05" date2="2008-10-06" DateCreated="2009-02-01"
+    DateEdited="2009-02-01" />
+  <indicatorValue reportingPeriodId="3" indicatorId="1"
+    value="10000" />
+
+
+</dataset>

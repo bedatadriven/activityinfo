@@ -35,6 +35,7 @@ import org.activityinfo.shared.command.handler.pivot.bundler.EntityBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.MonthBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.MySqlYearWeekBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.OrderedEntityBundler;
+import org.activityinfo.shared.command.handler.pivot.bundler.PointBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.QuarterBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.SimpleBundler;
 import org.activityinfo.shared.command.handler.pivot.bundler.YearBundler;
@@ -109,7 +110,7 @@ public class PivotQuery {
 
         baseTable.setupQuery(command, query);
 
-        if (command.isPivotedBy(DimensionType.Location)) {
+        if (command.isPivotedBy(DimensionType.Location) || command.isPointRequested()) {
             query.leftJoin(Tables.LOCATION, "Location")
                 .on("Location.LocationId=" + baseTable.getDimensionIdColumn(DimensionType.Location));
         }
@@ -121,6 +122,34 @@ public class PivotQuery {
         if (command.isPivotedBy(DimensionType.Project)) {
             query.leftJoin(Tables.PROJECT, "Project")
                 .on("Project.ProjectId=" + baseTable.getDimensionIdColumn(DimensionType.Project));
+        }
+        
+        if(command.isPointRequested()) {
+        	if(command.isPivotedBy(DimensionType.Location)) {
+	        	query.appendColumn("Location.X", "LX");
+	        	query.appendColumn("Location.Y", "LY");
+        	} else {
+	        	query.appendColumn("AVG(Location.X)", "LX");
+	        	query.appendColumn("AVG(Location.Y)", "LY");
+        	}
+        	
+        	// Build the derived table that identifies the MBR for each
+        	// location using the admin MBRs
+        	SqlQuery adminBoundsQuery = SqlQuery.select()
+        			.appendColumn("link.LocationId", "LocationId")
+        			.appendColumn("(MAX(X1)+MIN(X2))/2.0", "AX")
+        			.appendColumn("(MAX(Y1)+MIN(Y2))/2.0", "AY")
+        			.from(Tables.LOCATION_ADMIN_LINK, "link")
+        			.leftJoin(Tables.ADMIN_ENTITY, "e").on("link.adminentityid=e.adminentityid")
+        			.groupBy("link.locationid");
+        			
+        	query.leftJoin(adminBoundsQuery, "ambr").on("Location.LocationId=ambr.LocationId");
+        	query.appendColumn("ambr.AX", "AX");
+        	query.appendColumn("ambr.AY", "AY");
+        	
+        	System.out.println(adminBoundsQuery.sql());
+
+        	bundlers.add(new PointBundler());
         }
 
         addDimensionBundlers();
