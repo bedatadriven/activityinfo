@@ -47,8 +47,7 @@ import javax.persistence.Transient;
 @org.hibernate.annotations.Filter(
     name = "hideDeleted",
     condition = "DateDeleted is null")
-public class Indicator implements java.io.Serializable, Orderable, Deleteable,
-    SchemaElement {
+public class Indicator implements java.io.Serializable, Orderable, Deleteable {
 
     private int id;
     private Date dateDeleted;

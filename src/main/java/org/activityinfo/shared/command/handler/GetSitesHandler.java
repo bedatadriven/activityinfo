@@ -183,6 +183,7 @@ public class GetSitesHandler implements
             .appendColumn("partner.name", "PartnerName")
             .appendColumn("site.projectId", "ProjectId")
             .appendColumn("project.name", "ProjectName")
+            .appendColumn("project.dateDeleted", "ProjectDateDeleted")
             .appendColumn("location.locationId", "LocationId")
             .appendColumn("location.name", "LocationName")
             .appendColumn("location.axe", "LocationAxe")
@@ -229,6 +230,7 @@ public class GetSitesHandler implements
             .appendColumn("partner.name", "PartnerName")
             .appendColumn("site.projectId", "ProjectId")
             .appendColumn("project.name", "ProjectName")
+            .appendColumn("project.dateDeleted", "ProjectDateDeleted")
             .appendColumn("location.locationId", "LocationId")
             .appendColumn("location.name", "LocationName")
             .appendColumn("location.axe", "LocationAxe")
@@ -677,7 +679,7 @@ public class GetSitesHandler implements
         partner.setId(row.getInt("PartnerId"));
         partner.setName(row.getString("PartnerName"));
 
-        if (!row.isNull("ProjectId")) {
+        if (!row.isNull("ProjectId") && row.isNull("ProjectDateDeleted")) {
             ProjectDTO project = new ProjectDTO();
             project.setId(row.getInt("ProjectId"));
             project.setName(row.getString("ProjectName"));

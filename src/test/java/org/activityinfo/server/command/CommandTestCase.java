@@ -68,6 +68,8 @@ public abstract class CommandTestCase {
 
     protected <T extends CommandResult> T execute(Command<T> command)
         throws CommandException {
+        
+        
         User user = em.find(User.class, AuthenticationModuleStub
             .getCurrentUser().getUserId());
         assert user != null : "cannot find user id " +

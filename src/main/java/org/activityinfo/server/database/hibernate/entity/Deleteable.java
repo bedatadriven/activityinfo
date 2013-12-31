@@ -1,5 +1,7 @@
 package org.activityinfo.server.database.hibernate.entity;
 
+import javax.persistence.Transient;
+
 /*
  * #%L
  * ActivityInfo Server

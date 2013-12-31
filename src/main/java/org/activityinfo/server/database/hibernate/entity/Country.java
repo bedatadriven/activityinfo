@@ -47,7 +47,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonAutoDetect(JsonMethod.NONE)
 @NamedQuery(name = "queryAllCountriesAlphabetically",
     query = "select c from Country c order by c.name")
-public class Country implements Serializable, SchemaElement {
+public class Country implements Serializable {
 
     private int id;
     private String name;

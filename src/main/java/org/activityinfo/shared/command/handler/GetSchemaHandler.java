@@ -264,6 +264,7 @@ public class GetSchemaHandler implements
             SqlQuery.select("name", "projectId", "description", "databaseId")
                 .from("project")
                 .where("databaseId").in(databaseMap.keySet())   
+                .where("dateDeleted").isNull()
                 .execute(tx, new SqlResultCallback() {
                     @Override
                     public void onSuccess(SqlTransaction tx,

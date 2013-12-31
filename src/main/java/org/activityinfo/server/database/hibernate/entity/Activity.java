@@ -60,8 +60,7 @@ import org.activityinfo.shared.dto.Published;
 @Entity
 @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null")
 @NamedQuery(name = "queryMaxSortOrder", query = "select max(e.sortOrder) from Activity e where e.database.id = ?1")
-public class Activity implements Serializable, Deleteable, Orderable,
-    SchemaElement {
+public class Activity implements Serializable, Deleteable, Orderable {
 
     private int id;
     private LocationType locationType;

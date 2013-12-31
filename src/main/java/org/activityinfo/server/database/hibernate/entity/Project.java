@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,15 +39,37 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import org.activityinfo.server.entity.change.AllowUserUpdate;
 
 @Entity
-public class Project implements Serializable {
+@EntityListeners(SchemaChangeListener.class)
+public class Project implements SchemaElement, Serializable, Deleteable {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ProjectId", unique = true, nullable = false)
     private int id;
+
+    @AllowUserUpdate
+    @Column(nullable = false, length = 30)
     private String name;
+    
+    @Lob
+    @AllowUserUpdate
     private String description;
+    
     private Date dateDeleted;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DatabaseId", nullable = false)
     private UserDatabase userDatabase;
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
     private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>();
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
     private Set<Target> targets = new HashSet<Target>(0);
 
     public Project() {
@@ -59,9 +82,6 @@ public class Project implements Serializable {
         this.name = name;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ProjectId", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -70,7 +90,6 @@ public class Project implements Serializable {
         this.id = id;
     }
 
-    @Column(nullable = false, length = 30)
     public String getName() {
         return name;
     }
@@ -83,7 +102,6 @@ public class Project implements Serializable {
         this.description = description;
     }
 
-    @Lob
     public String getDescription() {
         return description;
     }
@@ -100,8 +118,6 @@ public class Project implements Serializable {
         this.userDatabase = userDatabase;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DatabaseId", nullable = false)
     public UserDatabase getUserDatabase() {
         return userDatabase;
     }
@@ -110,13 +126,10 @@ public class Project implements Serializable {
         this.lockedPeriods = lockedPeriods;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
-    // @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
     public Set<LockedPeriod> getLockedPeriods() {
         return lockedPeriods;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
     public Set<Target> getTargets() {
         return this.targets;
     }
@@ -124,4 +137,20 @@ public class Project implements Serializable {
     public void setTargets(Set<Target> targets) {
         this.targets = targets;
     }
+
+    @Override
+    public UserDatabase findOwningDatabase() {
+        return userDatabase;
+    }
+
+    @Override
+    public void delete() {
+        dateDeleted = new Date();
+    }
+
+    @Transient
+    @Override
+    public boolean isDeleted() {
+        return dateDeleted != null;
+    }   
 }

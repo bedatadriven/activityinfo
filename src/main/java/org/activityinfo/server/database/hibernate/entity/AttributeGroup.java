@@ -51,8 +51,7 @@ import javax.persistence.Transient;
 @org.hibernate.annotations.Filter(
     name = "hideDeleted",
     condition = "DateDeleted is null")
-public class AttributeGroup implements Serializable, Deleteable, Orderable,
-    SchemaElement {
+public class AttributeGroup implements Serializable, Deleteable, Orderable {
 
     private int id;
 

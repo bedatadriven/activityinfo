@@ -120,7 +120,11 @@ public class PivotQuery {
 
         }
         if (command.isPivotedBy(DimensionType.Project)) {
-            query.leftJoin(Tables.PROJECT, "Project")
+            
+            SqlQuery activeProjects = SqlQuery.selectAll().from(Tables.PROJECT, "AllProjects")
+                .where("AllProjects.dateDeleted").isNull();
+            
+            query.leftJoin(activeProjects, "Project")
                 .on("Project.ProjectId=" + baseTable.getDimensionIdColumn(DimensionType.Project));
         }
         

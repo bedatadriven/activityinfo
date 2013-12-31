@@ -93,4 +93,9 @@ public class MockDesignTree implements DesignPresenter.View {
     public AsyncMonitor getSavingMonitor() {
         return null;
     }
+
+    @Override
+    public void refresh() {
+       
+    }
 }

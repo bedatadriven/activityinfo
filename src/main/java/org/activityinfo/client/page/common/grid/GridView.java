@@ -39,6 +39,8 @@ public interface GridView<P extends GridPresenter, M extends ModelData> {
 
     public AsyncMonitor getSavingMonitor();
 
+    public void refresh();
+    
     public interface SiteGridView extends GridView<SiteGridPresenter, SiteDTO> {
 
     }

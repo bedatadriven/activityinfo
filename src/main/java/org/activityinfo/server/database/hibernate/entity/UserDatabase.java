@@ -63,8 +63,7 @@ import javax.persistence.Transient;
         + "where p.AllowView and p.UserId=:currentUserId and p.DatabaseId=DatabaseId))"),
         @org.hibernate.annotations.Filter(name = "hideDeleted", condition = "DateDeleted is null") })
 @NamedQuery(name = "queryAllUserDatabasesAlphabetically", query = "select db from UserDatabase db order by db.name")
-public class UserDatabase implements java.io.Serializable, Deleteable,
-SchemaElement {
+public class UserDatabase implements java.io.Serializable, Deleteable {
 
     private static final long serialVersionUID = 7405094318163898712L;
 
@@ -403,7 +402,7 @@ SchemaElement {
      * @param lastSchemaUpdate
      */
     public void setLastSchemaUpdate(Date lastSchemaUpdate) {
-        this.version = lastSchemaUpdate.getTime();
+        setVersion(lastSchemaUpdate.getTime());
     }
 
     public void setProjects(Set<Project> projects) {

@@ -38,7 +38,7 @@ public final class ProjectDTO
     extends
     BaseModelData
     implements
-    DTO,
+    EntityDTO,
     HasLockedPeriod {
 
     private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);

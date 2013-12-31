@@ -31,22 +31,25 @@ import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.page.PageId;
 import org.activityinfo.client.page.PageState;
 import org.activityinfo.client.page.common.dialog.FormDialogCallback;
+import org.activityinfo.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.client.page.common.grid.AbstractGridPresenter;
 import org.activityinfo.client.page.common.grid.GridView;
 import org.activityinfo.client.page.common.toolbar.UIActions;
+import org.activityinfo.client.page.config.form.ProjectForm;
 import org.activityinfo.client.util.state.StateProvider;
 import org.activityinfo.shared.command.AddProject;
-import org.activityinfo.shared.command.RemoveProject;
+import org.activityinfo.shared.command.RequestChange;
 import org.activityinfo.shared.command.result.CreateResult;
 import org.activityinfo.shared.command.result.VoidResult;
 import org.activityinfo.shared.dto.ProjectDTO;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.activityinfo.shared.exception.DuplicatePartnerException;
-import org.activityinfo.shared.exception.ProjectHasSitesException;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -98,21 +101,47 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO>
         view.init(this, db, store);
         view.setActionEnabled(UIActions.DELETE, false);
     }
+    
+    
+
+    @Override
+    protected void onEdit(final ProjectDTO model) {
+        
+        final FormDialogImpl<ProjectForm> dialog = new FormDialogImpl<ProjectForm>(new ProjectForm());
+        dialog.setWidth(450);
+        dialog.setHeight(300);
+        dialog.getForm().getBinding().bind(model);
+        dialog.show(new FormDialogCallback() {
+
+            @Override
+            public void onValidated() {
+                service.execute(RequestChange.update(model, "name", "description"), dialog, new AsyncCallback<VoidResult>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // handled by monitor
+                    }
+
+                    @Override
+                    public void onSuccess(VoidResult result) {
+                        dialog.hide();
+                        eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                        view.refresh();
+                    }
+                });
+            }
+        });
+        
+    }
 
     @Override
     protected void onDeleteConfirmed(final ProjectDTO project) {
-        service.execute(new RemoveProject(db.getId(), project.getId()),
+        service.execute(RequestChange.delete(project),
             view.getDeletingMonitor(), new AsyncCallback<VoidResult>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    if (caught instanceof ProjectHasSitesException) {
-                        MessageBox.alert(I18N.CONSTANTS.removeItem(),
-                            I18N.MESSAGES.projectHasDataWarning(project
-                                .getName()), null);
-                    } else {
-                        MessageBox.alert(I18N.CONSTANTS.error(),
-                            I18N.CONSTANTS.errorOnServer(), null);
-                    }
+                    MessageBox.alert(I18N.CONSTANTS.error(),
+                        I18N.CONSTANTS.errorOnServer(), null);
                 }
 
                 @Override
@@ -191,5 +220,4 @@ public class DbProjectEditor extends AbstractGridPresenter<ProjectDTO>
     public void onSelectionChanged(ModelData selectedItem) {
         view.setActionEnabled(UIActions.DELETE, true);
     }
-
 }

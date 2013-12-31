@@ -22,6 +22,8 @@ package org.activityinfo.client.dispatch.remote.cache;
  * #L%
  */
 
+import java.util.Set;
+
 import org.activityinfo.client.dispatch.CommandCache;
 import org.activityinfo.client.dispatch.DispatchEventSource;
 import org.activityinfo.client.dispatch.DispatchListener;
@@ -30,10 +32,12 @@ import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.CreateEntity;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.RemovePartner;
+import org.activityinfo.shared.command.RequestChange;
 import org.activityinfo.shared.command.UpdateEntity;
 import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.dto.SchemaDTO;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
@@ -47,6 +51,8 @@ import com.google.inject.Inject;
 public class SchemaCache implements CommandCache<GetSchema>, DispatchListener {
 
     private SchemaDTO schema = null;
+    
+    private Set<String> schemaEntityTypes = Sets.newHashSet();
 
     @Inject
     public SchemaCache(DispatchEventSource source) {
@@ -57,6 +63,17 @@ public class SchemaCache implements CommandCache<GetSchema>, DispatchListener {
         source.registerListener(CreateEntity.class, this);
         source.registerListener(AddPartner.class, this);
         source.registerListener(RemovePartner.class, this);
+        source.registerListener(RequestChange.class, this);
+
+        schemaEntityTypes.add("UserDatabase");
+        schemaEntityTypes.add("Activity");
+        schemaEntityTypes.add("Indicator");
+        schemaEntityTypes.add("AttributeGroup");
+        schemaEntityTypes.add("AttributeDimension");
+        schemaEntityTypes.add("Partner");
+        schemaEntityTypes.add("Project");
+        schemaEntityTypes.add("LockedPeriod");
+        
     }
 
     @Override
@@ -79,14 +96,13 @@ public class SchemaCache implements CommandCache<GetSchema>, DispatchListener {
         } else if (command instanceof AddPartner ||
             command instanceof RemovePartner) {
             schema = null;
+        } else if(command instanceof RequestChange && 
+            isSchemaEntity(((RequestChange) command).getEntityType())) {   
         }
     }
-
+    
     private boolean isSchemaEntity(String entityName) {
-        return ("UserDatabase".equals(entityName) ||
-            "Activity".equals(entityName) ||
-            "AttributeGroup".equals(entityName) ||
-            "Attribute".equals(entityName) || "Indicator".equals(entityName));
+        return schemaEntityTypes.contains(entityName);
     }
 
     @Override

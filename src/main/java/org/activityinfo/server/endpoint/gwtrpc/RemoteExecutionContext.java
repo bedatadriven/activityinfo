@@ -167,6 +167,7 @@ public class RemoteExecutionContext implements ExecutionContext {
              */
 
             try {
+                this.entityManager.flush();
                 this.entityManager.getTransaction().commit();
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Commit failed!", e);

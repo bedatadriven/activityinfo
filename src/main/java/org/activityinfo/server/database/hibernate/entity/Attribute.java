@@ -45,8 +45,7 @@ import javax.persistence.Transient;
  * 
  */
 @Entity
-public class Attribute implements Serializable, Deleteable, Orderable,
-    SchemaElement {
+public class Attribute implements Serializable, Deleteable, Orderable {
 
     private int id;
     private AttributeGroup group;

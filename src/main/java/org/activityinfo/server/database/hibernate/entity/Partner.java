@@ -45,7 +45,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Partner")
-public class Partner implements java.io.Serializable, SchemaElement {
+public class Partner implements java.io.Serializable {
 
     private static final long serialVersionUID = -5985734789552797994L;
 

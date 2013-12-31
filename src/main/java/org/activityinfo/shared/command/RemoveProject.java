@@ -28,31 +28,22 @@ import org.activityinfo.shared.command.result.VoidResult;
  * Removes Project with given projectId from the persistence store
  */
 public class RemoveProject implements Command<VoidResult> {
-    private int projectId;
-    private int databaseId;
+    private int id;
 
-    public RemoveProject(int projectId, int databaseId) {
+    public RemoveProject(int projectId) {
         super();
-        this.projectId = projectId;
-        this.databaseId = databaseId;
+        this.id = projectId;
     }
 
     public RemoveProject() {
     }
 
-    public int getProjectId() {
-        return projectId;
+    public int getId() {
+        return id;
     }
 
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
+    public void setId(int projectId) {
+        this.id = projectId;
     }
 
-    public int getDatabaseId() {
-        return databaseId;
-    }
-
-    public void setDatabaseId(int databaseId) {
-        this.databaseId = databaseId;
-    }
 }

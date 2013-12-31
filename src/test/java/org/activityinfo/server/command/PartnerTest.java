@@ -83,4 +83,5 @@ public class PartnerTest extends CommandTestCase {
         CreateResult cr = execute(new AddPartner(1, newPartner));
         Assert.assertTrue(cr instanceof DuplicateCreateResult);
     }
+    
 }

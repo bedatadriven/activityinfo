@@ -56,6 +56,7 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
 
     protected abstract void initToolBar();
 
+    
     public void init(final P presenter, Store store) {
         this.presenter = presenter;
 
@@ -132,5 +133,9 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
     @Override
     public AsyncMonitor getSavingMonitor() {
         return new MaskingAsyncMonitor(this, I18N.CONSTANTS.saving());
+    }
+
+    public void refresh() {
+        grid.getView().refresh(false);
     }
 }
