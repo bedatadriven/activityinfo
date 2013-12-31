@@ -91,6 +91,12 @@ public class SitesResources {
             json.writeStartObject();
             json.writeNumberField("id", site.getId());
             json.writeNumberField("activity", site.getActivityId());
+
+            // write start / end date if applicable
+            if(site.getDate1() != null && site.getDate2() != null) {
+                json.writeStringField("startDate", site.getDate1().toString());
+                json.writeStringField("endDate", site.getDate2().toString());
+            }
             
             // write the location as a separate object
             json.writeObjectFieldStart("location");
