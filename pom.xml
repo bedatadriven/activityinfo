@@ -117,12 +117,6 @@
       <version>${appengine.export.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.mixpanel</groupId>
-      <artifactId>mixpanel-java</artifactId>
-      <version>1.1.0</version>
-    </dependency>
-
     <!-- Database dependencies -->
 
     <dependency>
