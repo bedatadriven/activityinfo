@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.server.entity.change.ChangeException;
 import org.activityinfo.shared.command.Filter;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.command.GetSites;
@@ -90,7 +91,7 @@ public class ProjectTest extends CommandTestCase {
     }
     
 
-    @Test
+    @Test(expected = Exception.class)
     public void constraintViolation() {
         setUser(1);
         

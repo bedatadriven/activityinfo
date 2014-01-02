@@ -49,31 +49,12 @@ import org.activityinfo.server.entity.change.AllowUserUpdate;
 @EntityListeners(SchemaChangeListener.class)
 public class Project implements SchemaElement, Serializable, Deleteable {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ProjectId", unique = true, nullable = false)
     private int id;
-
-    @AllowUserUpdate
-    @NotNull
-    @Size(max = 30)
     private String name;
-    
-    @Lob
-    @AllowUserUpdate
     private String description;
-    
     private Date dateDeleted;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DatabaseId")
-    @NotNull
     private UserDatabase userDatabase;
-    
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
     private Set<LockedPeriod> lockedPeriods = new HashSet<LockedPeriod>();
-    
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
     private Set<Target> targets = new HashSet<Target>(0);
 
     public Project() {
@@ -86,6 +67,10 @@ public class Project implements SchemaElement, Serializable, Deleteable {
         this.name = name;
     }
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ProjectId", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -94,6 +79,9 @@ public class Project implements SchemaElement, Serializable, Deleteable {
         this.id = id;
     }
 
+    @AllowUserUpdate
+    @NotNull
+    @Size(max = 30)
     public String getName() {
         return name;
     }
@@ -105,7 +93,9 @@ public class Project implements SchemaElement, Serializable, Deleteable {
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
+    @Lob
+    @AllowUserUpdate
     public String getDescription() {
         return description;
     }
@@ -122,6 +112,9 @@ public class Project implements SchemaElement, Serializable, Deleteable {
         this.userDatabase = userDatabase;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DatabaseId")
+    @NotNull
     public UserDatabase getUserDatabase() {
         return userDatabase;
     }
@@ -130,10 +123,12 @@ public class Project implements SchemaElement, Serializable, Deleteable {
         this.lockedPeriods = lockedPeriods;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")
     public Set<LockedPeriod> getLockedPeriods() {
         return lockedPeriods;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
     public Set<Target> getTargets() {
         return this.targets;
     }
