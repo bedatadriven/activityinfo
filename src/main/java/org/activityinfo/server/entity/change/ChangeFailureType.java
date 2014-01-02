@@ -49,8 +49,14 @@ public enum ChangeFailureType {
     PROPERTY_DOES_NOT_EXIST,
     
     /**
-     * The property 
+     * The property referred to by the ChangeRequest may not be updated by the client
      */
-    PROPERTY_NOT_UPDATABLE
+    PROPERTY_NOT_UPDATABLE,
+    
+    
+    /**
+     * The new property value violated a constraint on the entity
+     */
+    CONSTRAINT_VIOLATION
 }
 

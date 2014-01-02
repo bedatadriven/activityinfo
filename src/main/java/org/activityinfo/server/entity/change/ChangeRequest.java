@@ -34,7 +34,7 @@ public interface ChangeRequest {
      * @param propertyClass the Java type in which to return the value.
      * @param propertyName the name of the property to retrieve
      * @return the new value of the property 
-     * @throws PropertyException if the ChangeRequest does not include
+     * @throws ChangeException if the ChangeRequest does not include
      * this property.
      */
     <T> T getPropertyValue(Class<T> propertyClass, String propertyName);

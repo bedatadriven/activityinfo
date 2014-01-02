@@ -26,6 +26,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.activityinfo.server.database.hibernate.dao.FixGeometryTask;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
@@ -37,6 +40,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.ejb.Ejb3Configuration;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.hibernate.validator.HibernateValidator;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
@@ -90,6 +94,14 @@ public class HibernateModule extends ServletModule {
     public Session provideSession(EntityManager em) {
         HibernateEntityManager hem = (HibernateEntityManager) em;
         return hem.getSession();
+    }
+    
+    @Provides @Singleton
+    public Validator provideValidator() {
+        ValidatorFactory validatorFactory = Validation.byProvider( HibernateValidator.class )
+            .configure()
+            .buildValidatorFactory();
+        return validatorFactory.getValidator();
     }
 
     protected static class EntityManagerFactoryProvider implements Provider<EntityManagerFactory> {

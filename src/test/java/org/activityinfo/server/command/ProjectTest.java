@@ -20,8 +20,6 @@ import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.report.model.Dimension;
 import org.activityinfo.shared.report.model.DimensionType;
 import org.activityinfo.test.InjectionSupport;
-import org.hibernate.Session;
-import org.hibernate.internal.SessionFactoryImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,8 +62,7 @@ public class ProjectTest extends CommandTestCase {
         assertThat(buckets.getBuckets().get(0).getCategory(projectDimension), is(nullValue()));
         
         // make sure the version number of the database is updated
-        assertThat(lookupDbVersion(1), not(equalTo(originalDatabaseVersion)));
-    
+        assertThat(lookupDbVersion(1), not(equalTo(originalDatabaseVersion)));    
     }
 
 
@@ -86,10 +83,26 @@ public class ProjectTest extends CommandTestCase {
         assertThat(schema.getProjectById(2).getName(), equalTo("RRMP II"));   
         assertThat(schema.getProjectById(2).getDescription(), equalTo("RRMP The Next Generation"));   
         
+        project.setName("RRMP III");
+        project.setDescription(null);
+        
+        execute(RequestChange.update(project, "name", "description"));        
     }
+    
 
+    @Test
+    public void constraintViolation() {
+        setUser(1);
+        
+        SchemaDTO schema = execute(new GetSchema());
+        
+        ProjectDTO project = schema.getProjectById(2);
+        project.setName(null);
+        
+        execute(RequestChange.update(project, "name"));
+    }
+       
     private long lookupDbVersion(int dbId) {
         return em.find(UserDatabase.class, dbId).getVersion();
     }
-    
 }

@@ -3,6 +3,7 @@ package org.activityinfo.server.entity.change;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,6 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EntityType;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.activityinfo.server.database.hibernate.entity.Deleteable;
 import org.activityinfo.server.entity.auth.Authorization;
@@ -27,11 +30,13 @@ public class ChangeHandler {
     private static final Logger LOGGER = Logger.getLogger(ChangeHandler.class.getName());
 
     private final Provider<EntityManager> entityManager;
+    private final Validator validator;
     
     @Inject
-    public ChangeHandler(Provider<EntityManager> entityManager) {
+    public ChangeHandler(Provider<EntityManager> entityManager, Validator validator) {
         super();
         this.entityManager = entityManager;
+        this.validator = validator;
     }
 
     public void execute(ChangeRequest request) {
@@ -118,12 +123,24 @@ public class ChangeHandler {
         private void updateProperty(T entity, Attribute<? super T, ?> attribute, String propertyName) {
             if(attribute.getPersistentAttributeType() == PersistentAttributeType.BASIC) {
                 
-                Method setter = setterForAttribute(attribute);
-                try {
-                    setter.invoke(entity, request.getPropertyValue(attribute.getJavaType(), propertyName));
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    throw new ChangeException(e);
-                }
+                updateBasicProperty(entity, attribute, propertyName);
+            }
+        }
+
+        private void updateBasicProperty(T entity, Attribute<? super T, ?> attribute, String propertyName) {
+
+            Object newValue = request.getPropertyValue(attribute.getJavaType(), propertyName);
+           
+            Set<ConstraintViolation<T>> violations = validator.validateValue(entityType.getJavaType(), attribute.getName(), newValue);
+            if(!violations.isEmpty()) {
+                throw new ChangeException(propertyName, violations);
+            }
+            
+            Method setter = setterForAttribute(attribute);
+            try {
+                setter.invoke(entity, newValue);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new ChangeException(e);
             }
         }
 

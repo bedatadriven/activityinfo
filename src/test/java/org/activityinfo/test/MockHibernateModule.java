@@ -24,6 +24,9 @@ package org.activityinfo.test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.activityinfo.server.database.TestConnectionProvider;
 import org.activityinfo.server.database.TestDatabaseModule;
@@ -35,6 +38,7 @@ import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.hibernate.Session;
 import org.hibernate.ejb.Ejb3Configuration;
 import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.validator.HibernateValidator;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
@@ -61,6 +65,14 @@ public class MockHibernateModule extends AbstractModule {
     public Session provideHibernateSession(EntityManager em) {
         HibernateEntityManager hem = (HibernateEntityManager) em;
         return hem.getSession();
+    }
+    
+    @Provides @Singleton
+    public Validator provideValidator() {
+        ValidatorFactory validatorFactory = Validation.byProvider( HibernateValidator.class )
+            .configure()
+            .buildValidatorFactory();
+        return validatorFactory.getValidator();
     }
 
     protected void configureEmf() {

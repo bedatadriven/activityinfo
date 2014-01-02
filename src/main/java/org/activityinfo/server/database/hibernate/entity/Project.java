@@ -40,6 +40,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.activityinfo.server.entity.change.AllowUserUpdate;
 
@@ -53,7 +55,8 @@ public class Project implements SchemaElement, Serializable, Deleteable {
     private int id;
 
     @AllowUserUpdate
-    @Column(nullable = false, length = 30)
+    @NotNull
+    @Size(max = 30)
     private String name;
     
     @Lob
@@ -63,7 +66,8 @@ public class Project implements SchemaElement, Serializable, Deleteable {
     private Date dateDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DatabaseId", nullable = false)
+    @JoinColumn(name = "DatabaseId")
+    @NotNull
     private UserDatabase userDatabase;
     
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project")

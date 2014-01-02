@@ -6,7 +6,6 @@ import java.util.Set;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.shared.auth.AuthenticatedUser;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.common.collect.Maps;
 
 
@@ -21,9 +20,7 @@ public class ChangeRequestBuilder implements ChangeRequest {
     private String entityId;
     private final Map<String, Object> properties = Maps.newHashMap();
     
-    public ChangeRequestBuilder() {
-        
-        
+    public ChangeRequestBuilder() {   
     }
     
     public static ChangeRequestBuilder delete() {
@@ -75,12 +72,12 @@ public class ChangeRequestBuilder implements ChangeRequest {
 
     @Override
     public <T> T getPropertyValue(Class<T> propertyClass, String propertyName) {
-        Object value = properties.get(propertyName);
-        if(value == null) {
-            throw new MissingPropertyException(propertyName);    
+        if(!properties.containsKey(propertyName)) {
+            throw new ChangeException(ChangeFailureType.REQUIRED_PROPERTY_MISSING, propertyName);    
         }
-        if(!value.getClass().equals(propertyClass)) {
-            throw new PropertyConversionException(propertyName);
+        Object value = properties.get(propertyName);
+        if(value != null && !value.getClass().equals(propertyClass)) {
+            throw new ChangeException(ChangeFailureType.MALFORMED_PROPERTY, propertyName);
         }
         return (T)value;
     }
@@ -108,5 +105,4 @@ public class ChangeRequestBuilder implements ChangeRequest {
         properties.putAll(map);
         return this;
     }
-    
 }
