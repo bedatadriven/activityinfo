@@ -111,10 +111,14 @@ public class SitesResources {
             }
             json.writeEndObject();
 
-            json.writeObjectFieldStart("partner");
+            json.writeObjectFieldStart("partner");            
             json.writeNumberField("id", site.getPartnerId());
             json.writeStringField("name", site.getPartnerName());
             json.writeEndObject();
+            
+            if(site.getProject() != null) {
+                json.writeNumberField("projectId", site.getProject().getId());
+            }
 
             // write attributes as a series of ids
             Set<Integer> attributes = getAttributeIds(site);
@@ -165,6 +169,7 @@ public class SitesResources {
                 if(!Strings.isNullOrEmpty(site.getComments())) {
                     json.writeStringField("comments", site.getComments());
                 }
+               
                 json.writeEndObject();
     
                 // write out the geometry object
