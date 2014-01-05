@@ -43,6 +43,7 @@ import com.bedatadriven.rebar.sql.client.SqlDatabase;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -241,11 +242,7 @@ public class DownSynchronizer implements AsyncCommand {
     private void handleException(String message, Throwable throwable) {
         Log.error("Synchronizer: " + message, throwable);
         if (callback != null) {
-            if (throwable instanceof InvocationException) {
-                callback.onFailure(new SynchronizerConnectionException());
-            } else {
-                callback.onFailure(throwable);
-            }
+            callback.onFailure(throwable);
         }
     }
 

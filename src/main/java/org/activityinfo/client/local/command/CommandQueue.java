@@ -24,6 +24,7 @@ package org.activityinfo.client.local.command;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.local.sync.SyncRequestEvent;
@@ -58,6 +59,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class CommandQueue {
+    
+    private static Logger LOGGER = Logger.getLogger(CommandQueue.class.getName());
 
     public static class QueueEntry {
         private int id;
@@ -147,8 +150,6 @@ public class CommandQueue {
     public CommandQueue(EventBus eventBus, SqlDatabase database) {
         this.eventBus = eventBus;
         this.database = database;
-        this.database.execute(queryCount.asFunction().compose(fireCount),
-            NullCallback.forVoid());
     }
 
     public static TxAsyncFunction<Void, Void> createTableIfNotExists() {

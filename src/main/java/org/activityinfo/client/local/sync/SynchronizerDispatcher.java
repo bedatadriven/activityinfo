@@ -86,11 +86,9 @@ public class SynchronizerDispatcher extends AbstractDispatcher {
         final Command<T> command, Throwable caught,
         final AsyncCallback<T> callback, final int attempt) {
         if (attempt > MAX_RETRY_COUNT) {
-            callback.onFailure(new SynchronizerConnectionException(caught));
+            callback.onFailure(new SyncException(SyncErrorType.CONNECTION_PROBLEM, caught));
         } else {
             int delay = retryDelay(attempt);
-            eventBus.fireEvent(new SyncConnectionProblemEvent(attempt + 1,
-                delay));
             Timer timer = new Timer() {
 
                 @Override

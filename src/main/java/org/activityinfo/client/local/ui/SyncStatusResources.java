@@ -36,5 +36,6 @@ public interface SyncStatusResources extends ClientBundle {
 
     public interface Style extends CssResource {
         String warningIcon();
+        String warning();
     }
 }

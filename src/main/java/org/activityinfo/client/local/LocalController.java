@@ -30,7 +30,6 @@ import java.util.List;
 import org.activityinfo.client.AppEvents;
 import org.activityinfo.client.EventBus;
 import org.activityinfo.client.Log;
-import org.activityinfo.client.SessionUtil;
 import org.activityinfo.client.authentication.ClientSideAuthProvider;
 import org.activityinfo.client.dispatch.AsyncMonitor;
 import org.activityinfo.client.dispatch.Dispatcher;
@@ -39,15 +38,14 @@ import org.activityinfo.client.i18n.UIConstants;
 import org.activityinfo.client.local.LocalStateChangeEvent.State;
 import org.activityinfo.client.local.capability.LocalCapabilityProfile;
 import org.activityinfo.client.local.capability.PermissionRefusedException;
-import org.activityinfo.client.local.sync.AppOutOfDateException;
 import org.activityinfo.client.local.sync.SyncCompleteEvent;
+import org.activityinfo.client.local.sync.SyncErrorEvent;
+import org.activityinfo.client.local.sync.SyncErrorType;
 import org.activityinfo.client.local.sync.SyncHistoryTable;
 import org.activityinfo.client.local.sync.SyncStatusEvent;
 import org.activityinfo.client.local.sync.Synchronizer;
-import org.activityinfo.client.local.sync.SynchronizerConnectionException;
 import org.activityinfo.shared.command.Command;
 import org.activityinfo.shared.command.result.CommandResult;
-import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -56,7 +54,6 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -201,20 +198,8 @@ public class LocalController implements Dispatcher {
 
     private void reportFailure(Throwable throwable) {
         Log.error("Exception in offline controller", throwable);
-
-        if (throwable instanceof InvalidAuthTokenException) {
-            SessionUtil.forceLogin();
-
-        } else if (throwable instanceof AppOutOfDateException
-            || throwable instanceof IncompatibleRemoteServiceException) {
-            // view.promptToReloadForNewVersion();
-
-        } else if (throwable instanceof SynchronizerConnectionException) {
-            // view.showSynchronizerConnectionProblem();
-
-        } else {
-            // view.showError(throwable.getMessage());
-        }
+        
+        eventBus.fireEvent(new SyncErrorEvent(SyncErrorType.fromException(throwable)));
     }
 
     private abstract class Strategy {

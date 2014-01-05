@@ -23,19 +23,27 @@ package org.activityinfo.client.local.ui;
  */
 
 import org.activityinfo.client.EventBus;
+import org.activityinfo.client.i18n.I18N;
 import org.activityinfo.client.local.LocalStateChangeEvent;
 import org.activityinfo.client.local.LocalStateChangeEvent.State;
 import org.activityinfo.client.local.sync.SyncCompleteEvent;
+import org.activityinfo.client.local.sync.SyncErrorEvent;
+import org.activityinfo.client.local.sync.SyncErrorType;
 import org.activityinfo.client.local.sync.SyncStatusEvent;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
+import com.google.gwt.user.client.Event;
 import com.google.inject.Inject;
 
 public class WorkStatus extends Status {
 
     private boolean syncing;
     private State state = State.UNINSTALLED;
+    protected String lastErrorMessage;
 
     @Inject
     public WorkStatus(EventBus eventBus) {
@@ -45,11 +53,19 @@ public class WorkStatus extends Status {
 
                 @Override
                 public void handleEvent(SyncStatusEvent be) {
-                    setBusy(be.getTask() + " "
-                        + ((int) (be.getPercentComplete())) + "%");
+                    setBusy(be.getTask() + " "  + ((int) (be.getPercentComplete())) + "%");
                     syncing = true;
                 }
             });
+        
+        eventBus.addListener(SyncErrorEvent.TYPE, new Listener<SyncErrorEvent>() {
+
+            @Override
+            public void handleEvent(SyncErrorEvent event) {
+                warn("Sync error");
+                lastErrorMessage = formatErrorMessage(event.getErrorType());
+            }
+        });
         eventBus.addListener(SyncCompleteEvent.TYPE,
             new Listener<SyncCompleteEvent>() {
 
@@ -67,6 +83,44 @@ public class WorkStatus extends Status {
                     onOfflineStatusChange(be.getState());
                 }
             });
+        
+    }
+        
+    private void warn(String warning) {
+        setIconStyle(SyncStatusResources.INSTANCE.style().warningIcon());
+        addStyleName(SyncStatusResources.INSTANCE.style().warning());
+        setText(warning);
+    }
+    
+    private void clearWarning() {
+        removeStyleName(SyncStatusResources.INSTANCE.style().warning());   
+        lastErrorMessage = null;
+    }
+
+    @Override
+    protected void afterRender() {
+        super.afterRender();
+        el().addEventsSunk(Event.ONCLICK);
+    }
+
+    private String formatErrorMessage(SyncErrorType type) {
+        switch(type) {
+        case APPCACHE_TIMEOUT:
+            if(GXT.isChrome) {
+                return I18N.CONSTANTS.syncAppCacheChrome();
+            } else {
+                return I18N.CONSTANTS.syncErrorConnection();
+            }
+        case CONNECTION_PROBLEM:
+            return I18N.CONSTANTS.syncErrorConnection();
+        case INVALID_AUTH:
+            return I18N.CONSTANTS.syncErrorAuth();
+        case NEW_VERSION:
+            return I18N.CONSTANTS.syncErrorReload();
+        default:
+        case UNEXPECTED_EXCEPTION:
+            return I18N.CONSTANTS.syncErrorUnexpected();
+        }
     }
 
     private void onOfflineStatusChange(State state) {
@@ -77,6 +131,8 @@ public class WorkStatus extends Status {
     }
 
     private void clearBusy() {
+        clearWarning();
+
         switch (state) {
         case UNINSTALLED:
         case INSTALLING:
@@ -91,4 +147,19 @@ public class WorkStatus extends Status {
         }
     }
 
+    @Override
+    public void onBrowserEvent(Event event) {
+        super.onBrowserEvent(event);
+        
+        if(event.getTypeInt() == Event.ONCLICK && lastErrorMessage != null) {
+            MessageBox.alert("Synchronization Error", lastErrorMessage, new Listener<MessageBoxEvent>() {
+                
+                @Override
+                public void handleEvent(MessageBoxEvent be) {
+                    clearBusy();
+                    clearWarning();
+                }
+            });
+        }
+    }
 }

@@ -22,7 +22,6 @@ package org.activityinfo.client.local.sync;
  * #L%
  */
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activityinfo.client.EventBus;
@@ -30,6 +29,7 @@ import org.activityinfo.client.i18n.I18N;
 
 import com.bedatadriven.rebar.appcache.client.AppCache;
 import com.bedatadriven.rebar.appcache.client.AppCache.Status;
+import com.bedatadriven.rebar.appcache.client.AppCacheException;
 import com.bedatadriven.rebar.appcache.client.AppCacheFactory;
 import com.bedatadriven.rebar.appcache.client.events.ProgressEventHandler;
 import com.bedatadriven.rebar.async.AsyncCommand;
@@ -60,7 +60,7 @@ public class AppCacheSynchronizer implements ProgressEventHandler, AsyncCommand 
             @Override
             public void onSuccess(Void result) {
                 if (appCache.getStatus() == Status.UPDATE_READY) {
-                    callback.onFailure(new AppOutOfDateException());
+                    callback.onFailure(new SyncException(SyncErrorType.NEW_VERSION));
                 } else {
                     progressRegistration.removeHandler();
                     callback.onSuccess(result);
@@ -69,10 +69,7 @@ public class AppCacheSynchronizer implements ProgressEventHandler, AsyncCommand 
 
             @Override
             public void onFailure(Throwable caught) {
-                LOGGER.log(Level.SEVERE, "Exception in AppCache Synchronizer",
-                    caught);
-                progressRegistration.removeHandler();
-                callback.onFailure(new SynchronizerConnectionException(caught));
+                callback.onFailure(caught);
             }
         });
     }
