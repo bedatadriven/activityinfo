@@ -74,6 +74,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.treegrid.CellTreeGridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
@@ -232,6 +233,10 @@ public class DesignView extends
         toolBar.add(newButtonMenu);
 
         toolBar.addDeleteButton();
+        
+        toolBar.add(new SeparatorToolItem());
+        toolBar.addExcelExportButton();
+
 
     }
 

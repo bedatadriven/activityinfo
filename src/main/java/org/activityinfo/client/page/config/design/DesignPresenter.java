@@ -57,6 +57,7 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -167,7 +168,16 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData>
             ((DbPageState) place).getDatabaseId() == db.getId();
     }
 
-    public void onNodeDropped(ModelData source) {
+    @Override
+	public void onUIAction(String actionId) {
+		super.onUIAction(actionId);
+		
+		if(UIActions.EXPORT.equals(actionId)) {
+			Window.open("/resources/database/" + db.getId() + "/schema.csv", "_blank", null);
+		}
+	}
+
+	public void onNodeDropped(ModelData source) {
 
         // update sortOrder
 

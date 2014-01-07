@@ -31,6 +31,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.activityinfo.server.command.DispatcherSync;
@@ -42,6 +43,7 @@ import org.activityinfo.shared.command.GetCountries;
 import org.activityinfo.shared.command.GetSchema;
 import org.activityinfo.shared.dto.CountryDTO;
 import org.activityinfo.shared.dto.DTOViews;
+import org.activityinfo.shared.dto.SchemaCsvWriter;
 import org.activityinfo.shared.dto.UserDatabaseDTO;
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -118,8 +120,25 @@ public class RootResource {
     public UserDatabaseDTO getDatabaseSchema(@PathParam("id") int id) {
         UserDatabaseDTO db = dispatcher.execute(new GetSchema())
             .getDatabaseById(id);
+        if(db == null) {
+        	throw new WebApplicationException(Status.NOT_FOUND);
+        }
         return db;
     }
+    
+    @GET
+    @Path("/database/{id}/schema.csv")
+    public Response getDatabaseSchemaCsv(@PathParam("id") int id) {
+    	UserDatabaseDTO db = getDatabaseSchema(id);
+    	SchemaCsvWriter writer = new SchemaCsvWriter();
+    	writer.write(db);
+    	
+    	return Response.ok()
+    		.type("text/css")
+    		.header("Content-Disposition", "attachment; filename=schema_" + id + ".csv")
+    		.entity(writer.toString())
+    		.build();
+    }    
 
     @Path("/adminLevel/{id}")
     public AdminLevelResource getAdminLevel(@PathParam("id") int id) {

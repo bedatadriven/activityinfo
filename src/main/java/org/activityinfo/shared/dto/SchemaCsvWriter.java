@@ -1,14 +1,13 @@
 package org.activityinfo.shared.dto;
 
+import com.extjs.gxt.ui.client.data.ModelData;
+
 public class SchemaCsvWriter {
 
 	private final StringBuilder csv = new StringBuilder();
 	
-	
-	
 	public void write(UserDatabaseDTO db) {
 		writeHeaders();
-		writeLine(db.getId(), null, "Database", null, db.getName(), db.getFullName(), null, null);
 		
 		for(ActivityDTO activity : db.getActivities()) {
 			writeActivity(activity);
@@ -17,22 +16,16 @@ public class SchemaCsvWriter {
 	}
 	
 	private void writeActivity(ActivityDTO activity) {
-		writeLine(activity.getId(), activity.getDatabase().getId(), "Activity", activity.getCategory(), activity.getName(), 
-				null, null);
+
 		
 		for(IndicatorDTO indicator : activity.getIndicators()) {
-			writeLine(indicator.getId(), activity.getId(), "Indicator", indicator.getCategory(), indicator.getName(),
-					indicator.getDescription(), indicator.getUnits(), aggregationToString(indicator));
+			writeElementLine(activity, indicator);
 			
 		}
 		
 		for(AttributeGroupDTO group : activity.getAttributeGroups()) {
-			writeLine(group.getId(), activity.getId(), "AttributeGroup", group.getName(), 
-					null, null, null);
-			
 			for(AttributeDTO attrib : group.getAttributes()) {
-				writeLine(attrib.getId(), group.getId(), "Attribute", attrib.getName(),
-						null, null, null);
+				writeElementLine(activity, group, attrib);
 			}
 		}
 	}
@@ -50,7 +43,34 @@ public class SchemaCsvWriter {
 	}
 
 	private void writeHeaders() {
-		writeLine("Id", "ParentId", "Entity", "Category", "Name", "Description", "Units", "Aggregation");		
+		writeLine("DatabaseId", "DatabaseName", 
+				"ActivityId", "ActivityCategory", "ActivityName", 
+				"FormFieldType",
+				"AttributeGroup/IndicatorId", 
+				"Category",
+				"Name",
+				"Description",
+				"Units", 
+				"AttributeId",
+				"AttributeValue");		
+	}
+	
+	private void writeElementLine(ActivityDTO activity, IndicatorDTO indicator) {
+		writeLine(
+				activity.getDatabase().getId(), activity.getDatabase().getName(), 
+				activity.getId(), activity.getCategory(), activity.getName(),
+				"Indicator",
+				indicator.getId(), indicator.getCategory(), indicator.getName(), indicator.getDescription(), indicator.getUnits(), 
+				null, null);
+	}
+	
+	private void writeElementLine(ActivityDTO activity, AttributeGroupDTO attribGroup, AttributeDTO attrib) {
+		writeLine(
+				activity.getDatabase().getId(), activity.getDatabase().getName(), 
+				activity.getId(), activity.getCategory(), activity.getName(),
+				"AttributeGroup",
+				attribGroup.getId(), null, attribGroup.getName(), null, null, 
+				attrib.getId(), attrib.getName());
 	}
 	
 	private void writeLine(Object... columns) {
