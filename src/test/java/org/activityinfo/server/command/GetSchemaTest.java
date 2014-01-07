@@ -38,6 +38,7 @@ import org.activityinfo.shared.dto.ActivityDTO;
 import org.activityinfo.shared.dto.AdminLevelDTO;
 import org.activityinfo.shared.dto.AttributeDTO;
 import org.activityinfo.shared.dto.IndicatorDTO;
+import org.activityinfo.shared.dto.SchemaCsvWriter;
 import org.activityinfo.shared.dto.SchemaDTO;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.test.InjectionSupport;
@@ -194,5 +195,15 @@ public class GetSchemaTest extends CommandTestCase2 {
         AttributeDTO test = nfi.getAttributeById(1);
 
         assertEquals("property:name", "Catastrophe Naturelle", test.getName());
+    }
+    
+    @Test
+    public void toCSV() {
+        SchemaDTO schema = execute(new GetSchema());
+
+    	SchemaCsvWriter writer = new SchemaCsvWriter();
+    	writer.write(schema.getDatabaseById(1));
+    	
+    	System.out.println(writer.toString());
     }
 }
