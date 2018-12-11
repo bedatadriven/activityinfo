@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import org.activityinfo.server.report.DummyPivotTableData;
 import org.activityinfo.server.report.DummyPivotTableData2;
 import org.activityinfo.shared.report.content.FilterDescription;
@@ -38,7 +39,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 /**
  * @author Alex Bertram (akbertram@gmail.com)

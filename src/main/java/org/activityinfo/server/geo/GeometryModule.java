@@ -22,8 +22,6 @@ package org.activityinfo.server.geo;
  * #L%
  */
 
-import org.activityinfo.server.DeploymentEnvironment;
-
 import com.google.inject.servlet.ServletModule;
 
 public class GeometryModule extends ServletModule {
@@ -32,13 +30,6 @@ public class GeometryModule extends ServletModule {
     protected void configureServlets() {
         bind(AdminGeometryProvider.class).to(MysqlGeometryProvider.class);
         serve(GeometryServlet.END_POINT).with(GeometryServlet.class);
-
-        if (DeploymentEnvironment.isAppEngineProduction()) {
-            bind(GeometryStorage.class).to(GcsGeometryStorage.class);
-        } else if (DeploymentEnvironment.isAppEngine()) {
-            bind(GeometryStorage.class).to(RemoteGcsStorage.class);
-        } else {
-            bind(GeometryStorage.class).to(LocalGeometryStorage.class);
-        }
+        bind(GeometryStorage.class).to(LocalGeometryStorage.class);
     }
 }

@@ -131,12 +131,7 @@ public class RootResource {
     public SitesResources getSites() {
         return new SitesResources(dispatcher);
     }  
-    
-    @Path("/tile")
-    public TileResource getTile() {
-        return new TileResource(config);
-    }
-    
+
     @Path("/geocode")
     public GeocodingResource getGeocoder() {
         return new GeocodingResource();

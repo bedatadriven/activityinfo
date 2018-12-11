@@ -23,14 +23,17 @@
     <display.version>${project.version}</display.version>
 
     <gwtVersion>2.5.1</gwtVersion>
-    <rebarVersion>2.4.1-SNAPSHOT</rebarVersion>
+    <rebarVersion>2.4.1</rebarVersion>
     <gae.version>1.8.8</gae.version>
     <jersey.version>1.17</jersey.version>
     <appengine.export.version>0.1.1</appengine.export.version>
+    <testDatabaseUrl>jdbc:mysql://localhost/activityinfo2?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull</testDatabaseUrl>
+    <testDatabaseUsername>root</testDatabaseUsername>
+    <testDatabasePassword>root</testDatabasePassword>
   </properties>
 
   <dependencies>
-    <!-- GWT deps (from central repo) -->
+    <!-- GWT deps (f rom central repo) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
@@ -42,12 +45,6 @@
       <artifactId>gwt-user</artifactId>
       <version>${gwtVersion}</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${gae.version}</version>
     </dependency>
 
     <dependency>
@@ -78,11 +75,16 @@
     </dependency>
 
     <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk</artifactId>
-      <version>1.2.2</version>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4</version>
     </dependency>
-  
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>4.4.10</version>
+    </dependency>
+
     <dependency>
       <groupId>org.mindrot.bcrypt</groupId>
       <artifactId>bcrypt</artifactId>
@@ -410,7 +412,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
+        <version>3.1</version>
         <configuration>
 
           <source>1.7</source>
@@ -419,20 +421,15 @@
           <excludes>
             <exclude>**/emul/**/*.java</exclude>
           </excludes>
+          <compilerArgs>
+            <arg>-implicit:none</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
-        <groupId>net.kindleit</groupId>
-        <artifactId>maven-gae-plugin</artifactId>
-        <version>0.9.5-bdd</version>
-        <configuration>
-          <port>${gae.port}</port>
-          <unpackVersion>${gae.version}</unpackVersion>
-          <jvmFlags>
-            <jvmFlag>-Xmx256m</jvmFlag>
-          </jvmFlags>
-          <serverId>appengine.google.com</serverId>
-        </configuration>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.4.14.v20181114</version>
       </plugin>
       <plugin>
         <groupId>pl.project13.maven</groupId>
@@ -569,9 +566,6 @@
             </fileset>
             <fileset>
               <directory>war/WEB-INF/deploy</directory>
-            </fileset>
-            <fileset>
-              <directory>war/WEB-INF/appengine-generated</directory>
             </fileset>
             <fileset>
               <directory>war/temp</directory>

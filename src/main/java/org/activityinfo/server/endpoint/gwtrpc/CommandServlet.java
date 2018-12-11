@@ -22,19 +22,13 @@ package org.activityinfo.server.endpoint.gwtrpc;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.database.hibernate.entity.DomainFilters;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.event.CommandEvent;
-import org.activityinfo.server.event.ServerEventBus;
 import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.shared.auth.AnonymousUser;
 import org.activityinfo.shared.auth.AuthenticatedUser;
@@ -44,11 +38,11 @@ import org.activityinfo.shared.command.result.CommandResult;
 import org.activityinfo.shared.exception.CommandException;
 import org.activityinfo.shared.exception.InvalidAuthTokenException;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.google.gwt.user.server.rpc.SerializationPolicy;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Process command objects from the client and returns CommandResults.
@@ -76,9 +70,6 @@ public class CommandServlet extends RemoteServiceServlet implements
 
     @Inject
     private ServerSideAuthProvider authProvider;
-
-    @Inject(optional = true)
-    private PersistentPolicyProvider policyProvider;
 
 
     @Override
@@ -163,18 +154,6 @@ public class CommandServlet extends RemoteServiceServlet implements
     public void log(String msg) {
         super.log(msg);
         LOGGER.log(Level.INFO, msg);
-    }
-
-    @Override
-    protected SerializationPolicy doGetSerializationPolicy(
-        HttpServletRequest request, String moduleBaseURL, String strongName) {
-        if (policyProvider == null) {
-            return super.doGetSerializationPolicy(request, moduleBaseURL,
-                strongName);
-        } else {
-            return policyProvider.getSerializationPolicy(moduleBaseURL,
-                strongName);
-        }
     }
 
     private boolean checkAuthentication(String authToken) {

@@ -27,7 +27,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.database.hibernate.dao.FixGeometryTask;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
@@ -113,10 +112,6 @@ public class HibernateModule extends ServletModule {
             config.setProperty(Environment.HBM2DDL_AUTO, "");
             config.setNamingStrategy(new AINamingStrategy());
             EntityManagerFactory emf = config.buildEntityManagerFactory();
-
-            if (DeploymentEnvironment.isAppEngineDevelopment()) {
-                SchemaServlet.performMigration((HibernateEntityManager) emf.createEntityManager());
-            }
 
             return emf;
         }

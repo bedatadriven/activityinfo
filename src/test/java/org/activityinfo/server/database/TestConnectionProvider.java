@@ -45,9 +45,9 @@ public class TestConnectionProvider implements Provider<Connection> {
     private static final String USERNAME_PROPERTY = "testDatabaseUsername";
     private static final String URL_PROPERTY = "testDatabaseUrl";
 
-    private static final String DEFAULT_PASSWORD = "adminpwd";
+    private static final String DEFAULT_PASSWORD = "root";
     private static final String DEFAULT_USERNAME = "root";
-    private static final String DEFAULT_URL = "jdbc:mysql://localhost/activityinfo-test?useUnicode=true&characterEncoding=utf8";
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost/activityinfo2?useUnicode=true&characterEncoding=utf8";
 
     public static String URL, USERNAME, PASSWORD;
 

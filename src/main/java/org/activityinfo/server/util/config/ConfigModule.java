@@ -22,29 +22,19 @@ package org.activityinfo.server.util.config;
  * #L%
  */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.security.AccessControlException;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-
-import org.activityinfo.server.DeploymentEnvironment;
-import org.activityinfo.server.util.logging.Trace;
-
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.base.Strings;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import org.activityinfo.server.util.logging.Trace;
+
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.AccessControlException;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Guice module that provides the {@link DeploymentConfiguration} used across
@@ -57,10 +47,6 @@ public class ConfigModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        if (DeploymentEnvironment.isAppEngine()) {
-            bind(AppengineConfigResource.class);
-            filter("/admin/config*").through(GuiceContainer.class);
-        }
     }
 
     @Provides
@@ -73,10 +59,6 @@ public class ConfigModule extends ServletModule {
         tryToLoadFrom(properties, webInfDirectory(context));
         tryToLoadFrom(properties, systemSettings());
         tryToLoadFrom(properties, userSettings());
-        tryToLoadFromS3(properties);
-        if (DeploymentEnvironment.isAppEngine()) {
-            tryToLoadFromAppEngineDatastore(properties);
-        }
 
         // specified at server start up with
         // -Dactivityinfo.config=/path/to/conf.properties
@@ -86,11 +68,6 @@ public class ConfigModule extends ServletModule {
         }
 
         return new DeploymentConfiguration(properties);
-    }
-
-    @Provides
-    public AWSCredentials provideAWSCredentials(DeploymentConfiguration config) {
-        return config.getAWSCredentials();
     }
 
     private boolean tryToLoadFrom(Properties properties, File file) {
@@ -109,77 +86,6 @@ public class ConfigModule extends ServletModule {
             return false;
         }
         return false;
-    }
-
-    /**
-     * 
-     * Tries to load a configuration file from an external object stored in
-     * Amazon S3.
-     * 
-     * This is very useful in automating production and continuous deployment
-     * scenarios because it allows us to keep the config and the app artifact
-     * seperate.
-     * 
-     * This method expects the following environment variables to be set:
-     * <ul>
-     * <li>AWS_ACCESS_KEY_ID: access key for the AWS account authorized to
-     * access the S3 bucket</li>
-     * <li>AWS_SECRET_KEY: secret key for this account</li>
-     * <li>PARAM1: the name of the bucket where the config file is stored</li>
-     * <li>PARAM2: the key to the config properties file</li>
-     * </ul>
-     * 
-     * @param properties
-     *            the properties object into which to load the config
-     */
-    private void tryToLoadFromS3(Properties properties) {
-        if (!BeanstalkEnvironment.credentialsArePresent()) {
-            logger
-                .info("AWS Credentials not provided, not attempting to load config from S3");
-            return;
-        }
-
-        String awsAccessKeyId = BeanstalkEnvironment.getAccessKeyId();
-        String awsSecretAccessKey = BeanstalkEnvironment.getSecretKey();
-        String bucket = BeanstalkEnvironment.getConfigurationPropertiesBucket();
-        if (Strings.isNullOrEmpty(bucket)) {
-            logger
-                .log(
-                    Level.SEVERE,
-                    "AWS Credentials provided, but PARAM1 does not contain the bucket name in which the configuration file is stored");
-            return;
-        }
-        String key = BeanstalkEnvironment.getConfigurationPropertiesKey();
-        if (Strings.isNullOrEmpty(key)) {
-            logger
-                .log(
-                    Level.SEVERE,
-                    "AWS Credentials provided, but PARAM2 does not contain the configuration file's key");
-        }
-
-        AmazonS3Client client = new AmazonS3Client(new BasicAWSCredentials(
-            awsAccessKeyId, awsSecretAccessKey));
-        try {
-            properties.load(client.getObject(bucket, key).getObjectContent());
-            logger.info("Loaded configuration from S3 " + bucket + "/" + key);
-        } catch (IOException e) {
-            logger
-                .log(Level.SEVERE, "Exception reading configuration from S3: "
-                    + e.getMessage(), e);
-        }
-    }
-
-    private void tryToLoadFromAppEngineDatastore(Properties properties) {
-        try {
-            String config = AppEngineConfig.getPropertyFile();
-            if (!Strings.isNullOrEmpty(config)) {
-                logger.info("Read config from datastore: \n" + config);
-                properties.load(new StringReader(config));
-            }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE,
-                "Exception reading configuration from AppEngine Datastore", e);
-        }
     }
 
     private File webInfDirectory(ServletContext context) {

@@ -44,8 +44,8 @@
 		</addColumn>				
 		
 		<!--  We don't want to delete the lastSchemaUpdate columns just yet -->
-		<addDefaultValue tableName="userdatabase" columnName="lastSchemaUpdate" defaultValue="0000-00-00"/>
-		<addDefaultValue tableName="userpermission" columnName="lastSchemaUpdate" defaultValue="0000-00-00"/>
+		<addDefaultValue tableName="userdatabase" columnName="lastSchemaUpdate" defaultValue="1970-01-01"/>
+		<addDefaultValue tableName="userpermission" columnName="lastSchemaUpdate" defaultValue="1970-01-01"/>
 		
 		<sql>
 			UPDATE userdatabase SET version = UNIX_TIMESTAMP()*1000;

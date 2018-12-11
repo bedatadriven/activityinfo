@@ -31,7 +31,6 @@ import org.activityinfo.server.authentication.AuthenticationModule;
 import org.activityinfo.server.branding.BrandingModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
-import org.activityinfo.server.digest.DigestModule;
 import org.activityinfo.server.endpoint.adminreport.AdminReportModule;
 import org.activityinfo.server.endpoint.content.ContentModule;
 import org.activityinfo.server.endpoint.export.ExportModule;
@@ -94,7 +93,6 @@ public class StartupListener extends GuiceServletContextListener {
             new AttachmentModule(),
             new ReportModule(),
             new EventModule(),
-            new DigestModule(),
             new LoginModule(),
             new GwtRpcModule(), new JsonRpcModule(),
             new HealthCheckModule(),
