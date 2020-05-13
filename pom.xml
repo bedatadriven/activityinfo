@@ -2,18 +2,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>activityinfo-server</artifactId>
+  <groupId>org.activityinfo</groupId>
+  <artifactId>activityinfo</artifactId>
+  <version>2.7.0-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>ActivityInfo Server</name>
+  <name>ActivityInfo</name>
 
-  <parent>
-    <groupId>org.activityinfo</groupId>
-    <artifactId>activityinfo-parent</artifactId>
-    <version>2.7.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+  <licenses>
+    <license>
+      <name>GPLv3</name>
+      <url>http://www.gnu.org/licenses/gpl.html</url>
+    </license>
+  </licenses>
+  <organization>
+    <name>UNICEF</name>
+    <url>http://www.unicef.org</url>
+  </organization>
 
+  <description>Web-based database platform for program monitoring and reporting for the UN,
+    NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
+  <issueManagement>
+    <system>PivotalTracker</system>
+    <url>https://www.pivotaltracker.com/projects/303613</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>http://build.bedatadriven.com/job/ActivityInfo/</url>
+  </ciManagement>
+  <inceptionYear>2009</inceptionYear>
 
+  <scm>
+    <connection>scm:git:git@github.com:bedatadriven/activityinfo.git</connection>
+    <url>scm:git:git@github.com:bedatadriven/activityinfo.git</url>
+    <developerConnection>scm:git:git@github.com:bedatadriven/activityinfo.git</developerConnection>
+  </scm>
   <properties>
     <gwt.output.directory>${basedir}/war</gwt.output.directory>
 
@@ -27,13 +49,57 @@
     <gae.version>1.8.8</gae.version>
     <jersey.version>1.17</jersey.version>
     <appengine.export.version>0.1.1</appengine.export.version>
-    <testDatabaseUrl>jdbc:mysql://localhost/activityinfo2?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull</testDatabaseUrl>
+    <testDatabaseUrl>jdbc:mysql://localhost/activityinfo2_test?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull</testDatabaseUrl>
     <testDatabaseUsername>root</testDatabaseUsername>
     <testDatabasePassword>root</testDatabasePassword>
+
+    <netbeans.hint.license>gpl3</netbeans.hint.license>
+
+    <!-- convenience to define GWT version in one place -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+
   </properties>
 
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>http://repo1.maven.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>bedatadriven-public</id>
+      <name>Bedatadriven Public Repo</name>
+      <url>http://nexus.bedatadriven.com/content/groups/public</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>http://repo1.maven.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>bedatadriven-public</id>
+      <name>Bedatadriven Public Repo</name>
+      <url>http://nexus.bedatadriven.com/content/groups/public</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>modafocus</id>
+      <name>Sonatype</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+
   <dependencies>
-    <!-- GWT deps (f rom central repo) -->
+
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
@@ -53,7 +119,7 @@
       <version>1.0</version>
       <scope>provided</scope>
     </dependency>
- 
+
     <dependency>
       <groupId>com.teklabs.gwt-i18n-server</groupId>
       <artifactId>gwt-i18n-server</artifactId>
@@ -90,11 +156,25 @@
       <artifactId>bcrypt</artifactId>
       <version>0.3</version>
     </dependency>
-
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+    </dependency>
     <dependency>
       <groupId>com.bedatadriven.appengine.export</groupId>
       <artifactId>appengine-itext</artifactId>
       <version>${appengine.export.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk14</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcmail-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.bedatadriven.appengine.export</groupId>
@@ -204,7 +284,7 @@
       <groupId>org.discotools.gwt.leaflet</groupId>
       <artifactId>gwtl-core</artifactId>
       <version>0.3-SNAPSHOT</version>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>com.google.gwt.google-apis</groupId>
       <artifactId>gwt-gears</artifactId>
@@ -234,7 +314,7 @@
       <artifactId>rebar-time</artifactId>
       <version>${rebarVersion}</version>
     </dependency>
-    <dependency>	
+    <dependency>
       <groupId>com.bedatadriven.rebar</groupId>
       <artifactId>rebar-sql</artifactId>
       <version>${rebarVersion}</version>
@@ -317,7 +397,7 @@
       <version>1.2.2</version>
     </dependency>
 
-    <!-- Required for DiskFileFactory but declared optional in commons-upload 
+    <!-- Required for DiskFileFactory but declared optional in commons-upload
          so needs to be redeclared here -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -329,13 +409,6 @@
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
       <version>4.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
       <scope>test</scope>
     </dependency>
 
@@ -370,23 +443,36 @@
       <artifactId>jackson-geojson</artifactId>
       <version>0.7</version>
     </dependency>
-  </dependencies>
 
-  <repositories>
-    <repository>
-      <id>OSGEO GeoTools repo</id>
-      <url>http://download.osgeo.org/webdav/geotools</url>
-    </repository>
-    <repository>
-      <id>Hibernate Spatial repo</id>
-      <url>http://www.hibernatespatial.org/repository</url>
-    </repository>
-    <!-- add JBOSS repository for easy access to Hibernate libraries -->
-    <repository>
-      <id>JBOSS</id>
-      <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-    </repository>
-  </repositories>
+
+    <!-- Logging facades -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>1.6.1</version>
+    </dependency>
+
+
+    <!-- Testing utils -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <resources>
@@ -401,8 +487,8 @@
         </includes>
       </resource>
     </resources>
-    
-    <!-- Compile classes into the war directory for hosted mode live 
+
+    <!-- Compile classes into the war directory for hosted mode live
         editing -->
     <outputDirectory>${gwt.output.directory}/WEB-INF/classes</outputDirectory>
     <testSourceDirectory>src/test/java</testSourceDirectory>
@@ -466,7 +552,7 @@
         <configuration>
           <encoding>UTF-8</encoding>
 
-          <!-- Change the delimiters used for filtering to avoid 
+          <!-- Change the delimiters used for filtering to avoid
               colliding with FTL template syntaxt -->
           <delimiters>
             <delimeter>$[*]</delimeter>
@@ -474,26 +560,8 @@
           <useDefaultDelimiters>false</useDefaultDelimiters>
         </configuration>
       </plugin>
-      
-      <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-        <!--<version>2.9.1</version>-->
-        <!--<configuration>-->
-          <!--<configLocation>checkstyle.xml</configLocation>-->
-        <!--</configuration>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>checkstyle</id>-->
-            <!--<goals>-->
-              <!--<goal>check</goal>-->
-            <!--</goals>-->
-            <!--<phase>verify</phase>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
 
-      <!-- configure the GWT-Maven plugin -->
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -531,11 +599,10 @@
             </goals>
             <configuration>
               <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-              <logLevel>INFO</logLevel>
-              <compileReport>true</compileReport>
+              <logLevel>DEBUG</logLevel>
               <modules>
                 <module>org.activityinfo.ActivityInfoProduction</module>
-                <module>org.activityinfo.embed.Embed</module>
+<!--                <module>org.activityinfo.embed.Embed</module>-->
               </modules>
             </configuration>
           </execution>
@@ -574,7 +641,7 @@
       </plugin>
 
       <!-- Exclude GWT integration tests from the test phase -->
-      <!-- we want to run them during the integration-test phase with 
+      <!-- we want to run them during the integration-test phase with
           the gwt-maven plugin -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -592,7 +659,7 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-    
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -609,7 +676,7 @@
 
       <!-- Embedded web server for testing -->
       <!-- You can start by invoking mvn jetty:run -->
-      <!-- The server was also be started for the integration testing 
+      <!-- The server was also be started for the integration testing
           phase -->
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
@@ -618,6 +685,9 @@
         <configuration>
           <webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>
           <scanIntervalSeconds>0</scanIntervalSeconds>
+          <systemProperties>
+            <org.eclipse.jetty.webapp.LEVEL>ERROR</org.eclipse.jetty.webapp.LEVEL>
+          </systemProperties>
           <scanTargets>
                         <!--<scanTarget>${basedir}/war/WEB-INF/classes</scanTarget> -->
             <scanTarget>${basedir}/war/WEB-INF/web.xml</scanTarget>
@@ -631,6 +701,7 @@
           <contextPath>/</contextPath>
           <stopPort>9095</stopPort>
           <stopKey>STOP</stopKey>
+          <jvmArgs>-Dorg.eclipse.jetty.webapp.LEVEL=DEBUG</jvmArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -659,92 +730,8 @@
         </configuration>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <!--This plugin's configuration is used to store Eclipse 
-            m2e settings only. It has no influence on the Maven build itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <versionRange>[2.3,)</versionRange>
-                    <goals>
-                      <goal>resources</goal>
-                      <goal>testResources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <versionRange>[1.5,)</versionRange>
-                    <goals>
-                      <goal>revision</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>gwt-maven-plugin</artifactId>
-                    <versionRange>[2.3.0-1,)</versionRange>
-                    <goals>
-                      <goal>i18n</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.liquibase</groupId>
-                    <artifactId>
-                      liquibase-maven-plugin
-                    </artifactId>
-                    <versionRange>
-                      [2.0.1,)
-                    </versionRange>
-                    <goals>
-                      <goal>update</goal>
-                      <goal>dropAll</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
-
   <profiles>
-    <profile>
-      <id>ci</id>
-      <properties>
-        <display.version>2.7 Build ${BUILD_NUMBER}</display.version>
-      </properties>
-    </profile>
-
-
     <profile>
       <id>reset-test-db</id>
 
