@@ -17,3 +17,4 @@ war/WEB-INF/appengine-generated
 /ActivityInfo Chrome.launch
 /ActivityInfo Firefox.launch
 /target
+*.iml
