@@ -48,9 +48,15 @@ Then run:
 Set up a local MySQL database:
 
     mysql -uroot -proot -e "CREATE DATABASE activityinfo2"
-    mysql -uroot -proot activityinfo2 < activityinfo-bare.sql
+    mysql -uroot -proot activityinfo2 < activityinfo2.sql
 
 Then start Jetty:
 
-    mvn jetty:run-war
+    mvn jetty:run-war -DskipTests
+
+You can then navigate to http://localhost:8080/ and login with the
+email address "test@example.com" and password "notasecret".
+
+
+
 
