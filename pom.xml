@@ -21,14 +21,7 @@
 
   <description>Web-based database platform for program monitoring and reporting for the UN,
     NGOs, and others working in humanitarian, development, and post-conflict contexts.</description>
-  <issueManagement>
-    <system>PivotalTracker</system>
-    <url>https://www.pivotaltracker.com/projects/303613</url>
-  </issueManagement>
-  <ciManagement>
-    <system>Jenkins</system>
-    <url>http://build.bedatadriven.com/job/ActivityInfo/</url>
-  </ciManagement>
+
   <inceptionYear>2009</inceptionYear>
 
   <scm>
@@ -67,15 +60,17 @@
     <repository>
       <id>central</id>
       <name>Central Repository</name>
-      <url>http://repo1.maven.org/maven2/</url>
+      <url>https://repo1.maven.org/maven2/</url>
     </repository>
     <repository>
-      <id>bedatadriven-public</id>
+      <id>archive-repo</id>
       <name>Bedatadriven Public Repo</name>
-      <url>http://nexus.bedatadriven.com/content/groups/public</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <url>https://storage.googleapis.com/activityinfo2-repo-archive</url>
+    </repository>
+    <repository>
+      <id>geomajas</id>
+      <name>GeoMajas Repository</name>
+      <url>http://maven.geomajas.org</url>
     </repository>
   </repositories>
 
@@ -83,12 +78,12 @@
     <pluginRepository>
       <id>central</id>
       <name>Central Repository</name>
-      <url>http://repo1.maven.org/maven2/</url>
+      <url>https://repo1.maven.org/maven2/</url>
     </pluginRepository>
     <pluginRepository>
-      <id>bedatadriven-public</id>
+      <id>archive-repo</id>
       <name>Bedatadriven Public Repo</name>
-      <url>http://nexus.bedatadriven.com/content/groups/public</url>
+      <url>https://storage.googleapis.com/activityinfo2-repo-archive</url>
     </pluginRepository>
     <pluginRepository>
       <id>modafocus</id>
@@ -283,12 +278,7 @@
     <dependency>
       <groupId>org.discotools.gwt.leaflet</groupId>
       <artifactId>gwtl-core</artifactId>
-      <version>0.3-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt.google-apis</groupId>
-      <artifactId>gwt-gears</artifactId>
-      <version>1.2.1</version>
+      <version>0.4.15</version>
     </dependency>
 
     <dependency>
@@ -514,7 +504,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.14.v20181114</version>
+        <version>9.3.28.v20191105</version>
       </plugin>
       <plugin>
         <groupId>pl.project13.maven</groupId>
@@ -561,6 +551,27 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[1.8, 1.9)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -599,7 +610,7 @@
             </goals>
             <configuration>
               <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-              <logLevel>DEBUG</logLevel>
+              <logLevel>INFO</logLevel>
               <modules>
                 <module>org.activityinfo.ActivityInfoProduction</module>
 <!--                <module>org.activityinfo.embed.Embed</module>-->
@@ -673,37 +684,6 @@
         </configuration>
       </plugin>
 
-
-      <!-- Embedded web server for testing -->
-      <!-- You can start by invoking mvn jetty:run -->
-      <!-- The server was also be started for the integration testing
-          phase -->
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>maven-jetty-plugin</artifactId>
-        <version>6.1.22</version>
-        <configuration>
-          <webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>
-          <scanIntervalSeconds>0</scanIntervalSeconds>
-          <systemProperties>
-            <org.eclipse.jetty.webapp.LEVEL>ERROR</org.eclipse.jetty.webapp.LEVEL>
-          </systemProperties>
-          <scanTargets>
-                        <!--<scanTarget>${basedir}/war/WEB-INF/classes</scanTarget> -->
-            <scanTarget>${basedir}/war/WEB-INF/web.xml</scanTarget>
-          </scanTargets>
-          <connectors>
-            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-              <port>8888</port>
-              <integralPort>9095</integralPort>
-            </connector>
-          </connectors>
-          <contextPath>/</contextPath>
-          <stopPort>9095</stopPort>
-          <stopKey>STOP</stopKey>
-          <jvmArgs>-Dorg.eclipse.jetty.webapp.LEVEL=DEBUG</jvmArgs>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -756,6 +736,22 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>dev-db</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <configuration>my
+              <url>jdbc:mysql://localhost/activityinfo2?useUnicode=true&amp;characterEncoding=utf8</url>
+              <username>${testDatabaseUsername}</username>
+              <password>${testDatabasePassword}</password>
+            </configuration>
           </plugin>
         </plugins>
       </build>
