@@ -47,7 +47,7 @@ public class TestConnectionProvider implements Provider<Connection> {
 
     private static final String DEFAULT_PASSWORD = "root";
     private static final String DEFAULT_USERNAME = "root";
-    private static final String DEFAULT_URL = "jdbc:mysql://localhost/activityinfo2?useUnicode=true&characterEncoding=utf8";
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost/activityinfo2_test?useUnicode=true&characterEncoding=utf8";
 
     public static String URL, USERNAME, PASSWORD;
 
@@ -63,8 +63,7 @@ public class TestConnectionProvider implements Provider<Connection> {
 
             String urlProperty = activityinfoProperties
                 .getProperty(URL_PROPERTY);
-            URL = urlProperty != null ? urlProperty : System.getProperty(
-                URL_PROPERTY, DEFAULT_URL);
+            URL = DEFAULT_URL;
 
             String usernameProperty = activityinfoProperties
                 .getProperty(USERNAME_PROPERTY);
