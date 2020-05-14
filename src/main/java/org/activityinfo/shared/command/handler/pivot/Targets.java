@@ -106,7 +106,7 @@ public class Targets extends BaseTable {
 
         // don't use an actual sum query, target value is the same regardless of the number of sites
         query.appendColumn(String.valueOf(IndicatorDTO.AGGREGATE_SUM), ValueFields.AGGREGATION);
-        query.appendColumn("V.Value", ValueFields.SUM);
+        query.appendColumn("SUM(V.Value)", ValueFields.SUM);
         query.appendColumn("COUNT(V.Value)", ValueFields.COUNT);
     }
 

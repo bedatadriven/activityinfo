@@ -479,29 +479,15 @@ public class GetSitesHandler implements
     private void queryTotalLength(SqlTransaction tx, GetSites command,
         ExecutionContext context, final SiteResult result) {
 
-        if (isMySql()) {
-            tx.executeSql("SELECT FOUND_ROWS() site_count",
-                new SqlResultCallback() {
+        SqlQuery query = countQuery(command, context);
+        query.execute(tx, new SqlResultCallback() {
 
-                    @Override
-                    public void onSuccess(SqlTransaction tx,
-                        SqlResultSet results) {
-                        result.setTotalLength(results.getRow(0).getInt(
-                            "site_count"));
-                    }
-                });
-        } else {
-            // otherwise we have to execute the whole thing again
-            SqlQuery query = countQuery(command, context);
-            query.execute(tx, new SqlResultCallback() {
-
-                @Override
-                public void onSuccess(SqlTransaction tx, SqlResultSet results) {
-                    result.setTotalLength(results.getRow(0)
-                        .getInt("site_count"));
-                }
-            });
-        }
+            @Override
+            public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                result.setTotalLength(results.getRow(0)
+                    .getInt("site_count"));
+            }
+        });
     }
 
     private SqlQuery countQuery(GetSites command, ExecutionContext context) {
